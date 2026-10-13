@@ -42,6 +42,14 @@ export const demoEntities: DemoEntity[] = [
     gender: { male: 0.02, female: -0.02 },
   },
   {
+    id: 'DEMO-FILM-0004',
+    name: 'The Glass Lantern',
+    type: 'urn:entity:movie',
+    popularity: 0.09,
+    age: ages([0.2, 0.3, 0.16, -0.12, -0.3, -0.4]),
+    gender: { male: 0.04, female: -0.04 },
+  },
+  {
     id: 'DEMO-BOOK-0001',
     name: 'The Glass Lantern',
     type: 'urn:entity:book',

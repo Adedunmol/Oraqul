@@ -6,18 +6,30 @@ import { defineTool } from './tool';
 
 const MAX_CANDIDATES = 5;
 
+export const searchEntityOutputSchema = z.object({
+  candidates: z.array(
+    z.object({
+      entityId: z.string(),
+      name: z.string(),
+      types: z.array(z.string()),
+      popularity: z.number().nullable(),
+    }),
+  ),
+  ambiguous: z.boolean(),
+});
+
 export const searchEntity = defineTool({
   name: 'searchEntity',
   description:
     'Find a title, person, brand or place in Qloo by name. Returns candidates. When several share the top name, `ambiguous` is true and the user should pick.',
   input: z.object({ name: z.string().min(1), types: z.array(qlooEntityTypeSchema).min(1) }),
   async run(ctx, { name, types }) {
-    const { data, call } = await qloo.lookup.search(ctx.qloo, {
+    const { data: response, call } = await qloo.lookup.search(ctx.qloo, {
       query: name,
       types,
       take: MAX_CANDIDATES,
     });
-    const candidates = data.results.map((e) => ({
+    const candidates = response.results.map((e) => ({
       entityId: e.entity_id,
       name: e.name,
       types: e.types ?? [],
@@ -36,6 +48,7 @@ export const searchEntity = defineTool({
       confidence,
       source: ctx.source,
     });
-    return { data: { candidates, ambiguous }, receipt };
+    const data: z.infer<typeof searchEntityOutputSchema> = { candidates, ambiguous };
+    return { data, receipt };
   },
 });

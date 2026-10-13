@@ -3,16 +3,27 @@ import * as qloo from '../qloo';
 import { toReceipt } from '../receipts';
 import { defineTool } from './tool';
 
+export const audienceOutputSchema = z.object({
+  segments: z.array(
+    z.object({
+      entityId: z.string(),
+      age: z.record(z.string(), z.number()),
+      gender: z.record(z.string(), z.number()),
+      topAgeBand: z.string().nullable(),
+    }),
+  ),
+});
+
 export const audienceBySegment = defineTool({
   name: 'audienceBySegment',
   description:
     'Age and gender skew of the audience for one or more Qloo entities, as an affinity per segment. Positive means over-represented.',
   input: z.object({ entityIds: z.array(z.string()).min(1) }),
   async run(ctx, { entityIds }) {
-    const { data, call } = await qloo.insights.demographics(ctx.qloo, {
+    const { data: response, call } = await qloo.insights.demographics(ctx.qloo, {
       'signal.interests.entities': entityIds,
     });
-    const segments = data.results.demographics.map((row) => {
+    const segments = response.results.demographics.map((row) => {
       const age = row.query.age ?? {};
       const topAge = Object.entries(age).sort(([, a], [, b]) => b - a)[0];
       return {
@@ -32,6 +43,7 @@ export const audienceBySegment = defineTool({
       confidence,
       source: ctx.source,
     });
-    return { data: { segments }, receipt };
+    const data: z.infer<typeof audienceOutputSchema> = { segments };
+    return { data, receipt };
   },
 });
