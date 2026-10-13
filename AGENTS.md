@@ -20,7 +20,7 @@ pnpm test:e2e                           # Playwright (PW_CHANNEL=chrome on macOS
 
 ## How we work
 
-Two people ship **one feature at a time, end to end**: schema, API, and the web screen that uses it, in one branch and one PR. A backend change is not done until its frontend is wired and follows the design system. Details in [docs/git.md](docs/git.md).
+Two people ship **one feature at a time, end to end**: schema, API, and the web screen that uses it, in one branch and one PR. A backend change is usually not done until its frontend is wired and follows the design system. A backend-only PR is fine when it says why and names the screen that follows. Details in [docs/git.md](docs/git.md).
 
 The human reviewers compare each screen against the Claude artifact prototype outside this repo. You cannot see it. Build from `docs/frontend/design-system.md`, say plainly which parts you could not check visually, and never claim a screen matches the prototype.
 

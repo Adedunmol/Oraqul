@@ -97,7 +97,7 @@ export class ScriptedPlanner implements Planner {
     if (segment?.topAgeBand) {
       const affinity = segment.age[segment.topAgeBand];
       claims.push({
-        text: `Its audience skews most to ${bandWord(segment.topAgeBand)} (affinity ${affinity}).`,
+        text: `Its audience skews most to the ${bandWord(segment.topAgeBand)} age band (affinity ${affinity}).`,
         receiptIds: [audience.receiptId],
       });
     } else {
