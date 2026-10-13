@@ -24,6 +24,8 @@ Two people ship **one feature at a time, end to end**: schema, API, and the web 
 
 The human reviewers compare each screen against the Claude artifact prototype outside this repo. You cannot see it. Build from `docs/frontend/design-system.md`, say plainly which parts you could not check visually, and never claim a screen matches the prototype.
 
+Before every commit, push or PR, and while implementing, flag anything that goes against a hard rule or a doc in `docs/`, or that could break existing behaviour (schemas and exported types, API contracts, migrations, engine and pack outputs, receipts, shared UI components, tests). Say what conflicts, what it touches, and the options. Do not commit, push or open a PR over a flagged conflict until the user has decided. If nothing conflicts, say so in one line.
+
 ## Hard rules
 
 1. Scores, verdicts and confidence are computed by code from values Qloo returned. The model never sets a number.
