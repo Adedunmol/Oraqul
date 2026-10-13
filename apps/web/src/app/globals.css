@@ -141,3 +141,20 @@ body {
   color: var(--ink);
   font-family: var(--f-body);
 }
+
+@keyframes preview-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.preview-rise {
+  animation: preview-rise 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview-rise {
+    animation: none;
+  }
+}

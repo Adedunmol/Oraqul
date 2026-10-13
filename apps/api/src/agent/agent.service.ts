@@ -10,13 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { demoFetch, QlooClient, type ToolContext } from '@oraqul/engine';
 import { demoProjects } from '@oraqul/packs';
-import {
-  type Answer,
-  type Category,
-  categories,
-  type StartMode,
-  type ThreadEvent,
-} from '@oraqul/schema';
+import { type Answer, type Category, type StartMode, type ThreadEvent } from '@oraqul/schema';
 import type { Observable } from 'rxjs';
 import type { Env } from '../config/env.js';
 import { AnswerError, advance, newRunState, type RuntimeDeps } from './runtime.js';
@@ -36,11 +30,6 @@ export class AgentService {
     @Inject(PLANNER) private readonly planner: Planner,
     @Inject(ConfigService) private readonly config: ConfigService<Env, true>,
   ) {}
-
-  /** Demo projects, one per category. Their ids are the category names until real projects exist. */
-  demoProjects() {
-    return categories.map((id) => ({ id, project: demoProjects[id] }));
-  }
 
   /** Starts the run and returns once it first stops, usually on the router's confirm question. */
   async createThread(projectId: Category, mode: StartMode): Promise<{ threadId: string }> {

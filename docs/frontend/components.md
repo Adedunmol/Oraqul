@@ -28,7 +28,8 @@ Adding a token: add it in all three places in `globals.css`, then map it in `@th
 From [spec §9.1](../product/spec.md). Tick as built.
 
 - [x] VerdictPill
-- [ ] Button, Input, Chip, Card, Line, Icon
+- [x] Button (`buttonClassName` for links that must look like one), Input
+- [ ] Chip, Card, Line, Icon
 - [ ] Confidence, ReceiptChip, ReceiptDrawer
 - [ ] Tabs, TabNote
 - [ ] StartCard, ProjectCard, SummaryCard

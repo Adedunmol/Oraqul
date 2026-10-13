@@ -31,3 +31,44 @@ describe('envSchema agent settings', () => {
     expect(envSchema.safeParse({ ...valid, OPENAI_API_KEY: 'sk-x' }).success).toBe(false);
   });
 });
+
+describe('envSchema sign in settings', () => {
+  it('rejects a Google client id without a secret', () => {
+    expect(envSchema.safeParse({ ...valid, GOOGLE_CLIENT_ID: 'id' }).success).toBe(false);
+  });
+
+  it('accepts Google settings given together', () => {
+    const env = envSchema.parse({
+      ...valid,
+      GOOGLE_CLIENT_ID: 'id',
+      GOOGLE_CLIENT_SECRET: 'secret',
+    });
+    expect(env.GOOGLE_CLIENT_ID).toBe('id');
+  });
+
+  it('rejects an API_ORIGIN that includes a path', () => {
+    expect(
+      envSchema.safeParse({ ...valid, API_ORIGIN: 'http://localhost:4000/auth/google/callback' })
+        .success,
+    ).toBe(false);
+    expect(envSchema.safeParse({ ...valid, API_ORIGIN: 'http://localhost:4000/' }).success).toBe(
+      false,
+    );
+    expect(envSchema.safeParse({ ...valid, API_ORIGIN: 'http://localhost:4000' }).success).toBe(
+      true,
+    );
+  });
+
+  it('needs a sender address once a Brevo key is set', () => {
+    expect(envSchema.safeParse({ ...valid, BREVO_API_KEY: 'key' }).success).toBe(false);
+    expect(
+      envSchema.safeParse({ ...valid, BREVO_API_KEY: 'key', EMAIL_FROM: 'hi@example.com' }).success,
+    ).toBe(true);
+  });
+
+  it('runs with no Google or Brevo settings', () => {
+    const env = envSchema.parse(valid);
+    expect(env.BREVO_API_KEY).toBe('');
+    expect(env.COOKIE_DOMAIN).toBe('');
+  });
+});

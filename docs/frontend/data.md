@@ -22,7 +22,7 @@ A screen never starts before the response schema exists. If a field is missing, 
 
 Pages are async server components. They call fetchers and pass the result to client components as props. There is no client cache library.
 
-- Screens never call `fetch` or `apiFetch` directly. They call a fetcher.
+- Screens never call `fetch` directly. They call a fetcher.
 - A fetcher is one function per endpoint in `lib/api/<resource>.ts` (for example `lib/api/projects.ts`). It builds the request, sends it, and returns the value parsed with the schema from `@oraqul/schema`. That parse is the only validation of API data on the web side.
 - Server fetchers forward the session cookie from `cookies()` (`next/headers`) to the API. They run only on the server.
 - `cacheComponents` is on. Reading `cookies()` outside a `<Suspense>` boundary blocks the route. A route's `loading.tsx` is such a boundary, so fetch in the page and keep `loading.tsx` next to it. Never fetch in a layout.
@@ -34,7 +34,7 @@ The session cookie is set by the API with `Domain` on the shared parent domain, 
 
 ## Changing data
 
-Writes (create a project, answer a question, post a message, add a result) are made from client components with typed helpers in `lib/api/<resource>.ts`, using `apiFetch` with the session cookie.
+Writes (create a project, answer a question, post a message, add a result) are made from client components with typed helpers in `lib/api/<resource>.ts`, using `clientRequest` with the session cookie.
 
 - The helper validates the response with the schema and returns the typed value. The caller never reads raw JSON.
 - After a write, call `router.refresh()` so server components re-fetch. Keep local state only for what is still in flight (a pending message, a selected option).
@@ -77,8 +77,8 @@ Runs stream over server sent events from the API. The event types and their sche
 
 A 401 from the API sends the person to `/`. It is handled in one place per transport, not in screens:
 
-- Server fetchers: `serverGet` in `lib/api/server.ts` calls `redirect('/')` (`next/navigation`) on a 401.
-- Client helpers: `clientRequest` in `lib/api/client.ts` navigates to `/` on a 401.
+- Server fetchers: `serverGet` in `lib/api/server.ts` calls `redirect('/')` (`next/navigation`) on a 401. Pass `{ returnTo: '/path' }` to redirect to `/?next=/path`, so the person comes back after signing in. `/` reads `next` and accepts only same site paths (`nextPathSchema`).
+- Client helpers: `clientRequest` in `lib/api/client.ts` navigates to `/` on a 401 and never settles, so no error flashes while the page leaves. Sign in calls pass `redirectOn401: false`, because there a 401 means wrong credentials.
 - `/` must never fetch signed-in data, or a 401 loops.
 
 Screens and components never check for a 401 themselves. A 403 is an error, not a redirect.
@@ -89,5 +89,5 @@ TODO(verify): `unauthorized()` and `unauthorized.tsx` are experimental in this N
 
 - The schema, the API route, the fetcher and the screen are in the same branch (or the PR says which follows, see [git.md](../git.md)).
 - The screen has loading, error and empty states, and each was seen once.
-- No `fetch`, `apiFetch`, `useEffect` data load, cast or hand-written API type in the screen code.
+- No `fetch`, `useEffect` data load, cast or hand-written API type in the screen code.
 - The UI checks in [testing.md](../testing.md) pass.

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, MessageEvent, Param, Post, Sse } from '@nestjs/common';
+import { Body, Controller, Get, MessageEvent, Param, Post, Sse, UseGuards } from '@nestjs/common';
 import {
   type Answer,
   answerSchema,
@@ -9,21 +9,18 @@ import {
 } from '@oraqul/schema';
 import { map, type Observable } from 'rxjs';
 import { z } from 'zod';
+import { SessionGuard } from '../auth/session.guard.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
 import { AgentService } from './agent.service.js';
 
 const startBodySchema = z.object({ mode: startModeSchema.default('start') });
 
-// TODO(accounts): guard these with SessionGuard and RolesGuard once sessions work. They are open
-// because only demo projects exist.
+// TODO(teams): add RolesGuard once projects belong to teams. Until then any signed in user can
+// start a run, and the project id is still a category name.
 @Controller()
+@UseGuards(SessionGuard)
 export class AgentController {
   constructor(private readonly agent: AgentService) {}
-
-  @Get('demo/projects')
-  demoProjects() {
-    return this.agent.demoProjects();
-  }
 
   @Post('projects/:id/threads')
   createThread(

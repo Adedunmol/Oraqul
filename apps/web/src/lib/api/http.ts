@@ -17,7 +17,7 @@ export function apiUrl(path: string): URL {
   return new URL(path, baseUrl);
 }
 
-/** Turns a response into a parsed value. The 401 redirect is the caller's job, see docs/frontend/data.md. */
+/** Turns a response into a parsed value. An empty body (202, 204) parses as `undefined`. The 401 redirect is the caller's job, see docs/frontend/data.md. */
 export async function parseResponse<T>(
   response: Response,
   path: string,
@@ -26,5 +26,6 @@ export async function parseResponse<T>(
   if (!response.ok) {
     throw new ApiError(response.status, path);
   }
-  return schema.parse(await response.json());
+  const body = await response.text();
+  return schema.parse(body === '' ? undefined : JSON.parse(body));
 }

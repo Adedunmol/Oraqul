@@ -13,9 +13,3 @@ export const projectInputSchema = z.object({
   comps: z.array(z.string()),
 });
 export type ProjectInput = z.infer<typeof projectInputSchema>;
-
-/** `GET /demo/projects`: one project per category, keyed by the category id. */
-export const demoProjectsResponseSchema = z.array(
-  z.object({ id: categorySchema, project: projectInputSchema }),
-);
-export type DemoProjectsResponse = z.infer<typeof demoProjectsResponseSchema>;
