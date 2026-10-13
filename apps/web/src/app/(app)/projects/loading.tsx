@@ -1,7 +1,8 @@
 export default function Loading() {
   return (
-    <main
-      className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-5 py-16"
+    <div
+      className="flex w-full max-w-3xl flex-col gap-6"
+      role="status"
       aria-busy="true"
       aria-label="Loading projects"
     >
@@ -12,6 +13,6 @@ export default function Loading() {
           className="h-20 rounded-lg border border-line bg-surface2 motion-safe:animate-pulse"
         />
       ))}
-    </main>
+    </div>
   );
 }

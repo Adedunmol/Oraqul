@@ -2,7 +2,7 @@
 
 export default function ProjectsError({ retry }: { retry: () => void }) {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col items-start gap-3 px-5 py-16">
+    <div className="flex w-full max-w-3xl flex-col items-start gap-3">
       <h1 className="font-display text-2xl font-medium">We could not load your projects.</h1>
       <p className="text-muted">Nothing was lost. Try again in a moment.</p>
       <button
@@ -12,6 +12,6 @@ export default function ProjectsError({ retry }: { retry: () => void }) {
       >
         Try again
       </button>
-    </main>
+    </div>
   );
 }
