@@ -1,0 +1,46 @@
+# Architecture
+
+Behaviour is specified in [product/spec.md](product/spec.md). This file covers how the repo is laid out and how the pieces connect.
+
+## Running system
+
+```
+Next.js (Vercel)  ->  NestJS API (VPS)  ->  agent runtime (module in the API)
+                           |                       |
+                        Postgres              Qloo API (hackathon.qloo.com) + OpenAI
+```
+
+- The web app talks only to the API. Runs stream to it over server sent events (event types in `packages/schema`, listed in [spec §8](product/spec.md)).
+- The agent runtime is a module inside the API process, not a separate service.
+- Qloo is reached through the client in `packages/engine`, called from the API. There is no separate Qloo service. See [qloo.md](backend/qloo.md).
+
+## Repo layout
+
+| Path | Role | May import |
+|---|---|---|
+| `apps/web` | Next.js front end | `schema`, `ui` |
+| `apps/api` | NestJS API and agent runtime | `schema`, `engine`, `packs` |
+| `packages/schema` | Zod schemas and shared types | `zod` only |
+| `packages/engine` | Qloo client, receipts, scoring | `schema` |
+| `packages/packs` | One config per category | `schema` |
+| `packages/ui` | Design system components | `schema` |
+| `packages/mcp` | MCP server over the engine (P1) | `engine`, `schema` |
+| `packages/eval` | Golden runs and the eval runner | `engine`, `packs`, `schema` |
+
+Rules:
+
+- `engine` and `packs` never import from `apps`.
+- `schema` has no workspace dependencies.
+- `web` never imports `engine`. It gets types from `schema` and data from the API.
+- A new category is a new folder in `packs`, not new runtime code.
+
+## Build and tooling
+
+- pnpm workspaces and Turborepo. `turbo` builds packages before apps (`dependsOn: ["^build"]`).
+- Internal packages build with `tsup` to ESM and CJS with `.d.ts`, so Next and Nest both consume the built output. Run `pnpm dev` and package watchers rebuild on change.
+- One root `.env`, loaded by the API (`ConfigModule`) and by `apps/web/next.config.ts`. Keys are listed in `.env.example`.
+- Postgres runs in Docker on host port **5433** (5432 is often taken). `docker compose up -d db`.
+
+## Deployment
+
+Vercel for web. Docker Compose on a VPS for API and Postgres. Nightly Postgres backups. Details in [spec §12](product/spec.md).

@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+/* Component classes in the shared UI package must be scanned too. */
+@source "../../../../packages/ui/src";
+
+/* Tokens: docs/frontend/design-system.md section 11.1. Never use a literal colour in a component. */
+:root {
+  --bg: #f4f4f1;
+  --surface: #ffffff;
+  --surface2: #f0f0ec;
+  --ink: #16171a;
+  --muted: #686a72;
+  --line: #e5e5e0;
+  --accent: #3f51c9;
+  --accent-ink: #ffffff;
+  --accent-soft: #eceefb;
+  --holds: #1b7f4b;
+  --holds-bg: #e4f3ea;
+  --weak: #8f5c00;
+  --weak-bg: #fbefd3;
+  --breaks: #ba2b24;
+  --breaks-bg: #fbe6e4;
+  --cant: #686a72;
+  --cant-bg: #ecece8;
+  --shadow: 0 16px 40px rgba(20, 20, 30, 0.14);
+  --s1: #3f51c9;
+  --s2: #a6a8b0;
+  --good: #1b7f4b;
+  --warn: #b9770e;
+  --crit: #ba2b24;
+  --na: #b7b8be;
+  --grid: #e5e5e0;
+  --f-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --f-body: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: var(--font-geist-mono), ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0e10;
+    --surface: #151618;
+    --surface2: #1d1f22;
+    --ink: #ececea;
+    --muted: #9a9ca4;
+    --line: #2a2c31;
+    --accent: #93a3f6;
+    --accent-ink: #0d0e10;
+    --accent-soft: #1f2338;
+    --holds: #5fcb92;
+    --holds-bg: #10281c;
+    --weak: #e8b54f;
+    --weak-bg: #2b2210;
+    --breaks: #f0807a;
+    --breaks-bg: #321a19;
+    --cant: #9a9ca4;
+    --cant-bg: #222427;
+    --shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    --s1: #93a3f6;
+    --s2: #5a5c64;
+    --good: #5fcb92;
+    --warn: #e8b54f;
+    --crit: #f0807a;
+    --na: #4c4e55;
+    --grid: #2a2c31;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0d0e10;
+  --surface: #151618;
+  --surface2: #1d1f22;
+  --ink: #ececea;
+  --muted: #9a9ca4;
+  --line: #2a2c31;
+  --accent: #93a3f6;
+  --accent-ink: #0d0e10;
+  --accent-soft: #1f2338;
+  --holds: #5fcb92;
+  --holds-bg: #10281c;
+  --weak: #e8b54f;
+  --weak-bg: #2b2210;
+  --breaks: #f0807a;
+  --breaks-bg: #321a19;
+  --cant: #9a9ca4;
+  --cant-bg: #222427;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --s1: #93a3f6;
+  --s2: #5a5c64;
+  --good: #5fcb92;
+  --warn: #e8b54f;
+  --crit: #f0807a;
+  --na: #4c4e55;
+  --grid: #2a2c31;
+  color-scheme: dark;
+}
+
+/* Category colour is used only for the small icon tile and icon stroke. */
+[data-cat="film"] {
+  --cat: #6c7fd8;
+}
+[data-cat="music"] {
+  --cat: #c86ba3;
+}
+[data-cat="books"] {
+  --cat: #3e9f94;
+}
+[data-cat="podcasts"] {
+  --cat: #8f76d9;
+}
+[data-cat="games"] {
+  --cat: #d19a3f;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface2: var(--surface2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-holds: var(--holds);
+  --color-holds-bg: var(--holds-bg);
+  --color-weak: var(--weak);
+  --color-weak-bg: var(--weak-bg);
+  --color-breaks: var(--breaks);
+  --color-breaks-bg: var(--breaks-bg);
+  --color-cant: var(--cant);
+  --color-cant-bg: var(--cant-bg);
+  --color-cat: var(--cat);
+  --font-display: var(--f-display);
+  --font-sans: var(--f-body);
+  --font-mono: var(--f-mono);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+}
