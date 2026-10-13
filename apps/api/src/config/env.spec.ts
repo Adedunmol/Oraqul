@@ -17,3 +17,17 @@ describe('envSchema', () => {
     expect(envSchema.safeParse({ ...valid, SESSION_SECRET: 'short' }).success).toBe(false);
   });
 });
+
+describe('envSchema agent settings', () => {
+  it('defaults to demo mode with no keys', () => {
+    expect(envSchema.parse(valid).QLOO_MODE).toBe('demo');
+  });
+
+  it('rejects live mode without a Qloo key', () => {
+    expect(envSchema.safeParse({ ...valid, QLOO_MODE: 'live' }).success).toBe(false);
+  });
+
+  it('rejects an OpenAI key with no model', () => {
+    expect(envSchema.safeParse({ ...valid, OPENAI_API_KEY: 'sk-x' }).success).toBe(false);
+  });
+});
