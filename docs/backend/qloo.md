@@ -4,23 +4,22 @@ Qloo supplies the taste data. What we compute on top is in [spec §5](../product
 
 ## Status
 
-Written 2026-10-13 from docs.qloo.com (the Insights API Deep Dive OpenAPI definition, Entity Type Parameter Guide, Parameter Reference, the lookup, analysis and trending references, and the demographics, taste analysis, heatmap and location guides).
+Written 2026-10-13 from docs.qloo.com, then checked against the live API the same day with `pnpm --filter @oraqul/engine qloo:smoke` (51 calls, `hackathon.api.qloo.com`, our key).
 
-- **Documented** means the docs say so. **Nothing here is confirmed with our own key yet.** `QLOO_API_KEY` is empty, so `qloo:smoke` has not run.
-- Where the docs disagree with themselves, the item is listed under [Conflicts to settle live](#conflicts-to-settle-live) and marked `TODO(verify)` in the code.
-- After the first smoke run, change the status of each item below to **verified (date)** or fix it.
+- **Verified (2026-10-13)** means a live response confirmed it. **Documented** means only the docs say so.
+- Things the docs got wrong or left open are in [Conflicts](#conflicts-and-how-they-were-settled) and [What the live run showed](#what-the-live-run-showed).
 
 | Area | Status |
 |---|---|
-| Host and `X-Api-Key` auth | documented. `hackathon.api.qloo.com` answers 401 without a key (checked 2026-10-13); `hackathon.qloo.com` does not resolve |
-| `/search`, `/entities` | documented |
-| `/v2/tags`, `/v2/tags/types`, `/v2/audiences`, `/v2/audiences/types` | documented. Audiences and the two `types` responses have no sample in the docs |
-| `/v2/insights` for movie, tv_show, artist, book, podcast, videogame, brand, person | documented. Parameter support differs between sources, see conflicts |
-| `/v2/insights` for place, destination, locality | documented, not needed for the first build |
-| `/v2/insights` with `urn:tag`, `urn:demographics`, `urn:heatmap` | documented, with sample responses |
-| `/v2/analysis/compare` | documented, but the response shape is in doubt |
-| `/v2/trending` | documented, with a sample response |
-| Coverage of Nigerian titles, artists, authors, podcasts, games | unknown. The smoke script checks |
+| Host `hackathon.api.qloo.com` and `X-Api-Key` auth | verified. `hackathon.qloo.com` does not resolve |
+| `/search`, `/entities` (by Qloo id and by IMDb id) | verified |
+| `/v2/tags`, `/v2/tags/types`, `/v2/audiences`, `/v2/audiences/types` | verified |
+| `/v2/insights` for movie, tv_show, artist, book, podcast, videogame, brand | verified |
+| `/v2/insights` for person, place, destination, locality | documented, not exercised. Not needed for the first build |
+| `/v2/insights` with `urn:tag`, `urn:demographics`, `urn:heatmap` (geohash and locality) | verified |
+| `/v2/analysis/compare` | verified, shape differs from the OpenAPI definition |
+| `/v2/trending` | verified, with caveats on the date window |
+| Nigerian titles and artists | present, with lower popularity. See below |
 | Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo |
 
 ## Host, auth, limits
@@ -37,13 +36,13 @@ Written 2026-10-13 from docs.qloo.com (the Insights API Deep Dive OpenAPI defini
 
 ## The client (`packages/engine/src/qloo`)
 
-One `QlooClient` per agent run. Every call returns `{ data, call }`: `data` is the response, checked against a Zod schema, and `call` is the record of what was sent and received. A tool turns calls into receipts with `toReceipt(call, { rule, confidence })`. The client never sets confidence, because that is computed by code from [spec §5](../product/spec.md).
+One `QlooClient` per agent run. Every call returns `{ data, call }`: `data` is the response, checked against a Zod schema, and `call` is the record of what was sent and received. A tool turns calls into receipts with `toReceipt(call, { returned, rule, confidence })`. `returned` is the part of the response the line used, not the whole body: live responses are large (see below). The client never sets confidence, because that is computed by code from [spec §5](../product/spec.md).
 
 - **Retry.** Once, on a network error, a timeout, a 429 (waiting for `Retry-After`, at most 10 s) or a 5xx. Not on other 4xx. Then it throws `QlooError` with `kind` (`http`, `network`, `timeout`, `invalid_response`) and the `call`, so the line can still cite what happened ([spec §10](../product/spec.md): "could not test", never filled by the model).
 - **Budget.** `callBudget` (from `QLOO_CALL_BUDGET`) counts network calls. A retry is not a second call. When it is spent, `QlooBudgetError` is thrown before any request, which ends the run with what is tested so far.
 - **Memory.** An identical call later in the run, or made while the first is in flight, costs nothing and returns its own `call` with `cached: true`. Failures are not remembered.
 - **Validation.** `responses.ts` checks the body once. Objects are loose, so fields we do not read are kept in `returned`.
-- **404.** Treated as an error until we confirm it means "no results" (see conflicts). The error carries the call, so a receipt can still be built.
+- **Errors.** A non-2xx status throws `QlooError` carrying the call, so a receipt can still be built. No 404 was seen in the live run, so we do not yet know what Qloo returns for "no results": a search for nonsense still returned a (fuzzy) 200.
 
 Functions take the client first and are grouped by what you ask Qloo:
 
@@ -121,34 +120,53 @@ Checked once in `responses.ts`.
 | `/v2/trending` | `results.trending: [{ date, population_percentile, population_rank, population_rank_velocity, velocity_fold_change, population_percent_delta }]`, newest first |
 | `Entity` | `entity_id`, `name`, `subtype` (`urn:entity:movie`), `popularity`, `properties` (movie: `release_year`, `release_date`, `description`, `content_rating`, `duration`, `image.url`, `akas`, `production_companies`), `tags` |
 
-## Conflicts to settle live
+## Conflicts and how they were settled
 
-The docs disagree with themselves here. The smoke script tests the first four directly.
+| # | Question | Result (2026-10-13) |
+|---|---|---|
+| 1 | Does `signal.location.query` work for every title type? | **Yes.** Adding `Lagos` changed the results for movie, tv_show, artist, book, podcast and videogame. The Entity Type Parameter Guide omits it, the Reference was right |
+| 2 | Do weights, `page` and `feature.explainability` work? | **Yes**, tested on movie: `signal.interests.entities.weight` (very_high against very_low, with a tag signal) changed results, `page=2` differed from page 1, and all 5 results carried `query.explainability`. Age, gender and location weights not tested |
+| 3 | What does compare return? | `results.tags` (shared tags, each with `query.score`), `results.a` and `results.b` (each group's own tags, with `query.count` as text), and an empty `matchEntities`. Not the entity list in the OpenAPI definition |
+| 4 | Does Qloo reject unknown parameters? | **No, it ignores them** (a `bogus.param` returned normally). The typed requests are our only guard |
+| 5 | Audiences: `results.audiences` or `results.entities`? | `results.audiences`. Each has both `id` and `entity_id`, and they differ. **`signal.demographics.audiences` takes `id`**: `entity_id` had no effect on movie results, `id` changed them |
+| 6 | Tag id field | `/v2/tags` lookups use `id`. `urn:tag` insights and compare use `tag_id`. Tags inside entities vary (`id` or `tag_id`, sometimes no name) |
+| 7 | Exclude-tags operator name | not tested. We send `operator.exclude.tags` |
+| 8 | Resy filter names | not tested. We use the OpenAPI names (`filter.external.resy.*`) |
+| 9 | Hotel price range names | not tested. We use `from` and `to` |
+| 10 | Which params does `urn:tag` take? | An entity signal works. `filter.tag.types` and `filter.parents.types` not tested |
+| 11 | `filter.parents.types` values | not tested |
+| 12 | Heatmap `bias.trends` and audience weight | not tested |
+| 13 | What does a 404 mean? | Not seen. A search with no real match returns a 200 with fuzzy results, not an error |
+| 14 | Shapes of the two `types` responses | `results.tag_types` and `results.audience_types`, each a list of `{ type, parents }` |
+| 15 | Film filters | `filter.release_year.min` and `filter.content_rating` really filter: all 10 results were 2020 or later and PG-13 |
+| 16 | Cross-domain | A movie as the signal returned results for tv_show, artist, book, podcast, videogame and brand |
 
-| # | Question | What the sources say | In code |
-|---|---|---|---|
-| 1 | Does `signal.location(.query)` work for movie, tv_show, artist, book, podcast, videogame? | The Parameter Reference lists it for every entity type and the location guide calls movie with `signal.location.query`. The Entity Type Parameter Guide omits it | `UnconfirmedParams` |
-| 2 | Do weights (`signal.interests.entities.weight`, `.tags.weight`, age and gender weights), `page` and `feature.explainability` work for every type? | In the OpenAPI definition and the Reference, not in the Guide's tables for most types | `UnconfirmedParams` |
-| 3 | What does compare return? | The OpenAPI definition shows an entity list. Another project's code reads shared tags with `query.score` in `results.tags`, and each group's own tags in `results.a` and `results.b` | `compareResponseSchema` |
-| 4 | Does Qloo reject or ignore an unknown parameter? | Not stated. Another project's notes say ignored | the client's typed requests |
-| 5 | Is the audiences list at `results.audiences` or `results.entities`? | The docs say `entities`. Another project's code reads `audiences` | `audiencesResponseSchema` |
-| 6 | Which tag id field: `tag_id` or `id`? | `tag_id` in the taste analysis sample. Entity tags unseen | `tagSchema` (both optional) |
-| 7 | Exclude-tags operator name | Guide and Reference: `operator.exclude.tags`. OpenAPI: `operator.filter.exclude.tags` | `operator.exclude.tags` |
-| 8 | Resy filter names | Guide: `filter.properties.resy.rating.*`, `filter.resy.rating.party.*`, `filter.resy.rating_count.*`. OpenAPI: `filter.external.resy.rating|count|party_size.*` | the OpenAPI names |
-| 9 | Hotel price range names | OpenAPI and Guide: `filter.price_range.from|to`. Reference: `.min|max` | `from|to` |
-| 10 | Which params does `urn:tag` take? | The Guide lists only paging and `diversify`. The taste analysis guide requires signals or `filter.tag.types` | `TagInsightsRequest` |
-| 11 | `filter.parents.types` values | The OpenAPI enum lists audience parent types; the tag guide passes entity types | `string[]` |
-| 12 | Heatmap `bias.trends` and `.audiences.weight` | In the heatmap guide, not in the Guide's heatmap table | `HeatmapRequest` |
-| 13 | What does a 404 mean? | The docs list 404 as an error. Another project treated it as "no results" | the client throws |
-| 14 | Shapes of `/v2/tags/types` and `/v2/audiences/types` | not shown | `typesResponseSchema` (not read) |
+## What the live run showed
 
-## Seen in another project's code, not yet checked here
+These shape the agent. They are all from 2026-10-13.
 
-Shelva (books) ran against the live API. These are its findings, kept as things to test, not facts:
+**Search never says "not found".** It always returns the closest fuzzy matches. A made-up title, `Lagos Nights Of The Silent River`, returned unrelated films (*Nights of Cabiria*, *Talladega Nights*), and a nonsense string returned one film. The first hit is also not always the right one: searching `Lionheart` returned a 1990 US film first and the 2018 Nigerian film second. So **"not in Qloo" is a decision we make** by matching name, year and country on the candidates, and an ambiguous match becomes an entity match question ([spec §10](../product/spec.md)). The unknown-film flow in the product starts here.
 
-- A book entity id is rejected as a signal outside book insights, demographics and compare. A book's tags can be read from compare's `results.a`. Does the same hold for movies?
-- Insights from a tag signal can take 10 to 60 seconds on non-book types, and the locality heatmap is slow. The default timeout here is 30 s.
-- `/entities` returned no tags for books. The smoke script checks movies.
+**Missing popularity marks obscure titles.** `popularity` is a 0 to 1 percentile and is `null` or absent for some titles: 3 of the 5 `Black Panther` hits (duplicate and minor listings), and several 2020 to 2025 releases. Treat it as "thin data", not as zero.
+
+**Nigerian coverage is real but thin.** Present, checked by year and country: *Lionheart* (2018, Nigeria, popularity 0.65), *Gangs of Lagos* (2023, 0.46), *Blood Sisters* (2022, 0.09). Matched by exact name only, not checked further: Wizkid and *Half of a Yellow Sun*. Not present: the 1992 *Living in Bondage*, though a 2019 sequel is. Low popularity means a weaker signal, which feeds confidence.
+
+**Responses are big.** One movie carries about 335 tags. Ten movie results from insights were about 780 KB, a Lagos heatmap about 250 KB, and a Nigeria locality heatmap 6.8 MB. A receipt must hold the excerpt a line used, which is why `toReceipt` requires `returned`. Raw Qloo data also must not reach public share links ([PRD](../product/prd.md)).
+
+**`take` is not a limit everywhere.** `take=20` on a Lagos heatmap returned 558 cells and `take=10` on the locality heatmap returned 224 localities. On compare, `take=20` gave 12 shared tags but 30 and 34 tags on the two sides. Slice results in code.
+
+**Trending needs an entity and a long window.** Without `signal.interests.entities` Qloo answers 400. A 60 or 90 day window returned no points, 180 days or more returned 20. `population_rank` is a number written as text, `population_percentile` is 0 to 1, and points come newest first.
+
+**Entities are rich.** A movie's `properties` include `genres`, `keywords`, `plot_summary`, `plot_themes_description`, `audience_identity`, `situational_contexts`, `emotional_tone_description`, `collaborators`, `production_companies`, `release_country`, `release_date`, `content_rating`, `duration` and `wikidata_id`. Insights results also carry `query.measurements.audience_growth`.
+
+**Search results and insights results differ.** `/search` and `/entities` give `types: ['urn:entity:movie']` and no `subtype`. Insights gives `subtype`.
+
+## Still open
+
+- Whether tag-signal calls are slow on non-book types (another project saw 10 to 60 seconds). The smoke run did not record timings.
+- Whether a book id can be used as a signal outside book insights. A movie id can.
+- `person`, `place`, `destination` and `locality` insights; the weights for age, gender and location; the names in conflicts 7 to 12.
+- Lagos against no location for age and gender splits (does location change the demographics?). Location changes the ranking, but no location parameter is documented for the demographics call, so this may need a different approach.
 
 ## Rules
 
@@ -163,9 +181,9 @@ Shelva (books) ran against the live API. These are its findings, kept as things 
 
 1. Put `QLOO_API_KEY` and `QLOO_BASE_URL` in `.env`.
 2. `pnpm --filter @oraqul/engine qloo:smoke`. It prints counts and yes/no only, makes about 50 calls, and saves one response per endpoint and category type to `packages/engine/fixtures` (gitignored).
-3. Settle each conflict above. Fix the schemas and types, remove the `TODO(verify)` markers that are confirmed, and update the status table with the date.
+3. Settle anything still open above. Fix the schemas and types, remove the `TODO(verify)` markers that are confirmed, and update the status table with the date.
 4. Contract tests that parse the fixtures arrive with the first tools ([testing.md](../testing.md)).
 
 ## Open questions
 
-From [PRD §9](../product/prd.md): coverage of Nigerian titles, artists and authors; Lagos against no location; whether location changes age and gender splits; podcast and game coverage; the quota header (reported near 10,000 calls a month); what may be shown on public share links. Add: whether recorded responses may be committed to a public repository.
+From [PRD §9](../product/prd.md), still open: podcast and game coverage for African titles; the quota header (reported near 10,000 calls a month; the smoke run uses about 50); what may be shown on public share links; whether recorded responses may be committed to a public repository.
