@@ -43,8 +43,12 @@ export function compare(
 
 export type TrendingRequest = {
   'filter.type': QlooEntityType;
-  'signal.interests.entities'?: string[];
-  /** `YYYY-MM-DD`. */
+  /** Required: Qloo answers 400 without it. */
+  'signal.interests.entities': string[];
+  /**
+   * `YYYY-MM-DD`. A 60 or 90 day window returned no points in a live check, and 180 days or
+   * more did. Use a window of at least 180 days.
+   */
   'filter.start_date': string;
   'filter.end_date': string;
   take?: number;

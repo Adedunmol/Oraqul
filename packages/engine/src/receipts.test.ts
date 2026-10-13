@@ -17,6 +17,7 @@ const call: QlooCall = {
 describe('toReceipt', () => {
   it('builds a valid receipt from a call and the tool’s own rule and confidence', () => {
     const receipt = toReceipt(call, {
+      returned: { age: { '25_to_29': 0.43 } },
       rule: 'Age skew is the affinity per band for the signal',
       confidence: 'high',
       lineId: 'a1',
@@ -26,7 +27,7 @@ describe('toReceipt', () => {
       lineId: 'a1',
       endpoint: call.endpoint,
       input: call.input,
-      returned: call.returned,
+      returned: { age: { '25_to_29': 0.43 } },
       rule: 'Age skew is the affinity per band for the signal',
       confidence: 'high',
       calledAt: call.calledAt,
@@ -34,7 +35,7 @@ describe('toReceipt', () => {
   });
 
   it('leaves lineId out when there is none', () => {
-    const receipt = toReceipt(call, { rule: 'r', confidence: 'lower' });
+    const receipt = toReceipt(call, { returned: null, rule: 'r', confidence: 'lower' });
     expect('lineId' in receipt).toBe(false);
   });
 });

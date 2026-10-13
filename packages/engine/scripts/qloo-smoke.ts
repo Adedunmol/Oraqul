@@ -192,17 +192,6 @@ await probe('page=2 differs from page 1 (movie)', async () => {
   return same(first, ids(data.results.entities)) ? 'no (same results)' : 'yes';
 });
 
-await probe('signal.interests.entities.weight accepted (movie)', async () => {
-  if (!movieId) return 'skipped';
-  const { data } = await insights.entities(qloo, {
-    'filter.type': 'urn:entity:movie',
-    'signal.interests.entities': [movieId],
-    'signal.interests.entities.weight': 'high',
-    take: 3,
-  });
-  return `accepted; ${data.results.entities.length} result(s)`;
-});
-
 await probe('feature.explainability (movie)', async () => {
   if (!movieId) return 'skipped';
   const { data } = await insights.entities(qloo, {
@@ -215,15 +204,19 @@ await probe('feature.explainability (movie)', async () => {
   return `${withIt.length}/${data.results.entities.length} results carry query.explainability`;
 });
 
-await probe('film filters: release_year and content_rating (movie)', async () => {
+await probe('film filters really filter: release_year >= 2020 and PG-13 (movie)', async () => {
+  if (!movieId) return 'skipped';
   const { data } = await insights.entities(qloo, {
     'filter.type': 'urn:entity:movie',
-    'signal.interests.entities': movieId ? [movieId] : [],
+    'signal.interests.entities': [movieId],
     'filter.release_year.min': 2020,
     'filter.content_rating': ['PG-13'],
-    take: 5,
+    take: 10,
   });
-  return `${data.results.entities.length} result(s)`;
+  const rows = data.results.entities;
+  const years = rows.filter((e) => Number(e.properties?.release_year) >= 2020).length;
+  const ratings = rows.filter((e) => e.properties?.content_rating === 'PG-13').length;
+  return `${rows.length} result(s); released 2020 or later: ${years}; rated PG-13: ${ratings}`;
 });
 
 await probe('what does Qloo return when nothing matches?', async () => {
@@ -241,9 +234,29 @@ await probe('tags lookup: which id field?', async () => {
   const { data, call } = await lookup.tags(qloo, { 'filter.query': 'drama', take: 5 });
   await save('tags', 'search', call);
   const first = data.results.tags[0];
-  tagId = first?.tag_id ?? first?.id;
-  return `${data.results.tags.length} tag(s); tag_id on all: ${data.results.tags.every((t) => t.tag_id !== undefined)}; id on all: ${data.results.tags.every((t) => t.id !== undefined)}`;
+  tagId = first?.id;
+  return `${data.results.tags.length} tag(s), each with id and name`;
 });
+await probe(
+  'weights change results: entity weight very_high vs very_low, with a tag signal',
+  async () => {
+    const tag = tagId;
+    if (!movieId || !tag) return 'skipped';
+    const withWeight = (weight: 'very_high' | 'very_low') =>
+      insights.entities(qloo, {
+        'filter.type': 'urn:entity:movie',
+        'signal.interests.entities': [movieId],
+        'signal.interests.tags': [tag],
+        'signal.interests.entities.weight': weight,
+        take: 10,
+      });
+    const high = await withWeight('very_high');
+    const low = await withWeight('very_low');
+    return same(ids(high.data.results.entities), ids(low.data.results.entities))
+      ? 'no (same results, so weights are ignored here)'
+      : 'yes';
+  },
+);
 await probe('tag types', async () => {
   const { call } = await lookup.tagTypes(qloo, { take: 5 });
   await save('tags', 'types', call);
@@ -256,6 +269,30 @@ await probe('audiences (needs a filter?)', async () => {
   });
   await save('audiences', 'search', call);
   return `${data.results.audiences.length} audience(s)`;
+});
+await probe('audience signal: does entity_id or id change movie results?', async () => {
+  const before = base.get('movie');
+  if (!movieId || !before) return 'skipped';
+  const { data } = await lookup.audiences(qloo, {
+    'filter.parents.types': ['urn:audience:life_stage'],
+    take: 1,
+  });
+  const audience = data.results.audiences[0];
+  if (!audience) return 'skipped (no audience)';
+  const outcome = async (audienceId: string) => {
+    try {
+      const r = await insights.entities(qloo, {
+        'filter.type': 'urn:entity:movie',
+        'signal.interests.entities': [movieId],
+        'signal.demographics.audiences': [audienceId],
+        take: 10,
+      });
+      return same(before, ids(r.data.results.entities)) ? 'no effect' : 'changes results';
+    } catch (err) {
+      return err instanceof QlooError ? `rejected (status ${err.call.status})` : 'error';
+    }
+  };
+  return `entity_id: ${await outcome(audience.entity_id)}; id: ${await outcome(audience.id)}`;
 });
 await probe('audience types', async () => {
   const { call } = await lookup.audienceTypes(qloo, { take: 5 });
@@ -318,14 +355,14 @@ await probe('compare two movies: result shape', async () => {
   const r = data.results;
   return `shared tags: ${r.tags?.length ?? 'absent'}; side a: ${r.a?.length ?? 'absent'}; side b: ${r.b?.length ?? 'absent'}; scores on shared: ${r.tags?.filter((t) => t.query?.score !== undefined).length ?? 0}`;
 });
-await probe('trending for a movie, last 60 days', async () => {
+await probe('trending for a movie, last 365 days', async () => {
   if (!movieId) return 'skipped';
   const day = 24 * 60 * 60 * 1000;
   const iso = (t: number) => new Date(t).toISOString().slice(0, 10);
   const { data, call } = await analysis.trending(qloo, {
     'filter.type': 'urn:entity:movie',
     'signal.interests.entities': [movieId],
-    'filter.start_date': iso(Date.now() - 60 * day),
+    'filter.start_date': iso(Date.now() - 365 * day),
     'filter.end_date': iso(Date.now()),
   });
   await save('analysis', 'trending', call);

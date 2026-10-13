@@ -23,27 +23,24 @@ export type SignalParams = {
   'signal.interests.tags'?: string[];
   'signal.demographics.age'?: SignalAgeBand[];
   'signal.demographics.gender'?: Gender;
-  /** Audience urns from `lookup.audiences`. */
+  /** The `id` (not `entity_id`) of audiences from `lookup.audiences`. */
   'signal.demographics.audiences'?: string[];
   'signal.demographics.audiences.weight'?: Weight;
 };
 
 /**
  * In the Parameter Reference or the OpenAPI definition, but not in the Entity Type Parameter
- * Guide's table for most types. Qloo may ignore them. TODO(verify) with `qloo:smoke`.
+ * Guide's table, and not yet tried against the live API. Qloo ignores a parameter it does not
+ * support without an error, so none of these is known to work. TODO(verify) with `qloo:smoke`.
  */
 export type UnconfirmedParams = {
-  'signal.interests.entities.weight'?: Weight;
   'signal.interests.tags.weight'?: Weight;
   'operator.signal.interests.tags'?: SetOperator;
   'signal.demographics.age.weight'?: Weight;
   'signal.demographics.gender.weight'?: Weight;
   /** A WKT shape or a locality id. Longitude comes first in WKT. */
   'signal.location'?: string;
-  /** A place name such as `Lagos`. */
-  'signal.location.query'?: string;
   'signal.location.weight'?: Weight;
-  'feature.explainability'?: boolean;
   'bias.content_based'?: number;
   'backfill.cross_domain.take'?: number;
   'backfill.content_based.take'?: number;
@@ -54,6 +51,13 @@ export type UnconfirmedParams = {
 export type EntityBaseParams = SignalParams &
   UnconfirmedParams &
   Paging & {
+    // Verified live on 2026-10-13 for movie, tv_show, artist, book, podcast and videogame:
+    /** A place name such as `Lagos`. Changes the ranking. */
+    'signal.location.query'?: string;
+    /** Changes the ranking when mixed with another signal. */
+    'signal.interests.entities.weight'?: Weight;
+    /** Adds `query.explainability` to each result. */
+    'feature.explainability'?: boolean;
     'bias.trends'?: BiasLevel;
     /** 0 to 1. Closer to 1 is more popular. */
     'filter.popularity.min'?: number;

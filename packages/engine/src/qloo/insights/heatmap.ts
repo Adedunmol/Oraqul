@@ -13,6 +13,7 @@ type Place =
   | { 'filter.location': string; 'filter.location.query'?: never }
   | { 'filter.location.query': string; 'filter.location'?: never };
 
+// `take` does not limit a heatmap: `take: 20` returned 558 cells in a live check. Slice in code.
 export type HeatmapRequest = Place &
   SignalParams &
   Pick<EntityBaseParams, 'bias.trends' | 'take'> & {
@@ -54,7 +55,7 @@ export function heatmap(
 
 /**
  * The same question, answered with named localities (cities, neighbourhoods) instead of cells.
- * Slow: allow for the client's timeout. TODO(verify) the response shape with a real call.
+ * Large: Nigeria returned 224 localities (6.8 MB). Keep the few a line needs for the receipt.
  */
 export function heatmapByLocality(
   client: QlooClient,

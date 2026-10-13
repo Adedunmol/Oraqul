@@ -3,13 +3,15 @@ import type { QlooClient, QlooResult } from './client';
 import type { QlooParams } from './params';
 import {
   type AudiencesResponse,
+  type AudienceTypesResponse,
   audiencesResponseSchema,
+  audienceTypesResponseSchema,
   type EntityListResponse,
   entityListResponseSchema,
-  type TagsResponse,
-  type TypesResponse,
-  tagsResponseSchema,
-  typesResponseSchema,
+  type TagLookupResponse,
+  type TagTypesResponse,
+  tagLookupResponseSchema,
+  tagTypesResponseSchema,
 } from './responses';
 import type { AudienceParentType, ExternalIdSource, SearchSortBy, SetOperator } from './urns';
 
@@ -85,16 +87,16 @@ export type TagSearchParams = Page & {
 export function tags(
   client: QlooClient,
   params: TagSearchParams,
-): Promise<QlooResult<TagsResponse>> {
-  return client.get('/v2/tags', params, tagsResponseSchema);
+): Promise<QlooResult<TagLookupResponse>> {
+  return client.get('/v2/tags', params, tagLookupResponseSchema);
 }
 
 /** `/v2/tags/types`: the tag namespaces, for `filter.tag.types`. */
 export function tagTypes(
   client: QlooClient,
   params: Page & { 'filter.parents.types'?: AudienceParentType[] } = {},
-): Promise<QlooResult<TypesResponse>> {
-  return client.get('/v2/tags/types', params, typesResponseSchema);
+): Promise<QlooResult<TagTypesResponse>> {
+  return client.get('/v2/tags/types', params, tagTypesResponseSchema);
 }
 
 export type AudienceSearchParams = Page & {
@@ -118,6 +120,6 @@ export function audiences(
 export function audienceTypes(
   client: QlooClient,
   params: Page & { 'filter.parents.types'?: AudienceParentType[] } = {},
-): Promise<QlooResult<TypesResponse>> {
-  return client.get('/v2/audiences/types', params, typesResponseSchema);
+): Promise<QlooResult<AudienceTypesResponse>> {
+  return client.get('/v2/audiences/types', params, audienceTypesResponseSchema);
 }

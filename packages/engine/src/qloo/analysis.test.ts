@@ -10,8 +10,9 @@ describe('analysis.compare', () => {
       jsonResponse({
         success: true,
         results: {
-          tags: [{ name: 'Drama', query: { score: 0.7 } }],
-          a: [{ name: 'Drama', query: { count: '12' } }],
+          tags: [{ tag_id: 't1', name: 'Drama', query: { score: 0.7 } }],
+          a: [{ tag_id: 't1', name: 'Drama', query: { count: '12' } }],
+          b: [{ tag_id: 't2', name: 'Crime', query: { count: '4' } }],
         },
       }),
     );
@@ -31,7 +32,8 @@ describe('analysis.compare', () => {
       model: 'descriptive',
       take: '20',
     });
-    expect(data.results.tags?.[0]?.query?.score).toBe(0.7);
+    expect(data.results.tags[0]?.query?.score).toBe(0.7);
+    expect(data.results.b[0]?.query?.count).toBe('4');
   });
 
   it('needs entities on both sides', () => {
@@ -45,7 +47,7 @@ describe('analysis.trending', () => {
     const point = {
       date: '2026-09-25',
       population_percentile: 85.2,
-      population_rank: 150,
+      population_rank: '150',
       population_rank_velocity: 5,
       velocity_fold_change: 1.15,
       population_percent_delta: 1.15,
@@ -60,6 +62,6 @@ describe('analysis.trending', () => {
     const url = new URL(String(fetch.mock.calls[0]?.[0]));
     expect(url.pathname).toBe('/v2/trending');
     expect(url.searchParams.get('filter.start_date')).toBe('2026-09-01');
-    expect(data.results.trending[0]?.population_rank).toBe(150);
+    expect(data.results.trending[0]?.population_rank).toBe('150');
   });
 });

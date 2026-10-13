@@ -45,7 +45,7 @@ describe('lookup', () => {
     const fetch = stubFetch(
       jsonResponse({
         success: true,
-        results: { tags: [{ name: 'Drama', tag_id: 'urn:tag:genre:media:drama' }] },
+        results: { tags: [{ name: 'Drama', id: 'urn:tag:genre:media:drama' }] },
       }),
     );
     const { data } = await lookup.tags(testClient(), {
@@ -57,17 +57,20 @@ describe('lookup', () => {
     expect(url.pathname).toBe('/v2/tags');
     expect(url.searchParams.get('filter.query')).toBe('drama');
     expect(url.searchParams.get('feature.typo_tolerance')).toBe('true');
-    expect(data.results.tags[0]?.tag_id).toBe('urn:tag:genre:media:drama');
+    expect(data.results.tags[0]?.id).toBe('urn:tag:genre:media:drama');
   });
 
   it('audiences and the type lookups hit their own paths', async () => {
     const fetch = stubFetch(
       jsonResponse({
         success: true,
-        results: { audiences: [{ name: 'Parents', entity_id: 'A1' }] },
+        results: { audiences: [{ name: 'Parents', entity_id: 'A1', id: 'A1-id' }] },
       }),
-      jsonResponse({ success: true, results: {} }),
-      jsonResponse({ success: true, results: {} }),
+      jsonResponse({
+        success: true,
+        results: { audience_types: [{ type: 'urn:audience:life_stage' }] },
+      }),
+      jsonResponse({ success: true, results: { tag_types: [{ type: 'urn:tag:genre:media' }] } }),
     );
     const client = testClient();
     await lookup.audiences(client, { 'filter.parents.types': ['urn:audience:life_stage'] });

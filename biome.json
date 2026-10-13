@@ -5,6 +5,7 @@
       "**",
       "!**/node_modules",
       "!**/dist",
+      "!packages/engine/fixtures",
       "!**/.next",
       "!**/.turbo",
       "!**/drizzle/meta",

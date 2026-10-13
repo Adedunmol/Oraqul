@@ -3,18 +3,28 @@ import { z } from 'zod';
 // Qloo responses are validated here, once. Objects are loose: fields we do not read are kept,
 // and the whole body is stored on the call record as `returned`.
 //
-// Required fields are the ones every documented example carries. Anything the docs do not
-// settle is optional with a TODO(verify), to be tightened after `qloo:smoke` with a real key.
+// Shapes below were checked against live responses on 2026-10-13 (docs/backend/qloo.md).
+// Fields that were not seen in a live response stay optional with a TODO(verify).
 
-export const tagSchema = z.looseObject({
-  // TODO(verify): /v2/tags and urn:tag insights use `tag_id`; entity tags may use `id`.
-  tag_id: z.string().optional(),
-  id: z.string().optional(),
+/** A tag as `/v2/tags` lists it. Lookups use `id`, not `tag_id`. */
+export const tagLookupSchema = z.looseObject({
+  id: z.string(),
   name: z.string(),
+  type: z.string().optional(),
+  popularity: z.number().nullish(),
+});
+export type QlooTagLookup = z.infer<typeof tagLookupSchema>;
+
+/** A tag as `urn:tag` insights and compare return it. These use `tag_id`. */
+export const tagSchema = z.looseObject({
+  tag_id: z.string(),
+  name: z.string(),
+  type: z.string().optional(),
   subtype: z.string().optional(),
+  popularity: z.number().nullish(),
   query: z
     .looseObject({
-      // `affinity` on urn:tag insights, `score` on compare. TODO(verify): compare shape.
+      // `affinity` on urn:tag insights, `score` on compare shared tags, `count` on compare sides.
       affinity: z.number().optional(),
       score: z.number().optional(),
       count: z.union([z.string(), z.number()]).optional(),
@@ -23,13 +33,26 @@ export const tagSchema = z.looseObject({
 });
 export type QlooTag = z.infer<typeof tagSchema>;
 
+/** A tag listed inside an entity. Its shape varies: some have `id`, some `tag_id`, some no name. */
+export const entityTagSchema = z.looseObject({
+  tag_id: z.string().optional(),
+  id: z.string().optional(),
+  name: z.string().optional(),
+  type: z.string().optional(),
+  value: z.string().optional(),
+});
+export type QlooEntityTag = z.infer<typeof entityTagSchema>;
+
 export const entitySchema = z.looseObject({
   entity_id: z.string(),
   name: z.string(),
+  /** `/search` and `/entities` give `types`; insights gives `subtype`. */
+  types: z.array(z.string()).optional(),
   subtype: z.string().optional(),
-  popularity: z.number().optional(),
+  /** Null or missing for some titles. */
+  popularity: z.number().nullish(),
   properties: z.looseObject({}).optional(),
-  tags: z.array(tagSchema).optional(),
+  tags: z.array(entityTagSchema).optional(),
   query: z
     .looseObject({
       affinity: z.number().optional(),
@@ -40,9 +63,9 @@ export const entitySchema = z.looseObject({
 export type QlooEntity = z.infer<typeof entitySchema>;
 
 export const audienceSchema = z.looseObject({
-  // TODO(verify): which of the two ids Qloo sends.
-  entity_id: z.string().optional(),
-  id: z.string().optional(),
+  // The two differ. `signal.demographics.audiences` takes `id`; `entity_id` had no effect.
+  entity_id: z.string(),
+  id: z.string(),
   name: z.string(),
   type: z.string().optional(),
 });
@@ -74,13 +97,17 @@ export type QlooHeatmapPoint = z.infer<typeof heatmapPointSchema>;
 
 export const trendingPointSchema = z.looseObject({
   date: z.string(),
+  /** 0 to 1. */
   population_percentile: z.number(),
-  population_rank: z.number(),
+  /** A number written as text. */
+  population_rank: z.string(),
   population_rank_velocity: z.number(),
   velocity_fold_change: z.number(),
   population_percent_delta: z.number(),
 });
 export type QlooTrendingPoint = z.infer<typeof trendingPointSchema>;
+
+const typeRowSchema = z.looseObject({ type: z.string() });
 
 const envelope = {
   success: z.boolean().optional(),
@@ -93,14 +120,20 @@ export const entityListResponseSchema = z.looseObject({
   results: z.array(entitySchema),
 });
 
-/** `/v2/insights` for any `urn:entity:*` type. */
+/** `/v2/insights` for any `urn:entity:*` type, and the locality heatmap. */
 export const entityInsightsResponseSchema = z.looseObject({
   ...envelope,
   results: z.looseObject({ entities: z.array(entitySchema) }),
 });
 
-/** `/v2/insights` with `filter.type=urn:tag`, and `/v2/tags`. */
-export const tagsResponseSchema = z.looseObject({
+/** `/v2/tags`. */
+export const tagLookupResponseSchema = z.looseObject({
+  ...envelope,
+  results: z.looseObject({ tags: z.array(tagLookupSchema) }),
+});
+
+/** `/v2/insights` with `filter.type=urn:tag`. */
+export const tagInsightsResponseSchema = z.looseObject({
   ...envelope,
   results: z.looseObject({ tags: z.array(tagSchema) }),
 });
@@ -118,26 +151,29 @@ export const heatmapResponseSchema = z.looseObject({
 
 export const audiencesResponseSchema = z.looseObject({
   ...envelope,
-  // TODO(verify): the docs show `results.entities`; Shelva's live calls read `results.audiences`.
   results: z.looseObject({ audiences: z.array(audienceSchema) }),
 });
 
-// TODO(verify): shapes not seen in the docs; `results` is not read until a real response is saved.
-export const typesResponseSchema = z.looseObject({
+export const tagTypesResponseSchema = z.looseObject({
   ...envelope,
-  results: z.looseObject({}),
+  results: z.looseObject({ tag_types: z.array(typeRowSchema) }),
+});
+
+export const audienceTypesResponseSchema = z.looseObject({
+  ...envelope,
+  results: z.looseObject({ audience_types: z.array(typeRowSchema) }),
 });
 
 /**
- * TODO(verify): the docs describe an entity list, but Shelva's live calls read shared tags with
- * `query.score` in `results.tags` and each group's own tags in `results.a` and `results.b`.
+ * `results.tags` are the tags the two groups share, each with `query.score`. `results.a` and
+ * `results.b` are each group's own tags, with `query.count`. They are not limited by `take`.
  */
 export const compareResponseSchema = z.looseObject({
   ...envelope,
   results: z.looseObject({
-    tags: z.array(tagSchema).optional(),
-    a: z.array(tagSchema).optional(),
-    b: z.array(tagSchema).optional(),
+    tags: z.array(tagSchema),
+    a: z.array(tagSchema),
+    b: z.array(tagSchema),
   }),
 });
 
@@ -148,10 +184,12 @@ export const trendingResponseSchema = z.looseObject({
 
 export type EntityListResponse = z.infer<typeof entityListResponseSchema>;
 export type EntityInsightsResponse = z.infer<typeof entityInsightsResponseSchema>;
-export type TagsResponse = z.infer<typeof tagsResponseSchema>;
+export type TagLookupResponse = z.infer<typeof tagLookupResponseSchema>;
+export type TagInsightsResponse = z.infer<typeof tagInsightsResponseSchema>;
 export type DemographicsResponse = z.infer<typeof demographicsResponseSchema>;
 export type HeatmapResponse = z.infer<typeof heatmapResponseSchema>;
 export type AudiencesResponse = z.infer<typeof audiencesResponseSchema>;
-export type TypesResponse = z.infer<typeof typesResponseSchema>;
+export type TagTypesResponse = z.infer<typeof tagTypesResponseSchema>;
+export type AudienceTypesResponse = z.infer<typeof audienceTypesResponseSchema>;
 export type CompareResponse = z.infer<typeof compareResponseSchema>;
 export type TrendingResponse = z.infer<typeof trendingResponseSchema>;
