@@ -33,6 +33,6 @@ docs(agent): describe the red team step
 
 - Title follows the commit format. One feature per PR.
 - Description: what changed, why, how to see it working, and what you compared against the prototype.
-- Before review: `pnpm lint`, `pnpm typecheck` and `pnpm test` pass. UI changes checked in light and dark and at 400px wide.
+- Before review: `pnpm lint`, `pnpm typecheck` and `pnpm test` pass. UI changes checked in light and dark and at 400px wide. Comments you added say why, not what ([typescript.md](typescript.md#comments)).
 - Product behaviour changes update `docs/product` in the same PR.
 - Squash merge, with the PR title as the commit message.

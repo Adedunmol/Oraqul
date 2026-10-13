@@ -29,7 +29,6 @@ export function serializeParams(params: QlooParams): Record<string, string> {
   return out;
 }
 
-/** True when `key` is set to something Qloo would receive. */
 export function hasParam(params: QlooParams, key: string): boolean {
   const value = params[key];
   return value !== undefined && serializeValue(value) !== undefined;

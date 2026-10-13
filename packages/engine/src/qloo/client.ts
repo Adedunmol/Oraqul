@@ -81,11 +81,8 @@ interface Attempt {
 }
 
 /**
- * One client per agent run. Retries once (spec §10), validates every response, counts network
- * calls against the budget, and remembers answers for the rest of the run: an identical call
- * made again, or while the first is still in flight, is free and gets its own call record.
- *
- * Auth and endpoints follow docs.qloo.com. See docs/backend/qloo.md for what is confirmed.
+ * One client per agent run. Retries once (spec §10). An identical call made again, or while the
+ * first is in flight, is served from the run's cache: it is free and gets its own call record.
  */
 export class QlooClient {
   private readonly baseUrl: string;

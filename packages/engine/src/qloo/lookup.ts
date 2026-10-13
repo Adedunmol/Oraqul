@@ -15,8 +15,6 @@ import {
 } from './responses';
 import type { AudienceParentType, ExternalIdSource, SearchSortBy, SetOperator } from './urns';
 
-// Lookups turn names and phrases into the ids that Insights needs. Resolve first, then query.
-
 type Page = { take?: number; page?: number };
 
 export type SearchParams = Page & {
