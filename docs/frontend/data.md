@@ -29,7 +29,7 @@ Pages and layouts are async server components. They call fetchers and pass the r
 - Independent fetches in one page start together (`Promise.all`). Slow, non-critical parts go inside `<Suspense>` so the rest of the page shows first.
 - Do not fetch in a client component with `useEffect`. If a client component needs data, the parent fetches it and passes it down.
 
-TODO(owner: whoever wires auth): the API sets the session cookie for its own origin, and the web app is deployed on a different one. Server components only see cookies on the web origin. Decide how the session reaches server fetches (shared parent domain, or the web app sets its own cookie) before the first authenticated screen. Update this file and [architecture.md](../architecture.md) with the answer.
+The session cookie is set by the API with `Domain` on the shared parent domain, so the web app and API are same site and server components can read it. See [architecture.md](../architecture.md#sessions-and-domains).
 
 ## Changing data
 

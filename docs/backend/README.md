@@ -25,6 +25,8 @@ Drizzle in `src/db`.
 
 Hand rolled sessions. A signed `httpOnly` cookie holds a session id. `SessionGuard` looks it up in `sessions` and attaches the user. `RolesGuard` and `@Roles()` exist but deny everything until membership checks are written.
 
+The cookie is set on the shared parent domain and CORS allows only the web origin with credentials, see [architecture.md](../architecture.md#sessions-and-domains). Cookie domain and web origin come from env, validated in `src/config/env.ts`.
+
 Sign in methods (decided): email and password, Google OAuth, and a one-time code sent by email. All three end in the same session cookie. The demo team (PRD A2) needs no signup.
 
 Not built yet. Needs: a password hash on `users` (nullable, since OAuth and code users have none), a table for linked OAuth accounts, a table for one-time codes (hashed, short expiry, single use, attempt limit), and an email sender. Link accounts by verified email.

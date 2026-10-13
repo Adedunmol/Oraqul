@@ -34,6 +34,15 @@ Rules:
 - `web` never imports `engine`. It gets types from `schema` and data from the API.
 - A new category is a new folder in `packs`, not new runtime code.
 
+## Sessions and domains
+
+Web and API run on subdomains of one parent domain, for example `app.<domain>` and `api.<domain>`. The API sets the session cookie with `Domain=.<domain>; HttpOnly; Secure; SameSite=Lax`, so the browser sends it to both. Server components read it with `cookies()` and forward it to the API. Client calls use `credentials: 'include'`.
+
+- The API allows CORS only for the exact web origin, with credentials. No wildcard.
+- Locally, `localhost:3000` and `localhost:4000` are the same site, so no extra setup.
+- A web origin on another registrable domain (a `*.vercel.app` preview) does not receive the cookie. Previews use demo mode or their own API URL.
+- Not proxied through Next `rewrites`: SSE through Vercel's proxy has duration limits.
+
 ## Build and tooling
 
 - pnpm workspaces and Turborepo. `turbo` builds packages before apps (`dependsOn: ["^build"]`).
