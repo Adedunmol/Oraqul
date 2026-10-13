@@ -20,11 +20,12 @@ A screen never starts before the response schema exists. If a field is missing, 
 
 ## Reading data
 
-Pages and layouts are async server components. They call fetchers and pass the result to client components as props. There is no client cache library.
+Pages are async server components. They call fetchers and pass the result to client components as props. There is no client cache library.
 
 - Screens never call `fetch` or `apiFetch` directly. They call a fetcher.
 - A fetcher is one function per endpoint in `lib/api/<resource>.ts` (for example `lib/api/projects.ts`). It builds the request, sends it, and returns the value parsed with the schema from `@oraqul/schema`. That parse is the only validation of API data on the web side.
 - Server fetchers forward the session cookie from `cookies()` (`next/headers`) to the API. They run only on the server.
+- `cacheComponents` is on. Reading `cookies()` outside a `<Suspense>` boundary blocks the route. A route's `loading.tsx` is such a boundary, so fetch in the page and keep `loading.tsx` next to it. Never fetch in a layout.
 - Fetchers are not cached unless the route says so on purpose. User data is per session.
 - Independent fetches in one page start together (`Promise.all`). Slow, non-critical parts go inside `<Suspense>` so the rest of the page shows first.
 - Do not fetch in a client component with `useEffect`. If a client component needs data, the parent fetches it and passes it down.
@@ -76,8 +77,9 @@ Runs stream over server sent events from the API. The event types and their sche
 
 A 401 from the API sends the person to `/`. It is handled in one place per transport, not in screens:
 
-- Server fetchers: the shared request function in `lib/api` calls `redirect('/')` (`next/navigation`) on a 401.
-- Client helpers: the shared client request function navigates to `/` on a 401.
+- Server fetchers: `serverGet` in `lib/api/server.ts` calls `redirect('/')` (`next/navigation`) on a 401.
+- Client helpers: `clientRequest` in `lib/api/client.ts` navigates to `/` on a 401.
+- `/` must never fetch signed-in data, or a 401 loops.
 
 Screens and components never check for a 401 themselves. A 403 is an error, not a redirect.
 
