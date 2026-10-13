@@ -6,5 +6,6 @@ export * from './events';
 export * from './project';
 export * from './qloo';
 export * from './receipt';
+export * from './team';
 export * from './tools';
 export * from './verdict';

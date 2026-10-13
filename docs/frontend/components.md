@@ -28,15 +28,17 @@ Adding a token: add it in all three places in `globals.css`, then map it in `@th
 From [spec §9.1](../product/spec.md). Tick as built.
 
 - [x] VerdictPill
-- [x] Button (`buttonClassName` for links that must look like one), Input
-- [ ] Chip, Card, Line, Icon
+- [x] Button (`buttonClassName` for links that must look like one), Input, Select
+- [ ] Chip, Line
+- [x] Card, Icon (projects, team), Logo, PageHead
 - [ ] Confidence, ReceiptChip, ReceiptDrawer
 - [ ] Tabs, TabNote
 - [ ] StartCard, ProjectCard, SummaryCard
 - [ ] QuestionCard, Trace
 - [ ] Chart (with table toggle)
-- [ ] Palette, Modal, Toast
+- [ ] Palette, Toast
+- [~] Modal: built in `apps/web/src/app/(app)/_components/modal.tsx` (native `dialog`). It moves to `packages/ui` once that package has a client entry.
 
 ## TODO
 
-Theme toggle (`data-theme` override), icon set, chart conventions.
+Icon set beyond projects and team, chart conventions. The theme toggle sets `data-theme` and saves it in `localStorage` (`oraqul-theme`); an inline script in the root layout applies it before first paint.

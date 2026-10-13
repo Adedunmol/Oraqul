@@ -112,8 +112,9 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 | `sessions` | user_id, expires_at |
 | `oauth_accounts` | user_id, provider (google), provider_user_id; unique per provider and provider_user_id |
 | `email_codes` | email, code_hash, purpose (signin, signup, reset), name and password_hash for a pending signup, attempts, expires_at, consumed_at |
-| `teams` | name, kind |
-| `memberships` | team_id, user_id, role (owner, editor, viewer), status (active, invited) |
+| `teams` | name |
+| `memberships` | team_id, user_id, role (owner, editor, viewer); unique per team and user |
+| `invites` | team_id, email, role, token_hash, invited_by, expires_at, accepted_at; one pending invite per team and email |
 | `projects` | team_id, category, name, kind, genre, places[], window, lead, comps, inputs jsonb, status |
 | `threads` | project_id, name, base_output_id, from_output_id, fresh bool, created_by |
 | `messages` | thread_id, role (user, agent, question, trace, output), body jsonb, seq |
@@ -141,7 +142,9 @@ POST   /auth/password/reset/confirm   code and new password; ends other sessions
 GET    /auth/google           GET /auth/google/callback
 POST   /auth/logout           GET /auth/me
 GET    /teams                 POST /teams
-POST   /teams/:id/members     PATCH /teams/:id/members/:uid     DELETE /teams/:id/members/:uid
+GET    /teams/:teamId         members, pending invites (owners only), myRole
+POST   /teams/:teamId/invites     PATCH /teams/:teamId/members/:uid     DELETE /teams/:teamId/members/:uid
+GET    /invites/:token        POST /invites/:token/accept
 GET    /projects?category=    POST /projects        GET /projects/:id        DELETE /projects/:id
 POST   /projects/:id/threads  GET /threads/:id
 POST   /threads/:id/messages  user message or question card answer
@@ -156,7 +159,21 @@ POST   /uploads               plan or results file, parsed to aggregates
 
 Sign in details: codes are 6 digits, expire in 10 minutes, work once, and lock after 5 wrong tries. Accounts are linked by verified email, so the same person reaches one account by password, Google or code. Passwords are at least 8 characters.
 
-Roles are enforced in a guard: viewers get read only on projects and outputs and cannot post messages.
+Roles are enforced in a guard, never in handlers. `RolesGuard` runs after `SessionGuard`, reads `@Roles()` on the route and the `:teamId` route param, loads the caller's membership and answers 403 when there is none or the role is not listed. A route with no `@Roles()` is denied. A team that does not exist and a team the caller is not on give the same 403.
+
+| Action | Owner | Editor | Viewer |
+|---|---|---|---|
+| See the team and its members | yes | yes | yes |
+| See pending invites | yes | no | no |
+| Invite, change a role, remove a member | yes | no | no |
+| Read projects, threads and outputs | yes | yes | yes |
+| Create or change projects, run the agent, post messages | yes | yes | no |
+
+The last two rows apply when projects belong to teams.
+
+**Teams.** A new account gets a personal team it owns, made in the same transaction as the account (`UsersService.findOrCreateVerified`). Anyone can create more teams and owns the ones they create. A team always has an owner: demoting or removing the last one answers 409. Owners can remove themselves only while another owner remains.
+
+**Invites.** An owner invites an email with a role. The API emails a link to `/invite/<token>`. The token is 32 random bytes, stored only as a SHA-256 hash, works once and expires after 7 days. Inviting an email that already has a pending invite replaces it, which is how to resend. Inviting someone already on the team is 409, and a team sends at most 20 invites an hour (429). The accept routes need a signed in session, and the signed in email must equal the invited email, else 403, checked before the invite is used up. A token nobody issued is 404, one that expired or was used is 410 on accept, and `GET /invites/:token` reports it as `status` instead. Accepting adds the membership with the invited role. Someone who is already a member keeps their role.
 
 ## 8. Events
 
@@ -164,7 +181,9 @@ SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created
 
 ## 9. Web app
 
-Routes: `/` sign in and an example answer, `/projects`, `/categories/:id`, `/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/s/:token`.
+Routes: `/` sign in and an example answer, `/projects`, `/categories/:id`, `/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/invite/:token`, `/s/:token`.
+
+`/team` shows the team's members, a role select and remove for owners, pending invites, the invite form and sign out; the team comes from the sidebar switcher, remembered in an `oraqul_team` cookie and checked against the person's memberships. `/invite/:token` previews an invite and accepts it. A signed out visitor is sent to sign in and returned to the invite afterwards.
 
 Output page tabs come from the output kind and the category pack: Summary, Audience, Assumptions, Plan, the category's signature tabs, Risks, Could not test, Evidence, plus Changes, Results, Rival dates and Partner briefs where they fit. The what if bar sits above the plan tabs and matches typed text to the pack's scenario matchers. Receipts open in a side drawer. A dock chat on the output page continues the thread.
 

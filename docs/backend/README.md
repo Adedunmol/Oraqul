@@ -23,7 +23,7 @@ Drizzle in `src/db`.
 
 ## Auth
 
-Hand rolled sessions. A signed `httpOnly` cookie holds a session id. `SessionGuard` looks it up in `sessions` and attaches the user. `RolesGuard` and `@Roles()` exist but deny everything until membership checks are written (team management).
+Hand rolled sessions. A signed `httpOnly` cookie holds a session id. `SessionGuard` looks it up in `sessions` and attaches the user. `RolesGuard` and `@Roles()` check team roles, see Teams below.
 
 The cookie is set on the shared parent domain and CORS allows only the web origin with credentials, see [architecture.md](../architecture.md#sessions-and-domains). Cookie domain and web origin come from env, validated in `src/config/env.ts`.
 
@@ -38,7 +38,17 @@ Sign in methods: email and password, Google OAuth, and a one-time code sent by e
 - **Email.** `@getbrevo/brevo` sends through Brevo when `BREVO_API_KEY` is set. When it is empty, codes are printed to the API console. `EMAIL_FROM` must be a sender verified in Brevo. Brevo accepts a message from an unverified sender and then drops it, so the API refuses to start when `BREVO_API_KEY` is set without a valid `EMAIL_FROM`.
 - **Env.** `API_ORIGIN`, `COOKIE_DOMAIN` (empty locally), `TRUST_PROXY_HOPS` (0 locally), `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `BREVO_API_KEY`, `EMAIL_FROM`.
 
-Not built yet: the team side (`RolesGuard` still denies everything until membership checks exist). The agent routes need a signed in session (`SessionGuard`) but not yet a team role.
+The agent routes need a signed in session (`SessionGuard`) but not yet a team role, because projects do not belong to teams yet.
+
+## Teams
+
+`src/teams`. Roles, the last owner rule and invites are specified in [spec §7](../product/spec.md); this is how they are built.
+
+- **RolesGuard.** `@UseGuards(SessionGuard, RolesGuard)` and `@Roles('owner', ...)` on a route with `:teamId` in its path. The roles listed are the only ones allowed, there is no ranking. The guard attaches `request.membership`, read with `@CurrentMembership()`. Put the guard on the route, not the controller, when only some routes have a `:teamId`. Every team scoped route added later (projects, threads, outputs) uses the same guard.
+- **Personal team.** Created inside `UsersService.findOrCreateVerified`. Migration `0003` also gave one to every account that existed before it.
+- **Last owner.** `TeamsService.changeRole` and `removeMember` lock the team's owner rows (`FOR UPDATE`) before counting them, so two owners cannot demote each other at once.
+- **Invites.** `InvitesService`. Only a SHA-256 of the token is stored, which is enough for a 256 bit random value. A failed email send deletes the invite so the pending list never shows something nobody received. The link uses `WEB_ORIGIN`. Without `BREVO_API_KEY` the link is printed to the API console.
+- **No teams.kind or memberships.status.** Personal teams are not special after creation, and pending people live in `invites`, so neither column had a use.
 
 ## Streaming
 
@@ -50,4 +60,4 @@ Runs stream over server sent events at `GET /threads/:id/events`. Event shapes a
 
 ## TODO
 
-Team management and a real `RolesGuard`. Upload parsing (drop personal columns, delete the raw file, spec §6 privacy). Share link and export endpoints.
+Revoke a pending invite, rename or delete a team, and team scoped projects behind `RolesGuard`. Upload parsing (drop personal columns, delete the raw file, spec §6 privacy). Share link and export endpoints.
