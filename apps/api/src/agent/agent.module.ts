@@ -1,6 +1,7 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AuthModule } from '../auth/auth.module.js';
 import type { Env } from '../config/env.js';
 import { AgentController } from './agent.controller.js';
 import { AgentService, PLANNER } from './agent.service.js';
@@ -9,6 +10,7 @@ import { ScriptedPlanner } from './scripted-planner.js';
 import { InMemoryThreadStore, ThreadStore } from './thread-store.js';
 
 @Module({
+  imports: [AuthModule],
   controllers: [AgentController],
   providers: [
     AgentService,

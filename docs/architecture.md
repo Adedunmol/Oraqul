@@ -40,7 +40,7 @@ Web and API run on subdomains of one parent domain, for example `app.<domain>` a
 
 - The API allows CORS only for the exact web origin, with credentials. No wildcard.
 - Locally, `localhost:3000` and `localhost:4000` are the same site, so no extra setup.
-- A web origin on another registrable domain (a `*.vercel.app` preview) does not receive the cookie. Previews use demo mode or their own API URL.
+- A web origin on another registrable domain (a `*.vercel.app` preview) does not receive the cookie. Sign in needs that cookie, so a preview needs its own API deployment on the same site.
 - Not proxied through Next `rewrites`: SSE through Vercel's proxy has duration limits.
 
 ## Build and tooling

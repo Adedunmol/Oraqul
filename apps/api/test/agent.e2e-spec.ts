@@ -5,44 +5,53 @@ import { threadEventSchema } from '@oraqul/schema';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { AgentModule } from '../src/agent/agent.module.js';
+import { SessionGuard } from '../src/auth/session.guard.js';
 import { envSchema } from '../src/config/env.js';
+import { DB, DbModule } from '../src/db/db.module.js';
 
-describe('agent threads (e2e, demo data)', () => {
+const config = ConfigModule.forRoot({
+  isGlobal: true,
+  ignoreEnvFile: true,
+  validate: () =>
+    envSchema.parse({
+      DATABASE_URL: 'postgres://u:p@localhost:5433/db',
+      SESSION_SECRET: 'x'.repeat(32),
+      WEB_ORIGIN: 'http://localhost:3000',
+    }),
+});
+
+describe('agent routes without a session (e2e)', () => {
+  it('answers 401 and has no demo access', async () => {
+    const moduleRef = await Test.createTestingModule({ imports: [config, DbModule, AgentModule] })
+      .overrideProvider(DB)
+      .useValue({})
+      .compile();
+    const app = moduleRef.createNestApplication<INestApplication<App>>();
+    await app.init();
+    const http = app.getHttpServer();
+    await request(http).post('/projects/film/threads').send({}).expect(401);
+    await request(http).get('/threads/anything').expect(401);
+    await request(http).get('/demo/projects').expect(404);
+    await app.close();
+  });
+});
+
+describe('agent threads (e2e, scripted planner and stand-in Qloo data)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          ignoreEnvFile: true,
-          validate: () =>
-            envSchema.parse({
-              DATABASE_URL: 'postgres://u:p@localhost:5433/db',
-              SESSION_SECRET: 'x'.repeat(32),
-              WEB_ORIGIN: 'http://localhost:3000',
-            }),
-        }),
-        AgentModule,
-      ],
-    }).compile();
+    const moduleRef = await Test.createTestingModule({ imports: [config, DbModule, AgentModule] })
+      .overrideProvider(DB)
+      .useValue({})
+      .overrideGuard(SessionGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
     app = moduleRef.createNestApplication();
     await app.init();
   });
 
   afterEach(async () => {
     await app.close();
-  });
-
-  it('lists a demo project for every category', async () => {
-    const res = await request(app.getHttpServer()).get('/demo/projects').expect(200);
-    expect(res.body.map((p: { id: string }) => p.id)).toEqual([
-      'film',
-      'music',
-      'books',
-      'podcasts',
-      'games',
-    ]);
   });
 
   it('runs a film thread from the start card to an answer with receipts', async () => {

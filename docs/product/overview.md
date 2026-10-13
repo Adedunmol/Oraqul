@@ -103,7 +103,7 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 * The projects page opens with three Start here cards: plan a launch, check a plan I have, rescue one that missed. Each says what you get and what you bring.
 * Every output tab opens with one plain sentence on what it shows, and output pages show four main tabs with the rest under More.
 * Search on Ctrl K or Cmd K finds categories, projects, outputs and actions.
-* A demo team needs no signup and has a project in every category.
+* Signed out visitors see sign in and an example answer. Live runs need an account, so the demo shows what the product really does.
 * On mobile, only the core stays: chat, outputs and their details.
 
 ## How it looks and reads

@@ -1,8 +1,10 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig({
+// Watch mode must not empty dist: dependents compile while the d.ts files are being rewritten
+// and would see the package as untyped.
+export default defineConfig((options) => ({
   entry: ['src/index.ts'],
   format: ['esm', 'cjs'],
   dts: true,
-  clean: true,
-});
+  clean: !options.watch,
+}));

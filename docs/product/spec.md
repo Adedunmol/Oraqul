@@ -108,7 +108,10 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 
 | Table | Key columns |
 |---|---|
-| `users` | email, name |
+| `users` | email, name, password_hash (nullable: Google and code users have none) |
+| `sessions` | user_id, expires_at |
+| `oauth_accounts` | user_id, provider (google), provider_user_id; unique per provider and provider_user_id |
+| `email_codes` | email, code_hash, purpose (signin, signup, reset), name and password_hash for a pending signup, attempts, expires_at, consumed_at |
 | `teams` | name, kind |
 | `memberships` | team_id, user_id, role (owner, editor, viewer), status (active, invited) |
 | `projects` | team_id, category, name, kind, genre, places[], window, lead, comps, inputs jsonb, status |
@@ -129,7 +132,14 @@ Privacy: only public entity names, place names and age bands go to Qloo. Uploade
 REST, JSON. Auth by session cookie. Streaming runs by server sent events.
 
 ```
-POST   /auth/login            POST /auth/logout
+POST   /auth/signup           email, name, password; emails a code
+POST   /auth/code             email a sign in code
+POST   /auth/code/verify      code ends in a session, creates the account if new
+POST   /auth/login            email and password; 429 after repeated failures
+POST   /auth/password/reset   email a reset code (always 202)
+POST   /auth/password/reset/confirm   code and new password; ends other sessions
+GET    /auth/google           GET /auth/google/callback
+POST   /auth/logout           GET /auth/me
 GET    /teams                 POST /teams
 POST   /teams/:id/members     PATCH /teams/:id/members/:uid     DELETE /teams/:id/members/:uid
 GET    /projects?category=    POST /projects        GET /projects/:id        DELETE /projects/:id
@@ -144,6 +154,8 @@ GET    /s/:token              read only view
 POST   /uploads               plan or results file, parsed to aggregates
 ```
 
+Sign in details: codes are 6 digits, expire in 10 minutes, work once, and lock after 5 wrong tries. Accounts are linked by verified email, so the same person reaches one account by password, Google or code. Passwords are at least 8 characters.
+
 Roles are enforced in a guard: viewers get read only on projects and outputs and cannot post messages.
 
 ## 8. Events
@@ -152,7 +164,7 @@ SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created
 
 ## 9. Web app
 
-Routes: `/` login and demo, `/projects`, `/categories/:id`, `/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/s/:token`.
+Routes: `/` sign in and an example answer, `/projects`, `/categories/:id`, `/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/s/:token`.
 
 Output page tabs come from the output kind and the category pack: Summary, Audience, Assumptions, Plan, the category's signature tabs, Risks, Could not test, Evidence, plus Changes, Results, Rival dates and Partner briefs where they fit. The what if bar sits above the plan tabs and matches typed text to the pack's scenario matchers. Receipts open in a side drawer. A dock chat on the output page continues the thread.
 
@@ -213,5 +225,5 @@ Vercel for web. VPS with Docker Compose for API and Postgres. Environment variab
 3. Runtime with the router and the Film agent, end to end through plan, audit, scenario and rescue.
 4. Web: design tokens and components, chat, trace, outputs, evidence, receipts, Start here cards, tab notes.
 5. Music agent, then Books, Podcasts, Games as packs.
-6. Accounts, share, export, compare, demo team.
+6. Accounts, share, export, compare.
 7. MCP server, evals, demo video.

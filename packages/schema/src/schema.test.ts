@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { answerSchema } from './agent';
+import { codeRequestSchema, codeSchema, nextPathSchema, passwordSchema } from './auth';
 import { claimSchema } from './claim';
 import { threadEventSchema } from './events';
 
@@ -54,5 +55,29 @@ describe('claimSchema', () => {
   it('needs at least one receipt', () => {
     expect(claimSchema.safeParse({ text: 'a', receiptIds: [receiptId] }).success).toBe(true);
     expect(claimSchema.safeParse({ text: 'a', receiptIds: [] }).success).toBe(false);
+  });
+});
+
+describe('auth schemas', () => {
+  it('lowercases and trims emails', () => {
+    expect(codeRequestSchema.parse({ email: '  Ada@Example.COM ' }).email).toBe('ada@example.com');
+  });
+
+  it('requires passwords of at least 8 characters', () => {
+    expect(passwordSchema.safeParse('1234567').success).toBe(false);
+    expect(passwordSchema.safeParse('12345678').success).toBe(true);
+  });
+
+  it('accepts only 6 digit codes', () => {
+    expect(codeSchema.safeParse('123456').success).toBe(true);
+    expect(codeSchema.safeParse('12345').success).toBe(false);
+    expect(codeSchema.safeParse('12345a').success).toBe(false);
+  });
+
+  it('keeps next paths on the same site', () => {
+    expect(nextPathSchema.safeParse('/projects').success).toBe(true);
+    expect(nextPathSchema.safeParse('//evil.com').success).toBe(false);
+    expect(nextPathSchema.safeParse('https://evil.com').success).toBe(false);
+    expect(nextPathSchema.safeParse('/\\evil.com').success).toBe(false);
   });
 });

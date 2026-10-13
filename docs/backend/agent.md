@@ -21,7 +21,7 @@ Defined by `CategoryPack` in `packages/packs/src/types.ts`. Fill these per categ
 - [ ] Results format
 - [ ] Output schema
 
-The type holds the system prompt, assumption checklist, plan sections, tool allowlist, `consults` (other categories this agent may ask, only Books asks Film) and coverage lists. Add the rest as the runtime needs them. Every pack is filled with basics only; each category gets its deep pass later. `demoProjects` in `packages/packs/src/demo.ts` is one demo project per category.
+The type holds the system prompt, assumption checklist, plan sections, tool allowlist, `consults` (other categories this agent may ask, only Books asks Film) and coverage lists. Add the rest as the runtime needs them. Every pack is filled with basics only; each category gets its deep pass later. `demoProjects` in `packages/packs/src/demo.ts` is one stand-in project per category that the runtime and evals use until projects live in Postgres. It is not served to anyone: there is no demo access without an account.
 
 ## Tools
 
@@ -58,7 +58,7 @@ Code is in `apps/api/src/agent`:
 | `openai-planner.ts` | Model planner, see [llm.md](llm.md) |
 | `grounding.ts` | Rejects a finish whose claims cite receipts the run did not make |
 | `thread-store.ts` | In-memory threads and event log. Postgres comes with accounts |
-| `agent.service.ts`, `agent.controller.ts` | Per-thread Qloo client, routes: `GET /demo/projects`, `POST /projects/:id/threads`, `GET /threads/:id`, `POST /threads/:id/messages`, `GET /threads/:id/events` (SSE) |
+| `agent.service.ts`, `agent.controller.ts` | Per-thread Qloo client, routes (all need a session): `POST /projects/:id/threads`, `GET /threads/:id`, `POST /threads/:id/messages`, `GET /threads/:id/events` (SSE) |
 
 The planner only chooses the next step. The runtime runs it, so receipts, limits, questions and consults stay in code:
 
@@ -80,4 +80,4 @@ A run has two stages: routing, then the agent loop. Trace steps map one to one t
 
 ## TODO
 
-Persist threads, runs, messages and receipts to Postgres (`runs.steps` is the trace). Guard the routes with sessions. A model router for unclear category or job. Red team step. Remaining spec §4 tools, scenarios, results format, output schema. `POST /threads/:id/messages` holds the request open while the agent runs; move to a background run if model calls get slow. Per-category deep passes: Film first, then Books, Music, Podcasts, Games.
+Persist threads, runs, messages and receipts to Postgres (`runs.steps` is the trace). Guard the routes with team roles (they already need a session). A model router for unclear category or job. Red team step. Remaining spec §4 tools, scenarios, results format, output schema. `POST /threads/:id/messages` holds the request open while the agent runs; move to a background run if model calls get slow. Per-category deep passes: Film first, then Books, Music, Podcasts, Games.

@@ -125,12 +125,12 @@ Each category supplies its own inputs, plan sections, assumption checklist, scen
 | O4 | A read only share link for one output, with an off switch. Raw Qloo data is not shown on public links until Qloo confirms what may be shown. | P0 |
 | O5 | Copy summary and copy draft. | P0 |
 
-### 6.6 Accounts and demo
+### 6.6 Accounts
 
 | ID | Requirement | P |
 |---|---|---|
-| A1 | Sign in, teams, roles. Owners invite and remove. Editors run the agent. Viewers read and open receipts. | P0 |
-| A2 | A demo team with a project in every category, no signup. | P0 |
+| A1 | Sign in, teams, roles. Owners invite and remove. Editors run the agent. Viewers read and open receipts. People sign in with email and password, Google, or a one-time email code, and can reset a forgotten password. | P0 |
+| A2 | Signed out visitors see sign in and an example of an answer with its receipts. Recorded walkthroughs follow. There is no signup free team, because a demo that cannot make live Qloo calls hides what the product does. | P0 |
 | A3 | Mobile keeps chat, outputs and their details. Everything else is desktop only. | P1 |
 
 ### 6.7 Agents
@@ -152,7 +152,6 @@ The product has many new words and a deep structure, so it must explain itself b
 | U3 | Output pages show Summary, Plan, Assumptions and Evidence by default, plus the current tab. The rest sit under More. | P0 |
 | U4 | Words stay plain. Verdicts are Holds, Weak, Breaks and Could not test. No jargon without a one line explanation beside it. | P0 |
 | U5 | Search on Ctrl K or Cmd K reaches categories, projects, outputs and actions. Number keys pick options on question cards. Both are extras, never the only way. | P1 |
-| U6 | The demo team opens with a short tour of one finished project: bottom line, one assumption, one receipt. | P1 |
 | U7 | Motion marks arrival and progress only: agent text appearing, the trace advancing, views opening. Reduced motion settings are respected. | P1 |
 
 ### 6.9 Look and feel
@@ -167,8 +166,8 @@ African titles and artists are normal entities. For an African release, Oraqul r
 
 Hackathon
 
-* The demo opens with no signup and shows a rescue and a scenario diff in under three minutes.
-* Every claim in the demo opens a receipt.
+* The recorded walkthrough shows a rescue and a scenario diff in under three minutes.
+* Every claim in the walkthrough opens a receipt.
 * Each of the five categories runs end to end with its own views.
 * A first time viewer picks a start card and reaches a first result without help.
 
@@ -190,7 +189,7 @@ Product
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |
 | Qloo details came from secondhand sources | Confirm against Qloo's docs and our own key before building. |
 | Devpost team rules for two people | Confirm before submission. |
-| The product is hard to understand at first | Start here cards, tab notes, fewer tabs, plain words, a tour on the demo project. Test wording with real marketers before polishing visuals. |
+| The product is hard to understand at first | Start here cards, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
 | Five categories is a lot of surface | One engine, one toolbox, five packs. A new category is a new pack, not new code. |
 
 Open points to close first: Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.
@@ -202,6 +201,6 @@ Open points to close first: Africa entity coverage, Lagos against no location, w
 | Oct 13 to 15 | Qloo live tests. Monorepo, Qloo client, receipts, verdict engine. Design tokens and base components from the design system. |
 | Oct 16 to 20 | Film and Music agents end to end. Chat, trace, outputs, evidence. |
 | Oct 21 to 25 | Books, Podcasts, Games packs. Rescue and scenarios in all five. |
-| Oct 26 to 28 | Accounts, share, export, compare, demo team. MCP server. |
+| Oct 26 to 28 | Accounts, share, export, compare. MCP server. |
 | Oct 29 to 30 | Testing, demo video, write up, public repository and licence. |
 | Oct 31, 4:45am GMT+1 | Submitted. |

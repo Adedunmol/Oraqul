@@ -1,12 +1,14 @@
-import { categories, jobs, roles } from '@oraqul/schema';
+import { categories, codePurposes, jobs, oauthProviders, roles } from '@oraqul/schema';
 import {
   type AnyPgColumn,
   boolean,
+  index,
   integer,
   jsonb,
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from 'drizzle-orm/pg-core';
 
@@ -19,17 +21,69 @@ export const users = pgTable('users', {
   id: id(),
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
+  passwordHash: text('password_hash'),
   createdAt: createdAt(),
 });
 
-export const sessions = pgTable('sessions', {
-  id: id(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
-  createdAt: createdAt(),
-});
+export const sessions = pgTable(
+  'sessions',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [index('sessions_user_id_idx').on(table.userId)],
+);
+
+export const oauthAccounts = pgTable(
+  'oauth_accounts',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    provider: text('provider', { enum: oauthProviders }).notNull(),
+    providerUserId: text('provider_user_id').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    unique('oauth_accounts_provider_user_unique').on(table.provider, table.providerUserId),
+  ],
+);
+
+export const emailCodes = pgTable(
+  'email_codes',
+  {
+    id: id(),
+    email: text('email').notNull(),
+    codeHash: text('code_hash').notNull(),
+    purpose: text('purpose', { enum: codePurposes }).notNull(),
+    name: text('name'),
+    passwordHash: text('password_hash'),
+    attempts: integer('attempts').notNull().default(0),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    consumedAt: timestamp('consumed_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (table) => [index('email_codes_email_purpose_idx').on(table.email, table.purpose)],
+);
+
+export const loginFailures = pgTable(
+  'login_failures',
+  {
+    id: id(),
+    email: text('email').notNull(),
+    ip: text('ip').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    index('login_failures_email_ip_idx').on(table.email, table.ip, table.createdAt),
+    index('login_failures_ip_idx').on(table.ip, table.createdAt),
+  ],
+);
 
 export const teams = pgTable('teams', {
   id: id(),
