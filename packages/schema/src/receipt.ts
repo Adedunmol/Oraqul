@@ -10,5 +10,7 @@ export const receiptSchema = z.object({
   rule: z.string(),
   confidence: confidenceSchema,
   calledAt: z.string().datetime(),
+  /** `demo` receipts come from hand-written data and must never be shown as Qloo's. */
+  source: z.enum(['qloo', 'demo']),
 });
 export type Receipt = z.infer<typeof receiptSchema>;
