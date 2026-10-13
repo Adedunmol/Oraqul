@@ -6,6 +6,8 @@ export default defineConfig({
   use: { baseURL: 'http://localhost:3000', channel: process.env.PW_CHANNEL },
   webServer: {
     command: 'pnpm dev',
+    // No API runs under test, so data routes show their error state.
+    env: { NEXT_PUBLIC_API_URL: 'http://localhost:1' },
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 120_000,
