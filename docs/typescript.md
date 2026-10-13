@@ -39,8 +39,18 @@ Boundaries in this repo: HTTP bodies and params, env vars, Qloo responses, model
 ## Style
 
 - Early returns. Simple `if` and `switch`. No nested ternaries.
-- Comments explain why, not what.
 - No needless `async`, Promise wrappers, spreads or callbacks.
+
+## Comments
+
+Write a comment only when the code cannot say it: why something is done, a constraint, a trap, or a live finding.
+
+- Why, not what. If a comment restates the next line, delete it and rename something instead.
+- No section banners, no commented-out code, no change history (git has it), no "added for X".
+- Keep them short. One or two lines. Link to a doc (`docs/backend/qloo.md`, `spec §5`) instead of repeating its numbers.
+- `TODO(verify)` stays for unverified Qloo behaviour (hard rule 3). Any other TODO names an owner or a condition.
+- JSDoc goes on exported functions, types and fields whose name and type do not tell the whole story: units, ranges, accepted formats, side effects, what throws, a non-obvious default. Do not repeat the type in prose and do not add `@param` or `@returns` that only echo the signature.
+- No JSDoc on obvious fields, private helpers or test code.
 
 ## Repo specifics
 

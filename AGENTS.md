@@ -34,7 +34,8 @@ The human reviewers compare each screen against the Claude artifact prototype ou
 6. `engine` and `packs` never import from `apps`. `web` never imports `engine`.
 7. Only public entity names, place names and age bands go to Qloo. No personal data.
 8. Product behaviour lives in `docs/product`. Change code and docs together.
-9. `apps/web` runs a Next.js version with breaking changes. Read `apps/web/AGENTS.md` and the docs in `node_modules/next/dist/docs/` before using a Next API.
+9. Comments say why, never what. JSDoc only where a name and type leave out units, ranges, side effects or a trap. No banners, no commented-out code. See [docs/typescript.md](docs/typescript.md#comments).
+10. `apps/web` runs a Next.js version with breaking changes. Read `apps/web/AGENTS.md` and the docs in `node_modules/next/dist/docs/` before using a Next API.
 
 ## Doc map
 

@@ -5,7 +5,6 @@ import type { NextConfig } from 'next';
 loadEnvConfig(new URL('../..', import.meta.url).pathname);
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

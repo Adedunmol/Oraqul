@@ -15,7 +15,6 @@ export const SESSION_COOKIE = 'oraqul_session';
 export type SessionUser = typeof users.$inferSelect;
 export type AuthedRequest = Request & { user: SessionUser };
 
-/** Reads the signed session cookie and attaches the user to the request. */
 @Injectable()
 export class SessionGuard implements CanActivate {
   constructor(@Inject(DB) private readonly db: Database) {}

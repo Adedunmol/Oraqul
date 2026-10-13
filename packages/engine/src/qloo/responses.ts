@@ -1,10 +1,8 @@
 import { z } from 'zod';
 
-// Qloo responses are validated here, once. Objects are loose: fields we do not read are kept,
-// and the whole body is stored on the call record as `returned`.
-//
-// Shapes below were checked against live responses on 2026-10-13 (docs/backend/qloo.md).
-// Fields that were not seen in a live response stay optional with a TODO(verify).
+// Objects are loose so the whole body can be stored on the call record as `returned`.
+// Shapes were checked live on 2026-10-13 (docs/backend/qloo.md). Fields not seen live stay
+// optional with a TODO(verify).
 
 /** A tag as `/v2/tags` lists it. Lookups use `id`, not `tag_id`. */
 export const tagLookupSchema = z.looseObject({
