@@ -21,6 +21,7 @@ describe('toReceipt', () => {
       rule: 'Age skew is the affinity per band for the signal',
       confidence: 'high',
       lineId: 'a1',
+      source: 'qloo',
     });
     expect(receiptSchema.parse(receipt)).toEqual({
       callId: call.callId,
@@ -31,11 +32,17 @@ describe('toReceipt', () => {
       rule: 'Age skew is the affinity per band for the signal',
       confidence: 'high',
       calledAt: call.calledAt,
+      source: 'qloo',
     });
   });
 
   it('leaves lineId out when there is none', () => {
-    const receipt = toReceipt(call, { returned: null, rule: 'r', confidence: 'lower' });
+    const receipt = toReceipt(call, {
+      returned: null,
+      rule: 'r',
+      confidence: 'lower',
+      source: 'qloo',
+    });
     expect('lineId' in receipt).toBe(false);
   });
 });

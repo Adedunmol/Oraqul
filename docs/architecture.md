@@ -21,10 +21,10 @@ Next.js (Vercel)  ->  NestJS API (VPS)  ->  agent runtime (module in the API)
 | `apps/web` | Next.js front end | `schema`, `ui` |
 | `apps/api` | NestJS API and agent runtime | `schema`, `engine`, `packs` |
 | `packages/schema` | Zod schemas and shared types | `zod` only |
-| `packages/engine` | Qloo client, receipts, scoring | `schema` |
+| `packages/engine` | Qloo client, tools, receipts, scoring | `schema` |
 | `packages/packs` | One config per category | `schema` |
 | `packages/ui` | Design system components | `schema` |
-| `packages/mcp` | MCP server over the engine (P1) | `engine`, `schema` |
+| `packages/mcp` | MCP server over the engine tools | `engine`, `schema` |
 | `packages/eval` | Golden runs and the eval runner | `engine`, `packs`, `schema` |
 
 Rules:

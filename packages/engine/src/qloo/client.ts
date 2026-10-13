@@ -61,6 +61,8 @@ export interface QlooClientOptions {
   callBudget?: number;
   /** Wait before the retry when Qloo sends no `Retry-After`. Default 500. */
   retryDelayMs?: number;
+  /** Replaces the global `fetch`. Demo mode and tests pass one so no request leaves the process. */
+  fetch?: typeof fetch;
 }
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -90,6 +92,7 @@ export class QlooClient {
   private readonly timeoutMs: number;
   private readonly retryDelayMs: number;
   private readonly callBudget: number | undefined;
+  private readonly fetchImpl: typeof fetch;
   private readonly answers = new Map<string, Promise<Fetched>>();
   private networkCalls = 0;
 
@@ -99,6 +102,7 @@ export class QlooClient {
     this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
     this.callBudget = options.callBudget;
+    this.fetchImpl = options.fetch ?? fetch;
   }
 
   /** Network calls made so far. Cache hits do not count. */
@@ -197,7 +201,7 @@ export class QlooClient {
   private async attempt(url: URL): Promise<Attempt> {
     let response: Response;
     try {
-      response = await fetch(url, {
+      response = await this.fetchImpl(url, {
         headers: { 'X-Api-Key': this.apiKey, Accept: 'application/json' },
         signal: AbortSignal.timeout(this.timeoutMs),
       });

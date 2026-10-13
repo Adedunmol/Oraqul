@@ -1,4 +1,4 @@
-import type { Category, QlooCoverage } from '@oraqul/schema';
+import type { Category, QlooCoverage, ToolName } from '@oraqul/schema';
 
 /**
  * One category agent is a configuration of the shared runtime.
@@ -10,7 +10,9 @@ export interface CategoryPack {
   systemPrompt: string;
   assumptionChecklist: string[];
   planSections: { key: string; title: string }[];
-  toolAllowlist: string[];
+  toolAllowlist: ToolName[];
+  /** Other categories this agent may ask one bounded question (spec §3.4). Only Books lists Film. */
+  consults: Category[];
   /** Qloo entity types this category tests, by role. */
   qloo: QlooCoverage;
   coverage: { tests: string[]; thin: string[]; notSupported: string[] };

@@ -9,6 +9,7 @@ export {
   type QlooErrorKind,
   type QlooResult,
 } from './client';
+export { demoEntities, demoFetch } from './demo-fetch';
 export * as insights from './insights';
 export type { AudienceSearchParams, SearchParams, TagSearchParams } from './lookup';
 export * as lookup from './lookup';

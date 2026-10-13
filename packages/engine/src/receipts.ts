@@ -18,12 +18,14 @@ interface ReceiptInput {
   /** Computed by the tool from spec §5. Never a default. */
   confidence: Confidence;
   lineId?: string;
+  /** `demo` when the call was served by demo data. */
+  source: Receipt['source'];
 }
 
 /** A Qloo call, as a receipt for one line of an output. */
 export function toReceipt(
   call: QlooCall,
-  { returned, rule, confidence, lineId }: ReceiptInput,
+  { returned, rule, confidence, lineId, source }: ReceiptInput,
 ): Receipt {
   return {
     callId: call.callId,
@@ -34,5 +36,6 @@ export function toReceipt(
     rule,
     confidence,
     calledAt: call.calledAt,
+    source,
   };
 }

@@ -21,7 +21,11 @@ What to test and why is in [spec §11](product/spec.md). This file maps it to to
 | Kind | Location | Status |
 |---|---|---|
 | Unit: scoring, verdicts, diffs | next to the code, `*.test.ts` (packages) or `*.spec.ts` (API) | scoring done |
+| Unit: tools, with demo data | `packages/engine/src/tools/tools.test.ts` | done |
 | Unit: Qloo client and endpoint groups | `packages/engine/src/qloo/*.test.ts`, with a faked `fetch`. Qloo is never called | done |
+| Runtime: router, question and resume, consult, budget, grounding, failure | `apps/api/src/agent/runtime.spec.ts`, with the scripted planner and demo data | done |
+| API: thread routes | `apps/api/test/agent.e2e-spec.ts` | done |
+| MCP: list and call tools | `packages/mcp/src/server.test.ts`, in memory transport | done |
 | Contract: Qloo tools | `packages/engine`, parsing recorded responses in `packages/engine/fixtures`. Written with the first tools | not started |
 | Live smoke | `pnpm --filter @oraqul/engine qloo:smoke`. Skips without a key. Records the fixtures and answers the open questions in [backend/qloo.md](backend/qloo.md) | written, not yet run with a key |
 | Golden runs: plan, audit, rescue per category | `packages/eval/golden/<category>/` | not started |

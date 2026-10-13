@@ -87,7 +87,7 @@ Every tool returns `{ data, receipt }`. The model sees `data` and a receipt id, 
 | `exportBrief(output)` | Builds the one page brief and appendix. |
 | `draftMessage(partner, evidence)` | Draft only. No send. |
 
-External tools (web search, page reader) may supplement but never replace Qloo evidence, and are labelled as such on the line.
+Tools live in `packages/engine/src/tools` and are the one toolbox for the agents and the MCP server. External tools (web search, page reader) may supplement but never replace Qloo evidence, and are labelled as such on the line.
 
 ## 5. Scoring layer
 
@@ -148,7 +148,7 @@ Roles are enforced in a guard: viewers get read only on projects and outputs and
 
 ## 8. Events
 
-SSE event types: `trace.step`, `question`, `message`, `output.created`, `error`. A question carries its card type (single, multi, text, split, date, file, confirm, match) and its options. The web app renders cards from the event, and posts the answer back as a message.
+SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created`, `run.stopped`, `error`. Shapes are `threadEventSchema` in `packages/schema`. A `trace.step` names the agent that took it (`router`, `film`, `books→film` for a consult). A question has an id, the asking agent, its card type (single, multi, text, split, date, file, confirm, match) and its options. A `message` carries its claims, each with the receipt ids behind it. A `receipt` event streams each receipt as the tool makes it. `run.stopped` ends every run segment with a reason: `finished`, `waiting` (on a question), `budget`, `steps` or `error`. The web app renders cards from the event, and posts the answer back as a message.
 
 ## 9. Web app
 

@@ -9,3 +9,4 @@ import type { CategoryPack } from './types';
 export type { CategoryPack } from './types';
 
 export const packs: Record<Category, CategoryPack> = { film, music, books, podcasts, games };
+export { demoProjects } from './demo';

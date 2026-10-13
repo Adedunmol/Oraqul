@@ -2,7 +2,7 @@
 
 ## How we ship
 
-Two people, one feature at a time, end to end. A feature is a vertical slice: shared types in `packages/schema`, the API endpoint or agent change, and the web screen that uses it, all in one branch and one PR. Do not merge backend work that has no frontend yet, unless the PR says why.
+Two people, one feature at a time, end to end. A feature is a vertical slice: shared types in `packages/schema`, the API endpoint or agent change, and the web screen that uses it, all in one branch and one PR. Most features ship with their screen. A backend-only PR is fine when the work has no screen yet (a runtime, a tool, an MCP server): the PR says why and names the screen that will use it.
 
 - Build the screen from [frontend/design-system.md](frontend/design-system.md) and the components in `packages/ui`.
 - Visual parity with the Claude artifact prototype is checked by hand by the two of you, outside this repo. Note in the PR what you checked it against.

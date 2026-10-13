@@ -40,6 +40,7 @@ One `QlooClient` per agent run. Every call returns `{ data, call }`: `data` is t
 
 - **Retry.** Once, on a network error, a timeout, a 429 (waiting for `Retry-After`, at most 10 s) or a 5xx. Not on other 4xx. Then it throws `QlooError` with `kind` (`http`, `network`, `timeout`, `invalid_response`) and the `call`, so the line can still cite what happened ([spec §10](../product/spec.md): "could not test", never filled by the model).
 - **Budget.** `callBudget` (from `QLOO_CALL_BUDGET`) counts network calls. A retry is not a second call. When it is spent, `QlooBudgetError` is thrown before any request, which ends the run with what is tested so far.
+- **Injected `fetch`.** `fetch` in the options replaces the global one. Tests and demo mode use it so no request leaves the process.
 - **Memory.** An identical call later in the run, or made while the first is in flight, costs nothing and returns its own `call` with `cached: true`. Failures are not remembered.
 - **Validation.** `responses.ts` checks the body once. Objects are loose, so fields we do not read are kept in `returned`.
 - **Errors.** A non-2xx status throws `QlooError` carrying the call, so a receipt can still be built. No 404 was seen in the live run, so we do not yet know what Qloo returns for "no results": a search for nonsense still returned a (fuzzy) 200.
@@ -54,9 +55,13 @@ Functions take the client first and are grouped by what you ask Qloo:
 
 Parameter names are Qloo's own, dotted, so a receipt's `input` shows exactly what was sent. `insights.entities` takes a request that is a union on `filter.type`: a filter that belongs to another type does not compile. Qloo itself **silently ignores** parameters a type does not support, so this is the only guard.
 
+## Demo mode
+
+`QLOO_MODE=demo` (the default) serves `demoFetch` (`packages/engine/src/qloo/demo-fetch.ts`): a few hand-written titles shaped like Qloo's `/search` and demographics responses. Ids start with `DEMO-`, receipts built from it carry `source: 'demo'`, and the trace says "on demo data". It is not Qloo data and proves nothing about coverage. Any other endpoint answers 404. `QLOO_MODE=live` needs `QLOO_API_KEY` and `QLOO_BASE_URL`.
+
 ## Tools to Qloo ([spec §4](../product/spec.md))
 
-The plan for the tools, which are not built yet.
+Built: `searchEntity` and `audienceBySegment` (`packages/engine/src/tools`). Their confidence is a placeholder until spec §5's full rule is coded (`TODO` in each file). The rest are planned.
 
 | Tool | Qloo call |
 |---|---|
