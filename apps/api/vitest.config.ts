@@ -8,5 +8,8 @@ export default defineConfig({
     globals: true,
     root: './',
     include: ['**/*.spec.ts'],
+    // Each SQL spec boots its own in-process Postgres and applies every migration, which is slow
+    // when several start at once.
+    hookTimeout: 60_000,
   },
 });

@@ -1,4 +1,5 @@
 import { categories, codePurposes, jobs, oauthProviders, roles } from '@oraqul/schema';
+import { sql } from 'drizzle-orm';
 import {
   type AnyPgColumn,
   boolean,
@@ -9,6 +10,7 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
 
@@ -88,22 +90,49 @@ export const loginFailures = pgTable(
 export const teams = pgTable('teams', {
   id: id(),
   name: text('name').notNull(),
-  kind: text('kind').notNull(),
   createdAt: createdAt(),
 });
 
-export const memberships = pgTable('memberships', {
-  id: id(),
-  teamId: uuid('team_id')
-    .notNull()
-    .references(() => teams.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  role: text('role', { enum: roles }).notNull(),
-  status: text('status', { enum: ['active', 'invited'] }).notNull(),
-  createdAt: createdAt(),
-});
+export const memberships = pgTable(
+  'memberships',
+  {
+    id: id(),
+    teamId: uuid('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    role: text('role', { enum: roles }).notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [unique('memberships_team_user_unique').on(table.teamId, table.userId)],
+);
+
+export const invites = pgTable(
+  'invites',
+  {
+    id: id(),
+    teamId: uuid('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'cascade' }),
+    email: text('email').notNull(),
+    role: text('role', { enum: roles }).notNull(),
+    // Only the hash is stored, so a database leak does not hand out working invite links.
+    tokenHash: text('token_hash').notNull().unique(),
+    invitedBy: uuid('invited_by')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    acceptedAt: timestamp('accepted_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    uniqueIndex('invites_team_email_pending_idx')
+      .on(table.teamId, table.email)
+      .where(sql`${table.acceptedAt} is null`),
+  ],
+);
 
 export const projects = pgTable('projects', {
   id: id(),

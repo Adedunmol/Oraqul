@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { envSchema } from './config/env.js';
 import { DbModule } from './db/db.module.js';
 import { HealthModule } from './health/health.module.js';
+import { TeamsModule } from './teams/teams.module.js';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { HealthModule } from './health/health.module.js';
     AuthModule,
     HealthModule,
     AgentModule,
+    TeamsModule,
   ],
 })
 export class AppModule {}

@@ -36,6 +36,6 @@ import { UsersService } from './users.service.js';
       },
     },
   ],
-  exports: [SessionGuard, RolesGuard, UsersService],
+  exports: [SessionGuard, RolesGuard, UsersService, EMAIL_SENDER],
 })
 export class AuthModule {}
