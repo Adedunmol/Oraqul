@@ -7,6 +7,7 @@ export const envSchema = z.object({
   PORT: z.coerce.number().int().default(4000),
   QLOO_API_KEY: z.string().default(''),
   QLOO_BASE_URL: z.string().default(''),
+  QLOO_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
   QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(60),
   OPENAI_API_KEY: z.string().default(''),
   OPENAI_MODEL: z.string().default(''),
