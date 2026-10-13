@@ -12,7 +12,14 @@
     "format": "biome check --write .",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "test:e2e": "pnpm --filter @oraqul/web test:e2e"
+    "test:e2e": "pnpm --filter @oraqul/web test:e2e",
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:generate": "pnpm --filter @oraqul/api db:generate",
+    "db:migrate": "pnpm --filter @oraqul/api db:migrate",
+    "db:studio": "pnpm --filter @oraqul/api db:studio",
+    "qloo:smoke": "pnpm --filter @oraqul/engine qloo:smoke"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
