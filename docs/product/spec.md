@@ -5,7 +5,7 @@ Read with the PRD and the design system file. Qloo endpoint names and parameters
 ## 1. Architecture
 
 ```
-Next.js web app  ->  API (NestJS, Node, VPS)  ->  Agent runtime  ->  Qloo client (hackathon.qloo.com API)
+Next.js web app  ->  API (NestJS, Node, VPS)  ->  Agent runtime  ->  Qloo client (hackathon.api.qloo.com API)
                            |                          |
                         Postgres                  Model (OpenAI via Vercel AI SDK)
 ```

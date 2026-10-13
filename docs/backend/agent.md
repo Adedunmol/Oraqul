@@ -25,7 +25,7 @@ The type holds the first five fields today. Add the rest as the runtime needs th
 
 ## Tools
 
-Every tool returns `{ data, receipt }` (`ToolResult` in `packages/engine`). The model sees `data` and a receipt id. Tool list: [spec §4](../product/spec.md). Every Qloo call goes through `packages/engine` so it gets a receipt.
+Every tool returns `{ data, receipt }` (`ToolResult` in `packages/engine`). The model sees `data` and a receipt id. Tool list: [spec §4](../product/spec.md). Every Qloo call goes through `packages/engine`, which returns `{ data, call }`. The tool turns the call into a receipt with `toReceipt`, adding the rule and a confidence it computed from [spec §5](../product/spec.md).
 
 ## Rules that must hold
 
