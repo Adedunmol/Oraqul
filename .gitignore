@@ -11,3 +11,6 @@ coverage
 playwright-report
 test-results
 packages/engine/fixtures/*.local.json
+
+# Recorded Qloo responses stay local until Qloo confirms what may be republished
+packages/engine/fixtures/*/

@@ -21,7 +21,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "qloo:smoke": "tsx scripts/qloo-smoke.ts"
+    "qloo:smoke": "tsx --env-file=../../.env scripts/qloo-smoke.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
@@ -30,6 +30,7 @@
     "vitest": "^5.0.4"
   },
   "dependencies": {
-    "@oraqul/schema": "workspace:*"
+    "@oraqul/schema": "workspace:*",
+    "zod": "^4.6.7"
   }
 }

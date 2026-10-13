@@ -1,5 +1,5 @@
-import { randomUUID } from 'node:crypto';
 import type { Confidence, Receipt } from '@oraqul/schema';
+import type { QlooCall } from './qloo/client';
 
 export interface ToolResult<T> {
   data: T;
@@ -7,19 +7,23 @@ export interface ToolResult<T> {
 }
 
 interface ReceiptInput {
-  endpoint: string;
-  input: Receipt['input'];
-  returned: Receipt['returned'];
+  /** How the tool used this call, in words a marketer can read. Published with the receipt. */
   rule: string;
+  /** Computed by the tool from spec §5. Never a default. */
   confidence: Confidence;
   lineId?: string;
 }
 
-export function buildReceipt({ lineId, ...rest }: ReceiptInput): Receipt {
+/** A Qloo call, as a receipt for one line of an output. */
+export function toReceipt(call: QlooCall, { rule, confidence, lineId }: ReceiptInput): Receipt {
   return {
-    callId: randomUUID(),
+    callId: call.callId,
     ...(lineId ? { lineId } : {}),
-    ...rest,
-    calledAt: new Date().toISOString(),
+    endpoint: call.endpoint,
+    input: call.input,
+    returned: call.returned,
+    rule,
+    confidence,
+    calledAt: call.calledAt,
   };
 }
