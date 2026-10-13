@@ -27,7 +27,7 @@ The human reviewers compare each screen against the Claude artifact prototype ou
 ## Hard rules
 
 1. Scores, verdicts and confidence are computed by code from values Qloo returned. The model never sets a number.
-2. Every Qloo call returns `{ data, receipt }`. Every claim in an output links to a receipt.
+2. Every Qloo call returns `{ data, call }`. Each tool turns its calls into receipts. Every claim in an output links to a receipt.
 3. Do not treat any Qloo endpoint as verified until [docs/backend/qloo.md](docs/backend/qloo.md) says so. If unsure, leave a `TODO(verify)`.
 4. No literal colours in components. Use design tokens. Verdicts always show a glyph and a word.
 5. Validate untrusted data at the boundary, once. No `any`, no fake validation casts. See [docs/typescript.md](docs/typescript.md).

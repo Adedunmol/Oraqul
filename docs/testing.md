@@ -21,8 +21,9 @@ What to test and why is in [spec §11](product/spec.md). This file maps it to to
 | Kind | Location | Status |
 |---|---|---|
 | Unit: scoring, verdicts, diffs | next to the code, `*.test.ts` (packages) or `*.spec.ts` (API) | scoring done |
-| Contract: Qloo tools | `packages/engine`, using recorded responses in `packages/engine/fixtures` | not started |
-| Live smoke | `pnpm --filter @oraqul/engine qloo:smoke`. Skips without a key | stub |
+| Unit: Qloo client and endpoint groups | `packages/engine/src/qloo/*.test.ts`, with a faked `fetch`. Qloo is never called | done |
+| Contract: Qloo tools | `packages/engine`, parsing recorded responses in `packages/engine/fixtures`. Written with the first tools | not started |
+| Live smoke | `pnpm --filter @oraqul/engine qloo:smoke`. Skips without a key. Records the fixtures and answers the open questions in [backend/qloo.md](backend/qloo.md) | written, not yet run with a key |
 | Golden runs: plan, audit, rescue per category | `packages/eval/golden/<category>/` | not started |
 | Grounding check | `packages/eval`. Every entity and number must trace to a receipt. Fails the build | not started |
 | Refusal tests: forecast, pricing, send | `packages/eval` | not started |

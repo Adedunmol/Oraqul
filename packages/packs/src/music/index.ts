@@ -1,3 +1,4 @@
+import { sharedQlooCoverage } from '../qloo';
 import type { CategoryPack } from '../types';
 
 export const music: CategoryPack = {
@@ -7,5 +8,6 @@ export const music: CategoryPack = {
   assumptionChecklist: [],
   planSections: [],
   toolAllowlist: [],
+  qloo: { titles: ['urn:entity:artist'], ...sharedQlooCoverage },
   coverage: { tests: [], thin: [], notSupported: [] },
 };

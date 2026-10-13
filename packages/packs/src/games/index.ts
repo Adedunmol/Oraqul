@@ -1,3 +1,4 @@
+import { sharedQlooCoverage } from '../qloo';
 import type { CategoryPack } from '../types';
 
 export const games: CategoryPack = {
@@ -7,5 +8,6 @@ export const games: CategoryPack = {
   assumptionChecklist: [],
   planSections: [],
   toolAllowlist: [],
+  qloo: { titles: ['urn:entity:videogame'], ...sharedQlooCoverage },
   coverage: { tests: [], thin: [], notSupported: [] },
 };
