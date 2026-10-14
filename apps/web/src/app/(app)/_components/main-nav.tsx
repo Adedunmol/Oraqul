@@ -4,7 +4,7 @@ import type { Project } from '@oraqul/schema';
 import { Icon, type IconName } from '@oraqul/ui';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { usePinnedProjects } from '@/lib/demo/pins';
 import { getOverview } from '@/lib/demo/queries';
 import type { DemoState } from '@/lib/demo/store';
@@ -14,8 +14,7 @@ import { navCountClass, navItemActive, navItemClass, navItemIdle } from './nav-l
 
 const RECENT = 5;
 
-const groupLabel =
-  'px-3 text-[12px] font-semibold text-muted rail:sr-only';
+const groupLabel = 'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
 /** The project the current page belongs to, so its sidebar row stays lit inside it. */
 function currentProjectId(pathname: string, s: DemoState): string | undefined {
@@ -151,7 +150,7 @@ export function MainNav() {
 }
 
 /** Below 900px the sidebar becomes a top bar with the few main items. design-system §6 */
-export function MobileNav() {
+export function MobileNav({ search }: { search: ReactNode }) {
   const pathname = usePathname();
   const links: { href: string; icon: IconName; label: string; active: boolean }[] = [
     { href: startPath(), icon: 'plus', label: 'New', active: pathname === '/start' },
@@ -163,19 +162,28 @@ export function MobileNav() {
       active: pathname.startsWith('/categories/'),
     },
   ];
+  const team = {
+    href: '/team',
+    icon: 'team',
+    label: 'Team',
+    active: pathname.startsWith('/team'),
+  } as const;
+  const item = (l: { href: string; icon: IconName; label: string; active: boolean }) => (
+    <Link
+      key={l.href}
+      href={l.href}
+      aria-current={l.active ? 'page' : undefined}
+      className={`${navItemClass} ${l.active ? navItemActive : navItemIdle}`}
+    >
+      <Icon name={l.icon} />
+      <span className="max-[519px]:sr-only">{l.label}</span>
+    </Link>
+  );
   return (
     <>
-      {links.map((l) => (
-        <Link
-          key={l.href}
-          href={l.href}
-          aria-current={l.active ? 'page' : undefined}
-          className={`${navItemClass} ${l.active ? navItemActive : navItemIdle}`}
-        >
-          <Icon name={l.icon} />
-          <span className="max-[519px]:sr-only">{l.label}</span>
-        </Link>
-      ))}
+      {links.map(item)}
+      {search}
+      {item(team)}
     </>
   );
 }

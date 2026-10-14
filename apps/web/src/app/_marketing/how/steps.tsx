@@ -221,7 +221,6 @@ export function BottomLine() {
         className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[1.15fr_0.85fr] min-[1000px]:items-center`}
       >
         <Reveal className="order-2 flex flex-col gap-5 rounded-2xl bg-card p-[clamp(20px,3.4vw,40px)] shadow-md min-[1000px]:order-1">
-          <span className="text-[12.5px] font-medium text-muted">Bottom line</span>
           <p
             className="mk-in font-display text-[clamp(24px,2.6vw,32px)] leading-[1.15] font-semibold tracking-[-0.03em]"
             style={stagger(0)}
@@ -284,7 +283,7 @@ export function KeepGoing() {
               'Bring your results',
               'After it is out, add results by region or age band and Oraqul finds what missed.',
             ],
-          ].map(([title, text], i) => (
+          ].map(([title, text]) => (
             <div key={title} className="flex flex-col gap-3 rounded-2xl bg-card p-6">
               <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">
                 {title}

@@ -434,9 +434,7 @@ function SplitInputs({
   const total = values.reduce((a, b) => a + b, 0);
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-[12px] font-semibold text-muted">
-        {title} I read (percent)
-      </p>
+      <p className="text-[12px] font-semibold text-muted">{title} I read (percent)</p>
       <div className="flex flex-wrap items-end gap-3">
         {groups.map((g, i) => (
           <label key={g} className="flex flex-col gap-1 text-xs text-muted">

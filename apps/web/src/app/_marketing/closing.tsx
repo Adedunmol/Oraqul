@@ -18,7 +18,8 @@ export function Closing({
 }) {
   return (
     <section aria-labelledby="closing-title" className="scheme-dark relative overflow-hidden bg-bg">
-      <TasteDiscs set="closing" />
+      {/* On a phone the discs land on the buttons, and text is never set over art. */}
+      <TasteDiscs set="closing" className="max-[639px]:hidden" />
       <div
         className={`${wrap} relative flex flex-col items-start gap-8 py-[clamp(96px,14vw,200px)]`}
       >

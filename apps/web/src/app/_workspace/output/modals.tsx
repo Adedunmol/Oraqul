@@ -120,9 +120,7 @@ export function ExportModal({
       </div>
       <div className="flex flex-col gap-3.5 rounded-md bg-card p-[22px]">
         <div>
-          <p className="text-[12px] font-semibold text-muted">
-            Appendix
-          </p>
+          <p className="text-[12px] font-semibold text-muted">Appendix</p>
           <h3 className="font-display mt-1 mb-1 text-[15px] font-semibold">
             Assumptions ({c.holds} hold, {c.weak} weak, {c.breaks} break, {c.cant} could not test)
           </h3>

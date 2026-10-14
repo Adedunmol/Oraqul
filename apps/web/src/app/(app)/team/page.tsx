@@ -53,7 +53,6 @@ export default async function TeamPage() {
   return (
     <div className="flex max-w-5xl flex-col gap-8">
       <PageHead
-        label="Team"
         title={detail.team.name}
         description={`You are ${roleLabels[detail.myRole].toLowerCase()}. ${roleHelp[detail.myRole]}`}
       />

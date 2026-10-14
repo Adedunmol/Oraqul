@@ -34,9 +34,10 @@ function CategoryVisual({ info }: { info: CategoryInfo }) {
   return (
     <div
       data-cat={info.id}
-      className={`flex min-h-[min(74vh,640px)] flex-col justify-between gap-12 rounded-2xl p-[clamp(26px,4.4vw,64px)] shadow-lg ${field}`}
+      className={`flex flex-col justify-between gap-12 min-[1000px]:min-h-[min(74vh,640px)] rounded-2xl p-[clamp(26px,4.4vw,64px)] shadow-lg ${field}`}
     >
-      <div className="flex items-center justify-between gap-4">
+      {/* Below 1000px the panel sits right under the heading that already names the category. */}
+      <div className="hidden items-center justify-between gap-4 min-[1000px]:flex">
         <Icon name={info.id} className="size-11" />
         <span className="font-display text-[17px] font-semibold">{info.short}</span>
       </div>

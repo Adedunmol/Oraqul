@@ -1,15 +1,7 @@
 'use client';
 
 import type { Output, ThreadItem } from '@oraqul/schema';
-import {
-  Button,
-  buttonClassName,
-  ChipButton,
-  Confidence,
-  Icon,
-  Kbd,
-  ReceiptChip,
-} from '@oraqul/ui';
+import { Button, buttonClassName, ChipButton, Confidence, Kbd, ReceiptChip } from '@oraqul/ui';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Modal } from '@/app/(app)/_components/modal';
@@ -338,19 +330,18 @@ function OutputCard({
         </div>
         {output.moves.length ? (
           <div className="flex flex-col gap-2">
-            <p className="text-[12px] font-semibold text-muted">
-              Do this
-            </p>
+            <p className="text-[12px] font-semibold text-muted">Do this</p>
             <ol className="flex flex-col gap-1.5">
               {output.moves.slice(0, 3).map((m, i) => (
                 <li
                   key={m.text}
-                  className="flex items-center gap-2.5 rounded-lg bg-card px-3 py-2 text-[14px]"
+                  className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 gap-y-2 min-[640px]:grid-cols-[auto_minmax(0,1fr)_auto] rounded-lg bg-card px-3 py-2 text-[14px]"
                 >
                   <Kbd>{i + 1}</Kbd>
-                  <span className="min-w-0 flex-1">{m.text}</span>
+                  <span>{m.text}</span>
                   {hasReceipt(m.lineId) ? (
                     <ReceiptChip
+                      className="col-start-2 justify-self-start min-[640px]:col-start-auto"
                       onClick={() => m.lineId && onReceipt(m.lineId)}
                       aria-label="Open receipt"
                     />

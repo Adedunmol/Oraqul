@@ -133,17 +133,10 @@ export function ProjectWorkspace({
         <aside aria-label="Chats" className="hidden flex-col gap-4 min-[900px]:flex">
           {current ? <CurrentPlan output={current} /> : null}
           <div className="flex flex-col gap-1.5">
-            <p className="px-3 text-[12px] font-semibold text-muted">
-              Chats
-            </p>
+            <p className="px-3 text-[12px] font-semibold text-muted">Chats</p>
             <ChatList threads={threads} selectedId={selectedId} />
           </div>
         </aside>
-        {current ? (
-          <div className="min-[900px]:hidden">
-            <CurrentPlan output={current} />
-          </div>
-        ) : null}
         <details className="rounded-2xl bg-card px-4 py-3 min-[900px]:hidden">
           <summary className="cursor-pointer text-sm font-semibold">
             Chats ({threads.length})
@@ -155,7 +148,7 @@ export function ProjectWorkspace({
         {chat ? (
           <section
             aria-label={`Chat: ${chat.thread.name}`}
-            className="flex h-[calc(100dvh-180px)] min-h-[520px] min-w-0 flex-col overflow-hidden rounded-2xl bg-card"
+            className="flex h-[calc(100dvh-24px)] min-h-[480px] min-w-0 min-[900px]:h-[calc(100dvh-180px)] min-[900px]:min-h-[520px] flex-col overflow-hidden rounded-2xl bg-card"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-4 pt-3.5">
               <h2 className="font-display truncate text-[15px] font-semibold">
@@ -483,15 +476,11 @@ function Compare({ plans }: { plans: Output[] }) {
             <h4 className="mb-1.5 text-sm font-semibold">{c.label}</h4>
             <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">
               <div className="rounded-lg bg-card p-3">
-                <p className="text-[12px] font-semibold text-muted">
-                  Before
-                </p>
+                <p className="text-[12px] font-semibold text-muted">Before</p>
                 {c.before ?? 'Not in this plan'}
               </div>
               <div className="rounded-lg border border-accent/40 bg-accent-soft p-3">
-                <p className="text-[12px] font-semibold text-muted">
-                  After
-                </p>
+                <p className="text-[12px] font-semibold text-muted">After</p>
                 {c.after ?? 'Removed'}
               </div>
             </div>

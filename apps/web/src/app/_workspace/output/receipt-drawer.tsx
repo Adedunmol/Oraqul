@@ -75,9 +75,7 @@ export function ReceiptDrawer({
       {receipt && lineId ? (
         <div className="flex flex-col gap-3.5">
           <div className="flex items-center justify-between">
-            <p className="text-[12px] font-semibold text-muted">
-              Receipt
-            </p>
+            <p className="text-[12px] font-semibold text-muted">Receipt</p>
             <Button size="small" variant="ghost" onClick={onClose} aria-label="Close">
               <Icon name="close" className="size-4" />
             </Button>
@@ -110,9 +108,7 @@ export function ReceiptDrawer({
           </dl>
           {publicExample ? null : (
             <>
-              <p className="text-[12px] font-semibold text-muted">
-                Example response shape
-              </p>
+              <p className="text-[12px] font-semibold text-muted">Example response shape</p>
               <pre className="whitespace-pre-wrap break-words rounded-lg bg-surface2 px-3 py-2.5 font-mono text-xs">
                 {JSON.stringify(
                   {

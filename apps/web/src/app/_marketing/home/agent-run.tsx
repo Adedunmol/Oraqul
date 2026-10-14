@@ -1,6 +1,5 @@
 'use client';
 
-import { Icon } from '@oraqul/ui';
 import { type CSSProperties, useState } from 'react';
 import { Reveal } from '../reveal';
 import { band, h2Class, wrap } from '../section';

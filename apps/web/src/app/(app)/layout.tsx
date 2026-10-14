@@ -10,8 +10,7 @@ import { SidebarTeam, SidebarUser } from './_components/sidebar-parts';
 import { SidebarToggle } from './_components/sidebar-toggle';
 import { ThemeToggle } from './_components/theme-toggle';
 
-const groupLabel =
-  'px-3 text-[12px] font-semibold text-muted rail:sr-only';
+const groupLabel = 'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
 const lineSkeleton = (width: string) => (
   <div className={`h-4 ${width} rounded-md bg-surface2 motion-safe:animate-pulse`} />
@@ -29,7 +28,7 @@ const navSkeleton = (
 // This is the one place a layout reads data: docs/frontend/data.md.
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="app-shell min-h-dvh">
+    <div className="app-shell flex min-h-dvh flex-col">
       {/* In the rail nothing scrolls, so the team menu can open past its edge. */}
       <aside
         data-rail
@@ -78,20 +77,16 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3 min-[900px]:hidden">
+      <header className="flex items-center justify-between gap-3 px-4 py-2.5 min-[900px]:hidden">
         <Logo />
         <Suspense fallback={<div className="h-10 w-48 rounded-lg bg-surface2" />}>
-          <nav aria-label="Main" className="flex flex-wrap items-center gap-1">
-            <MobileNav />
-            <SearchButton />
-            <NavLink href="/team" icon="team">
-              Team
-            </NavLink>
+          <nav aria-label="Main" className="flex items-center gap-1">
+            <MobileNav search={<SearchButton />} />
           </nav>
         </Suspense>
       </header>
 
-      <main className="border-t border-line bg-canvas px-[clamp(16px,2.4vw,32px)] py-[clamp(16px,2vw,28px)] min-[900px]:my-2 min-[900px]:mr-2 min-[900px]:rounded-2xl min-[900px]:border">
+      <main className="flex-1 border-t border-line bg-canvas px-[clamp(16px,2.4vw,32px)] py-[clamp(16px,2vw,28px)] min-[900px]:my-2 min-[900px]:mr-2 min-[900px]:rounded-2xl min-[900px]:border">
         <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
           {children}
           <div className="flex flex-wrap gap-2 min-[900px]:hidden">

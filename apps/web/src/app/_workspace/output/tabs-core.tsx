@@ -83,12 +83,13 @@ function SummaryCard() {
           {output.moves.map((m, i) => (
             <li
               key={m.text}
-              className="flex items-center gap-2.5 rounded-xl bg-surface2 px-3.5 py-[11px]"
+              className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 gap-y-2 min-[640px]:grid-cols-[auto_minmax(0,1fr)_auto] rounded-xl bg-surface2 px-3.5 py-[11px]"
             >
               <Kbd>{i + 1}</Kbd>
-              <span className="min-w-0 flex-1">{m.text}</span>
+              <span>{m.text}</span>
               {m.lineId && receipt(m.lineId) ? (
                 <ReceiptChip
+                  className="col-start-2 justify-self-start min-[640px]:col-start-auto"
                   onClick={() => m.lineId && openReceipt(m.lineId)}
                   aria-label="Open receipt"
                 />

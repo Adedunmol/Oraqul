@@ -1,4 +1,4 @@
-import { buttonClassName, Icon } from '@oraqul/ui';
+import { buttonClassName } from '@oraqul/ui';
 import Link from 'next/link';
 import { wrap } from '../section';
 import { TasteDiscs } from '../taste-discs';

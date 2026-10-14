@@ -25,7 +25,7 @@ export function SearchButton() {
       type="button"
       onClick={() => openPalette?.()}
       data-rail-tip="Search (⌘K)"
-      className="flex w-full items-center gap-2.5 rounded-lg bg-surface2 px-2.5 py-2 text-left text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent max-[899px]:w-auto rail:min-h-10 rail:justify-center rail:px-0"
+      className="flex w-full items-center gap-2.5 rounded-lg bg-surface2 px-2.5 py-2 text-left text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent max-[899px]:min-h-10 max-[899px]:w-auto max-[899px]:bg-transparent max-[899px]:px-3 max-[899px]:hover:bg-surface2 rail:min-h-10 rail:justify-center rail:px-0"
     >
       <Icon name="search" />
       <span className="flex-1 max-[899px]:sr-only rail:sr-only">Search</span>
@@ -172,9 +172,7 @@ export function Palette() {
           results.map((e, i) => (
             <div key={e.href + e.label}>
               {i === 0 || results[i - 1]?.group !== e.group ? (
-                <p className="px-2.5 pt-2.5 pb-1 text-[12px] font-semibold text-muted">
-                  {e.group}
-                </p>
+                <p className="px-2.5 pt-2.5 pb-1 text-[12px] font-semibold text-muted">{e.group}</p>
               ) : null}
               <button
                 type="button"
@@ -201,9 +199,7 @@ export function Palette() {
             </div>
           ))
         ) : (
-          <p className="px-2.5 py-2.5 text-[12px] font-semibold text-muted">
-            Nothing matches
-          </p>
+          <p className="px-2.5 py-2.5 text-[12px] font-semibold text-muted">Nothing matches</p>
         )}
       </div>
       <div className="flex gap-4 border-t border-line px-4 py-2.5 text-xs text-muted">

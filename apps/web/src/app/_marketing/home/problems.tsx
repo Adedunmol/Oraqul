@@ -35,9 +35,7 @@ export function Problems() {
           <div className="grid border-b border-line text-[13px] font-medium max-[899px]:hidden min-[900px]:grid-cols-[1fr_56px_1fr]">
             <span className="px-6 py-3.5 text-muted">Today</span>
             <span />
-            <span className="flex items-center gap-2 px-6 py-3.5 text-accent">
-              With Oraqul
-            </span>
+            <span className="flex items-center gap-2 px-6 py-3.5 text-accent">With Oraqul</span>
           </div>
           <ol>
             {pairs.map((p, i) => (

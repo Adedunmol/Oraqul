@@ -1,4 +1,4 @@
-import { Chip, Icon, VerdictPill } from '@oraqul/ui';
+import { Chip, VerdictPill } from '@oraqul/ui';
 import type { ReactNode } from 'react';
 import { band, h2Class, leadClass, wrap } from '../section';
 import { StickySteps } from '../sticky-steps';
@@ -120,14 +120,19 @@ const stages: Stage[] = [
 function StageText({ stage }: { stage: Stage }) {
   return (
     <div className="flex flex-col gap-5">
-      <p className="text-[15px] font-medium text-accent">{stage.when}</p>
       <h3 className="font-display text-[clamp(30px,3.4vw,46px)] leading-[1.02] font-semibold tracking-[-0.04em]">
         {stage.title}
       </h3>
       <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">{stage.gets}</p>
-      <p className="text-[15px]">
-        <span className="font-semibold">You bring: </span>
-        <span className="text-ink/75">{stage.brings}</span>
+      <p className="flex flex-col gap-1.5 text-[15px]">
+        <span>
+          <span className="font-semibold">When: </span>
+          <span className="text-ink/75">{stage.when}</span>
+        </span>
+        <span>
+          <span className="font-semibold">You bring: </span>
+          <span className="text-ink/75">{stage.brings}</span>
+        </span>
       </p>
     </div>
   );
