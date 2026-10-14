@@ -38,7 +38,7 @@ export default async function TeamPage() {
   if (!current) {
     return (
       <div className="flex max-w-5xl flex-col gap-8">
-        <PageHead title="Team" />
+        <PageHead title="Team" className="sticky-head" />
         <Card className="flex flex-col items-start gap-4 p-5">
           <p className="text-muted">You are not on a team yet. Create one to get started.</p>
           <CreateTeamForm />
@@ -53,6 +53,7 @@ export default async function TeamPage() {
   return (
     <div className="flex max-w-5xl flex-col gap-8">
       <PageHead
+        className="sticky-head"
         title={detail.team.name}
         description={`You are ${roleLabels[detail.myRole].toLowerCase()}. ${roleHelp[detail.myRole]}`}
       />

@@ -23,6 +23,7 @@ export function OverviewScreen({ viewer }: { viewer: Viewer }) {
   return (
     <div className="view-enter flex flex-col gap-10">
       <PageHead
+        className="sticky-head"
         title="Overview"
         action={canEdit ? undefined : <Chip>Viewers can read projects</Chip>}
       />

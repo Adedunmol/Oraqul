@@ -47,6 +47,7 @@ export function ProjectsScreen({ scope, viewer }: { scope: CategoryScope; viewer
   return (
     <div className="view-enter flex flex-col gap-8" data-cat={category}>
       <PageHead
+        className="sticky-head"
         title="Projects"
         action={
           canEdit ? <NewProject category={category} /> : <Chip>Viewers can read projects</Chip>

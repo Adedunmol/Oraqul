@@ -147,7 +147,7 @@ export function OutputView({
         className={`grid grid-cols-1 gap-6 ${dock && dockOpen ? 'min-[900px]:grid-cols-[minmax(0,1fr)_380px]' : ''}`}
       >
         <div className="view-enter flex min-w-0 flex-col gap-7">
-          <header className="flex flex-col gap-3">
+          <header className="sticky-head flex flex-col gap-3">
             {shared ? null : <Crumbs items={crumbs} />}
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="flex min-w-0 flex-col gap-1.5">

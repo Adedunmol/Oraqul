@@ -340,6 +340,20 @@ body {
   }
 }
 
+/* A page's head stays at the top while the page scrolls. It covers the main panel's padding so
+   nothing shows above or beside it. Desktop only: on a phone it would take a quarter of the
+   screen, and the top bar already stays. */
+@media (min-width: 900px) {
+  .sticky-head {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin: calc(-1 * var(--page-y)) calc(-1 * var(--page-x)) 0;
+    padding: var(--page-y) var(--page-x) 12px;
+    background: var(--canvas);
+  }
+}
+
 .view-enter > * {
   animation: rise 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }

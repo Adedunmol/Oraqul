@@ -93,7 +93,7 @@ export function ProjectWorkspace({
 
   return (
     <div className="view-enter flex flex-col gap-5" data-cat={project.category}>
-      <header className="flex flex-col gap-2.5">
+      <header className="sticky-head flex flex-col gap-2.5">
         <Crumbs
           items={[
             { label: 'Projects', href: projectsPath() },
