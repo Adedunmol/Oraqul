@@ -138,6 +138,6 @@ export class GoogleService {
   }
 
   private failureUrl(): string {
-    return `${this.webOrigin}/?error=google`;
+    return `${this.webOrigin}/sign-in?error=google`;
   }
 }

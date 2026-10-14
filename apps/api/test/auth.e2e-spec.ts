@@ -201,7 +201,7 @@ describe('auth (e2e, services stubbed)', () => {
   it('sends Google sign in back to the web app when Google is not configured', async () => {
     await boot(fakeDb());
     const res = await request(app.getHttpServer()).get('/auth/google').expect(302);
-    expect(res.headers.location).toBe('http://localhost:3000/?error=google');
+    expect(res.headers.location).toBe('http://localhost:3000/sign-in?error=google');
   });
 
   it('rejects a Google next path that leaves the site', async () => {
