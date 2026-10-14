@@ -93,14 +93,14 @@ The output is always a direction: holds, weak, breaks, or could not test.
 Media and entertainment is the one industry Oraqul serves today. Film and series, Music, Books, Podcasts and Games are its five categories. The hierarchy is Team, Category, Project, Job, Output.
 
 * A team has members with owner, editor and viewer roles.
-* A category is a section of the product, not a lane inside a project. A project belongs to exactly one category, because most people will not need several categories in one project. Each category page shows what Oraqul tests there, where coverage is thin and what it does not support.
+* A category is a section of the product, not a lane inside a project. A project belongs to exactly one category, because most people will not need several categories in one project. Each category's project list opens with what Oraqul tests there and the tools it has.
 * Chat is the entry point, and the agent asks question cards instead of forms. The questions, quick actions and results format change with the category.
 * A project holds several threads. Each thread chooses what it builds on: the current plan, another plan, or a fresh start.
 * Every agent output ends with a summary and a takeaway card, then opens its own details page with only the tabs that fit it. Common tabs are Summary, Audience, Assumptions, Plan, Risks, Could not test and Evidence. Each category adds its own: territory ladder for film, tour route and support act grid for music, comp shelf and adaptation bridge for books, topic map for podcasts, fan base bridge and regions for games.
 * Every line has a receipt. Charts have a table view.
 * Versions can be compared. A one page brief exports with an evidence appendix and a confidence level per line.
 * A read only share link can be turned off.
-* The projects page opens with three Start here cards: plan a launch, check a plan I have, rescue one that missed. Each says what you get and what you bring.
+* The overview, the team's home after sign in, opens with three Start here cards: plan a launch, check a plan I have, rescue one that missed. Each says what you get and what you bring, and the project is made from the first message in the chat, never from an empty form.
 * Every output tab opens with one plain sentence on what it shows, and output pages show four main tabs with the rest under More.
 * Search on Ctrl K or Cmd K finds categories, projects, outputs and actions.
 * Signed out visitors see sign in and an example answer. Live runs need an account, so the demo shows what the product really does.
@@ -108,7 +108,7 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 
 ## How it looks and reads
 
-Calm and clear, a little cinematic. Neutral surfaces, one dark ink for main actions, a quiet blue for focus, and colour only for verdicts and the small category icons. A serif for titles and the bottom line, a clean sans for everything else. Light and dark are both designed. Motion is small and only marks things arriving: the agent's words appearing, the trace advancing, a view opening. Words are plain, and verdicts are always an icon, a word and a colour together. The design system file has the tokens, components and wording rules. The hosted prototype is the visual reference.
+Calm and clear, a little cinematic. Neutral surfaces, one dark ink for main actions, a quiet blue for focus, and colour only for verdicts and the small category icons. A characterful sans for titles and the bottom line, a clean sans for everything else, and soft fills instead of outlines. Light and dark are both designed. Motion is small and only marks things arriving: the agent's words appearing, the trace advancing, a view opening. Words are plain, and verdicts are always an icon, a word and a colour together. The design system file has the tokens, components and wording rules. The hosted prototype is the visual reference.
 
 ## Africa and diaspora
 

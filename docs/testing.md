@@ -35,7 +35,7 @@ What to test and why is in [spec §11](product/spec.md). This file maps it to to
 | Golden runs: plan, audit, rescue per category | `packages/eval/golden/<category>/` | not started |
 | Grounding check | `packages/eval`. Every entity and number must trace to a receipt. Fails the build | not started |
 | Refusal tests: forecast, pricing, send | `packages/eval` | not started |
-| UI pass: every tab, every category | `apps/web/e2e` | smoke, sign in and error states for `/projects`, `/team`, `/invite/[token]` |
+| UI pass: every tab, every category | `apps/web/e2e` | smoke, sign in pages, redirects from the old project routes, and error states for `/overview`, `/categories/:category/projects`, `/team`, `/invite/[token]`; signed out checks for `/s/[token]` and `/categories/[category]/projects`. Signed in demo screens are walked by hand until e2e has a test session |
 
 The Playwright run reuses a dev server already on :3000. Stop your own `pnpm dev` first, or the error state tests find a live API and fail.
 

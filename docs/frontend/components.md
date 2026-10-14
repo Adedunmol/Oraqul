@@ -8,11 +8,12 @@ How [design-system.md](design-system.md) becomes code. Do not repeat token value
 
 | Utility | Reads |
 |---|---|
-| `bg-bg`, `bg-surface`, `bg-surface2` | `--bg`, `--surface`, `--surface2` |
+| `bg-bg`, `bg-surface`, `bg-surface2`, `bg-surface2-hover`, `bg-card`, `bg-card-hover` | `--bg`, `--surface`, `--surface2`, `--surface2-hover`, `--card`, `--card-hover` |
 | `text-ink`, `text-muted`, `border-line` | `--ink`, `--muted`, `--line` |
 | `bg-holds-bg text-holds` (and weak, breaks, cant) | verdict tokens |
 | `text-cat`, `bg-cat` | `--cat`, set by `data-cat`. Icon tile and stroke only |
-| `font-display`, `font-sans`, `font-mono` | Fraunces, Geist, Geist Mono |
+| `bg-good`, `bg-warn`, `bg-crit`, `bg-na`, `bg-s1`, `bg-s2` | chart and status tokens, for chart marks only |
+| `font-display`, `font-sans`, `font-mono` | Bricolage Grotesque, Geist, Geist Mono |
 
 Adding a token: add it in all three places in `globals.css`, then map it in `@theme inline`.
 
@@ -29,15 +30,18 @@ From [spec §9.1](../product/spec.md). Tick as built.
 
 - [x] VerdictPill
 - [x] Button (`buttonClassName` for links that must look like one), Input, Select
-- [ ] Chip, Line
-- [x] Card, Icon (projects, team), Logo, PageHead
-- [ ] Confidence, ReceiptChip, ReceiptDrawer
-- [ ] Tabs, TabNote
-- [ ] StartCard, ProjectCard, SummaryCard
-- [ ] QuestionCard, Trace
-- [ ] Chart (with table toggle)
-- [ ] Palette, Toast
+- [x] Chip and ChipButton, Kbd
+- [x] Card, Icon (projects, team, the five categories, search), Logo, PageHead
+- [x] Confidence, ReceiptChip
+- [x] Tabs (controlled), TabNote
+- [~] Line, ReceiptDrawer, SummaryCard: in `apps/web/src/app/_workspace/output/` (they read the output context)
+- [~] StartCard and the Start picker: `apps/web/src/app/_workspace/start-cards.tsx`, scenes in `start-art.tsx`. Message box with files: `_workspace/chat/composer.tsx`. ProjectCard: in `apps/web/src/app/_workspace/projects-screen.tsx`
+- [~] QuestionCard, Trace: in `apps/web/src/app/_workspace/chat/`
+- [~] Chart (with table toggle and `data-tip` hover text): `apps/web/src/app/_workspace/charts.tsx`
+- [~] Palette in `(app)/_components/palette.tsx`, Toast in `_workspace/toast.tsx`
 - [~] Modal: built in `apps/web/src/app/(app)/_components/modal.tsx` (native `dialog`). It moves to `packages/ui` once that package has a client entry.
+
+Items marked `[~]` hold state or read a context, so they stay in `apps/web` until `packages/ui` has a client entry (see the Modal note).
 
 ## TODO
 

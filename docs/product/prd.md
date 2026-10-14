@@ -147,7 +147,7 @@ The product has many new words and a deep structure, so it must explain itself b
 
 | ID | Requirement | P |
 |---|---|---|
-| U1 | The projects page opens with three Start here cards: Plan a launch, Check a plan I have, Rescue one that missed. Each says what you get and what you bring. Choosing one starts the chat with the right first question, and the agent still asks the user to confirm the job it read. | P0 |
+| U1 | The overview opens with three Start here cards: Plan a launch, Check a plan I have, Rescue one that missed. Each says what you get and what you bring. Choosing one opens the chat with the right first prompt, the first message creates the project, and the agent still asks the user to confirm the job it read. | P0 |
 | U2 | Every output tab opens with one plain sentence on what it shows. The Assumptions and Evidence notes explain Holds, Breaks and receipts. | P0 |
 | U3 | Output pages show Summary, Plan, Assumptions and Evidence by default, plus the current tab. The rest sit under More. | P0 |
 | U4 | Words stay plain. Verdicts are Holds, Weak, Breaks and Could not test. No jargon without a one line explanation beside it. | P0 |
@@ -156,7 +156,7 @@ The product has many new words and a deep structure, so it must explain itself b
 
 ### 6.9 Look and feel
 
-Calm and clear, with a serif for titles and the bottom line. Colour is used for verdicts and for the small category icons, nothing else. No gradients, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
+Calm and clear, with a characterful sans (Bricolage Grotesque) for titles and the bottom line, and surfaces told apart by soft fills instead of outlines. Colour is used for verdicts and for the small category icons, nothing else. No gradients, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
 
 ## 7. Africa and diaspora
 

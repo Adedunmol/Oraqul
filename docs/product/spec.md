@@ -145,7 +145,10 @@ GET    /teams                 POST /teams
 GET    /teams/:teamId         members, pending invites (owners only), myRole
 POST   /teams/:teamId/invites     PATCH /teams/:teamId/members/:uid     DELETE /teams/:teamId/members/:uid
 GET    /invites/:token        POST /invites/:token/accept
-GET    /projects?category=    POST /projects        GET /projects/:id        DELETE /projects/:id
+GET    /overview              needs you, threads to pick up
+GET    /me/pins               pinned project ids, newest first
+PUT    /me/pins/:projectId    DELETE /me/pins/:projectId
+GET    /projects?category=    POST /projects (mode, category, first message, attachments)        GET /projects/:id        DELETE /projects/:id
 POST   /projects/:id/threads  GET /threads/:id
 POST   /threads/:id/messages  user message or question card answer
 GET    /threads/:id/events    SSE: trace steps, questions, messages, output ready
@@ -181,9 +184,9 @@ SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created
 
 ## 9. Web app
 
-Routes: `/` sign in and an example answer, `/projects`, `/categories/:id`, `/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/invite/:token`, `/s/:token`.
+Routes: `/` the landing page (pitch, example answer, how it works, categories, receipts), `/sign-in`, `/sign-up`, `/forgot-password`, `/email-code`, `/verify`, `/reset-password`, `/overview`, `/categories/:category/projects`, `/categories/:category/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/invite/:token`, `/s/:token`.
 
-`/team` shows the team's members, a role select and remove for owners, pending invites, the invite form and sign out; the team comes from the sidebar switcher, remembered in an `oraqul_team` cookie and checked against the person's memberships. `/invite/:token` previews an invite and accepts it. A signed out visitor is sent to sign in and returned to the invite afterwards.
+`/overview` is the team's home and where sign in lands: the Start here cards, Needs you (threads waiting on an answer, launches out with no results, new results, runs in progress) and threads to pick up. The project lists show the person's pinned projects first. `/start?mode=&category=` is the chat for one way to start, before anything is saved. `:category` is a category id or `all`. The list for one category opens with what Oraqul tests there; `all` lists every project. A project has one address, under its own category, so opening it under `all` or another category moves there. `/projects`, `/projects/:id` and `/categories/:category` redirect to the new routes. The current team is the one in the `oraqul_team` cookie, never part of the address. The landing page header shows Open app instead of the sign in buttons when the visitor is signed in, and never redirects. The sign in pages take a `next` path and pass it between each other. `/verify` and `/reset-password` take the email from an `email` query value, set by the page before them. `/team` shows the team's members, a role select and remove for owners, pending invites, the invite form and sign out; the team comes from the sidebar switcher, remembered in an `oraqul_team` cookie and checked against the person's memberships. `/invite/:token` previews an invite and accepts it. A signed out visitor is sent to sign in and returned to the invite afterwards.
 
 Output page tabs come from the output kind and the category pack: Summary, Audience, Assumptions, Plan, the category's signature tabs, Risks, Could not test, Evidence, plus Changes, Results, Rival dates and Partner briefs where they fit. The what if bar sits above the plan tabs and matches typed text to the pack's scenario matchers. Receipts open in a side drawer. A dock chat on the output page continues the thread.
 
@@ -194,13 +197,13 @@ Charts are inline SVG or CSS, each with a table toggle, a legend, and hover text
 The look is defined in the design system file. In code:
 
 * Tokens live in `globals.css` as CSS variables, light on bare `:root`, dark in a guarded media query and again under `[data-theme="dark"]`, each with `color-scheme`. No component uses a literal colour.
-* Fonts come from `next/font/google`: Fraunces for titles and the bottom line, Geist for text, Geist Mono for ids and keycaps.
+* Fonts come from `next/font/google`: Bricolage Grotesque for titles and the bottom line, Geist for text, Geist Mono for ids and keycaps.
 * Category colour is set by a `data-cat` attribute and a `--cat` variable. It is used only for the icon tile and icon stroke.
 * A small component set lives in `packages/ui`: Button, Input, Chip, VerdictPill, Confidence, ReceiptChip, Card, Line, Tabs, TabNote, StartCard, ProjectCard, SummaryCard, QuestionCard, Trace, Chart, ReceiptDrawer, Palette, Modal, Toast, Icon. VerdictPill and Confidence take the data value and draw the glyph and word, so colour cannot appear alone.
 
 ### 9.2 Start modes
 
-The Start here cards call the thread route with a `mode` of `start`, `audit` or `rescue`. The router uses it as the default reading of the job and sets the first prompt: a description for start, the existing plan for audit, and what happened plus results for rescue. The agent still asks "I read this as ... Is that right?" and lists the other two jobs, so a wrong card can be corrected in one tap.
+There is no New project action. The Start here cards on the overview, and a Start button on the project lists that opens the same three, open `/start` with a `mode` of `start`, `audit` or `rescue`, plus the category when started from a category's page. That page saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a choice nobody follows up leaves no empty project. The mode sets the first prompt: a title and a line for start, the plan for audit, and what happened plus results for rescue. The agent takes the title and the category from that message, asks only for what it could not find, and uses the mode as the default reading of the job. The agent still asks "I read this as ... Is that right?" and lists the other two jobs, so a wrong card can be corrected in one tap.
 
 ### 9.3 Tabs, notes and search
 
