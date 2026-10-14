@@ -53,7 +53,7 @@ export function SignInForm() {
       </form>
       <Link
         href={form.href('/forgot-password')}
-        className="w-fit rounded-md text-[13px] text-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
+        className="w-fit rounded-md text-[14px] font-medium text-accent hover:underline hover:underline-offset-2 focus-visible:outline-2 focus-visible:outline-accent"
       >
         Forgot password?
       </Link>

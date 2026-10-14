@@ -10,13 +10,19 @@ interface Disc {
   delay: number;
 }
 
-const sets: Record<'hero' | 'closing', Disc[]> = {
+const sets: Record<'hero' | 'closing' | 'auth', Disc[]> = {
   hero: [
     { cat: 'film', x: -12, y: 6, size: 30, delay: 0 },
     { cat: 'podcasts', x: -4, y: 46, size: 18, delay: 300 },
     { cat: 'music', x: 76, y: -6, size: 26, delay: 150 },
     { cat: 'books', x: 88, y: 34, size: 20, delay: 450 },
     { cat: 'games', x: 62, y: 52, size: 16, delay: 600 },
+  ],
+  auth: [
+    { cat: 'music', x: 60, y: -10, size: 20, delay: 0 },
+    { cat: 'books', x: 90, y: 34, size: 9, delay: 600 },
+    { cat: 'film', x: 74, y: 56, size: 17, delay: 200 },
+    { cat: 'games', x: 62, y: 84, size: 16, delay: 400 },
   ],
   closing: [
     { cat: 'games', x: -14, y: 62, size: 36, delay: 0 },

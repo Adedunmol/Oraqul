@@ -17,25 +17,28 @@ export function AuthCard({
   return (
     <section
       aria-labelledby="auth-heading"
-      className="flex w-full flex-col gap-5 rounded-2xl bg-card p-6 sm:p-9"
+      className="flex w-full flex-col gap-6 rounded-2xl bg-card p-6 shadow-md sm:p-9"
     >
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         <h1
           id="auth-heading"
-          className="font-display text-[clamp(26px,3vw,30px)] font-semibold leading-[1.1] tracking-[-0.025em] text-balance"
+          className="font-display text-[clamp(30px,3.4vw,38px)] font-semibold leading-[1.05] tracking-[-0.035em] text-balance"
         >
           {title}
         </h1>
-        {lead ? <p className="text-muted">{lead}</p> : null}
+        {lead ? <p className="text-[16px] leading-[1.5] text-muted">{lead}</p> : null}
       </div>
       {children}
       {links ? (
-        <nav aria-label="Other ways in" className="flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
+        <nav
+          aria-label="Other ways in"
+          className="flex flex-wrap gap-x-5 gap-y-1 border-t border-line pt-5 text-[14px]"
+        >
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-md py-1 text-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
+              className="rounded-md py-1.5 font-medium text-accent hover:underline hover:underline-offset-2 focus-visible:outline-2 focus-visible:outline-accent"
             >
               {link.label}
             </Link>
