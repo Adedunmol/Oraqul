@@ -11,6 +11,18 @@ loadEnvConfig(
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // Old addresses from before projects moved under their category. Temporary, so they can be reused.
+  async redirects() {
+    return [
+      { source: '/projects', destination: '/categories/all/projects', permanent: false },
+      { source: '/projects/:id', destination: '/categories/all/projects/:id', permanent: false },
+      {
+        source: '/categories/:category',
+        destination: '/categories/:category/projects',
+        permanent: false,
+      },
+    ];
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {

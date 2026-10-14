@@ -6,7 +6,7 @@ export default function Loading() {
       aria-label="Loading invite"
     >
       <div className="h-3 w-12 rounded-md bg-surface2 motion-safe:animate-pulse" />
-      <div className="h-48 rounded-2xl border border-line bg-surface2 motion-safe:animate-pulse" />
+      <div className="h-48 rounded-2xl bg-surface2 motion-safe:animate-pulse" />
     </main>
   );
 }

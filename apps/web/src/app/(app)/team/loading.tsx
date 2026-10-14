@@ -13,11 +13,11 @@ export default function Loading() {
       </div>
       <div className="flex flex-col gap-3">
         <div className="h-3 w-24 rounded-md bg-surface2 motion-safe:animate-pulse" />
-        <div className="h-48 rounded-2xl border border-line bg-surface2 motion-safe:animate-pulse" />
+        <div className="h-48 rounded-2xl bg-surface2 motion-safe:animate-pulse" />
       </div>
       <div className="flex flex-col gap-3">
         <div className="h-3 w-28 rounded-md bg-surface2 motion-safe:animate-pulse" />
-        <div className="h-40 rounded-2xl border border-line bg-surface2 motion-safe:animate-pulse" />
+        <div className="h-40 rounded-2xl bg-surface2 motion-safe:animate-pulse" />
       </div>
     </div>
   );

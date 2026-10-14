@@ -8,28 +8,28 @@ const lines: { claim: string; detail: string; verdict: Verdict }[] = [
     verdict: 'holds',
   },
   {
-    claim: 'Summer is the right window.',
-    detail: 'Interest rises, but a bigger release lands one week earlier.',
-    verdict: 'weak',
+    claim: 'Lagos is a strong opening city.',
+    detail: 'Taste fit is well above a neutral audience in the same place.',
+    verdict: 'holds',
   },
   {
-    claim: 'Your second market is ready.',
-    detail: 'Not enough data came back for that city.',
-    verdict: 'cant',
+    claim: 'Your lead market is the right first stop.',
+    detail: 'A stronger lead came back, and it is now in the plan.',
+    verdict: 'breaks',
   },
 ];
 
-/** A mock of the real output. It is labelled as an example because it is not data from a real project. */
-export function ProductPreview() {
+/** A mock of the real output. The label says so, because it is not data from a real project. */
+export function ExampleAnswer() {
   return (
     <section aria-label="Example of an Oraqul answer" className="flex flex-col gap-3">
       <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-        Example, not real data
+        Example answer
       </p>
       {lines.map((line, index) => (
         <div
           key={line.claim}
-          className="preview-rise flex flex-col gap-2 rounded-xl border border-line bg-surface px-4 py-3"
+          className="preview-rise flex flex-col gap-2 rounded-xl bg-surface px-4 py-3.5"
           style={{ animationDelay: `${index * 140}ms` }}
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -37,7 +37,7 @@ export function ProductPreview() {
             <VerdictPill verdict={line.verdict} />
           </div>
           <p className="text-sm text-muted">{line.detail}</p>
-          <span className="w-fit rounded-[7px] border border-line bg-surface px-2 py-0.5 text-xs text-muted">
+          <span className="w-fit rounded-[7px] bg-surface2 px-2 py-0.5 text-xs text-muted">
             View receipt
           </span>
         </div>

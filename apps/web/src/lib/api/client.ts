@@ -1,7 +1,7 @@
 import { apiUrl, parseResponse } from './http';
 
 /**
- * Browser-side request for writes. A 401 sends the person to `/` and the promise never settles,
+ * Browser-side request for writes. A 401 sends the person to `/sign-in` and the promise never settles,
  * so callers do not flash an error while the page leaves. Sign in calls pass `redirectOn401: false`
  * because a 401 there means wrong credentials.
  */
@@ -17,7 +17,7 @@ export async function clientRequest<T>(
     body: init.body === undefined ? undefined : JSON.stringify(init.body),
   });
   if (response.status === 401 && init.redirectOn401 !== false) {
-    window.location.assign('/');
+    window.location.assign('/sign-in');
     return new Promise<never>(() => {});
   }
   return parseResponse(response, path, schema);

@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
-import { Fraunces, Geist, Geist_Mono } from 'next/font/google';
+import { Bricolage_Grotesque, Geist, Geist_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
-const fraunces = Fraunces({
-  variable: '--font-fraunces',
+// Titles and the bottom line: a sans with enough character to lead a page. Geist carries the rest.
+const bricolage = Bricolage_Grotesque({
+  variable: '--font-bricolage',
   subsets: ['latin'],
-  weight: ['500', '600'],
+  weight: ['500', '600', '700'],
   display: 'swap',
 });
 
@@ -22,9 +23,10 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-// Applies a saved light or dark choice before first paint. The key matches theme-toggle.tsx.
+// Applies the saved theme and sidebar choices before first paint, so neither flashes. The keys
+// match theme-toggle.tsx and sidebar-toggle.tsx.
 const themeScript =
-  "try{var t=localStorage.getItem('oraqul-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}";
+  "try{var d=document.documentElement,t=localStorage.getItem('oraqul-theme');if(t==='light'||t==='dark')d.dataset.theme=t;if(localStorage.getItem('oraqul-sidebar')==='collapsed')d.dataset.sidebar='collapsed'}catch(e){}";
 
 export const metadata: Metadata = {
   title: 'Oraqul',
@@ -36,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

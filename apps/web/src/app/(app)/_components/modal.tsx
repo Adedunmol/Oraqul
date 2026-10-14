@@ -9,11 +9,14 @@ export function Modal({
   open,
   onClose,
   title,
+  wide,
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
+  /** For previews that need room, such as the export brief. */
+  wide?: boolean;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -35,10 +38,10 @@ export function Modal({
       onClick={(event) => {
         if (event.target === ref.current) onClose();
       }}
-      className="m-auto w-[min(92vw,26rem)] rounded-[18px] border border-line bg-surface p-5 text-ink shadow-[var(--shadow)] backdrop:bg-ink/40 backdrop:backdrop-blur-sm"
+      className={`m-auto max-h-[calc(100dvh-32px)] overflow-y-auto ${wide ? 'w-[min(92vw,820px)]' : 'w-[min(92vw,26rem)]'} pop-in rounded-[18px] border border-line bg-surface p-6 text-ink shadow-[var(--shadow)]`}
     >
       {open ? (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5">
           <div className="flex items-center justify-between gap-3">
             <h2 id={titleId} className="text-lg font-semibold tracking-[-0.02em]">
               {title}

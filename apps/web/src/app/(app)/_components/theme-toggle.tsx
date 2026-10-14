@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@oraqul/ui';
+import { Button, Icon } from '@oraqul/ui';
 
 // Keep in step with the inline script in app/layout.tsx that applies it before first paint.
 const STORAGE_KEY = 'oraqul-theme';
@@ -21,8 +21,14 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button size="small" onClick={toggle}>
-      Light or dark
+    <Button
+      size="small"
+      onClick={toggle}
+      data-rail-tip="Light or dark"
+      className="rail:size-9 rail:p-0"
+    >
+      <Icon name="theme" className="hidden rail:block" />
+      <span className="rail:sr-only">Light or dark</span>
     </Button>
   );
 }
