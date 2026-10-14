@@ -7,14 +7,11 @@ import { markRead, removeProject, setShare } from './store';
 export type { FirstMessage } from './flows';
 export {
   answerQuestion,
-  askScenario,
-  quickAsk,
-  resultsFlow as addResults,
+  runNextStep,
   sendText as sendMessage,
   setActor,
   startFromMessage as createProject,
   startThread as createThread,
-  whatIf,
 } from './flows';
 
 /** `DELETE /projects/:id` */

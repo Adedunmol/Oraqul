@@ -33,6 +33,7 @@
     "vitest": "^5.0.4"
   },
   "dependencies": {
-    "@oraqul/schema": "workspace:*"
+    "@oraqul/schema": "workspace:*",
+    "lucide-react": "1.57.0"
   }
 }

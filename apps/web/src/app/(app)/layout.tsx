@@ -3,10 +3,10 @@ import { type ReactNode, Suspense } from 'react';
 import { SignOutButton } from '../_components/sign-out-button';
 import { Toaster } from '../_workspace/toast';
 import { Tooltip } from '../_workspace/tooltip';
-import { CategoryNav, CategorySelect } from './_components/category-nav';
+import { MainNav, MobileNav } from './_components/main-nav';
 import { NavLink } from './_components/nav-link';
 import { Palette, SearchButton } from './_components/palette';
-import { SidebarTeam, SidebarUser, TeamNavLink } from './_components/sidebar-parts';
+import { SidebarTeam, SidebarUser } from './_components/sidebar-parts';
 import { SidebarToggle } from './_components/sidebar-toggle';
 import { ThemeToggle } from './_components/theme-toggle';
 
@@ -20,7 +20,7 @@ const lineSkeleton = (width: string) => (
 const navSkeleton = (
   <div className="flex flex-col gap-1.5">
     {[0, 1, 2, 3, 4, 5, 6, 7].map((key) => (
-      <div key={key} className="h-10 rounded-[10px] bg-surface2 motion-safe:animate-pulse" />
+      <div key={key} className="h-10 rounded-lg bg-surface2 motion-safe:animate-pulse" />
     ))}
   </div>
 );
@@ -51,18 +51,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         {/* The nav reads the URL to light the current item, which is only known at request time. */}
         <Suspense fallback={navSkeleton}>
           <nav aria-label="Main" className="flex flex-col gap-5">
-            <CategoryNav />
+            <MainNav />
             <div className="flex flex-col gap-1 rail:pt-3">
               <p className={groupLabel}>Manage</p>
-              <Suspense
-                fallback={
-                  <NavLink href="/team" icon="team">
-                    Team
-                  </NavLink>
-                }
-              >
-                <TeamNavLink />
-              </Suspense>
+              <NavLink href="/team" icon="team">
+                Team
+              </NavLink>
             </div>
           </nav>
         </Suspense>
@@ -86,9 +80,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3 min-[900px]:hidden">
         <Logo />
-        <Suspense fallback={<div className="h-10 w-48 rounded-[10px] bg-surface2" />}>
-          <nav aria-label="Main" className="flex items-center gap-1">
-            <CategorySelect />
+        <Suspense fallback={<div className="h-10 w-48 rounded-lg bg-surface2" />}>
+          <nav aria-label="Main" className="flex flex-wrap items-center gap-1">
+            <MobileNav />
             <SearchButton />
             <NavLink href="/team" icon="team">
               Team
@@ -97,8 +91,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </Suspense>
       </header>
 
-      <main className="border-t border-line bg-surface p-[clamp(20px,3.4vw,48px)] min-[900px]:my-2 min-[900px]:mr-2 min-[900px]:rounded-[20px] min-[900px]:border">
-        <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-8">
+      <main className="border-t border-line bg-canvas px-[clamp(16px,2.4vw,32px)] py-[clamp(16px,2vw,28px)] min-[900px]:my-2 min-[900px]:mr-2 min-[900px]:rounded-2xl min-[900px]:border">
+        <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
           {children}
           <div className="flex flex-wrap gap-2 min-[900px]:hidden">
             <ThemeToggle />

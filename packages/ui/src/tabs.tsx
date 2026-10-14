@@ -26,7 +26,7 @@ export function Tabs<K extends string>({
     <div
       role="tablist"
       aria-label={label}
-      className="inline-flex max-w-full gap-0.5 self-start overflow-x-auto rounded-xl bg-surface2 p-1"
+      className="inline-flex max-w-full gap-0.5 self-start overflow-x-auto rounded-lg bg-surface2 p-1"
     >
       {items.map((item) => {
         const on = item.key === selected;
@@ -37,7 +37,7 @@ export function Tabs<K extends string>({
             role="tab"
             aria-selected={on}
             onClick={() => onSelect(item.key)}
-            className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[9px] px-[13px] py-1.5 text-[13.5px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent motion-reduce:transition-none ${on ? 'bg-surface font-semibold text-ink shadow-sm' : 'text-muted hover:text-ink'}`}
+            className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-[13.5px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent motion-reduce:transition-none ${on ? 'bg-card font-semibold text-ink' : 'text-muted hover:text-ink'}`}
           >
             {item.label}
             {item.count ? (
@@ -60,7 +60,7 @@ export function TabNote({ children }: { children: ReactNode }) {
 /** A keycap. */
 export function Kbd({ children }: { children: ReactNode }) {
   return (
-    <kbd className="inline-block min-w-[22px] rounded-[5px] bg-surface px-1.5 py-[3px] text-center font-mono text-[11px] leading-none font-medium text-muted">
+    <kbd className="inline-block min-w-[22px] rounded-[5px] border border-line bg-surface px-1.5 py-[3px] text-center font-mono text-[11px] leading-none font-medium text-muted">
       {children}
     </kbd>
   );

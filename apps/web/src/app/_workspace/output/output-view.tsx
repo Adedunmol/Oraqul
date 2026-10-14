@@ -1,32 +1,27 @@
 'use client';
 
-import { type OutputTabKey, planKinds } from '@oraqul/schema';
-import { Button, buttonClassName, TabNote, Tabs } from '@oraqul/ui';
+import type { OutputTabKey } from '@oraqul/schema';
+import { Button, buttonClassName, Icon, TabNote, Tabs } from '@oraqul/ui';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { type FormEvent, type ReactNode, useCallback, useMemo, useState } from 'react';
-import { whatIf } from '@/lib/demo/actions';
-import { getCategory } from '@/lib/demo/catalog';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import type { OutputDetail, ThreadDetail } from '@/lib/demo/queries';
 import { projectPath, projectsPath } from '@/lib/routes';
 import { ChatPanel, KindTag } from '../chat/chat-panel';
 import { Crumbs } from '../crumbs';
 import { formatDay } from '../format';
-import { copyText, toast } from '../toast';
+import { copyText } from '../toast';
 import { makeView, OutputContext } from './context';
 import { ExportModal, ShareModal } from './modals';
 import { ReceiptDrawer } from './receipt-drawer';
 import {
   AssumptionsTab,
   AudienceTab,
-  CannotTab,
   ChangesTab,
   DateTab,
   EvidenceTab,
   PartnersTab,
   PlanTab,
   ResultsTab,
-  RisksTab,
   SummaryTab,
 } from './tabs-core';
 import {
@@ -45,8 +40,9 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   audience: AudienceTab,
   assumptions: AssumptionsTab,
   plan: PlanTab,
-  risks: RisksTab,
-  cannot: CannotTab,
+  // No output lists these two any more; their lists sit at the end of Plan and Assumptions.
+  risks: PlanTab,
+  cannot: AssumptionsTab,
   evidence: EvidenceTab,
   changes: ChangesTab,
   results: ResultsTab,
@@ -63,20 +59,11 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
 };
 
 const PRIMARY: OutputTabKey[] = ['summary', 'plan', 'assumptions', 'evidence'];
-const WHAT_IF_TABS: OutputTabKey[] = [
-  'summary',
-  'audience',
-  'assumptions',
-  'plan',
-  'territories',
-  'route',
-  'supportacts',
-  'shelf',
-  'bridge',
-  'topics',
-  'fanbase',
-  'regions',
-];
+/** Tabs that became part of another, so an old link still lands on the right list. */
+const FOLDED: Partial<Record<OutputTabKey, OutputTabKey>> = {
+  risks: 'plan',
+  cannot: 'assumptions',
+};
 
 type TabChoice = OutputTabKey | 'more';
 
@@ -87,6 +74,7 @@ export function OutputView({
   teamName,
   share,
   dock,
+  publicExample = false,
 }: {
   detail: OutputDetail;
   initialTab: OutputTabKey | undefined;
@@ -95,24 +83,27 @@ export function OutputView({
   /** Present in the app. Absent on a shared link, which is read only. */
   share?: { token: string; enabled: boolean };
   dock?: { thread: ThreadDetail; unread: boolean };
+  /** The public example page: the receipt drawer leaves out what could read as raw Qloo data. */
+  publicExample?: boolean;
 }) {
   const { output, project, thread, builtOn } = detail;
-  const router = useRouter();
   const shared = !share;
   const keys = output.tabs.map((t) => t.key);
-  const [tab, setTab] = useState<OutputTabKey>(
-    initialTab && keys.includes(initialTab) ? initialTab : 'summary',
-  );
+  const asked = initialTab ? (FOLDED[initialTab] ?? initialTab) : undefined;
+  const [tab, setTab] = useState<OutputTabKey>(asked && keys.includes(asked) ? asked : 'summary');
   const [more, setMore] = useState(false);
   const [receipt, setReceipt] = useState<string | null>(null);
   const [modal, setModal] = useState<'share' | 'export' | null>(null);
   const [dockOpen, setDockOpen] = useState(false);
-  const category = getCategory(project.category);
 
-  // The URL keeps the tab so a link opens it, without a server round trip for every click.
+  // The URL keeps the tab so a link opens it, without a server round trip for every click. Other
+  // query values stay (the public examples page keeps its ?case= beside it).
   const goToTab = useCallback((key: OutputTabKey) => {
     setTab(key);
-    window.history.replaceState(null, '', key === 'summary' ? '?' : `?tab=${key}`);
+    const url = new URL(window.location.href);
+    if (key === 'summary') url.searchParams.delete('tab');
+    else url.searchParams.set('tab', key);
+    window.history.replaceState(null, '', url);
   }, []);
 
   const view = useMemo(
@@ -142,31 +133,12 @@ export function OutputView({
 
   const current = all.find((t) => t.key === tab);
   const Body = TAB_BODY[tab];
-  const isPlan = (planKinds as readonly string[]).includes(output.kind);
-  const showWhatIf = view.canEdit && isPlan && WHAT_IF_TABS.includes(tab) && dock;
 
-  async function onWhatIf(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const input = event.currentTarget.elements.namedItem('what-if');
-    const text = input instanceof HTMLInputElement ? input.value.trim() : '';
-    if (!text) {
-      toast('Type a change or pick one of the presets');
-      return;
-    }
-    if (dock?.thread.busy) {
-      toast('The agent is working');
-      return;
-    }
-    setDockOpen(true);
-    const next = await whatIf(thread.id, output.id, text);
-    if (next) router.push(`/outputs/${next}`);
-  }
-
+  // The title below already names this output, and the chat is one click away, so the trail
+  // stops at the project.
   const crumbs = [
-    { label: category.name, href: projectsPath(project.category) },
+    { label: 'Projects', href: projectsPath() },
     { label: project.name, href: projectPath(project) },
-    { label: thread.name, href: `/threads/${thread.id}` },
-    { label: output.label },
   ];
 
   return (
@@ -178,18 +150,19 @@ export function OutputView({
           <header className="flex flex-col gap-3">
             {shared ? null : <Crumbs items={crumbs} />}
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="flex min-w-0 flex-col gap-2">
-                <p className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+              <div className="flex min-w-0 flex-col gap-1.5">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <h1 className="font-display text-[clamp(24px,2.8vw,32px)] font-semibold leading-[1.1] tracking-[-0.025em] text-balance">
+                    {output.label}
+                  </h1>
                   <KindTag kind={output.kind} label={output.kindLabel} />
-                  <span>
-                    {shared ? 'Shared brief · read only · ' : ''}Made in thread {thread.name} by{' '}
-                    {output.createdBy}, {formatDay(output.createdAt)}
-                    {builtOn ? ` · built on ${builtOn.label}` : ''}
-                  </span>
+                </div>
+                <p className="text-[13px] text-muted">
+                  {shared ? 'Shared brief, read only · ' : ''}
+                  {output.createdBy}, {formatDay(output.createdAt)}
+                  {shared ? '' : ` · in ${thread.name}`}
+                  {builtOn ? ` · built on ${builtOn.label}` : ''}
                 </p>
-                <h1 className="font-display text-[clamp(26px,3vw,34px)] font-semibold leading-[1.1] tracking-[-0.025em] text-balance">
-                  {output.label}
-                </h1>
               </div>
               <div className="flex flex-wrap gap-2">
                 {share && canEdit ? (
@@ -204,8 +177,12 @@ export function OutputView({
                   Copy summary
                 </Button>
                 {shared ? null : (
-                  <Link href={`/threads/${thread.id}`} className={buttonClassName('primary')}>
-                    Open thread
+                  // On desktop the dock chat does this; below 900px the dock is hidden.
+                  <Link
+                    href={`/threads/${thread.id}`}
+                    className={`${buttonClassName('primary')} min-[900px]:hidden`}
+                  >
+                    Open chat
                   </Link>
                 )}
               </div>
@@ -218,29 +195,6 @@ export function OutputView({
             />
           </header>
           {current ? <TabNote>{current.note}</TabNote> : null}
-          {showWhatIf ? (
-            <form
-              onSubmit={onWhatIf}
-              className="flex flex-wrap items-center gap-2 rounded-[10px] bg-card px-3 py-2.5 max-[899px]:hidden"
-            >
-              <label
-                htmlFor="what-if"
-                className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted"
-              >
-                What if
-              </label>
-              <input
-                id="what-if"
-                name="what-if"
-                autoComplete="off"
-                placeholder={`Try: ${category.scenarioExample}`}
-                className="min-w-[180px] flex-1 rounded-[10px] border border-line bg-surface px-2.5 py-1.5 text-sm placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-accent/45"
-              />
-              <Button type="submit" variant="primary" size="small">
-                Test
-              </Button>
-            </form>
-          ) : null}
           <div key={tab} className="tab-enter flex flex-col gap-[18px] pb-16">
             <Body />
           </div>
@@ -251,9 +205,14 @@ export function OutputView({
             className="sticky top-4 hidden h-[calc(100dvh-2rem)] min-h-0 flex-col overflow-hidden rounded-2xl bg-card min-[900px]:flex"
           >
             <div className="flex items-center justify-between px-3.5 pt-3 pb-1">
-              <b className="truncate">Thread: {thread.name}</b>
-              <Button size="small" variant="ghost" onClick={() => setDockOpen(false)}>
-                Close
+              <b className="truncate">{thread.name}</b>
+              <Button
+                size="small"
+                variant="ghost"
+                onClick={() => setDockOpen(false)}
+                aria-label="Close chat"
+              >
+                <Icon name="close" className="size-4" />
               </Button>
             </div>
             <ChatPanel detail={dock.thread} canEdit={canEdit} />
@@ -264,9 +223,10 @@ export function OutputView({
         <Button
           variant="primary"
           onClick={() => setDockOpen(true)}
-          className="fixed right-5 bottom-5 z-40 rounded-full px-[18px] py-2.5 shadow-[var(--shadow)] max-[899px]:hidden"
+          className="fixed right-5 bottom-5 z-40 h-11! rounded-full px-[18px] shadow-[var(--shadow)]! max-[899px]:hidden"
         >
-          Ask in this thread
+          <Icon name="sparkles" className="size-4" />
+          Ask Oraqul
           {dock.unread ? (
             <span className="ml-1.5 rounded-full bg-bg px-[7px] py-px text-[11px] font-semibold text-ink">
               New
@@ -274,7 +234,12 @@ export function OutputView({
           ) : null}
         </Button>
       ) : null}
-      <ReceiptDrawer output={output} lineId={receipt} onClose={() => setReceipt(null)} />
+      <ReceiptDrawer
+        output={output}
+        lineId={receipt}
+        onClose={() => setReceipt(null)}
+        publicExample={publicExample}
+      />
       <ExportModal
         open={modal === 'export'}
         onClose={() => setModal(null)}

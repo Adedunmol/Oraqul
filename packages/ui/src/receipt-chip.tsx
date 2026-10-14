@@ -9,7 +9,7 @@ export function ReceiptChip({
   return (
     <button
       type={type}
-      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-[7px] bg-surface2 px-[9px] py-px text-xs text-ink transition-colors duration-150 hover:bg-accent-soft hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none ${className ?? ''}`}
+      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-md bg-button px-2 py-0.5 text-xs text-ink transition-colors duration-150 hover:bg-accent-soft hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none ${className ?? ''}`}
       {...props}
     >
       View receipt

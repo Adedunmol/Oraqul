@@ -43,7 +43,7 @@ export function TeamSwitcher({
   }
 
   const item =
-    'flex min-h-10 w-full items-center rounded-[10px] px-3 py-2 text-left text-sm transition-colors hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent motion-reduce:transition-none';
+    'flex min-h-10 w-full items-center rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent motion-reduce:transition-none';
 
   return (
     <div ref={root} className="relative">
@@ -53,7 +53,7 @@ export function TeamSwitcher({
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
         data-rail-tip={current?.name ?? 'No team yet'}
-        className="flex w-full items-center gap-2 rounded-2xl border border-line bg-surface p-3 text-left transition-colors hover:bg-card-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none rail:justify-center rail:rounded-[10px] rail:p-1.5"
+        className="flex w-full items-center gap-2 rounded-2xl border border-line bg-surface p-3 text-left transition-colors hover:bg-card-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none rail:justify-center rail:rounded-lg rail:p-1.5"
       >
         <span
           aria-hidden

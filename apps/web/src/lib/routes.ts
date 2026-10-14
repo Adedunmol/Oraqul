@@ -19,9 +19,20 @@ export function projectPath(project: { id: string; category: Category }): string
   return `${projectsPath(project.category)}/${project.id}`;
 }
 
-/** The draft chat for one of the three ways to start. Nothing is saved until the first message. */
-export function startPath(mode: StartMode, category?: Category): string {
-  const query = new URLSearchParams({ mode });
+/**
+ * The message box for something new. `mode` is only a hint the agent starts from; without it the
+ * agent reads the job from the message. Nothing is saved until the first message.
+ */
+export function startPath({
+  mode,
+  category,
+}: {
+  mode?: StartMode;
+  category?: Category;
+} = {}): string {
+  const query = new URLSearchParams();
+  if (mode) query.set('mode', mode);
   if (category) query.set('category', category);
-  return `/start?${query.toString()}`;
+  const qs = query.toString();
+  return qs ? `/start?${qs}` : '/start';
 }

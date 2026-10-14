@@ -92,7 +92,7 @@ Projects, threads, outputs, receipts and share links are not served by the API y
 
 - Shapes are the draft schemas in `packages/schema` (`brief.ts`, `output.ts`, `thread.ts`, `projectSchema`, `categoryInfoSchema`). Every output the demo makes is parsed with `outputSchema`, so a drift fails loudly.
 - `lib/demo/queries.ts` has one function per endpoint in spec §7 (`getOverview`, `listProjects`, `getProjectDetail`, `getThreadDetail`, `getOutputDetail`, `comparePlans`, `getShared`). `lib/demo/actions.ts` mirrors the mutation helpers. Screens import only these two, `use-demo.ts` and `catalog.ts`.
-- Numbers, verdicts, confidence, headlines and receipts are computed in `lib/demo/build-output.ts`, never in a component (hard rule 1). Receipts carry `source: 'demo'` and every demo screen shows a "Demo data" note.
+- Numbers, verdicts, confidence, headlines and receipts are computed in `lib/demo/build-output.ts`, never in a component (hard rule 1). Receipts carry `source: 'demo'`. The public share link shows a "Demo data" note, since its readers are outside the team; signed in screens do not, because the team knows.
 - State lives in browser memory: new work survives client navigation and resets on reload. The server render and the browser start from the same seed, so hydration matches.
 - Pinned projects are one person's, so `lib/demo/pins.ts` keeps their ids in the browser's storage, parsed with `pinnedProjectsSchema`, and they survive a reload. A pin to a project the session no longer has is skipped.
 - Files attached to a first message stay in the browser. The demo reads small text files (txt, md, csv, json) so their words count, and takes only the name of anything else. Nothing is uploaded until `POST /uploads` exists.

@@ -4,7 +4,7 @@ import { type ReactNode, Suspense } from 'react';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col bg-canvas">
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-5">
         <Link
           href="/"

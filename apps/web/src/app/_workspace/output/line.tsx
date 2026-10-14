@@ -81,7 +81,7 @@ export function Stack({ children }: { children: ReactNode }) {
 export function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-2.5">
-      <h3 className="text-base font-semibold tracking-[-0.02em]">{title}</h3>
+      <h3 className="font-display text-base font-semibold tracking-[-0.02em]">{title}</h3>
       {children}
     </section>
   );
@@ -90,7 +90,7 @@ export function Section({ title, children }: { title: string; children: ReactNod
 export function TabTitle({ title, note }: { title: string; note?: string }) {
   return (
     <div className="flex flex-col gap-1">
-      <h2 className="text-lg font-semibold tracking-[-0.02em]">{title}</h2>
+      <h2 className="font-display text-lg font-semibold tracking-[-0.02em]">{title}</h2>
       {note ? <p className="max-w-[62ch] text-muted">{note}</p> : null}
     </div>
   );

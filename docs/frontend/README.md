@@ -28,7 +28,7 @@ Next.js App Router in `apps/web`. The look is defined in [design-system.md](desi
 |---|---|
 | `app/` | Routes, layouts, `globals.css` (tokens) |
 | `app/(auth)/` | Sign in, create account, forgot password, email code, verify and reset pages with their shared card and form hook |
-| `app/_landing/` | Pieces of the public landing page at `/` |
+| `app/(marketing)/`, `app/_marketing/` | The public marketing pages and their shared pieces (header, footer, app frame) |
 | `app/_workspace/` | Screen pieces shared by the signed in app and the public share link: charts, chat, output tabs |
 | `lib/api/` | One file per resource: fetchers and mutation helpers, see [data.md](data.md) |
 | `lib/demo/` | The demo backend that stands in for project, thread and output endpoints, see [data.md](data.md#demo-backend-until-the-api-serves-projects) |

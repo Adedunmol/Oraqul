@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@oraqul/ui';
+import { Button, Icon } from '@oraqul/ui';
 import { type ReactNode, useEffect, useId, useRef } from 'react';
 
 // Lives here, not in packages/ui: that package is one bundle with no client entry, so a component
@@ -38,16 +38,16 @@ export function Modal({
       onClick={(event) => {
         if (event.target === ref.current) onClose();
       }}
-      className={`m-auto max-h-[calc(100dvh-32px)] overflow-y-auto ${wide ? 'w-[min(92vw,820px)]' : 'w-[min(92vw,26rem)]'} pop-in rounded-[18px] border border-line bg-surface p-6 text-ink shadow-[var(--shadow)]`}
+      className={`m-auto max-h-[calc(100dvh-32px)] overflow-y-auto ${wide ? 'w-[min(92vw,820px)]' : 'w-[min(92vw,26rem)]'} pop-in rounded-2xl border border-line bg-canvas p-6 text-ink shadow-[var(--shadow)]`}
     >
       {open ? (
         <div className="flex flex-col gap-5">
           <div className="flex items-center justify-between gap-3">
-            <h2 id={titleId} className="text-lg font-semibold tracking-[-0.02em]">
+            <h2 id={titleId} className="font-display text-lg font-semibold tracking-[-0.02em]">
               {title}
             </h2>
-            <Button size="small" onClick={onClose}>
-              Close
+            <Button size="small" variant="ghost" onClick={onClose} aria-label="Close">
+              <Icon name="close" className="size-4" />
             </Button>
           </div>
           {children}

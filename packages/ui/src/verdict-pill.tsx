@@ -12,7 +12,7 @@ export function VerdictPill({ verdict }: { verdict: Verdict }) {
   const { word, glyph, className } = verdicts[verdict];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-[7px] px-[9px] py-0.5 text-xs font-semibold ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-md px-[9px] py-0.5 text-xs font-semibold ${className}`}
     >
       <span aria-hidden="true">{glyph}</span>
       {word}

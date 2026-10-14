@@ -335,6 +335,7 @@ export function AssumptionsTab() {
           <p className="text-muted">Nothing in this group.</p>
         )}
       </Stack>
+      {output.brief.cannot.length ? <CannotList /> : null}
     </>
   );
 }
@@ -356,6 +357,7 @@ export function PlanTab() {
           </Stack>
         </Section>
       ))}
+      {output.brief.risks.length ? <RiskList /> : null}
     </>
   );
 }
@@ -384,14 +386,13 @@ export function FitRow({
   );
 }
 
-export function RisksTab() {
+function RiskList() {
   const { output } = useOutputView();
   return (
-    <>
-      <TabTitle
-        title="Risks"
-        note="Each risk has an early warning signal to watch before launch."
-      />
+    <Section title="Risks">
+      <p className="text-[13px] text-muted">
+        Each risk has an early warning signal to watch before it goes out.
+      </p>
       <Stack>
         {output.brief.risks.map((k) => (
           <Line key={k.id} lineId={k.id} title={k.text}>
@@ -404,18 +405,17 @@ export function RisksTab() {
           </Line>
         ))}
       </Stack>
-    </>
+    </Section>
   );
 }
 
-export function CannotTab() {
+function CannotList() {
   const { output } = useOutputView();
   return (
-    <>
-      <TabTitle
-        title="Could not test"
-        note="What Oraqul could not test, and why. Nothing here is guessed."
-      />
+    <Section title="Could not test">
+      <p className="text-[13px] text-muted">
+        What Oraqul could not test, and why. Nothing here is guessed. You may need to supply it.
+      </p>
       <Stack>
         {output.brief.cannot.map((k) => (
           <Line key={k.id} title={k.item} side={<VerdictPill verdict="cant" />}>
@@ -423,7 +423,7 @@ export function CannotTab() {
           </Line>
         ))}
       </Stack>
-    </>
+    </Section>
   );
 }
 
@@ -774,7 +774,7 @@ export function EvidenceTab() {
       </div>
       {drivers.length ? (
         <section className="rounded-2xl bg-card px-5 py-[18px]">
-          <h3 className="text-[15px] font-semibold">Behind the recommendations</h3>
+          <h3 className="font-display text-[15px] font-semibold">Behind the recommendations</h3>
           <p className="mb-3 text-[13px] text-muted">
             {drivers.length} lines. Open a receipt to see the call, the input and how the verdict
             was reached.
@@ -784,7 +784,7 @@ export function EvidenceTab() {
       ) : null}
       {rest.length ? (
         <section className="rounded-2xl bg-card px-5 py-[18px]">
-          <h3 className="text-[15px] font-semibold">All other lines</h3>
+          <h3 className="font-display text-[15px] font-semibold">All other lines</h3>
           <p className="mb-3 text-[13px] text-muted">
             {rest.length} more calls, grouped. Open a group to read it.
           </p>

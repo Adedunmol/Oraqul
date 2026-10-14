@@ -73,10 +73,10 @@ const ENDPOINT: Record<Exclude<EndpointKind, 'none'>, string> = {
 
 const TAB_NOTE: Record<OutputTabKey, string> = {
   summary: 'The short version: what to do first, and how sure Oraqul is.',
-  audience: 'Who the launch is for, measured against Qloo taste data.',
+  audience: 'Who it is for, measured against Qloo taste data.',
   assumptions:
-    'Every belief your plan rests on. Holds means Qloo data supports it. Breaks means it does not. Each one has a receipt: the exact Qloo call behind it.',
-  plan: 'The plan itself, section by section.',
+    'Every belief your plan rests on. Holds means Qloo data supports it. Breaks means it does not. Each one has a receipt: the exact Qloo call behind it. What could not be tested is at the end.',
+  plan: 'The plan itself, section by section, then the risks to watch.',
   risks: 'What could go wrong, and what to do about it.',
   cannot: 'What Oraqul could not test, and why. You may need to supply this.',
   evidence: 'Every claim with its receipt. Use this to check any number.',
@@ -111,8 +111,9 @@ function tabsFor(pack: DemoPack, o: DOutput): OutputTab[] {
     .map(([key]) => key)
     .filter((k) => k !== 'territories' || o.brief.places.length >= 2);
   const keys: Record<Job, OutputTabKey[]> = {
-    plan: ['summary', 'audience', 'assumptions', 'plan', ...sig, 'risks', 'cannot', 'evidence'],
-    audit: ['summary', 'assumptions', 'plan', ...sig, 'risks', 'cannot', 'evidence'],
+    // Could not test sits under Assumptions and Risks under Plan, so a plan opens on fewer tabs.
+    plan: ['summary', 'audience', 'assumptions', 'plan', ...sig, 'evidence'],
+    audit: ['summary', 'assumptions', 'plan', ...sig, 'evidence'],
     scenario: ['summary', 'changes', 'assumptions', 'plan', ...sig, 'evidence'],
     rescue: ['summary', 'results', 'changes', 'assumptions', ...sig, 'evidence'],
     date: ['summary', 'date', 'evidence'],

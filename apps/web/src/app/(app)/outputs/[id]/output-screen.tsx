@@ -2,7 +2,6 @@
 
 import type { OutputTabKey } from '@oraqul/schema';
 import { useEffect, useMemo } from 'react';
-import { DemoNote } from '@/app/_workspace/demo-note';
 import { NotInSession } from '@/app/_workspace/not-in-session';
 import { OutputView } from '@/app/_workspace/output/output-view';
 import type { Viewer } from '@/lib/api/viewer';
@@ -31,7 +30,6 @@ export function OutputScreen({
   if (!detail || !thread) return <NotInSession what="output" />;
   return (
     <div className="flex flex-col gap-5" data-cat={detail.project.category}>
-      <DemoNote />
       <OutputView
         key={id}
         detail={detail}

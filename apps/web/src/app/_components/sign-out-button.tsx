@@ -27,7 +27,7 @@ export function SignOutButton() {
       data-rail-tip="Sign out"
       className="rail:size-9 rail:p-0"
     >
-      <Icon name="signout" className="hidden rail:block" />
+      <Icon name="signout" className="size-4" />
       <span className="rail:sr-only">Sign out</span>
     </Button>
   );

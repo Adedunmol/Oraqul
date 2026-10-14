@@ -58,7 +58,7 @@ Media and entertainment is the one industry Oraqul serves. Its five categories a
 Hierarchy: Team, Category, Project, Job, Output.
 
 * **Team.** Members and roles. Plans, results and briefs are visible only to the team.
-* **Category.** A section of the product. A project belongs to exactly one. The category page lists what Oraqul tests, where coverage is thin, and what is not supported.
+* **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, where coverage is thin, and what is not supported.
 * **Project.** The launch. Holds inputs, threads and outputs.
 * **Job.** Plan, Audit, Rescue (includes relaunch). Scenario testing, rival date check and partner brief run inside a project.
 * **Output.** A saved result with its own details page, evidence and version.
@@ -73,12 +73,13 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 
 | ID | Requirement | P |
 |---|---|---|
-| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category (or asks), kind, genre, places, window, and the job. | P0 |
+| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, and the job. It asks only when a wrong guess would waste the run (no category or title found, an ambiguous Qloo match). Otherwise it guesses, says what it read and guessed in one line, and the user corrects it by typing. | P0 |
 | C2 | The agent asks question cards instead of forms: single, multiple, text, split sliders, date, file, confirm, and entity match. | P0 |
 | C3 | The agent trace is shown live and kept collapsed afterwards. | P0 |
-| C4 | A project holds several threads. A thread chooses to build on the current plan, another plan, or start fresh, and shows what context it pulled in. | P0 |
+| C4 | A project holds several threads, shown as chats beside the project's current chat. A new one builds on the current plan without asking and says what context it pulled in. The user can type "start fresh" or "use an older plan" to change that. | P0 |
 | C5 | The agent refuses forecasts and sending, and says why. | P0 |
-| C6 | Each category changes the questions, quick actions and results format. | P0 |
+| C6 | Each category changes the questions, suggested next steps and results format. | P0 |
+| C7 | After each output the agent suggests up to three next steps built from it and the project (a scenario not yet tried, results if none are in, a brief or a date check). Each also works typed. | P0 |
 
 ### 6.2 The three jobs
 
@@ -119,7 +120,7 @@ Each category supplies its own inputs, plan sections, assumption checklist, scen
 
 | ID | Requirement | P |
 |---|---|---|
-| O1 | Every output ends in a summary, a decision first takeaway card, and its own details page with only the tabs that fit. | P0 |
+| O1 | Every output ends in a summary, a decision first takeaway card one click from the chat (the agent's message states the bottom line; the card opens in a dialog), and its own details page with only the tabs that fit. | P0 |
 | O2 | Compare any two plans line by line. | P0 |
 | O3 | Export a one page brief with an evidence appendix and confidence per line. | P0 |
 | O4 | A read only share link for one output, with an off switch. Raw Qloo data is not shown on public links until Qloo confirms what may be shown. | P0 |
@@ -147,16 +148,16 @@ The product has many new words and a deep structure, so it must explain itself b
 
 | ID | Requirement | P |
 |---|---|---|
-| U1 | The overview opens with three Start here cards: Plan a launch, Check a plan I have, Rescue one that missed. Each says what you get and what you bring. Choosing one opens the chat with the right first prompt, the first message creates the project, and the agent still asks the user to confirm the job it read. | P0 |
+| U1 | The overview opens with a message box. Three optional hints under it, Make a plan, Check my plan, Fix one that missed, change the prompt and say what to bring. The first message creates the project. The agent states the job it read in its first reply and the user corrects it by typing ("check my plan instead"); it does not ask a confirm card. | P0 |
 | U2 | Every output tab opens with one plain sentence on what it shows. The Assumptions and Evidence notes explain Holds, Breaks and receipts. | P0 |
-| U3 | Output pages show Summary, Plan, Assumptions and Evidence by default, plus the current tab. The rest sit under More. | P0 |
+| U3 | Output pages show Summary, Plan, Assumptions and Evidence by default, plus the current tab. The rest sit under More. Could not test sits at the end of Assumptions and Risks at the end of Plan, not on tabs of their own. | P0 |
 | U4 | Words stay plain. Verdicts are Holds, Weak, Breaks and Could not test. No jargon without a one line explanation beside it. | P0 |
 | U5 | Search on Ctrl K or Cmd K reaches categories, projects, outputs and actions. Number keys pick options on question cards. Both are extras, never the only way. | P1 |
 | U7 | Motion marks arrival and progress only: agent text appearing, the trace advancing, views opening. Reduced motion settings are respected. | P1 |
 
 ### 6.9 Look and feel
 
-Calm and clear, with a characterful sans (Bricolage Grotesque) for titles and the bottom line, and surfaces told apart by soft fills instead of outlines. Colour is used for verdicts and for the small category icons, nothing else. No gradients, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
+Calm and clear, with a wide geometric grotesque (Space Grotesk) for titles and the bottom line and a clear sans (Geist) for everything else, and a more characterful face only on the landing page, and solid cards that stand out from a neutral canvas by fill and a small lift, with no outlines, solid buttons, small corners and few icons, like an enterprise product people trust with detail. Colour is used for verdicts and for the small category icons, nothing else. No gradients, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
 
 ## 7. Africa and diaspora
 
@@ -169,7 +170,7 @@ Hackathon
 * The recorded walkthrough shows a rescue and a scenario diff in under three minutes.
 * Every claim in the walkthrough opens a receipt.
 * Each of the five categories runs end to end with its own views.
-* A first time viewer picks a start card and reaches a first result without help.
+* A first time viewer types one message and reaches a first result without help.
 
 Product
 
@@ -189,7 +190,7 @@ Product
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |
 | Qloo details came from secondhand sources | Confirm against Qloo's docs and our own key before building. |
 | Devpost team rules for two people | Confirm before submission. |
-| The product is hard to understand at first | Start here cards, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
+| The product is hard to understand at first | One message box to start, few questions, the answer shown in the chat, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
 | Five categories is a lot of surface | One engine, one toolbox, five packs. A new category is a new pack, not new code. |
 
 Open points to close first: Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.

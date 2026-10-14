@@ -41,7 +41,7 @@ export function Toaster() {
         <div
           key={message.key}
           role="status"
-          className="pop-in max-w-full rounded-xl bg-ink px-4 py-2.5 font-medium text-bg"
+          className="pop-in max-w-full rounded-lg bg-ink px-4 py-2.5 font-medium text-bg shadow-lg"
         >
           {message.text}
         </div>

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { getCategory } from '@/lib/demo/catalog';
 import { useDemo } from '@/lib/demo/use-demo';
-import { overviewPath, projectPath, projectsPath } from '@/lib/routes';
+import { overviewPath, projectPath, projectsPath, startPath } from '@/lib/routes';
 
 interface Entry {
   group: 'Go to' | 'Categories' | 'Projects' | 'Outputs' | 'Actions';
@@ -25,7 +25,7 @@ export function SearchButton() {
       type="button"
       onClick={() => openPalette?.()}
       data-rail-tip="Search (⌘K)"
-      className="flex w-full items-center gap-2.5 rounded-[10px] bg-surface2 px-2.5 py-2 text-left text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent max-[899px]:w-auto rail:min-h-10 rail:justify-center rail:px-0"
+      className="flex w-full items-center gap-2.5 rounded-lg bg-surface2 px-2.5 py-2 text-left text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent max-[899px]:w-auto rail:min-h-10 rail:justify-center rail:px-0"
     >
       <Icon name="search" />
       <span className="flex-1 max-[899px]:sr-only rail:sr-only">Search</span>
@@ -79,7 +79,7 @@ export function Palette() {
     const projectName = new Map(s.projects.map((p) => [p.id, p]));
     return [
       { group: 'Go to', label: 'Overview', icon: 'overview', href: overviewPath },
-      { group: 'Go to', label: 'All projects', icon: 'projects', href: projectsPath() },
+      { group: 'Go to', label: 'Projects', icon: 'projects', href: projectsPath() },
       ...categories.map((c): Entry => {
         const n = s.projects.filter((p) => p.category === c).length;
         return {
@@ -109,6 +109,7 @@ export function Palette() {
           href: `/outputs/${o.id}`,
         };
       }),
+      { group: 'Actions', label: 'New project', icon: 'plus', href: startPath() },
       { group: 'Actions', label: 'Team and roles', icon: 'team', href: '/team' },
     ];
   }, [s.projects, s.outputs]);
@@ -133,7 +134,7 @@ export function Palette() {
       onClick={(event) => {
         if (event.target === dialog.current) setOpen(false);
       }}
-      className="pop-in mx-auto mt-[12vh] flex max-h-[70vh] w-[min(calc(100%-32px),600px)] flex-col overflow-hidden rounded-[18px] border border-line bg-surface p-0 text-ink shadow-[var(--shadow)] [&:not([open])]:hidden"
+      className="pop-in mx-auto mt-[12vh] flex max-h-[70vh] w-[min(calc(100%-32px),600px)] flex-col overflow-hidden rounded-2xl border border-line bg-surface p-0 text-ink shadow-[var(--shadow)] [&:not([open])]:hidden"
     >
       <div className="flex items-center gap-2.5 border-b border-line px-4 py-3.5 text-muted">
         <Icon name="search" />

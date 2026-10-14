@@ -1,4 +1,7 @@
-/** Says plainly that a screen runs on invented data, so no number is mistaken for Qloo's. */
+/**
+ * Says plainly that a page runs on invented data, so no number is mistaken for Qloo's. Only on the
+ * public share link: its readers are outside the team, who already know.
+ */
 export function DemoNote() {
   return (
     <p className="w-fit max-w-full rounded-full border border-line bg-surface px-3 py-1 text-[12px] text-muted">

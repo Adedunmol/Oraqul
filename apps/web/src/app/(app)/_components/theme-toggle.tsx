@@ -24,11 +24,12 @@ export function ThemeToggle() {
     <Button
       size="small"
       onClick={toggle}
+      aria-label="Light or dark"
       data-rail-tip="Light or dark"
-      className="rail:size-9 rail:p-0"
+      data-tip="Light or dark"
+      className="size-8 p-0 rail:size-9"
     >
-      <Icon name="theme" className="hidden rail:block" />
-      <span className="rail:sr-only">Light or dark</span>
+      <Icon name="theme" className="size-4" />
     </Button>
   );
 }

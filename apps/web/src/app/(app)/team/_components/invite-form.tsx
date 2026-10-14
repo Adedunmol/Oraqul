@@ -1,12 +1,19 @@
 'use client';
 
 import { type Role, roleSchema } from '@oraqul/schema';
-import { Button, Input, Select } from '@oraqul/ui';
+import { Button, Input } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useState } from 'react';
+import { Dropdown } from '@/app/_components/dropdown';
 import { ApiError } from '@/lib/api/http';
 import { inviteMember } from '@/lib/api/teams';
 import { roleHelp, roleLabels } from '@/lib/roles';
+
+const roleOptions = roleSchema.options.map((role) => ({
+  value: role,
+  label: roleLabels[role],
+  description: roleHelp[role],
+}));
 
 function messageFor(error: unknown): string {
   if (error instanceof ApiError) {
@@ -44,31 +51,27 @@ export function InviteForm({ teamId }: { teamId: string }) {
   }
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3 px-4 py-4">
-      <div className="grid gap-3 sm:grid-cols-[1fr_9rem]">
-        <Input
-          id="invite-email"
-          label="Email"
-          type="email"
-          autoComplete="off"
-          required
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
-        <Select
+    <form onSubmit={submit} className="flex flex-col gap-4">
+      <Input
+        id="invite-email"
+        label="Email"
+        type="email"
+        autoComplete="off"
+        required
+        placeholder="name@company.com"
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+      />
+      <div className="flex flex-col gap-1.5">
+        <Dropdown
           id="invite-role"
           label="Role"
           value={role}
-          onChange={(event) => setRole(roleSchema.parse(event.target.value))}
-        >
-          {roleSchema.options.map((option) => (
-            <option key={option} value={option}>
-              {roleLabels[option]}
-            </option>
-          ))}
-        </Select>
+          options={roleOptions}
+          onChange={setRole}
+        />
+        <p className="text-[13px] text-muted">{roleHelp[role]}</p>
       </div>
-      <p className="text-[13px] text-muted">{roleHelp[role]}</p>
       {error ? (
         <p role="alert" className="text-[13px] text-breaks">
           {error}
@@ -79,16 +82,14 @@ export function InviteForm({ teamId }: { teamId: string }) {
           {notice}
         </p>
       ) : null}
-      <div>
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={pending || email === ''}
-          className="min-h-10 md:min-h-0"
-        >
-          {pending ? 'Sending' : 'Send invite'}
-        </Button>
-      </div>
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={pending || email === ''}
+        className="min-h-10 w-full md:min-h-0"
+      >
+        {pending ? 'Sending' : 'Send invite'}
+      </Button>
     </form>
   );
 }

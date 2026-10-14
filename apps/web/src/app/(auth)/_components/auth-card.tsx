@@ -17,7 +17,7 @@ export function AuthCard({
   return (
     <section
       aria-labelledby="auth-heading"
-      className="flex w-full flex-col gap-5 rounded-2xl bg-surface p-6 sm:p-9"
+      className="flex w-full flex-col gap-5 rounded-2xl bg-card p-6 sm:p-9"
     >
       <div className="flex flex-col gap-1.5">
         <h1

@@ -1,21 +1,25 @@
 'use client';
 
 import type { Output, ThreadItem } from '@oraqul/schema';
-import { Button, buttonClassName, ChipButton, Icon } from '@oraqul/ui';
-import Link from 'next/link';
-import { type FormEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
-  addResults,
-  answerQuestion,
-  askScenario,
-  markThreadRead,
-  quickAsk,
-  sendMessage,
-} from '@/lib/demo/actions';
-import { getCategory } from '@/lib/demo/catalog';
-import type { ThreadDetail } from '@/lib/demo/queries';
+  Button,
+  buttonClassName,
+  ChipButton,
+  Confidence,
+  Icon,
+  Kbd,
+  ReceiptChip,
+} from '@oraqul/ui';
+import Link from 'next/link';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Modal } from '@/app/(app)/_components/modal';
+import { answerQuestion, markThreadRead, runNextStep, sendMessage } from '@/lib/demo/actions';
+import { getNextSteps, type ThreadDetail } from '@/lib/demo/queries';
+import { useDemo } from '@/lib/demo/use-demo';
 import { toneClass, verdictTone } from '../charts';
+import { ReceiptDrawer } from '../output/receipt-drawer';
 import { copyText } from '../toast';
+import { type Attachment, Composer } from './composer';
 import { QuestionCard } from './question-card';
 
 // How many items of each thread have been on screen, so a re-render never replays an
@@ -41,13 +45,13 @@ export function ChatPanel({
   // typing in the box does not cut a word reveal short.
   const [from, setFrom] = useState(() => seen.get(thread.id) ?? items.length);
   const scroller = useRef<HTMLDivElement>(null);
-  const [draft, setDraft] = useState('');
+  const [receipt, setReceipt] = useState<{ output: Output; lineId: string } | null>(null);
+  const state = useDemo();
+  const steps = useMemo(() => getNextSteps(state, thread.id), [state, thread.id]);
 
   const openQuestion = [...items].reverse().find((x) => x.role === 'question' && x.answer === null);
   const textOpen = openQuestion?.role === 'question' && openQuestion.question.card === 'text';
   const idle = !busy && !openQuestion;
-  const hasPlan = detail.projectOutputs.length > 0;
-  const quick = getCategory(project.category).quick;
 
   useEffect(() => {
     seen.set(thread.id, items.length);
@@ -77,41 +81,47 @@ export function ChatPanel({
     return () => document.removeEventListener('keydown', onKey);
   }, [canEdit, visible, openQuestion, thread.id]);
 
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    const text = draft.trim();
-    if (!text || busy) return;
-    setDraft('');
-    sendMessage(thread.id, text);
+  function send(text: string, files: Attachment[]) {
+    if (busy) return;
+    const attached = files.length ? `Attached: ${files.map((f) => f.name).join(', ')}` : '';
+    sendMessage(thread.id, [text, attached].filter(Boolean).join('\n\n'));
   }
 
-  let placeholder = 'Ask Oraqul anything about this project';
+  let placeholder = `Tell Oraqul what to do next with ${project.name}`;
   if (!canEdit) placeholder = 'Chat is off for viewers';
   else if (textOpen) placeholder = 'Type your answer here';
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div ref={scroller} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-5">
-        {items.map((item, i) => (
-          <Item
-            key={item.id}
-            item={item}
-            isNew={i >= from}
-            canEdit={canEdit}
-            threadId={thread.id}
-            output={item.role === 'output' ? outputs.get(item.outputId) : undefined}
-          />
-        ))}
+      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
+        <div className="mx-auto flex w-full max-w-[820px] flex-col gap-3">
+          {items.map((item, i) => (
+            <Item
+              key={item.id}
+              item={item}
+              isNew={i >= from}
+              canEdit={canEdit}
+              threadId={thread.id}
+              output={item.role === 'output' ? outputs.get(item.outputId) : undefined}
+              onReceipt={(output, lineId) => setReceipt({ output, lineId })}
+            />
+          ))}
+        </div>
       </div>
-      <div className="flex flex-col gap-2 px-4 pt-1 pb-4">
-        {canEdit && idle && hasPlan ? (
-          <div className="flex flex-wrap gap-1.5">
-            <ChipButton onClick={() => askScenario(thread.id)}>Run a scenario</ChipButton>
-            <ChipButton onClick={() => quickAsk(thread.id, quick.date)}>{quick.date}</ChipButton>
-            <ChipButton onClick={() => addResults(thread.id)}>{quick.results}</ChipButton>
-            <ChipButton onClick={() => quickAsk(thread.id, quick.partner)}>
-              {quick.partner}
-            </ChipButton>
+      <div className="mx-auto flex w-full max-w-[852px] flex-col gap-2 px-4 pt-1 pb-4">
+        {canEdit && idle && steps.length ? (
+          <div className="flex flex-col gap-1.5">
+            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+              <Icon name="sparkles" className="size-3.5 text-accent" />
+              Next steps
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {steps.map((step) => (
+                <ChipButton key={step.id} onClick={() => runNextStep(thread.id, step)}>
+                  {step.label}
+                </ChipButton>
+              ))}
+            </div>
           </div>
         ) : null}
         {canEdit ? null : (
@@ -119,24 +129,22 @@ export function ChatPanel({
             Viewers can read outputs and open evidence. Editors and owners can chat.
           </p>
         )}
-        <form onSubmit={submit} className="flex gap-2">
-          <label htmlFor={`chat-${thread.id}`} className="sr-only">
-            Message
-          </label>
-          <input
-            id={`chat-${thread.id}`}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder={placeholder}
-            disabled={!canEdit || busy}
-            autoComplete="off"
-            className="min-w-0 flex-1 rounded-xl border border-line bg-surface px-3 py-[9px] text-sm placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-accent/45 disabled:opacity-60"
-          />
-          <Button type="submit" variant="primary" disabled={!canEdit || busy || !draft.trim()}>
-            Send
-          </Button>
-        </form>
+        <Composer
+          key={thread.id}
+          placeholder={placeholder}
+          disabled={!canEdit || busy}
+          allowFiles
+          compact
+          onSend={send}
+        />
       </div>
+      {receipt ? (
+        <ReceiptDrawer
+          output={receipt.output}
+          lineId={receipt.lineId}
+          onClose={() => setReceipt(null)}
+        />
+      ) : null}
     </div>
   );
 }
@@ -147,18 +155,20 @@ function Item({
   canEdit,
   threadId,
   output,
+  onReceipt,
 }: {
   item: ThreadItem;
   isNew: boolean;
   canEdit: boolean;
   threadId: string;
   output: Output | undefined;
+  onReceipt: (output: Output, lineId: string) => void;
 }) {
   switch (item.role) {
     case 'user':
       return (
         <div
-          className={`max-w-[92%] self-end whitespace-pre-wrap rounded-[16px_16px_4px_16px] bg-surface px-3.5 py-2.5 ${isNew ? 'item-new' : ''}`}
+          className={`max-w-[92%] self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-inset px-3.5 py-2.5 ${isNew ? 'item-new' : ''}`}
         >
           {item.text}
         </div>
@@ -177,7 +187,13 @@ function Item({
     case 'trace':
       return <Trace steps={item.steps} done={item.done} isNew={isNew} />;
     case 'output':
-      return output ? <OutputCard output={output} isNew={isNew} /> : null;
+      return output ? (
+        <OutputCard
+          output={output}
+          isNew={isNew}
+          onReceipt={(lineId) => onReceipt(output, lineId)}
+        />
+      ) : null;
   }
 }
 
@@ -217,7 +233,7 @@ function Trace({ steps, done, isNew }: { steps: string[]; done: number; isNew: b
     return (
       <div
         aria-live="polite"
-        className="fade-in relative overflow-hidden rounded-[14px] bg-surface px-3.5 pt-3.5 pb-3 text-[12.5px]"
+        className="fade-in relative overflow-hidden rounded-xl bg-inset px-3.5 pt-3.5 pb-3 text-[12.5px]"
       >
         <div className="absolute inset-x-0 top-0 h-0.5 bg-line">
           <i
@@ -240,9 +256,7 @@ function Trace({ steps, done, isNew }: { steps: string[]; done: number; isNew: b
     );
   }
   return (
-    <details
-      className={`rounded-[14px] bg-surface px-3.5 py-3 text-[12.5px] ${isNew ? 'item-new' : ''}`}
-    >
+    <details className={`rounded-xl bg-inset px-3.5 py-3 text-[12.5px] ${isNew ? 'item-new' : ''}`}>
       <summary className="cursor-pointer text-muted">Agent trace · {steps.length} steps</summary>
       <div className="mt-2 flex flex-col gap-1.5">
         {steps.map((s) => (
@@ -275,78 +289,117 @@ function Step({ text, running }: { text: string; running: boolean }) {
 }
 
 /**
- * An output in the conversation: one small button naming it, so the chat reads as a conversation.
- * The button opens the summary in place, and View full details goes to the output page.
+ * An output in the conversation: one line naming it. The agent's message just above already says
+ * the bottom line, so the summary card opens in a dialog instead of filling the chat.
+ * design-system §7.13
  */
-function OutputCard({ output, isNew }: { output: Output; isNew: boolean }) {
+function OutputCard({
+  output,
+  isNew,
+  onReceipt,
+}: {
+  output: Output;
+  isNew: boolean;
+  onReceipt: (lineId: string) => void;
+}) {
   const [open, setOpen] = useState(false);
-  const panelId = useId();
   const partner =
     output.kind === 'partner'
       ? output.brief.partners.find((p) => p.id === output.focusIds[0])
       : undefined;
+  const hasReceipt = (lineId: string | null): lineId is string =>
+    lineId !== null && output.receipts.some((r) => r.lineId === lineId);
   return (
-    <div className={`flex flex-col items-start gap-2 ${isNew ? 'item-new' : ''}`}>
+    <div className={`flex flex-wrap items-center gap-2 ${isNew ? 'item-new' : ''}`}>
       <button
         type="button"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((value) => !value)}
-        className="inline-flex max-w-full items-center gap-2 rounded-[10px] bg-surface2 py-1.5 pr-2.5 pl-3 text-[13px] transition-colors hover:bg-surface2-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
+        aria-haspopup="dialog"
+        onClick={() => setOpen(true)}
+        className="inline-flex max-w-full items-center gap-2 rounded-lg bg-button py-1.5 pr-3 pl-2.5 text-[13px] transition-colors hover:bg-button-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
       >
         <KindTag kind={output.kind} label={output.kindLabel} />
         <span className="truncate font-semibold">{output.label}</span>
-        <span className="shrink-0 text-muted">{open ? 'Hide summary' : 'Show summary'}</span>
-        <Icon
-          name="chevron"
-          className={`size-4 shrink-0 text-muted transition-transform duration-150 motion-reduce:transition-none ${open ? 'rotate-180' : ''}`}
-        />
+        <span className="shrink-0 text-muted">Summary</span>
       </button>
-      {open ? (
-        <article
-          id={panelId}
-          className="pop-in flex w-full flex-col gap-3 rounded-2xl bg-surface p-4"
-        >
-          <div className="flex flex-wrap gap-x-4 gap-y-2">
-            {output.stats.map((s) => (
-              <span
-                key={s.label}
-                className="inline-flex items-center gap-1.5 text-[13px] text-muted"
-              >
-                {s.verdict ? (
-                  <i
-                    aria-hidden="true"
-                    className={`size-2.5 rounded-[3px] ${toneClass[verdictTone[s.verdict]]}`}
-                  />
-                ) : null}
-                {s.label} <b className="text-ink tabular-nums">{s.value}</b>
-              </span>
-            ))}
+      <Link
+        href={`/outputs/${output.id}`}
+        className="rounded-lg px-2 py-1.5 text-[13px] text-muted transition-colors hover:bg-surface2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
+      >
+        Full details
+      </Link>
+      <Modal open={open} onClose={() => setOpen(false)} title={output.label} wide>
+        <div className="flex flex-col gap-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+            Bottom line
+          </p>
+          <p className="font-display text-[21px] font-semibold leading-[1.25] tracking-[-0.02em]">
+            {output.headline}
+          </p>
+          <div className="flex flex-wrap items-center gap-2 text-[13px]">
+            <Confidence level={output.confidence.level} />
+            <span className="text-muted">{output.confidence.why}</span>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href={`/outputs/${output.id}`} className={buttonClassName('primary', 'small')}>
-              View full details
-            </Link>
-            <Button size="small" onClick={() => copyText(output.summary, 'Summary copied')}>
-              Copy summary
+        </div>
+        {output.moves.length ? (
+          <div className="flex flex-col gap-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+              Do this
+            </p>
+            <ol className="flex flex-col gap-1.5">
+              {output.moves.slice(0, 3).map((m, i) => (
+                <li
+                  key={m.text}
+                  className="flex items-center gap-2.5 rounded-lg bg-card px-3 py-2 text-[14px]"
+                >
+                  <Kbd>{i + 1}</Kbd>
+                  <span className="min-w-0 flex-1">{m.text}</span>
+                  {hasReceipt(m.lineId) ? (
+                    <ReceiptChip
+                      onClick={() => m.lineId && onReceipt(m.lineId)}
+                      aria-label="Open receipt"
+                    />
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          </div>
+        ) : null}
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          {output.stats.map((s) => (
+            <span key={s.label} className="inline-flex items-center gap-1.5 text-[13px] text-muted">
+              {s.verdict ? (
+                <i
+                  aria-hidden="true"
+                  className={`size-2.5 rounded-[3px] ${toneClass[verdictTone[s.verdict]]}`}
+                />
+              ) : null}
+              {s.label} <b className="text-ink tabular-nums">{s.value}</b>
+            </span>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link href={`/outputs/${output.id}`} className={buttonClassName('primary', 'small')}>
+            View full details
+          </Link>
+          <Button size="small" onClick={() => copyText(output.summary, 'Summary copied')}>
+            Copy summary
+          </Button>
+          {partner ? (
+            <Button size="small" onClick={() => copyText(partner.draft, 'Draft copied')}>
+              Copy draft
             </Button>
-            {partner ? (
-              <Button size="small" onClick={() => copyText(partner.draft, 'Draft copied')}>
-                Copy draft
-              </Button>
-            ) : null}
-            <Link
-              href={`/outputs/${output.id}?tab=evidence`}
-              className={buttonClassName('ghost', 'small')}
-            >
-              Evidence{' '}
-              <span className="rounded-full bg-surface2 px-1.5 text-[11px] tabular-nums">
-                {output.evidence.length}
-              </span>
-            </Link>
-          </div>
-        </article>
-      ) : null}
+          ) : null}
+          <Link
+            href={`/outputs/${output.id}?tab=evidence`}
+            className={buttonClassName('ghost', 'small')}
+          >
+            Evidence{' '}
+            <span className="rounded-full bg-surface2 px-1.5 text-[11px] tabular-nums">
+              {output.evidence.length}
+            </span>
+          </Link>
+        </div>
+      </Modal>
     </div>
   );
 }

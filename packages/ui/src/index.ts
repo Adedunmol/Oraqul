@@ -7,6 +7,5 @@ export { Input } from './input';
 export { Logo } from './logo';
 export { PageHead } from './page-head';
 export { ReceiptChip } from './receipt-chip';
-export { Select } from './select';
 export { Kbd, type TabItem, TabNote, Tabs } from './tabs';
 export { VerdictPill } from './verdict-pill';

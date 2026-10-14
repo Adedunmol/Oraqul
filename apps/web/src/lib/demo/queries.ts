@@ -9,6 +9,7 @@ import {
 } from '@oraqul/schema';
 import { compareBriefs } from './build-output';
 import { uuidFrom } from './ids';
+import { PACKS } from './packs';
 import { type DemoState, douts } from './store';
 
 // One function per endpoint the screens will call once the API serves these resources
@@ -145,6 +146,39 @@ export function getThreadDetail(s: DemoState, id: string): ThreadDetail | undefi
     projectOutputs,
     busy: s.busy[id] === true,
   };
+}
+
+export interface NextStep {
+  /** `scn:<scenario id>`, `results`, `partner` or `date`. */
+  id: string;
+  label: string;
+}
+
+/**
+ * Up to three things worth doing next, from the plan the thread works on and what the project
+ * already has: a scenario not yet tried, results if none are in, a brief or a date check.
+ */
+export function getNextSteps(s: DemoState, threadId: string): NextStep[] {
+  const thread = s.threads.find((t) => t.id === threadId);
+  const project = thread && s.projects.find((p) => p.id === thread.projectId);
+  if (!thread || !project) return [];
+  const outputs = s.outputs.filter((o) => o.projectId === project.id);
+  // The same fallback as the agent: the thread's plan, else the project's latest.
+  const baseId = thread.baseOutputId ?? outputs.filter(isPlan).at(-1)?.id;
+  const base = baseId ? douts.get(baseId) : undefined;
+  if (!base) return [];
+  const pk = PACKS[project.category];
+  const tried = new Set(outputs.filter((o) => o.kind === 'scenario').map((o) => o.title));
+  const steps: NextStep[] = [];
+  const scenario = pk.scen.find((x) => !tried.has(`Scenario: ${x.label}`));
+  if (scenario) {
+    const label = `${scenario.label.charAt(0).toLowerCase()}${scenario.label.slice(1)}`;
+    steps.push({ id: `scn:${scenario.id}`, label: `What if ${label}?` });
+  }
+  if (!base.brief.course) steps.push({ id: 'results', label: pk.quick[1] });
+  if (!outputs.some((o) => o.kind === 'partner')) steps.push({ id: 'partner', label: pk.quick[2] });
+  if (!outputs.some((o) => o.kind === 'date')) steps.push({ id: 'date', label: pk.quick[0] });
+  return steps.slice(0, 3);
 }
 
 export interface OutputDetail {

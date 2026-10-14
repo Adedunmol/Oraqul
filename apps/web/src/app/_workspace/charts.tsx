@@ -99,7 +99,7 @@ export function ChartCard({
     <section className="rounded-2xl bg-card px-5 py-[18px]">
       <div className="mb-3 flex items-start justify-between gap-2.5">
         <div className="flex flex-col gap-0.5">
-          <h3 className="text-[15px] font-semibold tracking-[-0.02em]">{title}</h3>
+          <h3 className="font-display text-[15px] font-semibold tracking-[-0.02em]">{title}</h3>
           {note ? <p className="text-[13px] text-muted">{note}</p> : null}
         </div>
         <Button

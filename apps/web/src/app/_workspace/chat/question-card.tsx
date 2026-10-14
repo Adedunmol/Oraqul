@@ -1,7 +1,7 @@
 'use client';
 
 import type { QuestionAnswer, ThreadItem } from '@oraqul/schema';
-import { Button, Chip, Kbd } from '@oraqul/ui';
+import { Button, Chip, Icon, Kbd } from '@oraqul/ui';
 import { useState } from 'react';
 
 type QuestionItem = Extract<ThreadItem, { role: 'question' }>;
@@ -30,7 +30,10 @@ export function rebalance(values: number[], index: number, next: number): number
   return out;
 }
 
-/** A question card. Once answered it becomes a quiet dashed line. design-system §7.14 */
+/**
+ * A question card. Once answered it folds to one quiet line with the answer, so the chat stays
+ * about the work; the question opens on click. design-system §7.14
+ */
 export function QuestionCard({
   item,
   canEdit,
@@ -45,16 +48,25 @@ export function QuestionCard({
   const q = item.question;
   if (item.answer !== null) {
     return (
-      <div className="flex flex-col gap-0.5 rounded-2xl bg-surface px-3.5 py-2.5 text-muted">
-        <p className="text-[13px] text-muted">{q.prompt}</p>
-        <p className="font-semibold">{item.answer}</p>
-      </div>
+      <details className="group self-start rounded-lg text-[13px] text-muted">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-surface2 [&::-webkit-details-marker]:hidden">
+          <Icon name="check" className="size-3.5 shrink-0" />
+          <span className="min-w-0 truncate">
+            Answered: <span className="text-ink">{item.answer}</span>
+          </span>
+          <Icon
+            name="chevron"
+            className="size-3.5 shrink-0 transition-transform duration-150 group-open:rotate-180 motion-reduce:transition-none"
+          />
+        </summary>
+        <p className="px-2 pt-1 pb-1.5">{q.prompt}</p>
+      </details>
     );
   }
   return (
     <div
       aria-disabled={canEdit ? undefined : true}
-      className={`flex flex-col gap-3 rounded-2xl bg-surface p-4 ${isNew ? 'item-new' : ''}`}
+      className={`flex flex-col gap-3 rounded-2xl bg-inset p-4 ${isNew ? 'item-new' : ''}`}
     >
       <p className="text-[15.5px] font-semibold">{q.prompt}</p>
       <Body item={item} canEdit={canEdit} onAnswer={onAnswer} />
@@ -270,7 +282,7 @@ function DateBody({ initial, canEdit, onAnswer }: BodyProps & { initial: string 
         value={value}
         disabled={!canEdit}
         onChange={(e) => setValue(e.target.value)}
-        className="max-w-[200px] rounded-[10px] bg-card px-3 py-2 text-sm"
+        className="max-w-[200px] rounded-lg bg-card px-3 py-2 text-sm"
       />
       <Button
         variant="primary"

@@ -31,9 +31,7 @@ export const music: DemoPack = {
       'Venues and promoters. Oraqul has no venue data',
       'Lagos and Accra. Fewer listeners in the data',
     ],
-    none: [
-      'Streams, ticket sales and pricing. You supply them for a rescue. Premium tolerance is a taste proxy only',
-    ],
+    none: ['Streams, ticket sales and pricing. You supply them for a rescue.'],
   },
   fields: [
     ['Format', 'kind'],

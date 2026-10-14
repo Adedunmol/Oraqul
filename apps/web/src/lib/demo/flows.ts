@@ -8,7 +8,7 @@ import type {
 } from '@oraqul/schema';
 import { categories } from '@oraqul/schema';
 import { dedupe, defSplit, diffIds, gaps, splitList } from './brief';
-import { type DOutput, isPlanKind } from './build-output';
+import { compareBriefs, type DOutput, isPlanKind } from './build-output';
 import { uuidFrom } from './ids';
 import { PACKS } from './packs';
 import {
@@ -236,10 +236,17 @@ function prettyDate(iso: string): string {
   return month && d ? `${month} ${Number.parseInt(d, 10)}` : 'Oct 2';
 }
 
-const MODE_LABEL: Record<StartMode, string> = {
-  start: 'plan from scratch',
-  audit: 'audit your plan',
-  rescue: 'rescue after results',
+const MODE_READ: Record<StartMode, string> = {
+  start: 'a new plan',
+  audit: 'a check of the plan you have',
+  rescue: 'a rescue after results',
+};
+
+/** What a person would type to switch to the job the agent did not pick. */
+const MODE_FIX: Record<StartMode, string> = {
+  start: 'check my plan instead',
+  audit: 'plan from scratch instead',
+  rescue: 'plan from scratch instead',
 };
 
 const GENRES: Record<Category, [RegExp, string][]> = {
@@ -346,9 +353,12 @@ function detectMode(text: string, attached: string[]): StartMode {
   return 'start';
 }
 
-/** What the first message on the start page carries. `text` is what a file could be read as. */
+/**
+ * What the first message carries. `text` is what a file could be read as. `mode` is the job the
+ * person hinted at, or null to let the agent read it from the message.
+ */
 export interface FirstMessage {
-  mode: StartMode;
+  mode: StartMode | null;
   category: Category | null;
   text: string;
   files: { name: string; text?: string }[];
@@ -425,7 +435,7 @@ export function startFromMessage(message: FirstMessage): string {
     extra: {},
   };
   insertProject(r);
-  startModes.set(r.id, message.mode);
+  if (message.mode) startModes.set(r.id, message.mode);
   const t = mkThread(r, 'First plan', null);
   pushItem(t.id, {
     id: itemId(),
@@ -493,7 +503,9 @@ function processDescription(projectId: string, t: Thread, text: string, attached
   const lower = text.toLowerCase();
   const kind = (KINDS_RX[r.category].find(([re]) => re.test(lower))?.[1] ?? pk.kinds[0]) || '';
   const genre = GENRES[r.category].find(([re]) => re.test(lower))?.[1] ?? '';
-  const places = detectPlaces(r.category, text);
+  const named = detectPlaces(r.category, text);
+  // A guess the person can correct in one message costs less than a card before any result.
+  const places = named.length ? named : pk.placeOpts.slice(0, 3);
   const window =
     text
       .match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*(20\d\d)?/i)?.[0]
@@ -513,52 +525,13 @@ function processDescription(projectId: string, t: Thread, text: string, attached
     kind.toLowerCase(),
     genre.toLowerCase(),
     window && `window ${window}`,
-    places.length ? `${pk.placeLabel} ${places.join(', ')}` : '',
+    `${pk.placeLabel} ${places.join(', ')}${named.length ? '' : ' (my guess, you did not name any)'}`,
   ].filter(Boolean);
-  say(t.id, `Here is what I read: ${bits.join(', ') || 'not much detail yet'}.`);
-  const order: StartMode[] = [
-    mode,
-    ...(['start', 'audit', 'rescue'] as const).filter((m) => m !== mode),
-  ];
-  ask(
+  say(
     t.id,
-    {
-      card: 'single',
-      prompt: `I read this as: ${MODE_LABEL[mode]}. Is that right?`,
-      options: options(
-        order.map((m, i) => ({
-          v: m,
-          l: i === 0 ? `Yes, ${MODE_LABEL[m]}` : `Switch to: ${MODE_LABEL[m]}`,
-        })),
-      ),
-    },
-    (a) => {
-      const chosen = order.find((m) => m === firstOption(a)) ?? mode;
-      askPlaces(projectId, t, chosen);
-    },
+    `Reading this as ${MODE_READ[mode]}: ${bits.join(', ')}.\nIf any of that is wrong, just tell me, for example "${MODE_FIX[mode]}" or "${pk.placeOpts.at(-1) ?? 'other places'} too".`,
   );
-}
-
-function askPlaces(projectId: string, t: Thread, mode: StartMode): void {
-  const r = project(projectId);
-  const pk = pack(r);
-  if (r.places.length) {
-    say(t.id, `I found these ${pk.placeLabel} in what you wrote: ${r.places.join(', ')}.`);
-    askMatch(projectId, t, mode);
-    return;
-  }
-  ask(
-    t.id,
-    {
-      card: 'multi',
-      prompt: `I could not tell the ${pk.placeLabel}. Which ones is this for?`,
-      options: options(pk.placeOpts.map((x) => ({ v: x, l: x }))),
-    },
-    (a) => {
-      patchProject(projectId, { places: a.card === 'options' ? a.optionIds : [] });
-      askMatch(projectId, t, mode);
-    },
-  );
+  askMatch(projectId, t, mode);
 }
 
 function askMatch(projectId: string, t: Thread, mode: StartMode): void {
@@ -577,33 +550,14 @@ function askMatch(projectId: string, t: Thread, mode: StartMode): void {
     (a) => {
       const v = firstOption(a);
       patchProject(projectId, { qlooMatch: v || `Matched by ${pk.fallback}` });
-      if (mode === 'start') askExtra(projectId, t, () => runStart(projectId, t));
+      if (mode === 'start') runStart(projectId, t);
       else if (mode === 'audit') runAudit(projectId, t);
       else runRebuild(projectId, t);
     },
   );
 }
 
-function askExtra(projectId: string, t: Thread, next: () => void): void {
-  const r = project(projectId);
-  const q2 = pack(r).q2;
-  if (r.extra[q2.label]) {
-    next();
-    return;
-  }
-  ask(
-    t.id,
-    { card: 'single', prompt: q2.prompt, options: options(q2.opts.map((x) => ({ v: x, l: x }))) },
-    (a) => {
-      patchProject(projectId, {
-        extra: { ...project(projectId).extra, [q2.label]: firstOption(a) },
-      });
-      next();
-    },
-  );
-}
-
-function runStart(projectId: string, t: Thread): void {
+function runStart(projectId: string, t: Thread, title?: string): void {
   const first = planOutputs(projectId).length === 0;
   const r = project(projectId);
   runTrace(t.id, pack(r).trace.plan.slice(), () => {
@@ -612,7 +566,7 @@ function runStart(projectId: string, t: Thread): void {
       current,
       t,
       'plan',
-      first ? 'First plan' : 'New plan, started fresh',
+      title ?? (first ? 'First plan' : 'New plan, started fresh'),
       pack(current).base(current),
     );
     patchProject(projectId, { status: 'Planning' });
@@ -719,7 +673,7 @@ export function runScenario(
   });
 }
 
-export function askScenario(threadId: string): void {
+function askScenario(threadId: string): void {
   const t = thread(threadId);
   if (!needBase(t)) return;
   const r = project(t.projectId);
@@ -739,20 +693,6 @@ export function askScenario(threadId: string): void {
       else void runScenario(threadId, v);
     },
   );
-}
-
-/** The what if bar: matches typed text to a preset, or asks which one. */
-export function whatIf(
-  threadId: string,
-  outputId: string,
-  text: string,
-): Promise<string | undefined> {
-  const t = thread(threadId);
-  const r = project(t.projectId);
-  const match = pack(r).scen.find((s) => s.re.test(text.toLowerCase()));
-  if (match) return runScenario(threadId, match.id, outputId);
-  askScenario(threadId);
-  return Promise.resolve(undefined);
 }
 
 export function runDateCheck(threadId: string): void {
@@ -864,7 +804,7 @@ function demoResults(r: Project): DResultsInput {
 const fitSplit = (arr: number[], n: number): number[] =>
   arr.length === n ? arr.slice() : defSplit(n);
 
-export function resultsFlow(threadId: string): void {
+function resultsFlow(threadId: string): void {
   if (getState().busy[threadId]) return;
   const t = thread(threadId);
   const r = project(t.projectId);
@@ -1043,98 +983,58 @@ export function applyRescue(r: Project, b: DBrief, res: DResultsInput): void {
   pack(r).rescue(b, g);
 }
 
-/** Opens a thread on a project, asking which plan it should build on. Returns the thread id. */
+/**
+ * Opens a thread on a project. It builds on the current plan without asking, and says so, so the
+ * person can type what they want next. Returns the thread id.
+ */
 export function startThread(projectId: string): string {
   const r = project(projectId);
   const t = mkThread(r, 'New thread', null);
-  const plans = planOutputs(projectId);
-  const latest = plans.at(-1);
+  const latest = planOutputs(projectId).at(-1);
+  if (!latest) {
+    say(t.id, `Something new for ${r.name}. There is no plan yet.`);
+    askFresh(t);
+    return t.id;
+  }
+  patchThread(t.id, { baseOutputId: latest.id, fromOutputId: latest.id });
   say(
     t.id,
-    `Something new for ${r.name}. Choose which plan this works on, so separate work stays separate.`,
-  );
-  const opts: { v: string; l: string; d?: string }[] = [];
-  if (latest) opts.push({ v: 'latest', l: 'Build on the current plan', d: labelOf(latest.id) });
-  if (plans.length > 1)
-    opts.push({
-      v: 'pick',
-      l: 'Build on a different plan',
-      d: `Choose from ${plans.length} plans`,
-    });
-  opts.push({
-    v: 'fresh',
-    l: 'Start fresh',
-    d: 'Ignore earlier plans and begin again from the project inputs',
-  });
-  ask(
-    t.id,
-    { card: 'single', prompt: 'What should this thread work on?', options: options(opts) },
-    (a) => {
-      const v = firstOption(a);
-      if (v === 'latest' && latest) {
-        applyBase(t, latest.id);
-      } else if (v === 'pick') {
-        ask(
-          t.id,
-          {
-            card: 'single',
-            prompt: 'Which plan?',
-            options: options(
-              plans
-                .slice()
-                .reverse()
-                .map((o) => ({ v: o.id, l: labelOf(o.id), d: `By ${o.by}` })),
-            ),
-          },
-          (picked) => applyBase(t, firstOption(picked)),
-        );
-      } else {
-        patchThread(t.id, { baseOutputId: null, fromOutputId: null, fresh: true });
-        say(t.id, 'Starting fresh. I will not use any earlier plan, only the project inputs.');
-        askFresh(t);
-      }
-    },
+    `Picking up from ${labelOf(latest.id)}, with the project inputs (${r.name}${r.kind ? `, ${r.kind.toLowerCase()}` : ''}, comps: ${r.comps.join(', ') || 'none given'}). Nothing else.\nTell me what to do next. Say "start fresh" or "use an older plan" to work from something else.`,
   );
   return t.id;
 }
 
-function applyBase(t: Thread, outputId: string): void {
-  patchThread(t.id, { baseOutputId: outputId, fromOutputId: outputId });
-  const r = project(t.projectId);
-  const out = getState().outputs.find((o) => o.id === outputId);
-  if (out) {
-    say(
-      t.id,
-      `Here is what I pulled in: the project inputs (${r.name}, ${r.kind.toLowerCase()}, comps: ${r.comps.join(', ') || 'none given'}) and ${out.label}, with ${out.brief.assumptions.length} assumptions and ${out.receipts.length} evidence lines. Nothing else.`,
-    );
+function askOlderPlan(t: Thread): void {
+  const plans = planOutputs(t.projectId);
+  if (plans.length < 2) {
+    say(t.id, `There is only one plan so far: ${labelOf(plans[0]?.id ?? '')}. I am using it.`);
+    return;
   }
-  askWhat(t);
-}
-
-function askWhat(t: Thread): void {
-  const pk = pack(project(t.projectId));
   ask(
     t.id,
     {
       card: 'single',
-      prompt: 'What should I do?',
-      options: options([
-        { v: 'scn', l: 'Run a scenario', d: 'Change one assumption and see what holds' },
-        { v: 'date', l: pk.quick[0] },
-        { v: 'partner', l: pk.quick[2] },
-        { v: 'results', l: pk.quick[1], d: 'Compare who showed up with the plan' },
-        { v: 'type', l: 'Something else', d: 'I will type it' },
-      ]),
+      prompt: 'Which plan should I work from?',
+      options: options(
+        plans
+          .slice()
+          .reverse()
+          .map((o) => ({ v: o.id, l: labelOf(o.id), d: `By ${o.by}` })),
+      ),
     },
     (a) => {
-      const v = firstOption(a);
-      if (v === 'scn') askScenario(t.id);
-      else if (v === 'date') runDateCheck(t.id);
-      else if (v === 'partner') askPartner(t.id);
-      else if (v === 'results') resultsFlow(t.id);
-      else say(t.id, 'Type what you want in the message box.');
+      const id = firstOption(a);
+      patchThread(t.id, { baseOutputId: id, fromOutputId: id, fresh: false });
+      say(t.id, `Working from ${labelOf(id)} now. What should I do with it?`);
     },
   );
+}
+
+function startFresh(t: Thread): void {
+  patchThread(t.id, { baseOutputId: null, fromOutputId: null, fresh: true });
+  say(t.id, 'Starting fresh. I will not use any earlier plan, only the project inputs.');
+  rename(t, 'Fresh plan');
+  runStart(t.projectId, t);
 }
 
 function askFresh(t: Thread): void {
@@ -1153,7 +1053,7 @@ function askFresh(t: Thread): void {
       const v = firstOption(a);
       if (v === 'start') {
         rename(t, 'Fresh plan');
-        askExtra(t.projectId, t, () => runStart(t.projectId, t));
+        runStart(t.projectId, t);
       } else if (v === 'audit') {
         rename(t, 'Audit of a plan');
         ask(
@@ -1174,6 +1074,9 @@ function askFresh(t: Thread): void {
 }
 
 const RX_DATE = /rival|date|clash|collision|overlap|same (week|month|weekend)/;
+const RX_AUDIT = /check (my|the|our) plan|audit/;
+const RX_FRESH = /start (fresh|over|again)|from scratch/;
+const RX_OLDER = /(older|earlier|different|another|previous) plan/;
 const RX_PARTNER = /draft|partner|sponsor|creator|outreach|collab|brief|guest|influencer/;
 const RX_RESULTS =
   /result|opening numbers|add (the )?(numbers|data|streams|tickets|downloads|wishlist|pre.?order)|streams and tickets|pre.?order numbers|wishlist numbers|we (got|had|sold)/;
@@ -1221,7 +1124,24 @@ function reply(threadId: string, text: string): void {
     );
     return;
   }
+  if (RX_AUDIT.test(q)) {
+    rename(t, 'Audit of a plan');
+    runAudit(t.projectId, t);
+    return;
+  }
+  if (RX_FRESH.test(q)) {
+    startFresh(t);
+    return;
+  }
+  if (RX_OLDER.test(q)) {
+    askOlderPlan(t);
+    return;
+  }
   if (!needBase(t)) return;
+  if (/compare|differ|changed since/.test(q)) {
+    comparePlansInChat(t);
+    return;
+  }
   const scenario = pk.scen.find((s) => s.re.test(q));
   if (/what if|scenario/.test(q)) {
     if (scenario) void runScenario(threadId, scenario.id);
@@ -1244,17 +1164,58 @@ function reply(threadId: string, text: string): void {
     void runScenario(threadId, scenario.id);
     return;
   }
+  const r = project(t.projectId);
+  const named = detectPlaces(r.category, text);
+  if (named.length) {
+    const places = /\b(too|also|add|plus)\b/.test(q)
+      ? [...new Set([...r.places, ...named])]
+      : named;
+    patchProject(r.id, { places });
+    say(threadId, `Okay, ${pk.placeLabel} now ${places.join(', ')}. Replanning with them.`);
+    runStart(r.id, t, `Plan for ${places.join(', ')}`);
+    return;
+  }
   say(
     threadId,
-    `In this demo I can run a scenario, check ${pk.rivalWord}s, draft a ${pk.partnerWord} brief, add your results or open any receipt. The buttons above the message box start each one.`,
+    `In this demo I can run a scenario ("what if ..."), check ${pk.rivalWord}s, draft a ${pk.partnerWord} brief, add your results, change the ${pk.placeLabel}, compare plans or open any receipt. Just say which.`,
   );
 }
 
-/** A quick action chip: types its label as a message, the way a person would. */
-export function quickAsk(threadId: string, label: string): void {
+/** Line by line, what moved between the plan this thread works from and the one before it. */
+function comparePlansInChat(t: Thread): void {
+  const b = baseOf(t);
+  if (!b) return;
+  const plans = planOutputs(t.projectId);
+  const before = (b.parentId ? douts.get(b.parentId) : undefined) ?? plans[plans.indexOf(b) - 1];
+  if (!before) {
+    say(t.id, `${labelOf(b.id)} is the only plan so far, so there is nothing to compare it with.`);
+    return;
+  }
+  const changes = compareBriefs(before.brief, b.brief);
+  if (!changes.length) {
+    say(t.id, `${labelOf(before.id)} and ${labelOf(b.id)} are the same, line for line.`);
+    return;
+  }
+  const shown = changes
+    .slice(0, 4)
+    .map((c) => `• ${c.label}: ${c.before ?? 'not there'} → ${c.after ?? 'removed'}`);
+  const rest =
+    changes.length > 4 ? `\n…and ${changes.length - 4} more. Open the output for all of them.` : '';
+  say(
+    t.id,
+    `${labelOf(b.id)} against ${labelOf(before.id)}: ${changes.length} ${changes.length === 1 ? 'line differs' : 'lines differ'}.\n${shown.join('\n')}${rest}`,
+  );
+}
+
+/** Runs one of the suggested next steps, typed into the chat the way a person would. */
+export function runNextStep(threadId: string, step: { id: string; label: string }): void {
   if (getState().busy[threadId]) return;
-  pushItem(threadId, { id: itemId(), role: 'user', text: label });
-  reply(threadId, label);
+  pushItem(threadId, { id: itemId(), role: 'user', text: step.label });
+  const [kind, arg] = step.id.split(':');
+  if (kind === 'scn' && arg) void runScenario(threadId, arg);
+  else if (kind === 'results') resultsFlow(threadId);
+  else if (kind === 'partner') askPartner(threadId);
+  else if (kind === 'date') runDateCheck(threadId);
 }
 
 /** Lets the seed write with fixed dates and keys, so server and browser agree. */

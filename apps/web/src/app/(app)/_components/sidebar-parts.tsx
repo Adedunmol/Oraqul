@@ -1,5 +1,4 @@
 import { getShellData } from '@/lib/api/shell';
-import { NavLink } from './nav-link';
 import { TeamSwitcher } from './team-switcher';
 
 export async function SidebarTeam() {
@@ -23,20 +22,6 @@ export async function SidebarTeam() {
   );
 }
 
-export async function TeamNavLink() {
-  const data = await getShellData();
-  const count = data?.team?.members.length;
-  return (
-    <NavLink
-      href="/team"
-      icon="team"
-      badge={count === undefined ? undefined : { value: count, label: 'members' }}
-    >
-      Team
-    </NavLink>
-  );
-}
-
 export async function SidebarUser() {
   const data = await getShellData();
   if (!data) return null;
@@ -45,7 +30,7 @@ export async function SidebarUser() {
       <span
         aria-hidden
         data-rail-tip={`${data.user.name}, ${data.user.email}`}
-        className="hidden size-8 shrink-0 place-items-center rounded-full bg-ink text-sm font-semibold text-bg rail:grid"
+        className="hidden size-8 shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-ink rail:grid"
       >
         {data.user.name.charAt(0).toUpperCase()}
       </span>

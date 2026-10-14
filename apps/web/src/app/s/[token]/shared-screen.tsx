@@ -14,7 +14,7 @@ export function SharedScreen({ token }: { token: string }) {
   const state = useDemo();
   const detail = useMemo(() => getShared(state, token), [state, token]);
   return (
-    <main className="mx-auto my-2 flex w-[calc(100%-16px)] max-w-6xl flex-col gap-6 rounded-[20px] bg-surface px-[clamp(16px,3vw,40px)] py-7">
+    <main className="mx-auto my-2 flex w-[calc(100%-16px)] max-w-6xl flex-col gap-6 rounded-2xl border border-line bg-canvas px-[clamp(16px,3vw,40px)] py-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Logo />
         <p className="text-[13px] text-muted">Shared link · read only</p>

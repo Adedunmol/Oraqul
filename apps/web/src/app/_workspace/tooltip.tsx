@@ -51,7 +51,7 @@ export function Tooltip() {
       ref={ref}
       role="tooltip"
       style={{ left, top }}
-      className="pointer-events-none fixed z-[90] max-w-[260px] rounded-lg bg-ink px-2.5 py-1.5 text-xs text-bg"
+      className="pointer-events-none fixed z-[90] max-w-[260px] rounded-md bg-ink px-2.5 py-1.5 text-xs text-bg shadow-md"
     >
       {tip.text}
     </div>

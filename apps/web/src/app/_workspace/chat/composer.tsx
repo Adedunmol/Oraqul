@@ -37,12 +37,15 @@ export function Composer({
   disabled,
   autoFocus,
   allowFiles,
+  compact,
   onSend,
 }: {
   placeholder: string;
   disabled?: boolean;
   autoFocus?: boolean;
   allowFiles?: boolean;
+  /** One line to start, growing as the person types. For a chat that is already going. */
+  compact?: boolean;
   onSend: (text: string, files: Attachment[]) => void;
 }) {
   const id = useId();
@@ -106,14 +109,14 @@ export function Composer({
       }}
       onDragLeave={() => setDragging(false)}
       onDrop={onDrop}
-      className={`flex flex-col gap-2 rounded-2xl border bg-surface p-2 transition-colors focus-within:border-accent motion-reduce:transition-none ${dragging ? 'border-accent bg-accent-soft' : 'border-line'}`}
+      className={`flex flex-col gap-2 rounded-xl border bg-surface p-2 shadow-sm transition-colors focus-within:border-accent motion-reduce:transition-none ${dragging ? 'border-accent bg-accent-soft' : 'border-line'}`}
     >
       {files.length ? (
         <ul aria-label="Attached files" className="flex flex-wrap gap-1.5 px-1 pt-1">
           {files.map((file) => (
             <li
               key={file.name}
-              className="flex max-w-full items-center gap-2 rounded-[8px] bg-surface2 py-1 pr-1 pl-2.5 text-[12.5px]"
+              className="flex max-w-full items-center gap-2 rounded-md bg-surface2 py-1 pr-1 pl-2.5 text-[12.5px]"
             >
               <span className="truncate font-medium">{file.name}</span>
               <span className="shrink-0 text-muted">{sizeLabel(file.size)}</span>
@@ -141,8 +144,8 @@ export function Composer({
         disabled={disabled}
         // biome-ignore lint/a11y/noAutofocus: the page exists to write this one message
         autoFocus={autoFocus}
-        rows={3}
-        className="max-h-60 min-h-[72px] w-full resize-none bg-transparent px-2 py-1.5 text-[15px] leading-[1.5] placeholder:text-muted focus:outline-none disabled:opacity-60 [field-sizing:content]"
+        rows={compact ? 1 : 3}
+        className={`max-h-60 ${compact ? 'min-h-[36px]' : 'min-h-[72px]'} w-full resize-none bg-transparent px-2 py-1.5 text-[15px] leading-[1.5] placeholder:text-muted focus:outline-none disabled:opacity-60 [field-sizing:content]`}
       />
       {problem ? (
         <p role="alert" className="px-2 text-[13px] text-breaks">
@@ -184,6 +187,7 @@ export function Composer({
           </span>
           <Button type="submit" variant="primary" size="small" disabled={!ready}>
             Send
+            <Icon name="arrowUp" className="size-4" />
           </Button>
         </span>
       </div>

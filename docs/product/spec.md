@@ -35,7 +35,7 @@ Rules: `engine` and `packs` never import from `apps`. `schema` has no dependenci
 
 ### 3.1 Router
 
-Input: project record. Output: the category agent to run and the job (plan, audit, rescue, scenario, date, partner). It does not call tools. If category or job is unclear it returns a question card, not a guess.
+Input: project record. Output: the category agent to run and the job (plan, audit, rescue, scenario, date, partner). It does not call tools. If the category is unclear it returns a question card, not a guess. The job it reads is stated in the first reply, not confirmed with a card; the user corrects it by typing (§9.2).
 
 ### 3.2 Category agent
 
@@ -184,11 +184,13 @@ SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created
 
 ## 9. Web app
 
-Routes: `/` the landing page (pitch, example answer, how it works, categories, receipts), `/sign-in`, `/sign-up`, `/forgot-password`, `/email-code`, `/verify`, `/reset-password`, `/overview`, `/categories/:category/projects`, `/categories/:category/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/invite/:token`, `/s/:token`.
+Routes: `/` the landing page (see §9.5), `/sign-in`, `/sign-up`, `/forgot-password`, `/email-code`, `/verify`, `/reset-password`, `/overview`, `/categories/:category/projects`, `/categories/:category/projects/:id`, `/threads/:id`, `/outputs/:id`, `/team`, `/invite/:token`, `/s/:token`.
 
-`/overview` is the team's home and where sign in lands: the Start here cards, Needs you (threads waiting on an answer, launches out with no results, new results, runs in progress) and threads to pick up. The project lists show the person's pinned projects first. `/start?mode=&category=` is the chat for one way to start, before anything is saved. `:category` is a category id or `all`. The list for one category opens with what Oraqul tests there; `all` lists every project. A project has one address, under its own category, so opening it under `all` or another category moves there. `/projects`, `/projects/:id` and `/categories/:category` redirect to the new routes. The current team is the one in the `oraqul_team` cookie, never part of the address. The landing page header shows Open app instead of the sign in buttons when the visitor is signed in, and never redirects. The sign in pages take a `next` path and pass it between each other. `/verify` and `/reset-password` take the email from an `email` query value, set by the page before them. `/team` shows the team's members, a role select and remove for owners, pending invites, the invite form and sign out; the team comes from the sidebar switcher, remembered in an `oraqul_team` cookie and checked against the person's memberships. `/invite/:token` previews an invite and accepts it. A signed out visitor is sent to sign in and returned to the invite afterwards.
+`/overview` is the team's home and where sign in lands: the message box to start something new, Needs you (threads waiting on an answer, projects that are out with no results, new results, runs in progress) and threads to pick up. `/start?category=&mode=` is the same message box on its own page, before anything is saved; both values are optional hints. The sidebar has New project, Overview (with the Needs you count), Projects, the person's pinned and recent projects, and Team. `/categories/:category/projects` is the project list with a category filter: `:category` is a category id or `all`. The project lists show the person's pinned projects first, and one category's list has a help button beside the filter that opens what Oraqul tests there in a dialog. A project has one address, under its own category, so opening it under `all` or another category moves there. The project page is the workspace: the newest chat, the project's other chats beside it, the current plan above, and Project details (inputs, all outputs, plan lineage and compare, delete for owners) in a dialog. `/threads/:id` is the same workspace with that chat selected. `/projects`, `/projects/:id` and `/categories/:category` redirect to the new routes. The current team is the one in the `oraqul_team` cookie, never part of the address. The landing page header shows Open app instead of the sign in buttons when the visitor is signed in, and never redirects. The sign in pages take a `next` path and pass it between each other. `/verify` and `/reset-password` take the email from an `email` query value, set by the page before them. `/team` shows the team's members, a role select and remove for owners, pending invites, the invite form and sign out; the team comes from the sidebar switcher, remembered in an `oraqul_team` cookie and checked against the person's memberships. `/invite/:token` previews an invite and accepts it. A signed out visitor is sent to sign in and returned to the invite afterwards.
 
-Output page tabs come from the output kind and the category pack: Summary, Audience, Assumptions, Plan, the category's signature tabs, Risks, Could not test, Evidence, plus Changes, Results, Rival dates and Partner briefs where they fit. The what if bar sits above the plan tabs and matches typed text to the pack's scenario matchers. Receipts open in a side drawer. A dock chat on the output page continues the thread.
+Output page tabs come from the output kind and the category pack: Summary, Audience, Assumptions, Plan, the category's signature tabs, Evidence, plus Changes, Results, Rival dates and Partner briefs where they fit. Could not test is listed at the end of Assumptions and Risks at the end of Plan; old `?tab=cannot` and `?tab=risks` links open those tabs. Scenarios have one way in: the chat. Typed text with "what if" or matching a pack's scenario matcher runs it, and a suggested next step can start one. Receipts open in a side drawer. A dock chat on the output page continues the thread on desktop; below 900px an Open chat button goes to it.
+
+In the chat, an output is one line that opens its summary card in a dialog: bottom line, confidence, up to three moves with receipt chips that open the drawer, the verdict counts, and View full details. Answered question cards fold to one line with the answer, and the trace folds once it finishes, so the chat stays clean. Above the message box sit up to three suggested next steps built from the thread's plan and the project (a scenario not yet tried, results if none are in, a partner brief or rival date check not yet made). The message box takes text and files on every chat, not only the first. Typed corrections work at any point: "check my plan instead", "start fresh", "use an older plan", "compare with the last plan", or naming places, which replans with them.
 
 Charts are inline SVG or CSS, each with a table toggle, a legend, and hover text. Colour never carries meaning alone: verdicts also carry an icon and a word.
 
@@ -197,13 +199,15 @@ Charts are inline SVG or CSS, each with a table toggle, a legend, and hover text
 The look is defined in the design system file. In code:
 
 * Tokens live in `globals.css` as CSS variables, light on bare `:root`, dark in a guarded media query and again under `[data-theme="dark"]`, each with `color-scheme`. No component uses a literal colour.
-* Fonts come from `next/font/google`: Bricolage Grotesque for titles and the bottom line, Geist for text, Geist Mono for ids and keycaps.
-* Category colour is set by a `data-cat` attribute and a `--cat` variable. It is used only for the icon tile and icon stroke.
-* A small component set lives in `packages/ui`: Button, Input, Chip, VerdictPill, Confidence, ReceiptChip, Card, Line, Tabs, TabNote, StartCard, ProjectCard, SummaryCard, QuestionCard, Trace, Chart, ReceiptDrawer, Palette, Modal, Toast, Icon. VerdictPill and Confidence take the data value and draw the glyph and word, so colour cannot appear alone.
+* Fonts come from `next/font/google`: Space Grotesk for titles and the bottom line, Geist for text, Geist Mono for ids and keycaps.
+* Category colour is set by a `data-cat` attribute and a `--cat` variable. It is used for icon tiles and strokes, and to tint project cards (design-system §3.3).
+* A small component set lives in `packages/ui`: Button, Input, Chip, VerdictPill, Confidence, ReceiptChip, Card, Line, Tabs, TabNote, StartComposer, ProjectCard, SummaryCard, QuestionCard, Trace, Chart, ReceiptDrawer, Palette, Modal, Toast, Icon. VerdictPill and Confidence take the data value and draw the glyph and word, so colour cannot appear alone.
 
 ### 9.2 Start modes
 
-There is no New project action. The Start here cards on the overview, and a Start button on the project lists that opens the same three, open `/start` with a `mode` of `start`, `audit` or `rescue`, plus the category when started from a category's page. That page saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a choice nobody follows up leaves no empty project. The mode sets the first prompt: a title and a line for start, the plan for audit, and what happened plus results for rescue. The agent takes the title and the category from that message, asks only for what it could not find, and uses the mode as the default reading of the job. The agent still asks "I read this as ... Is that right?" and lists the other two jobs, so a wrong card can be corrected in one tap.
+There is no form. Work starts in one message box, on the overview or on `/start` (opened from New project in the sidebar or on a project list, with the category when opened from a category's list). New project is the one name for it, whatever the job: an audit or a fix is still a project. The box saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a box nobody uses leaves no empty project. Three optional hints under the box, Make a plan, Check my plan and Fix one that missed, set a `mode` of `start`, `audit` or `rescue`; they only change the prompt and the default reading of the job. With no hint the agent reads the job from the message.
+
+The agent asks only what a wrong guess would waste a run on: the category when no category word is found, the title when none is found, and which Qloo entity is theirs. It does not ask for the job, the places or the category's extra input. Its first reply says what it read and what it guessed, for example "Reading this as a new plan: series, crime drama, territories UK, Canada, US (my guess, you did not name any)", with an example of how to correct it. A correction typed later reruns what it changes: "check my plan instead" runs an audit, naming places replans with them.
 
 ### 9.3 Tabs, notes and search
 
@@ -214,6 +218,34 @@ There is no New project action. The Start here cards on the overview, and a Star
 ### 9.4 Motion
 
 Motion uses CSS only. New chat items are marked by a per thread seen count so a re render does not replay them. Agent text reveals word by word with a capped delay. The trace shows a progress bar from step count. Bars grow once on the first view of a tab. All durations drop to near zero under `prefers-reduced-motion`.
+
+### 9.5 Public pages
+
+The marketing and trust pages a signed out visitor sees. Decided, in this order of work: content outline per page, then design, then build.
+
+**Launch set**
+
+| Route | Holds |
+|---|---|
+| `/` | The pitch, the example answer, the three jobs. Exists |
+| `/how-it-works` | Describe it, the agent asks only what it must, tests each assumption, ends with a bottom line and receipts |
+| `/examples` | Three full read only sample outputs with every receipt openable: a film plan (make a plan), an Afrobeats tour (check my plan) and a podcast season (fix one that missed), picked with `?case=`. Built from the demo data and labelled as examples. The walkthrough video joins when it exists. `/example` redirects here |
+| `/use-cases` | Make a plan, check my plan, fix one that missed, and the what if test. One page, a section for each |
+| `/categories` | One page for all five categories: what is tested, where data is thin, what the team brings. The same content as the in app help dialog |
+| `/method` | How verdicts, lift, fit and confidence are computed, and what Oraqul never does (no forecasts). For people who judge the numbers |
+| `/trust` | What data goes where: only public names, places and age bands to Qloo, results stored as aggregates, roles. Separate from Method because the readers differ (a marketer or judge against a reviewer or legal) |
+| `/about` | Why it exists, the team, the Africa and diaspora angle |
+| `/privacy`, `/terms` | Required. Google sign in needs both links |
+
+**Next:** `/developers` (the MCP server, with a quickstart), `/faq`, `/africa` (diaspora cities ranked beside African ones). **Later:** `/compare` (against a generic chatbot and against audience dashboards), one page per category, `/changelog`, a blog.
+
+**No pricing page for now**, and no mention of pricing anywhere until there is real pricing. Access is by creating an account.
+
+**Built:** every page in the launch set except `/terms`. `/` runs: the hero (positioning line, app preview with the agent at work), the prompts people type, the problem against Oraqul's answer (prd §2), an agent run streaming its tool calls and red team step, a taste map that explains Qloo, the four jobs in launch order as sticky steps, a plan marked up with verdicts, one lift worked out, the five categories as sticky steps, an FAQ and the closing call to action. The data flow diagram lives on `/trust`. `/examples` renders the real output screen, read only, for three seeded outputs (`output:r1:1`, `output:r3:1`, `output:r6:2`); `?case=` and `?tab=` are checked at the page boundary, and the output screen keeps other query values when it changes tab; the receipt drawer there leaves out the endpoint and the response shape (`publicExample`). `/categories` and the in app help dialog read the same columns (`_workspace/category-coverage.ts`). `/method` draws lift, fit and rival overlap with the thresholds in §5. `/trust` and `/privacy` state only what the code does: cookies `oraqul_session` (30 days), `oraqul_team`, `oraqul_oauth`; Qloo, OpenAI, Brevo, Google, Vercel and a VPS as processors. **Terms is deferred**: this is a hackathon project with no lawyer, and `/privacy` is a plain account of what the product does; add Terms and the privacy contact (`TODO(contact)` in `_marketing/privacy/privacy.tsx`) before Google sign in leaves testing mode. `/examples` has no video until a real one exists.
+
+**Navigation.** A short header: Product (How it works, Examples, Method), Use cases, Categories, Sign in, Create account; Developers joins it when that page exists. The footer carries the rest in four columns: Product, Resources, Company, Legal. This follows what Linear, Notion, Harvey, Glean and Elicit do. As built: Product is a small menu (Escape or a click outside closes it and returns focus to it); below 900px one Menu button opens a panel with every link; below 600px Sign in moves into that panel so the bar stays on one row.
+
+**Rules.** Marketing pages use the app's tokens and Space Grotesk headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 400px. Words follow design-system §10: launch is the umbrella word (launch strategy, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
 
 ## 10. Failure handling
 
@@ -233,7 +265,7 @@ Motion uses CSS only. New chat items are marked by a per thread seen count so a 
 * **Grounding check.** Every entity and number in an output must trace to a receipt. Fails the build if not.
 * **Refusal tests.** Forecast, pricing and send requests are refused with the right message.
 * **Coverage tests.** Nigerian titles, Lagos against no location, podcasts and games, diaspora ranking.
-* **UI.** Headless browser pass over every tab of every output in every category, checking for errors and for the words "undefined" or "NaN". Include the three Start here cards, the More tab toggle, the search palette, light and dark, and a 400px width with no horizontal scroll.
+* **UI.** Headless browser pass over every tab of every output in every category, checking for errors and for the words "undefined" or "NaN". Include the start message box and its three hints, the next step chips, the More tab toggle, the search palette, light and dark, and a 400px width with no horizontal scroll.
 * **Comprehension.** A short test with real launch marketers on the prototype, including Nigerian users on mid range Android, before wording is locked.
 
 ## 12. Deployment
@@ -245,7 +277,7 @@ Vercel for web. VPS with Docker Compose for API and Postgres. Environment variab
 1. Live Qloo tests and notes on real coverage.
 2. `engine` with receipts and verdicts, tested against recorded responses.
 3. Runtime with the router and the Film agent, end to end through plan, audit, scenario and rescue.
-4. Web: design tokens and components, chat, trace, outputs, evidence, receipts, Start here cards, tab notes.
+4. Web: design tokens and components, chat, trace, outputs, evidence, receipts, the start message box, tab notes.
 5. Music agent, then Books, Podcasts, Games as packs.
 6. Accounts, share, export, compare.
 7. MCP server, evals, demo video.

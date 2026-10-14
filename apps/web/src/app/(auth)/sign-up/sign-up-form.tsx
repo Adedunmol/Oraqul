@@ -24,7 +24,7 @@ export function SignUpForm() {
   return (
     <AuthCard
       title="Create your account"
-      lead="Plan, check and rescue launches with a receipt on every claim."
+      lead="Plan, check and fix launches, with a receipt on every claim."
       links={[{ href: form.href('/sign-in'), label: 'Already have an account? Sign in' }]}
     >
       <GoogleButton href={form.googleHref} />

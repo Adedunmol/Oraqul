@@ -9,123 +9,185 @@
   &:where([data-sidebar="collapsed"] [data-rail], [data-sidebar="collapsed"] [data-rail] *)
 );
 
-/* Tokens: docs/frontend/design-system.md section 11.1. Never use a literal colour in a component. */
-:root {
-  --bg: #f4f4f1;
+/* Tokens: docs/frontend/design-system.md section 11.1. Never use a literal colour in a component.
+   .scheme-light and .scheme-dark pin one theme on a part of a page: the marketing pages use them for
+   their light and dark sections, so components inside read the right tokens whatever the OS says. */
+:root,
+.scheme-light {
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface2: #e7eaf4;
-  --surface2-hover: #dce0ee;
-  --card: #edf0fc;
-  --card-hover: #e4e9fb;
-  --ink: #16171a;
-  --muted: #686a72;
-  --line: #e5e5e0;
-  --accent: #3f51c9;
+  --surface2: #ececef;
+  --surface2-hover: #e3e3e7;
+  --card: #ffffff;
+  --card-hover: #f6f6f8;
+  --ink: #111114;
+  --muted: #5a5a63;
+  --line: #e6e6ea;
+  --accent: #1e47c2;
   --accent-ink: #ffffff;
-  --accent-soft: #dde3fa;
-  --holds: #1b7f4b;
-  --holds-bg: #e4f3ea;
-  --weak: #8f5c00;
-  --weak-bg: #fbefd3;
-  --breaks: #ba2b24;
-  --breaks-bg: #fbe6e4;
-  --cant: #686a72;
-  --cant-bg: #ecece8;
-  --shadow: 0 16px 40px rgba(20, 20, 30, 0.14);
-  --s1: #3f51c9;
-  --s2: #a6a8b0;
-  --good: #1b7f4b;
-  --warn: #b9770e;
-  --crit: #ba2b24;
-  --na: #b7b8be;
-  --grid: #e5e5e0;
+  --accent-soft: #eaf0ff;
+  --holds: #167a40;
+  --holds-bg: #e8f5ec;
+  --weak: #8a5800;
+  --weak-bg: #fbf2d9;
+  --breaks: #be3128;
+  --breaks-bg: #fcebe9;
+  --cant: #5a5a63;
+  --cant-bg: #ececef;
+  --shadow: 0 4px 12px rgba(17, 17, 20, 0.06), 0 24px 48px -12px rgba(17, 17, 20, 0.18);
+  --s1: #1e47c2;
+  --s2: #8a8a94;
+  --good: #167a40;
+  --warn: #b7780a;
+  --crit: #be3128;
+  --na: #8a8a94;
+  --grid: #e6e6ea;
+  --button: #e4e4e9;
+  --button-hover: #dadae0;
+  --inset: #efeff2;
+  --cat-tint: 20%;
+  --cat-tint-hover: 28%;
+  --cat-film: #d12f45;
+  --cat-music: #c2368a;
+  --cat-books: #0e8a78;
+  --cat-podcasts: #7a46d8;
+  --cat-games: #dc6410;
+  --canvas: #f2f2f4;
+  --primary: #1e47c2;
+  --primary-hover: #1a3da8;
+  --primary-ink: #ffffff;
+  --elev-1: 0 1px 2px rgba(17, 17, 20, 0.05), 0 2px 6px rgba(17, 17, 20, 0.04);
+  --elev-primary: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(17, 17, 20, 0.12);
+  --elev-2: 0 2px 4px -2px rgba(17, 17, 20, 0.06), 0 12px 24px -4px rgba(17, 17, 20, 0.1);
   --f-display:
-    var(--font-bricolage), var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
+    var(--font-space-grotesk), var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-body: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: var(--font-geist-mono), ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0d0e10;
-    --surface: #151618;
-    --surface2: #252a38;
-    --surface2-hover: #2e3445;
-    --card: #1a2032;
-    --card-hover: #20283e;
-    --ink: #ececea;
-    --muted: #9a9ca4;
-    --line: #2a2c31;
-    --accent: #93a3f6;
-    --accent-ink: #0d0e10;
-    --accent-soft: #2a3560;
-    --holds: #5fcb92;
-    --holds-bg: #10281c;
-    --weak: #e8b54f;
-    --weak-bg: #2b2210;
-    --breaks: #f0807a;
-    --breaks-bg: #321a19;
-    --cant: #9a9ca4;
-    --cant-bg: #222427;
-    --shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-    --s1: #93a3f6;
-    --s2: #5a5c64;
-    --good: #5fcb92;
-    --warn: #e8b54f;
-    --crit: #f0807a;
-    --na: #4c4e55;
-    --grid: #2a2c31;
+    --bg: #09090a;
+    --surface: #141417;
+    --surface2: #26262b;
+    --surface2-hover: #2e2e34;
+    --card: #1b1b1f;
+    --card-hover: #232328;
+    --ink: #f2f2f4;
+    --muted: #9a9aa3;
+    --line: #27272c;
+    --accent: #8aa9ff;
+    --accent-ink: #06101f;
+    --accent-soft: #1c2440;
+    --holds: #5cc98b;
+    --holds-bg: #10251a;
+    --weak: #e3ae4a;
+    --weak-bg: #2a2010;
+    --breaks: #f27a6f;
+    --breaks-bg: #2f1715;
+    --cant: #9a9aa3;
+    --cant-bg: #26262b;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+    --s1: #8aa9ff;
+    --s2: #74747d;
+    --good: #5cc98b;
+    --warn: #e3ae4a;
+    --crit: #f27a6f;
+    --na: #74747d;
+    --grid: #27272c;
+    --button: #26262b;
+    --button-hover: #303036;
+    --inset: #141417;
+    --cat-tint: 24%;
+    --cat-tint-hover: 30%;
+    --cat-film: #f25c6e;
+    --cat-music: #e866b5;
+    --cat-books: #2cc0a8;
+    --cat-podcasts: #a888f6;
+    --cat-games: #f59a48;
+    --canvas: #0e0e10;
+    --primary: #2b54d4;
+    --primary-hover: #3460e0;
+    --primary-ink: #ffffff;
+    --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.25);
+    --elev-primary: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(0, 0, 0, 0.4);
+    --elev-2: 0 2px 4px -2px rgba(0, 0, 0, 0.4), 0 12px 24px -4px rgba(0, 0, 0, 0.5);
     color-scheme: dark;
   }
 }
 
-:root[data-theme="dark"] {
-  --bg: #0d0e10;
-  --surface: #151618;
-  --surface2: #252a38;
-  --surface2-hover: #2e3445;
-  --card: #1a2032;
-  --card-hover: #20283e;
-  --ink: #ececea;
-  --muted: #9a9ca4;
-  --line: #2a2c31;
-  --accent: #93a3f6;
-  --accent-ink: #0d0e10;
-  --accent-soft: #2a3560;
-  --holds: #5fcb92;
-  --holds-bg: #10281c;
-  --weak: #e8b54f;
-  --weak-bg: #2b2210;
-  --breaks: #f0807a;
-  --breaks-bg: #321a19;
-  --cant: #9a9ca4;
-  --cant-bg: #222427;
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-  --s1: #93a3f6;
-  --s2: #5a5c64;
-  --good: #5fcb92;
-  --warn: #e8b54f;
-  --crit: #f0807a;
-  --na: #4c4e55;
-  --grid: #2a2c31;
+:root[data-theme="dark"],
+.scheme-dark {
+  --bg: #09090a;
+  --surface: #141417;
+  --surface2: #26262b;
+  --surface2-hover: #2e2e34;
+  --card: #1b1b1f;
+  --card-hover: #232328;
+  --ink: #f2f2f4;
+  --muted: #9a9aa3;
+  --line: #27272c;
+  --accent: #8aa9ff;
+  --accent-ink: #06101f;
+  --accent-soft: #1c2440;
+  --holds: #5cc98b;
+  --holds-bg: #10251a;
+  --weak: #e3ae4a;
+  --weak-bg: #2a2010;
+  --breaks: #f27a6f;
+  --breaks-bg: #2f1715;
+  --cant: #9a9aa3;
+  --cant-bg: #26262b;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+  --s1: #8aa9ff;
+  --s2: #74747d;
+  --good: #5cc98b;
+  --warn: #e3ae4a;
+  --crit: #f27a6f;
+  --na: #74747d;
+  --grid: #27272c;
+  --button: #26262b;
+  --button-hover: #303036;
+  --inset: #141417;
+  --cat-tint: 24%;
+  --cat-tint-hover: 30%;
+  --cat-film: #f25c6e;
+  --cat-music: #e866b5;
+  --cat-books: #2cc0a8;
+  --cat-podcasts: #a888f6;
+  --cat-games: #f59a48;
+  --canvas: #0e0e10;
+  --primary: #2b54d4;
+  --primary-hover: #3460e0;
+  --primary-ink: #ffffff;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --elev-primary: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --elev-2: 0 2px 4px -2px rgba(0, 0, 0, 0.4), 0 12px 24px -4px rgba(0, 0, 0, 0.5);
   color-scheme: dark;
 }
 
-/* Category colour is used only for the small icon tile and icon stroke. */
+/* Text colour is inherited as a computed value, so a pinned scheme must set its own. */
+.scheme-light,
+.scheme-dark {
+  color: var(--ink);
+}
+
+/* Category colour: icon tiles and strokes, and the tint of a project card (.cat-card). */
 [data-cat="film"] {
-  --cat: #6c7fd8;
+  --cat: var(--cat-film);
 }
 [data-cat="music"] {
-  --cat: #c86ba3;
+  --cat: var(--cat-music);
 }
 [data-cat="books"] {
-  --cat: #3e9f94;
+  --cat: var(--cat-books);
 }
 [data-cat="podcasts"] {
-  --cat: #8f76d9;
+  --cat: var(--cat-podcasts);
 }
 [data-cat="games"] {
-  --cat: #d19a3f;
+  --cat: var(--cat-games);
 }
 
 @theme inline {
@@ -157,9 +219,45 @@
   --color-s1: var(--s1);
   --color-s2: var(--s2);
   --color-grid: var(--grid);
+  --color-canvas: var(--canvas);
+  --color-inset: var(--inset);
+  --color-button: var(--button);
+  --color-button-hover: var(--button-hover);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  /* Small corners everywhere: the scale itself is remapped, so rounded-xl and rounded-2xl follow. */
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --shadow-xs: var(--elev-1);
+  --shadow-primary: var(--elev-primary);
+  --shadow-sm: var(--elev-1);
+  --shadow-md: var(--elev-2);
+  --shadow-lg: var(--shadow);
   --font-display: var(--f-display);
   --font-sans: var(--f-body);
   --font-mono: var(--f-mono);
+}
+
+/* Cards stand out from the canvas by fill and a small lift, never an outline. Set once here so
+   every card, row and line gets the same lift; hover changes only the fill. design-system §5 */
+@layer utilities {
+  .bg-card {
+    box-shadow: var(--elev-1);
+  }
+  /* A project card is its category's colour as a clear tint on the card, with the same lift.
+     Secondary text inside is a stronger mix of ink, so it keeps 4.5:1 on every category in both
+     themes, hover included. */
+  .cat-card {
+    --muted: color-mix(in srgb, var(--ink) 72%, var(--card));
+    background-color: color-mix(in srgb, var(--cat) var(--cat-tint), var(--card));
+    box-shadow: var(--elev-1);
+  }
+  .cat-card:hover {
+    background-color: color-mix(in srgb, var(--cat) var(--cat-tint-hover), var(--card));
+  }
 }
 
 body {
@@ -333,88 +431,20 @@ body {
   }
 }
 
-/* Start card scenes play on hover or keyboard focus of their card, in place of a shadow: the plan
-   draws itself, the lens scans the rows, the line turns back up. Nothing moves at rest. */
-@keyframes art-draw {
-  from {
-    stroke-dashoffset: 1;
-  }
-}
-@keyframes art-fade {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes art-scan {
-  0% {
-    transform: translate(-6px, -44px);
-  }
-  55% {
-    transform: translate(-6px, -22px);
-  }
-  100% {
-    transform: none;
-  }
-}
-@keyframes art-wave {
-  50% {
-    transform: skewY(-8deg) scaleX(0.92);
-  }
-}
-.art-draw {
-  stroke-dasharray: 1;
-}
-.art-wave {
-  transform-origin: left center;
-}
-/* Only for people who have not asked for less motion: at rest the scenes are already complete. */
-@media (prefers-reduced-motion: no-preference) {
-  .art-rise,
-  .art-float,
-  .art-wave {
-    transform-box: fill-box;
-    transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .art-later {
-    transition-delay: 60ms;
-  }
-  :is(.start-card:hover, .start-card:focus-visible) .art-draw {
-    animation: art-draw 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  }
-  :is(.start-card:hover, .start-card:focus-visible) .art-draw.art-later {
-    animation-delay: 650ms;
-  }
-  :is(.start-card:hover, .start-card:focus-visible) .art-fade {
-    animation: art-fade 900ms ease-out both;
-  }
-  :is(.start-card:hover, .start-card:focus-visible) .art-scan {
-    animation: art-scan 1100ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  }
-  :is(.start-card:hover, .start-card:focus-visible) .art-rise {
-    transform: translateY(-4px);
-  }
-  :is(.start-card:hover, .start-card:focus-visible) .art-float {
-    transform: translateY(-3px);
-  }
-  :is(.start-card:hover, .start-card:focus-visible) .art-wave {
-    animation: art-wave 900ms ease-in-out 300ms 2;
-  }
-}
-
 /* One scrim for every dialog: the modal, the search palette and the receipt drawer. A plain dim,
    darker in dark mode so the page behind reads as set aside rather than washed grey. Literal
    values because older engines do not pass custom properties into ::backdrop. */
 dialog::backdrop {
-  background: rgba(13, 14, 16, 0.28);
+  background: rgba(13, 14, 16, 0.48);
   animation: fade-in 200ms both;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) dialog::backdrop {
-    background: rgba(0, 0, 0, 0.62);
+    background: rgba(0, 0, 0, 0.8);
   }
 }
 :root[data-theme="dark"] dialog::backdrop {
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(0, 0, 0, 0.8);
 }
 @media (prefers-reduced-motion: reduce) {
   dialog::backdrop {

@@ -16,7 +16,7 @@ const levels: Record<Level, { word: string; bars: number }> = {
 export function Confidence({ level, suffix = 'confidence' }: { level: Level; suffix?: string }) {
   const { word, bars } = levels[level];
   return (
-    <span className="inline-flex items-center gap-[7px] whitespace-nowrap rounded-[7px] bg-surface2 px-2 py-0.5 text-xs font-medium text-ink">
+    <span className="inline-flex items-center gap-[7px] whitespace-nowrap rounded-md bg-surface2 px-2 py-0.5 text-xs font-medium text-ink">
       {word}
       {suffix ? ` ${suffix}` : ''}
       <span aria-hidden="true" className="flex gap-px">

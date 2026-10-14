@@ -11,7 +11,7 @@ import { copyText } from '../toast';
 import { lineLabel } from './receipt-drawer';
 
 const H3 = ({ children }: { children: string }) => (
-  <h3 className="mb-1 text-[15px] font-semibold">{children}</h3>
+  <h3 className="font-display mb-1 text-[15px] font-semibold">{children}</h3>
 );
 
 /** A preview of the one page brief and its appendix. Downloads come with the export endpoint. */
@@ -50,7 +50,7 @@ export function ExportModal({
             {output.kindLabel} · {output.label}
             {teamName ? ` · ${teamName}` : ''}
           </p>
-          <h2 className="mt-1 text-2xl font-semibold">{project.name}</h2>
+          <h2 className="font-display mt-1 text-2xl font-semibold">{project.name}</h2>
           <p className="text-muted">
             {[project.kind, project.genre, project.places.join(', ')].filter(Boolean).join(' · ')}
           </p>
@@ -123,7 +123,7 @@ export function ExportModal({
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
             Appendix
           </p>
-          <h3 className="mt-1 mb-1 text-[15px] font-semibold">
+          <h3 className="font-display mt-1 mb-1 text-[15px] font-semibold">
             Assumptions ({c.holds} hold, {c.weak} weak, {c.breaks} break, {c.cant} could not test)
           </h3>
           <ul className="list-disc pl-5">
