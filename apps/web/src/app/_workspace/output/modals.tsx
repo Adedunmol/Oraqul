@@ -46,7 +46,7 @@ export function ExportModal({
       </p>
       <div className="flex flex-col gap-3.5 rounded-md bg-card p-[22px]">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+          <p className="text-[12px] font-semibold text-muted">
             {output.kindLabel} · {output.label}
             {teamName ? ` · ${teamName}` : ''}
           </p>
@@ -120,7 +120,7 @@ export function ExportModal({
       </div>
       <div className="flex flex-col gap-3.5 rounded-md bg-card p-[22px]">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+          <p className="text-[12px] font-semibold text-muted">
             Appendix
           </p>
           <h3 className="font-display mt-1 mb-1 text-[15px] font-semibold">

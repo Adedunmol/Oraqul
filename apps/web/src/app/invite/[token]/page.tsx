@@ -8,7 +8,7 @@ import { getMe } from '@/lib/api/me';
 import { roleLabels } from '@/lib/roles';
 import { AcceptInvite } from './accept-invite';
 
-const label = 'text-[11px] font-semibold uppercase tracking-[0.08em] text-muted';
+const label = 'text-[12px] font-semibold text-muted';
 
 export default async function InvitePage({ params }: PageProps<'/invite/[token]'>) {
   const { token } = await params;

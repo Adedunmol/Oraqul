@@ -225,7 +225,6 @@ export function OutputView({
           onClick={() => setDockOpen(true)}
           className="fixed right-5 bottom-5 z-40 h-11! rounded-full px-[18px] shadow-[var(--shadow)]! max-[899px]:hidden"
         >
-          <Icon name="sparkles" className="size-4" />
           Ask Oraqul
           {dock.unread ? (
             <span className="ml-1.5 rounded-full bg-bg px-[7px] py-px text-[11px] font-semibold text-ink">

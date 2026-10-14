@@ -133,7 +133,7 @@ export function ProjectWorkspace({
         <aside aria-label="Chats" className="hidden flex-col gap-4 min-[900px]:flex">
           {current ? <CurrentPlan output={current} /> : null}
           <div className="flex flex-col gap-1.5">
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+            <p className="px-3 text-[12px] font-semibold text-muted">
               Chats
             </p>
             <ChatList threads={threads} selectedId={selectedId} />
@@ -218,7 +218,7 @@ export function builtOnText(
 function CurrentPlan({ output }: { output: Output }) {
   return (
     <section aria-label="Current plan" className="flex flex-col gap-1.5 rounded-xl bg-card p-3">
-      <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+      <p className="flex items-center gap-1.5 text-[12px] font-semibold text-muted">
         <Icon name="flag" className="size-3.5 text-accent" />
         Current plan
       </p>
@@ -474,7 +474,7 @@ function Compare({ plans }: { plans: Output[] }) {
         <Dropdown id="compare-a" label="From" value={a} options={planOptions} onChange={setA} />
         <Dropdown id="compare-b" label="To" value={b} options={planOptions} onChange={setB} />
       </div>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+      <p className="text-[12px] font-semibold text-muted">
         {plural(result?.changes.length ?? 0, 'line')} differ
       </p>
       {result?.changes.length ? (
@@ -483,13 +483,13 @@ function Compare({ plans }: { plans: Output[] }) {
             <h4 className="mb-1.5 text-sm font-semibold">{c.label}</h4>
             <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">
               <div className="rounded-lg bg-card p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+                <p className="text-[12px] font-semibold text-muted">
                   Before
                 </p>
                 {c.before ?? 'Not in this plan'}
               </div>
               <div className="rounded-lg border border-accent/40 bg-accent-soft p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+                <p className="text-[12px] font-semibold text-muted">
                   After
                 </p>
                 {c.after ?? 'Removed'}

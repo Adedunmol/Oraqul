@@ -147,7 +147,6 @@ function StageVisual({ stage }: { stage: Stage }) {
         {stage.prompt}
       </p>
       <span className="flex items-center gap-1.5 text-[12.5px] font-semibold text-accent">
-        <Icon name="sparkles" className="size-3.5" />
         Oraqul
       </span>
       <p className="-mt-2 text-[clamp(16px,1.4vw,19px)] leading-[1.55]">{stage.reply}</p>

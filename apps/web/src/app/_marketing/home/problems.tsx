@@ -36,7 +36,6 @@ export function Problems() {
             <span className="px-6 py-3.5 text-muted">Today</span>
             <span />
             <span className="flex items-center gap-2 px-6 py-3.5 text-accent">
-              <Icon name="sparkles" className="size-3.5" />
               With Oraqul
             </span>
           </div>
@@ -62,7 +61,6 @@ export function Problems() {
                 >
                   <span className="sr-only">With Oraqul: </span>
                   <span className="mb-1.5 flex items-center gap-1.5 text-[12.5px] text-accent min-[900px]:hidden">
-                    <Icon name="sparkles" className="size-3.5" />
                     With Oraqul
                   </span>
                   {p.answer}

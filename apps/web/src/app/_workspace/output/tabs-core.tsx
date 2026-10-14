@@ -53,9 +53,6 @@ function SummaryCard() {
   return (
     <section className="grid grid-cols-1 items-start gap-4 rounded-2xl bg-card p-[clamp(20px,2.6vw,30px)] min-[900px]:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] min-[900px]:gap-[clamp(20px,3vw,44px)]">
       <div className="flex min-w-0 flex-col gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-          Bottom line
-        </p>
         <p className="max-w-[30ch] font-display text-[clamp(23px,2.3vw,28px)] font-semibold leading-[1.18] tracking-[-0.025em]">
           {output.headline}
         </p>
@@ -81,7 +78,7 @@ function SummaryCard() {
         </div>
       </div>
       <div className="flex min-w-0 flex-col gap-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">Do this</p>
+        <p className="text-[12px] font-semibold text-muted">Do this</p>
         <ol className="flex flex-col gap-2">
           {output.moves.map((m, i) => (
             <li

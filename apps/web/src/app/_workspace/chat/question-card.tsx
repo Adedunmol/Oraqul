@@ -387,7 +387,7 @@ function ConfirmBody({ question, canEdit, onAnswer }: BodyProps & { question: Co
           }}
         />
       ) : null}
-      <label className="flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+      <label className="flex flex-col gap-1 text-[12px] font-semibold text-muted">
         {question.holdLabel}
         <input
           type="number"
@@ -434,7 +434,7 @@ function SplitInputs({
   const total = values.reduce((a, b) => a + b, 0);
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+      <p className="text-[12px] font-semibold text-muted">
         {title} I read (percent)
       </p>
       <div className="flex flex-wrap items-end gap-3">

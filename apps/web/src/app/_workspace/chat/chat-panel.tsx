@@ -111,8 +111,7 @@ export function ChatPanel({
       <div className="mx-auto flex w-full max-w-[852px] flex-col gap-2 px-4 pt-1 pb-4">
         {canEdit && idle && steps.length ? (
           <div className="flex flex-col gap-1.5">
-            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-              <Icon name="sparkles" className="size-3.5 text-accent" />
+            <p className="flex items-center gap-1.5 text-[12px] font-semibold text-muted">
               Next steps
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -241,7 +240,7 @@ function Trace({ steps, done, isNew }: { steps: string[]; done: number; isNew: b
             style={{ width: `${pct}%` }}
           />
         </div>
-        <div className="mb-1 flex justify-between text-[11px] uppercase tracking-[0.04em] text-muted">
+        <div className="mb-1 flex justify-between text-[12px] text-muted">
           <span>Working</span>
           <span className="font-mono">
             Step {done + 1} of {steps.length}
@@ -329,9 +328,6 @@ function OutputCard({
       </Link>
       <Modal open={open} onClose={() => setOpen(false)} title={output.label} wide>
         <div className="flex flex-col gap-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-            Bottom line
-          </p>
           <p className="font-display text-[21px] font-semibold leading-[1.25] tracking-[-0.02em]">
             {output.headline}
           </p>
@@ -342,7 +338,7 @@ function OutputCard({
         </div>
         {output.moves.length ? (
           <div className="flex flex-col gap-2">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+            <p className="text-[12px] font-semibold text-muted">
               Do this
             </p>
             <ol className="flex flex-col gap-1.5">

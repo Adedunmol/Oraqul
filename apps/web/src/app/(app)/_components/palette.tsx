@@ -172,7 +172,7 @@ export function Palette() {
           results.map((e, i) => (
             <div key={e.href + e.label}>
               {i === 0 || results[i - 1]?.group !== e.group ? (
-                <p className="px-2.5 pt-2.5 pb-1 text-[11px] font-semibold uppercase tracking-[0.07em] text-muted">
+                <p className="px-2.5 pt-2.5 pb-1 text-[12px] font-semibold text-muted">
                   {e.group}
                 </p>
               ) : null}
@@ -201,7 +201,7 @@ export function Palette() {
             </div>
           ))
         ) : (
-          <p className="px-2.5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.07em] text-muted">
+          <p className="px-2.5 py-2.5 text-[12px] font-semibold text-muted">
             Nothing matches
           </p>
         )}

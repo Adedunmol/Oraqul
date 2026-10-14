@@ -40,12 +40,8 @@ export function Hero() {
         className={`${wrap} relative flex flex-col items-start gap-7 pt-[clamp(56px,9vw,128px)] pb-16`}
       >
         <div className="mk-word">
-          <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-2xl bg-card py-1.5 pr-4 pl-1.5 text-[14px] sm:rounded-full">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-[12px] font-semibold text-primary-ink">
-              <Icon name="sparkles" className="size-3.5" />
-              Oraqul
-            </span>
-            <span>A verifiable AI agent for launch strategy in media and entertainment</span>
+          <p className="text-[15px] text-muted">
+            A verifiable AI agent for launch strategy in media and entertainment
           </p>
         </div>
         <h1

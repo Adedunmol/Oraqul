@@ -5,7 +5,6 @@ import { buttonClassName, Card } from '@oraqul/ui';
 import Link from 'next/link';
 import { StartComposer } from '@/app/_workspace/start-composer';
 import type { Viewer } from '@/lib/api/viewer';
-import { getCategory } from '@/lib/demo/catalog';
 import { overviewPath, projectsPath } from '@/lib/routes';
 
 /**
@@ -21,7 +20,6 @@ export function StartScreen({
   category?: Category;
   viewer: Viewer;
 }) {
-  const info = category ? getCategory(category) : undefined;
   const back = category ? projectsPath(category) : overviewPath;
 
   if (viewer.role === 'viewer') {
@@ -39,9 +37,6 @@ export function StartScreen({
   return (
     <div className="view-enter flex flex-col gap-7">
       <header className="mx-auto flex w-full max-w-[760px] flex-col gap-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-          {info ? info.name : (viewer.teamName ?? 'Start')}
-        </p>
         <h1 className="font-display text-[clamp(26px,3vw,34px)] font-semibold leading-[1.1] tracking-[-0.025em] text-balance">
           What are you working on?
         </h1>

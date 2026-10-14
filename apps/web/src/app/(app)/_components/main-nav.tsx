@@ -15,7 +15,7 @@ import { navCountClass, navItemActive, navItemClass, navItemIdle } from './nav-l
 const RECENT = 5;
 
 const groupLabel =
-  'px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted rail:sr-only';
+  'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
 /** The project the current page belongs to, so its sidebar row stays lit inside it. */
 function currentProjectId(pathname: string, s: DemoState): string | undefined {

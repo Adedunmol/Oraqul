@@ -11,7 +11,7 @@ import { SidebarToggle } from './_components/sidebar-toggle';
 import { ThemeToggle } from './_components/theme-toggle';
 
 const groupLabel =
-  'px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted rail:sr-only';
+  'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
 const lineSkeleton = (width: string) => (
   <div className={`h-4 ${width} rounded-md bg-surface2 motion-safe:animate-pulse`} />

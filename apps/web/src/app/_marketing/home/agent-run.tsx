@@ -74,7 +74,6 @@ export function AgentRun() {
           <ul className="flex flex-col gap-5">
             {traits.map(([title, text]) => (
               <li key={title} className="flex gap-4">
-                <Icon name="sparkles" className="mt-1 size-4 shrink-0 text-accent" />
                 <span className="flex flex-col gap-1">
                   <span className="font-medium">{title}</span>
                   <span className="text-[15px] leading-[1.55] text-ink/70">{text}</span>
@@ -87,7 +86,6 @@ export function AgentRun() {
         <div className="overflow-hidden rounded-2xl bg-card shadow-lg">
           <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-3.5">
             <span className="flex items-center gap-2 text-[14px] font-semibold">
-              <Icon name="sparkles" className="size-4 text-accent" />
               Oraqul agent run
             </span>
             <span className="flex items-center gap-3">
