@@ -25,7 +25,7 @@ export const cases = [
 export function CaseIndex() {
   return (
     <ol className="flex flex-col">
-      {cases.map((c, i) => (
+      {cases.map((c) => (
         <li key={c.id}>
           <a
             href={`#${c.id}`}

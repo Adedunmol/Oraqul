@@ -16,7 +16,7 @@ export function Promises() {
   ];
   return (
     <ol className="flex flex-col gap-2">
-      {items.map((item, i) => (
+      {items.map((item) => (
         <li
           key={item}
           className="flex items-start gap-4 rounded-2xl bg-card p-5 text-[17px] leading-[1.45]"
