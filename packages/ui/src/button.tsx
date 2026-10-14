@@ -4,7 +4,7 @@ type Variant = 'default' | 'primary' | 'ghost';
 type Size = 'default' | 'small';
 
 const variants: Record<Variant, string> = {
-  default: 'border border-line bg-surface text-ink shadow-sm',
+  default: 'border border-transparent bg-surface2 text-ink hover:bg-surface2-hover',
   primary: 'border border-transparent bg-ink text-bg hover:opacity-90',
   ghost: 'border border-transparent bg-transparent text-ink hover:bg-surface2',
 };

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-/** Small label, serif title and the primary action on the right. design-system §6 */
+/** Small label, display title and the primary action on the right. design-system §6 */
 export function PageHead({
   label,
   title,
@@ -20,7 +20,7 @@ export function PageHead({
             {label}
           </p>
         ) : null}
-        <h1 className="font-display text-[clamp(26px,3vw,34px)] font-medium leading-[1.1] tracking-[-0.015em] text-balance">
+        <h1 className="font-display text-[clamp(26px,3vw,34px)] font-semibold leading-[1.1] tracking-[-0.025em] text-balance">
           {title}
         </h1>
         {description ? <p className="max-w-[60ch] text-muted">{description}</p> : null}
