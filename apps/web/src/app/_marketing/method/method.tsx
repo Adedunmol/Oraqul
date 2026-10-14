@@ -3,6 +3,7 @@ import { Confidence, VerdictPill } from '@oraqul/ui';
 import type { ReactNode } from 'react';
 import { liftZones, Scale } from '../scale';
 import { wrap } from '../section';
+import { SectionNav } from '../section-nav';
 
 /** The formula beside the page title, set like a page from a notebook. */
 export function FormulaCard() {
@@ -71,20 +72,7 @@ export function MethodBody() {
     <div
       className={`${wrap} grid gap-12 py-[clamp(56px,8vw,112px)] min-[1000px]:grid-cols-[220px_minmax(0,1fr)]`}
     >
-      <nav aria-label="On this page" className="max-[999px]:hidden">
-        <ol className="sticky top-24 flex flex-col gap-1 text-[14px]">
-          {sections.map((s) => (
-            <li key={s.id}>
-              <a
-                href={`#${s.id}`}
-                className="block rounded-lg px-3 py-1.5 text-muted transition-colors duration-150 hover:bg-surface2 hover:text-ink"
-              >
-                {s.title}
-              </a>
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <SectionNav sections={sections} />
 
       <div className="flex flex-col gap-14">
         <Block id="who" title="Code sets every number. The model writes the words.">

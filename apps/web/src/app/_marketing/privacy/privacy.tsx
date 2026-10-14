@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { wrap } from '../section';
+import { SectionNav } from '../section-nav';
 
 // TODO(contact): add the team's privacy email before Google sign in leaves testing mode.
 const contact = 'the Oraqul team';
@@ -139,20 +140,7 @@ export function PrivacyBody() {
     <div
       className={`${wrap} grid gap-12 pb-[clamp(72px,10vw,144px)] min-[1000px]:grid-cols-[220px_minmax(0,1fr)]`}
     >
-      <nav aria-label="On this page" className="max-[999px]:hidden">
-        <ol className="sticky top-24 flex flex-col gap-1 text-[14px]">
-          {sections.map((s) => (
-            <li key={s.id}>
-              <a
-                href={`#${s.id}`}
-                className="block rounded-lg px-3 py-1.5 text-muted transition-colors duration-150 hover:bg-surface2 hover:text-ink"
-              >
-                {s.title}
-              </a>
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <SectionNav sections={sections.map(({ id, title }) => ({ id, title }))} />
       <article className="flex max-w-[68ch] flex-col gap-12 rounded-2xl bg-card p-[clamp(22px,4vw,56px)]">
         {sections.map((s) => (
           <section key={s.id} id={s.id} aria-labelledby={`${s.id}-title`} className="scroll-mt-24">
