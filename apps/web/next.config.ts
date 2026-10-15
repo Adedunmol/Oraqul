@@ -1,9 +1,11 @@
+import { fileURLToPath } from 'node:url';
 import { loadEnvConfig } from '@next/env';
 import type { NextConfig } from 'next';
 
 // One .env at the repo root serves every app. Next has already loaded apps/web and caches that, so force a reload.
+// fileURLToPath, not URL.pathname: on Windows pathname is "/C:/..." and the root .env is silently skipped.
 loadEnvConfig(
-  new URL('../..', import.meta.url).pathname,
+  fileURLToPath(new URL('../..', import.meta.url)),
   process.env.NODE_ENV !== 'production',
   console,
   true,
