@@ -7,7 +7,7 @@ import { AppPreview } from './app-preview';
 const delay = (i: number) => ({ animationDelay: `${i * 70}ms` });
 
 /**
- * The headline marks its two verbs: "Plans" in cobalt over a highlighter band, and a drawn stroke
+ * The headline marks its two verbs: "Plans" in ultramarine over a highlighter band, and a drawn stroke
  * under "check". Text sits on the plain canvas; the art lives behind the app preview, so nothing
  * is read over colour.
  */
