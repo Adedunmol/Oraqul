@@ -3,6 +3,8 @@ import { answerSchema } from './agent';
 import { codeRequestSchema, codeSchema, nextPathSchema, passwordSchema } from './auth';
 import { claimSchema } from './claim';
 import { threadEventSchema } from './events';
+import { pinnedProjectsSchema } from './pin';
+import { questionCardSchema, threadItemSchema } from './thread';
 
 const receiptId = '3f2b8c1e-6d6a-4c53-9b0e-0a1f4f1d2e11';
 
@@ -79,5 +81,39 @@ describe('auth schemas', () => {
     expect(nextPathSchema.safeParse('//evil.com').success).toBe(false);
     expect(nextPathSchema.safeParse('https://evil.com').success).toBe(false);
     expect(nextPathSchema.safeParse('/\\evil.com').success).toBe(false);
+  });
+});
+
+describe('threadItemSchema', () => {
+  it('keeps the fields of each question card type', () => {
+    const card = questionCardSchema.parse({
+      id: 'q1',
+      card: 'split',
+      prompt: 'Audience by age?',
+      split: { title: 'Audience by age', groups: ['18 to 24', '25 and over'], values: [62, 38] },
+    });
+    expect(card.card === 'split' && card.split.values).toEqual([62, 38]);
+  });
+
+  it('rejects a card whose fields belong to another type', () => {
+    const wrong = { id: 'q1', card: 'single', prompt: 'Pick one', hint: 'Type it' };
+    expect(questionCardSchema.safeParse(wrong).success).toBe(false);
+  });
+
+  it('rejects an output item that does not point at an output id', () => {
+    expect(threadItemSchema.safeParse({ id: 'i1', role: 'output', outputId: 'o1' }).success).toBe(
+      false,
+    );
+  });
+});
+
+describe('pinnedProjectsSchema', () => {
+  it('accepts project ids', () => {
+    expect(pinnedProjectsSchema.parse(['a', 'b'])).toEqual(['a', 'b']);
+  });
+
+  it('rejects an empty id or a value that is not a list', () => {
+    expect(pinnedProjectsSchema.safeParse(['']).success).toBe(false);
+    expect(pinnedProjectsSchema.safeParse({ kind: 'project', id: 'a' }).success).toBe(false);
   });
 });

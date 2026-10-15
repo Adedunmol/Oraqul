@@ -8,7 +8,7 @@ import { getMe } from '@/lib/api/me';
 import { roleLabels } from '@/lib/roles';
 import { AcceptInvite } from './accept-invite';
 
-const label = 'text-[11px] font-semibold uppercase tracking-[0.08em] text-muted';
+const label = 'text-[12px] font-semibold text-muted';
 
 export default async function InvitePage({ params }: PageProps<'/invite/[token]'>) {
   const { token } = await params;
@@ -64,8 +64,8 @@ export default async function InvitePage({ params }: PageProps<'/invite/[token]'
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-start gap-4 rounded-2xl border border-line bg-surface p-6">
-      <h1 className="font-display text-[clamp(23px,2.3vw,28px)] font-medium leading-[1.1] tracking-[-0.015em] text-balance">
+    <div className="flex flex-col items-start gap-4 rounded-2xl bg-card p-6">
+      <h1 className="font-display text-[clamp(23px,2.3vw,28px)] font-semibold leading-[1.1] tracking-[-0.025em] text-balance">
         {title}
       </h1>
       {children}

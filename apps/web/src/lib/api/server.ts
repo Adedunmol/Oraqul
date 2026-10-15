@@ -10,7 +10,7 @@ function serverFetch(path: string): Promise<Response> {
 
 /**
  * Reads cookies, so call it inside a Suspense boundary (a loading.tsx counts) or
- * Cache Components blocks the route. A 401 sends the person to `/`, so `/` must not fetch.
+ * Cache Components blocks the route. A 401 sends the person to `/sign-in`, so the sign in pages must not fetch.
  * Pass `returnTo` when the page should be reopened after they sign in.
  */
 export async function serverGet<T>(
@@ -20,7 +20,9 @@ export async function serverGet<T>(
 ): Promise<T> {
   const response = await serverFetch(path);
   if (response.status === 401) {
-    redirect(options?.returnTo ? `/?next=${encodeURIComponent(options.returnTo)}` : '/');
+    redirect(
+      options?.returnTo ? `/sign-in?next=${encodeURIComponent(options.returnTo)}` : '/sign-in',
+    );
   }
   return parseResponse(response, path, schema);
 }

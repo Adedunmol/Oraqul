@@ -1,9 +1,20 @@
 import { expect, test } from '@playwright/test';
 
-test('home renders without broken values', async ({ page }) => {
+test('the landing page shows the pitch, the example and the ways in', async ({ page }) => {
   await page.goto('/');
   const text = await page.locator('body').innerText();
   expect(text).toContain('Holds');
+  await expect(page.getByRole('link', { name: 'Create account' }).first()).toHaveAttribute(
+    'href',
+    '/sign-up',
+  );
+  await expect(page.getByRole('link', { name: 'Sign in' }).first()).toHaveAttribute(
+    'href',
+    '/sign-in',
+  );
+  for (const name of ['How it works', 'Five categories', 'Receipts']) {
+    await expect(page.getByText(name, { exact: true }).first()).toBeAttached();
+  }
   expect(text).not.toContain('undefined');
   expect(text).not.toContain('NaN');
 });

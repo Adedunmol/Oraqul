@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@oraqul/ui';
+import { Button, Icon } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { logout } from '@/lib/api/auth';
@@ -21,8 +21,14 @@ export function SignOutButton() {
   }
 
   return (
-    <Button onClick={signOut} disabled={pending}>
-      Sign out
+    <Button
+      onClick={signOut}
+      disabled={pending}
+      data-rail-tip="Sign out"
+      className="rail:size-9 rail:p-0"
+    >
+      <Icon name="signout" className="size-4" />
+      <span className="rail:sr-only">Sign out</span>
     </Button>
   );
 }

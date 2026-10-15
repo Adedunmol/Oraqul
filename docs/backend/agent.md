@@ -51,7 +51,7 @@ Code is in `apps/api/src/agent`:
 
 | File | Role |
 |---|---|
-| `router.ts` | Spec §3.1. Category from the project, job from the start card, then a `confirm` question ("I read this as ... Is that right?", spec §9.2). No tools, no model. A model router comes with the category passes |
+| `router.ts` | Spec §3.1. Category from the project, job from the start hint. No tools, no model. A model router comes with the category passes. TODO: it still asks a `confirm` question ("I read this as ... Is that right?"); spec §9.2 now states the job in the first reply instead, as the web demo does |
 | `runtime.ts` | `advance(state, deps, answer?)`: the one loop. Runs until the agent finishes, asks, or hits a limit, then emits `run.stopped`. The answer resumes it |
 | `types.ts` | `Step` (`tool`, `ask`, `consult`, `finish`), `HistoryItem`, `Planner` |
 | `scripted-planner.ts` | Deterministic planner, used when `OPENAI_API_KEY` is empty |

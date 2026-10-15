@@ -1,22 +1,26 @@
 import type { ButtonHTMLAttributes } from 'react';
 
-type Variant = 'default' | 'primary' | 'ghost';
+type Variant = 'default' | 'primary' | 'ghost' | 'danger' | 'dangerSolid';
 type Size = 'default' | 'small';
 
 const variants: Record<Variant, string> = {
-  default: 'border border-line bg-surface text-ink shadow-sm',
-  primary: 'border border-transparent bg-ink text-bg hover:opacity-90',
+  default: 'border border-transparent bg-button text-ink hover:bg-button-hover',
+  primary:
+    'border border-primary bg-primary text-primary-ink shadow-primary hover:border-primary-hover hover:bg-primary-hover',
   ghost: 'border border-transparent bg-transparent text-ink hover:bg-surface2',
+  // Red marks an action that removes something. Soft to offer it, solid to confirm it.
+  danger: 'border border-transparent bg-breaks-bg text-breaks hover:bg-breaks/20',
+  dangerSolid: 'border border-breaks bg-breaks text-surface hover:opacity-90',
 };
 
 const sizes: Record<Size, string> = {
-  default: 'px-[14px] py-[7px] text-sm',
-  small: 'px-[11px] py-1 text-[13px]',
+  default: 'h-9 px-3.5 text-sm',
+  small: 'h-8 px-3 text-[13px]',
 };
 
 /** Class names for anything that must look like a button, such as a link to another origin. */
 export function buttonClassName(variant: Variant = 'default', size: Size = 'default'): string {
-  return `inline-flex items-center justify-center gap-2 rounded-[10px] font-medium transition-[opacity,transform,background-color] duration-150 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-45 disabled:pointer-events-none motion-reduce:transition-none ${variants[variant]} ${sizes[size]}`;
+  return `inline-flex items-center justify-center gap-2 rounded-lg font-medium whitespace-nowrap transition-[opacity,transform,background-color,border-color] duration-150 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-45 disabled:pointer-events-none motion-reduce:transition-none ${variants[variant]} ${sizes[size]}`;
 }
 
 export function Button({

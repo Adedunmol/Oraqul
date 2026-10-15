@@ -1,39 +1,80 @@
+import {
+  ArrowUp,
+  BookOpen,
+  Check,
+  ChevronDown,
+  CircleHelp,
+  Clapperboard,
+  Flag,
+  Gamepad2,
+  LayoutDashboard,
+  LayoutGrid,
+  LogOut,
+  type LucideIcon,
+  Mic,
+  Music,
+  PanelLeft,
+  Paperclip,
+  Pin,
+  Plus,
+  Search,
+  Sparkles,
+  SunMoon,
+  Trash2,
+  Users,
+  X,
+} from 'lucide-react';
+
+// Lucide (ISC licence): one consistent stroke set, the one most product teams use, so a new
+// icon never has to be drawn by hand. Names here are ours, so screens never import Lucide.
 const icons = {
-  chevron: <path d="M7 9.5l5 5 5-5" />,
-  projects: (
-    <>
-      <rect x="3.5" y="3.5" width="7" height="7" rx="2" />
-      <rect x="13.5" y="3.5" width="7" height="7" rx="2" />
-      <rect x="3.5" y="13.5" width="7" height="7" rx="2" />
-      <rect x="13.5" y="13.5" width="7" height="7" rx="2" />
-    </>
-  ),
-  team: (
-    <>
-      <circle cx="9" cy="8" r="3.2" />
-      <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
-      <circle cx="17" cy="9" r="2.5" />
-      <path d="M16 14.2c2.8-.3 4.5 1.5 4.5 4.3" />
-    </>
-  ),
-};
+  chevron: ChevronDown,
+  check: Check,
+  close: X,
+  plus: Plus,
+  pin: Pin,
+  attach: Paperclip,
+  sidebar: PanelLeft,
+  theme: SunMoon,
+  signout: LogOut,
+  overview: LayoutDashboard,
+  projects: LayoutGrid,
+  team: Users,
+  film: Clapperboard,
+  music: Music,
+  books: BookOpen,
+  podcasts: Mic,
+  games: Gamepad2,
+  search: Search,
+  arrowUp: ArrowUp,
+  sparkles: Sparkles,
+  flag: Flag,
+  trash: Trash2,
+  help: CircleHelp,
+} satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof icons;
 
-/** Stroke icons on a 24 grid. Decorative: the label next to it carries the meaning. */
-export function Icon({ name, className }: { name: IconName; className?: string }) {
+/**
+ * A stroke icon at 18px by default. Decorative: the label next to it carries the meaning.
+ * `filled` fills the shape, for a state such as a pinned pin.
+ */
+export function Icon({
+  name,
+  className,
+  filled,
+}: {
+  name: IconName;
+  className?: string;
+  filled?: boolean;
+}) {
+  const Glyph = icons[name];
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <Glyph
       aria-hidden
+      strokeWidth={1.75}
+      fill={filled ? 'currentColor' : 'none'}
       className={`size-[18px] shrink-0 ${className ?? ''}`}
-    >
-      {icons[name]}
-    </svg>
+    />
   );
 }

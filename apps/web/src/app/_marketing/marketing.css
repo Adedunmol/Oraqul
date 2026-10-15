@@ -1,0 +1,400 @@
+/* Marketing pages only: art, highlights and motion. Tokens only, no literal colours.
+   Everything that moves stops under prefers-reduced-motion (end of file). design-system §6, §8 */
+
+@keyframes mk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes mk-sweep {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes mk-ink {
+  from {
+    color: var(--ink);
+  }
+}
+@keyframes mk-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes mk-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+@keyframes mk-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes mk-float {
+  50% {
+    transform: translate(var(--dx, 12px), var(--dy, -16px));
+  }
+}
+@keyframes mk-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes mk-travel {
+  from {
+    left: 0;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  to {
+    left: calc(100% - var(--w, 72px));
+    opacity: 0;
+  }
+}
+@keyframes mk-travel-y {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  to {
+    top: calc(100% - 28px);
+    opacity: 0;
+  }
+}
+@keyframes mk-untilt {
+  from {
+    transform: rotateX(16deg) scale(0.94);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Headline words arrive one after another on load. */
+.mk-word {
+  display: inline-block;
+  animation: mk-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* "Plans": cobalt ink over a soft highlighter band that sweeps in under the lower half. */
+.mk-select {
+  position: relative;
+  isolation: isolate;
+  color: var(--accent);
+  animation: mk-ink 600ms 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.mk-select::before {
+  content: "";
+  position: absolute;
+  inset: 0.5em -0.06em 0.04em;
+  z-index: -1;
+  border-radius: 0.06em;
+  background: var(--accent-soft);
+  transform-origin: left;
+  animation: mk-sweep 600ms 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* "check": a hand drawn stroke under the word, then the Holds tick. */
+.mk-check {
+  position: relative;
+  display: inline-block;
+}
+.mk-check svg {
+  position: absolute;
+  left: -0.04em;
+  right: -0.04em;
+  bottom: -0.16em;
+  width: calc(100% + 0.08em);
+  height: 0.3em;
+  overflow: visible;
+}
+.mk-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: mk-draw 700ms 1050ms cubic-bezier(0.6, 0, 0.2, 1) forwards;
+}
+
+/* Taste circles: audiences drawn as overlapping discs, the thing Oraqul measures. */
+.mk-disc {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--cat);
+  opacity: var(--o, 0.18);
+  mix-blend-mode: multiply;
+  animation:
+    mk-bloom 1400ms var(--delay, 0ms) cubic-bezier(0.2, 0.8, 0.2, 1) both,
+    mk-float var(--t, 18s) var(--delay, 0ms) ease-in-out infinite;
+}
+.scheme-dark .mk-disc {
+  mix-blend-mode: screen;
+  opacity: var(--o-dark, 0.2);
+}
+
+/* A faint dot grid, faded out downwards. Masks use black and transparent as alpha only. */
+.mk-dots {
+  background-image: radial-gradient(var(--line) 1.2px, transparent 1.6px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, black 20%, transparent 95%);
+}
+
+/* The app preview leans back and straightens as it scrolls in, where the browser can tie motion
+   to scroll. Elsewhere it is simply flat. */
+.mk-stage {
+  perspective: 1800px;
+}
+@supports (animation-timeline: view()) {
+  .mk-tilt {
+    transform-origin: 50% 0;
+    animation: mk-untilt linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 38%;
+  }
+}
+
+/* Reveal on view: <Reveal> sets data-shown once the block is on screen. Children with .mk-in
+   rise in, staggered by --i. */
+[data-reveal] .mk-in {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 700ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 110ms);
+}
+[data-reveal][data-shown] .mk-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Marquee of prompts. The track holds the list twice, so -50% loops seamlessly. */
+.mk-marquee {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.mk-track {
+  display: flex;
+  width: max-content;
+  animation: mk-marquee var(--t, 60s) linear infinite;
+}
+.mk-track[data-reverse] {
+  animation-direction: reverse;
+}
+.mk-marquee:hover .mk-track {
+  animation-play-state: paused;
+}
+
+/* Marked up plan: each mark paints in when the document is on screen. */
+.mk-mark {
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.14em;
+  text-underline-offset: 0.22em;
+  text-decoration-color: transparent;
+  transition:
+    text-decoration-color 500ms ease,
+    background-color 500ms ease;
+  transition-delay: calc(400ms + var(--i, 0) * 450ms);
+}
+[data-shown] .mk-mark[data-v="holds"] {
+  text-decoration-color: var(--holds);
+  background-color: var(--holds-bg);
+}
+.mk-mark[data-v="breaks"] {
+  text-decoration-line: line-through;
+  text-decoration-thickness: 0.1em;
+}
+[data-shown] .mk-mark[data-v="breaks"] {
+  text-decoration-color: var(--breaks);
+  color: var(--muted);
+}
+.mk-mark[data-v="weak"] {
+  text-decoration-style: wavy;
+  text-decoration-thickness: 0.08em;
+}
+[data-shown] .mk-mark[data-v="weak"] {
+  text-decoration-color: var(--weak);
+}
+.mk-mark[data-v="cant"] {
+  text-decoration-style: dotted;
+}
+[data-shown] .mk-mark[data-v="cant"] {
+  text-decoration-color: var(--cant);
+}
+.mk-insert {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease;
+  transition-delay: calc(700ms + var(--i, 0) * 450ms);
+}
+[data-shown] .mk-insert {
+  opacity: 1;
+  transform: none;
+}
+.mk-note {
+  opacity: 0;
+  transform: translateX(16px);
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease;
+  transition-delay: calc(500ms + var(--i, 0) * 450ms);
+}
+[data-shown] .mk-note {
+  opacity: 1;
+  transform: none;
+}
+
+/* Timeline axis draws across, and the lift marker slides to its value. */
+.mk-axis {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1600ms cubic-bezier(0.6, 0, 0.2, 1);
+}
+.mk-axis-y {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 1600ms cubic-bezier(0.6, 0, 0.2, 1);
+}
+[data-shown] .mk-axis,
+[data-shown] .mk-axis-y {
+  transform: none;
+}
+.mk-slide {
+  left: 0;
+  transition: left 1600ms 300ms cubic-bezier(0.6, 0, 0.2, 1);
+}
+[data-shown] .mk-slide {
+  left: var(--to);
+}
+.mk-grow {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1000ms calc(var(--i, 0) * 200ms) cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-shown] .mk-grow {
+  transform: none;
+}
+
+/* Taste map lines draw out from the centre. */
+.mk-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 900ms calc(var(--i, 0) * 90ms) cubic-bezier(0.6, 0, 0.2, 1);
+}
+[data-shown] .mk-line {
+  stroke-dashoffset: 0;
+}
+
+/* Signs of an agent at work: a blinking caret, lines that stream in one by one, and a bar that
+   keeps moving while it thinks. */
+@keyframes mk-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes mk-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+.mk-caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  background: var(--accent);
+  animation: mk-blink 1s steps(1) infinite;
+}
+.mk-thinking {
+  position: relative;
+  overflow: hidden;
+}
+.mk-thinking::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: var(--accent);
+  animation: mk-indeterminate 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+[data-reveal] .mk-stream {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+  transition-delay: calc(var(--i, 0) * 520ms);
+}
+[data-reveal][data-shown] .mk-stream {
+  opacity: 1;
+  transform: none;
+}
+
+/* Tokens travelling from the team to Qloo in the data flow. */
+.mk-token {
+  position: absolute;
+  animation: mk-travel 4.8s var(--delay, 0s) cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+}
+.mk-token-y {
+  position: absolute;
+  animation: mk-travel-y 4.8s var(--delay, 0s) cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-word,
+  .mk-select,
+  .mk-select::before,
+  .mk-check path,
+  .mk-disc,
+  .mk-tilt,
+  .mk-track,
+  .mk-token,
+  .mk-token-y,
+  .mk-caret,
+  .mk-thinking::after {
+    animation: none;
+  }
+  .mk-check path,
+  .mk-line {
+    stroke-dashoffset: 0;
+  }
+  .mk-token,
+  .mk-token-y {
+    display: none;
+  }
+  .mk-track {
+    flex-wrap: wrap;
+    width: auto;
+  }
+  .mk-dup {
+    display: none;
+  }
+  [data-reveal] .mk-in,
+  [data-reveal] .mk-stream,
+  .mk-mark,
+  .mk-insert,
+  .mk-note,
+  .mk-axis,
+  .mk-axis-y,
+  .mk-slide,
+  .mk-grow,
+  .mk-line {
+    transition: none;
+  }
+}

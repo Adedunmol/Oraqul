@@ -3,119 +3,200 @@
 /* Component classes in the shared UI package must be scanned too. */
 @source "../../../../packages/ui/src";
 
-/* Tokens: docs/frontend/design-system.md section 11.1. Never use a literal colour in a component. */
-:root {
-  --bg: #f4f4f1;
+/* `rail:` styles the sidebar while it is collapsed to icons. Scoped to the sidebar so the mobile
+   bar and the page keep their labels when the desktop choice is collapsed. */
+@custom-variant rail (
+  &:where([data-sidebar="collapsed"] [data-rail], [data-sidebar="collapsed"] [data-rail] *)
+);
+
+/* Tokens: docs/frontend/design-system.md section 11.1. Never use a literal colour in a component.
+   .scheme-light and .scheme-dark pin one theme on a part of a page: the marketing pages use them for
+   their light and dark sections, so components inside read the right tokens whatever the OS says. */
+:root,
+.scheme-light {
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface2: #f0f0ec;
-  --ink: #16171a;
-  --muted: #686a72;
-  --line: #e5e5e0;
-  --accent: #3f51c9;
+  --surface2: #ececef;
+  --surface2-hover: #e3e3e7;
+  --card: #ffffff;
+  --card-hover: #f6f6f8;
+  --ink: #111114;
+  --muted: #5a5a63;
+  --line: #e6e6ea;
+  --accent: #1e47c2;
   --accent-ink: #ffffff;
-  --accent-soft: #eceefb;
-  --holds: #1b7f4b;
-  --holds-bg: #e4f3ea;
-  --weak: #8f5c00;
-  --weak-bg: #fbefd3;
-  --breaks: #ba2b24;
-  --breaks-bg: #fbe6e4;
-  --cant: #686a72;
-  --cant-bg: #ecece8;
-  --shadow: 0 16px 40px rgba(20, 20, 30, 0.14);
-  --s1: #3f51c9;
-  --s2: #a6a8b0;
-  --good: #1b7f4b;
-  --warn: #b9770e;
-  --crit: #ba2b24;
-  --na: #b7b8be;
-  --grid: #e5e5e0;
-  --f-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --accent-soft: #eaf0ff;
+  --holds: #167a40;
+  --holds-bg: #e8f5ec;
+  --weak: #8a5800;
+  --weak-bg: #fbf2d9;
+  --breaks: #be3128;
+  --breaks-bg: #fcebe9;
+  --cant: #5a5a63;
+  --cant-bg: #ececef;
+  --shadow: 0 4px 12px rgba(17, 17, 20, 0.06), 0 24px 48px -12px rgba(17, 17, 20, 0.18);
+  --s1: #1e47c2;
+  --s2: #8a8a94;
+  --good: #167a40;
+  --warn: #b7780a;
+  --crit: #be3128;
+  --na: #8a8a94;
+  --grid: #e6e6ea;
+  --button: #e4e4e9;
+  --button-hover: #dadae0;
+  --inset: #efeff2;
+  --cat-tint: 20%;
+  --cat-tint-hover: 28%;
+  --cat-film: #d12f45;
+  --cat-music: #c2368a;
+  --cat-books: #0e8a78;
+  --cat-podcasts: #7a46d8;
+  --cat-games: #dc6410;
+  --canvas: #f2f2f4;
+  --primary: #1e47c2;
+  --primary-hover: #1a3da8;
+  --primary-ink: #ffffff;
+  --elev-1: 0 1px 2px rgba(17, 17, 20, 0.05), 0 2px 6px rgba(17, 17, 20, 0.04);
+  --elev-primary: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(17, 17, 20, 0.12);
+  --elev-2: 0 2px 4px -2px rgba(17, 17, 20, 0.06), 0 12px 24px -4px rgba(17, 17, 20, 0.1);
+  --f-display:
+    var(--font-space-grotesk), var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-body: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: var(--font-geist-mono), ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0d0e10;
-    --surface: #151618;
-    --surface2: #1d1f22;
-    --ink: #ececea;
-    --muted: #9a9ca4;
-    --line: #2a2c31;
-    --accent: #93a3f6;
-    --accent-ink: #0d0e10;
-    --accent-soft: #1f2338;
-    --holds: #5fcb92;
-    --holds-bg: #10281c;
-    --weak: #e8b54f;
-    --weak-bg: #2b2210;
-    --breaks: #f0807a;
-    --breaks-bg: #321a19;
-    --cant: #9a9ca4;
-    --cant-bg: #222427;
-    --shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-    --s1: #93a3f6;
-    --s2: #5a5c64;
-    --good: #5fcb92;
-    --warn: #e8b54f;
-    --crit: #f0807a;
-    --na: #4c4e55;
-    --grid: #2a2c31;
+    --bg: #09090a;
+    --surface: #141417;
+    --surface2: #26262b;
+    --surface2-hover: #2e2e34;
+    --card: #1b1b1f;
+    --card-hover: #232328;
+    --ink: #f2f2f4;
+    --muted: #9a9aa3;
+    --line: #27272c;
+    --accent: #8aa9ff;
+    --accent-ink: #06101f;
+    --accent-soft: #1c2440;
+    --holds: #5cc98b;
+    --holds-bg: #10251a;
+    --weak: #e3ae4a;
+    --weak-bg: #2a2010;
+    --breaks: #f27a6f;
+    --breaks-bg: #2f1715;
+    --cant: #9a9aa3;
+    --cant-bg: #26262b;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+    --s1: #8aa9ff;
+    --s2: #74747d;
+    --good: #5cc98b;
+    --warn: #e3ae4a;
+    --crit: #f27a6f;
+    --na: #74747d;
+    --grid: #27272c;
+    --button: #26262b;
+    --button-hover: #303036;
+    --inset: #141417;
+    --cat-tint: 24%;
+    --cat-tint-hover: 30%;
+    --cat-film: #f25c6e;
+    --cat-music: #e866b5;
+    --cat-books: #2cc0a8;
+    --cat-podcasts: #a888f6;
+    --cat-games: #f59a48;
+    --canvas: #0e0e10;
+    --primary: #2b54d4;
+    --primary-hover: #3460e0;
+    --primary-ink: #ffffff;
+    --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.25);
+    --elev-primary: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(0, 0, 0, 0.4);
+    --elev-2: 0 2px 4px -2px rgba(0, 0, 0, 0.4), 0 12px 24px -4px rgba(0, 0, 0, 0.5);
     color-scheme: dark;
   }
 }
 
-:root[data-theme="dark"] {
-  --bg: #0d0e10;
-  --surface: #151618;
-  --surface2: #1d1f22;
-  --ink: #ececea;
-  --muted: #9a9ca4;
-  --line: #2a2c31;
-  --accent: #93a3f6;
-  --accent-ink: #0d0e10;
-  --accent-soft: #1f2338;
-  --holds: #5fcb92;
-  --holds-bg: #10281c;
-  --weak: #e8b54f;
-  --weak-bg: #2b2210;
-  --breaks: #f0807a;
-  --breaks-bg: #321a19;
-  --cant: #9a9ca4;
-  --cant-bg: #222427;
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-  --s1: #93a3f6;
-  --s2: #5a5c64;
-  --good: #5fcb92;
-  --warn: #e8b54f;
-  --crit: #f0807a;
-  --na: #4c4e55;
-  --grid: #2a2c31;
+:root[data-theme="dark"],
+.scheme-dark {
+  --bg: #09090a;
+  --surface: #141417;
+  --surface2: #26262b;
+  --surface2-hover: #2e2e34;
+  --card: #1b1b1f;
+  --card-hover: #232328;
+  --ink: #f2f2f4;
+  --muted: #9a9aa3;
+  --line: #27272c;
+  --accent: #8aa9ff;
+  --accent-ink: #06101f;
+  --accent-soft: #1c2440;
+  --holds: #5cc98b;
+  --holds-bg: #10251a;
+  --weak: #e3ae4a;
+  --weak-bg: #2a2010;
+  --breaks: #f27a6f;
+  --breaks-bg: #2f1715;
+  --cant: #9a9aa3;
+  --cant-bg: #26262b;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+  --s1: #8aa9ff;
+  --s2: #74747d;
+  --good: #5cc98b;
+  --warn: #e3ae4a;
+  --crit: #f27a6f;
+  --na: #74747d;
+  --grid: #27272c;
+  --button: #26262b;
+  --button-hover: #303036;
+  --inset: #141417;
+  --cat-tint: 24%;
+  --cat-tint-hover: 30%;
+  --cat-film: #f25c6e;
+  --cat-music: #e866b5;
+  --cat-books: #2cc0a8;
+  --cat-podcasts: #a888f6;
+  --cat-games: #f59a48;
+  --canvas: #0e0e10;
+  --primary: #2b54d4;
+  --primary-hover: #3460e0;
+  --primary-ink: #ffffff;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --elev-primary: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --elev-2: 0 2px 4px -2px rgba(0, 0, 0, 0.4), 0 12px 24px -4px rgba(0, 0, 0, 0.5);
   color-scheme: dark;
 }
 
-/* Category colour is used only for the small icon tile and icon stroke. */
+/* Text colour is inherited as a computed value, so a pinned scheme must set its own. */
+.scheme-light,
+.scheme-dark {
+  color: var(--ink);
+}
+
+/* Category colour: icon tiles and strokes, and the tint of a project card (.cat-card). */
 [data-cat="film"] {
-  --cat: #6c7fd8;
+  --cat: var(--cat-film);
 }
 [data-cat="music"] {
-  --cat: #c86ba3;
+  --cat: var(--cat-music);
 }
 [data-cat="books"] {
-  --cat: #3e9f94;
+  --cat: var(--cat-books);
 }
 [data-cat="podcasts"] {
-  --cat: #8f76d9;
+  --cat: var(--cat-podcasts);
 }
 [data-cat="games"] {
-  --cat: #d19a3f;
+  --cat: var(--cat-games);
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface2: var(--surface2);
+  --color-surface2-hover: var(--surface2-hover);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
@@ -131,15 +212,60 @@
   --color-cant: var(--cant);
   --color-cant-bg: var(--cant-bg);
   --color-cat: var(--cat);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-crit: var(--crit);
+  --color-na: var(--na);
+  --color-s1: var(--s1);
+  --color-s2: var(--s2);
+  --color-grid: var(--grid);
+  --color-canvas: var(--canvas);
+  --color-inset: var(--inset);
+  --color-button: var(--button);
+  --color-button-hover: var(--button-hover);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  /* Small corners everywhere: the scale itself is remapped, so rounded-xl and rounded-2xl follow. */
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --shadow-xs: var(--elev-1);
+  --shadow-primary: var(--elev-primary);
+  --shadow-sm: var(--elev-1);
+  --shadow-md: var(--elev-2);
+  --shadow-lg: var(--shadow);
   --font-display: var(--f-display);
   --font-sans: var(--f-body);
   --font-mono: var(--f-mono);
+}
+
+/* Cards stand out from the canvas by fill and a small lift, never an outline. Set once here so
+   every card, row and line gets the same lift; hover changes only the fill. design-system §5 */
+@layer utilities {
+  .bg-card {
+    box-shadow: var(--elev-1);
+  }
+  /* A project card is its category's colour as a clear tint on the card, with the same lift.
+     Secondary text inside is a stronger mix of ink, so it keeps 4.5:1 on every category in both
+     themes, hover included. */
+  .cat-card {
+    --muted: color-mix(in srgb, var(--ink) 72%, var(--card));
+    background-color: color-mix(in srgb, var(--cat) var(--cat-tint), var(--card));
+    box-shadow: var(--elev-1);
+  }
+  .cat-card:hover {
+    background-color: color-mix(in srgb, var(--cat) var(--cat-tint-hover), var(--card));
+  }
 }
 
 body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--f-body);
+  font-size: 14.5px;
+  line-height: 1.5;
 }
 
 @keyframes preview-rise {
@@ -155,6 +281,187 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .preview-rise {
+    animation: none;
+  }
+}
+
+/* Motion: docs/frontend/design-system.md section 8. Classes go only on things that are new. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes word-in {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(3px);
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+@keyframes flash-line {
+  from {
+    background: var(--accent-soft);
+  }
+}
+
+/* A page's head stays at the top while the page scrolls. It covers the main panel's padding so
+   nothing shows above or beside it. Desktop only: on a phone it would take a quarter of the
+   screen, and the top bar already stays. */
+@media (min-width: 900px) {
+  .sticky-head {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin: calc(-1 * var(--page-y)) calc(-1 * var(--page-x)) 0;
+    padding: var(--page-y) var(--page-x) 12px;
+    background: var(--canvas);
+  }
+}
+
+.view-enter > * {
+  animation: rise 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.view-enter > :nth-child(2) {
+  animation-delay: 40ms;
+}
+.view-enter > :nth-child(3) {
+  animation-delay: 80ms;
+}
+.tab-enter {
+  animation: rise 340ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.tab-enter .grow-x {
+  transform-origin: left;
+  animation: grow-x 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.tab-enter .grow-y {
+  transform-origin: bottom;
+  animation: grow-y 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.item-new {
+  animation: pop 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.word-in {
+  display: inline-block;
+  white-space: pre;
+  animation: word-in 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.pop-in {
+  animation: pop 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.fade-in {
+  animation: fade-in 200ms both;
+}
+.slide-in {
+  animation: slide-in 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.line-flash {
+  animation: flash-line 2.2s ease-out;
+}
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--ink) 0,
+    var(--ink) 35%,
+    var(--muted) 50%,
+    var(--ink) 65%,
+    var(--ink) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view-enter > *,
+  .tab-enter,
+  .tab-enter .grow-x,
+  .tab-enter .grow-y,
+  .item-new,
+  .word-in,
+  .pop-in,
+  .fade-in,
+  .slide-in,
+  .line-flash,
+  .shimmer-text {
+    animation-duration: 0.01ms;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+  }
+}
+
+/* The app shell: a 232px sidebar, or a 68px icon rail when collapsed. design-system §6 */
+@media (min-width: 900px) {
+  .app-shell {
+    display: grid;
+    grid-template-columns: 232px minmax(0, 1fr);
+    transition: grid-template-columns 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  [data-sidebar="collapsed"] .app-shell {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell {
+    transition: none;
+  }
+}
+
+/* One scrim for every dialog: the modal, the search palette and the receipt drawer. A plain dim,
+   darker in dark mode so the page behind reads as set aside rather than washed grey. Literal
+   values because older engines do not pass custom properties into ::backdrop. */
+dialog::backdrop {
+  background: rgba(13, 14, 16, 0.64);
+  animation: fade-in 200ms both;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) dialog::backdrop {
+    background: rgba(0, 0, 0, 0.88);
+  }
+}
+:root[data-theme="dark"] dialog::backdrop {
+  background: rgba(0, 0, 0, 0.88);
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog::backdrop {
     animation: none;
   }
 }
