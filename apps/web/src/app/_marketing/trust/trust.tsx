@@ -118,7 +118,7 @@ const access: [string, boolean, boolean, boolean][] = [
 export function Roles() {
   const roles = ['owner', 'editor', 'viewer'] as const;
   return (
-    <section aria-labelledby="roles-title" className={`scheme-dark bg-bg ${band}`}>
+    <section aria-labelledby="roles-title" className={`scheme-dark mk-glow bg-bg ${band}`}>
       <div className={`${wrap} grid gap-12 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}>
         <div className="flex flex-col gap-6">
           <h2 id="roles-title" className={h2Class}>

@@ -9,18 +9,22 @@ export function PageHero({
   title,
   lead,
   tone = 'light',
+  wash,
   children,
 }: {
   title: ReactNode;
   lead: ReactNode;
   tone?: 'light' | 'dark';
+  /** A soft cobalt fade down from the top, for a light hero with nothing else beside the title. */
+  wash?: boolean;
   children?: ReactNode;
 }) {
   return (
     <section
       aria-labelledby="page-title"
-      className={`relative overflow-x-clip ${tone === 'dark' ? 'scheme-dark bg-bg' : ''}`}
+      className={`relative overflow-x-clip ${tone === 'dark' ? 'scheme-dark mk-glow bg-bg' : ''}`}
     >
+      {wash ? <div aria-hidden="true" className="mk-fade absolute inset-0" /> : null}
       <div aria-hidden="true" className="mk-dots absolute inset-0" />
       <div
         className={`${wrap} relative grid gap-12 pt-[clamp(56px,9vw,128px)] pb-[clamp(56px,8vw,112px)] ${children ? 'min-[1000px]:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] min-[1000px]:items-center' : ''}`}

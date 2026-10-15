@@ -13,6 +13,7 @@ export default function Categories() {
   return (
     <>
       <PageHero
+        wash
         title="Every kind of launch, tested its own way."
         lead="For each category: what Oraqul checks against Qloo taste data, where the data is thin and confidence is lower, and what your team brings because it is not taste data."
       >

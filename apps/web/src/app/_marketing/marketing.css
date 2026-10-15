@@ -142,6 +142,31 @@
 }
 
 /* A faint dot grid, faded out downwards. Masks use black and transparent as alpha only. */
+/* Gradients are marketing only and built from tokens, one soft light source per band. They stay
+   under big type and panels, never under small text that would lose contrast. */
+.mk-glow {
+  background-image: radial-gradient(
+    70% 80% at 88% 0%,
+    color-mix(in srgb, var(--accent) 18%, transparent),
+    transparent 70%
+  );
+}
+.mk-glow-low {
+  background-image: radial-gradient(
+    60% 90% at 6% 100%,
+    color-mix(in srgb, var(--accent) 16%, transparent),
+    transparent 70%
+  );
+}
+.mk-lit {
+  background-image:
+    radial-gradient(65% 90% at 10% 0%, var(--bg), transparent 70%),
+    radial-gradient(60% 90% at 100% 100%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
+}
+.mk-fade {
+  background-image: linear-gradient(to bottom, var(--accent-soft), transparent 75%);
+}
+
 .mk-dots {
   background-image: radial-gradient(var(--line) 1.2px, transparent 1.6px);
   background-size: 22px 22px;

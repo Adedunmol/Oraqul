@@ -1,24 +1,32 @@
-import { Chip, Icon, VerdictPill } from '@oraqul/ui';
-import Link from 'next/link';
-import type { CSSProperties, ReactNode } from 'react';
-import { Reveal } from '../reveal';
-import { band, h2Class, wrap } from '../section';
+import { Chip, Icon, VerdictPill } from "@oraqul/ui";
+import Link from "next/link";
+import type { CSSProperties, ReactNode } from "react";
+import { Reveal } from "../reveal";
+import { band, h2Class, wrap } from "../section";
 
-const stagger = (i: number) => ({ '--i': i }) as CSSProperties;
+const stagger = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export const cases = [
-  { id: 'plan', title: 'Make a plan', line: 'You have a title and no plan yet.' },
   {
-    id: 'check',
-    title: 'Check my plan',
-    line: 'You have a plan and want to know where it is weak.',
+    id: "plan",
+    title: "Make a plan",
+    line: "You have a title and no plan yet.",
   },
   {
-    id: 'fix',
-    title: 'Fix one that missed',
-    line: 'It is out and the numbers are not what you hoped.',
+    id: "check",
+    title: "Check my plan",
+    line: "You have a plan and want to know where it is weak.",
   },
-  { id: 'whatif', title: 'Test a what if', line: 'You are weighing a date, a city or a partner.' },
+  {
+    id: "fix",
+    title: "Fix one that missed",
+    line: "It is out and the numbers are not what you hoped.",
+  },
+  {
+    id: "whatif",
+    title: "Test a what if",
+    line: "You are weighing a date, a city or a partner.",
+  },
 ] as const;
 
 /** The page title's companion: the four jobs as a large index that jumps to each. */
@@ -48,129 +56,147 @@ export function CaseIndex() {
   );
 }
 
-function CaseText({
-  title,
-  when,
-  prompt,
-  gets,
-  brings,
-  tabs,
-  example,
-}: {
-  title: string;
-  when: string;
-  prompt: string;
-  gets: string;
-  brings: string;
-  tabs: string[];
-  example?: string;
-}) {
+function Tabs({ tabs }: { tabs: string[] }) {
   return (
-    <div className="flex flex-col gap-6">
-      <h2 className={h2Class}>{title}</h2>
-      <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink/75">{when}</p>
-      <p className="max-w-[48ch] rounded-xl border border-line bg-surface px-4 py-3 text-[15px] leading-[1.5]">
-        <span className="sr-only">You might type: </span>“{prompt}”
-      </p>
-      <dl className="grid gap-4 text-[15px] sm:grid-cols-[110px_1fr]">
-        <dt className="font-medium">You get</dt>
-        <dd className="flex flex-col gap-2.5">
-          <span className="text-ink/75">{gets}</span>
-          <span className="flex flex-wrap gap-1.5">
-            {tabs.map((t) => (
-              <Chip key={t}>{t}</Chip>
-            ))}
-          </span>
-        </dd>
-        <dt className="font-medium">You bring</dt>
-        <dd className="text-ink/75">{brings}</dd>
-      </dl>
-      {example ? (
-        <Link
-          href={example}
-          className="inline-flex w-fit items-center gap-1.5 text-[15px] font-medium text-accent hover:underline"
-        >
-          See an example
-          <Icon name="chevron" className="size-4 -rotate-90" />
-        </Link>
-      ) : null}
-    </div>
+    <span className="flex flex-wrap gap-1.5">
+      {tabs.map((t) => (
+        <Chip key={t}>{t}</Chip>
+      ))}
+    </span>
   );
 }
 
-function Frame({ children, label }: { children: ReactNode; label: string }) {
+function ExampleLink({ href }: { href: string }) {
   return (
-    <Reveal className="flex flex-col gap-4 rounded-2xl bg-card p-[clamp(16px,3vw,28px)] shadow-md">
-      <div className="flex items-center justify-between gap-3 text-[13px]">
-        <span className="font-semibold">{label}</span>
-        <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
-          Example
-        </span>
-      </div>
-      {children}
-    </Reveal>
+    <Link
+      href={href}
+      className="inline-flex w-fit items-center gap-1.5 text-[15px] font-medium text-accent hover:underline"
+    >
+      See an example
+      <Icon name="chevron" className="size-4 -rotate-90" />
+    </Link>
+  );
+}
+
+/** What a person types, as the chat shows it: right aligned in a soft bubble. */
+function UserBubble({ children }: { children: ReactNode }) {
+  return (
+    <p className="mk-in max-w-[46ch] self-end rounded-xl bg-inset px-4 py-3 text-[15px] leading-[1.5]">
+      <span className="sr-only">You might type: </span>“{children}”
+    </p>
+  );
+}
+
+function ExampleTag() {
+  return (
+    <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
+      Example
+    </span>
   );
 }
 
 const ladder: [string, number, string][] = [
-  ['Lagos', 1.82, 'Strong'],
-  ['London', 1.64, 'Strong'],
-  ['Toronto', 1.41, 'Usable'],
-  ['Houston', 1.33, 'Usable'],
-  ['Manchester', 1.08, 'Low lift'],
+  ["Lagos", 1.82, "Strong"],
+  ["London", 1.64, "Strong"],
+  ["Toronto", 1.41, "Usable"],
+  ["Houston", 1.33, "Usable"],
+  ["Manchester", 1.08, "Low lift"],
 ];
 
+/** Make a plan reads as the chat it is: the ask on the right, the agent's answer under it. */
 export function PlanCase() {
   return (
-    <section id="plan" aria-label="Make a plan" className={`${band} scroll-mt-16`}>
+    <section
+      id="plan"
+      aria-label="Make a plan"
+      className={`${band} scroll-mt-16`}
+    >
       <div
-        className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.9fr_1.1fr] min-[1000px]:items-center`}
+        className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}
       >
-        <CaseText
-          title="Make a plan"
-          when="You have a title, a rough window and a hunch about the audience. Oraqul builds the plan from what that audience actually likes."
-          prompt="Plan the release of Harmattan, a Lagos crime drama series, for the UK and the US."
-          gets="The audience, comparable titles, the places to open in order, partner brands, and the risks to watch."
-          brings="A title and a short description. Files help but are optional."
-          tabs={['Summary', 'Audience', 'Plan', 'Territories', 'Evidence']}
-          example="/examples?case=film&tab=territories"
-        />
-        <Frame label="Where to open, ranked by lift">
-          <ol className="flex flex-col gap-2">
-            {ladder.map(([city, lift, band], i) => (
-              <li
-                key={city}
-                className="mk-in grid grid-cols-[96px_1fr_auto] items-center gap-3 rounded-xl bg-inset px-3.5 py-3"
-                style={stagger(i)}
-              >
-                <span className="text-[14.5px] font-medium">{city}</span>
-                <span className="h-2 rounded-sm bg-surface2">
-                  <span
-                    className="mk-grow block h-full rounded-sm bg-accent"
-                    style={{ width: `${(lift / 2) * 100}%`, ...stagger(i + 1) }}
-                  />
+        <div className="flex flex-col gap-6 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
+          <h2 className={h2Class}>Make a plan</h2>
+          <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
+            You have a title, a rough window and a hunch about the audience.
+            Oraqul builds the plan from what that audience actually likes.
+          </p>
+          <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
+            <span className="font-medium text-ink">You bring </span>a title and
+            a short description. Files help but are optional.
+          </p>
+          <ExampleLink href="/examples?case=film&tab=territories" />
+        </div>
+        <Reveal className="flex flex-col gap-5">
+          <UserBubble>
+            Plan the release of Harmattan, a Lagos crime drama series, for the
+            UK and the US.
+          </UserBubble>
+          <div className="mk-in flex flex-col gap-4" style={stagger(1)}>
+            <span className="text-[14px] font-semibold text-accent">
+              Oraqul
+            </span>
+            <div className="flex flex-col gap-4 rounded-2xl bg-card p-[clamp(16px,3vw,24px)] shadow-md">
+              <div className="flex items-center justify-between gap-3 text-[13px]">
+                <span className="font-semibold">
+                  Where to open, ranked by lift
                 </span>
-                <span className="flex items-center gap-2 text-[13px]">
-                  <span className="tabular-nums">{lift.toFixed(2)}</span>
-                  <Chip className="max-[520px]:hidden">{band}</Chip>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </Frame>
+                <ExampleTag />
+              </div>
+              <ol className="flex flex-col">
+                {ladder.map(([city, lift, tier], i) => (
+                  <li
+                    key={city}
+                    className="mk-in grid grid-cols-[88px_1fr_auto] items-center gap-3 border-b border-line py-3 last:border-0"
+                    style={stagger(i + 2)}
+                  >
+                    <span className="text-[14.5px] font-medium">{city}</span>
+                    <span className="h-2 rounded-sm bg-surface2">
+                      <span
+                        className="mk-grow block h-full rounded-sm bg-accent"
+                        style={{
+                          width: `${(lift / 2) * 100}%`,
+                          ...stagger(i + 3),
+                        }}
+                      />
+                    </span>
+                    <span className="flex items-center gap-2 text-[13px]">
+                      <span className="tabular-nums">{lift.toFixed(2)}</span>
+                      <Chip className="max-[520px]:hidden">{tier}</Chip>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <p className="text-[15px] leading-[1.55] text-ink/75">
+              Also in the plan: the audience, comparable titles, partner brands
+              and the risks to watch.
+            </p>
+            <Tabs
+              tabs={["Summary", "Audience", "Plan", "Territories", "Evidence"]}
+            />
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-const audit: { belief: string; verdict: 'holds' | 'weak' | 'breaks' | 'cant'; better?: string }[] =
-  [
-    { belief: 'Women 25 to 34 are the core audience', verdict: 'holds' },
-    { belief: 'Open in the UK first', verdict: 'breaks', better: 'Open in Canada first' },
-    { belief: 'Partner with a late night radio show', verdict: 'weak' },
-    { belief: 'Pre sales will cover the spend', verdict: 'cant' },
-  ];
+const audit: {
+  belief: string;
+  verdict: "holds" | "weak" | "breaks" | "cant";
+  better?: string;
+}[] = [
+  { belief: "Women 25 to 34 are the core audience", verdict: "holds" },
+  {
+    belief: "Open in the UK first",
+    verdict: "breaks",
+    better: "Open in Canada first",
+  },
+  { belief: "Partner with a late night radio show", verdict: "weak" },
+  { belief: "Pre sales will cover the spend", verdict: "cant" },
+];
 
+/** Check my plan is a ledger: one belief per line, the verdict beside it, the fix at the end. */
 export function CheckCase() {
   return (
     <section
@@ -178,46 +204,53 @@ export function CheckCase() {
       aria-label="Check my plan"
       className={`scheme-dark bg-bg ${band} scroll-mt-16`}
     >
-      <div
-        className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[1.1fr_0.9fr] min-[1000px]:items-center`}
-      >
-        <div className="order-2 min-[1000px]:order-1">
-          <Frame label="Your plan, checked">
-            <ul className="flex flex-col gap-2">
-              {audit.map((a, i) => (
-                <li
-                  key={a.belief}
-                  className="mk-in flex flex-col gap-2 rounded-xl bg-inset px-4 py-3.5"
-                  style={stagger(i)}
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <span
-                      className={`min-w-0 flex-1 basis-48 text-[15px] ${a.better ? 'text-muted line-through' : ''}`}
-                    >
-                      {a.belief}
-                    </span>
-                    <VerdictPill verdict={a.verdict} />
-                  </div>
-                  {a.better ? (
-                    <span className="w-fit rounded-md bg-accent-soft px-2 py-1 text-[14px] font-medium text-accent">
-                      Stronger option: {a.better}
-                    </span>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </Frame>
+      <div className={`${wrap} flex flex-col gap-12`}>
+        <div className="flex flex-col gap-6">
+          <h2 className={`${h2Class} max-w-[16ch]`}>Check my plan</h2>
+          <p className="max-w-[52ch] text-[clamp(18px,2vw,24px)] leading-[1.4] text-ink/75">
+            <span className="sr-only">You might type: </span>“Check my plan:
+            open in the UK, then Canada. Our core audience is women 25 to 34.”
+            <span aria-hidden="true" className="mk-caret" />
+          </p>
         </div>
-        <div className="order-1 min-[1000px]:order-2">
-          <CaseText
-            title="Check my plan"
-            when="Before you commit money, find out which beliefs in your plan the data supports and which it does not."
-            prompt="Check my plan: open in the UK, then Canada. Our core audience is women 25 to 34."
-            gets="Every belief marked Holds, Weak, Breaks or Could not test, with a stronger option for anything that breaks."
-            brings="Your plan, pasted or as a file."
-            tabs={['Summary', 'Assumptions', 'Plan', 'Evidence']}
-            example="/examples?case=music&tab=assumptions"
-          />
+        <Reveal>
+          <div className="mb-3 flex items-center justify-between gap-3 text-[13px] text-muted">
+            <span>Your plan, belief by belief</span>
+            <ExampleTag />
+          </div>
+          <ul className="border-t border-line">
+            {audit.map((a, i) => (
+              <li
+                key={a.belief}
+                className="mk-in grid items-center gap-x-6 gap-y-2 border-b border-line py-5 min-[900px]:grid-cols-[1.3fr_auto_1fr]"
+                style={stagger(i)}
+              >
+                <span
+                  className={`font-display text-[clamp(18px,1.9vw,24px)] tracking-[-0.02em] ${a.better ? "text-muted line-through" : ""}`}
+                >
+                  {a.belief}
+                </span>
+                <span className="w-fit">
+                  <VerdictPill verdict={a.verdict} />
+                </span>
+                {a.better ? (
+                  <span className="w-fit rounded-md bg-accent-soft px-2 py-1 text-[14px] font-medium text-accent">
+                    Stronger option: {a.better}
+                  </span>
+                ) : (
+                  <span aria-hidden="true" className="max-[899px]:hidden" />
+                )}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+        <div className="flex flex-col gap-3 text-[15px] text-ink/75 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
+          <p className="max-w-[60ch]">
+            Every belief is marked Holds, Weak, Breaks or Could not test, with a
+            stronger option for anything that breaks. Bring your plan, pasted or
+            as a file.
+          </p>
+          <ExampleLink href="/examples?case=music&tab=assumptions" />
         </div>
       </div>
     </section>
@@ -225,126 +258,153 @@ export function CheckCase() {
 }
 
 const bands: [string, number, number][] = [
-  ['18 to 24', 30, 12],
-  ['25 to 34', 55, 28],
-  ['35 to 44', 15, 60],
+  ["18 to 24", 30, 12],
+  ["25 to 34", 55, 28],
+  ["35 to 44", 15, 60],
 ];
 
+/** Fix one that missed leads with the picture: planned against actual as paired columns. */
 export function FixCase() {
   return (
     <section
       id="fix"
       aria-label="Fix one that missed"
-      className={`bg-accent-soft ${band} scroll-mt-16`}
+      className={`mk-lit bg-accent-soft ${band} scroll-mt-16`}
     >
-      <div className={`${wrap} flex flex-col gap-14`}>
-        <div className="grid gap-10 min-[1000px]:grid-cols-[1fr_1fr]">
-          <CaseText
-            title="Fix one that missed"
-            when="It is out and the people who came are not the people you planned for. Oraqul finds the belief that broke and rebuilds around who showed up."
-            prompt="It missed. Here are our results by region and age band."
-            gets="Who came against who the plan expected, the belief that broke, a plan built around the real audience, and what to stop."
-            brings="Your results by region or age band, typed, pasted or as a file. They are kept as totals."
-            tabs={['Summary', 'Results', 'What changed', 'Plan']}
-            example="/examples?case=podcasts"
-          />
-          <Frame label="Planned against actual, by age band">
-            <div className="flex flex-wrap gap-4 text-[13px] text-muted">
+      <div
+        className={`${wrap} grid gap-12 min-[1000px]:grid-cols-[1.2fr_0.8fr] min-[1000px]:items-end`}
+      >
+        <Reveal className="flex flex-col gap-6 rounded-2xl bg-card p-[clamp(16px,3vw,28px)] shadow-md">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-[13px]">
+            <span className="font-semibold">
+              Planned against actual, by age band
+            </span>
+            <span className="flex items-center gap-4 text-muted">
               <span className="flex items-center gap-2">
-                <span className="h-2 w-5 rounded-sm bg-muted" /> Planned
+                <span className="h-2 w-4 rounded-sm bg-muted" /> Planned
               </span>
               <span className="flex items-center gap-2">
-                <span className="h-2 w-5 rounded-sm bg-accent" /> Actual
+                <span className="h-2 w-4 rounded-sm bg-accent" /> Actual
               </span>
-            </div>
+              <ExampleTag />
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-[clamp(12px,3vw,40px)] border-b border-line">
             {bands.map(([label, planned, actual], i) => (
-              <div key={label} className="mk-in flex flex-col gap-2" style={stagger(i)}>
-                <div className="flex justify-between text-[14.5px]">
-                  <span className="font-medium">Ages {label}</span>
-                  <span className="text-muted tabular-nums">
-                    {planned}% planned · {actual}% actual
-                  </span>
+              <div key={label} className="flex flex-col gap-3">
+                <div className="flex h-56 items-end gap-1.5">
+                  {[
+                    [planned, "bg-muted"],
+                    [actual, "bg-accent"],
+                  ].map(([v, fill]) => (
+                    <div
+                      key={fill}
+                      className="mk-in flex h-full flex-1 flex-col justify-end gap-1.5"
+                      style={stagger(i)}
+                    >
+                      <span className="text-center text-[13px] tabular-nums text-muted">
+                        {v}%
+                      </span>
+                      <span
+                        className={`block rounded-t-sm ${fill}`}
+                        style={{ height: `${(Number(v) / 70) * 100}%` }}
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div className="flex flex-col gap-1">
-                  <span className="h-3 rounded-sm bg-surface2">
-                    <span
-                      className="mk-grow block h-full rounded-sm bg-muted"
-                      style={{ width: `${planned}%`, ...stagger(i) }}
-                    />
-                  </span>
-                  <span className="h-3 rounded-sm bg-surface2">
-                    <span
-                      className="mk-grow block h-full rounded-sm bg-accent"
-                      style={{ width: `${actual}%`, ...stagger(i + 1) }}
-                    />
-                  </span>
-                </div>
+                <span className="pb-3 text-center text-[14px] font-medium">
+                  Ages {label}
+                </span>
               </div>
             ))}
-            <p className="mt-2 rounded-xl bg-inset px-4 py-3 text-[14.5px]">
-              <span className="font-semibold">What broke:</span> the plan bet on 25 to 34. The
-              people who came were 35 to 44, so the next wave is planned around them.
-            </p>
-          </Frame>
+          </div>
+          <p className="text-[15px] leading-[1.5]">
+            <span className="font-semibold">What broke:</span> the plan bet on
+            25 to 34. The people who came were 35 to 44, so the next wave is
+            planned around them.
+          </p>
+        </Reveal>
+        <div className="flex flex-col gap-6">
+          <h2 className={h2Class}>Fix one that missed</h2>
+          <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
+            It is out and the people who came are not the people you planned
+            for. Oraqul finds the belief that broke and rebuilds around who
+            showed up.
+          </p>
+          <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
+            <span className="font-medium text-ink">You bring </span>your results
+            by region or age band, typed, pasted or as a file. They are kept as
+            totals.
+          </p>
+          <ExampleLink href="/examples?case=podcasts" />
         </div>
       </div>
     </section>
   );
 }
 
-const weeks: { day: string; rival?: string; overlap: string; best?: boolean }[] = [
-  { day: 'Fri 7 March', rival: 'Two crime dramas', overlap: 'Risky overlap' },
-  { day: 'Fri 14 March', overlap: 'Low overlap', best: true },
-  { day: 'Fri 21 March', rival: 'One thriller', overlap: 'Moderate overlap' },
-  { day: 'Fri 28 March', rival: 'The biggest rival', overlap: 'Risky overlap' },
+const weeks: {
+  day: string;
+  rival?: string;
+  overlap: string;
+  best?: boolean;
+}[] = [
+  { day: "Fri 7 March", rival: "Two crime dramas", overlap: "Risky overlap" },
+  { day: "Fri 14 March", overlap: "Low overlap", best: true },
+  { day: "Fri 21 March", rival: "One thriller", overlap: "Moderate overlap" },
+  { day: "Fri 28 March", rival: "The biggest rival", overlap: "Risky overlap" },
 ];
 
+/** Test a what if lays the options out as the weeks they are, with the safest one raised. */
 export function WhatIfCase() {
   return (
-    <section id="whatif" aria-label="Test a what if" className={`bg-bg ${band} scroll-mt-16`}>
-      <div className={`${wrap} flex flex-col gap-14`}>
-        <div className="grid gap-10 min-[1000px]:grid-cols-[1fr_1fr] min-[1000px]:items-end">
+    <section
+      id="whatif"
+      aria-label="Test a what if"
+      className={`bg-bg ${band} scroll-mt-16`}
+    >
+      <div className={`${wrap} flex flex-col items-center gap-12`}>
+        <div className="flex flex-col items-center gap-6 text-center">
           <h2 className={h2Class}>Test a what if</h2>
           <p className="max-w-[46ch] text-[18px] leading-[1.55] text-ink/75">
-            Ask before you lock a date, a city or a partner. Oraqul compares the options against the
-            same audience and says which one is safer, with the receipt for each.
+            Ask before you lock a date, a city or a partner. Oraqul compares the
+            options against the same audience and says which one is safer, with
+            the receipt for each.
           </p>
         </div>
-        <Reveal className="grid gap-3 min-[640px]:grid-cols-2 min-[1000px]:grid-cols-4">
+        <Reveal className="grid w-full gap-3 min-[640px]:grid-cols-2 min-[1000px]:grid-cols-4 min-[1000px]:items-end">
           {weeks.map((w, i) => (
             <div
               key={w.day}
-              className={`mk-in flex min-h-44 flex-col gap-3 rounded-2xl p-5 ${w.best ? 'bg-ink text-bg' : 'bg-canvas'}`}
+              className={`mk-in flex flex-col gap-3 rounded-2xl p-5 ${w.best ? "bg-ink text-bg min-[1000px]:min-h-60" : "min-h-44 bg-canvas"}`}
               style={stagger(i)}
             >
               <span className="font-display text-[22px] font-semibold tracking-[-0.02em]">
                 {w.day}
               </span>
-              <span className={`text-[14.5px] ${w.best ? 'opacity-80' : 'text-ink/70'}`}>
-                {w.rival ? `Opening that week: ${w.rival.toLowerCase()}` : 'No rival release'}
+              <span
+                className={`text-[14.5px] ${w.best ? "opacity-80" : "text-ink/70"}`}
+              >
+                {w.rival
+                  ? `Opening that week: ${w.rival.toLowerCase()}`
+                  : "No rival release"}
               </span>
               <span
-                className={`mt-auto w-fit rounded-md px-2.5 py-1 text-[13px] font-medium ${w.best ? 'bg-bg text-ink' : 'bg-card'}`}
+                className={`mt-auto w-fit rounded-md px-2.5 py-1 text-[13px] font-medium ${w.best ? "bg-bg text-ink" : "bg-card"}`}
               >
                 {w.overlap}
               </span>
             </div>
           ))}
         </Reveal>
-        <div className="grid gap-6 border-t border-line pt-8 text-[15px] sm:grid-cols-3">
-          <p>
-            <span className="font-medium">You might type: </span>
-            <span className="text-ink/75">“What if a rival series opens the same weekend?”</span>
+        <div className="flex max-w-[60ch] flex-col items-center gap-4 text-center">
+          <p className="rounded-xl bg-inset px-4 py-3 text-[15px] leading-[1.5]">
+            <span className="sr-only">You might type: </span>“What if a rival
+            series opens the same weekend?”
           </p>
-          <p>
-            <span className="font-medium">You get: </span>
-            <span className="text-ink/75">
-              the overlap for each option, lower is better, and what changes in the plan.
-            </span>
-          </p>
-          <p>
-            <span className="font-medium">You bring: </span>
-            <span className="text-ink/75">the options you are weighing.</span>
+          <p className="text-[15px] leading-[1.55] text-ink/75">
+            You get the overlap for each option, lower is better, and what
+            changes in the plan. Bring the options you are weighing.
           </p>
         </div>
       </div>

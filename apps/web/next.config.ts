@@ -11,6 +11,8 @@ loadEnvConfig(
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // A phone on the same Wi-Fi opens the dev server by LAN address. Without this Next blocks its scripts, the page never hydrates and everything that waits on <Reveal> stays hidden.
+  allowedDevOrigins: ['192.168.*.*'],
   // Old addresses from before projects moved under their category. Temporary, so they can be reused.
   async redirects() {
     return [
