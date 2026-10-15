@@ -17,8 +17,8 @@ export const games: DemoPack = {
       'Region ranking, as lift over a neutral audience',
     ],
     thin: [
-      'Small indie titles. Oraqul falls back to the studio and comp games',
-      'Japan and Brazil entity coverage',
+      'Small indie titles. With few anchors the read rests on the studio and comp games',
+      'Niche genres with few comparable games',
     ],
     none: ['Wishlists, sales, player counts and retention. You supply them for a rescue'],
   },
@@ -348,8 +348,8 @@ export const games: DemoPack = {
         ),
         CN(
           'cn3',
-          'Japan and Brazil entity coverage',
-          `Qloo may not have ${r.name} or its comps in these regions. The plan falls back to the studio and comps.`,
+          'Anchors for Japan and Brazil',
+          `${r.name} is not in Qloo yet, so these regions are read from the studio and comps. If few of them are known there, the line is a draft.`,
         ),
       ],
       course: null,

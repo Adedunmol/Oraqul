@@ -29,7 +29,7 @@ export const music: DemoPack = {
     ],
     thin: [
       'Venues and promoters. Oraqul has no venue data',
-      'Lagos and Accra. Fewer listeners in the data',
+      'New artists with a small catalogue. The read leans on sound alike artists and tags',
     ],
     none: ['Streams, ticket sales and pricing. You supply them for a rescue.'],
   },
@@ -216,7 +216,7 @@ export const music: DemoPack = {
           'as5',
           'The Lagos date can reuse the London plan',
           'weak',
-          'Lagos listeners lean 18 to 34 and Afrobeats first. Qloo data for Lagos is thin.',
+          'Lagos listeners lean 18 to 34 and Afrobeats first. Few comparable artists were found for Lagos.',
           'Build a Lagos plan on its own and treat it as a draft.',
           'geo',
           'top segment, Lagos = 18 to 34',

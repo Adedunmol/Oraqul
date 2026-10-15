@@ -19,8 +19,8 @@ export const film: DemoPack = {
       'Rival opening dates, measured as shared audience',
     ],
     thin: [
-      'Titles outside the US, UK and Canada',
-      'Nigerian titles. Oraqul falls back to comps and cast',
+      'Original ideas with no close comps. The read rests on cast and themes',
+      'Nigerian titles. Present in Qloo, some with low popularity, so the signal is weaker',
     ],
     none: ['Box office, viewing numbers and reviews. You supply them for a rescue'],
   },
@@ -337,8 +337,8 @@ export const film: DemoPack = {
         ),
         CN(
           'cn3',
-          'Nigerian title coverage',
-          `Qloo may not have ${r.name} or its comps in Nigeria. The plan falls back to cast and comps.`,
+          'Anchors for Nigeria',
+          `${r.name} is not in Qloo yet, so Nigeria is read from its comps and cast. If few of them are known there, the line is a draft.`,
         ),
       ],
       course: null,

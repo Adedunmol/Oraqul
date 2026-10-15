@@ -17,8 +17,8 @@ export const books: DemoPack = {
       'Adaptation bridge to series, film and podcasts',
     ],
     thin: [
-      'Small press and self published titles. Oraqul falls back to author and comps',
-      'Nigerian titles and readers',
+      'Debut authors and small press titles. With few anchors the read rests on comps and themes',
+      'A book with no close comps. Cross-domain taste is read instead, and less certain',
     ],
     none: ['Sales, pre orders, bestseller lists and review quality. You supply them for a rescue'],
   },
@@ -348,8 +348,8 @@ export const books: DemoPack = {
         ),
         CN(
           'cn3',
-          'Nigerian title coverage',
-          'Qloo has few Nigerian book entities. The plan falls back to author and comps.',
+          'Anchors for Nigeria',
+          'The book is not in Qloo yet, so Nigeria is read from the author and comps. If few of them are known there, the line is a draft.',
         ),
       ],
       course: null,
