@@ -20,6 +20,7 @@ Written 2026-10-13 from docs.qloo.com, then checked against the live API the sam
 | `/v2/analysis/compare` | verified, shape differs from the OpenAPI definition |
 | `/v2/trending` | verified, with caveats on the date window |
 | Nigerian film and series | three titles checked by year and country, all present, popularity 0.09 to 0.65. Artists, books and other categories not checked. See below |
+| A bundle of comps as the signal for books (2026-10-15) | verified for similar books and for scoring a candidate list. Demographics from a bundle are patchy, places from a bundle are unstable, tags alone are noisy and a person was rejected as a signal. See below |
 | Cross-domain taste tests (one type's fans as the signal for another) | verified on one run (2026-10-15): artist signals return books, podcasts, games and movies, and scoring a candidate list separates books by taste. One kind of book and three artists only. See below |
 | Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo |
 
@@ -34,6 +35,17 @@ Qloo is a taste graph. It says who likes what, and where, for the things it know
 - **Modes.** Design intent, not built. Before release the anchors are the surroundings only. After release the title joins them as one more anchor, and often a weaker one than the comps. For a rescue, the audience the launch actually reached (from the team's results) is compared with the one the plan assumed.
 
 The anchors that describe an item differ by category. See [Categories](#categories).
+
+### Recommended approach (subject to change)
+
+This is the current best view, written 2026-10-15. It is a design, not a verified behaviour, and it will be revised when each category agent is worked on, because the anchors differ by category (for music the artist is often already in Qloo, for podcasts the host matters most) and because of what the proxy probe shows ([Still open](#still-open)).
+
+1. **Build the bundle from comparable titles first.** Three to five comps that belong together. A grab bag of unrelated anchors collapses into generic titles (2026-10-15 run). Check in code that the comps agree before trusting the bundle. A person cannot be the signal on the evidence so far, so use the author's other books as comps. Tags alone gave noisy books; keep them as a filter, once tested, not as an anchor.
+2. **Ask the user to confirm the comps.** They decide the result and Qloo cannot choose them. The agent proposes comps from the pitch and asks one question card to confirm.
+3. **Ask each question of the whole bundle in one call:** one for the audience, one for places, one to score titles of our kind against other kinds. Scores from separate calls are never compared. After the 2026-10-15 proxy run only the scoring call is solid. The audience call is patchy and the place call is unstable (see [What the live run showed](#what-the-live-run-showed)).
+4. **Compute confidence from stability and coverage.** Count how many comps actually returned data, since demographics rows are missing for most books, and how well Qloo knows each (`popularity`). Rerun candidate scoring with each comp left out: if the ranking holds, confidence is higher. All of it is code over Qloo values and costs a few extra calls, which `QLOO_CALL_BUDGET` must allow for. Stability is our own design. Leave-one-out on audiences did not work (2 rows), and on places it flipped the ranking.
+5. **Cross-domain tests are supporting evidence.** A clear gap above the baseline can back a line. It does not drive a headline until checked on more kinds of book and on other categories.
+6. **After release the title joins the bundle** as one more anchor. It does not replace the comps, because a live title can still be thin.
 
 ## Host, auth, limits
 
@@ -170,6 +182,8 @@ Checked once in `responses.ts`.
 | 16 | Cross-domain | A movie as the signal returned results for tv_show, artist, book, podcast, videogame and brand |
 | 17 | Does an artist signal work for books, with a score? | **Yes** (2026-10-15). Three artists each returned 20 books with `query.affinity` on all 20. Podcast, videogame and movie targets also returned results |
 | 18 | Does `filter.results.entities` score a list of candidates we choose? | **Yes**, for books with an artist signal. All 8 candidates came back, each with an affinity, for each of 3 signals. Nothing was dropped for lack of overlap |
+| 19 | Can a person be a signal? | **Not the one tried** (2026-10-15). An author with no `popularity` gave 400 "All of the provided signal.interests.entities were invalid" for book and movie targets. One person tested, so other people are untested |
+| 20 | Does every entity have a demographics row? | **No.** Only 3 of 9 books returned one (age in 6 bands and gender), including a title with popularity 1.000. The others returned a normal 200 with no rows. A call with several entities returns rows only for those that have data |
 
 ## What the live run showed
 
@@ -189,6 +203,15 @@ These shape the agent. They are all from 2026-10-13.
 - Artist signals also returned podcasts, games and movies. Whether those are good results was not judged beyond a look at the top few.
 - Popularity was not varied. Whether low-popularity candidates (the realistic case for a debut) score as cleanly is untested.
 
+**A bundle of comps works as a signal for books, but only the first step is solid (2026-10-15, `qloo:proxy-bundle`).** The pretend launch was an unreleased Nigerian crime thriller. The bundle was four comps: two Nigerian crime novels (one with popularity 0.80), a Swedish bestseller and a US bestseller. A second bundle of four romance titles was the control.
+
+- **Similar books and candidate scoring work.** The thriller bundle returned thrillers. Scored in one call against four more thrillers and four books of other kinds, every thriller beat every other kind (lowest thriller 0.69, highest other 0.63).
+- **The control was a poor one, and shows a trap.** The romance bundle mixed a classic with modern titles and returned unrelated books (a boxed set, poetry, plays), shared nothing with the thriller list, and did not separate the kinds when scoring. So a comp set that is not coherent gives noise, and we cannot yet tell a coherent-but-different bundle from a bad one. The bundle's own coherence should be checked in code before it is trusted.
+- **Demographics are patchy, and silently.** Only 3 of 9 books returned any (conflict 20). The thriller bundle got rows for 2 of its 4 comps and the romance bundle for none, all as normal 200 responses. Leave-one-out on 2 rows moved the age profile by up to 0.36, which is too few to measure stability with. Any audience line from a bundle must count how many comps actually returned a row.
+- **Places from a bundle were unstable.** Ranking Nigerian localities (`heatmapByLocality`) gave 161 localities for the thriller bundle and 55 with one comp left out. Not one of the first 10 was shared, and Lagos moved from position 64 to 12. A locality outside Nigeria came first for the full bundle. Do not build city ranking on this call as it is.
+- **Tags alone are noisy.** A tag lookup returns one tag per namespace (`genre:media`, `subgenre:qloo`, `keyword:qloo`, `theme:qloo`). As the only signal for books, `thriller` gave a mixed list, and the subgenre tag gave young adult and science fiction titles. One larger call returned 504, a smaller one took 5.5 s and another 0.8 s, so timings vary a lot.
+- **A person is not a usable signal so far** (conflict 19). The author's other books can serve as comps instead.
+
 **Responses are big.** One movie carries about 335 tags. Ten movie results from insights were about 780 KB, a Lagos heatmap about 250 KB, and a Nigeria locality heatmap 6.8 MB. A receipt must hold the excerpt a line used, which is why `toReceipt` requires `returned`. Raw Qloo data also must not reach public share links ([PRD](../product/prd.md)).
 
 **`take` is not a limit everywhere.** `take=20` on a Lagos heatmap returned 558 cells and `take=10` on the locality heatmap returned 224 localities. On compare, `take=20` gave 12 shared tags but 30 and 34 tags on the two sides. Slice results in code.
@@ -204,6 +227,7 @@ These shape the agent. They are all from 2026-10-13.
 - Whether tag-signal calls are slow on non-book types (another project saw 10 to 60 seconds). The smoke run did not record timings.
 - Whether a book id can be used as a signal outside book insights. A movie id can.
 - Cross-domain tests beyond the first run: other kinds of book, podcasts and games as targets, film and brand signals, candidates with low popularity, and how large a gap between kind and baseline counts as a real signal. The anchors table in [Categories](#categories) is still a hypothesis. `TODO(verify)`.
+- After the proxy run: why demographics are missing for most books and whether that differs for films, music, podcasts and games; a place ranking that holds when a comp is dropped (a geohash heatmap, or a different region size, instead of `heatmapByLocality`); whether a coherent bundle of a different kind (not a mixed romance set) separates cleanly from the thriller one; how tags behave as a filter instead of a signal; whether any person can be a signal. `TODO(verify)`.
 - Coverage per category: a probe of about ten real titles each (well known, new, and local-language) to replace the guesses about podcasts, games and other regions with measured counts.
 - `person`, `place`, `destination` and `locality` insights; the weights for age, gender and location; the names in conflicts 7 to 12.
 - Lagos against no location for age and gender splits (does location change the demographics?). Location changes the ranking, but no location parameter is documented for the demographics call, so this may need a different approach.
@@ -222,7 +246,7 @@ These shape the agent. They are all from 2026-10-13.
 1. Put `QLOO_API_KEY` and `QLOO_BASE_URL` in `.env`.
 2. `pnpm --filter @oraqul/engine qloo:smoke`. It prints counts and yes/no only, makes about 50 calls, and saves one response per endpoint and category type to `packages/engine/fixtures` (gitignored).
 3. Settle anything still open above. Fix the schemas and types, remove the `TODO(verify)` markers that are confirmed, and update the status table with the date.
-4. `pnpm --filter @oraqul/engine qloo:cross-domain` (about 21 calls) reruns the cross-domain check. Unlike the smoke run it prints titles and scores to the terminal so they can be judged by eye, and saves nothing. Copy conclusions into the docs, not names or scores.
+4. `pnpm --filter @oraqul/engine qloo:cross-domain` (about 21 calls) and `qloo:proxy-bundle` (about 40 calls, three of them large and slow) rerun the cross-domain and proxy checks. Unlike the smoke run it prints titles and scores to the terminal so they can be judged by eye, and saves nothing. Copy conclusions into the docs, not names or scores.
 5. Contract tests that parse the fixtures arrive with the first tools ([testing.md](../testing.md)).
 
 ## Open questions
