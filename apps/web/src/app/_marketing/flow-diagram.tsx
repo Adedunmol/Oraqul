@@ -2,14 +2,14 @@ import { Logo } from '@oraqul/ui';
 import type { CSSProperties } from 'react';
 
 const inYourTeam: [string, boolean][] = [
-  ['Harmattan', true],
-  ['Lagos, London', true],
+  ['Night Ferry', true],
+  ['Mexico City, London', true],
   ['Ages 25 to 34', true],
   ['Customer emails', false],
   ['Names of people', false],
 ];
 
-const sent = ['Harmattan', 'Lagos', '25 to 34'];
+const sent = ['Night Ferry', 'Mexico City', '25 to 34'];
 
 /** A lane with tokens moving along it. Horizontal on a wide screen, downwards on a narrow one. */
 function Lane() {

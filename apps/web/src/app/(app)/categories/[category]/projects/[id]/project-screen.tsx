@@ -26,6 +26,7 @@ import type { Viewer } from '@/lib/api/viewer';
 import { getCategory } from '@/lib/demo/catalog';
 import { comparePlans } from '@/lib/demo/queries';
 import { projectsPath } from '@/lib/routes';
+import { ConfirmDialog } from '../../../../_components/confirm-dialog';
 import { Modal } from '../../../../_components/modal';
 
 type ProjectUpdate = Extract<ThreadEvent, { type: 'project.updated' }>;
@@ -95,7 +96,11 @@ export function ProjectWorkspace({
             )}
             <div className="min-w-0">
               {reading ? (
-                <div role="status" aria-label="Reading what this project is" className="flex flex-col gap-2 py-1">
+                <div
+                  role="status"
+                  aria-label="Reading what this project is"
+                  className="flex flex-col gap-2 py-1"
+                >
                   <span className={`block h-6 w-44 ${bar}`} />
                   <span className={`block h-3.5 w-28 ${bar}`} />
                 </div>
@@ -115,12 +120,11 @@ export function ProjectWorkspace({
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button onClick={() => setDetails(true)} disabled={reading}>
+            <Button icon="details" onClick={() => setDetails(true)} disabled={reading}>
               Project details
             </Button>
             {canEdit ? (
-              <Button variant="primary" onClick={newChat} disabled={reading}>
-                <Icon name="plus" className="size-4" />
+              <Button variant="primary" icon="plus" onClick={newChat} disabled={reading}>
                 New chat
               </Button>
             ) : null}
@@ -196,30 +200,28 @@ export function ProjectWorkspace({
               }}
             />
           </Modal>
-          <Modal open={deleting} onClose={() => setDeleting(false)} title={`Delete ${name}?`}>
-            <p className="text-muted">
+          <ConfirmDialog
+            open={deleting}
+            onClose={() => setDeleting(false)}
+            title={`Delete ${name}?`}
+            confirmLabel="Delete project"
+            onConfirm={async () => {
+              try {
+                await deleteProject(project.id);
+                toast(`${name} deleted`);
+                router.push(projectsPath(info.id));
+                router.refresh();
+              } catch {
+                toast(`Could not delete ${name}. Try again.`);
+              }
+            }}
+          >
+            <p>
               This removes the project, its {plural(threads.length, 'chat')} and{' '}
-              {plural(outputs.length, 'output')} for everyone on the team. It cannot be undone.
+              {plural(outputs.length, 'output')} for everyone on the team.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={() => setDeleting(false)}>Cancel</Button>
-              <Button
-                variant="dangerSolid"
-                onClick={async () => {
-                  try {
-                    await deleteProject(project.id);
-                    toast(`${name} deleted`);
-                    router.push(projectsPath(info.id));
-                    router.refresh();
-                  } catch {
-                    toast(`Could not delete ${name}. Try again.`);
-                  }
-                }}
-              >
-                Delete project
-              </Button>
-            </div>
-          </Modal>
+            <p className="font-medium text-ink">It cannot be undone.</p>
+          </ConfirmDialog>
         </>
       ) : null}
     </div>
@@ -373,8 +375,7 @@ function Details({
       </section>
       {canDelete ? (
         <div className="max-[899px]:hidden">
-          <Button variant="danger" onClick={onDelete}>
-            <Icon name="trash" className="size-4" />
+          <Button variant="danger" icon="trash" onClick={onDelete}>
             Delete project
           </Button>
         </div>

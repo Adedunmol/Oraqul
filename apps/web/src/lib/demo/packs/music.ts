@@ -6,10 +6,10 @@ const SUPPORT = 'Nia Okoro';
 const GRID: Record<string, [number, number, number]> = {
   London: [1.1, 1.6, 1.3],
   Toronto: [0.9, 1.5, 1.4],
-  Lagos: [0.8, 1.3, 1.5],
-  Houston: [0.9, 1.2, 1.2],
-  Accra: [0.8, 1.1, 1.3],
-  Atlanta: [1.0, 1.3, 1.2],
+  'Mexico City': [0.8, 1.3, 1.5],
+  Austin: [0.9, 1.2, 1.2],
+  Seoul: [0.8, 1.1, 1.3],
+  Chicago: [1.0, 1.3, 1.2],
 };
 const gridVal = (city: string, i: 0 | 1 | 2): number => GRID[city]?.[i] ?? 1;
 
@@ -43,12 +43,12 @@ export const music: DemoPack = {
   ],
   kinds: ['Tour', 'Album', 'EP', 'Single'],
   placeLabel: 'route cities',
-  placeOpts: ['London', 'Houston', 'Toronto', 'Lagos', 'Atlanta'],
+  placeOpts: ['London', 'Austin', 'Toronto', 'Mexico City', 'Chicago'],
   files: { plan: 'tour-plan.xlsx', res: 'streams-and-tickets.csv' },
   descHint:
     'Describe the release or tour: artist, genre, similar artists, cities, window. Paste or attach anything you already have, such as a tour plan or ticket numbers.',
   matchOpts: (n) => [
-    { v: `${n} (artist)`, l: `${n} (artist)`, d: 'Afrobeats · 41k listeners in Qloo' },
+    { v: `${n} (artist)`, l: `${n} (artist)`, d: 'Indie pop · 41k listeners in Qloo' },
     { v: `${n} (band)`, l: `${n} (band)`, d: 'Indie rock · low confidence' },
   ],
   q2: {
@@ -157,15 +157,15 @@ export const music: DemoPack = {
   base(r) {
     const who = r.lead || 'the headliner';
     const pl = placesFor(r);
-    const hasHouston = pl.some((p) => p.name === 'Houston');
+    const hasAustin = pl.some((p) => p.name === 'Austin');
     const cols = pl.slice(0, 3).map((p) => p.name);
     const B: DBrief = {
       aLabels: r.places.slice(),
       planned: fitArr([28, 24, 14, 26, 8], r.places.length),
       audience: [
         A('au1', 'Superfans 25 to 34', 86, `Highest affinity for ${who} and similar artists`),
-        A('au2', 'Diaspora listeners 25 to 34', 78, 'Strong in London, Toronto and Atlanta'),
-        A('au3', 'Afrobeats listeners 18 to 24', 72, 'Streams heavily, buys fewer tickets'),
+        A('au2', 'Genre fans 25 to 34', 78, 'Strong in London, Toronto and Chicago'),
+        A('au3', 'Indie pop listeners 18 to 24', 72, 'Streams heavily, buys fewer tickets'),
         A('au4', 'Gig goers 25 to 44', 66, 'Overlaps with the support act audiences'),
         A('au5', 'Casual listeners 35 to 54', 41, 'Low overlap with similar artists'),
         A(
@@ -180,28 +180,28 @@ export const music: DemoPack = {
           'as1',
           'Superfans 25 to 34 are the core audience',
           'holds',
-          'Affinity 86, an 8 point lead over diaspora listeners.',
+          'Affinity 86, an 8 point lead over genre fans.',
           '',
           'demo',
-          'superfans 25 to 34 = 86, diaspora listeners = 78',
+          'superfans 25 to 34 = 86, genre fans = 78',
         ),
         AS(
           'as2',
-          'Houston will be the biggest diaspora city',
+          'Austin will be the biggest US city',
           'breaks',
-          'Lift in Houston is 1.1. Toronto is 1.5 and Atlanta is 1.5.',
-          'Swap Houston for Atlanta, or move Toronto earlier in the route.',
+          'Lift in Austin is 1.1. Toronto is 1.5 and Chicago is 1.5.',
+          'Swap Austin for Chicago, or move Toronto earlier in the route.',
           'geo',
-          'lift(Houston) = 1.1, lift(Toronto) = 1.5',
+          'lift(Austin) = 1.1, lift(Toronto) = 1.5',
         ),
         AS(
           'as3',
           `${SUPPORT} is the right support act`,
           'weak',
           'Her lift is 1.1 in London and 0.9 in Toronto. Two other acts score above 1.3 in every city.',
-          'Test Tobe Marlow or Sade Kline as the support act.',
+          'Test Tomas Marlow or Sadie Kline as the support act.',
           'cmp',
-          'lift(support acts) across London, Toronto, Lagos',
+          'lift(support acts) across London, Toronto, Mexico City',
         ),
         AS(
           'as4',
@@ -214,12 +214,12 @@ export const music: DemoPack = {
         ),
         AS(
           'as5',
-          'The Lagos date can reuse the London plan',
+          'The Mexico City date can reuse the London plan',
           'weak',
-          'Lagos listeners lean 18 to 34 and Afrobeats first. Few comparable artists were found for Lagos.',
-          'Build a Lagos plan on its own and treat it as a draft.',
+          'Mexico City listeners lean 18 to 34 and Indie pop first. Few comparable artists were found for Mexico City.',
+          'Build a Mexico City plan on its own and treat it as a draft.',
           'geo',
-          'top segment, Lagos = 18 to 34',
+          'top segment, Mexico City = 18 to 34',
           true,
         ),
         AS(
@@ -242,20 +242,32 @@ export const music: DemoPack = {
         ),
       ],
       s1: [
-        F('s1a', 'Tobe Marlow', 88, 'Lift 1.6 in London, 1.5 in Toronto, 1.3 in Lagos', 'cmp'),
-        F('s1b', 'Sade Kline', 85, 'Lift 1.3 in London, 1.4 in Toronto, 1.5 in Lagos', 'cmp'),
-        F('s1c', SUPPORT, 58, 'Lift 1.1 in London, 0.9 in Toronto, 0.8 in Lagos', 'cmp'),
+        F(
+          's1a',
+          'Tomas Marlow',
+          88,
+          'Lift 1.6 in London, 1.5 in Toronto, 1.3 in Mexico City',
+          'cmp',
+        ),
+        F(
+          's1b',
+          'Sadie Kline',
+          85,
+          'Lift 1.3 in London, 1.4 in Toronto, 1.5 in Mexico City',
+          'cmp',
+        ),
+        F('s1c', SUPPORT, 58, 'Lift 1.1 in London, 0.9 in Toronto, 0.8 in Mexico City', 'cmp'),
       ],
       s2: [
         F('s2a', 'Pulse Energy', 81, 'Affinity 81 with superfans', 'brand'),
-        F('s2b', 'Kente Threads', 73, 'Affinity 73 with diaspora listeners', 'brand'),
+        F('s2b', 'Loom & Co', 73, 'Affinity 73 with genre fans', 'brand'),
         F('s2c', 'Sonar Headphones', 68, 'Affinity 68 with gig goers', 'brand'),
         F('s2d', 'Ledger Bank', 41, 'Affinity 41 with the core group', 'brand'),
       ],
       s3: [
         F('s3a', 'Naija Heat (playlist)', 87, 'Listener overlap 87', 'pod'),
-        F('s3b', 'Lagos to London (playlist)', 80, 'Listener overlap 80', 'pod'),
-        F('s3c', 'Afrobeats Now (radio)', 74, 'Listener overlap 74', 'pod'),
+        F('s3b', 'Mexico City to London (playlist)', 80, 'Listener overlap 80', 'pod'),
+        F('s3c', 'Indie Pop Now (radio)', 74, 'Listener overlap 74', 'pod'),
         F('s3d', 'Late Night Rotation (radio)', 61, 'Listener overlap 61', 'pod'),
       ],
       s4: [
@@ -270,13 +282,13 @@ export const music: DemoPack = {
           { id: 'g1', name: SUPPORT, tag: 'Planned', vals: cols.map((n) => gridVal(n, 0)) },
           {
             id: 'g2',
-            name: 'Tobe Marlow',
+            name: 'Tomas Marlow',
             tag: 'Suggested by Oraqul',
             vals: cols.map((n) => gridVal(n, 1)),
           },
           {
             id: 'g3',
-            name: 'Sade Kline',
+            name: 'Sadie Kline',
             tag: 'Suggested by Oraqul',
             vals: cols.map((n) => gridVal(n, 2)),
           },
@@ -304,7 +316,7 @@ export const music: DemoPack = {
           id: 'da3',
           date: 'Oct 31',
           wk: 2,
-          rival: 'Sade Kline, tour announcement',
+          rival: 'Sadie Kline, tour announcement',
           overlap: 47,
           rec: 'Moderate',
         },
@@ -322,26 +334,26 @@ export const music: DemoPack = {
         },
         {
           id: 'pb2',
-          name: 'Tobe Marlow (support act)',
+          name: 'Tomas Marlow (support act)',
           type: 'Support act',
-          fits: 'Superfans and diaspora listeners',
+          fits: 'Superfans and genre fans',
           ev: 'Lift above 1.3 in every route city',
           k: 'cmp',
-          draft: `Subject: Joining the ${r.name}\n\nHi Tobe,\n\nYour audience overlaps strongly with ours in every city on the route (lift above 1.3). We would like to invite you to support on the full run.\n\nBest,\nThe Kora tour team\n\n(Draft only. Oraqul does not send it.)`,
+          draft: `Subject: Joining the ${r.name}\n\nHi Tomas,\n\nYour audience overlaps strongly with ours in every city on the route (lift above 1.3). We would like to invite you to support on the full run.\n\nBest,\nThe Kora tour team\n\n(Draft only. Oraqul does not send it.)`,
         },
       ],
       risks: [
         RK(
           'rk1',
-          'Houston underdelivers',
-          'Houston presales below 60 percent of capacity two weeks out',
-          'Swap Houston for Atlanta',
+          'Austin underdelivers',
+          'Austin presales below 60 percent of capacity two weeks out',
+          'Swap Austin for Chicago',
         ),
         RK(
           'rk2',
           'The support act adds no tickets',
           'Presales do not move after the support act is announced',
-          'Announce Tobe Marlow or Sade Kline',
+          'Announce Tomas Marlow or Sadie Kline',
         ),
         RK(
           'rk3',
@@ -366,53 +378,54 @@ export const music: DemoPack = {
       course: null,
       results: null,
     };
-    if (!hasHouston) B.assumptions = B.assumptions.filter((x) => x.id !== 'as2');
-    if (!r.places.includes('Lagos')) B.assumptions = B.assumptions.filter((x) => x.id !== 'as5');
+    if (!hasAustin) B.assumptions = B.assumptions.filter((x) => x.id !== 'as2');
+    if (!r.places.includes('Mexico City'))
+      B.assumptions = B.assumptions.filter((x) => x.id !== 'as5');
     return B;
   },
   scen: [
     {
       id: 'swap',
-      label: 'Houston is replaced by Atlanta',
-      re: /houston|atlanta|swap|city/,
+      label: 'Austin is replaced by Chicago',
+      re: /austin|chicago|swap|city/,
       apply(b) {
-        const i = b.places.findIndex((p) => p.name === 'Houston');
+        const i = b.places.findIndex((p) => p.name === 'Austin');
         const houston = b.places[i];
         if (houston) {
-          const atlanta = placeRow('music', 'Atlanta', houston.id);
+          const atlanta = placeRow('music', 'Chicago', houston.id);
           if (atlanta) b.places[i] = atlanta;
         }
         const x = assumption(b, 'as2');
         if (x) {
           x.verdict = 'holds';
-          x.why = 'With Atlanta in the route, lift for the second diaspora stop is 1.5.';
+          x.why = 'With Chicago in the route, lift for the second US stop is 1.5.';
           x.fix = '';
-          x.text = 'The second diaspora city is Atlanta';
+          x.text = 'The second US city is Chicago';
         }
         b.risks.push(
           RK(
             'rk4',
-            'Atlanta dates are not yet held',
+            'Chicago dates are not yet held',
             'Venue holds are not confirmed by Oct 25',
-            'Hold Atlanta and Houston together until one clears',
+            'Hold Chicago and Austin together until one clears',
           ),
         );
       },
     },
     {
       id: 'support',
-      label: 'The support act is changed to Tobe Marlow',
+      label: 'The support act is changed to Tomas Marlow',
       re: /support|opener|act/,
       apply(b) {
         const x = assumption(b, 'as3');
         if (x) {
           x.verdict = 'holds';
-          x.text = 'Tobe Marlow is the right support act';
-          x.why = 'Lift is 1.6 in London, 1.5 in Toronto and 1.3 in Lagos.';
+          x.text = 'Tomas Marlow is the right support act';
+          x.why = 'Lift is 1.6 in London, 1.5 in Toronto and 1.3 in Mexico City.';
           x.fix = '';
         }
         for (const row of b.grid?.rows ?? []) {
-          if (row.name === 'Tobe Marlow') row.tag = 'Chosen';
+          if (row.name === 'Tomas Marlow') row.tag = 'Chosen';
           else if (row.tag === 'Planned') row.tag = 'Dropped';
         }
         for (const s of b.s1) if (s.id === 's1a') s.note = 'Chosen';
@@ -473,14 +486,14 @@ export const music: DemoPack = {
       best.lift = 1.6;
       best.note = 'Overdelivered. Add a second date.';
     }
-    if (!b.places.some((p) => p.name === 'Atlanta')) {
-      const atlanta = placeRow('music', 'Atlanta', 'pl9');
+    if (!b.places.some((p) => p.name === 'Chicago')) {
+      const atlanta = placeRow('music', 'Chicago', 'pl9');
       if (atlanta) b.places.push(atlanta);
     }
     b.s2.push(
       F(
         's2e',
-        `Kente Threads pop up in ${g.B}`,
+        `Loom & Co pop up in ${g.B}`,
         79,
         'Affinity 79 with the audience that showed up',
         'brand',
@@ -490,14 +503,14 @@ export const music: DemoPack = {
     b.course = {
       summary: `The plan assumed ${g.W} would deliver ${g.wp} percent of the audience. It delivered ${g.wa} percent, and ${g.B} delivered ${g.ba}. The show was liked, so the miss is about where the audience lives.`,
       actions: [
-        `Swap the remaining ${g.W} date for Atlanta.`,
+        `Swap the remaining ${g.W} date for Chicago.`,
         `Add a second ${g.B} date in the same week.`,
-        'Announce Tobe Marlow as the support act for the remaining dates.',
+        'Announce Tomas Marlow as the support act for the remaining dates.',
         `Move the Pulse Energy activation to ${g.B}.`,
       ],
       territories: [
-        `Atlanta: hold a date for the week after ${g.B}.`,
-        'Lagos: hold spend until the first show shows the split.',
+        `Chicago: hold a date for the week after ${g.B}.`,
+        'Mexico City: hold spend until the first show shows the split.',
       ],
       stop: [`Stop paid social aimed at ${g.W}.`, 'Stop the Ledger Bank tie in.'],
     };

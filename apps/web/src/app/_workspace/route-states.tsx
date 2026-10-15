@@ -21,7 +21,7 @@ export function PageError({ what, retry }: { what: string; retry: () => void }) 
     <div className="flex w-full max-w-3xl flex-col items-start gap-3">
       <h1 className="font-display text-2xl font-semibold">We could not load {what}.</h1>
       <p className="text-muted">Nothing was lost. Try again in a moment.</p>
-      <Button variant="primary" onClick={() => retry()}>
+      <Button variant="primary" icon="retry" onClick={() => retry()}>
         Try again
       </Button>
     </div>

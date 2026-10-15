@@ -26,12 +26,12 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
       conf: 'high',
       note: 'Lead with Austin and Chicago.',
     },
-    Nigeria: {
+    Mexico: {
       lift: 1.5,
       date: 'Dec 4',
       aud: 'Men and women 25 to 34',
       conf: 'lower',
-      note: 'Few comparable titles were found for Nigeria. The plan rests on comps and cast, treat it as a draft.',
+      note: 'Few comparable titles were found for Mexico. The plan rests on comps and cast, treat it as a draft.',
     },
     Germany: {
       lift: 1.2,
@@ -52,14 +52,14 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
     London: {
       lift: 1.7,
       date: 'Nov 14',
-      aud: 'Superfans and diaspora listeners 25 to 34',
+      aud: 'Superfans and genre fans 25 to 34',
       conf: 'high',
       note: 'Opening night. Strong superfan base.',
     },
-    Houston: {
+    Austin: {
       lift: 1.1,
       date: 'Nov 21',
-      aud: 'Diaspora listeners 25 to 44',
+      aud: 'Genre fans 25 to 44',
       conf: 'medium',
       note: 'Planned as the second biggest city. The data says otherwise.',
     },
@@ -70,26 +70,26 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
       conf: 'high',
       note: 'Highest lift outside London.',
     },
-    Lagos: {
+    'Mexico City': {
       lift: 1.4,
       date: 'Dec 20',
-      aud: 'Afrobeats listeners 18 to 34',
+      aud: 'Indie pop listeners 18 to 34',
       conf: 'lower',
-      note: 'Home crowd. Few Lagos venues came back, so treat it as a draft.',
+      note: 'Newest market. Few Mexico City venues came back, so treat it as a draft.',
     },
-    Accra: {
+    Seoul: {
       lift: 1.0,
       date: 'Dec 23',
-      aud: 'Afrobeats listeners 18 to 34',
+      aud: 'Indie pop listeners 18 to 34',
       conf: 'lower',
       note: 'Thin data. Treat as a draft.',
     },
-    Atlanta: {
+    Chicago: {
       lift: 1.5,
       date: 'Nov 21',
-      aud: 'Diaspora listeners 25 to 34',
+      aud: 'Genre fans 25 to 34',
       conf: 'medium',
-      note: 'A stronger fit than Houston.',
+      note: 'A stronger fit than Austin.',
     },
   },
   books: {
@@ -107,12 +107,12 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
       conf: 'high',
       note: 'Coastal states first.',
     },
-    Nigeria: {
+    Mexico: {
       lift: 1.2,
       date: 'Mar 25',
       aud: 'Literary readers 25 to 34',
       conf: 'lower',
-      note: 'Few comparable books were found for Nigeria. Treat as a draft.',
+      note: 'Few comparable books were found for Mexico. Treat as a draft.',
     },
     Canada: {
       lift: 1.3,
@@ -131,11 +131,11 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
     },
     US: {
       lift: 1.5,
-      aud: 'Diaspora listeners 25 to 44',
+      aud: 'Travel listeners 25 to 44',
       conf: 'high',
       note: 'Strong, and not the lead market in the plan.',
     },
-    Nigeria: {
+    Mexico: {
       lift: 1.1,
       aud: 'Listeners 25 to 34',
       conf: 'lower',

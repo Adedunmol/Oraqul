@@ -12,10 +12,7 @@ export default async function ProjectPage({
   const scope = parseScope(category);
   if (!scope) notFound();
   const returnTo = `/categories/${scope}/projects/${id}`;
-  const [viewer, detail] = await Promise.all([
-    getViewer(returnTo),
-    getProjectDetail(id, returnTo),
-  ]);
+  const [viewer, detail] = await Promise.all([getViewer(returnTo), getProjectDetail(id, returnTo)]);
   const newest = detail.threads[0]?.thread.id;
   const { project } = detail;
   // A draft has no category yet, so it lives at its chat's address until the router reads it.

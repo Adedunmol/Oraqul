@@ -1,31 +1,31 @@
-import { Chip, Icon, VerdictPill } from "@oraqul/ui";
-import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
-import { Reveal } from "../reveal";
-import { band, h2Class, wrap } from "../section";
+import { Chip, Icon, VerdictPill } from '@oraqul/ui';
+import Link from 'next/link';
+import type { CSSProperties, ReactNode } from 'react';
+import { Reveal } from '../reveal';
+import { band, h2Class, wrap } from '../section';
 
-const stagger = (i: number) => ({ "--i": i }) as CSSProperties;
+const stagger = (i: number) => ({ '--i': i }) as CSSProperties;
 
 export const cases = [
   {
-    id: "plan",
-    title: "Make a plan",
-    line: "You have a title and no plan yet.",
+    id: 'plan',
+    title: 'Make a plan',
+    line: 'You have a title and no plan yet.',
   },
   {
-    id: "check",
-    title: "Check my plan",
-    line: "You have a plan and want to know where it is weak.",
+    id: 'check',
+    title: 'Check my plan',
+    line: 'You have a plan and want to know where it is weak.',
   },
   {
-    id: "fix",
-    title: "Fix one that missed",
-    line: "It is out and the numbers are not what you hoped.",
+    id: 'fix',
+    title: 'Fix one that missed',
+    line: 'It is out and the numbers are not what you hoped.',
   },
   {
-    id: "whatif",
-    title: "Test a what if",
-    line: "You are weighing a date, a city or a partner.",
+    id: 'whatif',
+    title: 'Test a what if',
+    line: 'You are weighing a date, a city or a partner.',
   },
 ] as const;
 
@@ -96,50 +96,40 @@ function ExampleTag() {
 }
 
 const ladder: [string, number, string][] = [
-  ["Lagos", 1.82, "Strong"],
-  ["London", 1.64, "Strong"],
-  ["Toronto", 1.41, "Usable"],
-  ["Houston", 1.33, "Usable"],
-  ["Manchester", 1.08, "Low lift"],
+  ['Mexico City', 1.82, 'Strong'],
+  ['London', 1.64, 'Strong'],
+  ['Toronto', 1.41, 'Usable'],
+  ['Austin', 1.33, 'Usable'],
+  ['Manchester', 1.08, 'Low lift'],
 ];
 
 /** Make a plan reads as the chat it is: the ask on the right, the agent's answer under it. */
 export function PlanCase() {
   return (
-    <section
-      id="plan"
-      aria-label="Make a plan"
-      className={`${band} scroll-mt-16`}
-    >
-      <div
-        className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}
-      >
+    <section id="plan" aria-label="Make a plan" className={`${band} scroll-mt-16`}>
+      <div className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}>
         <div className="flex flex-col gap-6 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
           <h2 className={h2Class}>Make a plan</h2>
           <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
-            You have a title, a rough window and a hunch about the audience.
-            Oraqul builds the plan from what that audience actually likes.
+            You have a title, a rough window and a hunch about the audience. Oraqul builds the plan
+            from what that audience actually likes.
           </p>
           <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
-            <span className="font-medium text-ink">You bring </span>a title and
-            a short description. Files help but are optional.
+            <span className="font-medium text-ink">You bring </span>a title and a short description.
+            Files help but are optional.
           </p>
           <ExampleLink href="/examples?case=film&tab=territories" />
         </div>
         <Reveal className="flex flex-col gap-5">
           <UserBubble>
-            Plan the release of Harmattan, a Lagos crime drama series, for the
-            UK and the US.
+            Plan the release of Night Ferry, a Mexico City crime drama series, for the UK and the
+            US.
           </UserBubble>
           <div className="mk-in flex flex-col gap-4" style={stagger(1)}>
-            <span className="text-[14px] font-semibold text-accent">
-              Oraqul
-            </span>
+            <span className="text-[14px] font-semibold text-accent">Oraqul</span>
             <div className="flex flex-col gap-4 rounded-2xl bg-card p-[clamp(16px,3vw,24px)] shadow-md">
               <div className="flex items-center justify-between gap-3 text-[13px]">
-                <span className="font-semibold">
-                  Where to open, ranked by lift
-                </span>
+                <span className="font-semibold">Where to open, ranked by lift</span>
                 <ExampleTag />
               </div>
               <ol className="flex flex-col">
@@ -168,12 +158,10 @@ export function PlanCase() {
               </ol>
             </div>
             <p className="text-[15px] leading-[1.55] text-ink/75">
-              Also in the plan: the audience, comparable titles, partner brands
-              and the risks to watch.
+              Also in the plan: the audience, comparable titles, partner brands and the risks to
+              watch.
             </p>
-            <Tabs
-              tabs={["Summary", "Audience", "Plan", "Territories", "Evidence"]}
-            />
+            <Tabs tabs={['Summary', 'Audience', 'Plan', 'Territories', 'Evidence']} />
           </div>
         </Reveal>
       </div>
@@ -183,17 +171,17 @@ export function PlanCase() {
 
 const audit: {
   belief: string;
-  verdict: "holds" | "weak" | "breaks" | "cant";
+  verdict: 'holds' | 'weak' | 'breaks' | 'cant';
   better?: string;
 }[] = [
-  { belief: "Women 25 to 34 are the core audience", verdict: "holds" },
+  { belief: 'Women 25 to 34 are the core audience', verdict: 'holds' },
   {
-    belief: "Open in the UK first",
-    verdict: "breaks",
-    better: "Open in Canada first",
+    belief: 'Open in the UK first',
+    verdict: 'breaks',
+    better: 'Open in Canada first',
   },
-  { belief: "Partner with a late night radio show", verdict: "weak" },
-  { belief: "Pre sales will cover the spend", verdict: "cant" },
+  { belief: 'Partner with a late night radio show', verdict: 'weak' },
+  { belief: 'Pre sales will cover the spend', verdict: 'cant' },
 ];
 
 /** Check my plan is a ledger: one belief per line, the verdict beside it, the fix at the end. */
@@ -208,8 +196,8 @@ export function CheckCase() {
         <div className="flex flex-col gap-6">
           <h2 className={`${h2Class} max-w-[16ch]`}>Check my plan</h2>
           <p className="max-w-[52ch] text-[clamp(18px,2vw,24px)] leading-[1.4] text-ink/75">
-            <span className="sr-only">You might type: </span>“Check my plan:
-            open in the UK, then Canada. Our core audience is women 25 to 34.”
+            <span className="sr-only">You might type: </span>“Check my plan: open in the UK, then
+            Canada. Our core audience is women 25 to 34.”
             <span aria-hidden="true" className="mk-caret" />
           </p>
         </div>
@@ -226,7 +214,7 @@ export function CheckCase() {
                 style={stagger(i)}
               >
                 <span
-                  className={`font-display text-[clamp(18px,1.9vw,24px)] tracking-[-0.02em] ${a.better ? "text-muted line-through" : ""}`}
+                  className={`font-display text-[clamp(18px,1.9vw,24px)] tracking-[-0.02em] ${a.better ? 'text-muted line-through' : ''}`}
                 >
                   {a.belief}
                 </span>
@@ -246,9 +234,8 @@ export function CheckCase() {
         </Reveal>
         <div className="flex flex-col gap-3 text-[15px] text-ink/75 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <p className="max-w-[60ch]">
-            Every belief is marked Holds, Weak, Breaks or Could not test, with a
-            stronger option for anything that breaks. Bring your plan, pasted or
-            as a file.
+            Every belief is marked Holds, Weak, Breaks or Could not test, with a stronger option for
+            anything that breaks. Bring your plan, pasted or as a file.
           </p>
           <ExampleLink href="/examples?case=music&tab=assumptions" />
         </div>
@@ -258,9 +245,9 @@ export function CheckCase() {
 }
 
 const bands: [string, number, number][] = [
-  ["18 to 24", 30, 12],
-  ["25 to 34", 55, 28],
-  ["35 to 44", 15, 60],
+  ['18 to 24', 30, 12],
+  ['25 to 34', 55, 28],
+  ['35 to 44', 15, 60],
 ];
 
 /** Fix one that missed leads with the picture: planned against actual as paired columns. */
@@ -276,9 +263,7 @@ export function FixCase() {
       >
         <Reveal className="flex flex-col gap-6 rounded-2xl bg-card p-[clamp(16px,3vw,28px)] shadow-md">
           <div className="flex flex-wrap items-center justify-between gap-3 text-[13px]">
-            <span className="font-semibold">
-              Planned against actual, by age band
-            </span>
+            <span className="font-semibold">Planned against actual, by age band</span>
             <span className="flex items-center gap-4 text-muted">
               <span className="flex items-center gap-2">
                 <span className="h-2 w-4 rounded-sm bg-muted" /> Planned
@@ -294,17 +279,15 @@ export function FixCase() {
               <div key={label} className="flex flex-col gap-3">
                 <div className="flex h-56 items-end gap-1.5">
                   {[
-                    [planned, "bg-muted"],
-                    [actual, "bg-accent"],
+                    [planned, 'bg-muted'],
+                    [actual, 'bg-accent'],
                   ].map(([v, fill]) => (
                     <div
                       key={fill}
                       className="mk-in flex h-full flex-1 flex-col justify-end gap-1.5"
                       style={stagger(i)}
                     >
-                      <span className="text-center text-[13px] tabular-nums text-muted">
-                        {v}%
-                      </span>
+                      <span className="text-center text-[13px] tabular-nums text-muted">{v}%</span>
                       <span
                         className={`block rounded-t-sm ${fill}`}
                         style={{ height: `${(Number(v) / 70) * 100}%` }}
@@ -312,29 +295,24 @@ export function FixCase() {
                     </div>
                   ))}
                 </div>
-                <span className="pb-3 text-center text-[14px] font-medium">
-                  Ages {label}
-                </span>
+                <span className="pb-3 text-center text-[14px] font-medium">Ages {label}</span>
               </div>
             ))}
           </div>
           <p className="text-[15px] leading-[1.5]">
-            <span className="font-semibold">What broke:</span> the plan bet on
-            25 to 34. The people who came were 35 to 44, so the next wave is
-            planned around them.
+            <span className="font-semibold">What broke:</span> the plan bet on 25 to 34. The people
+            who came were 35 to 44, so the next wave is planned around them.
           </p>
         </Reveal>
         <div className="flex flex-col gap-6">
           <h2 className={h2Class}>Fix one that missed</h2>
           <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
-            It is out and the people who came are not the people you planned
-            for. Oraqul finds the belief that broke and rebuilds around who
-            showed up.
+            It is out and the people who came are not the people you planned for. Oraqul finds the
+            belief that broke and rebuilds around who showed up.
           </p>
           <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
-            <span className="font-medium text-ink">You bring </span>your results
-            by region or age band, typed, pasted or as a file. They are kept as
-            totals.
+            <span className="font-medium text-ink">You bring </span>your results by region or age
+            band, typed, pasted or as a file. They are kept as totals.
           </p>
           <ExampleLink href="/examples?case=podcasts" />
         </div>
@@ -349,48 +327,39 @@ const weeks: {
   overlap: string;
   best?: boolean;
 }[] = [
-  { day: "Fri 7 March", rival: "Two crime dramas", overlap: "Risky overlap" },
-  { day: "Fri 14 March", overlap: "Low overlap", best: true },
-  { day: "Fri 21 March", rival: "One thriller", overlap: "Moderate overlap" },
-  { day: "Fri 28 March", rival: "The biggest rival", overlap: "Risky overlap" },
+  { day: 'Fri 7 March', rival: 'Two crime dramas', overlap: 'Risky overlap' },
+  { day: 'Fri 14 March', overlap: 'Low overlap', best: true },
+  { day: 'Fri 21 March', rival: 'One thriller', overlap: 'Moderate overlap' },
+  { day: 'Fri 28 March', rival: 'The biggest rival', overlap: 'Risky overlap' },
 ];
 
 /** Test a what if lays the options out as the weeks they are, with the safest one raised. */
 export function WhatIfCase() {
   return (
-    <section
-      id="whatif"
-      aria-label="Test a what if"
-      className={`bg-bg ${band} scroll-mt-16`}
-    >
+    <section id="whatif" aria-label="Test a what if" className={`bg-bg ${band} scroll-mt-16`}>
       <div className={`${wrap} flex flex-col items-center gap-12`}>
         <div className="flex flex-col items-center gap-6 text-center">
           <h2 className={h2Class}>Test a what if</h2>
           <p className="max-w-[46ch] text-[18px] leading-[1.55] text-ink/75">
-            Ask before you lock a date, a city or a partner. Oraqul compares the
-            options against the same audience and says which one is safer, with
-            the receipt for each.
+            Ask before you lock a date, a city or a partner. Oraqul compares the options against the
+            same audience and says which one is safer, with the receipt for each.
           </p>
         </div>
         <Reveal className="grid w-full gap-3 min-[640px]:grid-cols-2 min-[1000px]:grid-cols-4 min-[1000px]:items-end">
           {weeks.map((w, i) => (
             <div
               key={w.day}
-              className={`mk-in flex flex-col gap-3 rounded-2xl p-5 ${w.best ? "bg-ink text-bg min-[1000px]:min-h-60" : "min-h-44 bg-canvas"}`}
+              className={`mk-in flex flex-col gap-3 rounded-2xl p-5 ${w.best ? 'bg-ink text-bg min-[1000px]:min-h-60' : 'min-h-44 bg-canvas'}`}
               style={stagger(i)}
             >
               <span className="font-display text-[22px] font-semibold tracking-[-0.02em]">
                 {w.day}
               </span>
-              <span
-                className={`text-[14.5px] ${w.best ? "opacity-80" : "text-ink/70"}`}
-              >
-                {w.rival
-                  ? `Opening that week: ${w.rival.toLowerCase()}`
-                  : "No rival release"}
+              <span className={`text-[14.5px] ${w.best ? 'opacity-80' : 'text-ink/70'}`}>
+                {w.rival ? `Opening that week: ${w.rival.toLowerCase()}` : 'No rival release'}
               </span>
               <span
-                className={`mt-auto w-fit rounded-md px-2.5 py-1 text-[13px] font-medium ${w.best ? "bg-bg text-ink" : "bg-card"}`}
+                className={`mt-auto w-fit rounded-md px-2.5 py-1 text-[13px] font-medium ${w.best ? 'bg-bg text-ink' : 'bg-card'}`}
               >
                 {w.overlap}
               </span>
@@ -399,12 +368,12 @@ export function WhatIfCase() {
         </Reveal>
         <div className="flex max-w-[60ch] flex-col items-center gap-4 text-center">
           <p className="rounded-xl bg-inset px-4 py-3 text-[15px] leading-[1.5]">
-            <span className="sr-only">You might type: </span>“What if a rival
-            series opens the same weekend?”
+            <span className="sr-only">You might type: </span>“What if a rival series opens the same
+            weekend?”
           </p>
           <p className="text-[15px] leading-[1.55] text-ink/75">
-            You get the overlap for each option, lower is better, and what
-            changes in the plan. Bring the options you are weighing.
+            You get the overlap for each option, lower is better, and what changes in the plan.
+            Bring the options you are weighing.
           </p>
         </div>
       </div>

@@ -40,12 +40,12 @@ const paragraphs: { v: Verdict; text: ReactNode; note: string }[] = [
       <>
         Our core audience is{' '}
         <Mark v="holds" i={0}>
-          fans of Nigerian crime thrillers
+          fans of Mexican crime thrillers
         </Mark>
         , mostly 25 to 34.
       </>
     ),
-    note: 'Their taste overlaps strongly with yours in Lagos and London.',
+    note: 'Their taste overlaps strongly with yours in Mexico City and London.',
   },
   {
     v: 'breaks',
@@ -72,7 +72,7 @@ const paragraphs: { v: Verdict; text: ReactNode; note: string }[] = [
       <>
         A second wave in{' '}
         <Mark v="weak" i={2}>
-          Johannesburg
+          Seoul
         </Mark>{' '}
         in month two.
       </>
@@ -113,7 +113,7 @@ export function Markup() {
 
         <Reveal className="grid gap-y-0 min-[1000px]:grid-cols-[minmax(0,1fr)_300px] min-[1000px]:gap-x-10">
           <div className="scheme-light rounded-t-2xl bg-surface px-[clamp(20px,4vw,48px)] pt-[clamp(24px,4vw,44px)] pb-2 min-[1000px]:col-start-1">
-            <p className="text-[12.5px] text-muted">Harmattan · launch plan · draft 3</p>
+            <p className="text-[12.5px] text-muted">Night Ferry · launch plan · draft 3</p>
             <p className="pt-2 font-display text-[clamp(22px,2.4vw,30px)] font-semibold tracking-[-0.03em]">
               Who it is for and where it opens
             </p>

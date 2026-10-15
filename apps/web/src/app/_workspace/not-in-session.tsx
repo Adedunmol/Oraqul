@@ -1,4 +1,4 @@
-import { buttonClassName, Card } from '@oraqul/ui';
+import { buttonClassName, Card, Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import { projectsPath } from '@/lib/routes';
 
@@ -14,8 +14,9 @@ export function NotInSession({ what }: { what: string }) {
         The demo keeps new work only until the page reloads, and the link may be wrong. The sample
         projects are always there.
       </p>
-      <Link href={projectsPath()} className={buttonClassName('primary')}>
-        Go to all projects
+      <Link href={projectsPath()} className={buttonClassName('primary', 'default', 'icon')}>
+        <Icon name="projects" className="size-4" />
+        All projects
       </Link>
     </Card>
   );

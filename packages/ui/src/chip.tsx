@@ -19,7 +19,7 @@ export function ChipButton({
     <button
       type={type}
       aria-pressed={selected}
-      className={`${base} border transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-45 motion-reduce:transition-none ${selected ? 'border-accent/40 bg-accent-soft! font-semibold text-accent' : 'border-transparent bg-button! hover:bg-button-hover!'} ${className ?? ''}`}
+      className={`${base} border transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-45 motion-reduce:transition-none ${selected ? 'border-accent/40 bg-accent-soft! font-semibold text-accent' : 'border-transparent bg-secondary! text-secondary-ink! hover:bg-secondary-hover!'} ${className ?? ''}`}
       {...props}
     />
   );

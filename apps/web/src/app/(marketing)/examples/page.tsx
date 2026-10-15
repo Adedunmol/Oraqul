@@ -11,7 +11,7 @@ import { wrap } from '../../_marketing/section';
 export const metadata: Metadata = {
   title: 'Examples · Oraqul',
   description:
-    'Three full Oraqul answers: a film plan for three markets, an Afrobeats tour checked city by city, and a podcast season fixed after it missed. Invented data, every receipt open.',
+    'Three full Oraqul answers: a film plan for three markets, an indie pop tour checked city by city, and a podcast season fixed after it missed. Invented data, every receipt open.',
 };
 
 const legend: { verdict: Verdict; text: string }[] = [

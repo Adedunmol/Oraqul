@@ -17,12 +17,12 @@ interface Node {
 const nodes: Node[] = [
   { name: 'Grey Tide', kind: 'Series', cat: 'film', angle: 0, ring: 1 },
   { name: 'Nia Okoro', kind: 'Artist', cat: 'music', angle: 45, ring: 0 },
-  { name: 'Lagos', kind: 'Place', angle: 90, ring: 1 },
+  { name: 'Mexico City', kind: 'Place', angle: 90, ring: 1 },
   { name: 'The Salt Road', kind: 'Book', cat: 'books', angle: 135, ring: 0 },
   { name: 'Night Shift', kind: 'Podcast', cat: 'podcasts', angle: 180, ring: 1 },
   { name: 'London', kind: 'Place', angle: 225, ring: 0 },
   { name: 'Ember Run', kind: 'Game', cat: 'games', angle: 270, ring: 1 },
-  { name: 'Adire Studio', kind: 'Brand', angle: 315, ring: 0 },
+  { name: 'Atelier Nord', kind: 'Brand', angle: 315, ring: 0 },
 ];
 
 const pos = (n: Node) => {
@@ -101,7 +101,7 @@ export function TasteMap() {
             </svg>
             <span className="absolute top-1/2 left-1/2 flex -translate-1/2 flex-col items-center gap-0.5 rounded-2xl bg-primary px-5 py-3 text-center text-primary-ink shadow-md">
               <span className="font-display text-[clamp(16px,2vw,20px)] font-semibold tracking-[-0.02em]">
-                Harmattan
+                Night Ferry
               </span>
               <span className="text-[11px] opacity-80">Your series</span>
             </span>

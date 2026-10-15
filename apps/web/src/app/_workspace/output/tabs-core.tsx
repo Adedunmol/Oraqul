@@ -61,14 +61,22 @@ function SummaryCard() {
           <span className="text-muted">{output.confidence.why}</span>
         </div>
         <div className="mt-2 flex flex-wrap gap-2">
-          <Button size="small" onClick={() => copyText(output.summary, 'Summary copied')}>
+          <Button
+            size="small"
+            icon="copy"
+            onClick={() => copyText(output.summary, 'Summary copied')}
+          >
             Copy summary
           </Button>
-          <Button size="small" className="max-[899px]:hidden" onClick={openExport}>
+          <Button size="small" icon="export" className="max-[899px]:hidden" onClick={openExport}>
             Export brief
           </Button>
           {partner ? (
-            <Button size="small" onClick={() => copyText(partner.draft, 'Draft copied')}>
+            <Button
+              size="small"
+              icon="copy"
+              onClick={() => copyText(partner.draft, 'Draft copied')}
+            >
               Copy draft
             </Button>
           ) : null}
@@ -203,7 +211,7 @@ function PartnerDraft() {
     <Section title="Draft">
       <Draft text={p.draft} />
       <div className="flex flex-wrap items-center gap-3">
-        <Button size="small" onClick={() => copyText(p.draft, 'Draft copied')}>
+        <Button size="small" icon="copy" onClick={() => copyText(p.draft, 'Draft copied')}>
           Copy draft
         </Button>
         <span className="text-xs text-muted">Oraqul never sends this.</span>
@@ -502,7 +510,11 @@ export function PartnersTab() {
                 <>
                   <Draft text={p.draft} />
                   <div>
-                    <Button size="small" onClick={() => copyText(p.draft, 'Draft copied')}>
+                    <Button
+                      size="small"
+                      icon="copy"
+                      onClick={() => copyText(p.draft, 'Draft copied')}
+                    >
                       Copy draft
                     </Button>
                   </div>
@@ -763,7 +775,7 @@ export function EvidenceTab() {
         note="Every Qloo call behind this output. The lines that drove the recommendations come first."
       />
       <div className="flex flex-wrap items-center gap-3">
-        <Button onClick={() => copyText(listText, 'Evidence list copied')}>
+        <Button icon="copy" onClick={() => copyText(listText, 'Evidence list copied')}>
           Copy evidence list
         </Button>
         <span className="text-xs text-muted">

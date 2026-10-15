@@ -171,10 +171,10 @@ export function Composer({
             <Button
               size="small"
               variant="ghost"
+              icon="attach"
               disabled={disabled || files.length >= MAX_FILES}
               onClick={() => picker.current?.click()}
             >
-              <Icon name="attach" className="size-4" />
               Attach files
             </Button>
           </>
@@ -185,9 +185,8 @@ export function Composer({
           <span className="hidden text-xs text-muted min-[700px]:inline">
             Shift Enter for a new line
           </span>
-          <Button type="submit" variant="primary" size="small" disabled={!ready}>
+          <Button type="submit" variant="primary" size="small" icon="arrowUp" disabled={!ready}>
             Send
-            <Icon name="arrowUp" className="size-4" />
           </Button>
         </span>
       </div>

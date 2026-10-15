@@ -1,7 +1,15 @@
 'use client';
 
 import type { Output, QuestionAnswer, ThreadItem } from '@oraqul/schema';
-import { Button, buttonClassName, ChipButton, Confidence, Kbd, ReceiptChip } from '@oraqul/ui';
+import {
+  Button,
+  buttonClassName,
+  ChipButton,
+  Confidence,
+  Icon,
+  Kbd,
+  ReceiptChip,
+} from '@oraqul/ui';
 import Link from 'next/link';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { Modal } from '@/app/(app)/_components/modal';
@@ -438,14 +446,26 @@ function OutputCard({
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href={`/outputs/${output.id}`} className={buttonClassName('primary', 'small')}>
+          <Link
+            href={`/outputs/${output.id}`}
+            className={buttonClassName('primary', 'small', 'icon')}
+          >
+            <Icon name="external" className="size-4" />
             View full details
           </Link>
-          <Button size="small" onClick={() => copyText(output.summary, 'Summary copied')}>
+          <Button
+            size="small"
+            icon="copy"
+            onClick={() => copyText(output.summary, 'Summary copied')}
+          >
             Copy summary
           </Button>
           {partner ? (
-            <Button size="small" onClick={() => copyText(partner.draft, 'Draft copied')}>
+            <Button
+              size="small"
+              icon="copy"
+              onClick={() => copyText(partner.draft, 'Draft copied')}
+            >
               Copy draft
             </Button>
           ) : null}

@@ -44,6 +44,9 @@
   --grid: #e6e6ea;
   --button: #e4e4e9;
   --button-hover: #dadae0;
+  --secondary: #dce2f6;
+  --secondary-hover: #cdd5f1;
+  --secondary-ink: #1f2a5c;
   --inset: #efeff2;
   --cat-tint: 20%;
   --cat-tint-hover: 28%;
@@ -98,6 +101,9 @@
     --grid: #27272c;
     --button: #26262b;
     --button-hover: #303036;
+    --secondary: #2a3468;
+    --secondary-hover: #343f7d;
+    --secondary-ink: #dbe2fb;
     --inset: #141417;
     --cat-tint: 24%;
     --cat-tint-hover: 30%;
@@ -149,6 +155,9 @@
   --grid: #27272c;
   --button: #26262b;
   --button-hover: #303036;
+  --secondary: #2a3468;
+  --secondary-hover: #343f7d;
+  --secondary-ink: #dbe2fb;
   --inset: #141417;
   --cat-tint: 24%;
   --cat-tint-hover: 30%;
@@ -223,6 +232,9 @@
   --color-inset: var(--inset);
   --color-button: var(--button);
   --color-button-hover: var(--button-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-ink: var(--secondary-ink);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-ink: var(--primary-ink);

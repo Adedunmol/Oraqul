@@ -34,7 +34,7 @@ export function Lift() {
         <div className="flex flex-col gap-10 rounded-2xl bg-card p-[clamp(20px,4vw,48px)]">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[14px] font-medium">
-              Is Lagos a strong city for Harmattan’s audience?
+              Is Mexico City a strong city for Night Ferry’s audience?
             </p>
             <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
               Example
@@ -44,9 +44,9 @@ export function Lift() {
           <div className="grid items-start gap-6 font-display min-[700px]:grid-cols-[auto_auto_auto_auto_auto] min-[700px]:justify-start min-[700px]:gap-x-6">
             {(
               [
-                [score.toFixed(2), 'Taste fit of your audience in Lagos'],
+                [score.toFixed(2), 'Taste fit of your audience in Mexico City'],
                 ['÷', ''],
-                [baseline.toFixed(2), 'A neutral audience in Lagos'],
+                [baseline.toFixed(2), 'A neutral audience in Mexico City'],
                 ['=', ''],
                 [lift.toFixed(2), 'Lift'],
               ] as const
@@ -81,7 +81,7 @@ export function Lift() {
 
           <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6">
             <span className="text-[15px]">
-              {lift.toFixed(2)} is strong, so the belief that Lagos fits
+              {lift.toFixed(2)} is strong, so the belief that Mexico City fits
             </span>
             <VerdictPill verdict="holds" />
             <Link

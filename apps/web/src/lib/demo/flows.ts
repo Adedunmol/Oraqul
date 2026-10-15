@@ -230,20 +230,20 @@ const PLACE_RX: Record<string, RegExp> = {
   UK: /\buk\b|britain|british|united kingdom|england|scotland/i,
   US: /\bUS\b|\bUSA\b|united states|america|u\.s\./,
   Canada: /canada|canadian/i,
-  Nigeria: /nigeria|nollywood|abuja/i,
+  Mexico: /mexico|mexican|guadalajara/i,
   Germany: /german|berlin/i,
   Brazil: /brazil|sao paulo/i,
   Japan: /japan|tokyo/i,
   London: /london/i,
-  Houston: /houston/i,
+  Austin: /austin/i,
   Toronto: /toronto/i,
-  Lagos: /lagos/i,
-  Atlanta: /atlanta/i,
-  Accra: /accra/i,
+  'Mexico City': /mexico city|cdmx/i,
+  Chicago: /chicago/i,
+  Seoul: /seoul/i,
 };
 
 function detectPlaces(category: Category, text: string): string[] {
-  const opts = [...PACKS[category].placeOpts, ...(category === 'music' ? ['Accra'] : [])];
+  const opts = [...PACKS[category].placeOpts, ...(category === 'music' ? ['Seoul'] : [])];
   return opts.filter((p) => PLACE_RX[p]?.test(text));
 }
 

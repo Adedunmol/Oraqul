@@ -41,7 +41,7 @@ The three jobs are also the three start modes, called `build`, `audit` and `resc
 All five run on one engine. Each has its own questions, output tabs, scenario presets and results format for rescue. A generic template handles anything else and says plainly that it is less certain.
 
 * **Film and series distribution.** Audience by age and territory, comparable titles, partner brands, and overlap with rival titles the user names. Rescue takes opening results by territory.
-* **Music releases and tours.** Support acts, tour cities, partner brands, and diaspora cities for African artists. Rescue takes streams and ticket sales by city.
+* **Music releases and tours.** Support acts, tour cities, partner brands, and home and fan markets for the artist. Rescue takes streams and ticket sales by city.
 * **Book publishing.** Comparable books, audience by age and place, adaptation and cross media angles, and retail or event partners. Rescue takes pre orders, sales by region and review aggregates.
 * **Podcasts.** Audience and topic tags, sponsor brands, and guest fit. Rescue takes downloads by region and age band from the host dashboard.
 * **Games.** Comparable games, fan bases to collaborate with across music and film, and which regions to prioritise. Rescue takes wishlists and player counts by region.
@@ -113,16 +113,16 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 
 Calm and clear, a little cinematic. Neutral surfaces with no tint, a near black ink for text, solid indigo for main actions, focus and selection, and colour only for verdicts and the small category icons. A wide geometric grotesque (Space Grotesk) for titles and the bottom line, a clean sans (Geist) for everything else, and a more characterful face on the landing page only, and solid cards that stand out by fill and a small lift with no outlines, small corners and few icons. Light and dark are both designed. Motion is small and only marks things arriving: the agent's words appearing, the trace advancing, a view opening. Words are plain, and verdicts are always an icon, a word and a colour together. The design system file has the tokens, components and wording rules. The hosted prototype is the visual reference.
 
-## Africa and diaspora
+## Every market
 
-African titles and artists are treated as normal entities, and coverage will be tested first. For African releases, Oraqul ranks diaspora cities such as London, Houston and Toronto by lift beside African cities, and checks whether African city data is strong enough to rank. If it is not, the product says so plainly.
+Oraqul is a global product. A title from any market is a normal entity, and cities from every region are ranked in one list by lift, whether the release is a Korean series, a Mexican album or a Nigerian novel. Coverage differs by place, and it is tested and recorded in `docs/backend/qloo.md` (Nigerian film is the first measured case). Where data for a place is too thin to rank, the product says so plainly and lowers its confidence.
 
 ## What makes it different
 
 * A receipt on every claim, with limits stated.
 * Relaunch and scenario diffs, not only a first plan.
 * One engine and one agent per category, so each category gets its own questions, charts and checks.
-* Territory logic that includes diaspora cities.
+* Territory logic that ranks cities from every region in one list.
 * Honest gaps instead of confident guesses.
 
 The demo leads with rescue and scenario diffs, because auditing a plan alone is no longer unique among entrants.

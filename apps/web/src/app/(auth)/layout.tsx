@@ -1,4 +1,4 @@
-import { Logo } from '@oraqul/ui';
+import { buttonClassName, Icon, Logo } from '@oraqul/ui';
 import Link from 'next/link';
 import { type ReactNode, Suspense } from 'react';
 import '../_marketing/marketing.css';
@@ -18,10 +18,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           >
             <Logo />
           </Link>
-          <Link
-            href="/"
-            className="rounded-md px-1 py-2 text-[14px] text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
-          >
+          <Link href="/" className={buttonClassName('default', 'small', 'icon')}>
+            <Icon name="home" className="size-4" />
             Back to home
           </Link>
         </header>

@@ -21,7 +21,7 @@ const run: { kind: Kind; text: string; out: string }[] = [
     text: 'Series, crime drama, UK and US',
     out: 'Job: make a plan',
   },
-  { kind: 'tool', text: 'searchEntity("Harmattan", series)', out: '1 match' },
+  { kind: 'tool', text: 'searchEntity("Night Ferry", series)', out: '1 match' },
   {
     kind: 'tool',
     text: 'resolveBundle(comps: Grey Tide, The Ferry Office)',
@@ -29,7 +29,7 @@ const run: { kind: Kind; text: string; out: string }[] = [
   },
   {
     kind: 'tool',
-    text: 'rankPlaces(bundle, UK, US, Canada, Lagos, London)',
+    text: 'rankPlaces(bundle, UK, US, Canada, Mexico City, London)',
     out: '5 ranked',
   },
   { kind: 'code', text: 'lift(London) = 0.81 ÷ 0.50 = 1.62', out: 'Holds' },
@@ -127,7 +127,7 @@ export function AgentRun() {
               className="mk-stream px-3 pt-2 font-sans text-[14px] text-ink"
               style={{ '--i': run.length } as CSSProperties}
             >
-              Open in Lagos and London, then Toronto
+              Open in Mexico City and London, then Toronto
               <span className="mk-caret" aria-hidden="true" />
             </p>
           </Reveal>

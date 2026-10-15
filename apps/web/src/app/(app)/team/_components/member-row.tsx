@@ -5,6 +5,7 @@ import { Button, Chip } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Dropdown } from '@/app/_components/dropdown';
+import { ConfirmDialog } from '@/app/(app)/_components/confirm-dialog';
 import { ApiError } from '@/lib/api/http';
 import { changeMemberRole, removeMember } from '@/lib/api/teams';
 import { roleHelp, roleLabels } from '@/lib/roles';
@@ -65,6 +66,7 @@ export function MemberRow({
     return run(
       () => removeMember(teamId, member.userId),
       () => {
+        setConfirming(false);
         if (isMe) router.push('/team');
         router.refresh();
       },
@@ -100,43 +102,39 @@ export function MemberRow({
               onChange={changeRole}
               className="min-w-[7.5rem]"
             />
-            {confirming ? (
-              <>
-                <Button
-                  size="small"
-                  variant="dangerSolid"
-                  disabled={pending}
-                  onClick={remove}
-                  className="min-h-10 md:min-h-0"
-                >
-                  {isMe ? 'Yes, leave' : 'Yes, remove'}
-                </Button>
-                <Button
-                  size="small"
-                  variant="ghost"
-                  disabled={pending}
-                  onClick={() => setConfirming(false)}
-                  className="min-h-10 md:min-h-0"
-                >
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <Button
-                size="small"
-                variant="danger"
-                disabled={pending}
-                onClick={() => setConfirming(true)}
-                className="min-h-10 md:min-h-0"
-              >
-                {isMe ? 'Leave team' : 'Remove'}
-              </Button>
-            )}
+            <Button
+              size="small"
+              variant="danger"
+              icon={isMe ? 'signout' : 'trash'}
+              disabled={pending}
+              onClick={() => setConfirming(true)}
+              className="min-h-10 md:min-h-0"
+            >
+              {isMe ? 'Leave team' : 'Remove'}
+            </Button>
           </div>
         ) : (
           <Chip>{roleLabels[member.role]}</Chip>
         )}
       </div>
+      <ConfirmDialog
+        open={confirming}
+        onClose={() => setConfirming(false)}
+        title={isMe ? 'Leave this team?' : `Remove ${member.name}?`}
+        confirmLabel={isMe ? 'Leave team' : 'Remove from team'}
+        confirmIcon={isMe ? 'signout' : 'trash'}
+        onConfirm={remove}
+        pending={pending}
+      >
+        {isMe ? (
+          <p>You lose access to this team's projects. An owner has to invite you back.</p>
+        ) : (
+          <p>
+            {member.name} loses access to this team's projects straight away. You can invite them
+            again later.
+          </p>
+        )}
+      </ConfirmDialog>
       {error ? (
         <p role="alert" className="text-[13px] text-breaks">
           {error}

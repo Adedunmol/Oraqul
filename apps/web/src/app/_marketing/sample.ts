@@ -11,18 +11,18 @@ export interface SampleLine {
 }
 
 export const planPrompt =
-  'Plan the release of Harmattan, a Lagos crime drama, for the UK and the US.';
+  'Plan the release of Night Ferry, a Mexico City crime drama, for the UK and the US.';
 
 export const heroLines: SampleLine[] = [
   {
     id: 'core',
-    claim: 'Fans of Nigerian crime thrillers are your core audience.',
-    detail: 'Their taste overlaps with your lead in Lagos and London.',
+    claim: 'Fans of Mexican crime thrillers are your core audience.',
+    detail: 'Their taste overlaps with your lead in Mexico City and London.',
     verdict: 'holds',
     confidence: 'high',
     receipt: {
       callId: 'call_8f3a',
-      input: 'Lead title, Lagos and London, ages 25 to 34',
+      input: 'Lead title, Mexico City and London, ages 25 to 34',
       returned: 'Taste overlap well above a neutral audience in the same places',
       decided: 'Computed by code from the values returned, against the published rule',
     },
@@ -42,13 +42,13 @@ export const heroLines: SampleLine[] = [
   },
   {
     id: 'second',
-    claim: 'Johannesburg is worth a second wave.',
+    claim: 'Seoul is worth a second wave.',
     detail: 'Thin data for this place. Treat it as a draft.',
     verdict: 'weak',
     confidence: 'lower',
     receipt: {
       callId: 'call_b904',
-      input: 'Lead title, Johannesburg, ages 25 to 34',
+      input: 'Lead title, Seoul, ages 25 to 34',
       returned: 'A small signal from few comparable titles',
       decided: 'Computed by code: usable but below the strong threshold, confidence capped',
     },

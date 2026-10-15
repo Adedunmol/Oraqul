@@ -78,7 +78,7 @@ Every tool returns `{ data, receipt }`. The model sees `data` and a receipt id, 
 | `resolveBundle(title, comps, talent, tags)` | Describes the launch as a bundle of anchors: comps, talent and tags. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. |
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
 | `lift(candidates, baseline)` | Lift over a neutral audience, from one ranking call. |
-| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Includes diaspora cities. A city with too few cells is not ranked. |
+| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Cities from any region. A city with too few cells is not ranked. |
 | `compareAudiences(a, b)` | Shared audience between two entity sets. Used for rival overlap, comp shelf, fan base bridge. |
 | `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. Worked on one live run, see [qloo.md](../backend/qloo.md#what-the-live-run-showed). The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
 | `partnerFit(segment, candidates, type)` | Brand, creator, act or show affinity for a segment. |
@@ -242,10 +242,10 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 | `/categories` | One page for all five categories: what is tested, where it is less certain, what the team brings. The same content as the in app help dialog |
 | `/method` | How verdicts, lift, fit and confidence are computed, and what Oraqul never does (no forecasts). For people who judge the numbers |
 | `/trust` | What data goes where: only public names, places and age bands to Qloo, results stored as aggregates, roles. Separate from Method because the readers differ (a marketer or judge against a reviewer or legal) |
-| `/about` | Why it exists, the team, the Africa and diaspora angle |
+| `/about` | Why it exists, the team, the global angle |
 | `/privacy`, `/terms` | Required. Google sign in needs both links |
 
-**Next:** `/developers` (the MCP server, with a quickstart), `/faq`, `/africa` (diaspora cities ranked beside African ones). **Later:** `/compare` (against a generic chatbot and against audience dashboards), one page per category, `/changelog`, a blog.
+**Next:** `/developers` (the MCP server, with a quickstart), `/faq`, `/markets` (cities from every region ranked in one list). **Later:** `/compare` (against a generic chatbot and against audience dashboards), one page per category, `/changelog`, a blog.
 
 **No pricing page for now**, and no mention of pricing anywhere until there is real pricing. Access is by creating an account.
 
