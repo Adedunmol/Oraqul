@@ -1,7 +1,7 @@
 'use client';
 
 import type { Output } from '@oraqul/schema';
-import { Button, Icon, VerdictPill } from '@oraqul/ui';
+import { Button, VerdictPill } from '@oraqul/ui';
 import { useEffect, useId, useRef } from 'react';
 
 /** Display name of a line, from whichever brief group holds it. */
@@ -76,9 +76,13 @@ export function ReceiptDrawer({
         <div className="flex flex-col gap-3.5">
           <div className="flex items-center justify-between">
             <p className="text-[12px] font-semibold text-muted">Receipt</p>
-            <Button size="small" variant="ghost" onClick={onClose} aria-label="Close">
-              <Icon name="close" className="size-4" />
-            </Button>
+            <Button
+              size="small"
+              variant="ghost"
+              icon="close"
+              onClick={onClose}
+              aria-label="Close"
+            />
           </div>
           <h2 id={titleId} className="font-display text-xl font-semibold tracking-[-0.02em]">
             {lineLabel(output, lineId)}

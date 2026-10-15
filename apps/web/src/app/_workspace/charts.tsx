@@ -105,6 +105,7 @@ export function ChartCard({
         <Button
           size="small"
           variant="ghost"
+          icon={asTable ? 'projects' : 'overview'}
           aria-pressed={asTable}
           onClick={() => setAsTable((v) => !v)}
         >

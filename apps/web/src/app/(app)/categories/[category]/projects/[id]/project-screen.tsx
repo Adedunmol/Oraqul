@@ -25,6 +25,7 @@ import {
 } from '@/lib/demo/queries';
 import { useDemo } from '@/lib/demo/use-demo';
 import { type CategoryScope, projectPath, projectsPath } from '@/lib/routes';
+import { ConfirmDialog } from '../../../../_components/confirm-dialog';
 import { Modal } from '../../../../_components/modal';
 
 /** The project's address opens its newest chat. */
@@ -118,10 +119,11 @@ export function ProjectWorkspace({
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button onClick={() => setDetails(true)}>Project details</Button>
+            <Button icon="details" onClick={() => setDetails(true)}>
+              Project details
+            </Button>
             {canEdit ? (
-              <Button variant="primary" onClick={newChat}>
-                <Icon name="plus" className="size-4" />
+              <Button variant="primary" icon="plus" onClick={newChat}>
                 New chat
               </Button>
             ) : null}
@@ -175,25 +177,23 @@ export function ProjectWorkspace({
           }}
         />
       </Modal>
-      <Modal open={deleting} onClose={() => setDeleting(false)} title={`Delete ${project.name}?`}>
-        <p className="text-muted">
+      <ConfirmDialog
+        open={deleting}
+        onClose={() => setDeleting(false)}
+        title={`Delete ${project.name}?`}
+        confirmLabel="Delete project"
+        onConfirm={() => {
+          deleteProject(project.id);
+          toast(`${project.name} deleted`);
+          router.push(projectsPath(project.category));
+        }}
+      >
+        <p>
           This removes the project, its {plural(threads.length, 'chat')} and{' '}
-          {plural(outputs.length, 'output')} for everyone on the team. It cannot be undone.
+          {plural(outputs.length, 'output')} for everyone on the team.
         </p>
-        <div className="flex flex-wrap gap-2">
-          <Button onClick={() => setDeleting(false)}>Cancel</Button>
-          <Button
-            variant="dangerSolid"
-            onClick={() => {
-              deleteProject(project.id);
-              toast(`${project.name} deleted`);
-              router.push(projectsPath(project.category));
-            }}
-          >
-            Delete project
-          </Button>
-        </div>
-      </Modal>
+        <p className="font-medium text-ink">It cannot be undone.</p>
+      </ConfirmDialog>
     </div>
   );
 }
@@ -332,8 +332,7 @@ function Details({
       </section>
       {canDelete ? (
         <div className="max-[899px]:hidden">
-          <Button variant="danger" onClick={onDelete}>
-            <Icon name="trash" className="size-4" />
+          <Button variant="danger" icon="trash" onClick={onDelete}>
             Delete project
           </Button>
         </div>

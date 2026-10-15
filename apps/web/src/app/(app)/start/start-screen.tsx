@@ -1,7 +1,7 @@
 'use client';
 
 import type { Category, StartMode } from '@oraqul/schema';
-import { buttonClassName, Card } from '@oraqul/ui';
+import { buttonClassName, Card, Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import { StartComposer } from '@/app/_workspace/start-composer';
 import type { Viewer } from '@/lib/api/viewer';
@@ -27,7 +27,8 @@ export function StartScreen({
       <Card className="flex max-w-xl flex-col items-start gap-3 p-6">
         <h1 className="font-display text-2xl font-semibold">Editors and owners start projects.</h1>
         <p className="text-muted">Ask an owner on your team to make you an editor.</p>
-        <Link href={back} className={buttonClassName('primary')}>
+        <Link href={back} className={buttonClassName('primary', 'default', 'icon')}>
+          <Icon name="back" className="size-4" />
           Go back
         </Link>
       </Card>

@@ -113,7 +113,7 @@ export function ProjectsScreen({ scope, viewer }: { scope: CategoryScope; viewer
 
 function NewProject({ category }: { category?: Category }) {
   return (
-    <Link href={startPath({ category })} className={buttonClassName('primary')}>
+    <Link href={startPath({ category })} className={buttonClassName('primary', 'default', 'icon')}>
       <Icon name="plus" className="size-4" />
       New project
     </Link>

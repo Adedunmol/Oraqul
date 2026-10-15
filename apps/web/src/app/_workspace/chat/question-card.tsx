@@ -173,6 +173,7 @@ function MultiBody({
       <div>
         <Button
           variant="primary"
+          icon="check"
           disabled={!canEdit || !selected.length}
           onClick={() => onAnswer({ card: 'options', optionIds: selected })}
         >
@@ -199,6 +200,7 @@ function TextBody({
             <Button
               key={name}
               size="small"
+              icon="attach"
               disabled={!canEdit}
               onClick={() => setAttached((a) => (a.includes(name) ? a : [...a, name]))}
             >

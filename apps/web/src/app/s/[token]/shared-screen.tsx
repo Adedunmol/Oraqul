@@ -1,6 +1,6 @@
 'use client';
 
-import { buttonClassName, Card, Logo } from '@oraqul/ui';
+import { buttonClassName, Card, Icon, Logo } from '@oraqul/ui';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { DemoNote } from '@/app/_workspace/demo-note';
@@ -28,8 +28,9 @@ export function SharedScreen({ token }: { token: string }) {
           <p className="text-muted">
             The owner may have turned it off, or the link is wrong. Ask them for a new one.
           </p>
-          <Link href="/" className={buttonClassName()}>
-            Go to Oraqul
+          <Link href="/" className={buttonClassName('default', 'default', 'icon')}>
+            <Icon name="home" className="size-4" />
+            Back to Oraqul
           </Link>
         </Card>
       )}

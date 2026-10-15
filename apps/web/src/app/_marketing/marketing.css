@@ -476,3 +476,12 @@
     transition: none;
   }
 }
+
+/* The mobile menu's dim is half-strength so the page stays readable behind it. Literal for the
+   same reason as the global dialog scrim: older engines do not pass custom properties into
+   ::backdrop. Important because the global dark-theme scrim is more specific and must not win
+   here: the marketing pages are pinned light whatever the visitor's theme. */
+.mk-sheet::backdrop {
+  /* biome-ignore lint/complexity/noImportantStyles: see the note above */
+  background: rgba(13, 14, 16, 0.5) !important;
+}

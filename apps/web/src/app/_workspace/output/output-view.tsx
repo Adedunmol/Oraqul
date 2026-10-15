@@ -166,22 +166,31 @@ export function OutputView({
               </div>
               <div className="flex flex-wrap gap-2">
                 {share && canEdit ? (
-                  <Button className="max-[899px]:hidden" onClick={() => setModal('share')}>
+                  <Button
+                    icon="share"
+                    className="max-[899px]:hidden"
+                    onClick={() => setModal('share')}
+                  >
                     Share
                   </Button>
                 ) : null}
-                <Button className="max-[899px]:hidden" onClick={() => setModal('export')}>
+                <Button
+                  icon="export"
+                  className="max-[899px]:hidden"
+                  onClick={() => setModal('export')}
+                >
                   Export brief
                 </Button>
-                <Button onClick={() => copyText(output.summary, 'Summary copied')}>
+                <Button icon="copy" onClick={() => copyText(output.summary, 'Summary copied')}>
                   Copy summary
                 </Button>
                 {shared ? null : (
                   // On desktop the dock chat does this; below 900px the dock is hidden.
                   <Link
                     href={`/threads/${thread.id}`}
-                    className={`${buttonClassName('primary')} min-[900px]:hidden`}
+                    className={`${buttonClassName('primary', 'default', 'icon')} min-[900px]:hidden`}
                   >
+                    <Icon name="sparkles" className="size-4" />
                     Open chat
                   </Link>
                 )}
@@ -209,11 +218,10 @@ export function OutputView({
               <Button
                 size="small"
                 variant="ghost"
+                icon="close"
                 onClick={() => setDockOpen(false)}
                 aria-label="Close chat"
-              >
-                <Icon name="close" className="size-4" />
-              </Button>
+              />
             </div>
             <ChatPanel detail={dock.thread} canEdit={canEdit} />
           </aside>
@@ -222,6 +230,7 @@ export function OutputView({
       {dock && !dockOpen ? (
         <Button
           variant="primary"
+          icon="sparkles"
           onClick={() => setDockOpen(true)}
           className="fixed right-5 bottom-5 z-40 h-11! rounded-full px-[18px] shadow-[var(--shadow)]! max-[899px]:hidden"
         >

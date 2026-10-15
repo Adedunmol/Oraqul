@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Icon } from '@oraqul/ui';
+import { Button } from '@oraqul/ui';
 import { type ReactNode, useEffect, useId, useRef } from 'react';
 
 // Lives here, not in packages/ui: that package is one bundle with no client entry, so a component
@@ -46,9 +46,13 @@ export function Modal({
             <h2 id={titleId} className="font-display text-lg font-semibold tracking-[-0.02em]">
               {title}
             </h2>
-            <Button size="small" variant="ghost" onClick={onClose} aria-label="Close">
-              <Icon name="close" className="size-4" />
-            </Button>
+            <Button
+              size="small"
+              variant="ghost"
+              icon="close"
+              onClick={onClose}
+              aria-label="Close"
+            />
           </div>
           {children}
         </div>

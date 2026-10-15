@@ -1,6 +1,6 @@
 'use client';
 
-import { Icon } from '@oraqul/ui';
+import { Button, Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
@@ -20,8 +20,9 @@ const linkClass =
   'rounded-md px-2.5 py-1.5 text-[13.5px] text-muted transition-colors duration-150 hover:text-ink focus-visible:outline-2 focus-visible:outline-accent aria-[current=page]:font-semibold aria-[current=page]:text-ink motion-reduce:transition-none';
 
 /**
- * The header's links. A Product menu on a wide screen and one Menu panel below 900px, both closed
- * by Escape or a click outside, with focus returned to the button that opened them.
+ * The header's links. A Product menu on a wide screen and, below 900px, a hamburger that opens a
+ * side sheet over a dimmed page. Both close on Escape, and focus returns to the button that opened
+ * them. The sheet also closes from its close icon or a click on the dim.
  */
 export function NavMenu({ extra }: { extra: ReactNode }) {
   const pathname = usePathname();
@@ -29,18 +30,30 @@ export function NavMenu({ extra }: { extra: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const productButton = useRef<HTMLButtonElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const sheet = useRef<HTMLDialogElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new path closes whatever is open
   useEffect(() => {
     setOpen(null);
   }, [pathname]);
 
+  // The sheet is a modal dialog: the browser owns Escape and the top layer, so only the page's
+  // scroll needs holding still here.
   useEffect(() => {
-    if (!open) return;
+    if (open !== 'menu') return;
+    sheet.current?.showModal();
+    const { overflow } = document.documentElement.style;
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.documentElement.style.overflow = overflow;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (open !== 'product') return;
     const close = (returnFocus: boolean) => {
-      const button = open === 'product' ? productButton.current : menuButton.current;
       setOpen(null);
-      if (returnFocus) button?.focus();
+      if (returnFocus) productButton.current?.focus();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close(true);
@@ -113,34 +126,56 @@ export function NavMenu({ extra }: { extra: ReactNode }) {
         ))}
       </nav>
 
-      <button
+      <Button
         ref={menuButton}
-        type="button"
+        variant="ghost"
+        icon="menu"
+        aria-label="Open menu"
         aria-expanded={open === 'menu'}
         aria-controls="mobile-menu"
-        onClick={() => setOpen(open === 'menu' ? null : 'menu')}
-        className="inline-flex h-10 items-center rounded-lg px-3 text-[13.5px] font-medium hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent min-[900px]:hidden"
-      >
-        {open === 'menu' ? 'Close' : 'Menu'}
-      </button>
+        onClick={() => setOpen('menu')}
+        className="min-[900px]:hidden"
+      />
       {open === 'menu' ? (
-        <nav
+        // biome-ignore lint/a11y/useKeyWithClickEvents: the dim is a mouse shortcut; Escape and the close icon are the keyboard ways out
+        <dialog
+          ref={sheet}
           id="mobile-menu"
-          aria-label="Main"
-          className="absolute inset-x-0 top-full z-20 flex flex-col gap-1 bg-bg px-[clamp(16px,2.4vw,32px)] pt-2 pb-5 shadow-md min-[900px]:hidden"
+          aria-label="Main menu"
+          onClose={() => {
+            setOpen(null);
+            menuButton.current?.focus();
+          }}
+          onClick={(e) => {
+            if (e.target === sheet.current) sheet.current?.close();
+          }}
+          className="mk-sheet m-0 ml-auto h-dvh max-h-none w-[min(88vw,22rem)] max-w-none bg-bg p-0 text-ink shadow-md min-[900px]:hidden"
         >
-          {[...product, ...top].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={current(item.href)}
-              className="flex min-h-11 items-center rounded-lg px-3 text-[16px] hover:bg-surface2 aria-[current=page]:bg-accent-soft aria-[current=page]:font-semibold aria-[current=page]:text-accent"
-            >
-              {item.label}
-            </Link>
-          ))}
-          {extra}
-        </nav>
+          <div className="flex h-full flex-col gap-1 overflow-y-auto p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="px-3 text-[13px] font-medium text-muted">Menu</span>
+              <Button
+                variant="ghost"
+                icon="close"
+                aria-label="Close menu"
+                onClick={() => sheet.current?.close()}
+              />
+            </div>
+            <nav aria-label="Main" className="flex flex-col gap-1">
+              {[...product, ...top].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={current(item.href)}
+                  className="flex min-h-11 items-center rounded-lg px-3 text-[16px] hover:bg-surface2 aria-[current=page]:bg-accent-soft aria-[current=page]:font-semibold aria-[current=page]:text-accent"
+                >
+                  {item.label}
+                </Link>
+              ))}
+              {extra}
+            </nav>
+          </div>
+        </dialog>
       ) : null}
     </div>
   );

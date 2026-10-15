@@ -1,9 +1,10 @@
 'use client';
 
 import type { Output, Project } from '@oraqul/schema';
-import { Button, buttonClassName, Chip } from '@oraqul/ui';
+import { Button, buttonClassName, Chip, Icon } from '@oraqul/ui';
 import Link from 'next/link';
-import { useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
+import { ConfirmDialog } from '@/app/(app)/_components/confirm-dialog';
 import { Modal } from '@/app/(app)/_components/modal';
 import { setShareEnabled } from '@/lib/demo/actions';
 import { verdictWord } from '../charts';
@@ -208,6 +209,7 @@ export function ShareModal({
   onClose: () => void;
   share: { outputId: string; token: string; enabled: boolean };
 }) {
+  const [confirmingOff, setConfirmingOff] = useState(false);
   // The origin is only known in the browser; the server render shows the path alone.
   const origin = useSyncExternalStore(
     subscribeNoop,
@@ -223,9 +225,15 @@ export function ShareModal({
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <Chip>{share.enabled ? 'Link is on' : 'Link is off'}</Chip>
-        <Button onClick={() => setShareEnabled(share.outputId, !share.enabled)}>
-          {share.enabled ? 'Turn link off' : 'Turn link on'}
-        </Button>
+        {share.enabled ? (
+          <Button icon="close" onClick={() => setConfirmingOff(true)}>
+            Turn link off
+          </Button>
+        ) : (
+          <Button icon="share" onClick={() => setShareEnabled(share.outputId, true)}>
+            Turn link on
+          </Button>
+        )}
       </div>
       {share.enabled ? (
         <>
@@ -233,10 +241,14 @@ export function ShareModal({
             {url}
           </code>
           <div className="flex flex-wrap gap-2">
-            <Button variant="primary" onClick={() => copyText(url, 'Link copied')}>
+            <Button variant="primary" icon="copy" onClick={() => copyText(url, 'Link copied')}>
               Copy link
             </Button>
-            <Link href={`/s/${share.token}`} className={buttonClassName()}>
+            <Link
+              href={`/s/${share.token}`}
+              className={buttonClassName('default', 'default', 'icon')}
+            >
+              <Icon name="external" className="size-4" />
               Open shared view
             </Link>
           </div>
@@ -248,6 +260,20 @@ export function ShareModal({
       ) : (
         <p className="text-muted">The old link no longer works.</p>
       )}
+      <ConfirmDialog
+        open={confirmingOff}
+        onClose={() => setConfirmingOff(false)}
+        title="Turn this link off?"
+        confirmLabel="Turn link off"
+        confirmIcon="close"
+        onConfirm={() => {
+          setShareEnabled(share.outputId, false);
+          setConfirmingOff(false);
+        }}
+      >
+        <p>Anyone using the link loses access straight away.</p>
+        <p>You can turn it on again later.</p>
+      </ConfirmDialog>
     </Modal>
   );
 }

@@ -1,4 +1,4 @@
-import { buttonClassName } from '@oraqul/ui';
+import { buttonClassName, Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SignOutButton } from '@/app/_components/sign-out-button';
@@ -32,7 +32,8 @@ export default async function InvitePage({ params }: PageProps<'/invite/[token]'
             If that was you, {invite.teamName} is on your team list. Otherwise ask{' '}
             {invite.invitedBy} for a new one.
           </p>
-          <Link href="/team" className={buttonClassName('primary')}>
+          <Link href="/team" className={buttonClassName('primary', 'default', 'icon')}>
+            <Icon name="team" className="size-4" />
             Go to your team
           </Link>
         </Panel>
