@@ -1,15 +1,14 @@
 'use client';
 
-import { categories } from '@oraqul/schema';
+import { categories, type Project } from '@oraqul/schema';
 import { Icon, type IconName, Kbd } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { getCategory } from '@/lib/demo/catalog';
-import { useDemo } from '@/lib/demo/use-demo';
 import { overviewPath, projectPath, projectsPath, startPath } from '@/lib/routes';
 
 interface Entry {
-  group: 'Go to' | 'Categories' | 'Projects' | 'Outputs' | 'Actions';
+  group: 'Go to' | 'Categories' | 'Projects' | 'Actions';
   label: string;
   hint?: string;
   icon?: IconName;
@@ -37,11 +36,10 @@ export function SearchButton() {
 }
 
 /**
- * Client side search over the team's categories, projects, outputs and fixed actions, grouped
- * by type. design-system §7.18 and spec §9.3
+ * Client side search over the team's categories, projects and fixed actions, grouped by type.
+ * Outputs join once the API serves them. design-system §7.18 and spec §9.3
  */
-export function Palette() {
-  const s = useDemo();
+export function Palette({ projects }: { projects: Project[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -76,12 +74,11 @@ export function Palette() {
   }, [open]);
 
   const entries = useMemo<Entry[]>(() => {
-    const projectName = new Map(s.projects.map((p) => [p.id, p]));
     return [
       { group: 'Go to', label: 'Overview', icon: 'overview', href: overviewPath },
       { group: 'Go to', label: 'Projects', icon: 'projects', href: projectsPath() },
       ...categories.map((c): Entry => {
-        const n = s.projects.filter((p) => p.category === c).length;
+        const n = projects.filter((p) => p.category === c).length;
         return {
           group: 'Categories',
           label: getCategory(c).name,
@@ -90,7 +87,7 @@ export function Palette() {
           href: projectsPath(c),
         };
       }),
-      ...s.projects.map(
+      ...projects.map(
         (p): Entry => ({
           group: 'Projects',
           label: p.name,
@@ -99,20 +96,10 @@ export function Palette() {
           href: projectPath(p),
         }),
       ),
-      ...s.outputs.map((o): Entry => {
-        const p = projectName.get(o.projectId);
-        return {
-          group: 'Outputs',
-          label: o.label,
-          hint: `${p?.name ?? ''} · ${o.kindLabel}`,
-          icon: p?.category,
-          href: `/outputs/${o.id}`,
-        };
-      }),
       { group: 'Actions', label: 'New project', icon: 'plus', href: startPath() },
       { group: 'Actions', label: 'Team and roles', icon: 'team', href: '/team' },
     ];
-  }, [s.projects, s.outputs]);
+  }, [projects]);
 
   const q = query.trim().toLowerCase();
   const results = entries

@@ -5,6 +5,14 @@ for (const route of [
   { path: '/categories/all/projects', heading: 'We could not load your projects.' },
   { path: '/categories/music/projects', heading: 'We could not load your projects.' },
   { path: '/start?mode=audit', heading: 'We could not load this page.' },
+  {
+    path: '/categories/all/projects/6f1d0c4e-1b9e-4c1e-9a3f-0a0b0c0d0e0f',
+    heading: 'We could not load this project.',
+  },
+  {
+    path: '/threads/6f1d0c4e-1b9e-4c1e-9a3f-0a0b0c0d0e0f',
+    heading: 'We could not load this thread.',
+  },
 ]) {
   test(`${route.path} shows a plain error with a retry when the API is down`, async ({ page }) => {
     await page.goto(route.path);

@@ -77,7 +77,7 @@ export const games: DemoPack = {
     return `Lead with ${b.audience[0]?.name ?? 'the core players'}${top ? ` and open in ${top.name}` : ''}.`;
   },
   trace: {
-    plan: [
+    build: [
       'Resolving the game to Qloo entities. Not found, falling back to the studio and comp games',
       'Building the player audience by age and region',
       'Bridging to anime, music and film fan bases',

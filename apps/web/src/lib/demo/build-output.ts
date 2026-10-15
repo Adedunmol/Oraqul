@@ -38,15 +38,15 @@ export interface DOutput {
   src?: 'you' | 'calendar';
 }
 
-const KIND_LABEL: Record<'plan' | 'audit' | 'scenario' | 'rescue', string> = {
-  plan: 'Plan',
+const KIND_LABEL: Record<'build' | 'audit' | 'scenario' | 'rescue', string> = {
+  build: 'Plan',
   audit: 'Audit',
   scenario: 'Scenario',
   rescue: 'Rescue',
 };
 
-const isPlanKind = (k: Job): k is 'plan' | 'audit' | 'scenario' | 'rescue' =>
-  k === 'plan' || k === 'audit' || k === 'scenario' || k === 'rescue';
+const isPlanKind = (k: Job): k is 'build' | 'audit' | 'scenario' | 'rescue' =>
+  k === 'build' || k === 'audit' || k === 'scenario' || k === 'rescue';
 
 export function kindLabel(pack: DemoPack, kind: Job): string {
   if (kind === 'date') return pack.dateLabel;
@@ -112,7 +112,7 @@ function tabsFor(pack: DemoPack, o: DOutput): OutputTab[] {
     .filter((k) => k !== 'territories' || o.brief.places.length >= 2);
   const keys: Record<Job, OutputTabKey[]> = {
     // Could not test sits under Assumptions and Risks under Plan, so a plan opens on fewer tabs.
-    plan: ['summary', 'audience', 'assumptions', 'plan', ...sig, 'evidence'],
+    build: ['summary', 'audience', 'assumptions', 'plan', ...sig, 'evidence'],
     audit: ['summary', 'assumptions', 'plan', ...sig, 'evidence'],
     scenario: ['summary', 'changes', 'assumptions', 'plan', ...sig, 'evidence'],
     rescue: ['summary', 'results', 'changes', 'assumptions', ...sig, 'evidence'],
@@ -453,7 +453,7 @@ function headlineFor(
     .filter((a) => a.verdict === 'breaks' || a.verdict === 'weak')
     .sort((x, y) => (x.verdict === 'breaks' ? 0 : 1) - (y.verdict === 'breaks' ? 0 : 1));
   switch (o.kind) {
-    case 'plan': {
+    case 'build': {
       const first = bad[0];
       const headline =
         first && first.verdict === 'breaks'
@@ -753,7 +753,7 @@ export function buildOutput(r: Project, o: DOutput, all: DOutput[]): Output {
   const parent = o.parentId ? all.find((x) => x.id === o.parentId) : undefined;
   const { headline, moves, stats } = headlineFor(r, pack, o, parent);
   const confidence = confidenceFor(r, pack, o);
-  const prefix = { plan: 'v', scenario: 'S', audit: 'A', rescue: 'R', date: 'D', partner: 'B' };
+  const prefix = { build: 'v', scenario: 'S', audit: 'A', rescue: 'R', date: 'D', partner: 'B' };
   const summary = [
     headline,
     ...moves.map((m, i) => `${i + 1}. ${m.text}`),
@@ -767,7 +767,7 @@ export function buildOutput(r: Project, o: DOutput, all: DOutput[]): Output {
     kind: o.kind,
     parentId: o.parentId,
     title: o.title,
-    label: o.kind === 'plan' ? `v${n} · ${o.title}` : o.title,
+    label: o.kind === 'build' ? `v${n} · ${o.title}` : o.title,
     shortLabel: `${prefix[o.kind]}${n}`,
     kindLabel: kindLabel(pack, o.kind),
     createdBy: o.by,

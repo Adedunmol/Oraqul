@@ -86,7 +86,7 @@ export const music: DemoPack = {
   lead: (b) =>
     `Lead with ${b.audience[0]?.name ?? 'the core audience'} and open in ${b.places[0]?.name ?? 'your top city'}.`,
   trace: {
-    plan: [
+    build: [
       'Resolving the artist to Qloo entities',
       'Building the audience by listener type, age and city',
       'Listing the assumptions, stated and unstated',

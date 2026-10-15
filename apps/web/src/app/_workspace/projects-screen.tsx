@@ -7,22 +7,29 @@ import { useMemo, useState } from 'react';
 import { Modal } from '@/app/(app)/_components/modal';
 import type { Viewer } from '@/lib/api/viewer';
 import { getCategory } from '@/lib/demo/catalog';
-import { usePinnedProjects } from '@/lib/demo/pins';
-import { listProjects } from '@/lib/demo/queries';
-import { useDemo } from '@/lib/demo/use-demo';
 import { type CategoryScope, projectPath, projectsPath, startPath } from '@/lib/routes';
 import { coverageColumns } from './category-coverage';
 import { formatDay } from './format';
 import { PinButton } from './pin-button';
 import { CardShell, cardGridClass } from './project-card';
 
-export function ProjectsScreen({ scope, viewer }: { scope: CategoryScope; viewer: Viewer }) {
+export function ProjectsScreen({
+  scope,
+  viewer,
+  projects,
+  pins,
+}: {
+  scope: CategoryScope;
+  viewer: Viewer;
+  /** The scope's projects, newest first. */
+  projects: Project[];
+  /** The person's pinned project ids, newest first. */
+  pins: string[];
+}) {
   const category: Category | undefined = scope === 'all' ? undefined : scope;
-  const state = useDemo();
   const [query, setQuery] = useState('');
   const canEdit = viewer.role !== 'viewer';
   const info = category ? getCategory(category) : undefined;
-  const projects = listProjects(state, category);
 
   const q = query.trim().toLowerCase();
   const matches = useMemo(
@@ -36,7 +43,6 @@ export function ProjectsScreen({ scope, viewer }: { scope: CategoryScope; viewer
       ),
     [projects, q],
   );
-  const pins = usePinnedProjects();
   // Pinned first, in pin order, then the rest in list order. Search narrows both.
   const pinned = useMemo(
     () => pins.flatMap((id) => matches.filter((p) => p.id === id)),
@@ -78,6 +84,7 @@ export function ProjectsScreen({ scope, viewer }: { scope: CategoryScope; viewer
               id="pinned"
               title="Pinned"
               projects={pinned}
+              pinned
               showCategory={!category}
               showTitle
             />
@@ -87,6 +94,7 @@ export function ProjectsScreen({ scope, viewer }: { scope: CategoryScope; viewer
               id="projects"
               title="Projects"
               projects={others}
+              pinned={false}
               showCategory={!category}
               showTitle={pinned.length > 0}
             />
@@ -168,12 +176,14 @@ function ProjectGroup({
   id,
   title,
   projects,
+  pinned,
   showCategory,
   showTitle,
 }: {
   id: string;
   title: string;
   projects: Project[];
+  pinned: boolean;
   showCategory: boolean;
   /** A heading only earns its place when there is a second group to tell this one from. */
   showTitle: boolean;
@@ -188,7 +198,7 @@ function ProjectGroup({
       </h2>
       <div className={cardGridClass}>
         {projects.map((p) => (
-          <ProjectCard key={p.id} project={p} showCategory={showCategory} />
+          <ProjectCard key={p.id} project={p} pinned={pinned} showCategory={showCategory} />
         ))}
       </div>
     </section>
@@ -266,7 +276,15 @@ function CategoryDetails({ category }: { category: Category }) {
 }
 
 /** A project in the list. The shared card, with its status, a hover date and a pin. */
-function ProjectCard({ project, showCategory }: { project: Project; showCategory: boolean }) {
+function ProjectCard({
+  project,
+  pinned,
+  showCategory,
+}: {
+  project: Project;
+  pinned: boolean;
+  showCategory: boolean;
+}) {
   const info = getCategory(project.category);
   // Kind and genre say what it is. The window is in the chat, so the card does not repeat it.
   const meta = [showCategory ? info.short : '', project.kind, project.genre]
@@ -282,6 +300,7 @@ function ProjectCard({ project, showCategory }: { project: Project; showCategory
         <PinButton
           projectId={project.id}
           name={project.name}
+          pinned={pinned}
           reveal
           className="relative z-10 -mt-1 -mr-1"
         />

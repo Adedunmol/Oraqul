@@ -1,14 +1,19 @@
 'use client';
 
-import type { Output, ThreadItem } from '@oraqul/schema';
+import type { Output, QuestionAnswer, ThreadItem } from '@oraqul/schema';
 import { Button, buttonClassName, ChipButton, Confidence, Kbd, ReceiptChip } from '@oraqul/ui';
 import Link from 'next/link';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { Modal } from '@/app/(app)/_components/modal';
 import { answerQuestion, markThreadRead, runNextStep, sendMessage } from '@/lib/demo/actions';
-import { getNextSteps, type ThreadDetail } from '@/lib/demo/queries';
+import {
+  type ThreadDetail as DemoThreadDetail,
+  getNextSteps,
+  type NextStep,
+} from '@/lib/demo/queries';
 import { useDemo } from '@/lib/demo/use-demo';
 import { toneClass, verdictTone } from '../charts';
+import { plural } from '../format';
 import { ReceiptDrawer } from '../output/receipt-drawer';
 import { copyText } from '../toast';
 import { type Attachment, Composer } from './composer';
@@ -18,13 +23,13 @@ import { QuestionCard } from './question-card';
 // arrival animation (design-system §8). Kept for the session, like the demo state.
 const seen = new Map<string, number>();
 
-/** The thread's transcript and message box. Used on the thread page and in the output dock. */
+/** The demo thread's chat, for the output page's dock while outputs are still demo data. */
 export function ChatPanel({
   detail,
   canEdit,
   visible = true,
 }: {
-  detail: ThreadDetail;
+  detail: DemoThreadDetail;
   canEdit: boolean;
   visible?: boolean;
 }) {
@@ -33,26 +38,90 @@ export function ChatPanel({
     () => new Map(detail.projectOutputs.map((o) => [o.id, o])),
     [detail.projectOutputs],
   );
-  // Items from this index on are new. It moves forward once their animations have finished, so
-  // typing in the box does not cut a word reveal short.
-  const [from, setFrom] = useState(() => seen.get(thread.id) ?? items.length);
-  const scroller = useRef<HTMLDivElement>(null);
-  const [receipt, setReceipt] = useState<{ output: Output; lineId: string } | null>(null);
   const state = useDemo();
   const steps = useMemo(() => getNextSteps(state, thread.id), [state, thread.id]);
+  return (
+    <ChatView
+      threadId={thread.id}
+      projectName={project.name}
+      items={items}
+      outputs={outputs}
+      busy={busy}
+      canEdit={canEdit}
+      visible={visible}
+      steps={steps}
+      onStep={(step) => runNextStep(thread.id, step)}
+      onAnswer={(itemId, answer) => answerQuestion(thread.id, itemId, answer)}
+      onSend={(text, files) => {
+        const attached = files.length ? `Attached: ${files.map((f) => f.name).join(', ')}` : '';
+        sendMessage(thread.id, [text, attached].filter(Boolean).join('\n\n'));
+      }}
+      onSeen={() => markThreadRead(thread.id)}
+    />
+  );
+}
+
+/**
+ * A thread's transcript and message box, drawn from items. Whoever owns the thread's data
+ * handles answers, messages and next steps.
+ */
+export function ChatView({
+  threadId,
+  projectName,
+  items,
+  outputs,
+  busy,
+  canEdit,
+  visible = true,
+  steps,
+  onStep,
+  onAnswer,
+  onSend,
+  onSeen,
+  notice,
+}: {
+  threadId: string;
+  /** Null while the router is still reading what the project is. */
+  projectName: string | null;
+  items: ThreadItem[];
+  outputs: Map<string, Output>;
+  busy: boolean;
+  canEdit: boolean;
+  visible?: boolean;
+  steps: NextStep[];
+  onStep?: (step: NextStep) => void;
+  /** `itemId` is the question item's id. */
+  onAnswer: (itemId: string, answer: QuestionAnswer) => void;
+  onSend: (text: string, files: Attachment[]) => void;
+  /** Called when new items have been on screen. */
+  onSeen?: () => void;
+  /** A line above the message box, such as a lost connection. */
+  notice?: ReactNode;
+}) {
+  // Items from this index on are new. It moves forward once their animations have finished, so
+  // typing in the box does not cut a word reveal short.
+  const [from, setFrom] = useState(() => seen.get(threadId) ?? items.length);
+  const scroller = useRef<HTMLDivElement>(null);
+  const [receipt, setReceipt] = useState<{ output: Output; lineId: string } | null>(null);
 
   const openQuestion = [...items].reverse().find((x) => x.role === 'question' && x.answer === null);
   const textOpen = openQuestion?.role === 'question' && openQuestion.question.card === 'text';
   const idle = !busy && !openQuestion;
+  // Callers pass a new function each render; reading it from a ref keeps the effect below to
+  // real changes in what is on screen.
+  const seenCallback = useRef(onSeen);
+  seenCallback.current = onSeen;
+  const answerRef = useRef(onAnswer);
+  answerRef.current = onAnswer;
 
   useEffect(() => {
-    seen.set(thread.id, items.length);
-    if (visible) markThreadRead(thread.id);
+    seen.set(threadId, items.length);
+    if (visible) seenCallback.current?.();
     const el = scroller.current;
     if (el) el.scrollTop = el.scrollHeight;
     const settle = setTimeout(() => setFrom(items.length), 2000);
     return () => clearTimeout(settle);
-  }, [thread.id, items.length, visible]);
+  }, [threadId, items.length, visible]);
 
   // Number keys pick an option on the open card while no text field has focus. design-system §2.6
   useEffect(() => {
@@ -67,19 +136,20 @@ export function ChatPanel({
       const option = q.options[Number.parseInt(event.key, 10) - 1];
       if (!option) return;
       event.preventDefault();
-      answerQuestion(thread.id, openQuestion.id, { card: 'options', optionIds: [option.id] });
+      answerRef.current(openQuestion.id, { card: 'options', optionIds: [option.id] });
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [canEdit, visible, openQuestion, thread.id]);
+  }, [canEdit, visible, openQuestion]);
 
   function send(text: string, files: Attachment[]) {
     if (busy) return;
-    const attached = files.length ? `Attached: ${files.map((f) => f.name).join(', ')}` : '';
-    sendMessage(thread.id, [text, attached].filter(Boolean).join('\n\n'));
+    onSend(text, files);
   }
 
-  let placeholder = `Tell Oraqul what to do next with ${project.name}`;
+  let placeholder = projectName
+    ? `Tell Oraqul what to do next with ${projectName}`
+    : 'Tell Oraqul more about it';
   if (!canEdit) placeholder = 'Chat is off for viewers';
   else if (textOpen) placeholder = 'Type your answer here';
 
@@ -93,7 +163,7 @@ export function ChatPanel({
               item={item}
               isNew={i >= from}
               canEdit={canEdit}
-              threadId={thread.id}
+              onAnswer={onAnswer}
               output={item.role === 'output' ? outputs.get(item.outputId) : undefined}
               onReceipt={(output, lineId) => setReceipt({ output, lineId })}
             />
@@ -108,20 +178,21 @@ export function ChatPanel({
             </p>
             <div className="flex flex-wrap gap-1.5">
               {steps.map((step) => (
-                <ChipButton key={step.id} onClick={() => runNextStep(thread.id, step)}>
+                <ChipButton key={step.id} onClick={() => onStep?.(step)}>
                   {step.label}
                 </ChipButton>
               ))}
             </div>
           </div>
         ) : null}
+        {notice}
         {canEdit ? null : (
           <p className="text-xs text-muted">
             Viewers can read outputs and open evidence. Editors and owners can chat.
           </p>
         )}
         <Composer
-          key={thread.id}
+          key={threadId}
           placeholder={placeholder}
           disabled={!canEdit || busy}
           allowFiles
@@ -144,14 +215,14 @@ function Item({
   item,
   isNew,
   canEdit,
-  threadId,
+  onAnswer,
   output,
   onReceipt,
 }: {
   item: ThreadItem;
   isNew: boolean;
   canEdit: boolean;
-  threadId: string;
+  onAnswer: (itemId: string, answer: QuestionAnswer) => void;
   output: Output | undefined;
   onReceipt: (output: Output, lineId: string) => void;
 }) {
@@ -172,7 +243,7 @@ function Item({
           item={item}
           canEdit={canEdit}
           isNew={isNew}
-          onAnswer={(answer) => answerQuestion(threadId, item.id, answer)}
+          onAnswer={(answer) => onAnswer(item.id, answer)}
         />
       );
     case 'trace':
@@ -248,7 +319,9 @@ function Trace({ steps, done, isNew }: { steps: string[]; done: number; isNew: b
   }
   return (
     <details className={`rounded-xl bg-inset px-3.5 py-3 text-[12.5px] ${isNew ? 'item-new' : ''}`}>
-      <summary className="cursor-pointer text-muted">Agent trace · {steps.length} steps</summary>
+      <summary className="cursor-pointer text-muted">
+        Agent trace · {plural(steps.length, 'step')}
+      </summary>
       <div className="mt-2 flex flex-col gap-1.5">
         {steps.map((s) => (
           <Step key={s} text={s} running={false} />
@@ -392,7 +465,7 @@ function OutputCard({
 }
 
 export function KindTag({ kind, label }: { kind: Output['kind']; label: string }) {
-  const planLike = kind === 'plan' || kind === 'audit';
+  const planLike = kind === 'build' || kind === 'audit';
   return (
     <span
       className={`inline-block rounded-full px-2 py-px align-middle text-[11px] font-semibold tracking-[0.02em] ${planLike ? 'bg-accent-soft' : 'bg-surface2'}`}

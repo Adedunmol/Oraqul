@@ -75,7 +75,7 @@ export const books: DemoPack = {
   lead: (b) =>
     `Lead with ${b.audience[0]?.name ?? 'the core readers'} and pitch against ${topFit(b.s1)?.name ?? 'the closest comp'}.`,
   trace: {
-    plan: [
+    build: [
       'Resolving the title to Qloo entities. Not found, falling back to author and comps',
       'Building the reader audience by age, genre and place',
       'Finding comp titles by reader overlap',

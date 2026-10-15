@@ -3,10 +3,10 @@ import { type ReactNode, Suspense } from 'react';
 import { SignOutButton } from '../_components/sign-out-button';
 import { Toaster } from '../_workspace/toast';
 import { Tooltip } from '../_workspace/tooltip';
-import { MainNav, MobileNav } from './_components/main-nav';
+import { MobileNav } from './_components/main-nav';
 import { NavLink } from './_components/nav-link';
-import { Palette, SearchButton } from './_components/palette';
-import { SidebarTeam, SidebarUser } from './_components/sidebar-parts';
+import { SearchButton } from './_components/palette';
+import { SidebarNav, SidebarPalette, SidebarTeam, SidebarUser } from './_components/sidebar-parts';
 import { SidebarToggle } from './_components/sidebar-toggle';
 import { ThemeToggle } from './_components/theme-toggle';
 
@@ -50,7 +50,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         {/* The nav reads the URL to light the current item, which is only known at request time. */}
         <Suspense fallback={navSkeleton}>
           <nav aria-label="Main" className="flex flex-col gap-5">
-            <MainNav />
+            <SidebarNav />
             <div className="flex flex-col gap-1 rail:pt-3">
               <p className={groupLabel}>Manage</p>
               <NavLink href="/team" icon="team">
@@ -95,7 +95,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </main>
-      <Palette />
+      <Suspense fallback={null}>
+        <SidebarPalette />
+      </Suspense>
       <Tooltip />
       <Toaster />
     </div>

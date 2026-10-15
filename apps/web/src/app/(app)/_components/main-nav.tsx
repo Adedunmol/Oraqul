@@ -5,10 +5,6 @@ import { Icon, type IconName } from '@oraqul/ui';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode, useMemo } from 'react';
-import { usePinnedProjects } from '@/lib/demo/pins';
-import { getOverview } from '@/lib/demo/queries';
-import type { DemoState } from '@/lib/demo/store';
-import { useDemo } from '@/lib/demo/use-demo';
 import { overviewPath, projectPath, projectsPath, startPath } from '@/lib/routes';
 import { navCountClass, navItemActive, navItemClass, navItemIdle } from './nav-link';
 
@@ -16,13 +12,13 @@ const RECENT = 3;
 
 const groupLabel = 'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
-/** The project the current page belongs to, so its sidebar row stays lit inside it. */
-function currentProjectId(pathname: string, s: DemoState): string | undefined {
-  const [, section, id, , projectId] = pathname.split('/');
-  if (section === 'categories') return projectId;
-  if (section === 'threads') return s.threads.find((t) => t.id === id)?.projectId;
-  if (section === 'outputs') return s.outputs.find((o) => o.id === id)?.projectId;
-  return undefined;
+/**
+ * The project the current page belongs to, so its sidebar row stays lit inside it. A chat's
+ * address does not name its project, so inside a chat Projects stays lit instead.
+ */
+function currentProjectId(pathname: string): string | undefined {
+  const [, section, , , projectId] = pathname.split('/');
+  return section === 'categories' ? projectId : undefined;
 }
 
 function Item({
@@ -100,23 +96,26 @@ function ProjectGroup({
  * New project, Overview and Projects, then the person's pinned and recent projects, so the way
  * back into work is one click. Categories are a filter on the project list, not nav.
  */
-export function MainNav() {
-  const s = useDemo();
+export function MainNav({
+  projects,
+  pins,
+  needsYou,
+}: {
+  /** The team's projects, newest first. */
+  projects: Project[];
+  /** Pinned project ids, newest first. */
+  pins: string[];
+  needsYou: number;
+}) {
   const pathname = usePathname();
-  const pins = usePinnedProjects();
-  const needsYou = useMemo(() => getOverview(s).needsYou.length, [s]);
-  const current = currentProjectId(pathname, s);
+  const current = currentProjectId(pathname);
   const pinned = useMemo(
-    () => pins.flatMap((id) => s.projects.filter((p) => p.id === id)),
-    [pins, s.projects],
+    () => pins.flatMap((id) => projects.filter((p) => p.id === id)),
+    [pins, projects],
   );
   const recent = useMemo(
-    () =>
-      s.projects
-        .filter((p) => !pins.includes(p.id))
-        .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-        .slice(0, RECENT),
-    [pins, s.projects],
+    () => projects.filter((p) => !pins.includes(p.id)).slice(0, RECENT),
+    [pins, projects],
   );
   // Projects lights on the list pages, and inside a project that has no row of its own here.
   const shown = current !== undefined && [...pinned, ...recent].some((p) => p.id === current);
