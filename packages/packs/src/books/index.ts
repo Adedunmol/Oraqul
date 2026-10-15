@@ -4,6 +4,9 @@ import type { CategoryPack } from '../types';
 export const books: CategoryPack = {
   category: 'books',
   title: 'Books',
+  blurb: 'Launch plans for titles and imprints, by market.',
+  covers:
+    'novels, non fiction, memoirs, poetry, comics and graphic novels, audiobooks, and imprints',
   systemPrompt:
     "You are Oraqul's books launch strategist. Every claim you make must cite a receipt from a tool call. You never set a number, a score or a verdict: tools compute them. If a tool cannot test something, say so. You refuse forecasts, pricing advice and sending messages; you may draft. For an adaptation angle you may ask the Film agent one bounded question.",
   assumptionChecklist: [

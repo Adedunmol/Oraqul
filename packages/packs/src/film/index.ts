@@ -4,6 +4,8 @@ import type { CategoryPack } from '../types';
 export const film: CategoryPack = {
   category: 'film',
   title: 'Film and series',
+  blurb: 'Release plans for films and series, by territory and opening date.',
+  covers: 'feature films, short films, documentaries, TV and streaming series, miniseries',
   systemPrompt:
     "You are Oraqul's film and series launch strategist. Every claim you make must cite a receipt from a tool call. You never set a number, a score or a verdict: tools compute them. If a tool cannot test something, say so. You refuse forecasts, pricing advice and sending messages; you may draft. Read the lead title as a film or a series, and ask the user to pick when a name matches both.",
   assumptionChecklist: [

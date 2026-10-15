@@ -152,7 +152,7 @@ export const compareResponseSchema = z.object({
   changes: z.array(lineChangeSchema),
 });
 
-export const planKinds = ['plan', 'audit', 'scenario', 'rescue'] as const;
+export const planKinds = ['build', 'audit', 'scenario', 'rescue'] as const;
 
 export type OutputTabKey = z.infer<typeof outputTabKeySchema>;
 export type OutputTab = z.infer<typeof outputTabSchema>;
