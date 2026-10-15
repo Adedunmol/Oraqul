@@ -22,11 +22,15 @@ export function StartScreen({
 }) {
   const back = category ? projectsPath(category) : overviewPath;
 
-  if (viewer.role === 'viewer') {
+  if (viewer.role === 'viewer' || !viewer.teamId) {
     return (
       <Card className="flex max-w-xl flex-col items-start gap-3 p-6">
         <h1 className="font-display text-2xl font-semibold">Editors and owners start projects.</h1>
-        <p className="text-muted">Ask an owner on your team to make you an editor.</p>
+        <p className="text-muted">
+          {viewer.teamId
+            ? 'Ask an owner on your team to make you an editor.'
+            : 'Create a team or join one first.'}
+        </p>
         <Link href={back} className={buttonClassName('primary', 'default', 'icon')}>
           <Icon name="back" className="size-4" />
           Go back
@@ -43,7 +47,7 @@ export function StartScreen({
         </h1>
       </header>
       <div className="mx-auto w-full max-w-[760px]">
-        <StartComposer actor={viewer.name} category={category} mode={mode} autoFocus />
+        <StartComposer teamId={viewer.teamId} category={category} mode={mode} autoFocus />
       </div>
     </div>
   );

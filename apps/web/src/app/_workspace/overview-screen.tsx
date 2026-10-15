@@ -1,12 +1,10 @@
 'use client';
 
+import type { NeedsYouItem, Overview, RecentThread } from '@oraqul/schema';
 import { Chip, Icon, PageHead } from '@oraqul/ui';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
 import type { Viewer } from '@/lib/api/viewer';
 import { getCategory } from '@/lib/demo/catalog';
-import { getOverview, type NeedsYouItem, type RecentThread } from '@/lib/demo/queries';
-import { useDemo } from '@/lib/demo/use-demo';
 import { projectPath } from '@/lib/routes';
 import { formatDay, plural } from './format';
 import { CardShell, cardGridClass } from './project-card';
@@ -15,10 +13,8 @@ import { StartComposer } from './start-composer';
 const sectionTitle = 'text-[15px] font-semibold tracking-[-0.01em]';
 const emptyBox = 'flex items-center gap-3 rounded-2xl bg-card px-5 py-5 text-[13.5px] text-muted';
 /** The team's home: the message box to start, what needs a person, and threads to pick up. */
-export function OverviewScreen({ viewer }: { viewer: Viewer }) {
-  const state = useDemo();
-  const overview = useMemo(() => getOverview(state), [state]);
-  const canEdit = viewer.role !== 'viewer';
+export function OverviewScreen({ viewer, overview }: { viewer: Viewer; overview: Overview }) {
+  const canEdit = viewer.role !== 'viewer' && viewer.teamId !== null;
 
   return (
     <div className="view-enter flex flex-col gap-10">
@@ -29,7 +25,7 @@ export function OverviewScreen({ viewer }: { viewer: Viewer }) {
       />
       {canEdit ? (
         <Section id="start" title="What are you working on?">
-          <StartComposer actor={viewer.name} />
+          {viewer.teamId ? <StartComposer teamId={viewer.teamId} /> : null}
         </Section>
       ) : null}
 

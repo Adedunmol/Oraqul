@@ -29,7 +29,13 @@ const questionBase = { id: z.string(), prompt: z.string() };
 
 /** A question card. The fields after `card` depend on its type, spec §9.3 and design-system §7.14. */
 export const questionCardSchema = z.discriminatedUnion('card', [
-  z.object({ ...questionBase, card: z.literal('single'), options: z.array(questionOptionSchema) }),
+  z.object({
+    ...questionBase,
+    card: z.literal('single'),
+    options: z.array(questionOptionSchema),
+    /** Under the options, such as that typing an answer works too. */
+    hint: z.string().optional(),
+  }),
   z.object({ ...questionBase, card: z.literal('match'), options: z.array(questionOptionSchema) }),
   z.object({ ...questionBase, card: z.literal('multi'), options: z.array(questionOptionSchema) }),
   z.object({

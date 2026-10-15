@@ -2,14 +2,13 @@ import { z } from 'zod';
 import { claimSchema } from './claim';
 import { questionCardTypeSchema, questionOptionSchema } from './events';
 
-export const startModeSchema = z.enum(['start', 'audit', 'rescue']);
-export type StartMode = z.infer<typeof startModeSchema>;
-
 export const questionSchema = z.object({
   id: z.string(),
   card: questionCardTypeSchema,
   prompt: z.string(),
   options: z.array(questionOptionSchema),
+  /** Shown under the card, such as how to answer by typing instead. */
+  hint: z.string().optional(),
 });
 export type Question = z.infer<typeof questionSchema>;
 
@@ -31,5 +30,6 @@ export const agentReplySchema = z.object({
 });
 export type AgentReply = z.infer<typeof agentReplySchema>;
 
-export const stopReasonSchema = z.enum(['finished', 'waiting', 'budget', 'steps', 'error']);
+export const stopReasons = ['finished', 'waiting', 'budget', 'steps', 'error'] as const;
+export const stopReasonSchema = z.enum(stopReasons);
 export type StopReason = z.infer<typeof stopReasonSchema>;

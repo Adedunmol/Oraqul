@@ -11,7 +11,7 @@ const RULES = `Choose exactly one next step.
 - Refuse forecasts, pricing advice and sending anything. You may draft.`;
 
 /** Model-backed planner. The prompt names the pack's tools only, and the schema allows only them. */
-export class OpenAiPlanner implements Planner {
+export class ModelPlanner implements Planner {
   constructor(private readonly model: LanguageModel) {}
 
   async next(context: AgentContext): Promise<Step> {

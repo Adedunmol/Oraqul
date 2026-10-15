@@ -173,7 +173,7 @@ export interface DScenario {
   apply(b: DBrief): void;
 }
 
-export type TraceKind = 'plan' | 'audit' | 'date' | 'partner' | 'rescue';
+export type TraceKind = 'build' | 'audit' | 'date' | 'partner' | 'rescue';
 
 export interface DemoPack {
   id: Category;

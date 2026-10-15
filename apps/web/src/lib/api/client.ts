@@ -7,7 +7,7 @@ import { apiUrl, parseResponse } from './http';
  */
 export async function clientRequest<T>(
   path: string,
-  init: { method: 'POST' | 'PATCH' | 'DELETE'; body?: unknown; redirectOn401?: boolean },
+  init: { method: 'POST' | 'PUT' | 'PATCH' | 'DELETE'; body?: unknown; redirectOn401?: boolean },
   schema: { parse(data: unknown): T },
 ): Promise<T> {
   const response = await fetch(apiUrl(path), {

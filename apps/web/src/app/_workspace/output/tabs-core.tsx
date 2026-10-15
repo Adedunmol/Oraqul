@@ -142,7 +142,7 @@ export function SummaryTab() {
     <>
       <SummaryCard />
       <Stats />
-      {output.kind === 'plan' || output.kind === 'audit' ? (
+      {output.kind === 'build' || output.kind === 'audit' ? (
         <>
           <ChartCard title="How the assumptions tested" table={verdictTable(output.counts)}>
             <VerdictBar counts={output.counts} />

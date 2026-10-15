@@ -1,30 +1,42 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AuthModule } from '../auth/auth.module.js';
-import type { Env } from '../config/env.js';
-import { AgentController } from './agent.controller.js';
-import { AgentService, PLANNER } from './agent.service.js';
-import { OpenAiPlanner } from './openai-planner.js';
-import { ScriptedPlanner } from './scripted-planner.js';
-import { InMemoryThreadStore, ThreadStore } from './thread-store.js';
+import { Logger, Module } from '@nestjs/common';
+import { LLM, type Llm } from '../llm/llm.js';
+import { CATEGORY_AGENTS, placeholderAgents } from './category-agents.js';
+import { ModelReader } from './router/model-reader.js';
+import { FallbackReader } from './router/router.js';
+import { ScriptedReader } from './router/scripted-reader.js';
+import { ROUTER_READER, RunService } from './run.service.js';
+import { ThreadStore } from './thread-store.js';
+import { createTitler, THREAD_TITLER } from './titler.js';
+
+const logger = new Logger('Router');
 
 @Module({
-  imports: [AuthModule],
-  controllers: [AgentController],
   providers: [
-    AgentService,
-    { provide: ThreadStore, useClass: InMemoryThreadStore },
+    ThreadStore,
+    RunService,
     {
-      provide: PLANNER,
-      inject: [ConfigService],
-      useFactory: (config: ConfigService<Env, true>) => {
-        const apiKey = config.get('OPENAI_API_KEY', { infer: true });
-        if (apiKey === '') return new ScriptedPlanner();
-        const openai = createOpenAI({ apiKey });
-        return new OpenAiPlanner(openai(config.get('OPENAI_MODEL', { infer: true })));
+      provide: ROUTER_READER,
+      inject: [LLM],
+      useFactory: (llm: Llm | null) => {
+        const scripted = new ScriptedReader();
+        if (!llm) return scripted;
+        return new FallbackReader(
+          new ModelReader(llm.model('router'), llm.timeoutMs),
+          scripted,
+          (err) => logger.warn(`Model router failed, reading with the scripted router: ${err}`),
+        );
       },
     },
+    {
+      provide: THREAD_TITLER,
+      inject: [LLM],
+      useFactory: (llm: Llm | null) =>
+        createTitler(llm, (err) =>
+          logger.warn(`Model titler failed, naming the chat the scripted way: ${err}`),
+        ),
+    },
+    { provide: CATEGORY_AGENTS, useFactory: placeholderAgents },
   ],
+  exports: [RunService, ThreadStore],
 })
 export class AgentModule {}

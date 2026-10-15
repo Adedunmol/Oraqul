@@ -65,8 +65,9 @@ const sections: { id: string; title: string; body: ReactNode }[] = [
           person.
         </li>
         <li>
-          <b>OpenAI</b> receives your messages and plan text, so the language model can read the job
-          and write the answer.
+          <b>Google (Gemini)</b>, the language model we use today, receives your messages and the
+          text of small files you attach, so it can read the title, category and job and write the
+          answer.
         </li>
         <li>
           <b>Brevo</b> sends our emails, so it receives your email address and the message: a sign

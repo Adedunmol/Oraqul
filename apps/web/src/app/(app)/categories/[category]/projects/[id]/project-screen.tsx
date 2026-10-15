@@ -1,129 +1,130 @@
 'use client';
 
-import type { Job, Output } from '@oraqul/schema';
+import {
+  type Category,
+  type Job,
+  type Output,
+  type ProjectDetail,
+  planKinds,
+  type ThreadDetail,
+  type ThreadEvent,
+  type ThreadSummary,
+} from '@oraqul/schema';
 import { Button, buttonClassName, ChipButton, Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Dropdown } from '@/app/_components/dropdown';
 import { ChartCard, StackedColumns } from '@/app/_workspace/charts';
-import { ChatPanel, KindTag } from '@/app/_workspace/chat/chat-panel';
+import { KindTag } from '@/app/_workspace/chat/chat-panel';
+import { LiveChat } from '@/app/_workspace/chat/live-chat';
 import { Crumbs } from '@/app/_workspace/crumbs';
 import { formatDay, plural } from '@/app/_workspace/format';
-import { NotInSession } from '@/app/_workspace/not-in-session';
 import { toast } from '@/app/_workspace/toast';
+import { createThread, deleteProject } from '@/lib/api/projects';
 import type { Viewer } from '@/lib/api/viewer';
-import { createThread, deleteProject, setActor } from '@/lib/demo/actions';
 import { getCategory } from '@/lib/demo/catalog';
-import {
-  comparePlans,
-  getProjectDetail,
-  getThreadDetail,
-  type ProjectDetail,
-  planOutputs,
-  type ThreadSummary,
-} from '@/lib/demo/queries';
-import { useDemo } from '@/lib/demo/use-demo';
-import { type CategoryScope, projectPath, projectsPath } from '@/lib/routes';
+import { comparePlans } from '@/lib/demo/queries';
+import { projectsPath } from '@/lib/routes';
 import { ConfirmDialog } from '../../../../_components/confirm-dialog';
 import { Modal } from '../../../../_components/modal';
 
-/** The project's address opens its newest chat. */
-export function ProjectScreen({
-  id,
-  scope,
-  viewer,
-}: {
-  id: string;
-  scope: CategoryScope;
-  viewer: Viewer;
-}) {
-  const state = useDemo();
-  const router = useRouter();
-  const project = state.projects.find((p) => p.id === id);
-  const misplaced = project !== undefined && project.category !== scope;
+type ProjectUpdate = Extract<ThreadEvent, { type: 'project.updated' }>;
 
-  // A project has one address, under its own category. `all` and a wrong category both move there.
-  useEffect(() => {
-    if (project && misplaced) router.replace(projectPath(project));
-  }, [project, misplaced, router]);
+const isPlan = (o: Output): boolean => (planKinds as readonly string[]).includes(o.kind);
 
-  if (!project) return <NotInSession what="project" />;
-  if (misplaced) return null;
-  return <ProjectWorkspace projectId={id} threadId={undefined} viewer={viewer} />;
-}
+const bar = 'rounded-md bg-surface2 motion-safe:animate-pulse';
 
 /**
- * The project is the workspace: its chat in the middle, its other chats beside it, and
- * the current plan on top. Everything else about the project sits behind Project details.
+ * The project is the workspace: its chat in the middle, its other chats beside it, and the current
+ * plan on top. Everything else about the project sits behind Project details. While the router
+ * is still reading the first message, the name, category and chat name show as skeletons.
  */
 export function ProjectWorkspace({
-  projectId,
-  threadId,
+  detail,
+  chat,
   viewer,
 }: {
-  projectId: string;
-  /** The chat (thread) to show. The newest one when left out. */
-  threadId: string | undefined;
+  detail: ProjectDetail;
+  /** The chat to show: the one in the address, or the newest. Null when there is none. */
+  chat: ThreadDetail | null;
   viewer: Viewer;
 }) {
-  const state = useDemo();
   const router = useRouter();
-  const detail = useMemo(() => getProjectDetail(state, projectId), [state, projectId]);
-  const selectedId = threadId ?? detail?.threads[0]?.thread.id;
-  const chat = useMemo(
-    () => (selectedId ? getThreadDetail(state, selectedId) : undefined),
-    [state, selectedId],
-  );
+  const [update, setUpdate] = useState<ProjectUpdate | null>(null);
   const [details, setDetails] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const canEdit = viewer.role !== 'viewer';
+  const canEdit = detail.myRole !== 'viewer';
+  const onProjectUpdated = useCallback((event: ProjectUpdate) => setUpdate(event), []);
 
-  useEffect(() => setActor(viewer.name), [viewer.name]);
-
-  if (!detail) return <NotInSession what="project" />;
   const { project, threads, outputs } = detail;
-  const info = getCategory(project.category);
+  const name = update?.name ?? project.name;
+  const category = update?.category ?? project.category;
+  const reading = name === null || category === null;
+  const info = category ? getCategory(category) : undefined;
   const labels = new Map(outputs.map((o) => [o.id, o.label]));
   const current = outputs.find((o) => o.id === detail.currentPlanId);
+  const selectedId = chat?.thread.id;
+  const chatName = (id: string, stored: string) =>
+    update && id === selectedId ? update.threadName : stored;
 
-  function newChat() {
-    setActor(viewer.name);
-    router.push(`/threads/${createThread(project.id)}`);
+  async function newChat() {
+    try {
+      router.push(`/threads/${await createThread(project.id)}`);
+    } catch {
+      toast('Could not start a new chat. Try again.');
+    }
   }
 
   return (
-    <div className="view-enter flex flex-col gap-5" data-cat={project.category}>
+    <div className="view-enter flex flex-col gap-5" data-cat={category ?? undefined}>
       <header className="sticky-head flex flex-col gap-2.5">
         <Crumbs
           items={[
             { label: 'Projects', href: projectsPath() },
-            { label: info.name, href: projectsPath(project.category) },
+            ...(info ? [{ label: info.name, href: projectsPath(info.id) }] : []),
           ]}
         />
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[color-mix(in_srgb,var(--cat)_15%,var(--surface))] text-cat">
-              <Icon name={project.category} className="size-5" />
-            </span>
+            {category ? (
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[color-mix(in_srgb,var(--cat)_15%,var(--surface))] text-cat">
+                <Icon name={category} className="size-5" />
+              </span>
+            ) : (
+              <span aria-hidden className={`size-10 shrink-0 rounded-xl ${bar}`} />
+            )}
             <div className="min-w-0">
-              {/* `truncate` clips overflow, so the line must be tall enough for descenders (y, g, Q). */}
-              <h1 className="truncate font-display text-[clamp(22px,2.4vw,28px)] font-semibold leading-[1.3] tracking-[-0.02em]">
-                {project.name}
-              </h1>
-              <p className="truncate text-[13px] text-muted">
-                {[info.name, project.kind, project.genre, project.window]
-                  .filter(Boolean)
-                  .join(' · ')}
-              </p>
+              {reading ? (
+                <div
+                  role="status"
+                  aria-label="Reading what this project is"
+                  className="flex flex-col gap-2 py-1"
+                >
+                  <span className={`block h-6 w-44 ${bar}`} />
+                  <span className={`block h-3.5 w-28 ${bar}`} />
+                </div>
+              ) : (
+                <>
+                  {/* `truncate` clips overflow, so the line must be tall enough for descenders (y, g, Q). */}
+                  <h1 className="truncate font-display text-[clamp(22px,2.4vw,28px)] font-semibold leading-[1.3] tracking-[-0.02em]">
+                    {name}
+                  </h1>
+                  <p className="truncate text-[13px] text-muted">
+                    {[info?.name, project.kind, project.genre, project.window]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </p>
+                </>
+              )}
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button icon="details" onClick={() => setDetails(true)}>
+            <Button icon="details" onClick={() => setDetails(true)} disabled={reading}>
               Project details
             </Button>
             {canEdit ? (
-              <Button variant="primary" icon="plus" onClick={newChat}>
+              <Button variant="primary" icon="plus" onClick={newChat} disabled={reading}>
                 New chat
               </Button>
             ) : null}
@@ -136,7 +137,12 @@ export function ProjectWorkspace({
           {current ? <CurrentPlan output={current} /> : null}
           <div className="flex flex-col gap-1.5">
             <p className="px-3 text-[12px] font-semibold text-muted">Chats</p>
-            <ChatList threads={threads} selectedId={selectedId} />
+            <ChatList
+              threads={threads}
+              selectedId={selectedId}
+              nameOf={chatName}
+              reading={reading}
+            />
           </div>
         </aside>
         <details className="rounded-2xl bg-card px-4 py-3 min-[900px]:hidden">
@@ -144,21 +150,35 @@ export function ProjectWorkspace({
             Chats ({threads.length})
           </summary>
           <div className="mt-3">
-            <ChatList threads={threads} selectedId={selectedId} />
+            <ChatList
+              threads={threads}
+              selectedId={selectedId}
+              nameOf={chatName}
+              reading={reading}
+            />
           </div>
         </details>
         {chat ? (
           <section
-            aria-label={`Chat: ${chat.thread.name}`}
+            aria-label={`Chat: ${chatName(chat.thread.id, chat.thread.name)}`}
             className="flex h-[calc(100dvh-24px)] min-h-[480px] min-w-0 min-[900px]:h-[calc(100dvh-180px)] min-[900px]:min-h-[520px] flex-col overflow-hidden rounded-2xl bg-card"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-4 pt-3.5">
-              <h2 className="font-display truncate text-[15px] font-semibold">
-                {chat.thread.name}
-              </h2>
+              {reading ? (
+                <span aria-hidden className={`block h-4 w-24 ${bar}`} />
+              ) : (
+                <h2 className="font-display truncate text-[15px] font-semibold">
+                  {chatName(chat.thread.id, chat.thread.name)}
+                </h2>
+              )}
               <p className="text-[12.5px] text-muted">{builtOnText(chat.thread, labels)}</p>
             </div>
-            <ChatPanel key={chat.thread.id} detail={chat} canEdit={canEdit} />
+            <LiveChat
+              key={chat.thread.id}
+              detail={chat}
+              canEdit={canEdit}
+              onProjectUpdated={onProjectUpdated}
+            />
           </section>
         ) : (
           <p className="rounded-2xl bg-card p-7 text-center text-muted">
@@ -167,33 +187,43 @@ export function ProjectWorkspace({
         )}
       </div>
 
-      <Modal open={details} onClose={() => setDetails(false)} title="Project details" wide>
-        <Details
-          detail={detail}
-          canDelete={viewer.role === 'owner'}
-          onDelete={() => {
-            setDetails(false);
-            setDeleting(true);
-          }}
-        />
-      </Modal>
-      <ConfirmDialog
-        open={deleting}
-        onClose={() => setDeleting(false)}
-        title={`Delete ${project.name}?`}
-        confirmLabel="Delete project"
-        onConfirm={() => {
-          deleteProject(project.id);
-          toast(`${project.name} deleted`);
-          router.push(projectsPath(project.category));
-        }}
-      >
-        <p>
-          This removes the project, its {plural(threads.length, 'chat')} and{' '}
-          {plural(outputs.length, 'output')} for everyone on the team.
-        </p>
-        <p className="font-medium text-ink">It cannot be undone.</p>
-      </ConfirmDialog>
+      {info && name ? (
+        <>
+          <Modal open={details} onClose={() => setDetails(false)} title="Project details" wide>
+            <Details
+              detail={detail}
+              category={info.id}
+              canDelete={viewer.role === 'owner' && detail.myRole === 'owner'}
+              onDelete={() => {
+                setDetails(false);
+                setDeleting(true);
+              }}
+            />
+          </Modal>
+          <ConfirmDialog
+            open={deleting}
+            onClose={() => setDeleting(false)}
+            title={`Delete ${name}?`}
+            confirmLabel="Delete project"
+            onConfirm={async () => {
+              try {
+                await deleteProject(project.id);
+                toast(`${name} deleted`);
+                router.push(projectsPath(info.id));
+                router.refresh();
+              } catch {
+                toast(`Could not delete ${name}. Try again.`);
+              }
+            }}
+          >
+            <p>
+              This removes the project, its {plural(threads.length, 'chat')} and{' '}
+              {plural(outputs.length, 'output')} for everyone on the team.
+            </p>
+            <p className="font-medium text-ink">It cannot be undone.</p>
+          </ConfirmDialog>
+        </>
+      ) : null}
     </div>
   );
 }
@@ -234,14 +264,21 @@ function CurrentPlan({ output }: { output: Output }) {
 function ChatList({
   threads,
   selectedId,
+  nameOf,
+  reading,
 }: {
   threads: ThreadSummary[];
   selectedId: string | undefined;
+  /** The chat's name, including one the router has just set. */
+  nameOf: (id: string, stored: string) => string;
+  /** The router is still reading the project, so the first chat has no name yet. */
+  reading: boolean;
 }) {
   return (
     <ul className="flex flex-col gap-1.5">
       {threads.map(({ thread, outputCount, unread }) => {
         const selected = thread.id === selectedId;
+        const name = nameOf(thread.id, thread.name);
         return (
           <li key={thread.id}>
             <Link
@@ -250,7 +287,11 @@ function ChatList({
               className={`flex flex-col rounded-xl px-3 py-2.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none ${selected ? 'bg-card font-semibold' : 'hover:bg-surface2'}`}
             >
               <span className="flex items-center gap-1.5 text-sm">
-                <span className="truncate">{thread.name}</span>
+                {reading ? (
+                  <span aria-label="Naming this chat" className={`block h-4 w-20 ${bar}`} />
+                ) : (
+                  <span className="truncate">{name}</span>
+                )}
                 {unread && !selected ? (
                   <span className="shrink-0 rounded bg-accent-soft px-1.5 py-px text-[11px] font-semibold text-accent">
                     New
@@ -270,16 +311,18 @@ function ChatList({
 
 function Details({
   detail,
+  category,
   canDelete,
   onDelete,
 }: {
   detail: ProjectDetail;
+  category: Category;
   canDelete: boolean;
   onDelete: () => void;
 }) {
   const { project, outputs, threads } = detail;
-  const info = getCategory(project.category);
-  const plans = planOutputs(outputs);
+  const info = getCategory(category);
+  const plans = outputs.filter(isPlan);
   const value = (v: string) => v || 'Not given';
   const inputs: [string, string][] = [
     [info.inputLabels.kind, value(project.kind)],
@@ -351,7 +394,7 @@ function OutputsList({
   threads: ThreadSummary[];
 }) {
   const [kind, setKind] = useState<Job | 'all'>('all');
-  const kinds = (['plan', 'audit', 'scenario', 'rescue', 'date', 'partner'] as const).filter((k) =>
+  const kinds = (['build', 'audit', 'scenario', 'rescue', 'date', 'partner'] as const).filter((k) =>
     outputs.some((o) => o.kind === k),
   );
   const names = new Map(threads.map(({ thread }) => [thread.id, thread.name]));

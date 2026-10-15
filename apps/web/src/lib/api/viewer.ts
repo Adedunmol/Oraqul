@@ -5,6 +5,8 @@ import { getShellData } from './shell';
 export interface Viewer {
   name: string;
   role: Role;
+  /** The current team, from the sidebar switcher. Null when the person is on no team. */
+  teamId: string | null;
   teamName: string | null;
 }
 
@@ -17,6 +19,7 @@ export async function getViewer(returnTo: string): Promise<Viewer> {
   return {
     name: user.name,
     role: shell?.team?.myRole ?? 'viewer',
+    teamId: shell?.team?.team.id ?? null,
     teamName: shell?.team?.team.name ?? null,
   };
 }

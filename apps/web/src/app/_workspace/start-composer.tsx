@@ -4,9 +4,10 @@ import type { Category, StartMode } from '@oraqul/schema';
 import { ChipButton } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { createProject, setActor } from '@/lib/demo/actions';
+import { createProject } from '@/lib/api/projects';
 import { getCategory } from '@/lib/demo/catalog';
 import { type Attachment, Composer } from './chat/composer';
+import { toast } from './toast';
 
 /**
  * The three jobs, as hints. Picking one changes the prompt, never what the person may type. The
@@ -20,7 +21,7 @@ export const START_CHOICES: {
   brings: string;
 }[] = [
   {
-    mode: 'start',
+    mode: 'build',
     title: 'Make a plan',
     say: 'Tell me what it is: the title and a line about it. Add where and when if you know, and I will find the rest.',
     placeholder: 'Salt Road, a crime drama series opening in the UK and US in November',
@@ -51,31 +52,37 @@ const OPENING =
  * message; `category` and the chips only give it a head start. spec §9.2
  */
 export function StartComposer({
-  actor,
+  teamId,
   category,
   mode: initialMode,
   autoFocus,
 }: {
-  /** Name shown as who started the project. */
-  actor: string;
+  /** The team the project is made in. */
+  teamId: string;
   category?: Category;
   mode?: StartMode;
   autoFocus?: boolean;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<StartMode | null>(initialMode ?? null);
+  const [sending, setSending] = useState(false);
   const choice = START_CHOICES.find((c) => c.mode === mode);
   const info = category ? getCategory(category) : undefined;
 
-  function send(text: string, files: Attachment[]) {
-    setActor(actor);
-    const threadId = createProject({
-      mode,
-      category: category ?? null,
-      text,
-      files: files.map((f) => ({ name: f.name, text: f.text })),
-    });
-    router.push(`/threads/${threadId}`);
+  async function send(text: string, files: Attachment[]) {
+    setSending(true);
+    try {
+      const { threadId } = await createProject(teamId, {
+        text,
+        mode: mode ?? undefined,
+        category,
+        attachments: files.map((f) => ({ name: f.name, text: f.text })),
+      });
+      router.push(`/threads/${threadId}`);
+    } catch {
+      setSending(false);
+      toast('Oraqul could not save that. Try again in a moment.');
+    }
   }
 
   return (
@@ -91,6 +98,7 @@ export function StartComposer({
         placeholder={choice?.placeholder ?? START_CHOICES[0]?.placeholder ?? ''}
         allowFiles
         autoFocus={autoFocus}
+        disabled={sending}
         onSend={send}
       />
       <div className="flex flex-wrap items-center gap-2">

@@ -1,5 +1,30 @@
+import { getSidebarProjects } from '@/lib/api/projects-server';
 import { getShellData } from '@/lib/api/shell';
+import { MainNav } from './main-nav';
+import { Palette } from './palette';
 import { TeamSwitcher } from './team-switcher';
+
+/** New project, Overview and Projects, with the person's pins, recent projects and Needs you count. */
+export async function SidebarNav() {
+  const data = await getShellData();
+  const teamId = data?.team?.team.id;
+  const projects = teamId ? await getSidebarProjects(teamId) : undefined;
+  return (
+    <MainNav
+      projects={projects?.projects ?? []}
+      pins={projects?.pins ?? []}
+      needsYou={projects?.needsYou ?? 0}
+    />
+  );
+}
+
+/** Search over the team's projects. Outputs join once the API serves them. */
+export async function SidebarPalette() {
+  const data = await getShellData();
+  const teamId = data?.team?.team.id;
+  const projects = teamId ? await getSidebarProjects(teamId) : undefined;
+  return <Palette projects={projects?.projects ?? []} />;
+}
 
 export async function SidebarTeam() {
   const data = await getShellData();
