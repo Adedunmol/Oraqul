@@ -6,6 +6,7 @@ Qloo supplies the taste data. What we compute on top is in [spec §5](../product
 
 Written 2026-10-13 from docs.qloo.com, then checked against the live API the same day with `pnpm --filter @oraqul/engine qloo:smoke` (51 calls, `hackathon.api.qloo.com`, our key). Cross-domain taste tests were checked on 2026-10-15 with `qloo:cross-domain` (21 calls, same host and key).
 
+- **Subject to change.** The approach in [How Oraqul uses Qloo](#how-oraqul-uses-qloo) and the 2026-10-15 findings come from a few hand picked probes. They will be revised when each category agent starts making real Qloo calls.
 - **Verified (2026-10-13)** means a live response confirmed it. **Documented** means only the docs say so.
 - Things the docs got wrong or left open are in [Conflicts](#conflicts-and-how-they-were-settled) and [What the live run showed](#what-the-live-run-showed).
 
