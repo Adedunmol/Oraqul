@@ -56,8 +56,10 @@ export function NavMenu({ extra }: { extra: ReactNode }) {
     };
   }, [open]);
 
-  const productActive = product.some((item) => pathname === item.href);
-  const current = (href: string) => (pathname === href ? 'page' : undefined);
+  // A page under a link, such as an open example, still lights that link.
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const productActive = product.some((item) => isActive(item.href));
+  const current = (href: string) => (isActive(href) ? 'page' : undefined);
 
   return (
     <div ref={root} className="flex flex-1 items-center justify-end min-[900px]:justify-start">
@@ -87,9 +89,11 @@ export function NavMenu({ extra }: { extra: ReactNode }) {
                   <Link
                     href={item.href}
                     aria-current={current(item.href)}
-                    className="flex flex-col rounded-lg px-3 py-2 hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent"
+                    className="group flex flex-col rounded-lg px-3 py-2 hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent aria-[current=page]:bg-accent-soft"
                   >
-                    <span className="text-[13.5px] font-medium">{item.label}</span>
+                    <span className="text-[13.5px] font-medium group-aria-[current=page]:font-semibold group-aria-[current=page]:text-accent">
+                      {item.label}
+                    </span>
                     <span className="text-[12.5px] text-muted">{item.note}</span>
                   </Link>
                 </li>
@@ -130,7 +134,7 @@ export function NavMenu({ extra }: { extra: ReactNode }) {
               key={item.href}
               href={item.href}
               aria-current={current(item.href)}
-              className="flex min-h-11 items-center rounded-lg px-3 text-[16px] hover:bg-surface2 aria-[current=page]:font-semibold"
+              className="flex min-h-11 items-center rounded-lg px-3 text-[16px] hover:bg-surface2 aria-[current=page]:bg-accent-soft aria-[current=page]:font-semibold aria-[current=page]:text-accent"
             >
               {item.label}
             </Link>
