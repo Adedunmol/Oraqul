@@ -1,4 +1,12 @@
-import { categories, codePurposes, jobs, oauthProviders, roles } from '@oraqul/schema';
+import {
+  categories,
+  codePurposes,
+  jobs,
+  oauthProviders,
+  roles,
+  startModes,
+  stopReasons,
+} from '@oraqul/schema';
 import { sql } from 'drizzle-orm';
 import {
   type AnyPgColumn,
@@ -18,6 +26,7 @@ import {
 
 const id = () => uuid('id').primaryKey().defaultRandom();
 const createdAt = () => timestamp('created_at', { withTimezone: true }).notNull().defaultNow();
+const updatedAt = () => timestamp('updated_at', { withTimezone: true }).notNull().defaultNow();
 
 export const users = pgTable('users', {
   id: id(),
@@ -134,50 +143,71 @@ export const invites = pgTable(
   ],
 );
 
-export const projects = pgTable('projects', {
-  id: id(),
-  teamId: uuid('team_id')
-    .notNull()
-    .references(() => teams.id, { onDelete: 'cascade' }),
-  category: text('category', { enum: categories }).notNull(),
-  name: text('name').notNull(),
-  kind: text('kind'),
-  genre: text('genre'),
-  places: text('places').array().notNull().default([]),
-  // "window" in the spec; renamed because WINDOW is a reserved SQL word
-  launchWindow: text('launch_window'),
-  lead: text('lead'),
-  comps: jsonb('comps'),
-  inputs: jsonb('inputs'),
-  status: text('status').notNull().default('draft'),
-  createdAt: createdAt(),
-});
+// A project is saved from its first message, before the router has read its name, category and
+// mode. Until then it is a draft (`status = 'intake'`) that no list shows.
+export const projects = pgTable(
+  'projects',
+  {
+    id: id(),
+    teamId: uuid('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'cascade' }),
+    category: text('category', { enum: categories }),
+    name: text('name'),
+    mode: text('mode', { enum: startModes }),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    kind: text('kind'),
+    genre: text('genre'),
+    places: text('places').array().notNull().default([]),
+    // "window" in the spec; renamed because WINDOW is a reserved SQL word
+    launchWindow: text('launch_window'),
+    lead: text('lead'),
+    comps: jsonb('comps'),
+    inputs: jsonb('inputs'),
+    status: text('status').notNull().default('intake'),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [index('projects_team_status_idx').on(table.teamId, table.status, table.updatedAt)],
+);
 
-export const threads = pgTable('threads', {
-  id: id(),
-  projectId: uuid('project_id')
-    .notNull()
-    .references(() => projects.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  baseOutputId: uuid('base_output_id').references((): AnyPgColumn => outputs.id),
-  fromOutputId: uuid('from_output_id').references((): AnyPgColumn => outputs.id),
-  fresh: boolean('fresh').notNull().default(false),
-  createdBy: uuid('created_by')
-    .notNull()
-    .references(() => users.id),
-  createdAt: createdAt(),
-});
+export const threads = pgTable(
+  'threads',
+  {
+    id: id(),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    baseOutputId: uuid('base_output_id').references((): AnyPgColumn => outputs.id),
+    fromOutputId: uuid('from_output_id').references((): AnyPgColumn => outputs.id),
+    fresh: boolean('fresh').notNull().default(false),
+    createdBy: uuid('created_by')
+      .notNull()
+      .references(() => users.id),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [index('threads_project_idx').on(table.projectId)],
+);
 
-export const messages = pgTable('messages', {
-  id: id(),
-  threadId: uuid('thread_id')
-    .notNull()
-    .references(() => threads.id, { onDelete: 'cascade' }),
-  role: text('role', { enum: ['user', 'agent', 'question', 'trace', 'output'] }).notNull(),
-  body: jsonb('body').notNull(),
-  seq: integer('seq').notNull(),
-  createdAt: createdAt(),
-});
+export const messageRoles = ['user', 'agent', 'question', 'trace', 'output'] as const;
+
+/** A thread's stored transcript. `seq` orders it and is the event stream's resume point. */
+export const messages = pgTable(
+  'messages',
+  {
+    id: id(),
+    threadId: uuid('thread_id')
+      .notNull()
+      .references(() => threads.id, { onDelete: 'cascade' }),
+    role: text('role', { enum: messageRoles }).notNull(),
+    body: jsonb('body').notNull(),
+    seq: integer('seq').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [unique('messages_thread_seq_unique').on(table.threadId, table.seq)],
+);
 
 export const outputs = pgTable('outputs', {
   id: id(),
@@ -225,19 +255,66 @@ export const shareLinks = pgTable('share_links', {
   createdAt: createdAt(),
 });
 
-export const runs = pgTable('runs', {
-  id: id(),
-  threadId: uuid('thread_id')
-    .notNull()
-    .references(() => threads.id, { onDelete: 'cascade' }),
-  agent: text('agent').notNull(),
-  job: text('job', { enum: jobs }).notNull(),
-  steps: jsonb('steps'),
-  qlooCalls: integer('qloo_calls').notNull().default(0),
-  tokens: integer('tokens').notNull().default(0),
-  status: text('status').notNull().default('running'),
-  createdAt: createdAt(),
-});
+export const runStatuses = ['running', 'waiting', 'done', 'error'] as const;
+
+/**
+ * One run segment of a thread: from a message until the agent finishes, asks, or stops. `state`
+ * holds what the next segment needs (the router's reading, the open question), so a waiting run
+ * survives a restart. `job` is null while the router has not read it yet.
+ */
+export const runs = pgTable(
+  'runs',
+  {
+    id: id(),
+    threadId: uuid('thread_id')
+      .notNull()
+      .references(() => threads.id, { onDelete: 'cascade' }),
+    agent: text('agent').notNull(),
+    job: text('job', { enum: jobs }),
+    steps: jsonb('steps'),
+    state: jsonb('state'),
+    qlooCalls: integer('qloo_calls').notNull().default(0),
+    tokens: integer('tokens').notNull().default(0),
+    status: text('status', { enum: runStatuses }).notNull().default('running'),
+    stopReason: text('stop_reason', { enum: stopReasons }),
+    finishedAt: timestamp('finished_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (table) => [index('runs_thread_idx').on(table.threadId, table.createdAt)],
+);
+
+/** One person's pinned projects. Three at most, kept by the service, not the database. */
+export const pins = pgTable(
+  'pins',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    createdAt: createdAt(),
+  },
+  (table) => [unique('pins_user_project_unique').on(table.userId, table.projectId)],
+);
+
+/** How far one person has read a thread, by message `seq`. Drives "new" marks and Needs you. */
+export const threadReads = pgTable(
+  'thread_reads',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    threadId: uuid('thread_id')
+      .notNull()
+      .references(() => threads.id, { onDelete: 'cascade' }),
+    readSeq: integer('read_seq').notNull().default(0),
+    createdAt: createdAt(),
+  },
+  (table) => [unique('thread_reads_user_thread_unique').on(table.userId, table.threadId)],
+);
 
 // Packs live in code; this table only records which pack version produced an output.
 export const categoryPacks = pgTable('category_packs', {

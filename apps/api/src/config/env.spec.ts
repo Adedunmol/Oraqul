@@ -27,8 +27,26 @@ describe('envSchema agent settings', () => {
     expect(envSchema.safeParse({ ...valid, QLOO_MODE: 'live' }).success).toBe(false);
   });
 
-  it('rejects an OpenAI key with no model', () => {
-    expect(envSchema.safeParse({ ...valid, OPENAI_API_KEY: 'sk-x' }).success).toBe(false);
+  it('rejects a model key with no model', () => {
+    expect(envSchema.safeParse({ ...valid, LLM_API_KEY: 'sk-x' }).success).toBe(false);
+  });
+
+  it('needs a base URL for an OpenAI compatible provider', () => {
+    const llm = { LLM_API_KEY: 'k', LLM_MODEL: 'm', LLM_PROVIDER: 'openai-compatible' };
+    expect(envSchema.safeParse({ ...valid, ...llm }).success).toBe(false);
+    expect(
+      envSchema.safeParse({ ...valid, ...llm, LLM_BASE_URL: 'http://localhost:11434/v1' }).success,
+    ).toBe(true);
+  });
+
+  it('accepts a Google model', () => {
+    const env = envSchema.parse({
+      ...valid,
+      LLM_PROVIDER: 'google',
+      LLM_API_KEY: 'k',
+      LLM_MODEL: 'gemini-2.5-flash',
+    });
+    expect(env.LLM_PROVIDER).toBe('google');
   });
 });
 

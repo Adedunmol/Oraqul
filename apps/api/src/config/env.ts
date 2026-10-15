@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/** Model providers the API can call. Picking one is configuration, not code (docs/backend/llm.md). */
+export const llmProviders = ['openai', 'google', 'openai-compatible'] as const;
+
 export const envSchema = z
   .object({
     DATABASE_URL: z.string().url(),
@@ -25,8 +28,13 @@ export const envSchema = z
     QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(60),
     QLOO_MODE: z.enum(['demo', 'live']).default('demo'),
     AGENT_MAX_STEPS: z.coerce.number().int().positive().default(12),
-    OPENAI_API_KEY: z.string().default(''),
-    OPENAI_MODEL: z.string().default(''),
+    LLM_PROVIDER: z.enum(llmProviders).default('openai'),
+    LLM_API_KEY: z.string().default(''),
+    LLM_MODEL: z.string().default(''),
+    /** Optional: a cheaper or faster model for the router than for the category agents. */
+    LLM_ROUTER_MODEL: z.string().default(''),
+    LLM_BASE_URL: z.string().default(''),
+    LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
   })
   .refine(
     (env) => env.QLOO_MODE === 'demo' || (env.QLOO_API_KEY !== '' && env.QLOO_BASE_URL !== ''),
@@ -45,9 +53,16 @@ export const envSchema = z
     message: 'BREVO_API_KEY needs EMAIL_FROM set to a sender verified in Brevo',
     path: ['EMAIL_FROM'],
   })
-  .refine((env) => env.OPENAI_API_KEY === '' || env.OPENAI_MODEL !== '', {
-    message: 'OPENAI_API_KEY needs OPENAI_MODEL',
-    path: ['OPENAI_MODEL'],
-  });
+  .refine((env) => env.LLM_API_KEY === '' || env.LLM_MODEL !== '', {
+    message: 'LLM_API_KEY needs LLM_MODEL',
+    path: ['LLM_MODEL'],
+  })
+  .refine(
+    (env) =>
+      env.LLM_API_KEY === '' ||
+      env.LLM_PROVIDER !== 'openai-compatible' ||
+      z.url().safeParse(env.LLM_BASE_URL).success,
+    { message: 'LLM_PROVIDER=openai-compatible needs LLM_BASE_URL', path: ['LLM_BASE_URL'] },
+  );
 
 export type Env = z.infer<typeof envSchema>;
