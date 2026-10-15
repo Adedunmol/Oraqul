@@ -32,7 +32,7 @@ export function SiteFooter() {
         <div className="col-span-2 flex max-w-xs flex-col gap-3 min-[700px]:col-span-1">
           <Logo />
           <p className="text-[13.5px] text-muted">
-            A verifiable AI agent for launch strategy in media and entertainment, grounded in Qloo
+            A verifiable AI agent for launch planning in media and entertainment, grounded in Qloo
             taste data. Every claim has a receipt.
           </p>
         </div>

@@ -57,7 +57,7 @@ function CategoryVisual({ info }: { info: CategoryInfo }) {
           href={`/categories#${info.id}`}
           className="w-fit rounded-lg bg-bg px-4 py-2.5 text-[15px] font-medium text-ink hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg"
         >
-          Thin data and what you bring
+          What it reads and what you bring
         </Link>
       </div>
     </div>

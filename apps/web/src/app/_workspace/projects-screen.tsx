@@ -197,7 +197,7 @@ function ProjectGroup({
 
 /**
  * A help button beside the filter: what Oraqul can and cannot do in one category, in a dialog, so
- * the list stays about projects. The views it has, what it tests, where the data is thin, and what
+ * the list stays about projects. The views it has, what it tests, where it is less certain, and what
  * the team must bring. Gaps are said plainly, the same as on every output (PRD E3).
  */
 function CategoryHelp({ category }: { category: Category }) {

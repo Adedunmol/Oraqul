@@ -202,11 +202,11 @@ export function MethodBody() {
             <Confidence level="lower" />
           </div>
           <p className={prose}>
-            Set for each line from three things: whether the title was found in Qloo, how many
-            comparable titles stand behind the signal, and whether the place or title is on a list
-            of thin coverage. When Oraqul falls back to comparable titles and talent, confidence is
-            capped at medium. It is a word, never a percentage, because a percentage would claim a
-            precision the data does not have.
+            Set for each line from what stands behind it: how many comparable titles, people and
+            themes Oraqul could use, how well Qloo knows each, and whether they agree. A launch that
+            is not in Qloo yet is the normal case and does not lower confidence by itself. Few or
+            poorly known comparisons do. It is a word, never a percentage, because a percentage
+            would claim a precision the data does not have.
           </p>
         </Block>
 

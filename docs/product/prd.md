@@ -4,11 +4,11 @@ Owners: Wahab and Adedunmola.
 
 ## 1. Summary
 
-Oraqul is a verifiable AI agent for launch strategy in media and entertainment.
+Oraqul is a verifiable AI agent for launch planning in media and entertainment.
 
-Oraqul builds, checks and repairs launch strategy. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
+Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
 
-Oraqul is a verifiable AI agent that builds, checks and repairs launch strategy in media and entertainment.
+Oraqul is a verifiable AI agent that builds, checks and repairs launch plans in media and entertainment.
 
 This document says what to build and why. The spec says how. The design system file says how it looks and reads.
 
@@ -58,7 +58,7 @@ Media and entertainment is the one industry Oraqul serves. Its five categories a
 Hierarchy: Team, Category, Project, Job, Output.
 
 * **Team.** Members and roles. Plans, results and briefs are visible only to the team.
-* **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, where coverage is thin, and what is not supported.
+* **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, where it is less certain, and what is not supported.
 * **Project.** The launch. Holds inputs, threads and outputs.
 * **Job.** Plan, Audit, Rescue (includes relaunch). Scenario testing, rival date check and partner brief run inside a project.
 * **Output.** A saved result with its own details page, evidence and version.
@@ -184,7 +184,8 @@ Product
 
 | Risk | What we do |
 |---|---|
-| Qloo coverage is thin for Nigerian titles and for podcasts and games | Test first. State gaps on the line. Fall back to comps and talent at lower confidence. |
+| Qloo may know little about the surroundings of a launch (measured so far, on hand picked and mostly popular titles: age and gender profiles exist for about half of books and for 37 of 40 films, series, artists, podcasts and games, Nigerian ones included; nothing else is measured, and obscure titles are untested) | The launch is described by its anchors, not looked up. Probe coverage per category first. State gaps on the line. Confidence follows how many and how strong the anchors are. |
+| A cross-domain overlap is read as a verdict without a baseline | A clear gap above the baseline is evidence for. Qloo always returns a score, so a low score means little alone and counts as weak only against a baseline scored in the same call. |
 | Qloo terms may limit public receipts | Share links show summaries only until confirmed. |
 | Call quota (reported near 10,000 a month) | Set a call budget per audit. Cache within a run. Rerun only what changed. |
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |
@@ -193,7 +194,7 @@ Product
 | The product is hard to understand at first | One message box to start, few questions, the answer shown in the chat, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
 | Five categories is a lot of surface | One engine, one toolbox, five packs. A new category is a new pack, not new code. |
 
-Open points to close first: Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.
+Open points to close first: cross-domain tests per category, Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.
 
 ## 10. Milestones to October 31
 

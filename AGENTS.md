@@ -1,6 +1,6 @@
 # Oraqul
 
-A verifiable AI agent for launch strategy in media and entertainment. Every claim carries a receipt from real Qloo taste data. Start with [docs/README.md](docs/README.md).
+A verifiable AI agent for launch planning in media and entertainment. Every claim carries a receipt from real Qloo taste data. Start with [docs/README.md](docs/README.md).
 
 ## Stack
 
