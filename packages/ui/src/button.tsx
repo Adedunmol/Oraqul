@@ -14,8 +14,8 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  default: 'h-9 px-3.5 text-sm',
-  small: 'h-8 px-3 text-[13px]',
+  default: 'h-10 px-5 text-sm',
+  small: 'h-9 px-4 text-[13px]',
 };
 
 /** Class names for anything that must look like a button, such as a link to another origin. */
