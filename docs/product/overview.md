@@ -26,7 +26,9 @@ The problem is the same everywhere. Launch plans rest on audience assumptions th
 
 ## The three jobs
 
-**Plan.** From a description, Oraqul builds a launch plan: the audience by age band and place, comparable titles, which territories or cities to prioritise, partner brands, and positioning angles. Each part is tested against Qloo before it is shown.
+The three jobs are also the three start modes, called `build`, `audit` and `rescue` in code.
+
+**Build (plan).** From a description, Oraqul builds a launch plan: the audience by age band and place, comparable titles, which territories or cities to prioritise, partner brands, and positioning angles. Each part is tested against Qloo before it is shown.
 
 **Audit.** The user brings an existing plan. Oraqul pulls out the audience and taste assumptions it makes, tests each one, and marks it as holds, weak, breaks, or could not test. It then looks for stronger alternatives to whatever broke and tests those too.
 
@@ -77,7 +79,7 @@ The output is always a direction: holds, weak, breaks, or could not test.
 
 ## How the agent behaves
 
-* There is one category agent per category: Film and series, Music, Books, Podcasts and Games. A thin router reads the project's category and hands the project to that agent. The user never talks to the router.
+* There is one category agent per category: Film and series, Music, Books, Podcasts and Games. A thin router reads the title, category and job from the first message and hands the project to that agent. The router speaks only to ask what it could not read, or to decline an off-topic request.
 * The five agents share one toolbox: the Qloo client, the verdict engine, the receipt writer and a red team step that did not see the plan being built. They differ in instructions, assumption checklist, scenarios and output schema.
 * Category agents do not call each other freely. The one bounded exception is a book with a screen adaptation, where the Books agent can ask the Film agent one question and cite the answer as a receipt.
 * The language model chooses its tools. Every Qloo call and every scoring function is a tool.
@@ -94,7 +96,7 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 
 * A team has members with owner, editor and viewer roles.
 * A project belongs to exactly one category, because most people will not need several categories in one project. The agent reads the category from the first message, so people do not pick it first: categories are a filter on the project list, and a category's list has a help button that opens what Oraqul tests there, where data is thin, what the team must bring, and the tools it has.
-* Chat is the entry point. The person says what they want in a few words and the agent does the rest. It asks a question card only when a wrong guess would waste the run, such as which Qloo title is theirs. Everything else it guesses, says what it guessed in one line, and lets the person correct it by typing. The questions, suggested next steps and results format change with the category.
+* Chat is the entry point. The person says what they want in a few words and the agent does the rest. The title, the category and the job are never guessed: when one is unclear the agent says what it understood and asks one question card with close options, and the person can type their own answer. It also asks which Qloo title is theirs. Everything else it guesses, says what it guessed in one line, and lets the person correct it by typing. A request that has nothing to do with launches is declined in one line. The questions, suggested next steps and results format change with the category.
 * A project is the workspace: its chat, its other chats beside it, and the current plan on top. A project holds several chats (threads in code). A new one builds on the current plan and says so; the person can type "start fresh" or "use an older plan" instead.
 * Every agent output states its bottom line in the chat and opens its takeaway card, up to three moves with their receipts, in one click, then opens its own details page with only the tabs that fit it. Common tabs are Summary, Audience, Assumptions (with what could not be tested at the end), Plan (with its risks at the end) and Evidence. Each category adds its own: territory ladder for film, tour route and support act grid for music, comp shelf and adaptation bridge for books, topic map for podcasts, fan base bridge and regions for games.
 * After each output the agent suggests up to three next steps built from it, such as a scenario not yet tried or adding results. Every capability is something you can ask for in the chat, not a separate screen.
@@ -127,7 +129,7 @@ The demo leads with rescue and scenario diffs, because auditing a plan alone is 
 
 ## Stack
 
-TypeScript monorepo. Next.js front end. A Node backend on a VPS that calls the Qloo hackathon API directly through our own client. Vercel AI SDK with OpenAI. Postgres and Docker. A public repository with an open source licence for the submission.
+TypeScript monorepo. Next.js front end. A Node backend on a VPS that calls the Qloo hackathon API directly through our own client. Vercel AI SDK with a configurable model provider (OpenAI, Google Gemini, or any OpenAI compatible endpoint). Postgres and Docker. A public repository with an open source licence for the submission.
 
 ## Open points
 

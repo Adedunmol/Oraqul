@@ -23,8 +23,9 @@ What to test and why is in [spec §11](product/spec.md). This file maps it to to
 | Unit: scoring, verdicts, diffs | next to the code, `*.test.ts` (packages) or `*.spec.ts` (API) | scoring done |
 | Unit: tools, with demo data | `packages/engine/src/tools/tools.test.ts` | done |
 | Unit: Qloo client and endpoint groups | `packages/engine/src/qloo/*.test.ts`, with a faked `fetch`. Qloo is never called | done |
-| Runtime: router, question and resume, consult, budget, grounding, failure | `apps/api/src/agent/runtime.spec.ts`, with the scripted planner and demo data | done |
-| API: thread routes, and 401 without a session | `apps/api/test/agent.e2e-spec.ts` | done |
+| Router: quote check, off-topic refusal, option filtering and fallback, question order, picks never quoted, scripted reader, model output parsed (mock model, no network) | `apps/api/src/agent/router/router.spec.ts` | done |
+| Runtime: question and resume, consult, budget, grounding, failure | `apps/api/src/agent/runtime.spec.ts`, with the scripted planner and demo data | done |
+| API: projects and the router end to end (draft hidden, card, pick, `project.updated`, placeholder reply, event replay), roles, pins cap, overview | `apps/api/test/projects.e2e-spec.ts`, on PGlite with the scripted router | done |
 | API: sign in routes, cookie flags, login 429 | `apps/api/test/auth.e2e-spec.ts`, services stubbed | done |
 | Teams: role matrix over HTTP, last owner, invite accept | `apps/api/test/teams.e2e-spec.ts` | done |
 | Teams SQL: `RolesGuard` matrix, last owner rule, invites, personal team | `apps/api/src/auth/roles.guard.spec.ts`, `apps/api/src/teams/*.spec.ts`, `users.service.spec.ts` | done |
@@ -32,10 +33,10 @@ What to test and why is in [spec §11](product/spec.md). This file maps it to to
 | MCP: list and call tools | `packages/mcp/src/server.test.ts`, in memory transport | done |
 | Contract: Qloo tools | `packages/engine`, parsing recorded responses in `packages/engine/fixtures`. Written with the first tools | not started |
 | Live smoke | `pnpm --filter @oraqul/engine qloo:smoke`. Skips without a key. Records the fixtures and answers the open questions in [backend/qloo.md](backend/qloo.md) | written, not yet run with a key |
-| Golden runs: plan, audit, rescue per category | `packages/eval/golden/<category>/` | not started |
+| Golden runs: build, audit, rescue per category | `packages/eval/golden/<category>/` | not started |
 | Grounding check | `packages/eval`. Every entity and number must trace to a receipt. Fails the build | not started |
 | Refusal tests: forecast, pricing, send | `packages/eval` | not started |
-| UI pass: every tab, every category | `apps/web/e2e` | smoke, sign in pages, redirects from the old project routes, and error states for `/overview`, `/categories/:category/projects`, `/team`, `/invite/[token]`; signed out checks for `/s/[token]` and `/categories/[category]/projects`. Signed in demo screens are walked by hand until e2e has a test session |
+| UI pass: every tab, every category | `apps/web/e2e` | smoke, sign in pages, redirects from the old project routes, and error states for `/overview`, `/categories/:category/projects`, a project, a chat, `/team`, `/invite/[token]`; signed out checks for `/s/[token]` and `/categories/[category]/projects`. Signed in demo screens are walked by hand until e2e has a test session |
 
 The Playwright run reuses a dev server already on :3000. Stop your own `pnpm dev` first, or the error state tests find a live API and fail.
 
