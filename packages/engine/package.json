@@ -21,7 +21,8 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "qloo:smoke": "tsx --env-file=../../.env scripts/qloo-smoke.ts"
+    "qloo:smoke": "tsx --env-file=../../.env scripts/qloo-smoke.ts",
+    "qloo:cross-domain": "tsx --env-file=../../.env scripts/qloo-cross-domain.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
