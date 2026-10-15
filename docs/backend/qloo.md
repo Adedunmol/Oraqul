@@ -19,8 +19,21 @@ Written 2026-10-13 from docs.qloo.com, then checked against the live API the sam
 | `/v2/insights` with `urn:tag`, `urn:demographics`, `urn:heatmap` (geohash and locality) | verified |
 | `/v2/analysis/compare` | verified, shape differs from the OpenAPI definition |
 | `/v2/trending` | verified, with caveats on the date window |
-| Nigerian titles and artists | present, with lower popularity. See below |
+| Nigerian film and series | three titles checked by year and country, all present, popularity 0.09 to 0.65. Artists, books and other categories not checked. See below |
+| Cross-domain taste tests (one type's fans as the signal for another) | one case seen: a movie signal returned other types (conflict 16). Whether the results are useful for a launch is not tested |
 | Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo |
+
+## How Oraqul uses Qloo
+
+Qloo is a taste graph. It says who likes what, and where, for the things it knows. It is not a catalogue we look the launch up in. Most of what a team brings is not in Qloo: a book before publication, an album before release, a series still in development. A live title can also be a poor signal on its own, because Qloo may know it barely. So we never expect to find the thing being launched. We describe it by what surrounds it, and ask Qloo about that.
+
+- **Anchors.** Anything with a public name that Qloo can take as a signal: the title when it exists, comparable titles, the author, artist, cast or host, themes and tags, partner brands, places and age bands (hard rule 7). An anchor Qloo knows well is strong. One it barely knows (no `popularity`, few tags) is weak.
+- **Questions.** What we ask of the anchors: who the audience is (demographics), where it concentrates (heatmap), who overlaps with whom (compare), what is rising (trending), and what else that audience likes (entities of any type, tags).
+- **Cross-domain tests.** Qloo takes an entity of one type as the signal for another (conflict 16). So we can ask what the fans of a bestselling musician also read, and see whether our kind of book sits inside that taste. An overlap is evidence for. A missing overlap is "no signal", never a weak verdict on its own. It can count as weak only when code compares it with a baseline (comparable successful titles tested against the same audience) and the anchors were strong enough to be fair. Cross-domain tests are unverified beyond conflict 16: see [Still open](#still-open).
+- **Thin.** A signal is thin when it rests on few or weak anchors: few comparable titles, anchors with no `popularity`, a place that returned few results. It is worked out per claim in each run and lowers that claim's confidence. It is not a property of a category. What is known so far about where Qloo is sparse is in [What the live run showed](#what-the-live-run-showed), and it is small.
+- **Modes.** Design intent, not built. Before release the anchors are the surroundings only. After release the title joins them as one more anchor, and often a weaker one than the comps. For a rescue, the audience the launch actually reached (from the team's results) is compared with the one the plan assumed.
+
+The anchors that describe an item differ by category. See [Categories](#categories).
 
 ## Host, auth, limits
 
@@ -87,6 +100,16 @@ Each pack declares the Qloo types it uses in `qloo` (`packages/packs`). Every ca
 | Podcasts | `podcast` | `person` | `brand` | same |
 | Games | `videogame` | `person` | `brand` | same |
 
+**Anchors by category.** What could stand in for an item that does not exist in Qloo yet. This is a hypothesis for each pack to work out and test. Nothing in this table is verified.
+
+| Category | Likely anchors, strongest first | Cross-domain tests to try |
+|---|---|---|
+| Books | comparable books, the author (weak for a debut), themes and tags, an adaptation angle | fans of bestselling musicians, films and series in the same genre, brands the readers like |
+| Film and series | comparable titles, director and cast, source material, genre and theme tags | fans of the same artists, books and games |
+| Music | the artist (often already in Qloo before the release), sound-alike artists, tags | fans of related films, brands and places |
+| Podcasts | the host, comparable shows, topic tags, likely guests | fans of related books, artists and brands |
+| Games | the studio or franchise, comparable games, genre tags | fans of related films, series, music and anime |
+
 ## Parameters by `filter.type`
 
 From the Entity Type Parameter Guide, with differences noted in conflicts. Types are in `insights/filters.ts`.
@@ -150,11 +173,11 @@ Checked once in `responses.ts`.
 
 These shape the agent. They are all from 2026-10-13.
 
-**Search never says "not found".** It always returns the closest fuzzy matches. A made-up title, `Lagos Nights Of The Silent River`, returned unrelated films (*Nights of Cabiria*, *Talladega Nights*), and a nonsense string returned one film. The first hit is also not always the right one: searching `Lionheart` returned a 1990 US film first and the 2018 Nigerian film second. So **"not in Qloo" is a decision we make** by matching name, year and country on the candidates, and an ambiguous match becomes an entity match question ([spec §10](../product/spec.md)). The unknown-film flow in the product starts here.
+**Search never says "not found".** It always returns the closest fuzzy matches. A made-up title, `Lagos Nights Of The Silent River`, returned unrelated films (*Nights of Cabiria*, *Talladega Nights*), and a nonsense string returned one film. The first hit is also not always the right one: searching `Lionheart` returned a 1990 US film first and the 2018 Nigerian film second. So **"not in Qloo" is a decision we make** by matching name, year and country on the candidates, and an ambiguous match becomes an entity match question ([spec §10](../product/spec.md)). For an unreleased title "not in Qloo" is the expected answer, not a failure, and the flow moves straight to the anchors ([How Oraqul uses Qloo](#how-oraqul-uses-qloo)). The match question is for a live title that is ambiguous.
 
 **Missing popularity marks obscure titles.** `popularity` is a 0 to 1 percentile and is `null` or absent for some titles: 3 of the 5 `Black Panther` hits (duplicate and minor listings), and several 2020 to 2025 releases. Treat it as "thin data", not as zero.
 
-**Nigerian coverage is real but thin.** Present, checked by year and country: *Lionheart* (2018, Nigeria, popularity 0.65), *Gangs of Lagos* (2023, 0.46), *Blood Sisters* (2022, 0.09). Matched by exact name only, not checked further: Wizkid and *Half of a Yellow Sun*. Not present: the 1992 *Living in Bondage*, though a 2019 sequel is. Low popularity means a weaker signal, which feeds confidence.
+**Nigerian film and series: present, some with low popularity.** This is the only coverage that was measured, and it is three titles. Present, checked by year and country: *Lionheart* (2018, Nigeria, popularity 0.65), *Gangs of Lagos* (2023, 0.46), *Blood Sisters* (2022, 0.09). Matched by exact name only, not checked further: Wizkid and *Half of a Yellow Sun*. Not present: the 1992 *Living in Bondage*, though a 2019 sequel is. Low popularity means a weaker signal, which feeds confidence. Nothing here says anything about music, books, podcasts or games, or about other regions: those are untested, not known to be thin.
 
 **Responses are big.** One movie carries about 335 tags. Ten movie results from insights were about 780 KB, a Lagos heatmap about 250 KB, and a Nigeria locality heatmap 6.8 MB. A receipt must hold the excerpt a line used, which is why `toReceipt` requires `returned`. Raw Qloo data also must not reach public share links ([PRD](../product/prd.md)).
 
@@ -170,6 +193,8 @@ These shape the agent. They are all from 2026-10-13.
 
 - Whether tag-signal calls are slow on non-book types (another project saw 10 to 60 seconds). The smoke run did not record timings.
 - Whether a book id can be used as a signal outside book insights. A movie id can.
+- Cross-domain tests per category (see the table in [Categories](#categories)): does the audience of well known artists, films or brands, used as the signal, return plausible books, podcasts and games, and is the result stable enough to read an overlap, or its absence, from? Needs a baseline of comparable successful titles. `TODO(verify)`.
+- Coverage per category: a probe of about ten real titles each (well known, new, and local-language) to replace the guesses about podcasts, games and other regions with measured counts.
 - `person`, `place`, `destination` and `locality` insights; the weights for age, gender and location; the names in conflicts 7 to 12.
 - Lagos against no location for age and gender splits (does location change the demographics?). Location changes the ranking, but no location parameter is documented for the demographics call, so this may need a different approach.
 
@@ -191,4 +216,4 @@ These shape the agent. They are all from 2026-10-13.
 
 ## Open questions
 
-From [PRD §9](../product/prd.md), still open: podcast and game coverage for African titles; the quota header (reported near 10,000 calls a month; the smoke run uses about 50); what may be shown on public share links; whether recorded responses may be committed to a public repository.
+From [PRD §9](../product/prd.md), still open: coverage for podcasts, games, books and music (assumed uneven, not measured); the quota header (reported near 10,000 calls a month; the smoke run uses about 50); what may be shown on public share links; whether recorded responses may be committed to a public repository.

@@ -58,7 +58,7 @@ Media and entertainment is the one industry Oraqul serves. Its five categories a
 Hierarchy: Team, Category, Project, Job, Output.
 
 * **Team.** Members and roles. Plans, results and briefs are visible only to the team.
-* **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, where coverage is thin, and what is not supported.
+* **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, where it is less certain, and what is not supported.
 * **Project.** The launch. Holds inputs, threads and outputs.
 * **Job.** Plan, Audit, Rescue (includes relaunch). Scenario testing, rival date check and partner brief run inside a project.
 * **Output.** A saved result with its own details page, evidence and version.
@@ -184,7 +184,8 @@ Product
 
 | Risk | What we do |
 |---|---|
-| Qloo coverage is thin for Nigerian titles and for podcasts and games | Test first. State gaps on the line. Fall back to comps and talent at lower confidence. |
+| Qloo may know little about the surroundings of a launch (guesses so far: debut authors, new shows, local-language titles, podcasts, games; only three Nigerian film titles have been measured) | The launch is described by its anchors, not looked up. Probe coverage per category first. State gaps on the line. Confidence follows how many and how strong the anchors are. |
+| A cross-domain overlap is read as a verdict without a baseline | An overlap is evidence for. No overlap is no signal, and counts as weak only against a baseline from comparable successful titles. |
 | Qloo terms may limit public receipts | Share links show summaries only until confirmed. |
 | Call quota (reported near 10,000 a month) | Set a call budget per audit. Cache within a run. Rerun only what changed. |
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |
@@ -193,7 +194,7 @@ Product
 | The product is hard to understand at first | One message box to start, few questions, the answer shown in the chat, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
 | Five categories is a lot of surface | One engine, one toolbox, five packs. A new category is a new pack, not new code. |
 
-Open points to close first: Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.
+Open points to close first: cross-domain tests per category, Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.
 
 ## 10. Milestones to October 31
 
