@@ -1,13 +1,5 @@
-import type {
-  Category,
-  Project,
-  QuestionAnswer,
-  QuestionCard,
-  StartMode,
-  Thread,
-} from '@oraqul/schema';
-import { categories } from '@oraqul/schema';
-import { dedupe, defSplit, diffIds, gaps, splitList } from './brief';
+import type { Category, Project, QuestionAnswer, QuestionCard, Thread } from '@oraqul/schema';
+import { dedupe, defSplit, diffIds, gaps } from './brief';
 import { compareBriefs, type DOutput, isPlanKind } from './build-output';
 import { uuidFrom } from './ids';
 import { PACKS } from './packs';
@@ -15,7 +7,6 @@ import {
   douts,
   getState,
   insertOutput,
-  insertProject,
   insertThread,
   patchItem,
   patchProject,
@@ -30,7 +21,6 @@ import type { DBrief, DemoPack, DResultsInput } from './types';
 
 type Handler = (answer: QuestionAnswer) => void;
 const handlers = new Map<string, Handler>();
-const startModes = new Map<string, StartMode>();
 const resultsAttached = new Set<string>();
 
 let seq = 0;
@@ -236,81 +226,6 @@ function prettyDate(iso: string): string {
   return month && d ? `${month} ${Number.parseInt(d, 10)}` : 'Oct 2';
 }
 
-const MODE_READ: Record<StartMode, string> = {
-  start: 'a new plan',
-  audit: 'a check of the plan you have',
-  rescue: 'a rescue after results',
-};
-
-/** What a person would type to switch to the job the agent did not pick. */
-const MODE_FIX: Record<StartMode, string> = {
-  start: 'check my plan instead',
-  audit: 'plan from scratch instead',
-  rescue: 'plan from scratch instead',
-};
-
-const GENRES: Record<Category, [RegExp, string][]> = {
-  film: [
-    [/horror|haunt/, 'Horror'],
-    [/comedy|wedding/, 'Comedy'],
-    [/crime/, 'Crime drama'],
-    [/drama/, 'Drama'],
-  ],
-  music: [
-    [/afrobeats?/, 'Afrobeats'],
-    [/alte|soul/, 'Alte soul'],
-    [/hip ?hop|rap/, 'Hip hop'],
-    [/pop/, 'Pop'],
-    [/rock/, 'Rock'],
-  ],
-  books: [
-    [/thriller/, 'Literary thriller'],
-    [/romance/, 'Romance'],
-    [/fantasy/, 'Fantasy'],
-    [/memoir/, 'Memoir'],
-    [/literary/, 'Literary fiction'],
-  ],
-  podcasts: [
-    [/food|cook|kitchen/, 'Food and migration stories'],
-    [/true crime|crime/, 'True crime'],
-    [/comedy/, 'Comedy'],
-    [/business|money/, 'Business'],
-    [/news/, 'News'],
-  ],
-  games: [
-    [/survival|craft/, 'Survival crafting'],
-    [/rpg|role/, 'Role playing'],
-    [/puzzle/, 'Puzzle'],
-    [/racing/, 'Racing'],
-    [/horror/, 'Horror'],
-  ],
-};
-
-const KINDS_RX: Record<Category, [RegExp, string][]> = {
-  film: [[/series|season|episode|six part|premier/, 'Series']],
-  music: [
-    [/\bep\b/, 'EP'],
-    [/single/, 'Single'],
-    [/album/, 'Album'],
-    [/tour|dates|shows/, 'Tour'],
-  ],
-  books: [
-    [/non.?fiction|memoir/, 'Non fiction'],
-    [/debut/, 'Debut'],
-    [/series/, 'Series book'],
-  ],
-  podcasts: [
-    [/season (two|2)/, 'Season two'],
-    [/relaunch/, 'Relaunch'],
-    [/season/, 'Season launch'],
-  ],
-  games: [
-    [/story/, 'Story game'],
-    [/mobile/, 'Mobile game'],
-    [/live service/, 'Live service'],
-  ],
-};
-
 const PLACE_RX: Record<string, RegExp> = {
   UK: /\buk\b|britain|british|united kingdom|england|scotland/i,
   US: /\bUS\b|\bUSA\b|united states|america|u\.s\./,
@@ -332,240 +247,15 @@ function detectPlaces(category: Category, text: string): string[] {
   return opts.filter((p) => PLACE_RX[p]?.test(text));
 }
 
-function detectMode(text: string, attached: string[]): StartMode {
-  const t = text.toLowerCase();
-  const resultsFile = attached.some((a) =>
-    /result|streams|preorder|pre-order|wishlist|dashboard|download/.test(a),
-  );
-  const resultsText =
-    /(opened to|opening weekend|audience split|premiere week|box office|we opened|we sold|launched to|first week|pre.?orders were|wishlists? were|downloads were|sold out)/.test(
-      t,
-    ) && /\d/.test(t);
-  if (resultsFile || resultsText) return 'rescue';
-  if (
-    attached.some((a) => /plan/.test(a)) ||
-    /(marketing plan|our plan|we plan|we have planned|campaign plan|launch plan|tour plan|growth plan)/.test(
-      t,
-    )
-  ) {
-    return 'audit';
-  }
-  return 'start';
-}
-
-/**
- * What the first message carries. `text` is what a file could be read as. `mode` is the job the
- * person hinted at, or null to let the agent read it from the message.
- */
-export interface FirstMessage {
-  mode: StartMode | null;
-  category: Category | null;
-  text: string;
-  files: { name: string; text?: string }[];
-}
-
-// Checked in order, so the narrower words win: "season" alone is a series, a podcast says so.
-const CATEGORY_RX: [RegExp, Category][] = [
-  [/podcast|episodes?\b|listeners?|downloads/, 'podcasts'],
-  [/\bgames?\b|steam|players?\b|wishlists?|console|playtest/, 'games'],
-  [/\bbooks?\b|novel|memoir|author|publish|pre.?orders?|imprint|readers?\b/, 'books'],
-  [/album|\bep\b|\bsingle\b|\btour\b|artist|\bband\b|streams|songs?\b|afrobeats|gigs?\b/, 'music'],
-  [/film|movie|series|cinema|screen|festival|box office|distribut|season/, 'film'],
-];
-
-const RESULTS_FILE =
-  /result|stream|sales|download|wishlist|ticket|pre.?order|dashboard|\.csv$|\.xlsx?$/i;
-
-const titleCase = (text: string): string => text.replace(/\b[a-z]/g, (c) => c.toUpperCase());
-
-/** A working title from the start of some text. Long sentences give none. */
-function titleIn(text: string): string | undefined {
-  const quoted = text.match(/["“]([^"”]{2,60})["”]/)?.[1];
-  if (quoted) return quoted.trim();
-  const clause = (text.split(/[\n.,;:!?]|\s[-–—]\s/)[0] ?? '')
-    .trim()
-    .replace(
-      /^(we('re| are)?|i('m| am)?|our|my)\s+(launching|releasing|planning|publishing|putting out|dropping)\s+/i,
-      '',
-    )
-    .replace(/^(a|an|the)\s+(new\s+)?\w+\s+(called|named|titled)\s+/i, '')
-    .replace(/\s+(launch|marketing|release|tour|campaign)?\s*plan$/i, '')
-    .trim();
-  return clause && clause.split(/\s+/).length <= 6 ? clause : undefined;
-}
-
-/** A working title from the message, then from what a file says, then from the file's name. */
-function titleFrom(text: string, files: { name: string; text?: string }[]): string | undefined {
-  const fromText =
-    titleIn(text) ?? files.map((f) => (f.text ? titleIn(f.text) : undefined)).find(Boolean);
-  if (fromText) return fromText;
-  const file = files[0]?.name
-    ?.replace(/\.[a-z0-9]+$/i, '')
-    .replace(/[-_]+/g, ' ')
-    .replace(/\b(marketing|launch|plan|results?|final|draft|deck|v\d+)\b/gi, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return file ? titleCase(file) : undefined;
-}
-
-/**
- * Creates the project and its first thread from the first message on the start page, so a
- * choice nobody follows up leaves nothing behind. Returns the thread to open.
- */
-export function startFromMessage(message: FirstMessage): string {
-  const names = message.files.map((f) => f.name);
-  const body = [message.text, ...message.files.map((f) => f.text ?? '')].join('\n').trim();
-  const lower = `${body} ${names.join(' ')}`.toLowerCase();
-  const detected = CATEGORY_RX.find(([re]) => re.test(lower))?.[1];
-  const category = message.category ?? detected ?? null;
-  const title = titleFrom(message.text, message.files);
-  const r: Project = {
-    id: uuidFrom(`project:${++seq}`),
-    category: category ?? 'film',
-    name: title ?? 'Untitled launch',
-    kind: '',
-    genre: '',
-    places: [],
-    window: '',
-    lead: '',
-    comps: [],
-    status: 'Planning',
-    updatedAt: clock(),
-    qlooMatch: null,
-    extra: {},
-  };
-  insertProject(r);
-  if (message.mode) startModes.set(r.id, message.mode);
-  const t = mkThread(r, 'First plan', null);
-  pushItem(t.id, {
-    id: itemId(),
-    role: 'user',
-    text: [message.text, names.length ? `Attached: ${names.join(', ')}` : '']
-      .filter(Boolean)
-      .join('\n\n'),
-  });
-
-  const read = () => {
-    const pk = pack(project(r.id));
-    // The demo knows each pack's sample files, so a real file stands in for the matching one.
-    const attached = names.map((n) =>
-      message.mode === 'rescue' || RESULTS_FILE.test(n) ? pk.files.res : pk.files.plan,
-    );
-    processDescription(r.id, t, body, attached);
-  };
-  const withTitle = () => {
-    if (title) {
-      say(t.id, `I will call this ${title}.`);
-      read();
-      return;
-    }
-    ask(
-      t.id,
-      {
-        card: 'text',
-        prompt: 'What is it called?',
-        hint: 'A working title is fine. Type it in the message box below.',
-      },
-      (a) => {
-        patchProject(r.id, { name: textOf(a).trim() || 'Untitled launch' });
-        read();
-      },
-    );
-  };
-
-  if (category) {
-    if (!message.category) say(t.id, `This reads as ${PACKS[category].name}.`);
-    withTitle();
-  } else {
-    ask(
-      t.id,
-      {
-        card: 'single',
-        prompt: 'Which category is this in?',
-        options: options(
-          categories.map((id) => ({ v: id, l: PACKS[id].name, d: PACKS[id].blurb })),
-        ),
-      },
-      (a) => {
-        const chosen = categories.find((c) => c === firstOption(a)) ?? 'film';
-        patchProject(r.id, { category: chosen });
-        say(t.id, `Okay, ${PACKS[chosen].name}. I will use its inputs, charts and checks.`);
-        withTitle();
-      },
-    );
-  }
-  return t.id;
-}
-
-function processDescription(projectId: string, t: Thread, text: string, attached: string[]): void {
-  const r = project(projectId);
-  const pk = pack(r);
-  const lower = text.toLowerCase();
-  const kind = (KINDS_RX[r.category].find(([re]) => re.test(lower))?.[1] ?? pk.kinds[0]) || '';
-  const genre = GENRES[r.category].find(([re]) => re.test(lower))?.[1] ?? '';
-  const named = detectPlaces(r.category, text);
-  // A guess the person can correct in one message costs less than a card before any result.
-  const places = named.length ? named : pk.placeOpts.slice(0, 3);
-  const window =
-    text
-      .match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*(20\d\d)?/i)?.[0]
-      ?.replace(/[.\s]+$/, '') ?? '';
-  const comps = text.match(/comps?:?\s*([A-Z][^.;\n]+)/)?.[1];
-  if (attached.includes(pk.files.res)) resultsAttached.add(projectId);
-  const mode = startModes.get(projectId) ?? detectMode(text, attached);
-  startModes.delete(projectId);
-  patchProject(projectId, {
-    kind,
-    genre,
-    places,
-    window,
-    comps: comps ? splitList(comps) : r.comps,
-  });
-  const bits = [
-    kind.toLowerCase(),
-    genre.toLowerCase(),
-    window && `window ${window}`,
-    `${pk.placeLabel} ${places.join(', ')}${named.length ? '' : ' (my guess, you did not name any)'}`,
-  ].filter(Boolean);
-  say(
-    t.id,
-    `Reading this as ${MODE_READ[mode]}: ${bits.join(', ')}.\nIf any of that is wrong, just tell me, for example "${MODE_FIX[mode]}" or "${pk.placeOpts.at(-1) ?? 'other places'} too".`,
-  );
-  askMatch(projectId, t, mode);
-}
-
-function askMatch(projectId: string, t: Thread, mode: StartMode): void {
-  const r = project(projectId);
-  const pk = pack(r);
-  ask(
-    t.id,
-    {
-      card: 'match',
-      prompt: `I searched Qloo for the ${pk.noun}. Which one is yours?`,
-      options: options([
-        ...pk.matchOpts(r.name),
-        { v: '', l: 'None of these', d: `Use ${pk.fallback} instead` },
-      ]),
-    },
-    (a) => {
-      const v = firstOption(a);
-      patchProject(projectId, { qlooMatch: v || `Matched by ${pk.fallback}` });
-      if (mode === 'start') runStart(projectId, t);
-      else if (mode === 'audit') runAudit(projectId, t);
-      else runRebuild(projectId, t);
-    },
-  );
-}
-
 function runStart(projectId: string, t: Thread, title?: string): void {
   const first = planOutputs(projectId).length === 0;
   const r = project(projectId);
-  runTrace(t.id, pack(r).trace.plan.slice(), () => {
+  runTrace(t.id, pack(r).trace.build.slice(), () => {
     const current = project(projectId);
     const o = mkOut(
       current,
       t,
-      'plan',
+      'build',
       title ?? (first ? 'First plan' : 'New plan, started fresh'),
       pack(current).base(current),
     );
@@ -594,26 +284,6 @@ function runAudit(projectId: string, t: Thread): void {
     patchProject(projectId, { status: 'Audit' });
     finish(t.id, o, `${summaryOf(o)}\n(Demo: the plan it reads is sample content.)`);
   });
-}
-
-function runRebuild(projectId: string, t: Thread): void {
-  const r = project(projectId);
-  const fb = pack(r).fallback;
-  runTrace(
-    t.id,
-    [
-      'Reading the results you attached',
-      `No plan was given, so rebuilding the assumed audience from ${fb}`,
-      'Saving the rebuilt plan',
-    ],
-    () => {
-      const current = project(projectId);
-      const o = mkOut(current, t, 'plan', `Plan rebuilt from ${fb}`, pack(current).base(current));
-      patchProject(projectId, { status: 'Launched' });
-      finish(t.id, o, 'I rebuilt the audience the plan assumed. Now the results.');
-      resultsFlow(t.id);
-    },
-  );
 }
 
 const summaryOf = (o: DOutput): string =>
@@ -983,27 +653,6 @@ export function applyRescue(r: Project, b: DBrief, res: DResultsInput): void {
   pack(r).rescue(b, g);
 }
 
-/**
- * Opens a thread on a project. It builds on the current plan without asking, and says so, so the
- * person can type what they want next. Returns the thread id.
- */
-export function startThread(projectId: string): string {
-  const r = project(projectId);
-  const t = mkThread(r, 'New thread', null);
-  const latest = planOutputs(projectId).at(-1);
-  if (!latest) {
-    say(t.id, `Something new for ${r.name}. There is no plan yet.`);
-    askFresh(t);
-    return t.id;
-  }
-  patchThread(t.id, { baseOutputId: latest.id, fromOutputId: latest.id });
-  say(
-    t.id,
-    `Picking up from ${labelOf(latest.id)}, with the project inputs (${r.name}${r.kind ? `, ${r.kind.toLowerCase()}` : ''}, comps: ${r.comps.join(', ') || 'none given'}). Nothing else.\nTell me what to do next. Say "start fresh" or "use an older plan" to work from something else.`,
-  );
-  return t.id;
-}
-
 function askOlderPlan(t: Thread): void {
   const plans = planOutputs(t.projectId);
   if (plans.length < 2) {
@@ -1035,42 +684,6 @@ function startFresh(t: Thread): void {
   say(t.id, 'Starting fresh. I will not use any earlier plan, only the project inputs.');
   rename(t, 'Fresh plan');
   runStart(t.projectId, t);
-}
-
-function askFresh(t: Thread): void {
-  ask(
-    t.id,
-    {
-      card: 'single',
-      prompt: 'What are you starting from?',
-      options: options([
-        { v: 'start', l: 'Plan from scratch', d: 'Use the project inputs' },
-        { v: 'audit', l: 'A plan I already have', d: 'I will audit it' },
-        { v: 'rescue', l: 'Results', d: 'Rebuild the plan, then add the results' },
-      ]),
-    },
-    (a) => {
-      const v = firstOption(a);
-      if (v === 'start') {
-        rename(t, 'Fresh plan');
-        runStart(t.projectId, t);
-      } else if (v === 'audit') {
-        rename(t, 'Audit of a plan');
-        ask(
-          t.id,
-          {
-            card: 'file',
-            prompt: 'Drop the plan to audit.',
-            dropLabel: 'Drop a file or paste it in the chat',
-          },
-          () => runAudit(t.projectId, t),
-        );
-      } else {
-        rename(t, 'Rescue from results');
-        runRebuild(t.projectId, t);
-      }
-    },
-  );
 }
 
 const RX_DATE = /rival|date|clash|collision|overlap|same (week|month|weekend)/;

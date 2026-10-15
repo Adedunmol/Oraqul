@@ -1,8 +1,12 @@
+import { getProjectDetail, getThreadDetail } from '@/lib/api/projects-server';
 import { getViewer } from '@/lib/api/viewer';
-import { ThreadScreen } from './thread-screen';
+import { ProjectWorkspace } from '../../categories/[category]/projects/[id]/project-screen';
 
+/** A thread's address opens its project's workspace with that chat selected. */
 export default async function ThreadPage({ params }: PageProps<'/threads/[id]'>) {
   const { id } = await params;
-  const viewer = await getViewer(`/threads/${id}`);
-  return <ThreadScreen key={id} id={id} viewer={viewer} />;
+  const returnTo = `/threads/${id}`;
+  const [viewer, chat] = await Promise.all([getViewer(returnTo), getThreadDetail(id, returnTo)]);
+  const detail = await getProjectDetail(chat.thread.projectId, returnTo);
+  return <ProjectWorkspace key={id} detail={detail} chat={chat} viewer={viewer} />;
 }

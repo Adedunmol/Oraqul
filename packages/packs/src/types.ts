@@ -7,6 +7,10 @@ import type { Category, QlooCoverage, ToolName } from '@oraqul/schema';
 export interface CategoryPack {
   category: Category;
   title: string;
+  /** One line on what the category plans. Also shown on the router's category card. */
+  blurb: string;
+  /** What counts as this category, for the router: the kinds of work a person might name. */
+  covers: string;
   systemPrompt: string;
   assumptionChecklist: string[];
   planSections: { key: string; title: string }[];

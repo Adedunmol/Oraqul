@@ -106,6 +106,9 @@ function Body({
               ) : null}
             </button>
           ))}
+          {q.card === 'single' && q.hint ? (
+            <p className="text-[13px] text-muted">{q.hint}</p>
+          ) : null}
         </div>
       );
     case 'multi':

@@ -17,9 +17,11 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:backfill-thread-names": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/backfill-thread-names.js"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.97",
     "@ai-sdk/openai": "^4.0.93",
     "@getbrevo/brevo": "^6.1.0",
     "@nestjs/common": "^12.0.1",

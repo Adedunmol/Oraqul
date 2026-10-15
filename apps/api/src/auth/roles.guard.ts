@@ -11,7 +11,7 @@ import type { Role } from '@oraqul/schema';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { type Database, DB } from '../db/db.module.js';
-import { memberships } from '../db/schema.js';
+import { memberships, projects, threads } from '../db/schema.js';
 import type { AuthedRequest } from './session.guard.js';
 
 export const ROLES_KEY = 'roles';
@@ -23,7 +23,8 @@ export type Membership = { teamId: string; userId: string; role: Role };
 export type TeamRequest = AuthedRequest & { membership: Membership };
 
 /**
- * Checks the caller's role in the team named by the `:teamId` route param against @Roles()
+ * Checks the caller's role in the route's team (`:teamId`, or the team of `:projectId` or
+ * `:threadId`) against @Roles()
  * (roles per action: docs/product/spec.md section 7). Run it after SessionGuard, which sets
  * `request.user`. A route without @Roles() is denied, so forgetting one fails closed.
  * Every refusal is the same 403, so the answer does not say whether a team exists.
@@ -41,21 +42,55 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
     const request = context.switchToHttp().getRequest<TeamRequest>();
-    const teamId = z.uuid().safeParse(request.params.teamId);
-    if (!allowed || !teamId.success) {
+    const teamId = allowed ? await this.teamOf(request.params) : null;
+    if (!allowed || !teamId) {
       throw new ForbiddenException();
     }
 
     const [row] = await this.db
       .select({ role: memberships.role })
       .from(memberships)
-      .where(and(eq(memberships.teamId, teamId.data), eq(memberships.userId, request.user.id)))
+      .where(and(eq(memberships.teamId, teamId), eq(memberships.userId, request.user.id)))
       .limit(1);
     if (!row || !allowed.includes(row.role)) {
       throw new ForbiddenException();
     }
 
-    request.membership = { teamId: teamId.data, userId: request.user.id, role: row.role };
+    request.membership = { teamId, userId: request.user.id, role: row.role };
     return true;
+  }
+
+  /**
+   * The team the route acts in: `:teamId` itself, or the team that owns `:projectId` or
+   * `:threadId`. A malformed or unknown id gives null, which is the same 403 as no membership.
+   */
+  private async teamOf(params: Record<string, unknown>): Promise<string | null> {
+    const uuid = (value: unknown) => {
+      const parsed = z.uuid().safeParse(value);
+      return parsed.success ? parsed.data : null;
+    };
+    if (params.teamId !== undefined) return uuid(params.teamId);
+    if (params.projectId !== undefined) {
+      const projectId = uuid(params.projectId);
+      if (!projectId) return null;
+      const [row] = await this.db
+        .select({ teamId: projects.teamId })
+        .from(projects)
+        .where(eq(projects.id, projectId))
+        .limit(1);
+      return row?.teamId ?? null;
+    }
+    if (params.threadId !== undefined) {
+      const threadId = uuid(params.threadId);
+      if (!threadId) return null;
+      const [row] = await this.db
+        .select({ teamId: projects.teamId })
+        .from(threads)
+        .innerJoin(projects, eq(projects.id, threads.projectId))
+        .where(eq(threads.id, threadId))
+        .limit(1);
+      return row?.teamId ?? null;
+    }
+    return null;
   }
 }

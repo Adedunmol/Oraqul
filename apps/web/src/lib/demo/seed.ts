@@ -18,7 +18,7 @@ interface SeedProject {
   lead: string;
   comps: string;
   updated: string;
-  first: 'plan' | 'audit';
+  first: 'build' | 'audit';
   extras: ('date' | 'partner')[];
   second?: { kind: 'scenario'; id: string } | { kind: 'rescue' };
 }
@@ -36,7 +36,7 @@ const SEEDS: SeedProject[] = [
     lead: 'Nia Calloway, Teo Brandt',
     comps: 'Low Tide Letters, Paper Harbour',
     updated: '2026-10-06',
-    first: 'plan',
+    first: 'build',
     extras: ['date', 'partner'],
     second: { kind: 'scenario', id: 'rival' },
   },
@@ -83,7 +83,7 @@ const SEEDS: SeedProject[] = [
     lead: 'Ayo Delano',
     comps: 'Tobe Marlow, Sade Kline',
     updated: '2026-10-05',
-    first: 'plan',
+    first: 'build',
     extras: [],
   },
   {
@@ -98,7 +98,7 @@ const SEEDS: SeedProject[] = [
     lead: 'Ngozi Eze',
     comps: 'The Quiet Tide, Ash and Orchard',
     updated: '2026-10-08',
-    first: 'plan',
+    first: 'build',
     extras: ['partner'],
     second: { kind: 'scenario', id: 'thriller' },
   },
@@ -114,7 +114,7 @@ const SEEDS: SeedProject[] = [
     lead: 'Lola and Femi Adisa',
     comps: 'Kitchen Tongues, Taste of Home Radio',
     updated: '2026-10-07',
-    first: 'plan',
+    first: 'build',
     extras: [],
     second: { kind: 'rescue' },
   },
@@ -130,7 +130,7 @@ const SEEDS: SeedProject[] = [
     lead: 'Quayside Games',
     comps: 'Tidal Hollow, Cairn Keepers',
     updated: '2026-10-10',
-    first: 'plan',
+    first: 'build',
     extras: ['date'],
     second: { kind: 'scenario', id: 'anime' },
   },
@@ -146,7 +146,7 @@ const SEEDS: SeedProject[] = [
     lead: 'Dami Roe',
     comps: 'Sade Kline, Tobe Marlow',
     updated: '2026-10-08',
-    first: 'plan',
+    first: 'build',
     extras: [],
   },
 ];
@@ -158,7 +158,7 @@ function seedChat(r: Project, t: Thread, made: DOutput[]): void {
   const pk = PACKS[r.category];
   made.forEach((o, i) => {
     const asked = {
-      plan: 'Plan the launch.',
+      build: 'Plan the launch.',
       audit: 'Audit our plan.',
       scenario: `Run scenario: ${o.title.replace('Scenario: ', '')}`,
       date: 'Check the dates.',
@@ -219,7 +219,7 @@ export function seed(): void {
             { by: 'Amara' },
             `output:${s.key}:1`,
           )
-        : mkOut(r, t1, 'plan', 'First plan', pk.base(r), { by: 'Amara' }, `output:${s.key}:1`);
+        : mkOut(r, t1, 'build', 'First plan', pk.base(r), { by: 'Amara' }, `output:${s.key}:1`);
       const made = [o1];
       for (const extra of s.extras) {
         if (extra === 'date') {

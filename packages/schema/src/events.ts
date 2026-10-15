@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { categorySchema, startModeSchema } from './categories';
 import { claimSchema } from './claim';
 import { receiptSchema } from './receipt';
 
@@ -36,6 +37,16 @@ export const threadEventSchema = z.discriminatedUnion('type', [
     card: questionCardTypeSchema,
     prompt: z.string(),
     options: z.array(questionOptionSchema),
+    hint: z.string().optional(),
+  }),
+  /** The router has read the project's name, category and mode, so the workspace can show them. */
+  z.object({
+    type: z.literal('project.updated'),
+    projectId: z.uuid(),
+    name: z.string(),
+    category: categorySchema,
+    mode: startModeSchema,
+    threadName: z.string(),
   }),
   z.object({ type: z.literal('message'), body: z.string(), claims: z.array(claimSchema) }),
   z.object({ type: z.literal('receipt'), receipt: receiptSchema }),

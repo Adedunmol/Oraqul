@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AgentModule } from './agent/agent.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { envSchema } from './config/env.js';
 import { DbModule } from './db/db.module.js';
 import { HealthModule } from './health/health.module.js';
+import { LlmModule } from './llm/llm.module.js';
+import { ProjectsModule } from './projects/projects.module.js';
 import { TeamsModule } from './teams/teams.module.js';
 
 @Module({
@@ -15,9 +16,10 @@ import { TeamsModule } from './teams/teams.module.js';
       validate: (raw) => envSchema.parse(raw),
     }),
     DbModule,
+    LlmModule,
     AuthModule,
     HealthModule,
-    AgentModule,
+    ProjectsModule,
     TeamsModule,
   ],
 })

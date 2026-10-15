@@ -74,7 +74,7 @@ export const film: DemoPack = {
   lead: (b) =>
     `Lead with ${b.audience[0]?.name ?? 'the core audience'} and attach to ${topFit(b.s1)?.name ?? 'the top pairing'}.`,
   trace: {
-    plan: [
+    build: [
       'Resolving the title to Qloo entities. Not found, falling back to comps and cast at lower confidence',
       'Building the audience by age, gender and place',
       'Listing the assumptions, stated and unstated',

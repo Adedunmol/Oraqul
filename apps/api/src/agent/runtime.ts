@@ -7,17 +7,15 @@ import type {
   ProjectInput,
   Question,
   Receipt,
-  StartMode,
   ThreadEvent,
 } from '@oraqul/schema';
 import { z } from 'zod';
 import { ungroundedClaims } from './grounding.js';
-import { route } from './router.js';
 import type { AgentContext, HistoryItem, Planner, Step } from './types.js';
 
 type CategoryPack = (typeof packs)[Category];
 
-/** One agent's turn-by-turn state. The router's pack is `null` until the job is confirmed. */
+/** One agent's turn-by-turn state. */
 interface Loop {
   /** `film`, or `books→film` for a consult. */
   agent: string;
@@ -31,21 +29,18 @@ interface Loop {
   groundingRetries: number;
 }
 
+/** A category agent's run, after the router has handed the project over. */
 export interface RunState {
   project: ProjectInput;
-  mode: StartMode;
-  stage: 'routing' | 'running';
   status: 'active' | 'waiting' | 'done';
-  routerAnswers: Answer[];
   pending: Question | null;
   receipts: Receipt[];
-  main: Loop | null;
+  main: Loop;
 }
 
 export interface RuntimeDeps {
   planner: Planner;
   tools: ToolContext;
-  maxSteps: number;
   /** Cap for another agent's bounded question (spec §3.4). */
   consultMaxSteps: number;
   emit(event: ThreadEvent): void;
@@ -54,16 +49,23 @@ export interface RuntimeDeps {
 /** The answer does not fit the run: nothing is waiting, or it names a question or option that is not. */
 export class AnswerError extends Error {}
 
-export function newRunState(project: ProjectInput, mode: StartMode): RunState {
+export function newRunState(project: ProjectInput, job: Job, maxSteps: number): RunState {
   return {
     project,
-    mode,
-    stage: 'routing',
     status: 'active',
-    routerAnswers: [],
     pending: null,
     receipts: [],
-    main: null,
+    main: {
+      agent: project.category,
+      pack: packs[project.category],
+      job,
+      consultQuestion: undefined,
+      canAsk: true,
+      history: [],
+      maxSteps,
+      stepsUsed: 0,
+      groundingRetries: 0,
+    },
   };
 }
 
@@ -80,32 +82,7 @@ export async function advance(state: RunState, deps: RuntimeDeps, answer?: Answe
   if (answer) acceptAnswer(state, answer);
   state.status = 'active';
 
-  if (state.stage === 'routing') {
-    const decision = route(state.project, state.mode, state.routerAnswers);
-    if (decision.kind === 'ask') return stopAsking(state, deps, 'router', decision.question);
-    state.stage = 'running';
-    state.main = {
-      agent: decision.category,
-      pack: packs[decision.category],
-      job: decision.job,
-      consultQuestion: undefined,
-      canAsk: true,
-      history: [],
-      maxSteps: deps.maxSteps,
-      stepsUsed: 0,
-      groundingRetries: 0,
-    };
-    deps.emit({
-      type: 'trace.step',
-      agent: 'router',
-      step: 1,
-      of: 1,
-      text: `Handing this to the ${decision.category} agent as a ${decision.job}`,
-    });
-  }
-
   const loop = state.main;
-  if (!loop) throw new Error('Run is past routing but has no agent loop');
   const result = await runLoop(state, deps, loop);
 
   switch (result.outcome) {
@@ -147,11 +124,7 @@ function acceptAnswer(state: RunState, answer: Answer): void {
     }
   }
   state.pending = null;
-  if (state.stage === 'routing') {
-    state.routerAnswers.push(answer);
-    return;
-  }
-  state.main?.history.push({ kind: 'answer', question: pending, answer });
+  state.main.history.push({ kind: 'answer', question: pending, answer });
 }
 
 function stopAsking(state: RunState, deps: RuntimeDeps, agent: string, question: Question): void {

@@ -72,7 +72,7 @@ export const podcasts: DemoPack = {
   lead: (b) =>
     `Lead with ${b.audience[0]?.name ?? 'the core listeners'} and book ${topFit(b.s1)?.name ?? 'the top guest'} first.`,
   trace: {
-    plan: [
+    build: [
       'Resolving the show to Qloo entities. Not found, falling back to hosts and comp shows',
       'Building the listener audience by age and place',
       'Mapping topics against rival shows',

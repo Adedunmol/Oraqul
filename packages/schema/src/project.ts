@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { categorySchema } from './categories';
+import { categorySchema, startModeSchema } from './categories';
 
 /** The project fields the agent reads (spec §6 `projects`), without ids or team. */
 export const projectInputSchema = z.object({
@@ -36,6 +36,43 @@ export const projectSchema = z.object({
   extra: z.record(z.string(), z.string()),
 });
 export type Project = z.infer<typeof projectSchema>;
+
+/**
+ * A project as the workspace shows it. While the router is still reading the first message the
+ * project is a draft (`status: 'intake'`) and has no name, category or mode yet.
+ */
+export const workspaceProjectSchema = projectSchema.extend({
+  name: z.string().min(1).nullable(),
+  category: categorySchema.nullable(),
+  mode: startModeSchema.nullable(),
+});
+export type WorkspaceProject = z.infer<typeof workspaceProjectSchema>;
+
+/** A file sent with a message. Only the text of small text files is read; nothing is stored raw. */
+export const attachmentSchema = z.object({
+  name: z.string().min(1).max(200),
+  text: z.string().max(200_000).optional(),
+});
+export type Attachment = z.infer<typeof attachmentSchema>;
+
+/** Body of `POST /teams/:teamId/projects`: the first message, never an empty form (spec §9.2). */
+export const createProjectInputSchema = z
+  .object({
+    text: z.string().max(20_000).default(''),
+    /** The start hint the person picked, if any. Only a default reading of the job. */
+    mode: startModeSchema.optional(),
+    /** Set when the box was opened from one category's list. */
+    category: categorySchema.optional(),
+    attachments: z.array(attachmentSchema).max(5).default([]),
+  })
+  .refine((input) => input.text.trim() !== '' || input.attachments.length > 0, {
+    message: 'Type a message or attach a file',
+    path: ['text'],
+  });
+export type CreateProjectInput = z.input<typeof createProjectInputSchema>;
+
+export const createProjectResultSchema = z.object({ projectId: z.uuid(), threadId: z.uuid() });
+export type CreateProjectResult = z.infer<typeof createProjectResultSchema>;
 
 /** Draft: what a category page shows about its pack (spec §3.2 coverage lists). */
 export const categoryInfoSchema = z.object({

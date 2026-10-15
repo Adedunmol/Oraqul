@@ -7,7 +7,7 @@ Read with the PRD and the design system file. Qloo endpoint names and parameters
 ```
 Next.js web app  ->  API (NestJS, Node, VPS)  ->  Agent runtime  ->  Qloo client (hackathon.api.qloo.com API)
                            |                          |
-                        Postgres                  Model (OpenAI via Vercel AI SDK)
+                        Postgres                  Model (configured provider via Vercel AI SDK)
 ```
 
 * **Web.** Next.js, deployed on Vercel. Talks to the API only. Streams agent events over server sent events.
@@ -35,7 +35,9 @@ Rules: `engine` and `packs` never import from `apps`. `schema` has no dependenci
 
 ### 3.1 Router
 
-Input: project record. Output: the category agent to run and the job (plan, audit, rescue, scenario, date, partner). It does not call tools. If the category is unclear it returns a question card, not a guess. The job it reads is stated in the first reply, not confirmed with a card; the user corrects it by typing (§9.2).
+Input: the first message (text and the words of any small text file) and the `/start` hints. Output: the project's title, its category, the start mode (build, audit, rescue), and so the category agent to run. It does not call tools and it never guesses: a value counts only when the person's own words say it, which code checks by finding the model's quote in what they wrote. When the category or the mode is unclear it asks one `single` card, worded from what it read, with two to four close options that each settle the category, the mode or both, and the person may type their own answer instead. When only the title is missing it asks a `text` card. A message that is not about launching a film, series, music, book, podcast or game gets a fixed refusal. Once all three are known it states the job in its first reply and hands the project to the category agent. The model is configured, not fixed (backend/llm.md); with no model key a scripted router takes only what is plainly written and asks about the rest.
+
+The jobs a run can do are build, audit, rescue, scenario, date and partner. The first three are the start modes; the others are follow ups inside a project.
 
 ### 3.2 Category agent
 
@@ -116,13 +118,15 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 | `teams` | name |
 | `memberships` | team_id, user_id, role (owner, editor, viewer); unique per team and user |
 | `invites` | team_id, email, role, token_hash, invited_by, expires_at, accepted_at; one pending invite per team and email |
-| `projects` | team_id, category, name, kind, genre, places[], window, lead, comps, inputs jsonb, status |
-| `threads` | project_id, name, base_output_id, from_output_id, fresh bool, created_by |
-| `messages` | thread_id, role (user, agent, question, trace, output), body jsonb, seq |
-| `outputs` | thread_id, project_id, kind (plan, audit, scenario, rescue, date, partner), parent_id, title, brief jsonb, changed_ids[], headline, moves jsonb, confidence jsonb, data_as_of |
+| `projects` | team_id, category, name, mode (build, audit, rescue), kind, genre, places[], window, lead, comps, inputs jsonb, status, created_by, updated_at. Saved from the first message as a draft (`status` intake, no name, category or mode) that no list shows until the router has read it, then `active` |
+| `threads` | project_id, name, base_output_id, from_output_id, fresh bool, created_by, updated_at |
+| `messages` | thread_id, role (user, agent, question, trace, output), body jsonb, seq; unique per thread and seq, which is where an event stream resumes |
+| `outputs` | thread_id, project_id, kind (build, audit, scenario, rescue, date, partner), parent_id, title, brief jsonb, changed_ids[], headline, moves jsonb, confidence jsonb, data_as_of |
 | `receipts` | output_id, line_id, endpoint, input jsonb, returned jsonb, rule text, confidence, called_at, call_id |
 | `share_links` | output_id, token, enabled |
-| `runs` | thread_id, agent, job, steps jsonb, qloo_calls int, tokens int, status |
+| `runs` | thread_id, agent, job, steps jsonb, state jsonb, qloo_calls int, tokens int, status (running, waiting, done, error), stop_reason, finished_at. One row per run segment; `state` holds what the next segment needs, such as the router's open question |
+| `pins` | user_id, project_id; unique per pair. Three per person at most, kept by the API |
+| `thread_reads` | user_id, thread_id, read_seq: how far one person has read a thread |
 | `category_packs` | version only; packs live in code |
 
 `brief` shape (Zod, in `packages/schema`): `audience[]`, `assumptions[]`, plan sections `s1` to `s4`, `places[]`, `dates[]`, `partners[]`, `risks[]`, `cannot[]`, `planned[]`, `aLabels[]`, `results`, `course`, plus category data: `grid` (music), `shelf` and `bridge` (books), `topics` (podcasts), `fan` (games). Every line has an `id` that is stable across versions, which is how diffs and "changed" marks work.
@@ -146,13 +150,16 @@ GET    /teams                 POST /teams
 GET    /teams/:teamId         members, pending invites (owners only), myRole
 POST   /teams/:teamId/invites     PATCH /teams/:teamId/members/:uid     DELETE /teams/:teamId/members/:uid
 GET    /invites/:token        POST /invites/:token/accept
-GET    /overview              needs you, threads to pick up
+GET    /teams/:teamId/overview    needs you, threads to pick up
 GET    /me/pins               pinned project ids, newest first, three at most
-PUT    /me/pins/:projectId    DELETE /me/pins/:projectId
-GET    /projects?category=    POST /projects (mode, category, first message, attachments)        GET /projects/:id        DELETE /projects/:id
-POST   /projects/:id/threads  GET /threads/:id
-POST   /threads/:id/messages  user message or question card answer
-GET    /threads/:id/events    SSE: trace steps, questions, messages, output ready
+PUT    /me/pins/:projectId    DELETE /me/pins/:projectId    (each answers the list after the change)
+GET    /teams/:teamId/projects?category=    category id or all; drafts left out
+POST   /teams/:teamId/projects    first message (text, mode and category hints, attachments); answers projectId and threadId at once, the router runs in the background
+GET    /projects/:projectId   DELETE /projects/:projectId
+POST   /projects/:projectId/threads   GET /threads/:threadId
+POST   /threads/:threadId/messages    typed text or a card answer; 202, the reply comes on the stream; 409 while a run is going
+POST   /threads/:threadId/read    marks what is stored so far as read
+GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
 GET    /outputs/:id           GET /outputs/:id/evidence
 GET    /outputs/:id/export    one page brief and appendix
 GET    /projects/:id/compare?a=&b=
@@ -163,7 +170,7 @@ POST   /uploads               plan or results file, parsed to aggregates
 
 Sign in details: codes are 6 digits, expire in 10 minutes, work once, and lock after 5 wrong tries. Accounts are linked by verified email, so the same person reaches one account by password, Google or code. Passwords are at least 8 characters.
 
-Roles are enforced in a guard, never in handlers. `RolesGuard` runs after `SessionGuard`, reads `@Roles()` on the route and the `:teamId` route param, loads the caller's membership and answers 403 when there is none or the role is not listed. A route with no `@Roles()` is denied. A team that does not exist and a team the caller is not on give the same 403.
+Roles are enforced in a guard, never in handlers. `RolesGuard` runs after `SessionGuard`, reads `@Roles()` on the route and the route's team (the `:teamId` param, or the team that owns `:projectId` or `:threadId`), loads the caller's membership and answers 403 when there is none or the role is not listed. A project or thread that does not exist gives the same 403. A route with no `@Roles()` is denied. A team that does not exist and a team the caller is not on give the same 403.
 
 | Action | Owner | Editor | Viewer |
 |---|---|---|---|
@@ -181,7 +188,7 @@ The last two rows apply when projects belong to teams.
 
 ## 8. Events
 
-SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created`, `run.stopped`, `error`. Shapes are `threadEventSchema` in `packages/schema`. A `trace.step` names the agent that took it (`router`, `film`, `books→film` for a consult). A question has an id, the asking agent, its card type (single, multi, text, split, date, file, confirm, match) and its options. A `message` carries its claims, each with the receipt ids behind it. A `receipt` event streams each receipt as the tool makes it. `run.stopped` ends every run segment with a reason: `finished`, `waiting` (on a question), `budget`, `steps` or `error`. The web app renders cards from the event, and posts the answer back as a message.
+SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created`, `project.updated`, `run.stopped`, `error`. `project.updated` carries the name, category, mode and chat name once the router has read them, so the workspace fills its skeleton without a reload. Events stored in the transcript carry their `seq` as the SSE id. Shapes are `threadEventSchema` in `packages/schema`. A `trace.step` names the agent that took it (`router`, `film`, `books→film` for a consult). A question has an id, the asking agent, its card type (single, multi, text, split, date, file, confirm, match) and its options. A `message` carries its claims, each with the receipt ids behind it. A `receipt` event streams each receipt as the tool makes it. `run.stopped` ends every run segment with a reason: `finished`, `waiting` (on a question), `budget`, `steps` or `error`. The web app renders cards from the event, and posts the answer back as a message.
 
 ## 9. Web app
 
@@ -206,9 +213,9 @@ The look is defined in the design system file. In code:
 
 ### 9.2 Start modes
 
-There is no form. Work starts in one message box, on the overview or on `/start` (opened from New project in the sidebar or on a project list, with the category when opened from a category's list). New project is the one name for it, whatever the job: an audit or a fix is still a project. The box saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a box nobody uses leaves no empty project. Three optional hints under the box, Make a plan, Check my plan and Fix one that missed, set a `mode` of `start`, `audit` or `rescue`; they only change the prompt and the default reading of the job. With no hint the agent reads the job from the message.
+There is no form. Work starts in one message box, on the overview or on `/start` (opened from New project in the sidebar or on a project list, with the category when opened from a category's list). New project is the one name for it, whatever the job: an audit or a fix is still a project. The box saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a box nobody uses leaves no empty project. Three optional hints under the box, Make a plan, Check my plan and Fix one that missed, set a `mode` of `build`, `audit` or `rescue`; they only change the prompt and the default reading of the job. With no hint the agent reads the job from the message.
 
-The agent asks only what a wrong guess would waste a run on: the category when no category word is found, the title when none is found, and which Qloo entity is theirs. It does not ask for the job, the places or the category's extra input. Its first reply says what it read and what it guessed, for example "Reading this as a new plan: series, crime drama, territories UK, Canada, US (my guess, you did not name any)", with an example of how to correct it. A correction typed later reruns what it changes: "check my plan instead" runs an audit, naming places replans with them.
+After sending, the person lands on the new chat at once. The project's name, category and chat name show as skeletons while the router reads the message, and fill in when it has (`project.updated`). A chat's name is a short summary of its first message; a chat made with New chat is named the same way once its first message is sent. The router never guesses the title, the category or the mode. It asks only when one of them is unclear: the category and the mode first, on one card that says back what it understood ("Looks like a music release or a game. What would you like to do?") with close options such as "Work on a song release" and "Work on a game launch"; then the title on a text card. Typing in the message box answers the open card too, for an answer the options miss. A message about something else ("what's my blood pressure") gets "Oraqul works on launches for films, series, music, books, podcasts and games, so I can't help with that here", and the draft stays hidden. The category agent asks which Qloo entity is theirs. Nobody is asked for the places or the category's extra input. The first reply says what was read, for example "Reading this as a new launch plan for “Tomorrow” (Music)." A correction typed later reruns what it changes: "check my plan instead" runs an audit, naming places replans with them.
 
 ### 9.3 Tabs, notes and search
 
@@ -242,7 +249,7 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 
 **No pricing page for now**, and no mention of pricing anywhere until there is real pricing. Access is by creating an account.
 
-**Built:** every page in the launch set except `/terms`. `/` runs: the hero (positioning line, app preview with the agent at work), the prompts people type, the problem against Oraqul's answer (prd §2), an agent run streaming its tool calls and red team step, a taste map that explains Qloo, the four jobs in launch order as sticky steps, a plan marked up with verdicts, one lift worked out, the five categories as sticky steps, an FAQ and the closing call to action. The data flow diagram lives on `/trust`. `/examples` renders the real output screen, read only, for three seeded outputs (`output:r1:1`, `output:r3:1`, `output:r6:2`); `?case=` and `?tab=` are checked at the page boundary, and the output screen keeps other query values when it changes tab; the receipt drawer there leaves out the endpoint and the response shape (`publicExample`). `/categories` and the in app help dialog read the same columns (`_workspace/category-coverage.ts`). `/method` draws lift, fit and rival overlap with the thresholds in §5. `/trust` and `/privacy` state only what the code does: cookies `oraqul_session` (30 days), `oraqul_team`, `oraqul_oauth`; Qloo, OpenAI, Brevo, Google, Vercel and a VPS as processors. **Terms is deferred**: this is a hackathon project with no lawyer, and `/privacy` is a plain account of what the product does; add Terms and the privacy contact (`TODO(contact)` in `_marketing/privacy/privacy.tsx`) before Google sign in leaves testing mode. `/examples` has no video until a real one exists.
+**Built:** every page in the launch set except `/terms`. `/` runs: the hero (positioning line, app preview with the agent at work), the prompts people type, the problem against Oraqul's answer (prd §2), an agent run streaming its tool calls and red team step, a taste map that explains Qloo, the four jobs in launch order as sticky steps, a plan marked up with verdicts, one lift worked out, the five categories as sticky steps, an FAQ and the closing call to action. The data flow diagram lives on `/trust`. `/examples` renders the real output screen, read only, for three seeded outputs (`output:r1:1`, `output:r3:1`, `output:r6:2`); `?case=` and `?tab=` are checked at the page boundary, and the output screen keeps other query values when it changes tab; the receipt drawer there leaves out the endpoint and the response shape (`publicExample`). `/categories` and the in app help dialog read the same columns (`_workspace/category-coverage.ts`). `/method` draws lift, fit and rival overlap with the thresholds in §5. `/trust` and `/privacy` state only what the code does: cookies `oraqul_session` (30 days), `oraqul_team`, `oraqul_oauth`; Qloo, the model provider (Google Gemini today), Brevo, Google, Vercel and a VPS as processors. **Terms is deferred**: this is a hackathon project with no lawyer, and `/privacy` is a plain account of what the product does; add Terms and the privacy contact (`TODO(contact)` in `_marketing/privacy/privacy.tsx`) before Google sign in leaves testing mode. `/examples` has no video until a real one exists.
 
 **Navigation.** A short header: Product (How it works, Examples, Method), Use cases, Categories, Sign in, Create account; Developers joins it when that page exists. The footer carries the rest in four columns: Product, Resources, Company, Legal. This follows what Linear, Notion, Harvey, Glean and Elicit do. As built: Product is a small menu (Escape or a click outside closes it and returns focus to it); below 900px one Menu button opens a panel with every link; below 600px Sign in moves into that panel so the bar stays on one row.
 
@@ -263,7 +270,7 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 
 * **Unit.** Scoring functions, verdict rules, diff and changed marks, results gap logic.
 * **Contract.** Recorded Qloo responses per tool. A live smoke test runs against our key.
-* **Golden runs.** Per category, three fixed inputs (plan, audit, rescue) with expected verdict shape. Run on every change.
+* **Golden runs.** Per category, three fixed inputs (build, audit, rescue) with expected verdict shape. Run on every change.
 * **Grounding check.** Every entity and number in an output must trace to a receipt. Fails the build if not.
 * **Refusal tests.** Forecast, pricing and send requests are refused with the right message.
 * **Coverage tests.** Cross-domain taste tests per category, Nigerian titles, Lagos against no location, podcasts and games, diaspora ranking.

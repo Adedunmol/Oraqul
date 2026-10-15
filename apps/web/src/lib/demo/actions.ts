@@ -1,21 +1,11 @@
 import { shareTokenFor } from './queries';
-import { markRead, removeProject, setShare } from './store';
+import { markRead, setShare } from './store';
 
-// Stand-ins for the mutation helpers in lib/api (spec §7). Each is a synchronous change to the
-// demo state; the real ones post to the API and then `router.refresh()`.
+// Stand-ins for the mutation helpers in lib/api (spec §7) that outputs still need. Each is a
+// synchronous change to the demo state; the real ones post to the API and then `router.refresh()`.
+// Projects, chats and pins have moved to the API (lib/api/projects.ts).
 
-export type { FirstMessage } from './flows';
-export {
-  answerQuestion,
-  runNextStep,
-  sendText as sendMessage,
-  setActor,
-  startFromMessage as createProject,
-  startThread as createThread,
-} from './flows';
-
-/** `DELETE /projects/:id` */
-export const deleteProject = removeProject;
+export { answerQuestion, runNextStep, sendText as sendMessage, setActor } from './flows';
 
 /** `PATCH /shares/:token` */
 export function setShareEnabled(outputId: string, enabled: boolean): void {
