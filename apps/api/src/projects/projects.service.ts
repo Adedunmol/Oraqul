@@ -15,8 +15,9 @@ import type {
 } from '@oraqul/schema';
 import { and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 import { z } from 'zod';
-import { RunService, UNNAMED_THREAD } from '../agent/run.service.js';
+import { RunService } from '../agent/run.service.js';
 import { ThreadStore, toItems } from '../agent/thread-store.js';
+import { UNNAMED_THREAD } from '../agent/titler.js';
 import { type Database, DB } from '../db/db.module.js';
 import {
   memberships,

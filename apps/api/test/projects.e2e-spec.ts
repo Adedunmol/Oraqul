@@ -154,7 +154,7 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
       category: 'music',
       mode: 'build',
     });
-    expect(done.thread.name).toBe('First plan');
+    expect(done.thread.name).toBe('I have a song titled tomorrow');
     expect(done.items.find((i) => i.role === 'question')).toMatchObject({ answer: 'Make a plan' });
     const said = done.items.flatMap((i) => (i.role === 'agent' ? [i.text] : []));
     expect(said[0]).toBe('Reading this as a new launch plan for “tomorrow” (Music).');
@@ -262,6 +262,27 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
 
     await request(http()).delete(`/me/pins/${made[3]}`).set(as('viewer')).expect(200);
     await request(http()).put(`/me/pins/${made[0]}`).set(as('stranger')).expect(403);
+  });
+
+  it('names a new chat from its first message, once', async () => {
+    const { projectId, threadId: first } = await start('Plan the release of the film "Low Tide"');
+    await settled(first);
+    const created = await request(http())
+      .post(`/projects/${projectId}/threads`)
+      .set(as('editor'))
+      .expect(201);
+    const threadId: string = created.body.threadId;
+    expect((await settled(threadId)).thread.name).toBe('New chat');
+
+    for (const text of ['find fans of slow coastal dramas', 'and in Lisbon too']) {
+      await request(http())
+        .post(`/threads/${threadId}/messages`)
+        .set(as('editor'))
+        .send({ kind: 'text', text })
+        .expect(202);
+      await settled(threadId);
+    }
+    expect((await settled(threadId)).thread.name).toBe('Find fans of slow coastal dramas');
   });
 
   it('lists a waiting question under Needs you once the project is set up', async () => {

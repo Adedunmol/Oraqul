@@ -24,13 +24,6 @@ export const MODE_OPTIONS: Record<StartMode, { label: string; description: strin
   },
 };
 
-/** The first chat's name once the job is known. */
-export const THREAD_NAMES: Record<StartMode, string> = {
-  build: 'First plan',
-  audit: 'First check',
-  rescue: 'First fix',
-};
-
 const READINGS: Record<StartMode, string> = {
   build: 'a new launch plan',
   audit: 'a check of your plan',

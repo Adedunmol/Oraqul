@@ -22,7 +22,7 @@ import type { z } from 'zod';
 import { type Database, DB } from '../db/db.module.js';
 import { projects, runs, threads } from '../db/schema.js';
 import { CATEGORY_AGENTS, type CategoryAgents, type Handoff } from './category-agents.js';
-import { OFF_TOPIC_REPLY, readingLine, THREAD_NAMES } from './router/copy.js';
+import { OFF_TOPIC_REPLY, readingLine } from './router/copy.js';
 import type { Reader } from './router/reader.js';
 import {
   answerLabel,
@@ -34,11 +34,9 @@ import {
   routeTurn,
 } from './router/router.js';
 import { ThreadStore } from './thread-store.js';
+import { THREAD_TITLER, type Titler, UNNAMED_THREAD } from './titler.js';
 
 export const ROUTER_READER = Symbol('ROUTER_READER');
-
-/** The first chat's name until the router reads the job. */
-export const UNNAMED_THREAD = 'New chat';
 
 /** An event on a thread's live stream. `seq` is set when the event is stored in the transcript. */
 export interface LiveEvent {
@@ -68,6 +66,7 @@ export class RunService implements OnModuleInit {
     @Inject(ThreadStore) private readonly store: ThreadStore,
     @Inject(ROUTER_READER) private readonly reader: Reader,
     @Inject(CATEGORY_AGENTS) private readonly agents: CategoryAgents,
+    @Inject(THREAD_TITLER) private readonly titler: Titler,
   ) {}
 
   /** A run that was going when the process stopped will never finish, so say so. */
@@ -104,7 +103,10 @@ export class RunService implements OnModuleInit {
     await this.store.appendUser(threadId, input.text, input.attachments);
     const state = newRouterState({ category: input.category, mode: input.mode });
     const turn: RouterTurn = { kind: 'message', text: forRouter(input.text, input.attachments) };
-    this.launch(threadId, () => this.routerSegment(threadId, projectId, state, turn));
+    this.launch(threadId, async () => {
+      await this.nameThread(threadId, input.text, input.attachments);
+      await this.routerSegment(threadId, projectId, state, turn);
+    });
     return { projectId, threadId };
   }
 
@@ -143,7 +145,11 @@ export class RunService implements OnModuleInit {
     const { category, mode, name } = project;
     if (!category || !mode || !name) throw new Error('An active project has no category or mode');
     await this.store.appendUser(threadId, body.text, body.attachments);
-    this.launch(threadId, () => this.agentSegment(threadId, { category, mode, title: name }));
+    const unnamed = project.threadName === UNNAMED_THREAD;
+    this.launch(threadId, async () => {
+      if (unnamed) await this.nameThread(threadId, body.text, body.attachments);
+      await this.agentSegment(threadId, { category, mode, title: name });
+    });
   }
 
   /**
@@ -205,15 +211,11 @@ export class RunService implements OnModuleInit {
           return await this.stop(threadId, runId, 'waiting', { state, steps, tokens });
         case 'routed': {
           const { title, category, mode } = decision;
-          const threadName = THREAD_NAMES[mode];
           await this.db
             .update(projects)
             .set({ name: title, category, mode, status: 'active', updatedAt: new Date() })
             .where(eq(projects.id, projectId));
-          await this.db
-            .update(threads)
-            .set({ name: threadName })
-            .where(and(eq(threads.id, threadId), eq(threads.name, UNNAMED_THREAD)));
+          const threadName = (await this.projectOf(threadId)).threadName;
           await this.emit(threadId, {
             type: 'project.updated',
             projectId,
@@ -252,6 +254,20 @@ export class RunService implements OnModuleInit {
     } catch (err) {
       await stored.catch(() => undefined);
       await this.fail(threadId, runId, err, { state: null, steps, tokens: 0 });
+    }
+  }
+
+  /** Names a chat from its first message. Only an unnamed chat is renamed, so this runs once. */
+  private async nameThread(threadId: string, text: string, attachments: Attachment[]) {
+    try {
+      const name = await this.titler.title({ text, files: attachments.map((a) => a.name) });
+      await this.db
+        .update(threads)
+        .set({ name })
+        .where(and(eq(threads.id, threadId), eq(threads.name, UNNAMED_THREAD)));
+    } catch (err) {
+      // A chat left as "New chat" is better than a run that never starts.
+      this.logger.error(err);
     }
   }
 
@@ -342,6 +358,7 @@ export class RunService implements OnModuleInit {
         name: projects.name,
         category: projects.category,
         mode: projects.mode,
+        threadName: threads.name,
       })
       .from(threads)
       .innerJoin(projects, eq(projects.id, threads.projectId))

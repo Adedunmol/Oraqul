@@ -15,7 +15,7 @@ import { messages, threads } from '../db/schema.js';
 // A thread's transcript is the `messages` table (spec §6). Each stored row is one chat item and
 // one replayable event; `seq` orders them and is where an event stream resumes.
 
-const userBody = z.object({
+export const userBody = z.object({
   text: z.string(),
   attachments: z.array(z.object({ name: z.string() })).default([]),
 });

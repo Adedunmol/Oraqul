@@ -65,7 +65,7 @@ Code is in `apps/api/src/agent`:
 
 Routes are in `apps/api/src/projects` (spec §7) and are guarded by `SessionGuard` and `RolesGuard`: owners and editors write, viewers read. The guard finds the team from `:teamId`, `:projectId` or `:threadId`.
 
-Each run segment is a `runs` row: the router's segments carry `agent: router` and its state; the category agent's carry the category and the job. A segment stops `finished`, `waiting` (on a card), or `error`; the stream ends each with `run.stopped`. The router's trace is "Reading your message", then "Handing this to the Music agent". When it routes, it fills in the project (name, category, mode, `status: active`), names the first chat "First plan", "First check" or "First fix", and emits `project.updated`.
+Each run segment is a `runs` row: the router's segments carry `agent: router` and its state; the category agent's carry the category and the job. A segment stops `finished`, `waiting` (on a card), or `error`; the stream ends each with `run.stopped`. The router's trace is "Reading your message", then "Handing this to the Music agent". When it routes, it fills in the project (name, category, mode, `status: active`), and emits `project.updated` with the chat's name. Every chat is named once, from its first message, by the titler (`agent/titler.ts`): a short summary from the router model, or the message's opening line cut to 48 characters when there is no model or the call fails. A chat stays "New chat" until its first message.
 
 In the tool loop the planner only chooses the next step. The runtime runs it, so receipts, limits, questions and consults stay in code:
 

@@ -6,6 +6,7 @@ import { FallbackReader } from './router/router.js';
 import { ScriptedReader } from './router/scripted-reader.js';
 import { ROUTER_READER, RunService } from './run.service.js';
 import { ThreadStore } from './thread-store.js';
+import { createTitler, THREAD_TITLER } from './titler.js';
 
 const logger = new Logger('Router');
 
@@ -25,6 +26,14 @@ const logger = new Logger('Router');
           (err) => logger.warn(`Model router failed, reading with the scripted router: ${err}`),
         );
       },
+    },
+    {
+      provide: THREAD_TITLER,
+      inject: [LLM],
+      useFactory: (llm: Llm | null) =>
+        createTitler(llm, (err) =>
+          logger.warn(`Model titler failed, naming the chat the scripted way: ${err}`),
+        ),
     },
     { provide: CATEGORY_AGENTS, useFactory: placeholderAgents },
   ],
