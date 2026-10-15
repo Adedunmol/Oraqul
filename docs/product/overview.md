@@ -131,7 +131,7 @@ TypeScript monorepo. Next.js front end. A Node backend on a VPS that calls the Q
 
 ## Open points
 
-* Test Qloo's coverage first, per category: cross-domain taste tests (for example musicians' fans for a book), Nigerian artists, titles and authors, Lagos against no location, and whether location changes the age and gender splits.
+* Keep testing Qloo's coverage, per category (age and gender profiles are measured; books have them for about half of titles): cross-domain taste tests (for example musicians' fans for a book), Nigerian artists, titles and authors, Lagos against no location, and whether location changes the age and gender splits.
 * Check Qloo's terms on showing receipts on public links.
 * Confirm the monthly call quota, reported at about 10,000, and set a call budget per audit.
 * Confirm Devpost's rules for a two person submission.

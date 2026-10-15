@@ -17,6 +17,7 @@ export const books: DemoPack = {
       'Adaptation bridge to series, film and podcasts',
     ],
     thin: [
+      'Reader age and gender for one title. About half of the books checked had no profile in Qloo, so the read can rest on the genre',
       'Debut authors and small press titles. With few anchors the read rests on comps and themes',
       'A book with no close comps. Cross-domain taste is read instead, and less certain',
     ],
