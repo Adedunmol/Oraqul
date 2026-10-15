@@ -70,31 +70,31 @@ export function Idea() {
   );
 }
 
-const ranked: [string, 'Africa' | 'Diaspora', number][] = [
-  ['Lagos', 'Africa', 1.82],
-  ['London', 'Diaspora', 1.64],
-  ['Houston', 'Diaspora', 1.51],
-  ['Accra', 'Africa', 1.47],
-  ['Toronto', 'Diaspora', 1.38],
-  ['Nairobi', 'Africa', 1.22],
+const ranked: [string, string, number][] = [
+  ['Mexico City', 'Americas', 1.82],
+  ['Seoul', 'Asia', 1.64],
+  ['London', 'Europe', 1.51],
+  ['Lagos', 'Africa', 1.47],
+  ['Toronto', 'Americas', 1.38],
+  ['Sydney', 'Oceania', 1.22],
 ];
 
-/** African and diaspora cities in one ranking, which is the point: one list, not two. */
-export function Diaspora() {
+/** Cities from every region in one ranking, which is the point: one list, not one per region. */
+export function Markets() {
   return (
-    <section aria-labelledby="diaspora-title" className={`${band} overflow-x-clip`}>
+    <section aria-labelledby="markets-title" className={`${band} overflow-x-clip`}>
       <div
         className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[1fr_1fr] min-[1000px]:items-center`}
       >
         <div className="flex flex-col gap-6">
-          <h2 id="diaspora-title" className={h2Class}>
-            Built with Africa and its diaspora in mind.
+          <h2 id="markets-title" className={h2Class}>
+            Built for launches anywhere in the world.
           </h2>
           <div className="flex max-w-[46ch] flex-col gap-4 text-[17px] leading-[1.65] text-ink/80">
             <p>
-              Many audience tools treat Lagos or Nairobi as an afterthought. Oraqul tests Nigerian
-              and African titles instead of skipping them, and ranks diaspora cities beside African
-              ones, because that is where many of these audiences live.
+              A release rarely lives in one country. Oraqul tests titles from any market and ranks
+              cities from every region in a single list, so a plan for Seoul, Mexico City and London
+              is judged by the same rule.
             </p>
             <p>Where the data is thin, it says so and lowers its confidence rather than guess.</p>
           </div>
@@ -102,7 +102,7 @@ export function Diaspora() {
 
         <figure className="flex flex-col gap-3">
           <figcaption className="sr-only">
-            An example ranking by lift: Lagos, London, Houston, Accra, Toronto and Nairobi in one
+            An example ranking by lift: Mexico City, Seoul, London, Lagos, Toronto and Sydney in one
             list.
           </figcaption>
           <Reveal className="flex flex-col gap-2 rounded-2xl bg-card p-[clamp(16px,3vw,28px)]">
@@ -116,9 +116,7 @@ export function Diaspora() {
                 <span className="flex min-w-0 flex-col gap-1.5">
                   <span className="flex items-center gap-2">
                     <span className="font-medium">{city}</span>
-                    <span
-                      className={`rounded-md px-1.5 py-px text-[11.5px] font-medium ${where === 'Africa' ? 'bg-accent-soft text-accent' : 'bg-surface2'}`}
-                    >
+                    <span className="rounded-md bg-surface2 px-1.5 py-px text-[11.5px] font-medium">
                       {where}
                     </span>
                   </span>

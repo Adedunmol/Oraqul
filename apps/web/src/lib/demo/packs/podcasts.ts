@@ -32,7 +32,7 @@ export const podcasts: DemoPack = {
   ],
   kinds: ['New show', 'Season launch', 'Season two', 'Relaunch'],
   placeLabel: 'markets',
-  placeOpts: ['UK', 'US', 'Canada', 'Nigeria'],
+  placeOpts: ['UK', 'US', 'Canada', 'Mexico'],
   files: { plan: 'growth-plan.pdf', res: 'dashboard-export.csv' },
   descHint:
     'Describe the show: topic, hosts, comp shows, markets, launch window. Paste or attach anything you already have, such as a growth plan or a dashboard export.',
@@ -148,7 +148,7 @@ export const podcasts: DemoPack = {
       planned: [20, 45, 20, 15],
       audience: [
         A('au1', 'Home cooks 25 to 34', 83, 'Highest affinity for the comps and hosts'),
-        A('au2', 'Diaspora listeners 25 to 44', 79, 'Strong with migration stories'),
+        A('au2', 'Travel listeners 25 to 44', 79, 'Strong with travel stories'),
         A('au3', 'Food culture fans 35 to 54', 71, 'Follows the hosts more than the topic'),
         A('au4', 'News podcast listeners 25 to 44', 52, 'Moderate overlap with the topic'),
         A('au5', 'Students 18 to 24', 44, 'Low overlap with the comps'),
@@ -159,10 +159,10 @@ export const podcasts: DemoPack = {
           'as1',
           'Core listeners are home cooks aged 25 to 34',
           'holds',
-          'Affinity 83, a 4 point lead over diaspora listeners.',
+          'Affinity 83, a 4 point lead over travel listeners.',
           '',
           'demo',
-          'home cooks 25 to 34 = 83, diaspora listeners = 79',
+          'home cooks 25 to 34 = 83, travel listeners = 79',
         ),
         AS(
           'as2',
@@ -193,12 +193,12 @@ export const podcasts: DemoPack = {
         ),
         AS(
           'as5',
-          'The Nigeria audience matches the UK audience',
+          'The Mexico audience matches the UK audience',
           'breaks',
-          'The best matching group in Lagos is listeners 25 to 34 who follow food news. Home cooks rank third.',
-          'Plan Nigeria separately, with its own topics and guests.',
+          'The best matching group in Mexico City is listeners 25 to 34 who follow food news. Home cooks rank third.',
+          'Plan Mexico separately, with its own topics and guests.',
           'geo',
-          'top segment, Lagos = 25 to 34, food news',
+          'top segment, Mexico City = 25 to 34, food news',
           true,
         ),
         AS(
@@ -223,12 +223,12 @@ export const podcasts: DemoPack = {
       ],
       s1: [
         F('s1a', 'Mara Quist (chef)', 82, 'Listener overlap 82', 'pod'),
-        F('s1b', 'Dayo Femi (writer)', 74, 'Listener overlap 74', 'pod'),
+        F('s1b', 'Dario Fenn (writer)', 74, 'Listener overlap 74', 'pod'),
         F('s1c', 'Ines Carvalho (photographer)', 63, 'Listener overlap 63', 'pod'),
       ],
       s2: [
         F('s2a', 'Hearth Pantry', 79, 'Affinity 79 with home cooks', 'brand'),
-        F('s2b', 'Wayfarer Fares', 68, 'Affinity 68 with diaspora listeners', 'brand'),
+        F('s2b', 'Wayfarer Fares', 68, 'Affinity 68 with travel listeners', 'brand'),
         F('s2c', 'Nimbus Meal Kits', 47, 'Affinity 47 with core listeners', 'brand'),
       ],
       s3: [
@@ -245,7 +245,7 @@ export const podcasts: DemoPack = {
       topics: [
         {
           id: 'tp1',
-          name: 'migration stories',
+          name: 'travel stories',
           kind: 'distinct',
           w: 3,
           ev: "A tag with 3 times more weight in the show's audience than in rival audiences",
@@ -322,7 +322,7 @@ export const podcasts: DemoPack = {
           id: 'pb2',
           name: 'Mara Quist (guest)',
           type: 'Guest',
-          fits: 'Home cooks and diaspora listeners',
+          fits: 'Home cooks and travel listeners',
           ev: 'Listener overlap 82',
           k: 'pod',
           draft: `Subject: A seat at ${r.name}\n\nHi Mara,\n\nYour audience overlaps strongly with our listeners (82). We would like to invite you to record an episode on food and family history.\n\nBest,\nThe ${r.name} team\n\n(Draft only. Oraqul does not send it.)`,
@@ -364,7 +364,7 @@ export const podcasts: DemoPack = {
       course: null,
       results: null,
     };
-    if (!r.places.includes('Nigeria')) B.assumptions = B.assumptions.filter((x) => x.id !== 'as5');
+    if (!r.places.includes('Mexico')) B.assumptions = B.assumptions.filter((x) => x.id !== 'as5');
     return B;
   },
   scen: [
@@ -433,7 +433,7 @@ export const podcasts: DemoPack = {
           a.verdict = 'breaks';
           a.why =
             'Without Mara Quist, the next best guest has overlap 74. The launch episode loses its lead.';
-          a.fix = 'Open with Dayo Femi, and keep Mara for episode three.';
+          a.fix = 'Open with Dario Fenn, and keep Mara for episode three.';
         }
         b.s1 = b.s1.filter((x) => x.id !== 's1a');
       },
@@ -451,10 +451,10 @@ export const podcasts: DemoPack = {
         'as8',
         `Listeners aged ${g.B} are the real core`,
         'holds',
-        `They made up ${g.ba} percent. Taste overlap with migration story listeners is 81.`,
+        `They made up ${g.ba} percent. Taste overlap with travel story listeners is 81.`,
         '',
         'demo',
-        `overlap(listeners ${g.B}, migration story listeners) = 81`,
+        `overlap(listeners ${g.B}, travel story listeners) = 81`,
       ),
     );
     const a2 = assumption(b, 'as2');
@@ -486,14 +486,14 @@ export const podcasts: DemoPack = {
     b.course = {
       summary: `The plan assumed home cooks aged 25 to 34 would lead. Listeners aged ${g.W} were ${g.wa} percent, and aged ${g.B} was ${g.ba}. The show is liked, so the miss is about who listens, not about quality.`,
       actions: [
-        'Reposition around migration stories and home cooking, the topics only you own.',
+        'Reposition around travel stories and home cooking, the topics only you own.',
         'Lead the relaunch in the US, then the UK.',
         'Swap the guest list for guests with older, US skewed audiences.',
         'Move one sponsor slot from Nimbus Meal Kits to Hearth Pantry.',
       ],
       territories: [
         'United States: lead the relaunch.',
-        'Nigeria: hold spend until the first episode shows the split.',
+        'Mexico: hold spend until the first episode shows the split.',
       ],
       stop: ['Stop the student outreach.', 'Stop the Nimbus Meal Kits tie in.'],
     };

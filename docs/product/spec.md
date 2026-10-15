@@ -76,7 +76,7 @@ Every tool returns `{ data, receipt }`. The model sees `data` and a receipt id, 
 | `resolveBundle(title, comps, talent, tags)` | Describes the launch as a bundle of anchors: comps, talent and tags. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. |
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
 | `lift(candidates, baseline)` | Lift over a neutral audience, from one ranking call. |
-| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Includes diaspora cities. A city with too few cells is not ranked. |
+| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Cities from any region. A city with too few cells is not ranked. |
 | `compareAudiences(a, b)` | Shared audience between two entity sets. Used for rival overlap, comp shelf, fan base bridge. |
 | `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. Worked on one live run, see [qloo.md](../backend/qloo.md#what-the-live-run-showed). The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
 | `partnerFit(segment, candidates, type)` | Brand, creator, act or show affinity for a segment. |
@@ -208,7 +208,7 @@ The look is defined in the design system file. In code:
 
 There is no form. Work starts in one message box, on the overview or on `/start` (opened from New project in the sidebar or on a project list, with the category when opened from a category's list). New project is the one name for it, whatever the job: an audit or a fix is still a project. The box saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a box nobody uses leaves no empty project. Three optional hints under the box, Make a plan, Check my plan and Fix one that missed, set a `mode` of `start`, `audit` or `rescue`; they only change the prompt and the default reading of the job. With no hint the agent reads the job from the message.
 
-The agent asks only what a wrong guess would waste a run on: the category when no category word is found, the title when none is found, and which Qloo entity is theirs. It does not ask for the job, the places or the category's extra input. Its first reply says what it read and what it guessed, for example "Reading this as a new plan: series, crime drama, territories UK, Canada, US (my guess, you did not name any)", with an example of how to correct it. A correction typed later reruns what it changes: "check my plan instead" runs an audit, naming places replans with them.
+The agent asks only what a wrong assumption would waste a run on: the category when no category word is found, the title when none is found, and which Qloo entity is theirs. It does not ask for the job, the places or the category's extra input. Its first reply says what it read and what it assumed, for example "Reading this as a new plan: series, crime drama, territories UK, Canada, US (assumed, you did not name any)", with an example of how to correct it. A correction typed later reruns what it changes: "check my plan instead" runs an audit, naming places replans with them.
 
 ### 9.3 Tabs, notes and search
 
@@ -235,10 +235,10 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 | `/categories` | One page for all five categories: what is tested, where it is less certain, what the team brings. The same content as the in app help dialog |
 | `/method` | How verdicts, lift, fit and confidence are computed, and what Oraqul never does (no forecasts). For people who judge the numbers |
 | `/trust` | What data goes where: only public names, places and age bands to Qloo, results stored as aggregates, roles. Separate from Method because the readers differ (a marketer or judge against a reviewer or legal) |
-| `/about` | Why it exists, the team, the Africa and diaspora angle |
+| `/about` | Why it exists, the team, the global angle |
 | `/privacy`, `/terms` | Required. Google sign in needs both links |
 
-**Next:** `/developers` (the MCP server, with a quickstart), `/faq`, `/africa` (diaspora cities ranked beside African ones). **Later:** `/compare` (against a generic chatbot and against audience dashboards), one page per category, `/changelog`, a blog.
+**Next:** `/developers` (the MCP server, with a quickstart), `/faq`, `/markets` (cities from every region ranked in one list). **Later:** `/compare` (against a generic chatbot and against audience dashboards), one page per category, `/changelog`, a blog.
 
 **No pricing page for now**, and no mention of pricing anywhere until there is real pricing. Access is by creating an account.
 

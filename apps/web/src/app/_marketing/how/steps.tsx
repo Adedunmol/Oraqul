@@ -55,7 +55,7 @@ const stagger = (i: number) => ({ '--i': i }) as CSSProperties;
 export function TraceCard() {
   const steps = [
     'Reading the message: series, crime drama',
-    'Finding Harmattan and its comparable titles',
+    'Finding Night Ferry and its comparable titles',
     'Asking Qloo who else your audience loves',
     'Ranking the UK, Canada and the US',
     'Testing 9 beliefs in the plan',
@@ -121,8 +121,8 @@ export function Describe() {
             style={stagger(1)}
           >
             <p className="min-w-0 flex-1 text-[clamp(16px,1.6vw,19px)] leading-[1.5]">
-              Plan the release of Harmattan, a Lagos crime drama series, for the UK and the US.
-              Comparable shows are Grey Tide and The Ferry Office.
+              Plan the release of Night Ferry, a Mexico City crime drama series, for the UK and the
+              US. Comparable shows are Grey Tide and The Ferry Office.
             </p>
             <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-ink">
               <Icon name="arrowUp" className="size-4" />
@@ -152,11 +152,11 @@ export function Asks() {
       <div
         className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.9fr_1.1fr] min-[1000px]:items-center`}
       >
-        <StepHead n={2} icon="help" title="It guesses, says so, and asks only when it must.">
+        <StepHead n={2} icon="help" title="It states its assumptions and asks only when it must.">
           <p>
-            Oraqul says what it read and what it guessed, with an example of how to correct it. It
-            asks a question only when a wrong guess would waste the run: the category, the title, or
-            which match in Qloo is yours.
+            Oraqul says what it read and what it assumed, with an example of how to correct it. It
+            asks a question only when a wrong assumption would waste the run: the category, the
+            title, or which match in Qloo is yours.
           </p>
           <p>Type a correction any time. Only what it changes runs again.</p>
         </StepHead>
@@ -165,15 +165,15 @@ export function Asks() {
           <p className="mk-in max-w-[56ch] text-[16.5px] leading-[1.65]" style={stagger(0)}>
             Reading this as a new plan: series, crime drama, territories UK and US, plus{' '}
             <mark className="rounded-sm bg-accent-soft px-1 text-accent">
-              Canada (my guess, you did not name it)
+              Canada (assumed, you did not name it)
             </mark>
             . Say “only the UK and US” to change it.
           </p>
           <div className="mk-in flex flex-col gap-3 rounded-2xl bg-inset p-4" style={stagger(1)}>
             <p className="text-[15.5px] font-semibold">Which of these is your series?</p>
             {[
-              ['Harmattan', 'Series, 2026, crime drama', true],
-              ['Harmattan', 'Film, 2019, documentary', false],
+              ['Night Ferry', 'Series, 2026, crime drama', true],
+              ['Night Ferry', 'Film, 2019, documentary', false],
               ['None of these', 'Use comparable titles instead', false],
             ].map(([label, note, on]) => (
               <span
@@ -201,7 +201,7 @@ export function Asks() {
 const tests: { belief: string; call: string; verdict: Verdict }[] = [
   { belief: 'Crime thriller fans are the core', call: 'call_8f3a', verdict: 'holds' },
   { belief: 'The UK should open first', call: 'call_2c71', verdict: 'breaks' },
-  { belief: 'Johannesburg for a second wave', call: 'call_b904', verdict: 'weak' },
+  { belief: 'Seoul for a second wave', call: 'call_b904', verdict: 'weak' },
   { belief: 'Pre sales will cover the spend', call: 'no call', verdict: 'cant' },
 ];
 
@@ -258,7 +258,7 @@ export function BottomLine() {
             className="mk-in font-display text-[clamp(24px,2.6vw,32px)] leading-[1.15] font-semibold tracking-[-0.03em]"
             style={stagger(0)}
           >
-            Open in Lagos and London, then Toronto. Move the UK to week three.
+            Open in Mexico City and London, then Toronto. Move the UK to week three.
           </p>
           <div className="mk-in flex flex-wrap items-center gap-3" style={stagger(1)}>
             <Confidence level="medium" />
@@ -266,7 +266,7 @@ export function BottomLine() {
           </div>
           <span className="pt-2 text-[12.5px] font-medium text-muted">Do this</span>
           {[
-            'Open in Lagos and London in week one.',
+            'Open in Mexico City and London in week one.',
             'Add Toronto in week two.',
             'Move the UK to week three.',
           ].map((step, i) => (

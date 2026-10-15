@@ -20,7 +20,7 @@ export const film: DemoPack = {
     ],
     thin: [
       'Original ideas with no close comps. The read rests on cast and themes',
-      'Nigerian titles. Present in Qloo, some with low popularity, so the signal is weaker',
+      'Titles from outside the US and UK. Only Nigerian titles have been checked: present in Qloo, some with low popularity',
     ],
     none: ['Box office, viewing numbers and reviews. You supply them for a rescue'],
   },
@@ -34,7 +34,7 @@ export const film: DemoPack = {
   ],
   kinds: ['Film', 'Series'],
   placeLabel: 'territories',
-  placeOpts: ['UK', 'Canada', 'US', 'Nigeria', 'Germany', 'Brazil'],
+  placeOpts: ['UK', 'Canada', 'US', 'Mexico', 'Germany', 'Brazil'],
   files: { plan: 'marketing-plan-v3.pdf', res: 'opening-results.csv' },
   descHint:
     'Describe the film or series: logline, cast, comps, window. Paste or attach anything you already have, such as a plan or opening numbers. Type below or use the attach buttons.',
@@ -197,12 +197,12 @@ export const film: DemoPack = {
         ),
         AS(
           'as5',
-          'The Nigeria plan can reuse the UK audience',
+          'The Mexico plan can reuse the UK audience',
           'breaks',
-          'The best matching group in Lagos and Abuja is men and women 25 to 34. Women 18 to 24 rank third.',
-          'Build a separate Nigeria plan with its own audience, cities and date.',
+          'The best matching group in Mexico City and Guadalajara is men and women 25 to 34. Women 18 to 24 rank third.',
+          'Build a separate Mexico plan with its own audience, cities and date.',
           'geo',
-          'top segment, Lagos and Abuja = 25 to 34',
+          'top segment, Mexico City and Guadalajara = 25 to 34',
           true,
         ),
         AS(
@@ -252,12 +252,12 @@ export const film: DemoPack = {
         F('s4d', 'Manchester, UK', 70, 'Index 70', 'geo'),
         F(
           's4e',
-          'Lagos, Nigeria',
+          'Mexico City, Mexico',
           78,
           'Index 78 for 25 to 34. Lower confidence, thin data.',
           'geo',
         ),
-        F('s4f', 'Abuja, Nigeria', 66, 'Index 66. Lower confidence.', 'geo'),
+        F('s4f', 'Guadalajara, Mexico', 66, 'Index 66. Lower confidence.', 'geo'),
       ],
       places: placesFor(r),
       weeks: ['Nov 6', 'Nov 13', 'Nov 20', 'Nov 27'],
@@ -337,15 +337,15 @@ export const film: DemoPack = {
         ),
         CN(
           'cn3',
-          'Anchors for Nigeria',
-          `${r.name} is not in Qloo yet, so Nigeria is read from its comps and cast. If few of them are known there, the line is a draft.`,
+          'Anchors for Mexico',
+          `${r.name} is not in Qloo yet, so Mexico is read from its comps and cast. If few of them are known there, the line is a draft.`,
         ),
       ],
       course: null,
       results: null,
     };
     const cs = r.places;
-    const ng = cs.includes('Nigeria');
+    const ng = cs.includes('Mexico');
     if (!(ng && (cs.includes('US') || cs.includes('UK') || cs.includes('Canada')))) {
       B.assumptions = B.assumptions.filter((x) => x.id !== 'as5');
     }
@@ -470,15 +470,16 @@ export const film: DemoPack = {
     b.s4.push(F('s4g', 'Edinburgh, UK', 82, 'Index 82 for 35 to 54', 'geo'));
     const territories: string[] = [];
     const uk = b.places.find((x) => x.name === 'UK');
-    const ng = b.places.find((x) => x.name === 'Nigeria');
+    const ng = b.places.find((x) => x.name === 'Mexico');
     if (uk) {
       uk.aud = 'Women 35 to 54 first, then 18 to 34';
       uk.note = 'Rebuilt after the opening. Edinburgh added.';
       territories.push('United Kingdom: lead with women 35 to 54, add Edinburgh, keep London.');
     }
     if (ng) {
-      ng.note = 'Watch the Lagos opening split before spending. The same pattern could appear.';
-      territories.push('Nigeria: hold spend until the first Lagos weekend shows the split.');
+      ng.note =
+        'Watch the Mexico City opening split before spending. The same pattern could appear.';
+      territories.push('Mexico: hold spend until the first Mexico City weekend shows the split.');
     }
     if (!territories.length) {
       territories.push(

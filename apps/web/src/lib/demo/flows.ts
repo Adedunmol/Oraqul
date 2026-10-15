@@ -257,8 +257,8 @@ const GENRES: Record<Category, [RegExp, string][]> = {
     [/drama/, 'Drama'],
   ],
   music: [
-    [/afrobeats?/, 'Afrobeats'],
-    [/alte|soul/, 'Alte soul'],
+    [/indie ?pop/, 'Indie pop'],
+    [/alte|soul/, 'Dream pop'],
     [/hip ?hop|rap/, 'Hip hop'],
     [/pop/, 'Pop'],
     [/rock/, 'Rock'],
@@ -271,7 +271,7 @@ const GENRES: Record<Category, [RegExp, string][]> = {
     [/literary/, 'Literary fiction'],
   ],
   podcasts: [
-    [/food|cook|kitchen/, 'Food and migration stories'],
+    [/food|cook|kitchen/, 'Food and travel stories'],
     [/true crime|crime/, 'True crime'],
     [/comedy/, 'Comedy'],
     [/business|money/, 'Business'],
@@ -315,20 +315,20 @@ const PLACE_RX: Record<string, RegExp> = {
   UK: /\buk\b|britain|british|united kingdom|england|scotland/i,
   US: /\bUS\b|\bUSA\b|united states|america|u\.s\./,
   Canada: /canada|canadian/i,
-  Nigeria: /nigeria|nollywood|abuja/i,
+  Mexico: /mexico|mexican|guadalajara/i,
   Germany: /german|berlin/i,
   Brazil: /brazil|sao paulo/i,
   Japan: /japan|tokyo/i,
   London: /london/i,
-  Houston: /houston/i,
+  Austin: /austin/i,
   Toronto: /toronto/i,
-  Lagos: /lagos/i,
-  Atlanta: /atlanta/i,
-  Accra: /accra/i,
+  'Mexico City': /mexico city|cdmx/i,
+  Chicago: /chicago/i,
+  Seoul: /seoul/i,
 };
 
 function detectPlaces(category: Category, text: string): string[] {
-  const opts = [...PACKS[category].placeOpts, ...(category === 'music' ? ['Accra'] : [])];
+  const opts = [...PACKS[category].placeOpts, ...(category === 'music' ? ['Seoul'] : [])];
   return opts.filter((p) => PLACE_RX[p]?.test(text));
 }
 
@@ -369,7 +369,7 @@ const CATEGORY_RX: [RegExp, Category][] = [
   [/podcast|episodes?\b|listeners?|downloads/, 'podcasts'],
   [/\bgames?\b|steam|players?\b|wishlists?|console|playtest/, 'games'],
   [/\bbooks?\b|novel|memoir|author|publish|pre.?orders?|imprint|readers?\b/, 'books'],
-  [/album|\bep\b|\bsingle\b|\btour\b|artist|\bband\b|streams|songs?\b|afrobeats|gigs?\b/, 'music'],
+  [/album|\bep\b|\bsingle\b|\btour\b|artist|\bband\b|streams|songs?\b|indie ?pop|gigs?\b/, 'music'],
   [/film|movie|series|cinema|screen|festival|box office|distribut|season/, 'film'],
 ];
 
@@ -525,7 +525,7 @@ function processDescription(projectId: string, t: Thread, text: string, attached
     kind.toLowerCase(),
     genre.toLowerCase(),
     window && `window ${window}`,
-    `${pk.placeLabel} ${places.join(', ')}${named.length ? '' : ' (my guess, you did not name any)'}`,
+    `${pk.placeLabel} ${places.join(', ')}${named.length ? '' : ' (assumed, you did not name any)'}`,
   ].filter(Boolean);
   say(
     t.id,

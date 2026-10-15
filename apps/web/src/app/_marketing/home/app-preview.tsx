@@ -4,14 +4,14 @@ import { ReceiptCard } from '../receipt-card';
 import { heroLines, planPrompt } from '../sample';
 
 const projects: { cat: Category; name: string; on?: boolean }[] = [
-  { cat: 'film', name: 'Harmattan', on: true },
-  { cat: 'music', name: 'Lagos to London tour' },
+  { cat: 'film', name: 'Night Ferry', on: true },
+  { cat: 'music', name: 'Berlin to London tour' },
   { cat: 'books', name: 'The Salt Road' },
   { cat: 'podcasts', name: 'Night Shift, season two' },
 ];
 
 const steps = [
-  'Open in Lagos and London in week one.',
+  'Open in Mexico City and London in week one.',
   'Add Toronto in week two.',
   'Move the UK to week three.',
 ];
@@ -80,7 +80,7 @@ export function AppPreview() {
                 <Tile cat="film" size="size-9" />
                 <div className="min-w-0">
                   <p className="font-display text-[20px] font-semibold tracking-[-0.025em]">
-                    Harmattan
+                    Night Ferry
                   </p>
                   <p className="truncate text-[12.5px] text-muted">
                     Film and series · Series · Crime drama
@@ -98,7 +98,7 @@ export function AppPreview() {
                   </span>
                   <p className="-mt-1.5 text-[14px] leading-[1.6]">
                     Reading this as a new plan: series, crime drama, UK and US. The UK is weaker
-                    than it looks, so I moved it back and opened in Lagos and London.
+                    than it looks, so I moved it back and opened in Mexico City and London.
                   </p>
                   <p className="flex items-center gap-2 rounded-lg bg-inset px-3 py-2 text-[12.5px] text-muted">
                     <Icon name="check" className="size-3.5 text-holds" />
@@ -134,7 +134,7 @@ export function AppPreview() {
                 <div className="flex flex-col gap-3 rounded-2xl bg-card p-4 max-[699px]:hidden">
                   <span className="text-[12.5px] font-medium text-muted">Bottom line</span>
                   <p className="font-display text-[19px] leading-[1.2] font-semibold tracking-[-0.025em]">
-                    Open in Lagos and London, then Toronto. Move the UK to week three.
+                    Open in Mexico City and London, then Toronto. Move the UK to week three.
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
                     <Confidence level="medium" />

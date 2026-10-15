@@ -33,7 +33,7 @@ export const books: DemoPack = {
   ],
   kinds: ['Novel', 'Non fiction', 'Series book', 'Debut'],
   placeLabel: 'markets',
-  placeOpts: ['UK', 'US', 'Canada', 'Nigeria'],
+  placeOpts: ['UK', 'US', 'Canada', 'Mexico'],
   files: { plan: 'launch-plan.docx', res: 'preorders-by-market.csv' },
   descHint:
     'Describe the book: pitch, author, comp titles, markets, publication date. Paste or attach anything you already have, such as a launch plan or pre order numbers.',
@@ -252,7 +252,13 @@ export const books: DemoPack = {
       s4: [
         F('s4a', 'Coastal Words Festival, UK', 77, 'Reader overlap 77', 'geo'),
         F('s4b', 'Harbour Book Fair, US', 74, 'Reader overlap 74', 'geo'),
-        F('s4c', 'Lagos Book Week, Nigeria', 59, 'Reader overlap 59. Lower confidence.', 'geo'),
+        F(
+          's4c',
+          'Guadalajara Book Fair, Mexico',
+          59,
+          'Reader overlap 59. Lower confidence.',
+          'geo',
+        ),
       ],
       places: placesFor(r),
       shelf: [
@@ -349,14 +355,14 @@ export const books: DemoPack = {
         ),
         CN(
           'cn3',
-          'Anchors for Nigeria',
-          'The book is not in Qloo yet, so Nigeria is read from the author and comps. If few of them are known there, the line is a draft.',
+          'Anchors for Mexico',
+          'The book is not in Qloo yet, so Mexico is read from the author and comps. If few of them are known there, the line is a draft.',
         ),
       ],
       course: null,
       results: null,
     };
-    if (!r.places.includes('Nigeria')) {
+    if (!r.places.includes('Mexico')) {
       B.cannot = B.cannot.filter((x) => x.id !== 'cn3');
       B.s4 = B.s4.filter((x) => x.id !== 's4c');
     }
@@ -465,7 +471,7 @@ export const books: DemoPack = {
         'Add Tide Table (podcast) to the review run.',
         'Keep the festival slots that still hold.',
       ],
-      territories: ['Nigeria: hold spend until the first pre order week shows the split.'],
+      territories: ['Mexico: hold spend until the first pre order week shows the split.'],
       stop: [`Stop the ${g.W} paid social push.`, 'Stop the Skyline Airport Shops placement.'],
     };
   },

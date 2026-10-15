@@ -73,7 +73,7 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 
 | ID | Requirement | P |
 |---|---|---|
-| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, and the job. It asks only when a wrong guess would waste the run (no category or title found, an ambiguous Qloo match). Otherwise it guesses, says what it read and guessed in one line, and the user corrects it by typing. | P0 |
+| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, and the job. It asks only when a wrong assumption would waste the run (no category or title found, an ambiguous Qloo match). Otherwise it guesses, says what it read and guessed in one line, and the user corrects it by typing. | P0 |
 | C2 | The agent asks question cards instead of forms: single, multiple, text, split sliders, date, file, confirm, and entity match. | P0 |
 | C3 | The agent trace is shown live and kept collapsed afterwards. | P0 |
 | C4 | A project holds several threads, shown as chats beside the project's current chat. A new one builds on the current plan without asking and says what context it pulled in. The user can type "start fresh" or "use an older plan" to change that. | P0 |
@@ -159,9 +159,9 @@ The product has many new words and a deep structure, so it must explain itself b
 
 Calm and clear, with a wide geometric grotesque (Space Grotesk) for titles and the bottom line and a clear sans (Geist) for everything else, and a more characterful face only on the landing page, and solid cards that stand out from a neutral canvas by fill and a small lift, with no outlines, solid buttons, small corners and few icons, like an enterprise product people trust with detail. Colour is used for verdicts and for the small category icons, nothing else. No gradients, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
 
-## 7. Africa and diaspora
+## 7. Every market
 
-African titles and artists are normal entities. For an African release, Oraqul ranks diaspora cities such as London, Houston and Toronto by lift beside African cities. If African city data is too thin to rank, the product says so on the line and lowers its confidence.
+Oraqul is a global product. Titles and artists from any market are normal entities, and cities from every region are ranked by lift in one list. Examples and marketing copy span regions and never lean on one. If the data for a place is too thin to rank, the product says so on the line and lowers its confidence.
 
 ## 8. Success measures
 

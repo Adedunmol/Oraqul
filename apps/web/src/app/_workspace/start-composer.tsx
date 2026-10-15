@@ -37,7 +37,7 @@ export const START_CHOICES: {
     mode: 'rescue',
     title: 'Fix one that missed',
     say: 'Tell me what came out and how it did. Attach results if you have them, such as sales, streams, wishlists or downloads.',
-    placeholder: 'Late Lagos tour, Nov to Dec. Houston and Atlanta sold under half',
+    placeholder: 'Neon Hours tour, Nov to Dec. Chicago and Austin sold under half',
     brings: 'You bring: your results',
   },
 ];

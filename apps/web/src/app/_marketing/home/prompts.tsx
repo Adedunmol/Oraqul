@@ -5,8 +5,8 @@ import { h2Class, wrap } from '../section';
 
 const rows: [Category, string][][] = [
   [
-    ['film', 'Which territories should Harmattan open in first?'],
-    ['music', 'Plan a six city tour for an Afrobeats album, starting in Lagos.'],
+    ['film', 'Which territories should Night Ferry open in first?'],
+    ['music', 'Plan a six city tour for an indie pop album, starting in Berlin.'],
     ['books', 'Which comparable novels share readers with my debut?'],
     ['games', 'Which fan bases outside gaming overlap with our players?'],
     ['podcasts', 'Which topics do my listeners like that rival shows do not own?'],
@@ -14,7 +14,7 @@ const rows: [Category, string][][] = [
   [
     ['podcasts', 'Season two missed. Here are downloads by country.'],
     ['film', 'What if a rival crime drama opens the same weekend?'],
-    ['music', 'Which support act fits best in Toronto and Houston?'],
+    ['music', 'Which support act fits best in Toronto and Austin?'],
     ['books', 'Check my plan: lead with the audiobook in the UK.'],
     ['games', 'Which regions should the co op survival game open in?'],
   ],
@@ -49,7 +49,7 @@ export function Prompts() {
         </h2>
         <p className="max-w-[44ch] text-[17px] leading-[1.55] text-muted min-[900px]:justify-self-end">
           Type it the way you would say it to a colleague. Oraqul works out the category and the
-          job, says what it guessed, and asks only what a wrong guess would waste.
+          job, says what it assumed, and asks only what a wrong assumption would waste.
         </p>
       </div>
       <div className="mk-marquee flex flex-col gap-3 overflow-hidden">

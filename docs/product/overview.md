@@ -39,7 +39,7 @@ The problem is the same everywhere. Launch plans rest on audience assumptions th
 All five run on one engine. Each has its own questions, output tabs, scenario presets and results format for rescue. A generic template handles anything else and says plainly that it is less certain.
 
 * **Film and series distribution.** Audience by age and territory, comparable titles, partner brands, and overlap with rival titles the user names. Rescue takes opening results by territory.
-* **Music releases and tours.** Support acts, tour cities, partner brands, and diaspora cities for African artists. Rescue takes streams and ticket sales by city.
+* **Music releases and tours.** Support acts, tour cities, partner brands, and home and fan markets for the artist. Rescue takes streams and ticket sales by city.
 * **Book publishing.** Comparable books, audience by age and place, adaptation and cross media angles, and retail or event partners. Rescue takes pre orders, sales by region and review aggregates.
 * **Podcasts.** Audience and topic tags, sponsor brands, and guest fit. Rescue takes downloads by region and age band from the host dashboard.
 * **Games.** Comparable games, fan bases to collaborate with across music and film, and which regions to prioritise. Rescue takes wishlists and player counts by region.
@@ -94,7 +94,7 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 
 * A team has members with owner, editor and viewer roles.
 * A project belongs to exactly one category, because most people will not need several categories in one project. The agent reads the category from the first message, so people do not pick it first: categories are a filter on the project list, and a category's list has a help button that opens what Oraqul tests there, where it is less certain, what the team must bring, and the tools it has.
-* Chat is the entry point. The person says what they want in a few words and the agent does the rest. It asks a question card only when a wrong guess would waste the run, such as which Qloo title is theirs. Everything else it guesses, says what it guessed in one line, and lets the person correct it by typing. The questions, suggested next steps and results format change with the category.
+* Chat is the entry point. The person says what they want in a few words and the agent does the rest. It asks a question card only when a wrong assumption would waste the run, such as which Qloo title is theirs. Everything else it assumes, says what it assumed in one line, and lets the person correct it by typing. The questions, suggested next steps and results format change with the category.
 * A project is the workspace: its chat, its other chats beside it, and the current plan on top. A project holds several chats (threads in code). A new one builds on the current plan and says so; the person can type "start fresh" or "use an older plan" instead.
 * Every agent output states its bottom line in the chat and opens its takeaway card, up to three moves with their receipts, in one click, then opens its own details page with only the tabs that fit it. Common tabs are Summary, Audience, Assumptions (with what could not be tested at the end), Plan (with its risks at the end) and Evidence. Each category adds its own: territory ladder for film, tour route and support act grid for music, comp shelf and adaptation bridge for books, topic map for podcasts, fan base bridge and regions for games.
 * After each output the agent suggests up to three next steps built from it, such as a scenario not yet tried or adding results. Every capability is something you can ask for in the chat, not a separate screen.
@@ -111,16 +111,16 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 
 Calm and clear, a little cinematic. Neutral surfaces with no tint, a near black ink for text, solid indigo for main actions, focus and selection, and colour only for verdicts and the small category icons. A wide geometric grotesque (Space Grotesk) for titles and the bottom line, a clean sans (Geist) for everything else, and a more characterful face on the landing page only, and solid cards that stand out by fill and a small lift with no outlines, small corners and few icons. Light and dark are both designed. Motion is small and only marks things arriving: the agent's words appearing, the trace advancing, a view opening. Words are plain, and verdicts are always an icon, a word and a colour together. The design system file has the tokens, components and wording rules. The hosted prototype is the visual reference.
 
-## Africa and diaspora
+## Every market
 
-African titles and artists are treated as normal entities, and coverage will be tested first. For African releases, Oraqul ranks diaspora cities such as London, Houston and Toronto by lift beside African cities, and checks whether African city data is strong enough to rank. If it is not, the product says so plainly.
+Oraqul is a global product. A title from any market is a normal entity, and cities from every region are ranked in one list by lift, whether the release is a Korean series, a Mexican album or a Nigerian novel. Coverage differs by place, and it is tested and recorded in `docs/backend/qloo.md` (Nigerian film is the first measured case). Where data for a place is too thin to rank, the product says so plainly and lowers its confidence.
 
 ## What makes it different
 
 * A receipt on every claim, with limits stated.
 * Relaunch and scenario diffs, not only a first plan.
 * One engine and one agent per category, so each category gets its own questions, charts and checks.
-* Territory logic that includes diaspora cities.
+* Territory logic that ranks cities from every region in one list.
 * Honest gaps instead of confident guesses.
 
 The demo leads with rescue and scenario diffs, because auditing a plan alone is no longer unique among entrants.

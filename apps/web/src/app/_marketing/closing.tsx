@@ -8,9 +8,9 @@ import { TasteDiscs } from './taste-discs';
 export function Closing({
   title = (
     <>
-      Bring the plan.
+      Start anywhere.
       <br />
-      <span className="text-accent">Leave with receipts.</span>
+      <span className="text-accent">Leave with a plan to defend.</span>
     </>
   ),
 }: {

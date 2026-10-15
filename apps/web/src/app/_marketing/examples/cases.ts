@@ -19,8 +19,8 @@ const filmCase: ExampleCase = {
   job: 'Make a plan',
   noun: 'film',
   title: 'Salt Road',
-  meta: 'Crime drama film · UK, Canada and Nigeria',
-  why: 'A plan for three markets, where Oraqul finds the Nigeria release cannot reuse the UK audience.',
+  meta: 'Crime drama film · UK, Canada and Mexico',
+  why: 'A plan for three markets, where Oraqul finds the Mexico release cannot reuse the UK audience.',
   outputKey: 'output:r1:1',
 };
 
@@ -32,9 +32,9 @@ export const exampleCases: ExampleCase[] = [
     category: 'music',
     job: 'Check my plan',
     noun: 'tour',
-    title: 'Late Lagos tour',
-    meta: 'Afrobeats tour · Lagos, Accra, London, Houston, Toronto',
-    why: 'A tour plan checked city by city, with African and diaspora cities ranked in one list.',
+    title: 'Neon Hours tour',
+    meta: 'Indie pop tour · London, Austin, Toronto, Mexico City, Seoul',
+    why: 'A tour plan checked city by city, with cities on four continents ranked in one list.',
     outputKey: 'output:r3:1',
   },
   {

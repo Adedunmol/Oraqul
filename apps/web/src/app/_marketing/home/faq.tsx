@@ -41,8 +41,8 @@ const faqs: { q: string; a: ReactNode }[] = [
     a: 'Film and series releases, albums and tours, book launches, podcast seasons and game launches. Each category has its own questions, views and what if tests.',
   },
   {
-    q: 'Does it work for African and diaspora markets?',
-    a: 'Yes. It tests Nigerian and African titles, ranks cities like Lagos, Accra and Nairobi beside London, Houston and Toronto, and says plainly where the data is thin.',
+    q: 'Does it work outside the US and UK?',
+    a: 'Yes. It tests titles from any market and ranks cities like Mexico City, Seoul and São Paulo beside London, Chicago and Toronto. Where the data for a place is thin, it says so plainly and lowers its confidence.',
   },
   {
     q: 'What happens to my data?',

@@ -166,7 +166,7 @@ function lineConfidence(f: FoundLine): Confidence {
   const text = 'name' in f.it ? f.it.name : 'text' in f.it ? f.it.text : '';
   const extra = 'ev' in f.it ? f.it.ev : '';
   const why = f.k === 'assumptions' ? f.it.why : '';
-  if (/Nigeria|Lagos|Accra/.test(text + extra + why)) return 'lower';
+  if (/Mexico|Mexico City|Seoul/.test(text + extra + why)) return 'lower';
   if (f.k === 'audience' || ('k' in f.it && f.it.k === 'demo')) return 'medium';
   return 'high';
 }

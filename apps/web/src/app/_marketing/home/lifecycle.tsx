@@ -27,14 +27,14 @@ const stages: Stage[] = [
     id: 'plan',
     when: 'Months out',
     title: 'Make a plan',
-    prompt: 'Plan the release of Harmattan, a Lagos crime drama, for the UK and the US.',
+    prompt: 'Plan the release of Night Ferry, a Mexico City crime drama, for the UK and the US.',
     gets: 'The audience, comparable titles, where to open and in what order, and partner brands.',
     brings: 'A title and a short description.',
     reply: 'Reading this as a new plan. Here is where your audience is strongest.',
     preview: (
       <>
         <Row>
-          Open in Lagos and London <Chip>Recommended</Chip>
+          Open in Mexico City and London <Chip>Recommended</Chip>
         </Row>
         <Row>
           Add Toronto in week two <Chip>Usable</Chip>
