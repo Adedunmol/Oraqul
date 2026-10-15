@@ -12,7 +12,7 @@ import { useDemo } from '@/lib/demo/use-demo';
 import { overviewPath, projectPath, projectsPath, startPath } from '@/lib/routes';
 import { navCountClass, navItemActive, navItemClass, navItemIdle } from './nav-link';
 
-const RECENT = 5;
+const RECENT = 3;
 
 const groupLabel = 'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
