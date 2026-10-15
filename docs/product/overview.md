@@ -2,13 +2,13 @@
 
 ## One liner
 
-Oraqul is a verifiable AI agent for launch strategy in media and entertainment.
+Oraqul is a verifiable AI agent for launch planning in media and entertainment.
 
-Oraqul builds, checks and repairs launch strategy. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
+Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
 
 ## What it is
 
-Oraqul is a verifiable AI agent that builds, checks and repairs launch strategy in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and rescues a launch that underperformed, which is a relaunch. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
+Oraqul is a verifiable AI agent that builds, checks and repairs launch plans in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and rescues a launch that underperformed, which is a relaunch. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
 
 The agent works through several steps, shows its trace, and ends with a decision first summary and the evidence behind it. It gives direction, never forecasts.
 

@@ -4,11 +4,11 @@ Owners: Wahab and Adedunmola.
 
 ## 1. Summary
 
-Oraqul is a verifiable AI agent for launch strategy in media and entertainment.
+Oraqul is a verifiable AI agent for launch planning in media and entertainment.
 
-Oraqul builds, checks and repairs launch strategy. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
+Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
 
-Oraqul is a verifiable AI agent that builds, checks and repairs launch strategy in media and entertainment.
+Oraqul is a verifiable AI agent that builds, checks and repairs launch plans in media and entertainment.
 
 This document says what to build and why. The spec says how. The design system file says how it looks and reads.
 

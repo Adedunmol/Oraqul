@@ -14,7 +14,7 @@ export default function About() {
     <>
       <PageHero
         title="Launch plans should be checkable."
-        lead="Oraqul is a verifiable AI agent for launch strategy in media and entertainment. It exists so the people who make a plan, and the people who sign it off, can see why every line is there."
+        lead="Oraqul is a verifiable AI agent for launch planning in media and entertainment. It exists so the people who make a plan, and the people who sign it off, can see why every line is there."
       />
       <Problem />
       <Idea />
