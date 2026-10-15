@@ -1,17 +1,28 @@
 import type { Verdict } from '@oraqul/schema';
-import { Confidence, Icon, Kbd, VerdictPill } from '@oraqul/ui';
+import { Confidence, Icon, type IconName, VerdictPill } from '@oraqul/ui';
 import type { CSSProperties, ReactNode } from 'react';
 import { Reveal } from '../reveal';
 import { band, h2Class, wrap } from '../section';
 
-function StepHead({ n, title, children }: { n: number; title: string; children: ReactNode }) {
+/** An icon, not a count: the steps are told apart by what they do, and the arrow at each seam moves you on. */
+function StepHead({
+  n,
+  icon,
+  title,
+  children,
+}: {
+  n: number;
+  icon: IconName;
+  title: string;
+  children: ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-5">
       <span
         aria-hidden="true"
-        className="font-display text-[clamp(56px,7vw,96px)] leading-[0.8] font-semibold tracking-[-0.06em] text-accent"
+        className="grid size-14 place-items-center rounded-2xl bg-card text-accent shadow-[var(--elev-1)]"
       >
-        {n}
+        <Icon name={icon} className="size-6" />
       </span>
       <h2 className={h2Class}>
         <span className="sr-only">Step {n}: </span>
@@ -20,6 +31,20 @@ function StepHead({ n, title, children }: { n: number; title: string; children: 
       <div className="flex max-w-[46ch] flex-col gap-4 text-[17px] leading-[1.6] text-ink/75">
         {children}
       </div>
+    </div>
+  );
+}
+
+/** The arrow at the seam between two steps, half on each, so the page reads as one way down. */
+function NextStep() {
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-x-0 bottom-0 z-10 flex translate-y-1/2 justify-center"
+    >
+      <span className="mk-nudge grid size-12 place-items-center rounded-full bg-primary text-primary-ink shadow-[var(--elev-2)] ring-4 ring-bg">
+        <Icon name="chevron" className="size-5" />
+      </span>
     </div>
   );
 }
@@ -68,10 +93,10 @@ export function Describe() {
     'The project is saved when you send.',
   ];
   return (
-    <section aria-label="Step 1" className={`mk-lit bg-accent-soft ${band}`}>
+    <section aria-label="Step 1" className={`relative mk-lit bg-accent-soft ${band}`}>
       <div className={`${wrap} flex flex-col gap-14`}>
         <div className="grid gap-8 min-[1000px]:grid-cols-[1fr_1fr] min-[1000px]:items-end">
-          <StepHead n={1} title="Describe it in one message.">
+          <StepHead n={1} icon="attach" title="Describe it in one message.">
             <p>
               Say what you are working on the way you would to a colleague. Oraqul works out the
               category and the job from what you write.
@@ -116,17 +141,18 @@ export function Describe() {
           </div>
         </Reveal>
       </div>
+      <NextStep />
     </section>
   );
 }
 
 export function Asks() {
   return (
-    <section aria-label="Step 2" className={`scheme-dark bg-bg ${band}`}>
+    <section aria-label="Step 2" className={`relative scheme-dark bg-bg ${band}`}>
       <div
         className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.9fr_1.1fr] min-[1000px]:items-center`}
       >
-        <StepHead n={2} title="It guesses, says so, and asks only when it must.">
+        <StepHead n={2} icon="help" title="It guesses, says so, and asks only when it must.">
           <p>
             Oraqul says what it read and what it guessed, with an example of how to correct it. It
             asks a question only when a wrong guess would waste the run: the category, the title, or
@@ -149,12 +175,17 @@ export function Asks() {
               ['Harmattan', 'Series, 2026, crime drama', true],
               ['Harmattan', 'Film, 2019, documentary', false],
               ['None of these', 'Use comparable titles instead', false],
-            ].map(([label, note, on], i) => (
+            ].map(([label, note, on]) => (
               <span
                 key={`${label}${note}`}
                 className={`flex flex-wrap items-center gap-3 rounded-xl px-3.5 py-3 text-[14px] ${on ? 'border border-accent/40 bg-accent-soft' : 'bg-card'}`}
               >
-                <Kbd>{i + 1}</Kbd>
+                <span
+                  aria-hidden="true"
+                  className={`grid size-5 shrink-0 place-items-center rounded-full ${on ? 'bg-accent text-accent-ink' : 'border-2 border-muted/40'}`}
+                >
+                  {on ? <Icon name="check" className="size-3" /> : null}
+                </span>
                 <span className="font-medium">{label}</span>
                 <span className="text-muted sm:ml-auto">{note}</span>
               </span>
@@ -162,6 +193,7 @@ export function Asks() {
           </div>
         </Reveal>
       </div>
+      <NextStep />
     </section>
   );
 }
@@ -175,10 +207,10 @@ const tests: { belief: string; call: string; verdict: Verdict }[] = [
 
 export function Tests() {
   return (
-    <section aria-label="Step 3" className={`bg-bg ${band} overflow-x-clip`}>
+    <section aria-label="Step 3" className={`relative bg-bg ${band} overflow-x-clip`}>
       <div className={`${wrap} flex flex-col gap-14`}>
         <div className="min-[1000px]:max-w-[62%]">
-          <StepHead n={3} title="It tests every belief against Qloo.">
+          <StepHead n={3} icon="search" title="It tests every belief against Qloo.">
             <p>
               Each belief in the plan becomes a question for Qloo’s taste data. Code reads the
               values that come back and sets the verdict by a published rule. The model never sets a
@@ -210,13 +242,14 @@ export function Tests() {
           </ul>
         </Reveal>
       </div>
+      <NextStep />
     </section>
   );
 }
 
 export function BottomLine() {
   return (
-    <section aria-label="Step 4" className={`mk-lit bg-accent-soft ${band}`}>
+    <section aria-label="Step 4" className={`relative mk-lit bg-accent-soft ${band}`}>
       <div
         className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[1.15fr_0.85fr] min-[1000px]:items-center`}
       >
@@ -242,14 +275,19 @@ export function BottomLine() {
               className="mk-in flex items-center gap-3 rounded-xl bg-inset px-4 py-3 text-[15px]"
               style={stagger(i + 2)}
             >
-              <Kbd>{i + 1}</Kbd>
+              <span
+                aria-hidden="true"
+                className="grid size-6 shrink-0 place-items-center rounded-md bg-accent-soft text-accent"
+              >
+                <Icon name="chevron" className="size-3.5 -rotate-90" />
+              </span>
               <span className="min-w-0 flex-1">{step}</span>
               <span className="rounded-md bg-button px-2 py-0.5 text-xs">View receipt</span>
             </span>
           ))}
         </Reveal>
         <div className="order-1 min-[1000px]:order-2">
-          <StepHead n={4} title="It ends with what to do first.">
+          <StepHead n={4} icon="flag" title="It ends with what to do first.">
             <p>
               Every answer opens with the bottom line, how sure Oraqul is in a word, and up to three
               steps. Each step links to its receipt. The full plan, every assumption and all the
@@ -258,6 +296,7 @@ export function BottomLine() {
           </StepHead>
         </div>
       </div>
+      <NextStep />
     </section>
   );
 }
