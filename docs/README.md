@@ -9,6 +9,8 @@ Product docs say **what** and **why**. The rest say **how we build it**. Each fa
 3. [product/spec.md](product/spec.md) – technical spec: agents, tools, scoring, data model, API
 4. [architecture.md](architecture.md) – how the repo and the running system fit together
 
+Ideas agreed but not yet in the PRD: [product/backlog.md](product/backlog.md).
+
 ## Pick by task
 
 | Working on | Read |
