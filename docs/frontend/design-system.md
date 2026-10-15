@@ -4,7 +4,7 @@ Read with the PRD and the spec. The hosted prototype is the visual reference. Wh
 
 ## 1. Direction in one paragraph
 
-Calm, clear and a little cinematic. Oraqul is a tool for people who have to judge numbers and defend a plan, so the screen must never be louder than the content. Neutral surfaces, one near black ink for text, a deep ultramarine for primary actions, focus and selection, and colour used for exactly two jobs: verdicts and categories. Titles and the bottom line use Space Grotesk, a wide geometric grotesque with a distinctive y and g that stays easy to read at headline size, so the product feels like a briefing and not a dashboard. Everything else is Geist. It should feel like a well funded enterprise product: solid cards that stand out from a neutral canvas by their fill and a small lift, never an outline, solid buttons, small corners, and a few icons only where they carry meaning.
+Calm, clear and a little cinematic. Oraqul is a tool for people who have to judge numbers and defend a plan, so the screen must never be louder than the content. Neutral surfaces, one near black ink for text, a deep indigo for primary actions, focus and selection, and colour used for exactly two jobs: verdicts and categories. Titles and the bottom line use Space Grotesk, a wide geometric grotesque with a distinctive y and g that stays easy to read at headline size, so the product feels like a briefing and not a dashboard. Everything else is Geist. It should feel like a well funded enterprise product: solid cards that stand out from a neutral canvas by their fill and a small lift, never an outline, solid buttons, small corners, and a few icons only where they carry meaning.
 
 Avoid on purpose: gradients (except the one soft wash per marketing page, §6), film strips, ticket shapes, poster cards, coloured side stripes, dots as status markers, heavy shadows, large round corners, and any effect that competes with the content. The public marketing pages are the one exception: they may use art, colour fields and decorative motion to sell the product (§6, Marketing pages), never inside the app.
 
@@ -26,7 +26,7 @@ All colour is a token. Define every token on bare `:root` (light), then redefine
 
 ### 3.1 Neutrals and accent
 
-Neutral greys with no blue tint, so the screen never looks like a generic dark AI app: a light grey canvas with white cards in light, a near black canvas with charcoal cards in dark, and one ultramarine for action. Cards stand out from the canvas by fill (about 1.12:1) and a small lift, with no outline. Every text pair passes WCAG AA (4.5:1).
+Neutral greys with no blue tint, so the screen never looks like a generic dark AI app: a light grey canvas with white cards in light, a near black canvas with charcoal cards in dark, and one indigo for action. Cards stand out from the canvas by fill (about 1.12:1) and a small lift, with no outline. Every text pair passes WCAG AA (4.5:1).
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
@@ -43,16 +43,16 @@ Neutral greys with no blue tint, so the screen never looks like a generic dark A
 | `--ink` | #111114 | #F2F2F4 | Text, tooltips, toasts |
 | `--muted` | #5A5A63 | #9A9AA3 | Secondary text, labels, idle icons |
 | `--line` | #E6E6EA | #27272C | Field and button edges, dividers, table rows, chart axes |
-| `--primary` | #2b3a9e | #3f51bf | Primary button fill, the New project button, the sidebar avatar and logo |
-| `--primary-hover` | #222f85 | #4a5cc9 | Hover on primary |
-| `--primary-ink` | #FFFFFF | #FFFFFF | Text on primary (7.7:1 light, 6.3:1 dark): a deep ultramarine, so primary actions feel weighty rather than bright |
-| `--accent` | #2b3a9e | #a3b3ff | Focus ring, selected state, links, progress, accent icons |
-| `--accent-ink` | #FFFFFF | #0a1030 | Text on accent |
-| `--accent-soft` | #eceffc | #1e2448 | Selected and changed states, the active nav item, with an accent edge at 40 percent |
+| `--primary` | #2f3d7a | #909cd7 | Primary button fill, the New project button, the sidebar avatar and logo |
+| `--primary-hover` | #202c60 | #8a98d5 | Hover on primary |
+| `--primary-ink` | #FFFFFF | #202c60 | Text on primary (10.1:1 light, 6.8:1 dark): a deep indigo, so primary actions feel weighty rather than bright |
+| `--accent` | #2f3d7a | #8a98d5 | Focus ring, selected state, links, progress, accent icons |
+| `--accent-ink` | #FFFFFF | #202c60 | Text on accent |
+| `--accent-soft` | #eef1fb | #202c60 | Selected and changed states, the active nav item, with an accent edge at 40 percent |
 
-`--primary` and `--accent` match in light. In dark they split: a fill white text can sit on, and a lighter periwinkle that reads as text on charcoal.
+`--primary` and `--accent` match in light. In dark the primary flips to a light indigo fill with dark text, and the accent is a light indigo that reads as text on charcoal.
 
-Why ultramarine: blue is the only hue not already taken by a verdict (green, amber, red) or a category (crimson, magenta, teal, violet, orange). Kept deep and slightly violet so it reads as ink, not as the default analytics blue. As the one saturated hue on a neutral screen it always means "act here" or "selected".
+Why indigo: an ultramarine pulled toward the neutral greys. Blue is the one hue no verdict (green, amber, red) or category (crimson, magenta, teal, violet, orange) uses, and the grey in it keeps it calm and ink-like instead of a bright default blue.
 
 ### 3.2 Verdicts
 
@@ -113,7 +113,7 @@ Headings use text wrap balance. Running text stays under 70 characters wide.
 ## 6. Layout
 
 * **Shell.** Two columns on desktop: a 232px sidebar on `--bg`, and a main panel on `--canvas` with a 12px radius and a 1px `--line` edge, inset 8px from the top, right and bottom. Pages with no sidebar (landing, sign in, invite) also sit on `--canvas`, so their white cards show.
-* **Sidebar.** Brand, team switcher, search button (shows ⌘K), nav, then the user block. Nav: New project (ink fill, opens `/start`), Overview (with the Needs you count, hidden at zero: the one count in the sidebar, because it asks for action), Projects, then Pinned (the person's pins, in pin order) and Recent (the five most recently updated projects not pinned), each project a row with its tinted category tile and name, then Manage (Team). The open project's row is lit; inside a project with no row, Projects is. Categories are not in the sidebar: the agent reads them from the first message, and the project list filters by them. Labels always visible while the sidebar is open; in the rail, project rows keep their tile and show the name as a tooltip.
+* **Sidebar.** Brand, team switcher, search button (shows ⌘K), nav, then the user block. Nav: New project (ink fill, opens `/start`), Overview (with the Needs you count, hidden at zero: the one count in the sidebar, because it asks for action), Projects, then Pinned (the person's pins, in pin order, three at most) and Recent (the three most recently updated projects not pinned), each project a row with its tinted category tile and name, then Manage (Team). The open project's row is lit; inside a project with no row, Projects is. Categories are not in the sidebar: the agent reads them from the first message, and the project list filters by them. Labels always visible while the sidebar is open; in the rail, project rows keep their tile and show the name as a tooltip.
 * **Collapsed sidebar.** A toggle beside the logo, or ⌘B or Ctrl B outside a text field, collapses the sidebar to a 68px icon rail. The rail keeps every item as an icon: the team as its initial, the person as an initial in an ink circle, the Needs you count as a small badge on the icon, and group labels as dividers. Hidden labels stay for screen readers and show as a tooltip on hover and focus. The choice is remembered in the browser and applied before first paint. It only affects desktop: below 900px the top bar is unchanged.
 * **Page head.** Display title and the primary action on the right. No label above the title. From 900px the head stays at the top while the page scrolls (`.sticky-head`, on the `--canvas` fill); on a phone only the top bar stays.
 * **Auth pages.** Sign in, sign up, codes and password reset share one layout, pinned light like the marketing pages. From 1000px it splits in two: a dark `AuthAside` (taste discs on the right edge, the pitch headline and lead, one example receipt marked "Example") and the form card on `--canvas` with `--shadow`-lifted card and a display title. Below 1000px the panel is left out and the form fills the page under a logo and Back to home. Other ways in sit under a `--line` rule as accent links.
@@ -126,11 +126,11 @@ Headings use text wrap balance. Running text stays under 70 characters wide.
 * **Marketing pages.** Under `app/(marketing)/`, shared pieces in `app/_marketing/`. They keep the tokens and components but are allowed to sell: big Space Grotesk headlines, colour fields, art and decorative motion. Rules:
   * **One designed rhythm, not the visitor's theme.** The layout is pinned with `.scheme-light`; dark bands opt in with `.scheme-dark`. Both classes redefine every token on their element (`globals.css`), so a `VerdictPill` or card inside a dark band reads the dark tokens. The home rhythm: light hero, dark prompts, light problems, dark agent run, white taste map, light timeline, dark marked up plan, `--accent-soft` maths, light categories, white FAQ, dark closing and footer.
   * **No eyebrow labels.** A section opens with its headline (and at most one lead line). Compositions change from section to section: no repeated text left, picture right rows.
-  * **The product is the picture.** Previews are built from the real components on invented data and say "Example" where data shows; never raw Qloo data or endpoint names. The hero holds a full app preview (sidebar, chat, summary) that leans back and straightens on scroll where `animation-timeline` exists, with a receipt and a verdict floating off its edges.
-  * **Art.** Taste discs: each category's colour as a translucent disc, overlapping where audiences meet, which is what Oraqul measures (`taste-discs.tsx`; multiply on light, screen on dark). Text is never set over art: in the hero the discs sit behind the app preview and peek around its edges, and in the closing band they keep clear of the headline. A faint dot grid behind the hero. One band per page carries a soft gradient (`.mk-glow`, `.mk-glow-low`, `.mk-lit`, `.mk-fade` in `marketing.css`): a single ultramarine light source mixed from tokens at 16 to 18 percent on a dark band, or a `--bg` highlight on an `--accent-soft` band. Never inside the app, never more than one per page, and never under small text. Category panels use the category colour mixed 74 percent into ink (so `--bg` text keeps 4.5:1 on every category, orange included) as a solid field with `--bg` text. Category colours stay off text and off verdicts; verdict colours appear only on verdicts.
-  * **Headline marks.** The hero sets "Plans" in ultramarine over a soft `--accent-soft` highlighter band that sweeps in, and draws a `--holds` stroke under "check". Restraint matters: one mark per verb, the rest of the headline in plain ink.
+  * **The product is the picture.** Previews are built from the real components on invented data and say "Example" where data shows; never raw Qloo data or endpoint names. The hero is few words on purpose: the headline "Launch plans, with the proof attached." ("proof" in `--accent`), one lead line and the two buttons. What the product is comes from the art (`hero-orbit.tsx`): the Oraqul mark as a hub with the five kinds of media (film, music, books, podcasts, games) orbiting it as tiles in their category colour, faint, no words. The ring turns once every two minutes with each tile counter-rotating to stay upright, and the hub sends out a soft pulse; both stop under reduced motion. It sits right of the headline from 1000px and above it, right aligned, on a phone. The light behind it (`.mk-sky`: indigo, podcasts violet and music pink mixed from tokens, faded out top and bottom) never sits under text. Under it sits a full app preview (sidebar, chat, summary) that leans back and straightens on scroll where `animation-timeline` exists, with a receipt and a verdict floating off its edges.
+  * **Art.** Taste discs: each category's colour as a translucent disc, overlapping where audiences meet, which is what Oraqul measures (`taste-discs.tsx`; multiply on light, screen on dark). Text is never set over art: in the hero the discs sit behind the app preview and peek around its edges, and in the closing band they keep clear of the headline. A faint dot grid behind the inner page heroes. One band per page carries a soft gradient (`.mk-glow`, `.mk-glow-low`, `.mk-lit`, `.mk-fade` in `marketing.css`): a single indigo light source mixed from tokens at 16 to 18 percent on a dark band, or a `--bg` highlight on an `--accent-soft` band. Never inside the app, never more than one per page, and never under small text. Category panels use the category colour mixed 74 percent into ink (so `--bg` text keeps 4.5:1 on every category, orange included) as a solid field with `--bg` text. Category colours stay off text and off verdicts; verdict colours appear only on verdicts.
+  * **Headline marks.** The hero sets "Plans" in indigo over a soft `--accent-soft` highlighter band that sweeps in, and draws a `--holds` stroke under "check". Restraint matters: one mark per verb, the rest of the headline in plain ink.
   * **Motion.** `marketing.css`: headline words rise in on load; `<Reveal>` starts a section's motion once, when an eighth of it is on screen (timeline axis draws, marks paint in, the lift marker slides); the prompt marquee and the data flow tokens loop. Every one stops under `prefers-reduced-motion`.
-  * **Inner pages** open with `PageHero`: a large title, one lead, and a companion beside it that differs per page (the agent trace on How it works, the verdict legend on Example, a jump index on Use cases, colour tiles on Categories, the lift formula on Method, the four promises on Trust). The sections under it change composition from band to band: numbered steps that alternate sides, a belief to call to verdict table, ranked bars, a calendar of dates, solid category fields beside white coverage columns, a docs layout with a sticky contents list and threshold scales (`scale.tsx`), a ledger table and a roles matrix. Long reading (Method, Privacy) sits in a 68ch column with the contents list on the left from 1000px, lighting the section being read (`section-nav.tsx`).
+  * **Inner pages** open with `PageHero`: a large title, one lead, and a companion beside it that differs per page (the agent trace on How it works, the verdict legend on Example, a jump index on Use cases, colour tiles on Categories, the lift formula on Method, the four promises on Trust). The sections under it change composition from band to band: steps that alternate sides, each with an icon tile instead of a number and a round arrow on the seam to the next step (`NextStep` in `how/steps.tsx`), a belief to call to verdict table, ranked bars, a calendar of dates, solid category fields beside white coverage columns, a docs layout with a sticky contents list and threshold scales (`scale.tsx`), a ledger table and a roles matrix. Long reading (Method, Privacy) sits in a 68ch column with the contents list on the left from 1000px, lighting the section being read (`section-nav.tsx`).
   * The positioning line, "A verifiable AI agent for launch strategy in media and entertainment", sits as a muted line above the hero headline and in the footer, and Qloo is named wherever a claim depends on it.
   * **Sticky steps** (`sticky-steps.tsx`), the scroll pattern Calendly uses: the text for each step scrolls past while one picture stays pinned beside it and swaps to the step crossing the middle of the screen; the other steps fade to 25 percent, and pictures not showing are `inert`. Used twice on the home page, no more: the four jobs in launch order (the chat for each job) and the five categories (a solid colour panel with what Oraqul tests). From 1000px; below that each step shows its picture under its text; the category panel then drops its name row and minimum height. No layered background parallax: a transformed layer also breaks the taste discs' blend mode.
   * **Signs of an agent.** Oraqul must read as an AI agent, not a dashboard, and the signs are honest ones: its name in accent where it speaks (in the chat, the agent run, With Oraqul), a moving bar and shimmering label while it works (`.mk-thinking`, `.shimmer-text`), a blinking caret on text it is writing (`.mk-caret`), and an agent run whose lines stream in (`.mk-stream`) with the engine's real tool names and its red team step, replayable with Run again. No glowing orbs, chat bubbles with robots or gradients.
@@ -145,7 +145,7 @@ Headings use text wrap balance. Running text stays under 70 characters wide.
 A rounded box with an "o" ring inside. Box 28px, radius 8, fill `--ink`. Ring 12px, 2.6px stroke in `--bg`. Wordmark "Oraqul" beside it in the display face at 17px, weight 600.
 
 ### 7.2 Buttons
-Default: solid `--button` fill, no outline and no shadow, hover to `--button-hover`, radius 8, height 36, weight 500. Primary: solid `--primary`, `--primary-ink` text, a faint white top highlight and a small lift (`--elev-primary`, `shadow-primary`), hover to `--primary-hover`. Small: height 32, 13px. Ghost: transparent, no edge. Danger: soft red (`--breaks-bg` fill, `--breaks` text) for an action that removes something, such as Remove, Leave team and Delete project; Danger solid (`--breaks` fill) only for the confirming step (Yes, remove), so the first click is never destructive. Pressed: scale 0.98. Disabled: 45 percent opacity. Buttons are words. Only New project and New chat (plus), Send (arrow), Attach (paperclip), Delete project (bin), Ask Oraqul (sparkles) and Sign out carry an icon, and Light or dark is icon only; icon only buttons (Close) have an `aria-label`.
+Default: solid `--button` fill, no outline and no shadow, hover to `--button-hover`, radius 8, height 40, 20px side padding, weight 500. Primary: solid `--primary`, `--primary-ink` text, a faint white top highlight and a small lift (`--elev-primary`, `shadow-primary`), hover to `--primary-hover`. Small: height 36, 16px side padding, 13px. Ghost: transparent, no edge. Danger: soft red (`--breaks-bg` fill, `--breaks` text) for an action that removes something, such as Remove, Leave team and Delete project; Danger solid (`--breaks` fill) only for the confirming step (Yes, remove), so the first click is never destructive. Pressed: scale 0.98. Disabled: 45 percent opacity. Buttons are words. Only New project and New chat (plus), Send (arrow), Attach (paperclip), Delete project (bin), Ask Oraqul (sparkles) and Sign out carry an icon, and Light or dark is icon only; icon only buttons (Close) have an `aria-label`.
 
 ### 7.3 Inputs
 Radius 8, padding 9 by 12, `--surface` fill and a 1px `--line` edge. Focus: 2px outline of accent at 45 percent and the edge turns `--accent`.
@@ -288,14 +288,14 @@ Copy this shape exactly. Light on bare `:root`. Dark redefined in the media quer
 :root{
   --bg:#FFFFFF;--canvas:#F2F2F4;--surface:#FFFFFF;--surface2:#ECECEF;--surface2-hover:#E3E3E7;
   --card:#FFFFFF;--card-hover:#F6F6F8;--ink:#111114;--muted:#5A5A63;--line:#E6E6EA;
-  --primary:#2b3a9e;--primary-hover:#222f85;--primary-ink:#FFFFFF;
-  --accent:#2b3a9e;--accent-ink:#FFFFFF;--accent-soft:#eceffc;
+  --primary:#2f3d7a;--primary-hover:#202c60;--primary-ink:#FFFFFF;
+  --accent:#2f3d7a;--accent-ink:#FFFFFF;--accent-soft:#eef1fb;
   --holds:#167A40;--holds-bg:#E8F5EC;--weak:#8A5800;--weak-bg:#FBF2D9;
   --breaks:#BE3128;--breaks-bg:#FCEBE9;--cant:#5A5A63;--cant-bg:#ECECEF;
   --elev-1:0 1px 2px rgba(17,17,20,.05),0 2px 6px rgba(17,17,20,.04);
   --elev-2:0 2px 4px -2px rgba(17,17,20,.06),0 12px 24px -4px rgba(17,17,20,.1);
   --shadow:0 4px 12px rgba(17,17,20,.06),0 24px 48px -12px rgba(17,17,20,.18);
-  --s1:#2b3a9e;--s2:#8A8A94;--good:#167A40;--warn:#B7780A;--crit:#BE3128;--na:#8A8A94;--grid:#E6E6EA;
+  --s1:#2f3d7a;--s2:#8A8A94;--good:#167A40;--warn:#B7780A;--crit:#BE3128;--na:#8A8A94;--grid:#E6E6EA;
   --f-display:"Space Grotesk","Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-body:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"Geist Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -303,14 +303,14 @@ Copy this shape exactly. Light on bare `:root`. Dark redefined in the media quer
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#09090A;--canvas:#0E0E10;--surface:#141417;--surface2:#26262B;--surface2-hover:#2E2E34;
   --card:#1B1B1F;--card-hover:#232328;--ink:#F2F2F4;--muted:#9A9AA3;--line:#27272C;
-  --primary:#3f51bf;--primary-hover:#4a5cc9;--primary-ink:#FFFFFF;
-  --accent:#a3b3ff;--accent-ink:#0a1030;--accent-soft:#1e2448;
+  --primary:#909cd7;--primary-hover:#8a98d5;--primary-ink:#202c60;
+  --accent:#8a98d5;--accent-ink:#202c60;--accent-soft:#202c60;
   --holds:#5CC98B;--holds-bg:#10251A;--weak:#E3AE4A;--weak-bg:#2A2010;
   --breaks:#F27A6F;--breaks-bg:#2F1715;--cant:#9A9AA3;--cant-bg:#26262B;
   --elev-1:0 1px 2px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.25);
   --elev-2:0 2px 4px -2px rgba(0,0,0,.4),0 12px 24px -4px rgba(0,0,0,.5);
   --shadow:0 4px 12px rgba(0,0,0,.3),0 24px 48px -12px rgba(0,0,0,.6);
-  --s1:#a3b3ff;--s2:#74747D;--good:#5CC98B;--warn:#E3AE4A;--crit:#F27A6F;--na:#74747D;--grid:#27272C;color-scheme:dark}}
+  --s1:#8a98d5;--s2:#74747D;--good:#5CC98B;--warn:#E3AE4A;--crit:#F27A6F;--na:#74747D;--grid:#27272C;color-scheme:dark}}
 :root[data-theme="dark"]{ /* same dark values as above */ color-scheme:dark }
 body{background:var(--bg);color:var(--ink)}
 ```

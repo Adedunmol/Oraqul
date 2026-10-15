@@ -15,7 +15,7 @@ export function PageHero({
   title: ReactNode;
   lead: ReactNode;
   tone?: 'light' | 'dark';
-  /** A soft ultramarine fade down from the top, for a light hero with nothing else beside the title. */
+  /** A soft indigo fade down from the top, for a light hero with nothing else beside the title. */
   wash?: boolean;
   children?: ReactNode;
 }) {

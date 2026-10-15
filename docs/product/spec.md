@@ -146,7 +146,7 @@ GET    /teams/:teamId         members, pending invites (owners only), myRole
 POST   /teams/:teamId/invites     PATCH /teams/:teamId/members/:uid     DELETE /teams/:teamId/members/:uid
 GET    /invites/:token        POST /invites/:token/accept
 GET    /overview              needs you, threads to pick up
-GET    /me/pins               pinned project ids, newest first
+GET    /me/pins               pinned project ids, newest first, three at most
 PUT    /me/pins/:projectId    DELETE /me/pins/:projectId
 GET    /projects?category=    POST /projects (mode, category, first message, attachments)        GET /projects/:id        DELETE /projects/:id
 POST   /projects/:id/threads  GET /threads/:id

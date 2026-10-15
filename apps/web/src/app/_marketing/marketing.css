@@ -7,21 +7,6 @@
     transform: translateY(18px);
   }
 }
-@keyframes mk-sweep {
-  from {
-    transform: scaleX(0);
-  }
-}
-@keyframes mk-ink {
-  from {
-    color: var(--ink);
-  }
-}
-@keyframes mk-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
 @keyframes mk-pop {
   from {
     opacity: 0;
@@ -87,42 +72,103 @@
   animation: mk-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-/* "Plans": ultramarine ink over a soft highlighter band that sweeps in under the lower half. */
-.mk-select {
-  position: relative;
-  isolation: isolate;
-  color: var(--accent);
-  animation: mk-ink 600ms 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+/* The hero's light: indigo from the top right, with a faint warm and a faint cool category glow,
+   so the canvas has depth without any colour under the headline's ink. */
+.mk-sky {
+  background-image:
+    radial-gradient(38% 52% at 30% 18%, var(--bg), transparent 75%),
+    radial-gradient(
+      50% 65% at 88% 22%,
+      color-mix(in srgb, var(--cat-podcasts) 26%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      42% 55% at 62% 16%,
+      color-mix(in srgb, var(--accent) 24%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      34% 46% at 100% 52%,
+      color-mix(in srgb, var(--cat-music) 14%, transparent),
+      transparent 70%
+    );
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 50%, transparent);
 }
-.mk-select::before {
-  content: "";
-  position: absolute;
-  inset: 0.5em -0.06em 0.04em;
-  z-index: -1;
-  border-radius: 0.06em;
-  background: var(--accent-soft);
-  transform-origin: left;
-  animation: mk-sweep 600ms 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+/* On a phone the art is centred above the headline, so the light moves behind it. */
+@media (max-width: 999px) {
+  .mk-sky {
+    background-image:
+      radial-gradient(60% 40% at 50% 62%, var(--bg), transparent 75%),
+      radial-gradient(
+        70% 40% at 55% 22%,
+        color-mix(in srgb, var(--cat-podcasts) 24%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        60% 36% at 35% 28%,
+        color-mix(in srgb, var(--accent) 20%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        50% 30% at 95% 55%,
+        color-mix(in srgb, var(--cat-music) 14%, transparent),
+        transparent 70%
+      );
+  }
 }
 
-/* "check": a hand drawn stroke under the word, then the Holds tick. */
-.mk-check {
-  position: relative;
-  display: inline-block;
+/* The arrow between steps bobs down, a nudge to keep scrolling. */
+@keyframes mk-nudge {
+  50% {
+    transform: translateY(4px);
+  }
 }
-.mk-check svg {
-  position: absolute;
-  left: -0.04em;
-  right: -0.04em;
-  bottom: -0.16em;
-  width: calc(100% + 0.08em);
-  height: 0.3em;
-  overflow: visible;
+.mk-nudge {
+  animation: mk-nudge 2.4s ease-in-out infinite;
 }
-.mk-check path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: mk-draw 700ms 1050ms cubic-bezier(0.6, 0, 0.2, 1) forwards;
+
+/* The orbit art: the tiles tint with their category and drift, the hub stays put. */
+.mk-orbit {
+  opacity: 0.85;
+}
+.mk-orbit-tile {
+  background: color-mix(in srgb, var(--cat) 14%, var(--surface));
+  box-shadow: var(--elev-1);
+  animation:
+    mk-pop 700ms var(--delay, 0ms) cubic-bezier(0.3, 1.4, 0.5, 1) both,
+    mk-float var(--t, 16s) var(--delay, 0ms) ease-in-out infinite,
+    mk-unspin 120s linear infinite;
+}
+@keyframes mk-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes mk-unspin {
+  to {
+    rotate: -360deg;
+  }
+}
+@keyframes mk-ping {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.4);
+  }
+}
+/* The ring turns slowly as one; each tile turns back so it and its icon stay upright. */
+.mk-orbit-spin {
+  animation: mk-spin 120s linear infinite;
+}
+.mk-orbit-ping {
+  border: 1px solid var(--accent);
+  animation: mk-ping 4.5s 1.2s ease-out infinite both;
+}
+.mk-orbit-hub {
+  animation: mk-pop 700ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
 }
 
 /* Taste circles: audiences drawn as overlapping discs, the thing Oraqul measures. */
@@ -161,7 +207,11 @@
 .mk-lit {
   background-image:
     radial-gradient(65% 90% at 10% 0%, var(--bg), transparent 70%),
-    radial-gradient(60% 90% at 100% 100%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
+    radial-gradient(
+      60% 90% at 100% 100%,
+      color-mix(in srgb, var(--accent) 16%, transparent),
+      transparent 70%
+    );
 }
 .mk-fade {
   background-image: linear-gradient(to bottom, var(--accent-soft), transparent 75%);
@@ -383,9 +433,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mk-word,
-  .mk-select,
-  .mk-select::before,
-  .mk-check path,
+  .mk-nudge,
+  .mk-orbit-spin,
+  .mk-orbit-tile,
+  .mk-orbit-hub,
   .mk-disc,
   .mk-tilt,
   .mk-track,
@@ -395,9 +446,11 @@
   .mk-thinking::after {
     animation: none;
   }
-  .mk-check path,
   .mk-line {
     stroke-dashoffset: 0;
+  }
+  .mk-orbit-ping {
+    display: none;
   }
   .mk-token,
   .mk-token-y {

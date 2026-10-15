@@ -9,7 +9,7 @@ import { useSyncExternalStore } from 'react';
 
 const STORAGE_KEY = 'oraqul-pins';
 const EMPTY: string[] = [];
-const MAX_PINS = 12;
+const MAX_PINS = 3;
 
 const listeners = new Set<() => void>();
 let pins: string[] | undefined;
@@ -20,7 +20,7 @@ function load(): string[] {
     const parsed = pinnedProjectsSchema.safeParse(
       JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]'),
     );
-    pins = parsed.success ? parsed.data : [];
+    pins = parsed.success ? parsed.data.slice(0, MAX_PINS) : [];
   } catch {
     // Private windows can refuse storage, and an old value may not parse. Start empty.
     pins = [];
