@@ -185,7 +185,7 @@ Product
 | Risk | What we do |
 |---|---|
 | Qloo may know little about the surroundings of a launch (guesses so far: debut authors, new shows, local-language titles, podcasts, games; only three Nigerian film titles have been measured) | The launch is described by its anchors, not looked up. Probe coverage per category first. State gaps on the line. Confidence follows how many and how strong the anchors are. |
-| A cross-domain overlap is read as a verdict without a baseline | An overlap is evidence for. No overlap is no signal, and counts as weak only against a baseline from comparable successful titles. |
+| A cross-domain overlap is read as a verdict without a baseline | A clear gap above the baseline is evidence for. Qloo always returns a score, so a low score means little alone and counts as weak only against a baseline scored in the same call. |
 | Qloo terms may limit public receipts | Share links show summaries only until confirmed. |
 | Call quota (reported near 10,000 a month) | Set a call budget per audit. Cache within a run. Rerun only what changed. |
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |

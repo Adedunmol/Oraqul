@@ -34,7 +34,7 @@ const faqs: { q: string; a: ReactNode }[] = [
   },
   {
     q: 'What if my title is not in Qloo yet?',
-    a: 'That is expected. Qloo holds taste, not unreleased titles, so Oraqul does not look for yours. It describes the launch by what surrounds it: comparable titles, the people involved, themes and the audience you want, and asks Qloo about those. It can also check taste across domains, such as whether the fans of top selling musicians also read books like yours. A match is evidence for the plan. No match is reported as no signal, not as a no.',
+    a: 'That is expected. Qloo holds taste, not unreleased titles, so Oraqul does not look for yours. It describes the launch by what surrounds it: comparable titles, the people involved, themes and the audience you want, and asks Qloo about those. It can also check taste across domains, such as whether the fans of top selling musicians also read books like yours. A clear match is evidence for the plan. A weak one is only read as a warning when it is compared with other titles in the same call.',
   },
   {
     q: 'What kinds of launch does it cover?',

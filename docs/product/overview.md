@@ -55,7 +55,7 @@ Qloo does not supply everything Oraqul needs, so Oraqul has its own layer on top
 * **Derived signals.** Momentum, loyalty versus variety, partner fit, segment fit by age and gender split, rival overlap, and premium tolerance, which is a taste proxy and never a claim about willingness to pay.
 * **Held back.** The values signal and the early adopter score stay out of the headline until they can be validated, and are labelled exploratory if shown.
 
-Qloo is a taste graph, not a catalogue of releases. A launch is usually not in it yet, and a live title can still be a weak signal, so Oraqul does not look for the title. It describes the launch by what surrounds it (comparable titles, talent, themes and tags, partner brands, places) and asks Qloo about that. It can also test taste across domains, for example whether the fans of top selling musicians also read books like this one. An overlap counts as evidence for. No overlap is "no signal" and is not read as a no, unless code has a baseline to compare against.
+Qloo is a taste graph, not a catalogue of releases. A launch is usually not in it yet, and a live title can still be a weak signal, so Oraqul does not look for the title. It describes the launch by what surrounds it (comparable titles, talent, themes and tags, partner brands, places) and asks Qloo about that. It can also test taste across domains, for example whether the fans of top selling musicians also read books like this one. Each is scored in one call against titles of other kinds, because Qloo always returns a score and a low one means little alone. A clear gap above the baseline is evidence for. A low score is read as weak only against that baseline.
 
 ## What Oraqul does not do
 

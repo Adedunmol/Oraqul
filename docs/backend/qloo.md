@@ -4,7 +4,7 @@ Qloo supplies the taste data. What we compute on top is in [spec §5](../product
 
 ## Status
 
-Written 2026-10-13 from docs.qloo.com, then checked against the live API the same day with `pnpm --filter @oraqul/engine qloo:smoke` (51 calls, `hackathon.api.qloo.com`, our key).
+Written 2026-10-13 from docs.qloo.com, then checked against the live API the same day with `pnpm --filter @oraqul/engine qloo:smoke` (51 calls, `hackathon.api.qloo.com`, our key). Cross-domain taste tests were checked on 2026-10-15 with `qloo:cross-domain` (21 calls, same host and key).
 
 - **Verified (2026-10-13)** means a live response confirmed it. **Documented** means only the docs say so.
 - Things the docs got wrong or left open are in [Conflicts](#conflicts-and-how-they-were-settled) and [What the live run showed](#what-the-live-run-showed).
@@ -20,7 +20,7 @@ Written 2026-10-13 from docs.qloo.com, then checked against the live API the sam
 | `/v2/analysis/compare` | verified, shape differs from the OpenAPI definition |
 | `/v2/trending` | verified, with caveats on the date window |
 | Nigerian film and series | three titles checked by year and country, all present, popularity 0.09 to 0.65. Artists, books and other categories not checked. See below |
-| Cross-domain taste tests (one type's fans as the signal for another) | one case seen: a movie signal returned other types (conflict 16). Whether the results are useful for a launch is not tested |
+| Cross-domain taste tests (one type's fans as the signal for another) | verified on one run (2026-10-15): artist signals return books, podcasts, games and movies, and scoring a candidate list separates books by taste. One kind of book and three artists only. See below |
 | Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo |
 
 ## How Oraqul uses Qloo
@@ -29,7 +29,7 @@ Qloo is a taste graph. It says who likes what, and where, for the things it know
 
 - **Anchors.** Anything with a public name that Qloo can take as a signal: the title when it exists, comparable titles, the author, artist, cast or host, themes and tags, partner brands, places and age bands (hard rule 7). An anchor Qloo knows well is strong. One it barely knows (no `popularity`, few tags) is weak.
 - **Questions.** What we ask of the anchors: who the audience is (demographics), where it concentrates (heatmap), who overlaps with whom (compare), what is rising (trending), and what else that audience likes (entities of any type, tags).
-- **Cross-domain tests.** Qloo takes an entity of one type as the signal for another (conflict 16). So we can ask what the fans of a bestselling musician also read, and see whether our kind of book sits inside that taste. An overlap is evidence for. A missing overlap is "no signal", never a weak verdict on its own. It can count as weak only when code compares it with a baseline (comparable successful titles tested against the same audience) and the anchors were strong enough to be fair. Cross-domain tests are unverified beyond conflict 16: see [Still open](#still-open).
+- **Cross-domain tests.** Qloo takes an entity of one type as the signal for another (conflict 16). So we can ask what the fans of a bestselling musician also read, and see whether our kind of book sits inside that taste. An overlap is evidence for. Qloo does not return "no overlap" as an absence: every candidate came back with a score, so a low score is the only form of "no". A low score can count as weak only when code compares it with a baseline (comparable titles of other kinds, scored in the same call) and the anchors were strong enough to be fair. What the first run showed is in [What the live run showed](#what-the-live-run-showed).
 - **Thin.** A signal is thin when it rests on few or weak anchors: few comparable titles, anchors with no `popularity`, a place that returned few results. It is worked out per claim in each run and lowers that claim's confidence. It is not a property of a category. What is known so far about where Qloo is sparse is in [What the live run showed](#what-the-live-run-showed), and it is small.
 - **Modes.** Design intent, not built. Before release the anchors are the surroundings only. After release the title joins them as one more anchor, and often a weaker one than the comps. For a rescue, the audience the launch actually reached (from the team's results) is compared with the one the plan assumed.
 
@@ -168,6 +168,8 @@ Checked once in `responses.ts`.
 | 14 | Shapes of the two `types` responses | `results.tag_types` and `results.audience_types`, each a list of `{ type, parents }` |
 | 15 | Film filters | `filter.release_year.min` and `filter.content_rating` really filter: all 10 results were 2020 or later and PG-13 |
 | 16 | Cross-domain | A movie as the signal returned results for tv_show, artist, book, podcast, videogame and brand |
+| 17 | Does an artist signal work for books, with a score? | **Yes** (2026-10-15). Three artists each returned 20 books with `query.affinity` on all 20. Podcast, videogame and movie targets also returned results |
+| 18 | Does `filter.results.entities` score a list of candidates we choose? | **Yes**, for books with an artist signal. All 8 candidates came back, each with an affinity, for each of 3 signals. Nothing was dropped for lack of overlap |
 
 ## What the live run showed
 
@@ -178,6 +180,14 @@ These shape the agent. They are all from 2026-10-13.
 **Missing popularity marks obscure titles.** `popularity` is a 0 to 1 percentile and is `null` or absent for some titles: 3 of the 5 `Black Panther` hits (duplicate and minor listings), and several 2020 to 2025 releases. Treat it as "thin data", not as zero.
 
 **Nigerian film and series: present, some with low popularity.** This is the only coverage that was measured, and it is three titles. Present, checked by year and country: *Lionheart* (2018, Nigeria, popularity 0.65), *Gangs of Lagos* (2023, 0.46), *Blood Sisters* (2022, 0.09). Matched by exact name only, not checked further: Wizkid and *Half of a Yellow Sun*. Not present: the 1992 *Living in Bondage*, though a 2019 sequel is. Low popularity means a weaker signal, which feeds confidence. Nothing here says anything about music, books, podcasts or games, or about other regions: those are untested, not known to be thin.
+
+**Cross-domain tests work, if we score a candidate list against a baseline (2026-10-15).** Signals were three artists (Burna Boy, Taylor Swift, Metallica). Candidates were four African literary novels (the "kind" of book) and four bestsellers of other kinds (the baseline), all with popularity above 0.99, scored in one call per signal.
+
+- With Burna Boy as the signal, all four African novels scored above all four baseline books (mean 0.71 against 0.45). With Taylor Swift (0.57 against 0.58) and Metallica (0.43 against 0.46) the two groups did not separate. That is the direction a real taste signal should give, on one kind of book and three artists. It is not yet evidence for any other category, and the controls were chosen by hand.
+- **Absence never appears.** Every candidate came back with an affinity from 0.33 to 0.75, for every signal. So "no overlap" is a low score, not a missing result, and a low score means little without a baseline scored in the same call. Affinity values from separate calls are not comparable ([Rules](#rules)).
+- **Open-ended lists are the wrong tool.** The top 20 books for each artist shared nothing with the others, which shows the signal discriminates, but they were mostly non-fiction (memoirs, business, music biographies) and not the kind of book being launched. Mixing three unrelated artists as one signal gave generic business and memoir titles. Score a candidate list with coherent anchors instead. Whether a genre filter (`filter.tags`) keeps open-ended lists on topic is untested.
+- Artist signals also returned podcasts, games and movies. Whether those are good results was not judged beyond a look at the top few.
+- Popularity was not varied. Whether low-popularity candidates (the realistic case for a debut) score as cleanly is untested.
 
 **Responses are big.** One movie carries about 335 tags. Ten movie results from insights were about 780 KB, a Lagos heatmap about 250 KB, and a Nigeria locality heatmap 6.8 MB. A receipt must hold the excerpt a line used, which is why `toReceipt` requires `returned`. Raw Qloo data also must not reach public share links ([PRD](../product/prd.md)).
 
@@ -193,7 +203,7 @@ These shape the agent. They are all from 2026-10-13.
 
 - Whether tag-signal calls are slow on non-book types (another project saw 10 to 60 seconds). The smoke run did not record timings.
 - Whether a book id can be used as a signal outside book insights. A movie id can.
-- Cross-domain tests per category (see the table in [Categories](#categories)): does the audience of well known artists, films or brands, used as the signal, return plausible books, podcasts and games, and is the result stable enough to read an overlap, or its absence, from? Needs a baseline of comparable successful titles. `TODO(verify)`.
+- Cross-domain tests beyond the first run: other kinds of book, podcasts and games as targets, film and brand signals, candidates with low popularity, and how large a gap between kind and baseline counts as a real signal. The anchors table in [Categories](#categories) is still a hypothesis. `TODO(verify)`.
 - Coverage per category: a probe of about ten real titles each (well known, new, and local-language) to replace the guesses about podcasts, games and other regions with measured counts.
 - `person`, `place`, `destination` and `locality` insights; the weights for age, gender and location; the names in conflicts 7 to 12.
 - Lagos against no location for age and gender splits (does location change the demographics?). Location changes the ranking, but no location parameter is documented for the demographics call, so this may need a different approach.
@@ -212,7 +222,8 @@ These shape the agent. They are all from 2026-10-13.
 1. Put `QLOO_API_KEY` and `QLOO_BASE_URL` in `.env`.
 2. `pnpm --filter @oraqul/engine qloo:smoke`. It prints counts and yes/no only, makes about 50 calls, and saves one response per endpoint and category type to `packages/engine/fixtures` (gitignored).
 3. Settle anything still open above. Fix the schemas and types, remove the `TODO(verify)` markers that are confirmed, and update the status table with the date.
-4. Contract tests that parse the fixtures arrive with the first tools ([testing.md](../testing.md)).
+4. `pnpm --filter @oraqul/engine qloo:cross-domain` (about 21 calls) reruns the cross-domain check. Unlike the smoke run it prints titles and scores to the terminal so they can be judged by eye, and saves nothing. Copy conclusions into the docs, not names or scores.
+5. Contract tests that parse the fixtures arrive with the first tools ([testing.md](../testing.md)).
 
 ## Open questions
 
