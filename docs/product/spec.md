@@ -76,7 +76,7 @@ Every tool returns `{ data, receipt }`. The model sees `data` and a receipt id, 
 | `resolveBundle(title, comps, talent, tags)` | Describes the launch as a bundle of anchors: comps, talent and tags. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. |
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
 | `lift(candidates, baseline)` | Lift over a neutral audience, from one ranking call. |
-| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Includes diaspora cities. |
+| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Includes diaspora cities. A city with too few cells is not ranked. |
 | `compareAudiences(a, b)` | Shared audience between two entity sets. Used for rival overlap, comp shelf, fan base bridge. |
 | `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. Worked on one live run, see [qloo.md](../backend/qloo.md#what-the-live-run-showed). The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
 | `partnerFit(segment, candidates, type)` | Brand, creator, act or show affinity for a segment. |

@@ -21,7 +21,8 @@ Written 2026-10-13 from docs.qloo.com, then checked against the live API the sam
 | `/v2/trending` | verified, with caveats on the date window |
 | Nigerian film and series | three titles checked by year and country, all present, popularity 0.09 to 0.65. Artists, books and other categories not checked. See below |
 | Age and gender profiles by category (2026-10-15) | measured on 50 titles: books 5 of 10, every other category 37 of 40 (films, series, artists, podcasts, games). Hand picked, mostly popular titles. See below |
-| A bundle of comps as the signal for books (2026-10-15) | verified for similar books and for scoring a candidate list. Demographics from a bundle are patchy, places from a bundle are unstable, tags alone are noisy and a person was rejected as a signal. See below |
+| City ranking from a bundle (2026-10-15) | one geohash heatmap call over several city boxes works and its order follows the bundle. Books give few cells, and a bundle can rest on one comp. The locality entity path and `heatmapByLocality` for Nigeria are not usable. See below |
+| A bundle of comps as the signal for books (2026-10-15) | verified for similar books and for scoring a candidate list. Demographics from a bundle are patchy for books, tags alone are noisy and a person was rejected as a signal. See below |
 | Cross-domain taste tests (one type's fans as the signal for another) | verified on one run (2026-10-15): artist signals return books, podcasts, games and movies, and scoring a candidate list separates books by taste. One kind of book and three artists only. See below |
 | Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo |
 
@@ -43,8 +44,8 @@ This is the current best view, written 2026-10-15. It is a design, not a verifie
 
 1. **Build the bundle from comparable titles first.** Three to five comps that belong together. A grab bag of unrelated anchors collapses into generic titles (2026-10-15 run). Check in code that the comps agree before trusting the bundle. A person cannot be the signal on the evidence so far, so use the author's other books as comps. Tags alone gave noisy books; keep them as a filter, once tested, not as an anchor.
 2. **Ask the user to confirm the comps.** They decide the result and Qloo cannot choose them. The agent proposes comps from the pitch and asks one question card to confirm.
-3. **Ask each question of the whole bundle in one call:** one for the audience, one for places, one to score titles of our kind against other kinds. Scores from separate calls are never compared. After the 2026-10-15 runs the scoring call is solid. The audience call works for most categories but about half of books have no profile, so a book bundle can lean on the comps that have one, then on the genre tag, labelled as the genre's audience. The place call is unstable (see [What the live run showed](#what-the-live-run-showed)).
-4. **Compute confidence from stability and coverage.** Count how many comps actually returned data, since demographics rows are missing for most books, and how well Qloo knows each (`popularity`). Rerun candidate scoring with each comp left out: if the ranking holds, confidence is higher. All of it is code over Qloo values and costs a few extra calls, which `QLOO_CALL_BUDGET` must allow for. Stability is our own design. Leave-one-out on audiences did not work (2 rows), and on places it flipped the ranking.
+3. **Ask each question of the whole bundle in one call:** one for the audience, one for places, one to score titles of our kind against other kinds. Scores from separate calls are never compared. After the 2026-10-15 runs the scoring call is solid. The audience call works for most categories but about half of books have no profile, so a book bundle can lean on the comps that have one, then on the genre tag, labelled as the genre's audience. For places, one geohash heatmap over all the city boxes in one call gives a city order that follows the bundle, but a city needs enough cells, and a bundle can rest on a single comp (see [What the live run showed](#what-the-live-run-showed)).
+4. **Compute confidence from stability and coverage.** Count how many comps actually returned data, since demographics rows are missing for most books, and how well Qloo knows each (`popularity`). Rerun candidate scoring with each comp left out: if the ranking holds, confidence is higher. All of it is code over Qloo values and costs a few extra calls, which `QLOO_CALL_BUDGET` must allow for. Stability is our own design. Leave-one-out on audiences did not work (2 rows). On places it exposed that the answer rested on one comp, which is what it is for.
 5. **Cross-domain tests are supporting evidence.** A clear gap above the baseline can back a line. It does not drive a headline until checked on more kinds of book and on other categories.
 6. **After release the title joins the bundle** as one more anchor. It does not replace the comps, because a live title can still be thin.
 
@@ -95,7 +96,7 @@ Built: `searchEntity` and `audienceBySegment` (`packages/engine/src/tools`). The
 | `resolveBundle` | `lookup.tags` for the phrases, then `insights.tags` or an insights call with `signal.interests.tags` |
 | `audienceBySegment` | `insights.demographics` for the entities, or `signal.demographics.*` on an entity insights call |
 | `lift` | one `insights.entities` call with `filter.results.entities` set to the candidates, so all scores share one ranking |
-| `rankPlaces` | `insights.heatmap` or `insights.heatmapByLocality`, one call |
+| `rankPlaces` | `insights.heatmap` with all the city boxes as one `MULTIPOLYGON`, one call; cells are assigned to cities in code. Not `heatmapByLocality` (unstable) |
 | `compareAudiences` | `analysis.compare`, one call |
 | `partnerFit` | `insights.entities` for `brand`, `person` or `artist` with an audience signal |
 | `tagWeights` | `insights.tags` |
@@ -185,6 +186,8 @@ Checked once in `responses.ts`.
 | 18 | Does `filter.results.entities` score a list of candidates we choose? | **Yes**, for books with an artist signal. All 8 candidates came back, each with an affinity, for each of 3 signals. Nothing was dropped for lack of overlap |
 | 19 | Can a person be a signal? | **Not the one tried** (2026-10-15). An author with no `popularity` gave 400 "All of the provided signal.interests.entities were invalid" for book and movie targets. One person tested, so other people are untested |
 | 20 | Does every entity have a demographics row? | **No, and books are the gap** (2026-10-15). Books 5 of 10, other categories 37 of 40. A title without one returns a normal 200 with no rows. A call with several entities returns rows only for those that have data. Popularity and tag count do not predict it (see below) |
+| 21 | Can one heatmap call cover several cities, so scores compare? | **Yes** (2026-10-15). A `MULTIPOLYGON` of four city boxes in `filter.location` returned 1 216 cells in one call, which we assigned to cities by coordinates. The call is repeatable: the same request from two fresh clients gave the same cells in the same order |
+| 22 | Do locality entity insights accept a book as the signal? | **No.** `filter.type=urn:entity:locality` with book signals gave 400 "All of the provided signal.interests.entities were invalid", as the docs said: only a locality can be the signal |
 
 ## What the live run showed
 
@@ -209,7 +212,7 @@ These shape the agent. They are all from 2026-10-13.
 - **Similar books and candidate scoring work.** The thriller bundle returned thrillers. Scored in one call against four more thrillers and four books of other kinds, every thriller beat every other kind (lowest thriller 0.69, highest other 0.63).
 - **The control was a poor one, and shows a trap.** The romance bundle mixed a classic with modern titles and returned unrelated books (a boxed set, poetry, plays), shared nothing with the thriller list, and did not separate the kinds when scoring. So a comp set that is not coherent gives noise, and we cannot yet tell a coherent-but-different bundle from a bad one. The bundle's own coherence should be checked in code before it is trusted.
 - **Demographics are patchy for books, and silently.** Only 3 of 9 books returned any (conflict 20). The thriller bundle got rows for 2 of its 4 comps and the romance bundle for none, all as normal 200 responses. Leave-one-out on 2 rows moved the age profile by up to 0.36, which is too few to measure stability with. Any audience line from a bundle must count how many comps actually returned a row. The coverage run below shows this is a book problem, not a general one.
-- **Places from a bundle were unstable.** Ranking Nigerian localities (`heatmapByLocality`) gave 161 localities for the thriller bundle and 55 with one comp left out. Not one of the first 10 was shared, and Lagos moved from position 64 to 12. A locality outside Nigeria came first for the full bundle. Do not build city ranking on this call as it is.
+- **Places from a bundle through `heatmapByLocality` were unstable.** Ranking Nigerian localities gave 161 localities for the thriller bundle and 55 with one comp left out. Not one of the first 10 was shared, and Lagos moved from position 64 to 12. A locality outside Nigeria came first for the full bundle. The place run below explains the cause and a better call.
 - **Tags alone are noisy.** A tag lookup returns one tag per namespace (`genre:media`, `subgenre:qloo`, `keyword:qloo`, `theme:qloo`). As the only signal for books, `thriller` gave a mixed list, and the subgenre tag gave young adult and science fiction titles. One larger call returned 504, a smaller one took 5.5 s and another 0.8 s, so timings vary a lot.
 - **A person is not a usable signal so far** (conflict 19). The author's other books can serve as comps instead.
 
@@ -222,6 +225,16 @@ These shape the agent. They are all from 2026-10-13.
 - **Podcast entities carry 2 to 3 tags, films 60 to 335**, so tag based questions will be thinner for podcasts.
 - **Search can pick the wrong entity.** Searching `The Daily` returned *The Daily Zeitgeist* first. This is the match question from [spec §10](../product/spec.md) again: a first hit is a candidate, not an answer.
 - Limits: small, hand picked, popular titles, hackathon host. It does not cover new or obscure titles, which is the realistic case for a launch's comps.
+
+**City ranking works in one geohash call, with limits (2026-10-15, `qloo:places-stability`).** The pretend launch was the thriller bundle again, with four city boxes (Lagos, London, Houston, Toronto) in one `urn:heatmap` call.
+
+- **Qloo is repeatable.** The same call from two fresh clients gave the same cells in the same order. The earlier flip was not noise.
+- **The city order follows the bundle.** Controls, one call each: four Afrobeats artists gave Lagos, London, Toronto, Houston; four US country artists gave Houston, Toronto, London, Lagos; four Canadian and UK pop artists gave Toronto, London, Houston, Lagos; four US thrillers gave Houston, Toronto, London, Lagos. The ordering by mean cell affinity is plausible in all four. It is a hand picked check on four cities.
+- **Books give far fewer cells than artists.** The Nigerian thriller bundle gave 405 cells for Lagos and 67 for Houston. The US thriller bundle gave 1 cell for Lagos and 18 for Houston, against 957 to 3 122 cells per city for artists. A mean over one cell means nothing, so a city needs a minimum number of cells before it is ranked, and otherwise it is "cannot rank". The floor is not chosen yet.
+- **A bundle can rest on one comp.** Dropping three of the four thriller comps changed nothing, to three decimals. Dropping the fourth (*My Sister, the Serial Killer*) cut Lagos from 405 cells to 43 and put London first. So the heatmap used only the comp that has location data, and leave-one-out is the check that shows it: count the comps that change the answer, not the comps given.
+- **Within a city the pattern is bundle specific.** Cell by cell, the thriller and literary bundles for Lagos hardly correlate (rank correlation 0.02) though the city order is the same.
+- **The aggregation is ours and untested.** The mean cell affinity depends on how the city box is drawn and on how many cells Qloo returns for it. A fixed box and a minimum cell count are a start, not a validated rule.
+- **The locality entity path is out** (conflict 22).
 
 **Responses are big.** One movie carries about 335 tags. Ten movie results from insights were about 780 KB, a Lagos heatmap about 250 KB, and a Nigeria locality heatmap 6.8 MB. A receipt must hold the excerpt a line used, which is why `toReceipt` requires `returned`. Raw Qloo data also must not reach public share links ([PRD](../product/prd.md)).
 
@@ -238,7 +251,7 @@ These shape the agent. They are all from 2026-10-13.
 - Whether tag-signal calls are slow on non-book types (another project saw 10 to 60 seconds). The smoke run did not record timings.
 - Whether a book id can be used as a signal outside book insights. A movie id can.
 - Cross-domain tests beyond the first run: other kinds of book, podcasts and games as targets, film and brand signals, candidates with low popularity, and how large a gap between kind and baseline counts as a real signal. The anchors table in [Categories](#categories) is still a hypothesis. `TODO(verify)`.
-- After the proxy run: why about half of books have no demographics when other categories mostly do (not popularity, not tag count) and whether it differs for obscure titles; a place ranking that holds when a comp is dropped (a geohash heatmap, or a different region size, instead of `heatmapByLocality`); whether a coherent bundle of a different kind (not a mixed romance set) separates cleanly from the thriller one; how tags behave as a filter instead of a signal; whether any person can be a signal. `TODO(verify)`.
+- After the proxy run: why about half of books have no demographics when other categories mostly do (not popularity, not tag count) and whether it differs for obscure titles; how big a city box to draw and how many cells make a city rankable; whether a place ranking can be checked against a known truth (a title with known strong cities); whether a coherent bundle of a different kind (not a mixed romance set) separates cleanly from the thriller one; how tags behave as a filter instead of a signal; whether any person can be a signal. `TODO(verify)`.
 - Coverage per category: a probe of about ten real titles each (well known, new, and local-language) to replace the guesses about podcasts, games and other regions with measured counts.
 - `person`, `place`, `destination` and `locality` insights; the weights for age, gender and location; the names in conflicts 7 to 12.
 - Lagos against no location for age and gender splits (does location change the demographics?). Location changes the ranking, but no location parameter is documented for the demographics call, so this may need a different approach.
@@ -257,7 +270,7 @@ These shape the agent. They are all from 2026-10-13.
 1. Put `QLOO_API_KEY` and `QLOO_BASE_URL` in `.env`.
 2. `pnpm --filter @oraqul/engine qloo:smoke`. It prints counts and yes/no only, makes about 50 calls, and saves one response per endpoint and category type to `packages/engine/fixtures` (gitignored).
 3. Settle anything still open above. Fix the schemas and types, remove the `TODO(verify)` markers that are confirmed, and update the status table with the date.
-4. `pnpm --filter @oraqul/engine qloo:cross-domain` (about 21 calls) and `qloo:proxy-bundle` (about 40 calls, three of them large and slow) and `qloo:demographics-coverage` (about 120 calls) rerun the cross-domain, proxy and demographics checks. Unlike the smoke run it prints titles and scores to the terminal so they can be judged by eye, and saves nothing. Copy conclusions into the docs, not names or scores.
+4. `pnpm --filter @oraqul/engine qloo:cross-domain` (about 21 calls) and `qloo:proxy-bundle` (about 40 calls, three of them large and slow) and `qloo:demographics-coverage` (about 120 calls) and `qloo:places-stability` (about 40 calls) rerun the cross-domain, proxy, demographics and place checks. Unlike the smoke run it prints titles and scores to the terminal so they can be judged by eye, and saves nothing. Copy conclusions into the docs, not names or scores.
 5. Contract tests that parse the fixtures arrive with the first tools ([testing.md](../testing.md)).
 
 ## Open questions
