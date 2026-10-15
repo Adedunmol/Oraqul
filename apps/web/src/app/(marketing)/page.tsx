@@ -12,7 +12,7 @@ import { Prompts } from '../_marketing/home/prompts';
 import { TasteMap } from '../_marketing/home/taste-map';
 
 export const metadata: Metadata = {
-  title: 'Oraqul: a verifiable AI agent for launch strategy in media and entertainment',
+  title: 'Oraqul: a verifiable AI agent for launch planning in media and entertainment',
   description:
     'Oraqul plans, checks and fixes launches: film and series releases, albums and tours, books, podcasts and games. Every claim is tested against Qloo cultural taste data and comes with a receipt.',
 };

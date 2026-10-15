@@ -31,7 +31,7 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
       date: 'Dec 4',
       aud: 'Men and women 25 to 34',
       conf: 'lower',
-      note: 'Qloo data is thin for Nigerian titles. The plan uses comps and cast, treat it as a draft.',
+      note: 'Few comparable titles were found for Nigeria. The plan rests on comps and cast, treat it as a draft.',
     },
     Germany: {
       lift: 1.2,
@@ -75,7 +75,7 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
       date: 'Dec 20',
       aud: 'Afrobeats listeners 18 to 34',
       conf: 'lower',
-      note: 'Home crowd. Qloo data is thin for Lagos venues.',
+      note: 'Home crowd. Few Lagos venues came back, so treat it as a draft.',
     },
     Accra: {
       lift: 1.0,
@@ -112,7 +112,7 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
       date: 'Mar 25',
       aud: 'Literary readers 25 to 34',
       conf: 'lower',
-      note: 'Qloo has few Nigerian book entities. Treat as a draft.',
+      note: 'Few comparable books were found for Nigeria. Treat as a draft.',
     },
     Canada: {
       lift: 1.3,

@@ -1,6 +1,6 @@
 # Oraqul
 
-A verifiable AI agent that builds, checks and repairs launch strategy in media and entertainment. Plan a launch, audit a plan, or rescue one that missed, across film, music, books, podcasts and games. Each audience assumption is tested against Qloo taste data and carries a receipt.
+A verifiable AI agent for launch planning in media and entertainment. Plan a launch, audit a plan, or rescue one that missed, across film, music, books, podcasts and games. Each audience assumption is tested against Qloo taste data and carries a receipt.
 
 Product background: [docs/product/overview.md](docs/product/overview.md).
 

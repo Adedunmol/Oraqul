@@ -8,7 +8,11 @@ import type { CategoryInfo } from '@oraqul/schema';
 export function coverageColumns(info: CategoryInfo) {
   return [
     { title: 'Tests', note: 'Checked against Qloo, with a receipt', items: info.coverage.tests },
-    { title: 'Thin data', note: 'Tested at lower confidence', items: info.coverage.thin },
+    {
+      title: 'Less certain',
+      note: 'Still tested, with lower confidence when there is little to go on',
+      items: info.coverage.thin,
+    },
     {
       title: 'You bring',
       note: 'Not in Qloo, so it is your numbers',

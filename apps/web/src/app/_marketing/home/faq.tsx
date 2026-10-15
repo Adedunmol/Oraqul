@@ -33,6 +33,10 @@ const faqs: { q: string; a: ReactNode }[] = [
     a: 'It measures audience taste: who likes what, and where. Sales, streams and ticket numbers are yours to bring, and when you add them Oraqul compares them with what the plan expected.',
   },
   {
+    q: 'What if my title is not in Qloo yet?',
+    a: 'That is expected. Qloo holds taste, not unreleased titles, so Oraqul does not look for yours. It describes the launch by what surrounds it: comparable titles, the people involved, themes and the audience you want, and asks Qloo about those. It can also check taste across domains, such as whether the fans of top selling musicians also read books like yours. A clear match is evidence for the plan. A weak one is only read as a warning when it is compared with other titles in the same call.',
+  },
+  {
     q: 'What kinds of launch does it cover?',
     a: 'Film and series releases, albums and tours, book launches, podcast seasons and game launches. Each category has its own questions, views and what if tests.',
   },

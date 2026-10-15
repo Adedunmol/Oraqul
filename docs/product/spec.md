@@ -52,7 +52,7 @@ One per category. Each is a configuration of the same runtime:
 | Scenarios | Presets with a matcher and an apply function |
 | Results format | Group labels, planned shares, hold metric, confirm card fields |
 | Output schema | Brief shape and signature tab data |
-| Coverage | Tests, thin, and not supported lists shown on the category page |
+| Coverage | Tests, where the read is less certain, and not supported lists shown on the category page |
 
 The runtime is one loop for all five: plan the steps, call tools, record each call as a receipt, test each assumption, search for better options, red team, package.
 
@@ -75,11 +75,12 @@ Every tool returns `{ data, receipt }`. The model sees `data` and a receipt id, 
 | Tool | What it does |
 |---|---|
 | `searchEntity(name, type)` | Qloo search. Returns candidates. Ambiguous results become an entity match question card. |
-| `resolveBundle(title, comps, talent, tags)` | For titles not in Qloo: describe as a bundle of comps, tags and talent. |
+| `resolveBundle(title, comps, talent, tags)` | Describes the launch as a bundle of anchors: comps, talent and tags. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. |
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
 | `lift(candidates, baseline)` | Lift over a neutral audience, from one ranking call. |
-| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Includes diaspora cities. |
+| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Includes diaspora cities. A city with too few cells is not ranked. |
 | `compareAudiences(a, b)` | Shared audience between two entity sets. Used for rival overlap, comp shelf, fan base bridge. |
+| `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. Worked on one live run, see [qloo.md](../backend/qloo.md#what-the-live-run-showed). The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
 | `partnerFit(segment, candidates, type)` | Brand, creator, act or show affinity for a segment. |
 | `tagWeights(entities)` | Tag weights in an audience, for the podcast topic map. |
 | `momentum(entity)` | Trend over time, where Qloo supplies it. |
@@ -98,7 +99,7 @@ Computed in code, from values Qloo returned in the same run. The model explains 
 * **Lift.** `lift(x) = score(x) / score(baseline)`, both from one ranking call. Strong at 1.5 and above, usable 1.2 to 1.5, weak below 1.2.
 * **Verdict.** Per assumption: holds, weak, breaks, or cannot test. Rules are published in the receipt. An assumption with no Qloo signal is cannot test, never weak.
 * **Fit.** 0 to 100 for plan lines. 75 and above recommended, 50 to 74 usable, below 50 not recommended.
-* **Confidence.** High, medium, lower, set per line from: whether the entity was found, the number of comps behind the signal, and whether the place or title is in a thin coverage list. A fallback to comps and talent caps confidence at medium.
+* **Confidence.** High, medium, lower, set per line from the anchors behind it: how many, how well Qloo knows each (for example `popularity` and tags present), and whether they agree. A title that is not in Qloo does not lower it by itself, since that is the normal case before release. Few or weak anchors, or a place that returned few results, do. The leading ideas are how many comps actually returned data, and whether the candidate ranking holds when each comp is left out (see [qloo.md](../backend/qloo.md#recommended-approach-subject-to-change), subject to change). The exact rule is still to be written and coded.
 * **Route score (music).** Weighted mean of lift over stops, weights `1, 0.9, 0.8, 0.7, ...` by position, plus the best order by lift for comparison.
 * **Rival overlap.** Shared audience between your title and a rival, from one comparison call. Above 60 risky, 35 to 60 moderate, below 35 low.
 * **Topic ownership (podcasts).** Tag weight in your audience divided by its weight in rival shows' audiences. Above 1 means yours.
@@ -238,7 +239,7 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 | `/how-it-works` | Describe it, the agent asks only what it must, tests each assumption, ends with a bottom line and receipts |
 | `/examples` | Three full read only sample outputs with every receipt openable: a film plan (make a plan), an Afrobeats tour (check my plan) and a podcast season (fix one that missed), picked with `?case=`. Built from the demo data and labelled as examples. The walkthrough video joins when it exists. `/example` redirects here |
 | `/use-cases` | Make a plan, check my plan, fix one that missed, and the what if test. One page, a section for each |
-| `/categories` | One page for all five categories: what is tested, where data is thin, what the team brings. The same content as the in app help dialog |
+| `/categories` | One page for all five categories: what is tested, where it is less certain, what the team brings. The same content as the in app help dialog |
 | `/method` | How verdicts, lift, fit and confidence are computed, and what Oraqul never does (no forecasts). For people who judge the numbers |
 | `/trust` | What data goes where: only public names, places and age bands to Qloo, results stored as aggregates, roles. Separate from Method because the readers differ (a marketer or judge against a reviewer or legal) |
 | `/about` | Why it exists, the team, the Africa and diaspora angle |
@@ -252,13 +253,14 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 
 **Navigation.** A short header: Product (How it works, Examples, Method), Use cases, Categories, Sign in, Create account; Developers joins it when that page exists. The footer carries the rest in four columns: Product, Resources, Company, Legal. This follows what Linear, Notion, Harvey, Glean and Elicit do. As built: Product is a small menu (Escape or a click outside closes it and returns focus to it); below 900px one Menu button opens a panel with every link; below 600px Sign in moves into that panel so the bar stays on one row.
 
-**Rules.** Marketing pages use the app's tokens and Space Grotesk headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 400px. Words follow design-system §10: launch is the umbrella word (launch strategy, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
+**Rules.** Marketing pages use the app's tokens and Space Grotesk headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 400px. Words follow design-system §10: launch is the umbrella word (launch planning, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
 
 ## 10. Failure handling
 
 | Case | Behaviour |
 |---|---|
-| Entity not found | Search alternatives, ask a match question, or fall back to comps and talent. Say so on the line. |
+| Entity not found | Expected before release: describe it by its anchors (comps, talent, tags) and say so on the line. For a live title that is ambiguous, ask a match question. |
+| Few or weak anchors | Say which, lower confidence, and say which anchor would help. |
 | Place not ranked | Mark thin, lower confidence, keep it out of the headline. |
 | Qloo error or timeout | Retry once. Then mark the line cannot test with the reason. Never fill from the model. |
 | Call budget reached | Stop, return what is tested, list what was skipped. |
@@ -271,7 +273,7 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 * **Golden runs.** Per category, three fixed inputs (build, audit, rescue) with expected verdict shape. Run on every change.
 * **Grounding check.** Every entity and number in an output must trace to a receipt. Fails the build if not.
 * **Refusal tests.** Forecast, pricing and send requests are refused with the right message.
-* **Coverage tests.** Nigerian titles, Lagos against no location, podcasts and games, diaspora ranking.
+* **Coverage tests.** Cross-domain taste tests per category, Nigerian titles, Lagos against no location, podcasts and games, diaspora ranking.
 * **UI.** Headless browser pass over every tab of every output in every category, checking for errors and for the words "undefined" or "NaN". Include the start message box and its three hints, the next step chips, the More tab toggle, the search palette, light and dark, and a 400px width with no horizontal scroll.
 * **Comprehension.** A short test with real launch marketers on the prototype, including Nigerian users on mid range Android, before wording is locked.
 

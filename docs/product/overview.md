@@ -2,13 +2,13 @@
 
 ## One liner
 
-Oraqul is a verifiable AI agent for launch strategy in media and entertainment.
+Oraqul is a verifiable AI agent for launch planning in media and entertainment.
 
-Oraqul builds, checks and repairs launch strategy. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
+Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
 
 ## What it is
 
-Oraqul is a verifiable AI agent that builds, checks and repairs launch strategy in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and rescues a launch that underperformed, which is a relaunch. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
+Oraqul is a verifiable AI agent that builds, checks and repairs launch plans in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and rescues a launch that underperformed, which is a relaunch. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
 
 The agent works through several steps, shows its trace, and ends with a decision first summary and the evidence behind it. It gives direction, never forecasts.
 
@@ -57,7 +57,7 @@ Qloo does not supply everything Oraqul needs, so Oraqul has its own layer on top
 * **Derived signals.** Momentum, loyalty versus variety, partner fit, segment fit by age and gender split, rival overlap, and premium tolerance, which is a taste proxy and never a claim about willingness to pay.
 * **Held back.** The values signal and the early adopter score stay out of the headline until they can be validated, and are labelled exploratory if shown.
 
-New titles are not in Qloo yet, so Oraqul describes them as a bundle of comparable titles, tags and talent.
+Qloo is a taste graph, not a catalogue of releases. A launch is usually not in it yet, and a live title can still be a weak signal, so Oraqul does not look for the title. It describes the launch by what surrounds it (comparable titles, talent, themes and tags, partner brands, places) and asks Qloo about that. It can also test taste across domains, for example whether the fans of top selling musicians also read books like this one. Each is scored in one call against titles of other kinds, because Qloo always returns a score and a low one means little alone. A clear gap above the baseline is evidence for. A low score is read as weak only against that baseline.
 
 ## What Oraqul does not do
 
@@ -95,7 +95,7 @@ The output is always a direction: holds, weak, breaks, or could not test.
 Media and entertainment is the one industry Oraqul serves today. Film and series, Music, Books, Podcasts and Games are its five categories. The hierarchy is Team, Category, Project, Job, Output.
 
 * A team has members with owner, editor and viewer roles.
-* A project belongs to exactly one category, because most people will not need several categories in one project. The agent reads the category from the first message, so people do not pick it first: categories are a filter on the project list, and a category's list has a help button that opens what Oraqul tests there, where data is thin, what the team must bring, and the tools it has.
+* A project belongs to exactly one category, because most people will not need several categories in one project. The agent reads the category from the first message, so people do not pick it first: categories are a filter on the project list, and a category's list has a help button that opens what Oraqul tests there, where it is less certain, what the team must bring, and the tools it has.
 * Chat is the entry point. The person says what they want in a few words and the agent does the rest. The title, the category and the job are never guessed: when one is unclear the agent says what it understood and asks one question card with close options, and the person can type their own answer. It also asks which Qloo title is theirs. Everything else it guesses, says what it guessed in one line, and lets the person correct it by typing. A request that has nothing to do with launches is declined in one line. The questions, suggested next steps and results format change with the category.
 * A project is the workspace: its chat, its other chats beside it, and the current plan on top. A project holds several chats (threads in code). A new one builds on the current plan and says so; the person can type "start fresh" or "use an older plan" instead.
 * Every agent output states its bottom line in the chat and opens its takeaway card, up to three moves with their receipts, in one click, then opens its own details page with only the tabs that fit it. Common tabs are Summary, Audience, Assumptions (with what could not be tested at the end), Plan (with its risks at the end) and Evidence. Each category adds its own: territory ladder for film, tour route and support act grid for music, comp shelf and adaptation bridge for books, topic map for podcasts, fan base bridge and regions for games.
@@ -133,7 +133,7 @@ TypeScript monorepo. Next.js front end. A Node backend on a VPS that calls the Q
 
 ## Open points
 
-* Test Qloo's coverage first: Nigerian artists, titles and authors, Lagos against no location, and whether location changes the age and gender splits.
+* Keep testing Qloo's coverage, per category (age and gender profiles are measured; books have them for about half of titles): cross-domain taste tests (for example musicians' fans for a book), Nigerian artists, titles and authors, Lagos against no location, and whether location changes the age and gender splits.
 * Check Qloo's terms on showing receipts on public links.
 * Confirm the monthly call quota, reported at about 10,000, and set a call budget per audit.
 * Confirm Devpost's rules for a two person submission.
