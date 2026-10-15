@@ -62,7 +62,7 @@ const traits = [
 export function AgentRun() {
   const [runId, setRunId] = useState(0);
   return (
-    <section aria-labelledby="agent-title" className={`scheme-dark bg-bg ${band}`}>
+    <section aria-labelledby="agent-title" className={`scheme-dark mk-glow bg-bg ${band}`}>
       <div
         className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.85fr_1.15fr] min-[1000px]:items-center`}
       >

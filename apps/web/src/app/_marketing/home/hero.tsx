@@ -1,4 +1,4 @@
-import { buttonClassName } from '@oraqul/ui';
+import { buttonClassName, Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import { wrap } from '../section';
 import { TasteDiscs } from '../taste-discs';
@@ -7,7 +7,7 @@ import { AppPreview } from './app-preview';
 const delay = (i: number) => ({ animationDelay: `${i * 70}ms` });
 
 /**
- * The headline marks its two verbs: "Plans" in cobalt over a highlighter band, and a drawn stroke
+ * The headline marks its two verbs: "Plans" in ultramarine over a highlighter band, and a drawn stroke
  * under "check". Text sits on the plain canvas; the art lives behind the app preview, so nothing
  * is read over colour.
  */
@@ -40,8 +40,14 @@ export function Hero() {
         className={`${wrap} relative flex flex-col items-start gap-7 pt-[clamp(56px,9vw,128px)] pb-16`}
       >
         <div className="mk-word">
-          <p className="text-[15px] text-muted">
-            A verifiable AI agent for launch strategy in media and entertainment
+          <p className="flex max-w-full items-start gap-3 rounded-lg bg-surface py-1.5 pr-3 pl-1.5 text-[14px] leading-snug text-muted shadow-[var(--elev-1)] min-[640px]:items-center">
+            <span className="grid size-6 shrink-0 place-items-center rounded-md bg-accent-soft text-accent">
+              <Icon name="sparkles" className="size-3.5" />
+            </span>
+            <span>
+              A verifiable AI agent for launch strategy in media and entertainment
+              <span aria-hidden="true" className="mk-caret" />
+            </span>
           </p>
         </div>
         <h1

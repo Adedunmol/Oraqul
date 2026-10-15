@@ -68,7 +68,7 @@ export function Describe() {
     'The project is saved when you send.',
   ];
   return (
-    <section aria-label="Step 1" className={band}>
+    <section aria-label="Step 1" className={`mk-lit bg-accent-soft ${band}`}>
       <div className={`${wrap} flex flex-col gap-14`}>
         <div className="grid gap-8 min-[1000px]:grid-cols-[1fr_1fr] min-[1000px]:items-end">
           <StepHead n={1} title="Describe it in one message.">
@@ -216,7 +216,7 @@ export function Tests() {
 
 export function BottomLine() {
   return (
-    <section aria-label="Step 4" className={`bg-accent-soft ${band}`}>
+    <section aria-label="Step 4" className={`mk-lit bg-accent-soft ${band}`}>
       <div
         className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[1.15fr_0.85fr] min-[1000px]:items-center`}
       >

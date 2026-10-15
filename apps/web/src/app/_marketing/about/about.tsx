@@ -47,7 +47,7 @@ export function Idea() {
     ],
   ];
   return (
-    <section aria-labelledby="idea-title" className={`scheme-dark bg-bg ${band}`}>
+    <section aria-labelledby="idea-title" className={`scheme-dark mk-glow-low bg-bg ${band}`}>
       <div className={`${wrap} flex flex-col gap-14`}>
         <h2 id="idea-title" className={`${h2Class} max-w-[16ch]`}>
           So every answer comes with its working.
