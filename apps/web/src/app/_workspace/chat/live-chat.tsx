@@ -73,14 +73,18 @@ export function LiveChat({
         case 'run.stopped':
           setBusy(false);
           setItems(finishTrace);
-          // The sidebar, lists and chat names read the server; let them catch up.
-          router.refresh();
+          // The reply lands while busy, when onSeen skips marking, and stopping adds no item to
+          // fire it again. The chat is on screen, so mark it here. The sidebar, lists and chat
+          // names read the server; refresh once the mark is saved so they agree.
+          void markThreadRead(threadId)
+            .catch(() => undefined)
+            .finally(() => router.refresh());
           return;
         case 'receipt':
           return;
       }
     },
-    [onProjectUpdated, router],
+    [onProjectUpdated, router, threadId],
   );
 
   const { status, retry } = useThreadEvents(threadId, detail.lastSeq, onEvent);
