@@ -80,6 +80,9 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | C5 | The agent refuses forecasts and sending, and says why. | P0 |
 | C6 | Each category changes the questions, suggested next steps and results format. | P0 |
 | C7 | After each output the agent suggests up to three next steps built from it and the project (a scenario not yet tried, results if none are in, a brief or a date check). Each also works typed. | P0 |
+| C8 | Memory in three layers. In a chat the agent knows the whole chat. A project's chats share what the project knows (its inputs, current plan and facts the person confirmed). A team's standing facts (home market, usual territories, language, usual partners) apply to every project. The chat says which memory it used. | P0 |
+| C9 | A new chat asks whether to continue from the project or start fresh. Fresh ignores project memory and the earlier plan. Team memory can be switched off for that chat. Typed "start fresh" does the same. | P0 |
+| C10 | The agent offers to remember a fact ("Remember that you launch in Lagos first?") as a card with project, team or not now. Nothing is saved without a yes. The team and each project have a memory list where every item can be edited, archived or deleted, and says where it came from. | P0 |
 
 ### 6.2 The three jobs
 
