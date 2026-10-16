@@ -33,9 +33,9 @@ What to test and why is in [spec §11](product/spec.md). This file maps it to to
 | MCP: list and call tools | `packages/mcp/src/server.test.ts`, in memory transport | done |
 | Contract: Qloo tools | `packages/engine`, parsing recorded responses in `packages/engine/fixtures`. Written with the first tools | not started |
 | Live smoke | `pnpm --filter @oraqul/engine qloo:smoke`. Skips without a key. Records the fixtures and answers the open questions in [backend/qloo.md](backend/qloo.md) | written, not yet run with a key |
-| Golden runs: build, audit, rescue per category | `packages/eval/golden/<category>/` | not started |
-| Grounding check | `packages/eval`. Every entity and number must trace to a receipt. Fails the build | not started |
-| Refusal tests: forecast, pricing, send | `packages/eval` | not started |
+| Golden runs: build, audit, rescue per category, on the plan pipeline over recorded fixtures | `packages/eval/golden/<category>/` | not started. Required for Film before a second category starts |
+| Grounding check | `packages/eval`. Every entity and number must trace to a receipt. Fails the build | not started. Required with Film's golden runs |
+| Refusal tests: forecast, pricing, send, and off topic through the gate | `packages/eval` | not started. Required with Film's golden runs |
 | UI pass: every tab, every category | `apps/web/e2e` | smoke, sign in pages, redirects from the old project routes, and error states for `/overview`, `/categories/:category/projects`, a project, a chat, `/team`, `/invite/[token]`; signed out checks for `/s/[token]` and `/categories/[category]/projects`. Signed in demo screens are walked by hand until e2e has a test session |
 
 The Playwright run reuses a dev server already on :3000. Stop your own `pnpm dev` first, or the error state tests find a live API and fail.
@@ -45,6 +45,9 @@ The Playwright run reuses a dev server already on :3000. Stop your own `pnpm dev
 No "undefined" or "NaN" in the text, no horizontal scroll at 400px, correct in light and dark. `apps/web/e2e/smoke.spec.ts` shows the pattern.
 
 ## Rules
+
+- Evals are the proof the product works. Golden runs, the grounding check and the refusal tests live in `packages/eval` and run as part of `pnpm test`, on recorded fixtures, so they need no Qloo key.
+- `pnpm test` runs before every commit and `pnpm check` (lint, typecheck, test) before every push, through the hooks in `.githooks`. `pnpm install` turns them on (`prepare` sets `core.hooksPath`). A commit or push that fails them does not go through. `--no-verify` is for an emergency only, and the PR says why.
 
 - Scoring and verdict thresholds are tested at the boundary on both sides (74 vs 75).
 - Tests use recorded fixtures, never live Qloo, except the smoke script.

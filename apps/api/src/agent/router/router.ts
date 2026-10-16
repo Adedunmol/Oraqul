@@ -74,8 +74,10 @@ export async function routeTurn(
   turn: RouterTurn,
   reader: Reader,
 ): Promise<{ decision: RouterDecision; tokens: number }> {
+  const titling = state.pending?.question.card === 'text';
   if (turn.kind === 'answer') {
     const picked = pick(state, turn.answer);
+    if (titling && turn.answer.kind === 'text') state.known.title = titleFrom(turn.answer.text);
     if (picked) {
       if (picked.category) state.known.category = picked.category;
       if (picked.mode) state.known.mode = picked.mode;
@@ -88,6 +90,12 @@ export async function routeTurn(
   } else {
     state.transcript.push({ from: 'person', text: turn.text });
     state.pending = null;
+    if (titling) {
+      state.known.title = titleFrom(turn.text) ?? state.known.title;
+      if (state.known.title !== null && state.known.category && state.known.mode) {
+        return { decision: settle(state, decide(state.known, null, nextId(state))), tokens: 0 };
+      }
+    }
   }
 
   const { reading, tokens } = await reader.read({
@@ -129,6 +137,19 @@ function pick(state: RouterState, answer: Answer) {
   const settles = settlesOf(state, answer);
   if (answer.kind === 'text') state.transcript.push({ from: 'person', text: answer.text });
   return settles;
+}
+
+const MAX_TITLE_CHARS = 80;
+
+/**
+ * The reply to "What is it called?" is the title itself, so it is taken as typed rather than
+ * searched for a quote: a bare name has no "called" or quotation marks to find. Only the first
+ * line counts, so an attached file's text (added after it) never becomes the title.
+ */
+function titleFrom(text: string): string | null {
+  const line = text.trim().split('\n')[0]?.trim() ?? '';
+  if (line === '' || line.startsWith('[File:') || line.startsWith('[Attached file:')) return null;
+  return line.slice(0, MAX_TITLE_CHARS);
 }
 
 function nextId(state: RouterState): string {

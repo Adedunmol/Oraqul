@@ -11,6 +11,7 @@ import { and, desc, eq, gt, isNull, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { type Database, DB } from '../db/db.module.js';
 import { messages, threads } from '../db/schema.js';
+import type { TranscriptLine } from './router/reader.js';
 
 // A thread's transcript is the `messages` table (spec §6). Each stored row is one chat item and
 // one replayable event; `seq` orders them and is where an event stream resumes.
@@ -100,6 +101,28 @@ export class ThreadStore {
       .update(messages)
       .set({ body: { ...body, answer } })
       .where(eq(messages.id, open.id));
+  }
+
+  /** The last `count` things said in the chat, oldest first, for a model that judges a new message. */
+  async recentLines(threadId: string, count: number): Promise<TranscriptLine[]> {
+    const rows = await this.db
+      .select()
+      .from(messages)
+      .where(eq(messages.threadId, threadId))
+      .orderBy(desc(messages.seq))
+      .limit(count);
+    return rows.reverse().flatMap((row): TranscriptLine[] => {
+      switch (row.role) {
+        case 'user':
+          return [{ from: 'person', text: userBody.parse(row.body).text }];
+        case 'agent':
+          return [{ from: 'oraqul', text: agentBody.parse(row.body).text }];
+        case 'question':
+          return [{ from: 'oraqul', text: questionBody.parse(row.body).question.prompt }];
+        default:
+          return [];
+      }
+    });
   }
 
   async rows(threadId: string, afterSeq = 0): Promise<Row[]> {

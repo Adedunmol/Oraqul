@@ -37,6 +37,8 @@ Rules: `engine` and `packs` never import from `apps`. `schema` has no dependenci
 
 Input: the first message (text and the words of any small text file) and the `/start` hints. Output: the project's title, its category, the start mode (build, audit, rescue), and so the category agent to run. It does not call tools and it never guesses: a value counts only when the person's own words say it, which code checks by finding the model's quote in what they wrote. When the category or the mode is unclear it asks one `single` card, worded from what it read, with two to four close options that each settle the category, the mode or both, and the person may type their own answer instead. When only the title is missing it asks a `text` card. A message that is not about launching a film, series, music, book, podcast or game gets a fixed refusal. Once all three are known it states the job in its first reply and hands the project to the category agent. The model is configured, not fixed (backend/llm.md); with no model key a scripted router takes only what is plainly written and asks about the rest.
 
+**Front door for an active project.** Once the project is saved, every later message passes a check before the category agent sees it. A message with nothing to do with launching or marketing a film, series, music, book, podcast or game gets the same fixed refusal as at the start. A message that may be about this project, or may be a new idea, gets one `single` card of two or three close readings, such as "Check how this plays in Lagos" or "Start a different project", and the person may type their own. A message that plainly follows the conversation goes through. With no model key the check passes everything. The refusal wording is fixed in code. The model may word the card's options, but never decides which agent runs: the project's category does.
+
 The jobs a run can do are build, audit, rescue, scenario, date and partner. The first three are the start modes; the others are follow ups inside a project.
 
 ### 3.2 Category agent
@@ -54,7 +56,12 @@ One per category. Each is a configuration of the same runtime:
 | Output schema | Brief shape and signature tab data |
 | Coverage | Tests, where the read is less certain, and not supported lists shown on the category page |
 
-The runtime is one loop for all five: plan the steps, call tools, record each call as a receipt, test each assumption, search for better options, red team, package.
+The runtime is shared by all five and has two paths:
+
+* **Plans (build, audit, rescue, and scenario, date, partner) run a fixed pipeline.** Code sets the steps and their order, so the same input always runs the same tests: read the input into assumptions and anchors, choose a test for each assumption from the pack, run the tests, compute verdicts and scores (§5), write the brief, check it. The model only reads the input and writes the brief from results already computed. Repeatable runs are what make a plan trustworthy and what golden runs (§11) test.
+* **Conversation runs a tool loop.** Follow up questions, suggestions and other answers (§3.6), clarifying questions and the Books to Film consult (§3.4) let the model choose the next tool call, because their route cannot be fixed in advance. Code still runs each call, makes the receipts and computes every number.
+
+Both paths share the tools, receipts, scoring and grounding check.
 
 ### 3.3 Red team step
 
@@ -67,6 +74,33 @@ Agents do not call each other. One exception: Books may call `askAgent("film", q
 ### 3.5 Loop limits
 
 Max steps per run, max Qloo calls per run (call budget), and a stop rule: stop when no candidate beats the current plan by a set margin, or say what input would change the verdict. Follow up requests rerun only the lines whose inputs changed.
+
+### 3.6 Plan and not a plan
+
+A category agent replies in one of two ways. A plan (build, audit, rescue, scenario, date, partner) is a saved output with a brief and receipts, as in §6 and §9. Anything else the person asks inside a project, a follow up question, a request for suggestions or recommendations, is an answer: a short message in the chat whose claims each carry a receipt, with no output page and no saved brief. When the agent cannot tell which the person wants, it asks "Do you want a plan for this, or just an answer?" on a card instead of drafting a full plan nobody asked for. An answer may offer a plan as the next step. Refusals, no forecasts and no invented numbers (§5) apply to both.
+
+### 3.7 Memory
+
+Memory is context the agent starts from so the person does not repeat themselves or copy between projects. It has three layers, narrowest first:
+
+| Layer | What it holds | Who sees it | Lives |
+|---|---|---|---|
+| Chat | Everything said in this chat, its replies and its outputs | This chat | The thread's messages. A long chat is summarised so the model is not sent all of it |
+| Project | The project's inputs (title, category, mode, places, window, comps, files read), its current plan (`base_output_id`), and facts the person confirmed for this project | Every chat of the project | `projects.inputs`, `outputs`, `memory_items` with a project |
+| Team | Standing facts about the team: home market, usual territories, language, usual partners, typical comps, formats. "This team always launches in Lagos first" | Every project of the team | `memory_items` with no project |
+
+**Rules**
+
+* **Memory is context, never evidence.** A claim, a number, a score or a verdict still comes from a receipt run in this run (§5, hard rules 1 and 2). A remembered fact may steer what to test, such as which places to rank first, and is never cited as the reason a line holds. The model is told so in the shared base prompt.
+* **Most specific wins.** This message beats this chat, which beats the project, which beats the team. When a message changes something memory says, the agent follows the message and says so on the line, and offers to update the memory item.
+* **Saving needs a yes.** The agent may notice a standing fact and offers it on a `single` card ("Remember that you launch in Lagos first?": this project, the whole team, not now). Nothing is written silently, and the person can add or edit an item by hand in the memory list.
+* **Always visible.** A run that used memory says which items in the chat ("Using: you launch in Lagos first, from your team's memory"), so a surprising answer can be traced to its source.
+* **Under the person's control.** Each item is short text with a kind (market, language, partner, comp, format, preference, other), a source (typed by hand, or offered by the agent and confirmed, with the chat it came from), who added it and when. Owners and editors add, edit, archive and delete; viewers read. An archived or deleted item is never used again. A memory list exists for the team and for each project (Project details).
+* **Privacy.** Memory goes to the configured model like a message does and never to Qloo, which still gets only public entity names, place names and age bands (§6). Items are short facts about the work. The input warns against personal data, and the agent does not offer to remember it.
+
+**New chats.** A new chat in a project asks one question before the first message: continue from the project, or start fresh. Continue is the default and builds on the current plan and project memory, as C4 says, and the chat says what it pulled in. Start fresh ignores project memory and the earlier plan, so the chat does not depend on them; it records `threads.fresh`. "Use an older plan" sets `from_output_id` to another plan. Team memory stays on in a fresh chat, since the standing facts are the point of it, with a switch to leave it out of that chat. Typed "start fresh" or "use an older plan" in any chat does the same from that message on.
+
+**Open decisions.** Whether team memory is one switch or two in a fresh chat (the recommendation above is that fresh skips the project and keeps the team). Whether memory items expire. A cap on items per layer, so the context stays short. Whether viewers may suggest items.
 
 ## 4. Tools
 
@@ -99,7 +133,7 @@ Computed in code, from values Qloo returned in the same run. The model explains 
 * **Lift.** `lift(x) = score(x) / score(baseline)`, both from one ranking call. Strong at 1.5 and above, usable 1.2 to 1.5, weak below 1.2.
 * **Verdict.** Per assumption: holds, weak, breaks, or cannot test. Rules are published in the receipt. An assumption with no Qloo signal is cannot test, never weak.
 * **Fit.** 0 to 100 for plan lines. 75 and above recommended, 50 to 74 usable, below 50 not recommended.
-* **Confidence.** High, medium, lower, set per line from the anchors behind it: how many, how well Qloo knows each (for example `popularity` and tags present), and whether they agree. A title that is not in Qloo does not lower it by itself, since that is the normal case before release. Few or weak anchors, or a place that returned few results, do. The leading ideas are how many comps actually returned data, and whether the candidate ranking holds when each comp is left out (see [qloo.md](../backend/qloo.md#recommended-approach-subject-to-change), subject to change). The exact rule is still to be written and coded.
+* **Confidence.** High, medium, lower, set per line from the anchors behind it: how many, how well Qloo knows each (for example `popularity` and tags present), and whether they agree. A title that is not in Qloo does not lower it by itself, since that is the normal case before release. Few or weak anchors, or a place that returned few results, do. The leading ideas are how many comps actually returned data, and whether the candidate ranking holds when each comp is left out (see [qloo.md](../backend/qloo.md#recommended-approach-subject-to-change), subject to change). The exact rule is still to be written and coded. **Blocker:** the rule must be written here, with its thresholds, before the first category agent ships, since it shows on every line of every output. Until then no code sets confidence except the tools that already compute it, and nothing hard codes a value.
 * **Route score (music).** Weighted mean of lift over stops, weights `1, 0.9, 0.8, 0.7, ...` by position, plus the best order by lift for comparison.
 * **Rival overlap.** Shared audience between your title and a rival, from one comparison call. Above 60 risky, 35 to 60 moderate, below 35 low.
 * **Topic ownership (podcasts).** Tag weight in your audience divided by its weight in rival shows' audiences. Above 1 means yours.
@@ -119,14 +153,15 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 | `memberships` | team_id, user_id, role (owner, editor, viewer); unique per team and user |
 | `invites` | team_id, email, role, token_hash, invited_by, expires_at, accepted_at; one pending invite per team and email |
 | `projects` | team_id, category, name, mode (build, audit, rescue), kind, genre, places[], window, lead, comps, inputs jsonb, status, created_by, updated_at. Saved from the first message as a draft (`status` intake, no name, category or mode) that no list shows until the router has read it, then `active` |
-| `threads` | project_id, name, base_output_id, from_output_id, fresh bool, created_by, updated_at |
+| `threads` | project_id, name, base_output_id, from_output_id, fresh bool, team_memory bool (planned, default true), summary (planned, a long chat's summary), created_by, updated_at |
 | `messages` | thread_id, role (user, agent, question, trace, output), body jsonb, seq; unique per thread and seq, which is where an event stream resumes |
 | `outputs` | thread_id, project_id, kind (build, audit, scenario, rescue, date, partner), parent_id, title, brief jsonb, changed_ids[], headline, moves jsonb, confidence jsonb, data_as_of |
-| `receipts` | output_id, line_id, endpoint, input jsonb, returned jsonb, rule text, confidence, called_at, call_id |
+| `receipts` | run_id, thread_id, output_id (nullable), line_id, endpoint, input jsonb, returned jsonb, rule text, confidence, source (live, demo), called_at, call_id. A receipt belongs to the run that made the call; an answer (§3.6) has no output, so `output_id` is set only when a plan saves one. Today the table has `output_id` not null and no `run_id`, `thread_id` or `source`: change it before the first agent ships |
 | `share_links` | output_id, token, enabled |
 | `runs` | thread_id, agent, job, steps jsonb, state jsonb, qloo_calls int, tokens int, status (running, waiting, done, error), stop_reason, finished_at. One row per run segment; `state` holds what the next segment needs, such as the router's open question |
 | `pins` | user_id, project_id; unique per pair. Three per person at most, kept by the API |
 | `thread_reads` | user_id, thread_id, read_seq: how far one person has read a thread |
+| `memory_items` | team_id, project_id (null for a team item), text, kind (market, language, partner, comp, format, preference, other), source (typed, suggested), source_thread_id, created_by, updated_at, archived_at. Planned, §3.7 |
 | `category_packs` | version only; packs live in code |
 
 `brief` shape (Zod, in `packages/schema`): `audience[]`, `assumptions[]`, plan sections `s1` to `s4`, `places[]`, `dates[]`, `partners[]`, `risks[]`, `cannot[]`, `planned[]`, `aLabels[]`, `results`, `course`, plus category data: `grid` (music), `shelf` and `bridge` (books), `topics` (podcasts), `fan` (games). Every line has an `id` that is stable across versions, which is how diffs and "changed" marks work.
@@ -156,7 +191,9 @@ PUT    /me/pins/:projectId    DELETE /me/pins/:projectId    (each answers the li
 GET    /teams/:teamId/projects?category=    category id or all; drafts left out
 POST   /teams/:teamId/projects    first message (text, mode and category hints, attachments); answers projectId and threadId at once, the router runs in the background
 GET    /projects/:projectId   DELETE /projects/:projectId
-POST   /projects/:projectId/threads   GET /threads/:threadId
+POST   /projects/:projectId/threads   body `{ fresh?, teamMemory?, fromOutputId? }` (planned, §3.7)   GET /threads/:threadId
+GET    /teams/:teamId/memory   POST   /teams/:teamId/memory   PATCH, DELETE /memory/:id   (planned, §3.7)
+GET    /projects/:projectId/memory   POST   /projects/:projectId/memory   (planned, §3.7)
 POST   /threads/:threadId/messages    typed text or a card answer; 202, the reply comes on the stream; 409 while a run is going
 POST   /threads/:threadId/read    marks what is stored so far as read
 GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
@@ -188,7 +225,7 @@ The last two rows apply when projects belong to teams.
 
 ## 8. Events
 
-SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created`, `project.updated`, `run.stopped`, `error`. `project.updated` carries the name, category, mode and chat name once the router has read them, so the workspace fills its skeleton without a reload. Events stored in the transcript carry their `seq` as the SSE id. Shapes are `threadEventSchema` in `packages/schema`. A `trace.step` names the agent that took it (`router`, `film`, `books→film` for a consult). A question has an id, the asking agent, its card type (single, multi, text, split, date, file, confirm, match) and its options. A `message` carries its claims, each with the receipt ids behind it. A `receipt` event streams each receipt as the tool makes it. `run.stopped` ends every run segment with a reason: `finished`, `waiting` (on a question), `budget`, `steps` or `error`. The web app renders cards from the event, and posts the answer back as a message.
+SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created`, `project.updated`, `run.stopped`, `error`, and planned `memory.used` (the items a run started from, for the chat's "Using" line, §3.7). `project.updated` carries the name, category, mode and chat name once the router has read them, so the workspace fills its skeleton without a reload. Events stored in the transcript carry their `seq` as the SSE id. Shapes are `threadEventSchema` in `packages/schema`. A `trace.step` names the agent that took it (`router`, `film`, `books→film` for a consult). A question has an id, the asking agent, its card type (single, multi, text, split, date, file, confirm, match) and its options. A `message` carries its claims, each with the receipt ids behind it. A `receipt` event streams each receipt as the tool makes it. `run.stopped` ends every run segment with a reason: `finished`, `waiting` (on a question), `budget`, `steps` or `error`. The web app renders cards from the event, and posts the answer back as a message.
 
 ## 9. Web app
 
@@ -270,7 +307,7 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 
 * **Unit.** Scoring functions, verdict rules, diff and changed marks, results gap logic.
 * **Contract.** Recorded Qloo responses per tool. A live smoke test runs against our key.
-* **Golden runs.** Per category, three fixed inputs (build, audit, rescue) with expected verdict shape. Run on every change.
+* **Golden runs.** Per category, three fixed inputs (build, audit, rescue) with expected verdicts, run on the plan pipeline (§3.2) over recorded Qloo responses in `packages/engine/fixtures`. Run on every change. A category does not ship without its golden runs, and the second category is not started until Film's pass with the grounding check and refusal tests.
 * **Grounding check.** Every entity and number in an output must trace to a receipt. Fails the build if not.
 * **Refusal tests.** Forecast, pricing and send requests are refused with the right message.
 * **Coverage tests.** Cross-domain taste tests per category, Nigerian titles, Lagos against no location, podcasts and games, diaspora ranking.

@@ -1,0 +1,3 @@
+#!/bin/sh
+# The full check before code leaves the machine (docs/git.md). Tests are cached from the commit.
+pnpm check

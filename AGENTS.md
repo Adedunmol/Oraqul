@@ -18,6 +18,8 @@ pnpm build | lint | format | typecheck | test
 pnpm test:e2e                           # Playwright (PW_CHANNEL=chrome on macOS 13)
 ```
 
+`pnpm test` (with evals) runs before every commit and `pnpm check` before every push, via `.githooks`. Never skip them with `--no-verify`.
+
 ## How we work
 
 Two people ship **one feature at a time, end to end**: schema, API, and the web screen that uses it, in one branch and one PR. A backend change is usually not done until its frontend is wired and follows the design system. A backend-only PR is fine when it says why and names the screen that follows. Details in [docs/git.md](docs/git.md).
