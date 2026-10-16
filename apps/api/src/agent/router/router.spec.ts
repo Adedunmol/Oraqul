@@ -321,3 +321,36 @@ describe('ModelReader', () => {
     expect(failures).toHaveLength(1);
   });
 });
+
+describe('routeTurn on the title card', () => {
+  const asking = () => {
+    const state = newRouterState({ category: 'books', mode: 'build' });
+    state.pending = {
+      question: { id: 'router.q3', card: 'text', prompt: TITLE_PROMPT, options: [], hint: '' },
+      settles: {},
+    };
+    return state;
+  };
+
+  it('takes a bare typed name as the title without calling the model', async () => {
+    const reader = fixed(reading({}));
+    const { decision } = await routeTurn(asking(), { kind: 'message', text: 'oh papa' }, reader);
+    expect(decision).toEqual({
+      kind: 'routed',
+      title: 'oh papa',
+      category: 'books',
+      mode: 'build',
+    });
+    expect(reader.calls).toBe(0);
+  });
+
+  it('does not take an attached file as the title', async () => {
+    const reader = fixed(reading({}));
+    const { decision } = await routeTurn(
+      asking(),
+      { kind: 'message', text: '[File: plan.txt]\nlots of text' },
+      reader,
+    );
+    expect(decision.kind).toBe('ask');
+  });
+});
