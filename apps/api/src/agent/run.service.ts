@@ -22,6 +22,7 @@ import type { z } from 'zod';
 import { type Database, DB } from '../db/db.module.js';
 import { projects, runs, threads } from '../db/schema.js';
 import { CATEGORY_AGENTS, type CategoryAgents, type Handoff } from './category-agents.js';
+import { GATE, type Gate, type GatePending, gateDecide, gateStateSchema } from './gate/gate.js';
 import { OFF_TOPIC_REPLY, readingLine } from './router/copy.js';
 import type { Reader } from './router/reader.js';
 import {
@@ -47,6 +48,8 @@ export interface LiveEvent {
 type CreateProject = z.output<typeof createProjectInputSchema>;
 type PostMessage = z.output<typeof postMessageSchema>;
 
+const GATE_LINES = 8;
+
 // Spec: a file's text is read for the router, but a long plan should not fill the model's context.
 const ATTACHMENT_CHARS = 8_000;
 
@@ -67,6 +70,7 @@ export class RunService implements OnModuleInit {
     @Inject(ROUTER_READER) private readonly reader: Reader,
     @Inject(CATEGORY_AGENTS) private readonly agents: CategoryAgents,
     @Inject(THREAD_TITLER) private readonly titler: Titler,
+    @Inject(GATE) private readonly gate: Gate,
   ) {}
 
   /** A run that was going when the process stopped will never finish, so say so. */
@@ -138,17 +142,41 @@ export class RunService implements OnModuleInit {
       return;
     }
 
-    if (body.kind === 'answer') throw new BadRequestException('No question is waiting');
-    if (!body.text.trim() && body.attachments.length === 0) {
-      throw new BadRequestException('Type a message or attach a file');
-    }
     const { category, mode, name } = project;
     if (!category || !mode || !name) throw new Error('An active project has no category or mode');
-    await this.store.appendUser(threadId, body.text, body.attachments);
+    const handoff: Handoff = { category, mode, title: name };
+    const pending = await this.gatePending(threadId);
+
+    if (body.kind === 'answer' && !pending) {
+      throw new BadRequestException('No question is waiting');
+    }
+    if (body.kind === 'answer' && pending?.question.id !== body.answer.questionId) {
+      throw new BadRequestException('That is not the question asked');
+    }
+    if (body.kind === 'answer' && body.answer.kind === 'options') {
+      // A suggestion we made is on topic by construction, so it goes straight to the agent.
+      const [optionId] = body.answer.optionIds;
+      const label = optionId ? pending?.picks[optionId] : undefined;
+      if (!label || body.answer.optionIds.length !== 1) {
+        throw new BadRequestException('That option is not on the card');
+      }
+      await this.store.answerOpenQuestion(threadId, label);
+      this.launch(threadId, () => this.agentSegment(threadId, handoff));
+      return;
+    }
+
+    const text =
+      body.kind === 'answer' ? (body.answer.kind === 'text' ? body.answer.text : '') : body.text;
+    const attachments = body.kind === 'answer' ? [] : body.attachments;
+    if (!text.trim() && attachments.length === 0) {
+      throw new BadRequestException('Type a message or attach a file');
+    }
+    await this.store.appendUser(threadId, text, attachments);
+    if (pending) await this.store.answerOpenQuestion(threadId, text);
     const unnamed = project.threadName === UNNAMED_THREAD;
     this.launch(threadId, async () => {
-      if (unnamed) await this.nameThread(threadId, body.text, body.attachments);
-      await this.agentSegment(threadId, { category, mode, title: name });
+      if (unnamed) await this.nameThread(threadId, text, attachments);
+      if (await this.gateSegment(threadId, handoff)) await this.agentSegment(threadId, handoff);
     });
   }
 
@@ -239,6 +267,56 @@ export class RunService implements OnModuleInit {
     }
   }
 
+  /**
+   * Judges a message sent to an active project (backend/agent.md). Returns true when the agent
+   * should run. An off topic message gets the fixed refusal and an unclear one gets a card of
+   * close readings, and in both the run stops here.
+   */
+  private async gateSegment(threadId: string, handoff: Handoff): Promise<boolean> {
+    const runId = await this.newRun(threadId, 'gate', null, null);
+    try {
+      const recent = await this.store.recentLines(threadId, GATE_LINES);
+      const { reading, tokens } = await this.gate.check({ project: handoff, recent });
+      const decision = gateDecide(reading, `gate.${runId}`);
+      const record = { state: null, steps: [], tokens };
+      switch (decision.kind) {
+        case 'pass':
+          await this.finishRun(runId, 'finished', record);
+          return true;
+        case 'refuse':
+          await this.emit(threadId, { type: 'message', body: OFF_TOPIC_REPLY, claims: [] });
+          await this.stop(threadId, runId, 'finished', record);
+          return false;
+        case 'ask':
+          await this.emit(threadId, {
+            type: 'question',
+            agent: 'gate',
+            ...decision.pending.question,
+          });
+          await this.stop(threadId, runId, 'waiting', {
+            ...record,
+            state: { pending: decision.pending },
+          });
+          return false;
+      }
+    } catch (err) {
+      await this.fail(threadId, runId, err, { state: null, steps: [], tokens: 0 });
+      return false;
+    }
+  }
+
+  /** The gate card waiting for an answer, if the thread's last run left one open. */
+  private async gatePending(threadId: string): Promise<GatePending | null> {
+    const [run] = await this.db
+      .select({ agent: runs.agent, status: runs.status, state: runs.state })
+      .from(runs)
+      .where(eq(runs.threadId, threadId))
+      .orderBy(desc(runs.createdAt))
+      .limit(1);
+    if (run?.agent !== 'gate' || run.status !== 'waiting' || !run.state) return null;
+    return gateStateSchema.parse(run.state).pending;
+  }
+
   private async agentSegment(threadId: string, handoff: Handoff): Promise<void> {
     const runId = await this.newRun(threadId, handoff.category, handoff.mode, null);
     const steps: string[] = [];
@@ -303,7 +381,7 @@ export class RunService implements OnModuleInit {
     threadId: string,
     agent: string,
     job: Handoff['mode'] | null,
-    state: RouterState | null,
+    state: object | null,
   ): Promise<string> {
     const [run] = await this.db
       .insert(runs)
@@ -379,7 +457,7 @@ export class RunService implements OnModuleInit {
 }
 
 interface RunRecord {
-  state: RouterState | null;
+  state: object | null;
   steps: string[];
   tokens: number;
   job?: Handoff['mode'];

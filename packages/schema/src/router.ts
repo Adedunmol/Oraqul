@@ -29,3 +29,20 @@ export const routerReadingSchema = z.object({
 
 export type RouterOption = z.infer<typeof routerOptionSchema>;
 export type RouterReading = z.infer<typeof routerReadingSchema>;
+
+/** What the follow-up gate model returns for a message in an active project (backend/agent.md). */
+export const gateReadingSchema = z.object({
+  /** `unclear` is for a message that might be about this project but could also be a new topic. */
+  fit: z.enum(['on_topic', 'unclear', 'off_topic']),
+  /** Set only for `unclear`: two or three close readings the person can pick from. */
+  question: z
+    .object({
+      prompt: z.string().min(1),
+      options: z
+        .array(z.object({ label: z.string().min(1), description: z.string().optional() }))
+        .max(3),
+    })
+    .nullable(),
+});
+
+export type GateReading = z.infer<typeof gateReadingSchema>;
