@@ -1,0 +1,4 @@
+#!/bin/sh
+# Tests and evals guard the receipt-on-every-claim promise, so a commit that breaks them never lands
+# (docs/testing.md). Turborepo caches packages that did not change, so this stays quick.
+pnpm test
