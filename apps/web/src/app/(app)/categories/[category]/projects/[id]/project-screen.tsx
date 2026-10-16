@@ -288,7 +288,11 @@ function ChatList({
             >
               <span className="flex items-center gap-1.5 text-sm">
                 {reading ? (
-                  <span aria-label="Naming this chat" className={`block h-4 w-20 ${bar}`} />
+                  <span
+                    role="img"
+                    aria-label="Naming this chat"
+                    className={`block h-4 w-20 ${bar}`}
+                  />
                 ) : (
                   <span className="truncate">{name}</span>
                 )}
