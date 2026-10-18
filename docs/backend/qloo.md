@@ -16,7 +16,8 @@ Written 2026-10-13 from docs.qloo.com, then checked against the live API the sam
 | `/search`, `/entities` (by Qloo id and by IMDb id) | verified |
 | `/v2/tags`, `/v2/tags/types`, `/v2/audiences`, `/v2/audiences/types` | verified |
 | `/v2/insights` for movie, tv_show, artist, book, podcast, videogame, brand | verified |
-| `/v2/insights` for person, place, destination, locality | documented, not exercised. Not needed for the first build |
+| `/v2/insights` for place | verified (2026-10-17) with `filter.tags` set to a place category and `filter.location.query` set to a city. See below |
+| `/v2/insights` for person, destination, locality | documented, not exercised. A person as the only signal is rejected (conflict 19, rechecked 2026-10-17) |
 | `/v2/insights` with `urn:tag`, `urn:demographics`, `urn:heatmap` (geohash and locality) | verified |
 | `/v2/analysis/compare` | verified, shape differs from the OpenAPI definition |
 | `/v2/trending` | verified, with caveats on the date window |
@@ -25,6 +26,7 @@ Written 2026-10-13 from docs.qloo.com, then checked against the live API the sam
 | City ranking from a bundle (2026-10-15) | one geohash heatmap call over several city boxes works and its order follows the bundle. Books give few cells, and a bundle can rest on one comp. The locality entity path and `heatmapByLocality` for Nigeria are not usable. See below |
 | A bundle of comps as the signal for books (2026-10-15) | verified for similar books and for scoring a candidate list. Demographics from a bundle are patchy for books, tags alone are noisy and a person was rejected as a signal. See below |
 | Cross-domain taste tests (one type's fans as the signal for another) | verified on one run (2026-10-15): artist signals return books, podcasts, games and movies, and scoring a candidate list separates books by taste. One kind of book and three artists only. See below |
+| Context that shapes a Film query (2026-10-17, `qloo:film-probes`) | verified on one brief: a genre tag on artists, `filter.release_country` (full country name), `signal.location.query`, `signal.demographics.age` and `signal.demographics.audiences` on entity lists; place categories per city; brand categories (`urn:tag:genre:brand:*`); theme, archetype and audience tags on comps; tags shared with genre peers from compare. See below |
 | Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo |
 
 ## How Oraqul uses Qloo
@@ -46,7 +48,7 @@ This is the current best view, written 2026-10-15. It is a design, not a verifie
 1. **Build the bundle from comparable titles first.** Three to five comps that belong together. A grab bag of unrelated anchors collapses into generic titles (2026-10-15 run). Check in code that the comps agree before trusting the bundle. A person cannot be the signal on the evidence so far, so use the author's other books as comps. Tags alone gave noisy books; keep them as a filter, once tested, not as an anchor.
 2. **Ask the user to confirm the comps.** They decide the result and Qloo cannot choose them. The agent proposes comps from the pitch and asks one question card to confirm.
 3. **Ask each question of the whole bundle in one call:** one for the audience, one for places, one to score titles of our kind against other kinds. Scores from separate calls are never compared. After the 2026-10-15 runs the scoring call is solid. The audience call works for most categories but about half of books have no profile, so a book bundle can lean on the comps that have one, then on the genre tag, labelled as the genre's audience. For places, one geohash heatmap over all the city boxes in one call gives a city order that follows the bundle, but a city needs enough cells, and a bundle can rest on a single comp (see [What the live run showed](#what-the-live-run-showed)).
-4. **Compute confidence from stability and coverage.** Count how many comps actually returned data, since demographics rows are missing for most books, and how well Qloo knows each (`popularity`). Rerun candidate scoring with each comp left out: if the ranking holds, confidence is higher. All of it is code over Qloo values and costs a few extra calls, which `QLOO_CALL_BUDGET` must allow for. Stability is our own design. Leave-one-out on audiences did not work (2 rows). On places it exposed that the answer rested on one comp, which is what it is for.
+4. **Compute confidence from stability and coverage.** The rule and its thresholds are [spec §5.1](../product/spec.md#51-confidence). Count how many comps actually returned data, since demographics rows are missing for most books, and how well Qloo knows each (`popularity`). Rerun candidate scoring with each comp left out: if the ranking holds, confidence is higher. All of it is code over Qloo values and costs a few extra calls, which `QLOO_CALL_BUDGET` must allow for. Stability is our own design. Leave-one-out on audiences did not work (2 rows). On places it exposed that the answer rested on one comp, which is what it is for.
 5. **Cross-domain tests are supporting evidence.** A clear gap above the baseline can back a line. It does not drive a headline until checked on more kinds of book and on other categories.
 6. **After release the title joins the bundle** as one more anchor. It does not replace the comps, because a live title can still be thin.
 
@@ -66,7 +68,8 @@ This is the current best view, written 2026-10-15. It is a design, not a verifie
 
 One `QlooClient` per agent run. Every call returns `{ data, call }`: `data` is the response, checked against a Zod schema, and `call` is the record of what was sent and received. A tool turns calls into receipts with `toReceipt(call, { returned, rule, confidence })`. `returned` is the part of the response the line used, not the whole body: live responses are large (see below). The client never sets confidence, because that is computed by code from [spec §5](../product/spec.md).
 
-- **Retry.** Once, on a network error, a timeout, a 429 (waiting for `Retry-After`, at most 10 s) or a 5xx. Not on other 4xx. Then it throws `QlooError` with `kind` (`http`, `network`, `timeout`, `invalid_response`) and the `call`, so the line can still cite what happened ([spec §10](../product/spec.md): "could not test", never filled by the model).
+- **Concurrency.** At most 2 requests in flight (`maxConcurrent`). A plan's parallel calls got 429 from the hackathon host on 2026-10-16; with 2 in flight and the rate-limit retries below, a 33-call plan came back with no 429.
+- **Retry.** Once, on a network error, a timeout or a 5xx; twice on a 429, waiting for `Retry-After` (at most 10 s) or 2 s and then 4 s without it. Not on other 4xx. Then it throws `QlooError` with `kind` (`http`, `network`, `timeout`, `invalid_response`) and the `call`, so the line can still cite what happened ([spec §10](../product/spec.md): "could not test", never filled by the model).
 - **Budget.** `callBudget` (from `QLOO_CALL_BUDGET`) counts network calls. A retry is not a second call. When it is spent, `QlooBudgetError` is thrown before any request, which ends the run with what is tested so far.
 - **Injected `fetch`.** `fetch` in the options replaces the global one. Tests and demo mode use it so no request leaves the process.
 - **Memory.** An identical call later in the run, or made while the first is in flight, costs nothing and returns its own `call` with `cached: true`. Failures are not remembered.
@@ -89,17 +92,20 @@ Parameter names are Qloo's own, dotted, so a receipt's `input` shows exactly wha
 
 ## Tools to Qloo ([spec §4](../product/spec.md))
 
-Built: `searchEntity` and `audienceBySegment` (`packages/engine/src/tools`). Their confidence is a placeholder until spec §5's full rule is coded (`TODO` in each file). The rest are planned.
+Built: `searchEntity`, `audienceBySegment`, `resolveBundle`, `rankPlaces` and `lift` (`packages/engine/src/tools`). Demo mode answers search, demographics, heatmap and candidate scoring with made-up numbers. Their confidence follows [spec §5.1](../product/spec.md#51-confidence) (`confidenceFor` in `packages/engine`). The rest are planned.
 
 | Tool | Qloo call |
 |---|---|
 | `searchEntity` | `lookup.search`, or `lookup.entitiesByExternalId` when the user gives an IMDb, Spotify or ISBN id |
-| `resolveBundle` | `lookup.tags` for the phrases, then `insights.tags` or an insights call with `signal.interests.tags` |
+| `resolveBundle` | `lookup.search` per name, exact match only |
+| `resolveTags` | `lookup.tags` per phrase, keeping the first tag under the wanted urn prefix (brand categories with `filter.parents.types=urn:entity:brand`) |
+| `findTaste` | `insights.entities` for one type with the comps as the signal and context: `filter.tags`, `signal.location.query` (or `filter.location.query` for places), `signal.demographics.age`, `filter.release_country`, `filter.release_year.min` |
+| `themeTags` | `insights.tags` with `filter.tag.types=urn:tag:<kind>:qloo`, one call per kind |
 | `audienceBySegment` | `insights.demographics` for the entities, or `signal.demographics.*` on an entity insights call |
 | `lift` | one `insights.entities` call with `filter.results.entities` set to the candidates, so all scores share one ranking |
 | `rankPlaces` | `insights.heatmap` with all the city boxes as one `MULTIPOLYGON`, one call; cells are assigned to cities in code. Not `heatmapByLocality` (unstable) |
-| `compareAudiences` | `analysis.compare`, one call |
-| `partnerFit` | `insights.entities` for `brand`, `person` or `artist` with an audience signal |
+| `compareAudiences` | one `insights.entities` call with `filter.results.entities` set to the rivals (not `analysis.compare`) |
+| `partnerFit` | `insights.entities` with no context. Not used by Film builds: open lists drift |
 | `tagWeights` | `insights.tags` |
 | `momentum` | `analysis.trending` |
 
@@ -136,7 +142,7 @@ From the Entity Type Parameter Guide, with differences noted in conflicts. Types
 | `movie` | `filter.content_rating`, `filter.release_year.min|max`, `filter.release_country` and its operator, `filter.rating.min|max` (0 to 5) |
 | `tv_show` | the movie set, plus `filter.finale_year.min|max`, `filter.latest_known_year.min|max` |
 | `book` | `filter.publication_year.min|max`. **No location filters** |
-| `artist`, `podcast`, `videogame`, `brand` | nothing. **No location filters** |
+| `artist`, `podcast`, `videogame`, `brand` | nothing. **No location filters**, but `signal.location.query` changes the ranking (verified for artist, podcast and brand, 2026-10-17) |
 | `person` | `filter.gender`, `filter.date_of_birth.min|max`, `filter.date_of_death.min|max` |
 | `destination` | `signal.interests.entities` **required**; location filters (`filter.location`, `.radius`, `.geohash`, `filter.geocode.*`) |
 | `place` | the destination location set, plus `sort_by`, `bias.quality`, `filter.address`, `filter.hours`, price, hotel class, business rating, `filter.references_brand`, Tripadvisor and Resy filters |
@@ -237,6 +243,26 @@ These shape the agent. They are all from 2026-10-13.
 - **The aggregation is ours and untested.** The mean cell affinity depends on how the city box is drawn and on how many cells Qloo returns for it. A fixed box and a minimum cell count are a start, not a validated rule.
 - **The locality entity path is out** (conflict 22).
 
+**The Film build on a Nigerian crime bundle (2026-10-16, `qloo:film-tools` and the live golden run).**
+
+- **Scoring a list of films works.** `filter.results.entities` with film comps as the signal scored every candidate, so `lift` is verified for films as well as books, on this run.
+- **One heatmap call over all 26 city boxes works** (about 430 KB) and every city had enough cells to rank. The order did not put the bundle's home city first, and it rested on one comp, which the leave one out check caught.
+- **Same-name films are common.** Several well known titles matched more than one film by exact name, so the match card (with year and country) is the normal path, not an edge case. Curly and straight apostrophes differ between how people type and how Qloo stores names.
+- **Open-ended lists drift.** Trailer pairings, brands and podcasts from a small bundle were plausible for the audience but not for the genre, as the book run found. They are scored against a baseline before they become plan lines, and the picks still need a person's eye.
+- **Parallel calls are rate limited.** About a dozen calls at once got 429 for some of them, which is why the client keeps 2 in flight.
+
+**Context makes a comp signal usable (2026-10-17, `qloo:film-probes`, 50 calls).** The brief was a Nigerian crime thriller for 18 to 34 with three Nigerian crime comps, opening in Lagos, London, Houston and Atlanta. These are hand-read results from one brief.
+
+- **An open-ended list without context drifts to what is popular overall.** Artists for the comps with only a city gave the same US R&B names in every city. Films since 2024 gave US, Korean and Indian titles. Brands with only a city gave luxury names.
+- **A tag, a release country, a city or an age band makes it sharp.** Artists with the Afrobeats genre tag (`urn:tag:genre:music:afrobeats`) and a city gave Nigerian and diaspora Afrobeats artists, with a different order in Lagos and London, and a younger set with the youngest age band. Films with `filter.release_country=Nigeria` and `filter.release_year.min=2022` gave recent Nigerian films. **The country takes the full name**: `NG` returned nothing. TV shows with a US city and a year gave Black-led US series in Atlanta, and a generic list in London.
+- **Place categories work per city.** `filter.type=urn:entity:place` with `filter.tags=urn:tag:category:place:movie_theater` and `filter.location.query` gave real cinemas in all four cities, with a pull to central and flagship venues in London. Churches gave large Nigerian and Black congregations in Houston and landmarks mixed in for London. Universities gave campuses in both.
+- **Brand categories need the brand namespace.** `lookup.tags` for "beverage" or "telecom" returns place categories unless `filter.parents.types=urn:entity:brand` is set. With it, `urn:tag:genre:brand:telecom` and `urn:tag:genre:brand:food_and_beverage` as `filter.tags` gave telecoms and drinks brands that operate in each city (the local network in Lagos, the UK networks in London). The fashion category still gave luxury names.
+- **Tag types on comps.** `insights.tags` on the comps with no type gave mostly style adjectives. `filter.tag.types=urn:tag:theme:qloo` gave themes (poverty, community, success, struggle, wealth, women empowerment), and `archetype:qloo` and `audience:qloo` work the same way. `theme:media` returned nothing. The tag types an entity type has come from `lookup.tagTypes` with `filter.parents.types`.
+- **Compare gives shared genre tags.** `analysis.compare` of the comps against three crime peers gave the genre tags both share (drama, crime), each listing which entities on each side carry it. What sets the comps apart is in each side's own tags (`results.a`, `results.b`), not the shared list.
+- **Community audiences work as a signal.** `signal.demographics.audiences` with the id from `lookup.audiences` ("Black") changed a Houston TV list toward Black-led series.
+- **Podcasts are US-heavy.** With a city they gave US culture podcasts in Lagos and London alike. A genre tag (`urn:tag:genre:media:true_crime`) gave true crime shows instead.
+- **A person is still not a signal.** A cast member as the only signal returned 400.
+
 **Responses are big.** One movie carries about 335 tags. Ten movie results from insights were about 780 KB, a Lagos heatmap about 250 KB, and a Nigeria locality heatmap 6.8 MB. A receipt must hold the excerpt a line used, which is why `toReceipt` requires `returned`. Raw Qloo data also must not reach public share links ([PRD](../product/prd.md)).
 
 **`take` is not a limit everywhere.** `take=20` on a Lagos heatmap returned 558 cells and `take=10` on the locality heatmap returned 224 localities. On compare, `take=20` gave 12 shared tags but 30 and 34 tags on the two sides. Slice results in code.
@@ -271,7 +297,7 @@ These shape the agent. They are all from 2026-10-13.
 1. Put `QLOO_API_KEY` and `QLOO_BASE_URL` in `.env`.
 2. `pnpm --filter @oraqul/engine qloo:smoke`. It prints counts and yes/no only, makes about 50 calls, and saves one response per endpoint and category type to `packages/engine/fixtures` (gitignored).
 3. Settle anything still open above. Fix the schemas and types, remove the `TODO(verify)` markers that are confirmed, and update the status table with the date.
-4. `pnpm --filter @oraqul/engine qloo:cross-domain` (about 21 calls) and `qloo:proxy-bundle` (about 40 calls, three of them large and slow) and `qloo:demographics-coverage` (about 120 calls) and `qloo:places-stability` (about 40 calls) rerun the cross-domain, proxy, demographics and place checks. Unlike the smoke run it prints titles and scores to the terminal so they can be judged by eye, and saves nothing. Copy conclusions into the docs, not names or scores.
+4. `pnpm --filter @oraqul/engine qloo:film-probes` (about 50 calls) reruns the Film query catalog checks. `qloo:cross-domain` (about 21 calls) and `qloo:proxy-bundle` (about 40 calls, three of them large and slow) and `qloo:demographics-coverage` (about 120 calls) and `qloo:places-stability` (about 40 calls) rerun the cross-domain, proxy, demographics and place checks. Unlike the smoke run it prints titles and scores to the terminal so they can be judged by eye, and saves nothing. Copy conclusions into the docs, not names or scores.
 5. Contract tests that parse the fixtures arrive with the first tools ([testing.md](../testing.md)).
 
 ## Open questions

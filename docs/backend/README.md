@@ -2,6 +2,8 @@
 
 NestJS in `apps/api`. Endpoints are listed in [spec §7](../product/spec.md), tables in [spec §6](../product/spec.md), failure behaviour in [spec §10](../product/spec.md).
 
+How Film planning works end to end, from the first message to a saved plan and its follow ups: [film-overview.md](film-overview.md).
+
 ## Conventions
 
 - ESM. Relative imports end in `.js`.

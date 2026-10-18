@@ -1,6 +1,6 @@
 # Oraqul
 
-A verifiable AI agent for launch planning in media and entertainment. Every claim carries a receipt from real Qloo taste data. Start with [docs/README.md](docs/README.md).
+A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like. Every claim about taste, audience or place cites a finding from real Qloo taste data. Start with [docs/README.md](docs/README.md).
 
 ## Stack
 
@@ -31,7 +31,7 @@ Before every commit, push or PR, and while implementing, flag anything that goes
 ## Hard rules
 
 1. Scores, verdicts and confidence are computed by code from values Qloo returned. The model never sets a number.
-2. Every Qloo call returns `{ data, call }`. Each tool turns its calls into receipts. Every claim in an output links to a receipt.
+2. Every Qloo call returns `{ data, call }`. Each tool turns its calls into receipts, and code turns results into findings. Every grounded line cites a finding; playbook lines are labelled and cite nothing. Code checks every line ([spec §6.2](docs/product/spec.md)).
 3. Do not treat any Qloo endpoint as verified until [docs/backend/qloo.md](docs/backend/qloo.md) says so. If unsure, leave a `TODO(verify)`.
 4. No literal colours in components. Use design tokens. Verdicts always show a glyph and a word.
 5. Validate untrusted data at the boundary, once. No `any`, no fake validation casts. See [docs/typescript.md](docs/typescript.md).

@@ -12,7 +12,7 @@ Avoid on purpose: gradients (except the one soft wash per marketing page, §6), 
 
 1. **Quiet by default.** Colour, motion and weight are spent only where they carry meaning.
 2. **Decision first.** Every output opens with the bottom line and the next step. Detail sits one click down.
-3. **Show the evidence, plainly.** Verdicts are an icon plus a word plus a colour. Confidence is a word with a three bar meter. Never a percentage. Every claim has a receipt.
+3. **Show the evidence, plainly.** Verdicts are an icon plus a word plus a colour. Confidence is a word with a three bar meter. Never a percentage. Every claim about taste cites a finding, and launch practice is labelled Playbook.
 4. **Say what things mean.** Each tab opens with one sentence on what it shows. Each start option says what you get and what you bring.
 5. **Few choices at a time.** One message box to start. The agent states its assumptions instead of asking, and asks one question card at a time only when a wrong assumption would waste the run. Four main tabs, rest under More.
 8. **Say it, do not navigate it.** Every capability is something you can ask for in the chat. A new feature is a next step the agent can suggest, not a new page or tab.
@@ -134,7 +134,7 @@ Headings use text wrap balance. Running text stays under 70 characters wide.
   * **Headline marks.** The hero sets "Plans" in indigo over a soft `--accent-soft` highlighter band that sweeps in, and draws a `--holds` stroke under "check". Restraint matters: one mark per verb, the rest of the headline in plain ink.
   * **Motion.** `marketing.css`: headline words rise in on load; `<Reveal>` starts a section's motion once, when an eighth of it is on screen (timeline axis draws, marks paint in, the lift marker slides); the prompt marquee and the data flow tokens loop. Every one stops under `prefers-reduced-motion`.
   * **Inner pages** open with `PageHero`: a large title, one lead, and a companion beside it that differs per page (the agent trace on How it works, the verdict legend on Example, a jump index on Use cases, colour tiles on Categories, the lift formula on Method, the four promises on Trust). The sections under it change composition from band to band: steps that alternate sides, each with an icon tile instead of a number and a round arrow on the seam to the next step (`NextStep` in `how/steps.tsx`), a belief to call to verdict table, ranked bars, a calendar of dates, solid category fields beside white coverage columns, a docs layout with a sticky contents list and threshold scales (`scale.tsx`), a ledger table and a roles matrix. Long reading (Method, Privacy) sits in a 68ch column with the contents list on the left from 1000px, lighting the section being read (`section-nav.tsx`).
-  * The positioning line, "A verifiable AI agent for launch planning in media and entertainment", sits as a muted line above the hero headline and in the footer, and Qloo is named wherever a claim depends on it.
+  * The positioning line, "Launch plans grounded in what audiences actually like", sits as a muted line above the hero headline and in the footer, and Qloo is named wherever a claim depends on it.
   * **Sticky steps** (`sticky-steps.tsx`), the scroll pattern Calendly uses: the text for each step scrolls past while one picture stays pinned beside it and swaps to the step crossing the middle of the screen; the other steps fade to 25 percent, and pictures not showing are `inert`. Used twice on the home page, no more: the four jobs in launch order (the chat for each job) and the five categories (a solid colour panel with what Oraqul tests). From 1000px; below that each step shows its picture under its text; the category panel then drops its name row and minimum height. No layered background parallax: a transformed layer also breaks the taste discs' blend mode.
   * **Signs of an agent.** Oraqul must read as an AI agent, not a dashboard, and the signs are honest ones: its name in accent where it speaks (in the chat, the agent run, With Oraqul), a moving bar and shimmering label while it works (`.mk-thinking`, `.shimmer-text`), a blinking caret on text it is writing (`.mk-caret`), and an agent run whose lines stream in (`.mk-stream`) with the engine's real tool names and its red team step, replayable with Run again. No glowing orbs, chat bubbles with robots or gradients.
   * **FAQ** uses native `details` disclosures. Answers say only what the product does today.
@@ -175,7 +175,7 @@ Small chip, radius 6, 12px, a solid `--button` fill with no outline and the labe
 Card: `--card` fill with `--elev-1` and no outline, radius 12; hover fills to `--card-hover`. Line item (`.ln`): radius 10, padding 12 by 16, title, one line of detail, verdict pill and confidence on the right. A changed line gets the soft accent fill, plus the word "Updated" and what it was before.
 
 ### 7.9 Tabs
-A segmented control: `--surface2` track, radius 8, padding 4. Each tab radius 6, padding 6 by 12. The selected tab is a raised `--card`. Show four tabs by default (Summary, Plan, Assumptions, Evidence) plus the current tab. The rest sit under a "More (n)" tab that toggles to "Fewer".
+A segmented control: `--surface2` track, radius 8, padding 4. Each tab radius 6, padding 6 by 12. The selected tab is a raised `--card`. A launch plan opens on Plan, then Audience, Assumptions and Evidence, with no note above the plan (and What changed for a scenario): the API lists them in order and the first is the default. Other outputs show four tabs by default (Summary, Plan, Assumptions, Evidence) plus the current tab. The rest sit under a "More (n)" tab that toggles to "Fewer".
 
 ### 7.10 Tab note
 A single muted sentence above the content, 13.5px, max 68 characters wide. Every tab has one. Keep the wording in section 10.
@@ -193,13 +193,18 @@ In the chat an output is one line: a button with its kind and label that opens t
 Radius 12, padding 16, on `--inset`. The prompt in 15.5px weight 600. Options are rows (radius 10, `--card` fill on the `--inset` question card) with a keycap number on the left, label, and a muted description on the right. Hover deepens the fill. Selected gets the soft accent fill. Once answered the card folds to one muted line, a tick and "Answered: ...", closed by default; it opens to show the question.
 
 ### 7.15 Agent trace
-A card (radius 14). While running: a 2px progress bar across the top, a small "Working" label with "Step n of m", and one row per step. The running row has a spinner and a shimmering label. Finished rows have a green tick. When done it collapses to "Agent trace, n steps" with a chevron. Steps are plain sentences.
+A card (radius 14). While running: a 2px progress bar across the top, a small "Working" label with "Step n of m", and one row per step. The running row has a spinner and a shimmering label. Finished rows have a green tick. When done it collapses to "Agent trace, n steps" with a chevron. Steps are plain sentences. Findings, what Qloo returned as one sentence each, sit under the steps in muted text: the latest three while it runs, all of them in the folded trace. No icons, no counts, no ids.
 
 ### 7.16 Charts
 Inline SVG or CSS. Every chart has a legend, a hover tooltip and a "View as table" toggle. Verdict colours carry a glyph in the legend. Bars grow from their baseline on first view. Series colours come from `--s1` and `--s2` and the verdict tokens, never from category colours.
 
 ### 7.17 Receipt drawer
 A sheet from the right, inset 10px, radius 12, 420px wide, with a line border and the floating shadow. Contents: label "Receipt", the claim, a verdict pill, then Call id, Endpoint, Input, Returned, How it was decided, Confidence, and the example response shape in a mono code box. A note on what leaves the team and a Close button.
+
+A finding opens in the same sheet, labelled "Finding": its sentence, Asked (the comps and the context), Returned (the names, with year or address), How it was decided and Confidence. Call id, Endpoint and the response shape show only when the drawer is opened from the Evidence tab.
+
+### 7.17a Plan document
+A launch plan reads as a document, in the chat and on the plan page (`PlanDocument`): no cards, chips or badges. "In brief" first: three numbered moves in the display face at 19px, each with a small accent number tile. Then each section under a 20px display heading, with groups under a 14px bold subheading and lines as plain 15.5px paragraphs with a small muted bullet. The reading column is 720px. What a line rests on is a quiet raised number after it (muted, dotted underline, accent on hover) that opens the finding in the receipt drawer; a line with nothing behind it carries no mark. Nothing about confidence, tests or data limits appears in the plan. In the chat the plan is the whole card: a header with the kind tag and label, the Export menu and "Open plan", then the document. A changed line gets "New" or "Updated" and "Was: …".
 
 ### 7.18 Search palette (⌘K)
 A centred 600px panel, radius 12, on the scrim. Search field with an esc keycap. Results grouped as Go to, Categories, Projects, Outputs, Actions, each with its icon. Arrow keys move, Enter opens. A footer shows the keys.
@@ -210,6 +215,9 @@ Modal radius 12, on `--canvas` (so white cards inside it show, like the main pan
 ### 7.20 Icons
 [Lucide](https://lucide.dev) (ISC licence) through the `Icon` component in `packages/ui`, at 1.75px stroke, 18px by default and 14 to 16px inside buttons, `currentColor`. Screens use our names, never Lucide directly, and the set holds only what is used. Icons stay out of section titles, chips and receipt chips. On buttons they go before the word for the verbs in §7.2, and an icon replaces the word only on an icon button with an `aria-label` and a tooltip. Navigation, the five categories (with their colour), the agent's own things in accent (Next steps, Ask Oraqul, Current plan), plus, send, attach, close, pin, search, delete, sign out, copy, export, share, back, home and the light or dark switch all use the set.
 
+
+### 7.20a Export menu
+On a launch plan, "Export brief" becomes an "Export" button (export icon before the word, chevron after) that opens a menu in the Dropdown's look (§7.21): Download PDF, Download Word and Copy as Markdown, each with a muted line on what it is for. All three come from the API (`GET /outputs/:id/export/:format`), laid out as a document with the sources at the end, never the printed page. Arrow keys, Home, End, Escape, and focus back to the button. Hidden below 900px like Export brief on the page.
 
 ### 7.21 Dropdown
 Our own select, never the browser's. Two kinds from one component: a normal **Dropdown** for a handful of options (a role, a plan to compare), and a **SearchDropdown** when the list is long or people know the name (cities, entities), with a search box at the top of the menu.
@@ -261,6 +269,7 @@ Use plain words. Short sentences. No jargon without a one line explanation next 
 | The category's own word when naming the event: a film or series release (or premiere), an album or tour, a book launch, a podcast season or launch, a game launch | One word forced on every category, such as a book release or a podcast drop |
 | Holds, Weak, Breaks, Could not test | Validated, Invalidated, Inconclusive |
 | Receipt (the exact Qloo call behind a claim) | Provenance, Citation, Trace id |
+| In brief (the three moves), To sharpen this plan (inputs the team could add) | Executive summary, Gaps, Could not test, Low confidence in a plan |
 | Bottom line, Do this | Executive summary, Recommendations |
 | Could not test | N/A, Unavailable |
 | Low confidence | 42 percent |

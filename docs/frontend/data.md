@@ -29,7 +29,7 @@ Pages are async server components. They call fetchers and pass the result to cli
 - Never fetch in a layout, with one exception: the signed in shell (`app/(app)/layout.tsx`) shows the team, member count and person in its sidebar. Each part sits in its own `<Suspense>`, reads through `getShellData` (`lib/api/shell.ts`, one fetch per request) and uses `serverGetIfSignedIn`, so a 401 gives nothing instead of a redirect and the page keeps the return path. A failure also renders nothing, because the page reports a down API itself.
 - Fetchers are not cached unless the route says so on purpose. User data is per session.
 - Independent fetches in one page start together (`Promise.all`). Slow, non-critical parts go inside `<Suspense>` so the rest of the page shows first.
-- Do not fetch in a client component with `useEffect`. If a client component needs data, the parent fetches it and passes it down.
+- Do not fetch in a client component with `useEffect`. If a client component needs data, the parent fetches it and passes it down. The one exception is data a person asks for with a click inside an open panel, such as comparing two plans: `clientGet` in `lib/api/client.ts`, called from the event handler, never from an effect. A file the person asks for, such as an exported plan, is `clientFile` the same way (`exportOutput` in `lib/api/projects.ts`), so the session cookie goes with it.
 
 The session cookie is set by the API with `Domain` on the shared parent domain, so the web app and API are same site and server components can read it. See [architecture.md](../architecture.md#sessions-and-domains).
 
@@ -48,6 +48,7 @@ Runs stream over server sent events from the API. The event types and their sche
 
 - Each event is parsed once with the schema as it arrives. Unknown or malformed events are reported, not rendered.
 - Render from the event type with a `switch` over the discriminated union, so a new event type is a compile error until handled.
+- A `finding` event adds to the running trace item's `findings`; the stored transcript folds them the same way, so a reload shows what streamed.
 - Answers to question cards are posted back as messages through a mutation helper.
 - A dropped stream shows a plain message with a retry. It never leaves the screen looking finished.
 
@@ -90,7 +91,7 @@ TODO(verify): `unauthorized()` and `unauthorized.tsx` are experimental in this N
 
 Projects, chats, the overview and pins come from the API (`lib/api/projects-server.ts` for reads, `lib/api/projects.ts` for writes). A chat follows its run on the event stream through `_workspace/chat/use-thread-events.ts` and `live-chat.tsx`; the stream's stored events carry their seq as the SSE id, and the hook drops ones it has seen. The sidebar's pins, recents and Needs you count, and the search palette, are read once per request in `getSidebarProjects`.
 
-Outputs, receipts and share links are not served by the API yet. Until they are, `apps/web/src/lib/demo/` stands in for them (the output page, its dock chat, `/s/:token` and `/examples`), so those screens can be built and reviewed now.
+Outputs and their receipts come from the API: `GET /outputs/:id` (`getOutputDetail` in `lib/api/projects-server.ts`) feeds the output page, whose dock is the thread's `LiveChat`, and `GET /threads/:id` and `GET /projects/:id` list the project's outputs. Plan comparison is `GET /projects/:id/compare` (`comparePlans`). Share links are not served yet, so `apps/web/src/lib/demo/` still stands in for `/s/:token` and `/examples`, and the output page has no Share button until `POST /outputs/:id/share` exists.
 
 - Shapes are the draft schemas in `packages/schema` (`brief.ts`, `output.ts`, `thread.ts`, `projectSchema`, `categoryInfoSchema`). Every output the demo makes is parsed with `outputSchema`, so a drift fails loudly.
 - `lib/demo/queries.ts` has one function per endpoint in spec §7 (`getOverview`, `listProjects`, `getProjectDetail`, `getThreadDetail`, `getOutputDetail`, `comparePlans`, `getShared`). `lib/demo/actions.ts` mirrors the mutation helpers. Screens import only these two, `use-demo.ts` and `catalog.ts`.

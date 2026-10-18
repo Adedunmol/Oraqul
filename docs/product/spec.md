@@ -73,7 +73,7 @@ Agents do not call each other. One exception: Books may call `askAgent("film", q
 
 ### 3.5 Loop limits
 
-Max steps per run, max Qloo calls per run (call budget), and a stop rule: stop when no candidate beats the current plan by a set margin, or say what input would change the verdict. Follow up requests rerun only the lines whose inputs changed.
+Max steps per run, max Qloo calls per run (call budget, `QLOO_CALL_BUDGET`), and a stop rule. The budget is per run, not per thread or team: a run is one `runs` row, so a run that resumes after a question starts a new budget, and a consult spends its caller's. The stop rule: stop when no candidate beats the current plan by a set margin, or say what input would change the verdict. Follow up requests rerun only the lines whose inputs changed.
 
 ### 3.6 Plan and not a plan
 
@@ -104,27 +104,49 @@ Memory is context the agent starts from so the person does not repeat themselves
 
 ## 4. Tools
 
-Every tool returns `{ data, receipt }`. The model sees `data` and a receipt id, never raw Qloo payloads beyond what the tool chooses to return.
+Every tool returns `{ data, receipts }`, one receipt per Qloo call it made, and `data` names the receipt behind each item. The model sees `data` and the receipt ids, never raw Qloo payloads beyond what the tool chooses to return.
 
 | Tool | What it does |
 |---|---|
 | `searchEntity(name, type)` | Qloo search. Returns candidates. Ambiguous results become an entity match question card. |
-| `resolveBundle(title, comps, talent, tags)` | Describes the launch as a bundle of anchors: comps, talent and tags. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. |
+| `resolveBundle(names, types)` | Describes the launch as a bundle of anchors by finding each comparable title in Qloo, one search each. An anchor counts only on one exact name match; several are a pick for the user, none is not found. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. Talent and tags are not anchors yet: a person was rejected as a signal and tags alone were noisy ([qloo.md](../backend/qloo.md#what-the-live-run-showed)). |
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
-| `lift(candidates, baseline)` | Lift over a neutral audience, from one ranking call. |
-| `rankPlaces(entities, places)` | City or territory ranking by lift, one call. Cities from any region. A city with too few cells is not ranked. |
-| `compareAudiences(a, b)` | Shared audience between two entity sets. Used for rival overlap, comp shelf, fan base bridge. |
+| `lift(entities, type, candidates, baseline)` | Lift of candidate titles over a baseline of other kinds for the anchors' audience, from one scoring call, then one rerun per anchor left out (§5.1). Verified for books; for films and series `TODO(verify)`. |
+| `rankPlaces(entities, places)` | City ranking by mean cell affinity, from one heatmap call over every city's box, then one rerun per anchor left out (§5.1). Cities from any region in the engine's city table (`places.ts`); a city not in it, or with fewer than 25 cells, is not ranked. Box size `TODO(verify)`. |
+| `compareAudiences(entities, rivals)` | Rival overlap: each rival scored against the anchors in one call, overlap = affinity × 100 (§5), with leave one out. Built for the rival date check. |
 | `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. Worked on one live run, see [qloo.md](../backend/qloo.md#what-the-live-run-showed). The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
-| `partnerFit(segment, candidates, type)` | Brand, creator, act or show affinity for a segment. |
+| `partnerFit(entities, type, take, releasedFrom?, exclude?)` | The films, series, brands or podcasts the anchors' audience likes most, from one open call. Not used by Film builds any more: an open list drifts to what is popular overall (§4.1). |
+| `findTaste(entities, type, tags?, city?, ages?, audiences?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, brand, place), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md) (2026-10-17). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. |
+| `resolveTags(phrases)` | A phrase and the urn prefix it must start with to a Qloo tag, one lookup each. Brand categories need the parent type `urn:entity:brand`. No match is null, never a guess. |
+| `themeTags(entities, kinds)` | The theme, archetype, audience or plot tags that best describe the anchors, one call per kind. |
 | `tagWeights(entities)` | Tag weights in an audience, for the podcast topic map. |
 | `momentum(entity)` | Trend over time, where Qloo supplies it. |
 | `explain(receiptId)` | Reads back a receipt in plain words. |
 | `applyScenario(brief, change)` | Marks dependent lines, reruns only those, returns the diff. |
 | `compareResults(brief, results)` | Planned against actual shares, the largest negative and positive gaps. |
-| `exportBrief(output)` | Builds the one page brief and appendix. |
+| `toMarkdown(output)`, `toDocx(output)` | The plan as Markdown or Word, in `apps/api/src/outputs/export.ts`: grounded lines footnoted to findings, playbook lines labelled, an evidence appendix, no raw Qloo data. PDF is built by the API too. |
 | `draftMessage(partner, evidence)` | Draft only. No send. |
 
 Tools live in `packages/engine/src/tools` and are the one toolbox for the agents and the MCP server. External tools (web search, page reader) may supplement but never replace Qloo evidence, and are labelled as such on the line.
+
+### 4.1 Film query catalog
+
+Stage 1 of every Film reply (direction: findings, then the reply). The model shapes the queries; code runs them and turns each result into a **finding**: a sentence built by code from one call, with the entities Qloo returned, the numbers the sentence states, a confidence (§5.1), a verdict when it tests a team decision, and the call ids behind it (`findingSchema`). Each finding streams into the chat as a `finding` event. The catalog is `FILM_QUERIES` in `packages/packs/src/film/catalog.ts`; which run is `queriesFor` from the plan's modules (§6.1).
+
+| Query | Runs for | Call | Shaped by |
+|---|---|---|---|
+| `audience` | core | `audienceBySegment` on the comps; also tests the team's age band and gender (§5.2) | — |
+| `markets` | core | `rankPlaces` over the team's cities plus up to 4 nearby table cities, which only ever appear as Worth a look | — |
+| `themes` | core | `themeTags`, theme and archetype | — |
+| `shows` | core | `findTaste` tv_show per city | diaspora cities first, series from the last 6 years |
+| `cinemas` | core, unless streaming | `findTaste` place with the movie theater category per city | the team's cities |
+| `music` | partnerships | `findTaste` artist per city | a music scene tag (pack default by country of origin, or the model's), the team's age band. No scene: not asked, and Gaps says why |
+| `brands` | partnerships | `findTaste` brand per category and city, 4 calls at most | brand categories (`urn:tag:genre:brand:*`), never luxury |
+| `films` | placement | `findTaste` movie | release country (full name), films from the last 3 years, or a genre tag with no country |
+| `podcasts` | publicity | `findTaste` podcast | a podcast genre tag, one city |
+| `community` | community | `findTaste` place per kind and city, 4 calls at most | place kinds such as church and university |
+
+The model (`ModelQueryPlanner`) may change the scene, categories, genres, place kinds and which of the team's cities each query uses. Code keeps only cities on the team's list, Worth a look cities from the city table, and short phrases with no personal detail, and resolves every phrase through `resolveTags`. With no key, `ScriptedQueryPlanner` uses the pack's defaults. The same brief gives the same queries.
 
 ## 5. Scoring layer
 
@@ -132,12 +154,49 @@ Computed in code, from values Qloo returned in the same run. The model explains 
 
 * **Lift.** `lift(x) = score(x) / score(baseline)`, both from one ranking call. Strong at 1.5 and above, usable 1.2 to 1.5, weak below 1.2.
 * **Verdict.** Per assumption: holds, weak, breaks, or cannot test. Rules are published in the receipt. An assumption with no Qloo signal is cannot test, never weak.
-* **Fit.** 0 to 100 for plan lines. 75 and above recommended, 50 to 74 usable, below 50 not recommended.
-* **Confidence.** High, medium, lower, set per line from the anchors behind it: how many, how well Qloo knows each (for example `popularity` and tags present), and whether they agree. A title that is not in Qloo does not lower it by itself, since that is the normal case before release. Few or weak anchors, or a place that returned few results, do. The leading ideas are how many comps actually returned data, and whether the candidate ranking holds when each comp is left out (see [qloo.md](../backend/qloo.md#recommended-approach-subject-to-change), subject to change). The exact rule is still to be written and coded. **Blocker:** the rule must be written here, with its thresholds, before the first category agent ships, since it shows on every line of every output. Until then no code sets confidence except the tools that already compute it, and nothing hard codes a value.
+* **Fit.** 0 to 100 for plan lines: lift on a 0 to 100 scale, `fit = 50 + (lift − 1.2) × 250 / 3`, rounded and kept between 0 and 100. Lift 1.2 is fit 50 and lift 1.5 is fit 75, so the fit bands line up with the lift bands. 75 and above recommended, 50 to 74 usable, below 50 not recommended.
+* **Confidence.** High, medium or lower, on every line. Rule in §5.1.
 * **Route score (music).** Weighted mean of lift over stops, weights `1, 0.9, 0.8, 0.7, ...` by position, plus the best order by lift for comparison.
-* **Rival overlap.** Shared audience between your title and a rival, from one comparison call. Above 60 risky, 35 to 60 moderate, below 35 low.
+* **Rival overlap.** How much your audience also likes a rival: each rival is scored against your comps in one scoring call (the call `lift` uses), and `overlap = affinity × 100`, rounded. Above 60 risky, 35 to 60 moderate, below 35 low. The band edges are checked on a live run before a plan leads with them. `TODO(verify)`
 * **Topic ownership (podcasts).** Tag weight in your audience divided by its weight in rival shows' audiences. Above 1 means yours.
 * **Held back.** Values signal and early adopter score stay out of the headline until validated. Premium tolerance is a taste proxy only.
+
+### 5.1 Confidence
+
+Confidence says how much the line rests on, not how good the result is. One function in `packages/engine` computes it from what the line's calls returned, and every tool uses it. Each check below sets a ceiling and the line takes the lowest. The receipt's rule names the check that set it, such as "medium: 2 of 4 comps returned an audience row". The thresholds are starting values, chosen from the 2026-10-15 runs in [qloo.md](../backend/qloo.md#what-the-live-run-showed), and are tuned on the Film golden runs. Change them here first.
+
+| Check | High | Medium | Lower |
+|---|---|---|---|
+| Anchors with data | 3 or more | 2 | 1 |
+| Known anchors, of those with data: `popularity` 0.3 or above | 2 or more | 1 | none |
+| Leave one out (place and scoring lines) | holds every time | | changes |
+| Margin: the deciding value against its nearest band edge | clear of it | within 0.05 lift, or 3 points of fit or overlap | |
+| Cells behind a ranked place | 100 or more | 25 to 99 | |
+
+* **Anchors with data.** For an audience line, the anchors that returned a demographics row. For a place or scoring line, the anchors whose leave one out rerun moved any value the line used: a comp that changes nothing contributed nothing, which is how a bundle that rests on one comp shows up.
+* **Leave one out.** Rerun the line's call once per anchor, with that anchor left out. It holds when the verdict and the order of the top three stay the same. When it changes, the receipt names the anchor the line rests on. It runs when 3 or more anchors are in the call. Audience lines skip it, since a few rows are too few to measure. If the call budget would not cover it, it is skipped and the line is at most medium, and the receipt says so.
+* **Places.** A place with fewer than 25 cells is not ranked. Its line is cannot test.
+* **Stand-ins.** A line read from a stand-in, such as the genre's audience in place of the comps', is lower and says so.
+* **Cannot test.** A cannot test line, or one whose call failed, is lower.
+* **Not lowered.** A title that is not in Qloo does not lower confidence by itself, since that is the normal case before release. Missing `popularity` counts as not known, never as zero.
+* **Lookups.** A search backs a match, not a taste claim: high for one clear match, lower when nothing matched or several share the top name. The anchor checks do not apply.
+* **Output.** An output's confidence is the lowest of the lines behind its headline and moves, and its reason is that line's.
+
+### 5.2 Film assumption tests (build)
+
+The read step turns the person's words into assumptions. Each kind below is tested by one call, and code turns the values into a verdict. A kind with no test is cannot test, and says why. Every value comes from the comps the person confirmed, as one bundle.
+
+| Assumption | Test | Holds | Weak | Breaks |
+|---|---|---|---|---|
+| The audience is a stated age band | `audienceBySegment` on the comps, rows averaged | the band is the top band, or within 0.05 of it | its affinity is above 0 but not near the top | its affinity is 0 or below |
+| The audience leans to a stated gender | the same call | that gender's affinity is above 0.05 | between −0.05 and 0.05 | below −0.05 |
+| A stated place is a strong market | `rankPlaces` over the stated places and the city table | place lift 1.2 or above | 1.0 to 1.2 | below 1.0 |
+| The comps describe one audience (unstated, always) | the leave one out check inside `rankPlaces` | the city order holds with each comp left out | it rests on one comp | |
+
+* **Place lift.** A city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city in that call. Banded as lift (§5). A place not in the city table, or under the cell floor, is cannot test.
+* **Audience index.** An age or gender affinity from Qloo (about −1 to 1, 0 neutral) is shown as `50 + 50 × affinity`, rounded and kept between 0 and 100, so 50 is neutral. It is a taste index, never a share of viewers.
+* **The team's decisions are constraints.** A place that is weak or breaks keeps its place in the plan; its fix orders it after the team's strongest city. An age band that breaks keeps the band and leads with its strongest part. Cities the team did not name are ranked in the same call but shown only under Worth a look, and only when they beat the team's weakest city.
+* **Plan lines** come from findings (§4.1, §6.1), not from lift over a baseline: lift rewards anything niche. Lift is kept as a confidence aid, such as a partner brief's fit.
 
 ## 6. Data model
 
@@ -154,9 +213,9 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 | `invites` | team_id, email, role, token_hash, invited_by, expires_at, accepted_at; one pending invite per team and email |
 | `projects` | team_id, category, name, mode (build, audit, rescue), kind, genre, places[], window, lead, comps, inputs jsonb, status, created_by, updated_at. Saved from the first message as a draft (`status` intake, no name, category or mode) that no list shows until the router has read it, then `active` |
 | `threads` | project_id, name, base_output_id, from_output_id, fresh bool, team_memory bool (planned, default true), summary (planned, a long chat's summary), created_by, updated_at |
-| `messages` | thread_id, role (user, agent, question, trace, output), body jsonb, seq; unique per thread and seq, which is where an event stream resumes |
-| `outputs` | thread_id, project_id, kind (build, audit, scenario, rescue, date, partner), parent_id, title, brief jsonb, changed_ids[], headline, moves jsonb, confidence jsonb, data_as_of |
-| `receipts` | run_id, thread_id, output_id (nullable), line_id, endpoint, input jsonb, returned jsonb, rule text, confidence, source (live, demo), called_at, call_id. A receipt belongs to the run that made the call; an answer (§3.6) has no output, so `output_id` is set only when a plan saves one. Today the table has `output_id` not null and no `run_id`, `thread_id` or `source`: change it before the first agent ships |
+| `messages` | thread_id, role (user, agent, question, trace, output), body jsonb (a trace row holds a step or a finding), seq; unique per thread and seq, which is where an event stream resumes |
+| `outputs` | thread_id, project_id, kind (build, audit, scenario, rescue, date, partner), parent_id, title, brief jsonb, plan jsonb (the launch plan, §6.1; null for the older brief shape), inputs jsonb (what the agent built it from, so a what-if can rerun it), changed_ids[], headline, moves jsonb, confidence jsonb, data_as_of |
+| `receipts` | run_id, thread_id, output_id (nullable), line_id, endpoint, input jsonb, returned jsonb, rule text, confidence (high, medium, lower), source (qloo, demo), called_at, call_id. A receipt belongs to the run that made the call; an answer (§3.6) has no output, so `output_id` is set only when a plan saves one |
 | `share_links` | output_id, token, enabled |
 | `runs` | thread_id, agent, job, steps jsonb, state jsonb, qloo_calls int, tokens int, status (running, waiting, done, error), stop_reason, finished_at. One row per run segment; `state` holds what the next segment needs, such as the router's open question |
 | `pins` | user_id, project_id; unique per pair. Three per person at most, kept by the API |
@@ -167,6 +226,39 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 `brief` shape (Zod, in `packages/schema`): `audience[]`, `assumptions[]`, plan sections `s1` to `s4`, `places[]`, `dates[]`, `partners[]`, `risks[]`, `cannot[]`, `planned[]`, `aLabels[]`, `results`, `course`, plus category data: `grid` (music), `shelf` and `bridge` (books), `topics` (podcasts), `fan` (games). Every line has an `id` that is stable across versions, which is how diffs and "changed" marks work.
 
 Privacy: only public entity names, place names and age bands go to Qloo. Uploaded results are stored as aggregates. Files are parsed, personal columns dropped, and the raw file deleted.
+
+### 6.1 Launch plan
+
+`launchPlanSchema` in `packages/schema/src/plan.ts`. A minimum core plus modules, written by the model from the findings (stage 2) and checked by code (§6.2).
+
+* **Core, always:** Bottom line (up to three moves), Positioning (hook, three key messages, the comps and what each stands for), Audience, Markets (the team's cities in order, then Worth a look), Gaps (last).
+* **Modules:** Partnerships, Creative placement, Publicity and media, Community and grassroots, Release route and window, Timeline, Release cadence, Budget split, What to measure, Risks. `pickModules` in the Film pack: a full plan (a launch plan, a go-to-market, or an unclear ask) gets every module the brief does not rule out; a narrow ask gets only the module it names. Release cadence is for series, and Creative placement is dropped for a film going straight to streaming. Budget split is always offered: shares with no budget, amounts with one.
+* **Lines:** `{ id, kind, text, findingIds, sourceIds, names, group }`. `grounded` lines cite findings; `playbook` lines cite no finding. Either may cite web sources (`sourceIds`), which is the only way a line may state a date, a rival release or a market figure.
+* **Written by code:** "To sharpen this plan" (the section key stays `gaps`: only inputs the team could add and what each would change; what could not be asked goes to the Assumptions tab) and Budget split (the pack's fixed convention table as shares, with amounts computed when a budget is given, labelled a starting split).
+* **Guaranteed by code:** the bottom line names every city the team chose and anchors the premiere in the home market (the city in the film's country of origin), with the rest following within days; Markets has a line for each city; every comp the team named has a line in Positioning. Code writes any of these the model missed (`decisions.ts`).
+* **Web research:** when the writer's provider has search (OpenAI web search, Google Search grounding; `LLM_WEB_SEARCH`), a step before writing looks up release timing, rival releases, who distributes and shows films like this, and market numbers, then extracts discrete facts each tied to a page it came from (`research.ts`). Only genre, country, format, route, window and cities are sent, never the film's title or story. The writer may use a fact only by citing its id; the plan keeps only the pages a kept line cites, numbered with the audience footnotes, and exports list them under Sources. A failed or empty search writes the plan without the step.
+* **Also stored:** `comps` (each with `source` you or added, the Qloo match and the choice code made between same-name titles), `findings`, `dropped` (every line the check removed, with why), `writer` (`model` or `template`).
+* The headline is the bottom line's first move; moves point at the first finding they cite; the output's confidence is the lowest of those findings.
+
+**Brand partnerships.** A brand rarely pays an independent film in cash: the realistic ask is in kind or a co-promotion (product, a venue or hospitality, ticket giveaways, data or ride credits, ad space or airtime) for premiere presence, stills, clip rights and access to the audience. Qloo ranks brands by how much this audience likes them, not by who will partner, so the writer is told to skip global giants and luxury brands for a small campaign, to scale the ask to the budget in the brief (an independent release when none is given), and to say who to approach, what to ask for and what the film offers.
+
+### 6.2 Line check
+
+`checkLine` in `apps/api/src/agent/film/check.ts`, on every line the model writes. A line that fails is dropped and logged in `dropped`; the plan still saves. A core section left empty is filled from the templates and checked again.
+
+| Rule | Grounded | Playbook |
+|---|---|---|
+| Citations | at least one, each a finding of this run | none |
+| Names | every name in `names` or written in the text that is a finding entity must be in a finding it cites, or in the brief | only names in the brief |
+| Numbers | every number in the text must be one the cited findings state, or one in the brief | not checked |
+| Taste | — | no claim about what an audience likes (`TASTE_CLAIM` in the Film pack). Playbook lines may name any real launch entity; a name a finding returned makes the line grounded and cites that finding |
+| Plain words | no data jargon (lift, index, affinity, cells, findings, confidence) and no talk of what could not be measured | same |
+| Market figures | no money, admissions or screen counts the findings or a cited web fact do not state | none, unless a cited web fact states it |
+| Web sources | every `sourceId` is a source of this plan; every number in a line citing a page is the page's own or the brief's | same |
+| Shares | no percentage unless a cited finding states one: an index or a lift is not a share of people | — |
+| Worth a look | only lines citing the Worth a look finding | none |
+| Anywhere | no receipts, call ids or endpoints; the section must be in the plan; no repeated line in a section | same |
+| Bottom line | at most three moves; no city the team did not choose. It may say who to lead the creative with, even when that is not the team's age band | same |
 
 ## 7. API
 
@@ -198,7 +290,7 @@ POST   /threads/:threadId/messages    typed text or a card answer; 202, the repl
 POST   /threads/:threadId/read    marks what is stored so far as read
 GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
 GET    /outputs/:id           GET /outputs/:id/evidence
-GET    /outputs/:id/export    one page brief and appendix
+GET    /outputs/:id/export/:format    md, docx or pdf, built from the stored plan (§6.1)
 GET    /projects/:id/compare?a=&b=
 POST   /outputs/:id/share     PATCH /shares/:token (on or off)
 GET    /s/:token              read only view
@@ -225,7 +317,7 @@ The last two rows apply when projects belong to teams.
 
 ## 8. Events
 
-SSE event types: `trace.step`, `question`, `message`, `receipt`, `output.created`, `project.updated`, `run.stopped`, `error`, and planned `memory.used` (the items a run started from, for the chat's "Using" line, §3.7). `project.updated` carries the name, category, mode and chat name once the router has read them, so the workspace fills its skeleton without a reload. Events stored in the transcript carry their `seq` as the SSE id. Shapes are `threadEventSchema` in `packages/schema`. A `trace.step` names the agent that took it (`router`, `film`, `books→film` for a consult). A question has an id, the asking agent, its card type (single, multi, text, split, date, file, confirm, match) and its options. A `message` carries its claims, each with the receipt ids behind it. A `receipt` event streams each receipt as the tool makes it. `run.stopped` ends every run segment with a reason: `finished`, `waiting` (on a question), `budget`, `steps` or `error`. The web app renders cards from the event, and posts the answer back as a message.
+SSE event types: `trace.step`, `finding` (a Qloo result as a sentence, §4.1, stored on the trace and folded into the trace item), `question`, `message`, `receipt`, `output.created`, `project.updated`, `run.stopped`, `error`, and `memory.used` (the items a run started from, for the chat's "Using" line, §3.7; stored as a `context` message). `project.updated` carries the name, category, mode and chat name once the router has read them, so the workspace fills its skeleton without a reload. Events stored in the transcript carry their `seq` as the SSE id. Shapes are `threadEventSchema` in `packages/schema`. A `trace.step` names the agent that took it (`router`, `film`, `books→film` for a consult). A question has an id, the asking agent, its card type (single, multi, text, split, date, file, confirm, match) and its options. A `message` carries its claims, each with the receipt ids behind it. A `receipt` event streams each receipt as the tool makes it. `run.stopped` ends every run segment with a reason: `finished`, `waiting` (on a question), `budget`, `steps` or `error`. The web app renders cards from the event, and posts the answer back as a message.
 
 ## 9. Web app
 
