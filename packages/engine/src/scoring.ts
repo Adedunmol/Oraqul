@@ -45,6 +45,20 @@ export function routeScore(lifts: number[]): number {
   return weighted / total;
 }
 
+export interface RouteStop {
+  place: string;
+  lift: number;
+}
+
+/**
+ * The same stops with the strongest first, and the route score of that order (spec §5.4), to set
+ * beside the team's own order. Ties keep the team's order.
+ */
+export function bestRoute(stops: RouteStop[]): { order: string[]; score: number } {
+  const ordered = [...stops].sort((a, b) => b.lift - a.lift);
+  return { order: ordered.map((s) => s.place), score: routeScore(ordered.map((s) => s.lift)) };
+}
+
 /** Band edges and how close to one a value is near it (spec §5.1, margin). */
 export const bandEdges = {
   lift: { edges: [1.2, 1.5], within: 0.05 },

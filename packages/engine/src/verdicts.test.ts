@@ -6,6 +6,7 @@ import {
   compsVerdict,
   genderVerdict,
   placeVerdict,
+  routeVerdict,
 } from './verdicts';
 
 const ages = { '24_and_younger': 0.3, '25_to_29': 0.27, '35_to_44': 0.1, '55_and_older': -0.4 };
@@ -73,5 +74,21 @@ describe('audienceIndex and averageBands', () => {
       a: 0.30000000000000004,
       b: 0.4,
     });
+  });
+});
+
+describe('routeVerdict (spec §5.4)', () => {
+  it.each([
+    [1.5, 1.5, 'holds'],
+    [1.43, 1.5, 'holds'],
+    [1.4, 1.5, 'weak'],
+    [1.28, 1.5, 'weak'],
+    [1.2, 1.5, 'breaks'],
+  ] as const)('route score %s against best %s is %s', (actual, best, verdict) => {
+    expect(routeVerdict(actual, best).verdict).toBe(verdict);
+  });
+
+  it('cannot test a route with no positive lift', () => {
+    expect(routeVerdict(0, 0).verdict).toBe('cant');
   });
 });

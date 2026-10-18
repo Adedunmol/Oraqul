@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  bestRoute,
   fitBand,
   fitFromLift,
   lift,
@@ -49,6 +50,34 @@ describe('overlapBand', () => {
     [34, 'low'],
   ] as const)('%s is %s', (value, band) => {
     expect(overlapBand(value)).toBe(band);
+  });
+});
+
+describe('bestRoute', () => {
+  const stops = [
+    { place: 'Accra', lift: 1.0 },
+    { place: 'Lagos', lift: 1.6 },
+    { place: 'London', lift: 1.3 },
+  ];
+
+  it('orders the stops by lift, strongest first', () => {
+    expect(bestRoute(stops).order).toEqual(['Lagos', 'London', 'Accra']);
+  });
+
+  it('scores the strongest order at least as high as the team order', () => {
+    expect(bestRoute(stops).score).toBeGreaterThan(routeScore(stops.map((s) => s.lift)));
+  });
+
+  it('keeps the team order when lifts tie', () => {
+    const tied = [
+      { place: 'A', lift: 1.2 },
+      { place: 'B', lift: 1.2 },
+    ];
+    expect(bestRoute(tied).order).toEqual(['A', 'B']);
+  });
+
+  it('throws on no stops', () => {
+    expect(() => bestRoute([])).toThrow();
   });
 });
 

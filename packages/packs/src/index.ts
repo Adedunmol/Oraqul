@@ -12,3 +12,4 @@ export type { CategoryPack } from './types';
 export const packs: Record<Category, CategoryPack> = { film, music, books, podcasts, games };
 export { demoProjects } from './demo';
 export * as filmPlan from './film/plan';
+export * as musicPlan from './music/plan';

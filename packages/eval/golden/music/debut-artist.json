@@ -1,0 +1,82 @@
+{
+  "title": "First Light",
+  "brief": "Launch plan for \"First Light\", a debut afrobeats EP from artist \"Zanzibar Quill Ensemble\" for 18 to 29 year olds, playing Lagos and London. Sound-alikes: \"Ada Lux\", \"Kola Wave\" and \"Sade Rhythm\".",
+  "replies": [],
+  "expect": {
+    "headline": "Start in Lagos, then London: that is where the artist's audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "weak",
+      "a-place-london": "breaks",
+      "a-comps": "weak",
+      "a-route": "holds"
+    },
+    "cities": ["Lagos", "London"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "you"
+      },
+      {
+        "name": "Sade Rhythm",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-a-route": ["Lagos", "London"],
+      "f-markets": ["Lagos", "London"],
+      "f-worth-a-look": ["Manchester"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
+      "f-shows-lagos": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
+      "f-shows-london": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
+      "f-community-university-lagos": ["Lagoon City University"]
+    },
+    "sections": {
+      "bottom-line": "2/0",
+      "positioning": "0/2",
+      "audience": "3/0",
+      "markets": "3/0",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "community": "1/1",
+      "tour": "1/0",
+      "sync": "2/0",
+      "timeline": "0/5",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "2/1",
+      "gaps": "0/2"
+    },
+    "moves": ["f-markets", "f-audience"],
+    "grounding": {
+      "lines": 31,
+      "backed": 55,
+      "rankKept": 100,
+      "findingsUsed": 12,
+      "cities": {
+        "Lagos": 8,
+        "London": 6
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Zanzibar Quill Ensemble",
+      "Streams, ticket sales and revenue",
+      "Support acts in Lagos",
+      "Support acts in London",
+      "Recent films",
+      "Universities in London"
+    ]
+  }
+}
