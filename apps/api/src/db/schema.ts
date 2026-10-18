@@ -225,6 +225,8 @@ export const outputs = pgTable('outputs', {
   brief: jsonb('brief').notNull(),
   /** The launch plan (core sections, modules, findings) for outputs built on findings. */
   plan: jsonb('plan'),
+  /** The audit report (items, risks, alternatives, results) for an audit. Null for every other kind. */
+  report: jsonb('report'),
   /** What the plan was built from (the agent's reading and the comps it used), so a follow up can rerun it. */
   inputs: jsonb('inputs'),
   changedIds: text('changed_ids').array().notNull().default([]),

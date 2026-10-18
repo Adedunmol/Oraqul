@@ -41,7 +41,7 @@ const RECENT_THREADS = 4;
 const STATUS_BY_MODE: Record<StartMode, string> = {
   build: 'Planning',
   audit: 'Audit',
-  rescue: 'Rescue',
+  fix: 'Fix',
 };
 
 const commaList = z.array(z.string());

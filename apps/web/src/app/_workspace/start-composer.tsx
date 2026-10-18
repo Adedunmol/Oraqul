@@ -30,16 +30,17 @@ export const START_CHOICES: {
   {
     mode: 'audit',
     title: 'Check my plan',
-    say: 'Paste your plan or attach the file. I will test each audience assumption in it and show what holds and what breaks.',
+    say: 'Paste your plan or attach the file. I will test each assumption in it and show what holds and what breaks. If the launch is already out, add how it did and I will look for why it fell short.',
     placeholder: 'Paste your plan here, or attach it below',
     brings: 'You bring: your plan',
   },
   {
-    mode: 'rescue',
-    title: 'Fix one that missed',
-    say: 'Tell me what came out and how it did. Attach results if you have them, such as sales, streams, wishlists or downloads.',
-    placeholder: 'Neon Hours tour, Nov to Dec. Chicago and Austin sold under half',
-    brings: 'You bring: your results',
+    mode: 'fix',
+    title: 'Fix my plan',
+    say: 'Paste your plan or attach it. If the launch is out, add how it did, such as sales, streams, wishlists or downloads, and I will find what went wrong and fix the plan.',
+    placeholder:
+      'Paste your plan, and the results if it is out: Chicago and Austin sold under half',
+    brings: 'You bring: your plan, and results if it is out',
   },
 ];
 

@@ -31,7 +31,7 @@ export const music: DemoPack = {
       'Venues and promoters. Oraqul has no venue data',
       'New artists with a small catalogue. The read leans on sound alike artists and tags',
     ],
-    none: ['Streams, ticket sales and pricing. You supply them for a rescue.'],
+    none: ['Streams, ticket sales and pricing. You supply them for a fix.'],
   },
   fields: [
     ['Format', 'kind'],
@@ -116,7 +116,7 @@ export const music: DemoPack = {
       'Checking affinity for each candidate',
       'Drafting the brief with the evidence attached',
     ],
-    rescue: [
+    fix: [
       'Reading the ticket and stream numbers by city',
       'Comparing where the audience showed up with where the plan put them',
       'Finding which assumption broke',
@@ -458,7 +458,7 @@ export const music: DemoPack = {
       },
     },
   ],
-  rescue(b, g) {
+  fix(b, g) {
     const a2 = assumption(b, 'as2') ?? assumption(b, 'as1');
     if (a2) {
       a2.verdict = 'breaks';

@@ -20,7 +20,7 @@ export const games: DemoPack = {
       'Small indie titles. With few anchors the read rests on the studio and comp games',
       'Niche genres with few comparable games',
     ],
-    none: ['Wishlists, sales, player counts and retention. You supply them for a rescue'],
+    none: ['Wishlists, sales, player counts and retention. You supply them for a fix'],
   },
   fields: [
     ['Format', 'kind'],
@@ -107,7 +107,7 @@ export const games: DemoPack = {
       'Checking affinity for each candidate',
       'Drafting the brief with the evidence attached',
     ],
-    rescue: [
+    fix: [
       'Reading the wishlist and player numbers by region and platform',
       'Comparing who wishlisted with who the plan assumed',
       'Finding which assumption broke',
@@ -447,7 +447,7 @@ export const games: DemoPack = {
       },
     },
   ],
-  rescue(b, g) {
+  fix(b, g) {
     const a2 = assumption(b, 'as2');
     if (a2) {
       a2.verdict = 'breaks';

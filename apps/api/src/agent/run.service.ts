@@ -23,8 +23,10 @@ import { type Database, DB } from '../db/db.module.js';
 import { projects, runs, threads } from '../db/schema.js';
 import {
   type AgentRun,
+  ATTACHMENT_CHARS,
   CATEGORY_AGENTS,
   type CategoryAgents,
+  cutFiles,
   type Handoff,
   type Reply,
   ReplyError,
@@ -395,14 +397,16 @@ export class RunService implements OnModuleInit {
         resume,
       );
       await stored;
-      const outputId = await this.outputs.save({
+      const outputIds = await this.outputs.save({
         threadId,
         projectId,
         runId,
-        output: run.output,
+        outputs: [...(run.earlier ?? []), ...(run.output ? [run.output] : [])],
         receipts: run.receipts,
       });
-      if (outputId) await this.emit(threadId, { type: 'output.created', outputId });
+      for (const outputId of outputIds) {
+        await this.emit(threadId, { type: 'output.created', outputId });
+      }
       await this.stop(threadId, runId, run.reason, {
         state: run.state,
         steps,
@@ -561,7 +565,8 @@ interface RunRecord {
   job?: Handoff['mode'];
 }
 
-function forRouter({ text, files }: Said): string {
+function forRouter(message: Said): string {
+  const { text, files } = cutFiles(message, ATTACHMENT_CHARS);
   const parts = files.map((f) =>
     f.text ? `[File: ${f.name}]\n${f.text}` : `[Attached file: ${f.name}]`,
   );

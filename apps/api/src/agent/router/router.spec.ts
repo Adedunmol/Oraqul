@@ -91,7 +91,7 @@ describe('decide', () => {
           options: [
             { label: 'Release this song', category: null, mode: 'build' },
             { label: 'It is a song', category: 'music', mode: null },
-            { label: 'Fix issues in its current release', category: null, mode: 'rescue' },
+            { label: 'Fix issues in its current release', category: null, mode: 'fix' },
           ],
         },
       }),
@@ -208,7 +208,7 @@ describe('routeTurn', () => {
       reading({
         category: { value: 'music', quote: 'song' },
         title: { value: 'tomorrow', quote: 'titled tomorrow' },
-        mode: { value: 'rescue', quote: 'it flopped' },
+        mode: { value: 'fix', quote: 'it flopped' },
       }),
     );
     const state = newRouterState({});
@@ -218,7 +218,7 @@ describe('routeTurn', () => {
       kind: 'routed',
       title: 'tomorrow',
       category: 'music',
-      mode: 'rescue',
+      mode: 'fix',
     });
   });
 
@@ -235,6 +235,21 @@ describe('routeTurn', () => {
       category: 'books',
       mode: 'audit',
     });
+  });
+
+  it('keeps a chosen Check my plan when the plan says launch and release all through', async () => {
+    const state = newRouterState({ mode: 'audit', category: 'film' });
+    const { decision } = await routeTurn(
+      state,
+      { kind: 'message', text: 'Our release plan for "Night Ferry" is to launch in Lagos.' },
+      fixed(
+        reading({
+          title: { value: 'Night Ferry', quote: 'Night Ferry' },
+          mode: { value: 'build', quote: 'launch' },
+        }),
+      ),
+    );
+    expect(decision).toMatchObject({ kind: 'routed', mode: 'audit' });
   });
 
   it('rejects a pick that is not on the open card', async () => {
@@ -269,10 +284,8 @@ describe('ScriptedReader', () => {
     expect(r.question?.options.map((o) => o.category)).toEqual(['music', 'games']);
   });
 
-  it('reads a fix as a rescue even when it says release', async () => {
-    expect((await read('fix issues in the current release of my album')).mode?.value).toBe(
-      'rescue',
-    );
+  it('reads a fix even when it says release', async () => {
+    expect((await read('fix issues in the current release of my album')).mode?.value).toBe('fix');
   });
 
   it('reads a quoted title and a plan check', async () => {

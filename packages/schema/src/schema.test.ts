@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { answerSchema } from './agent';
 import { codeRequestSchema, codeSchema, nextPathSchema, passwordSchema } from './auth';
+import { startModes } from './categories';
 import { claimSchema } from './claim';
 import { threadEventSchema } from './events';
+import { outputNature } from './output';
 import { pinnedProjectsSchema } from './pin';
 import { launchPlanSchema } from './plan';
+import { auditReportSchema, launchResultsSchema } from './report';
 import { questionCardSchema, threadItemSchema } from './thread';
 
 const receiptId = '3f2b8c1e-6d6a-4c53-9b0e-0a1f4f1d2e11';
@@ -181,6 +184,79 @@ describe('launch plan and findings', () => {
     expect(launchPlanSchema.parse(plan).sections[0]?.lines).toHaveLength(2);
     expect(
       launchPlanSchema.safeParse({ ...plan, sections: [{ ...plan.sections[0], key: 'trailers' }] })
+        .success,
+    ).toBe(false);
+  });
+});
+
+describe('start modes and the shape of a reply', () => {
+  it('names the third mode fix, not rescue', () => {
+    expect(startModes).toEqual(['build', 'audit', 'fix']);
+  });
+
+  it('tells a plan from a report from a small brief', () => {
+    expect(['build', 'scenario', 'fix'].map((k) => outputNature(k as 'build'))).toEqual([
+      'plan',
+      'plan',
+      'plan',
+    ]);
+    expect(outputNature('audit')).toBe('report');
+    expect(outputNature('date')).toBe('brief');
+    expect(outputNature('partner')).toBe('brief');
+  });
+});
+
+describe('auditReportSchema', () => {
+  const item = {
+    id: 'a-place-lagos',
+    subject: 'place',
+    claim: 'Lagos is a strong market for this film',
+    source: 'Your message: “opening in Lagos”',
+    unstated: false,
+    verdict: 'breaks',
+    confidence: 'medium',
+    findingIds: ['f-a-place-lagos'],
+    why: 'The audience is thinner here than elsewhere.',
+    fix: {
+      id: 'fix-a-place-lagos',
+      kind: 'grounded',
+      text: 'Keep Lagos, and open it after London.',
+      findingIds: ['f-markets'],
+      names: ['Lagos', 'London'],
+      group: null,
+    },
+  };
+  const report = {
+    phase: 'pre',
+    items: [item],
+    risks: [],
+    alternatives: [],
+    results: null,
+    comps: [],
+    findings: [],
+    dropped: [],
+    writer: 'template',
+  };
+
+  it('parses a report and defaults its web sources', () => {
+    expect(auditReportSchema.parse(report).sources).toEqual([]);
+  });
+
+  it('rejects a verdict the product does not have', () => {
+    const bad = { ...report, items: [{ ...item, verdict: 'strong' }] };
+    expect(auditReportSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it('keeps results to aggregates by place', () => {
+    const results = {
+      asOf: null,
+      measure: 'tickets',
+      byPlace: [{ place: 'Lagos', value: 10 }],
+      byAge: null,
+    };
+    expect(launchResultsSchema.parse(results).byPlace).toHaveLength(1);
+    expect(
+      launchResultsSchema.safeParse({ ...results, byPlace: [{ place: 'Lagos', value: -1 }] })
         .success,
     ).toBe(false);
   });

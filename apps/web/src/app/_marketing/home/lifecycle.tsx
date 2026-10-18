@@ -92,7 +92,7 @@ const stages: Stage[] = [
   {
     id: 'fix',
     when: 'After launch day',
-    title: 'Fix one that missed',
+    title: 'Fix my plan',
     prompt: 'It missed. Here are our results by age band.',
     gets: 'Who came against who the plan expected, the belief that broke, and a plan built around them.',
     brings: 'Your results by region or age band.',

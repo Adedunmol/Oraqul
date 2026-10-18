@@ -173,7 +173,7 @@ export interface DScenario {
   apply(b: DBrief): void;
 }
 
-export type TraceKind = 'build' | 'audit' | 'date' | 'partner' | 'rescue';
+export type TraceKind = 'build' | 'audit' | 'date' | 'partner' | 'fix';
 
 export interface DemoPack {
   id: Category;
@@ -203,7 +203,7 @@ export interface DemoPack {
   rivalWord: string;
   quick: [date: string, results: string, partner: string];
   noFc: { re: RegExp; msg: string };
-  /** What the numbers a rescue needs are called, such as "box office or viewing numbers". */
+  /** What the numbers a fix needs are called, such as "box office or viewing numbers". */
   noFcWhat: string;
   mv: [PlanSectionKey, string][];
   lead(b: DBrief): string;
@@ -231,6 +231,6 @@ export interface DemoPack {
   };
   base(r: Project): DBrief;
   scen: DScenario[];
-  rescue(b: DBrief, g: DGaps): void;
+  fix(b: DBrief, g: DGaps): void;
   auditFix(b: DBrief): Record<string, string>;
 }

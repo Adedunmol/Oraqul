@@ -10,7 +10,7 @@ import { KindTag } from '../chat/chat-panel';
 import { Crumbs } from '../crumbs';
 import { formatDay } from '../format';
 import { copyText, toast } from '../toast';
-import { makeView, OutputContext } from './context';
+import { makeView, OutputContext, useOutputView } from './context';
 import { ExportMenu } from './export-menu';
 import { ExportModal, ShareModal } from './modals';
 import { ReceiptDrawer } from './receipt-drawer';
@@ -26,6 +26,13 @@ import {
   SummaryTab,
 } from './tabs-core';
 import {
+  AlternativesTab,
+  FixesTab,
+  ReportAssumptionsTab,
+  ReportResultsTab,
+  RisksTab,
+} from './tabs-report';
+import {
   BridgeTab,
   FanBaseTab,
   RegionsTab,
@@ -36,17 +43,31 @@ import {
   TopicsTab,
 } from './tabs-signature';
 
+// An audit report has its own assumptions and results; every other output keeps the older tabs.
+function Assumptions() {
+  const { output } = useOutputView();
+  return output.kind === 'audit' && output.report ? <ReportAssumptionsTab /> : <AssumptionsTab />;
+}
+
+function Results() {
+  const { output } = useOutputView();
+  return output.kind === 'audit' && output.report ? <ReportResultsTab /> : <ResultsTab />;
+}
+
 const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   summary: SummaryTab,
   audience: AudienceTab,
-  assumptions: AssumptionsTab,
+  assumptions: Assumptions,
   plan: PlanTab,
-  // Their lists sit at the end of Plan and Assumptions.
-  risks: PlanTab,
-  cannot: AssumptionsTab,
+  // On an older output the risks sit at the end of Plan, and what could not be tested at the end of
+  // Assumptions; an audit report lists its risks on their own.
+  risks: RisksTab,
+  cannot: Assumptions,
+  alternatives: AlternativesTab,
+  fixes: FixesTab,
   evidence: EvidenceTab,
   changes: ChangesTab,
-  results: ResultsTab,
+  results: Results,
   date: DateTab,
   partners: PartnersTab,
   territories: TerritoriesTab,
@@ -95,7 +116,10 @@ export function OutputView({
   const keys = output.tabs.map((t) => t.key);
   // The API lists the tabs in order: a launch plan opens on Plan, the older outputs on Summary.
   const first = keys[0] ?? 'summary';
-  const asked = initialTab ? (FOLDED[initialTab] ?? initialTab) : undefined;
+  const asked =
+    initialTab && keys.includes(initialTab)
+      ? initialTab
+      : initialTab && (FOLDED[initialTab] ?? initialTab);
   const [tab, setTab] = useState<OutputTabKey>(asked && keys.includes(asked) ? asked : first);
   const [more, setMore] = useState(false);
   const [receipt, setReceipt] = useState<{ lineId: string; ids: boolean } | null>(null);

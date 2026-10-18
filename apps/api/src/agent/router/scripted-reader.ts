@@ -14,13 +14,14 @@ const CATEGORY_WORDS: [Category, RegExp][] = [
   ['games', /\b(games?|gaming|dlc)\b/i],
 ];
 
-// Checked in this order: "fix the release" is a rescue even though it says release.
+// Checked in this order: "fix the release" is a fix even though it says release.
 const MODE_WORDS: [StartMode, RegExp][] = [
+  ['fix', /\b(fix|rescue|relaunch|rebuild|redo)\b/i],
+  // A launch that missed is first a question of why, so without a word asking for a fix it is an audit.
   [
-    'rescue',
-    /\b(fix|rescue|relaunch|underperform\w*|flopp?(?:ed)?|missed|sold (?:under|badly|poorly))\b/i,
+    'audit',
+    /\b(check|audit|review|test)\b[^.?!\n]{0,20}\bplan\b|\bwhy (?:did|has|have|was|were)\b[^.?!\n]{0,60}\b(?:fail\w*|flop\w*|underperform\w*|miss\w*|sell|sold)\b|\b(?:underperform\w*|flopp?(?:ed)?|missed|sold (?:under|badly|poorly))\b/i,
   ],
-  ['audit', /\b(check|audit|review|test)\b[^.?!\n]{0,20}\bplan\b/i],
   [
     'build',
     /\b(plan (?:the|a|my|our) (?:launch|release)|launch(?:ing)?|releas(?:e|ing)|premier(?:e|ing))\b/i,

@@ -294,7 +294,7 @@ export function buildBrief(r: BriefResults): FilmBrief {
     {
       id: 'cant-box-office',
       item: 'Box office and viewing numbers',
-      reason: 'Qloo has taste data, not sales. Add your own numbers for a rescue.',
+      reason: 'Qloo has taste data, not sales. Add your own numbers when you fix a plan.',
     },
     ...(r.read.window
       ? [

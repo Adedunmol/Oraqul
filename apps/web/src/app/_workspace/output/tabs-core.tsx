@@ -178,7 +178,7 @@ export function SummaryTab() {
           </Section>
         </>
       ) : null}
-      {output.kind === 'rescue' && b.results && output.resultsCopy ? (
+      {output.kind === 'fix' && b.results && output.resultsCopy ? (
         <ChartCard
           title={output.resultsCopy.chartTitle}
           note={output.resultsCopy.chartNote}
@@ -832,7 +832,7 @@ export function EvidenceTab() {
           No Qloo calls were needed for this output.
         </p>
       )}
-      {builtOn && (output.kind === 'scenario' || output.kind === 'rescue') ? (
+      {builtOn && (output.kind === 'scenario' || output.kind === 'fix') ? (
         <div className="rounded-2xl bg-card px-4 py-3.5">
           <b>Lines not listed here were not rerun.</b>
           <p className="text-muted">

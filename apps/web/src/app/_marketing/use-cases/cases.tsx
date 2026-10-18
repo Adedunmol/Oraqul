@@ -19,7 +19,7 @@ export const cases = [
   },
   {
     id: 'fix',
-    title: 'Fix one that missed',
+    title: 'Fix my plan',
     line: 'It is out and the numbers are not what you hoped.',
   },
   {
@@ -248,12 +248,12 @@ const bands: [string, number, number][] = [
   ['35 to 44', 15, 60],
 ];
 
-/** Fix one that missed leads with the picture: planned against actual as paired columns. */
+/** Fix my plan leads with the picture: planned against actual as paired columns. */
 export function FixCase() {
   return (
     <section
       id="fix"
-      aria-label="Fix one that missed"
+      aria-label="Fix my plan"
       className={`mk-lit bg-accent-soft ${band} scroll-mt-16`}
     >
       <div
@@ -303,7 +303,7 @@ export function FixCase() {
           </p>
         </Reveal>
         <div className="flex flex-col gap-6">
-          <h2 className={h2Class}>Fix one that missed</h2>
+          <h2 className={h2Class}>Fix my plan</h2>
           <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
             It is out and the people who came are not the people you planned for. Oraqul finds the
             belief that broke and rebuilds around who showed up.

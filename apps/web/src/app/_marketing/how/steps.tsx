@@ -128,7 +128,7 @@ export function Describe() {
           </div>
           <div className="mk-in flex flex-wrap items-center gap-2" style={stagger(2)}>
             <span className="text-[13.5px] text-muted">Not sure how to put it? Start from:</span>
-            {['Make a plan', 'Check my plan', 'Fix one that missed'].map((c, i) => (
+            {['Make a plan', 'Check my plan', 'Fix my plan'].map((c, i) => (
               <span
                 key={c}
                 className={`rounded-md px-2.5 py-1 text-[12.5px] ${i === 0 ? 'border border-accent/40 bg-accent-soft font-semibold text-accent' : 'bg-button'}`}

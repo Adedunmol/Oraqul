@@ -42,7 +42,9 @@ export type FollowUp =
   | { job: 'answer' }
   | { job: 'scenario'; change: Change }
   | { job: 'date'; rivals: { title: string; date: string }[] }
-  | { job: 'partner'; partner: string | null };
+  | { job: 'partner'; partner: string | null }
+  | { job: 'audit' }
+  | { job: 'fix' };
 
 export interface FollowUpInput {
   text: string;
@@ -59,6 +61,12 @@ function inWords(quoteText: string, text: string): boolean {
   const q = normalise(quoteText);
   return q !== '' && normalise(text).includes(q);
 }
+
+// Asking for a fix or an audit is plain words, so code reads it and no model decides it (spec §3.1).
+const FIX_ASK =
+  /\b(?:fix|improve|rebuild|redo|repair|relaunch)\b[^.?!\n]{0,30}\b(?:plan|it|this|launch)\b|\bnew (?:fixed |better )?plan\b|\b(?:write|make|generate|give me) (?:a |the )?(?:fixed|better|new) plan\b/i;
+const AUDIT_ASK =
+  /\b(?:audit|check|review|test)\b[^.?!\n]{0,20}\bplan\b|\bwhy (?:did|has|was|were)\b[^.?!\n]{0,60}\b(?:fail\w*|flop\w*|underperform\w*|miss\w*|sell|sold)\b/i;
 
 /**
  * Keeps only what the person said, then code picks the job. The model's own job is used only when
@@ -91,6 +99,8 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
       0 || change.gender !== null;
 
   if (rivals.length) return { job: 'date', rivals };
+  if (FIX_ASK.test(text)) return { job: 'fix' };
+  if (AUDIT_ASK.test(text)) return { job: 'audit' };
   if (/\bpartner|\boutreach\b|\bsponsor/i.test(text) && reading.job === 'partner') {
     return { job: 'partner', partner };
   }

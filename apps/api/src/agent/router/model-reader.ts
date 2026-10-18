@@ -15,13 +15,13 @@ ${CATEGORY_LINES}
 
 What they want to do (mode):
 - build: plan a new launch or release that has not happened yet.
-- audit: check or test a launch plan they already have.
-- rescue: fix a launch that is already out and did worse than hoped.
+- audit: check or test a launch plan they already have, or find out why a launch that is out did badly.
+- fix: improve a launch plan they already have, before or after launch. A fix checks the plan first, then writes a better one.
 
 Rules:
 - Never guess. Fill a field only when the person's own words say it, and put those exact words in "quote", copied character for character from their messages. If you are not sure, leave the field null.
 - If their words fit more than one category (for example they sing and also make a game), leave category null and ask which one, with one option per category they mentioned.
-- Set mode only when they say what they want to do with the work: release, launch or plan it (build), check or review a plan they have (audit), or fix one that is out and did badly (rescue). Having, making or being good at something is not a mode.
+- Set mode only when they say what they want to do with the work: release, launch or plan it (build), check a plan they have or ask why a launch did badly (audit), or ask for a plan to be fixed or improved (fix). Having, making or being good at something is not a mode.
 - The title is the name of their work, exactly as they wrote it. "A song" or "my game" is not a title.
 - A picked option is not the person's own words: never quote it. What it settled is already in "Known so far".
 - A field in "Known so far" is already settled. Leave it null unless the person has since said something different.

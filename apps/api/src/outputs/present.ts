@@ -1,9 +1,12 @@
 import { packs } from '@oraqul/packs';
 import {
+  type AuditReport,
+  auditReportSchema,
   type Brief,
   briefSchema,
   type Category,
   type EvidenceRow,
+  type Finding,
   type GlanceRow,
   type Job,
   type LaunchPlan,
@@ -29,9 +32,9 @@ type ReceiptRow = typeof receipts.$inferSelect;
 
 const KIND_LABEL: Record<Job, string> = {
   build: 'Plan',
-  audit: 'Audit',
+  audit: 'Audit report',
   scenario: 'Scenario',
-  rescue: 'Rescue',
+  fix: 'Fixed plan',
   date: 'Rival date check',
   partner: 'Partner brief',
 };
@@ -39,7 +42,7 @@ const PREFIX: Record<Job, string> = {
   build: 'v',
   scenario: 'S',
   audit: 'A',
-  rescue: 'R',
+  fix: 'F',
   date: 'D',
   partner: 'B',
 };
@@ -48,6 +51,10 @@ const PREFIX: Record<Job, string> = {
 const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
   summary: 'The short version: what to do first, and how sure Oraqul is.',
   audience: 'Who it is for, measured against Qloo taste data.',
+  risks: 'What could go wrong with the plan, most serious first, and what to do about it.',
+  alternatives: 'Stronger options the data points to. Your own choices stay in the plan.',
+  results: 'What the launch produced, compared with where the plan expected it.',
+  fixes: 'What the audit found weak or broken, beside the part of the new plan that answers it.',
   assumptions:
     'Every belief your plan rests on. Holds means Qloo data supports it. Breaks means it does not. Each one has a receipt: the exact Qloo call behind it. What could not be tested is at the end.',
   plan: 'The plan itself, section by section, then the risks to watch.',
@@ -61,6 +68,10 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   summary: 'Summary',
   audience: 'Audience',
   assumptions: 'Assumptions',
+  risks: 'Risks',
+  alternatives: 'Worth a look',
+  results: 'Results',
+  fixes: 'What was fixed',
   plan: 'Plan',
   evidence: 'Evidence',
   changes: 'What changed',
@@ -82,6 +93,14 @@ export interface PresentInput {
   parentBrief: Brief | null;
   /** The launch plan this one was built on, when it has one. */
   parentPlan?: LaunchPlan | null;
+  /** The audit report this one was written from. Set for a fixed plan. */
+  parentReport?: AuditReport | null;
+}
+
+/** The stored audit report, or null for every other kind of output. */
+export function storedReport(value: unknown): AuditReport | null {
+  const parsed = auditReportSchema.safeParse(value);
+  return parsed.success ? parsed.data : null;
 }
 
 /** The stored launch plan, or null for outputs saved in the older brief shape. */
@@ -99,13 +118,17 @@ export function presentOutput({
   version,
   parentBrief,
   parentPlan = null,
+  parentReport = null,
 }: PresentInput): Output {
   const brief = briefSchema.parse(row.brief);
   const plan = storedPlan(row.plan);
+  const audit = storedReport(row.report);
+  // A fixed plan carries the report it answers, so its screen can set each fix beside the plan.
+  const report = audit ?? (row.kind === 'fix' ? parentReport : null);
   const moves = movesSchema.parse(row.moves ?? []);
   const confidence = overallConfidenceSchema.parse(row.confidence);
   const pack = packs[category];
-  const counts = countVerdicts(brief);
+  const counts = audit ? countItems(audit) : countVerdicts(brief);
   const headline = row.headline ?? '';
   const summary = [
     headline,
@@ -115,17 +138,28 @@ export function presentOutput({
   const territories: OutputTabKey[] =
     category === 'film' && brief.places.length >= 2 ? ['territories'] : [];
   // A launch plan opens on the plan itself (PRD O1); the evidence sits behind it.
-  const tabKeys: OutputTabKey[] = plan
-    ? row.kind === 'scenario'
-      ? ['plan', 'changes', 'audience', 'assumptions', 'evidence']
-      : ['plan', 'audience', 'assumptions', 'evidence']
-    : row.kind === 'date'
-      ? ['summary', 'date', 'evidence']
-      : row.kind === 'partner'
-        ? ['summary', 'partners', 'evidence']
-        : row.kind === 'scenario'
-          ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
-          : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
+  const tabKeys: OutputTabKey[] = audit
+    ? [
+        'summary',
+        'assumptions',
+        'risks',
+        'alternatives',
+        ...(audit.results ? (['results'] as const) : []),
+        'evidence',
+      ]
+    : plan
+      ? row.kind === 'scenario'
+        ? ['plan', 'changes', 'audience', 'assumptions', 'evidence']
+        : row.kind === 'fix' && report
+          ? ['plan', 'fixes', 'audience', 'assumptions', 'evidence']
+          : ['plan', 'audience', 'assumptions', 'evidence']
+      : row.kind === 'date'
+        ? ['summary', 'date', 'evidence']
+        : row.kind === 'partner'
+          ? ['summary', 'partners', 'evidence']
+          : row.kind === 'scenario'
+            ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
+            : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
   const focusIds =
     row.kind === 'date'
       ? brief.dates.map((d) => d.id)
@@ -156,7 +190,7 @@ export function presentOutput({
     headline,
     moves,
     confidence,
-    stats: stats(brief, counts),
+    stats: stats(audit ? audit.items.length : brief.assumptions.length, counts),
     counts,
     summary,
     changes,
@@ -171,13 +205,15 @@ export function presentOutput({
     ),
     sections: pack.planSections,
     glance:
-      plan || row.kind === 'date' || row.kind === 'partner'
+      plan || audit || row.kind === 'date' || row.kind === 'partner'
         ? []
         : glance(brief, pack.planSections, category),
     brief,
     plan,
+    report,
     evidence: [
-      ...(plan ? findingRows(plan, receipts) : []),
+      ...(plan ? findingRows(plan.findings, bottomLineFindings(plan), receipts) : []),
+      ...(audit ? findingRows(audit.findings, reportDrivers(audit), receipts) : []),
       ...evidence(brief, pack.planSections, receipts, moves, focusIds),
     ],
     receipts: receipts.map(toReceipt),
@@ -206,9 +242,15 @@ function countVerdicts(brief: Brief): VerdictCounts {
   return c;
 }
 
-function stats(brief: Brief, c: VerdictCounts): OutputStat[] {
+function countItems(report: AuditReport): VerdictCounts {
+  const c: VerdictCounts = { holds: 0, weak: 0, breaks: 0, cant: 0 };
+  for (const i of report.items) c[i.verdict]++;
+  return c;
+}
+
+function stats(assumptions: number, c: VerdictCounts): OutputStat[] {
   return [
-    { label: 'Assumptions', value: String(brief.assumptions.length) },
+    { label: 'Assumptions', value: String(assumptions) },
     { label: 'Hold', value: String(c.holds), verdict: 'holds' },
     { label: 'Weak or break', value: String(c.weak + c.breaks), verdict: 'breaks' },
     { label: 'Could not test', value: String(c.cant), verdict: 'cant' },
@@ -350,14 +392,27 @@ function evidence(
 }
 
 // Evidence rows for a launch plan's findings. A finding the bottom line cites drives the plan.
-function findingRows(plan: LaunchPlan, receipts: ReceiptRow[]): EvidenceRow[] {
-  const backed = new Set(receipts.flatMap((r) => (r.lineId ? [r.lineId] : [])));
-  const drivers = new Set(
+/** The findings behind a plan's bottom line, which drive what it recommends. */
+function bottomLineFindings(plan: LaunchPlan): Set<string> {
+  return new Set(
     plan.sections
       .filter((s) => s.key === 'bottom-line')
       .flatMap((s) => s.lines.flatMap((l) => l.findingIds)),
   );
-  return plan.findings
+}
+
+/** The findings behind the fixes of a report. */
+function reportDrivers(report: AuditReport): Set<string> {
+  return new Set(report.items.flatMap((i) => (i.fix ? i.fix.findingIds : [])));
+}
+
+function findingRows(
+  findings: Finding[],
+  drivers: Set<string>,
+  receipts: ReceiptRow[],
+): EvidenceRow[] {
+  const backed = new Set(receipts.flatMap((r) => (r.lineId ? [r.lineId] : [])));
+  return findings
     .filter((f) => backed.has(f.id))
     .map((f) => ({
       lineId: f.id,

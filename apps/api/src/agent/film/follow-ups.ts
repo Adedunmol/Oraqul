@@ -378,6 +378,7 @@ export async function runDateCheck(
       title: 'Rival date check',
       brief,
       plan: null,
+      report: null,
       headline,
       moves,
       confidence,
@@ -527,6 +528,7 @@ export async function runPartnerBrief(
       title: `Partner brief: ${name}`,
       brief: { ...plan.brief, partners: [line] },
       plan: null,
+      report: null,
       headline,
       moves,
       confidence: {
@@ -632,6 +634,7 @@ async function artistBrief(
       title: `Partner brief: ${name}`,
       brief: { ...plan.brief, partners: [line] },
       plan: null,
+      report: null,
       headline,
       moves,
       confidence: {

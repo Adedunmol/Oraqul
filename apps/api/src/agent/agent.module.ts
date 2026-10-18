@@ -14,7 +14,17 @@ import {
 import { PlanSummaryPlanner } from './film/follow-ups.js';
 import { FallbackQueryPlanner, ModelQueryPlanner, ScriptedQueryPlanner } from './film/planner.js';
 import { FallbackFilmReader, ModelFilmReader, ScriptedFilmReader } from './film/read.js';
+import {
+  FallbackReportWriter,
+  ModelReportWriter,
+  TemplateReportWriter,
+} from './film/report-writer.js';
 import { FallbackResearcher, ModelResearcher, NoResearch } from './film/research.js';
+import {
+  FallbackResultsReader,
+  ModelResultsReader,
+  ScriptedResultsReader,
+} from './film/results-read.js';
 import { FallbackPlanWriter, ModelPlanWriter, TemplatePlanWriter } from './film/writer.js';
 import { FallbackGate, GATE, ModelGate, ScriptedGate } from './gate/gate.js';
 import { ModelPlanner } from './model-planner.js';
@@ -104,6 +114,21 @@ const lookups = new LookupCache();
               (err) => logger.warn(`Model writer failed, writing from templates: ${err}`),
             )
           : new TemplatePlanWriter();
+        const scriptedResults = new ScriptedResultsReader();
+        const results = llm
+          ? new FallbackResultsReader(
+              new ModelResultsReader(llm.model('agent'), llm.timeoutMs),
+              scriptedResults,
+              (err) => logger.warn(`Model results reader failed, using the scripted one: ${err}`),
+            )
+          : scriptedResults;
+        const report = llm
+          ? new FallbackReportWriter(
+              new ModelReportWriter(llm.model('writer'), llm.writerTimeoutMs, llm.writerOptions),
+              new TemplateReportWriter(),
+              (err) => logger.warn(`Model report writer failed, writing from templates: ${err}`),
+            )
+          : new TemplateReportWriter();
         const search = llm?.search() ?? null;
         const research =
           llm && search
@@ -117,6 +142,8 @@ const lookups = new LookupCache();
           reader,
           queries,
           writer,
+          results,
+          report,
           research,
           followUps,
           tools,

@@ -57,6 +57,13 @@
       "when": 1792249768956,
       "tag": "0007_condemned_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792332440177,
+      "tag": "0008_normal_satana",
+      "breakpoints": true
     }
   ]
 }

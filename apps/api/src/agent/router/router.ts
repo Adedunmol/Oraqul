@@ -23,6 +23,8 @@ export interface RouterState {
   pending: PendingQuestion | null;
   /** Counts questions, so each one has its own id. */
   asked: number;
+  /** The mode the person chose on the start page, which a plan's own words cannot undo. */
+  hinted?: { mode?: StartMode };
 }
 
 /** Parses `runs.state` back, since what comes out of the database is untrusted. */
@@ -47,6 +49,7 @@ export const routerStateSchema: z.ZodType<RouterState> = z.object({
     })
     .nullable(),
   asked: z.number().int().min(0),
+  hinted: z.object({ mode: startModeSchema.optional() }).optional(),
 });
 
 /** A typed message (which also answers an open question) or a pick on the open card. */
@@ -61,6 +64,7 @@ export function newRouterState(hints: { category?: Category; mode?: StartMode })
     transcript: [],
     pending: null,
     asked: 0,
+    ...(hints.mode ? { hinted: { mode: hints.mode } } : {}),
   };
 }
 
@@ -100,6 +104,10 @@ export async function routeTurn(
   });
   if (reading.onTopic) {
     state.known = applyReading(state.known, reading, personText(state.transcript));
+    // A plan to check or fix says "launch" and "release" all through, which reads as a build. The
+    // person who chose Check my plan or Fix my plan on the start page has already said which.
+    const hinted = state.hinted?.mode;
+    if (hinted && hinted !== 'build' && state.known.mode === 'build') state.known.mode = hinted;
   }
   return { decision: settle(state, decide(state.known, reading, nextId(state))), tokens };
 }
