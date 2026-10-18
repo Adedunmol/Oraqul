@@ -44,3 +44,26 @@ export function routeScore(lifts: number[]): number {
   });
   return weighted / total;
 }
+
+/** Band edges and how close to one a value is near it (spec §5.1, margin). */
+export const bandEdges = {
+  lift: { edges: [1.2, 1.5], within: 0.05 },
+  fit: { edges: [50, 75], within: 3 },
+  overlap: { edges: [35, 60], within: 3 },
+} as const;
+
+export function isNearEdge(kind: keyof typeof bandEdges, value: number): boolean {
+  const { edges, within } = bandEdges[kind];
+  // 1.25 - 1.2 is 0.050000000000000044 in floating point, which must still count as within.
+  return edges.some((edge) => Math.abs(value - edge) <= within + 1e-9);
+}
+
+/** Spec §5: lift on a 0 to 100 scale, so lift 1.2 is fit 50 and lift 1.5 is fit 75. */
+export function fitFromLift(liftValue: number): number {
+  return Math.min(100, Math.max(0, Math.round(50 + ((liftValue - 1.2) * 250) / 3)));
+}
+
+/** Spec §5: a rival's affinity to our audience, 0 to 1, as a 0 to 100 overlap. */
+export function overlapFromAffinity(affinity: number): number {
+  return Math.min(100, Math.max(0, Math.round(affinity * 100)));
+}

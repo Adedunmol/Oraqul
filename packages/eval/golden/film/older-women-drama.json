@@ -1,0 +1,92 @@
+{
+  "data": "demo",
+  "title": "Long Table",
+  "brief": "Plan the release of \"Long Table\", a family drama film for women aged 35 to 54. Markets: Houston, Atlanta, Nairobi and Kumasi. Comps: \"Harbor Lights\", \"Third Mainland\" and \"Salt Road\".",
+  "replies": [],
+  "expect": {
+    "headline": "Open in Nairobi first, then Atlanta and Houston: that is where your comps' audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "breaks",
+      "a-gender": "breaks",
+      "a-place-nairobi": "holds",
+      "a-place-houston": "breaks",
+      "a-place-atlanta": "breaks",
+      "a-comps": "weak"
+    },
+    "cities": ["Nairobi", "Atlanta", "Houston"],
+    "comps": [
+      {
+        "name": "Harbor Lights",
+        "source": "you"
+      },
+      {
+        "name": "Third Mainland",
+        "source": "you"
+      },
+      {
+        "name": "Salt Road",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-a-gender": [],
+      "f-audience": [],
+      "f-a-place-atlanta": [],
+      "f-a-place-houston": [],
+      "f-a-place-nairobi": [],
+      "f-markets": ["Nairobi", "Atlanta", "Houston"],
+      "f-themes": ["Community", "Ambition", "Loyalty"],
+      "f-shows-atlanta": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-shows-houston": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-shows-nairobi": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-cinemas-atlanta": ["Peachtree Pictures"],
+      "f-cinemas-houston": ["Bayou Cinema"],
+      "f-brands-beverage-nairobi": ["Night Market Cola"],
+      "f-brands-telecom-nairobi": ["Lagoon Mobile"],
+      "f-podcasts": ["The Joe Rogan Experience", "Crime Junkie", "Late Signal"],
+      "f-community-church-houston": ["Grace Chapel Houston"],
+      "f-community-university-houston": ["Gulf Coast University"]
+    },
+    "sections": {
+      "bottom-line": "2/0",
+      "positioning": "4/1",
+      "audience": "5/0",
+      "markets": "3/0",
+      "partnerships": "2/0",
+      "placement": "3/0",
+      "publicity": "1/1",
+      "community": "2/1",
+      "route": "0/2",
+      "timeline": "0/5",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "2/1",
+      "gaps": "0/3"
+    },
+    "moves": ["f-markets", "f-audience"],
+    "grounding": {
+      "lines": 39,
+      "backed": 62,
+      "rankKept": 100,
+      "findingsUsed": 16,
+      "cities": {
+        "Nairobi": 6,
+        "Atlanta": 5,
+        "Houston": 7
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Box office and viewing numbers",
+      "Music and soundtrack",
+      "Cinemas in Nairobi",
+      "Recent films",
+      "Churches in Nairobi",
+      "Churches in Atlanta",
+      "Universities in Nairobi",
+      "Universities in Atlanta"
+    ]
+  }
+}

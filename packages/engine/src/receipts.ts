@@ -1,9 +1,10 @@
 import type { Confidence, Receipt } from '@oraqul/schema';
 import type { QlooCall } from './qloo/client';
 
+/** A tool's answer and one receipt per Qloo call it made. `data` names the receipt behind each item. */
 export interface ToolResult<T> {
   data: T;
-  receipt: Receipt;
+  receipts: Receipt[];
 }
 
 interface ReceiptInput {

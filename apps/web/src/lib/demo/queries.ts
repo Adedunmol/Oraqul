@@ -81,7 +81,7 @@ export interface OutputDetail {
   project: Project;
   thread: Thread;
   /** The output it was built on: the parent plan, or the plan a date check or brief came from. */
-  builtOn: Output | undefined;
+  builtOn: Output | null;
 }
 
 /** `GET /outputs/:id` */
@@ -91,7 +91,12 @@ export function getOutputDetail(s: DemoState, id: string): OutputDetail | undefi
   const thread = output && s.threads.find((t) => t.id === output.threadId);
   if (!output || !project || !thread) return undefined;
   const builtOnId = output.parentId ?? douts.get(output.id)?.ofId ?? null;
-  return { output, project, thread, builtOn: s.outputs.find((o) => o.id === builtOnId) };
+  return {
+    output,
+    project,
+    thread,
+    builtOn: s.outputs.find((o) => o.id === builtOnId) ?? null,
+  };
 }
 
 /** `GET /projects/:id/compare?a=&b=` */

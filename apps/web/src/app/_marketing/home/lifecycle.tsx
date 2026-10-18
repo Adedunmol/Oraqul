@@ -138,7 +138,6 @@ function StageText({ stage }: { stage: Stage }) {
   );
 }
 
-/** The chat for one job: the person's message, the agent's reply, and what it produced. */
 function StageVisual({ stage }: { stage: Stage }) {
   return (
     <div className="flex flex-col gap-5 rounded-2xl bg-card p-[clamp(22px,3.6vw,48px)] shadow-lg">
@@ -160,10 +159,6 @@ function StageVisual({ stage }: { stage: Stage }) {
   );
 }
 
-/**
- * The four jobs in the order they happen around a launch, told as sticky steps: the jobs scroll
- * past while the chat for the one in the middle of the screen stays pinned beside them.
- */
 export function Lifecycle() {
   return (
     <section aria-labelledby="life-title" className={band}>

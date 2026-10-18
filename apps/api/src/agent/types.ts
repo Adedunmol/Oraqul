@@ -26,7 +26,8 @@ export type HistoryItem =
       name: ToolName;
       input: Record<string, unknown>;
       data: ToolData;
-      receiptId: string;
+      /** One per Qloo call the tool made. `data` names the one behind each item. */
+      receiptIds: string[];
     }
   | {
       kind: 'failed';
@@ -46,12 +47,16 @@ export interface AgentContext {
   pack: CategoryPack;
   project: ProjectInput;
   job: Job;
-  /** Set when this run is another agent's bounded question. */
+  /** Another agent's bounded question, or the person's question when the run answers about a plan. */
   consultQuestion: string | undefined;
   /** Whether the agent may ask the user or consult another agent. False inside a consult. */
   canAsk: boolean;
   history: HistoryItem[];
   receipts: Receipt[];
+  /** Receipts of the plan this run answers about. A claim may cite them by id. */
+  prior: Receipt[];
+  /** The plan and the chat as text. Context, never evidence. */
+  context: string | null;
 }
 
 export interface Planner {

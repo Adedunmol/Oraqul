@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { wrap } from './section';
 import { TasteDiscs } from './taste-discs';
 
-/** The closing call to action: the page's last dark band, with the art back behind it. */
 export function Closing({
   title = (
     <>

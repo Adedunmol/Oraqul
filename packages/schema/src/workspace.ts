@@ -42,6 +42,16 @@ export const threadDetailSchema = z.object({
 });
 export type ThreadDetail = z.infer<typeof threadDetailSchema>;
 
+/** `GET /outputs/:outputId` */
+export const outputDetailSchema = z.object({
+  output: outputSchema,
+  project: projectSchema,
+  thread: threadSchema,
+  /** The output it was built on: the parent plan, or the plan a date check or brief came from. */
+  builtOn: outputSchema.nullable(),
+});
+export type OutputDetail = z.infer<typeof outputDetailSchema>;
+
 /** Body of `POST /threads/:threadId/messages`. Typed text also answers an open question. */
 export const postMessageSchema = z.discriminatedUnion('kind', [
   z.object({

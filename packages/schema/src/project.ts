@@ -55,6 +55,10 @@ export const attachmentSchema = z.object({
 });
 export type Attachment = z.infer<typeof attachmentSchema>;
 
+/** What `POST /uploads` answers for a PDF or Word file: its name and text, never the file. */
+export const uploadResultSchema = attachmentSchema.required({ text: true });
+export type UploadResult = z.infer<typeof uploadResultSchema>;
+
 /** Body of `POST /teams/:teamId/projects`: the first message, never an empty form (spec §9.2). */
 export const createProjectInputSchema = z
   .object({

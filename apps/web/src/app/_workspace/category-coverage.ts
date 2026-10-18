@@ -1,9 +1,8 @@
 import type { CategoryInfo } from '@oraqul/schema';
 
 /**
- * What Oraqul tests in a category, in three columns: tested with a receipt, tested at lower
- * confidence, and what the team brings. Shared by the in app help dialog and the public
- * categories page, so they never disagree. Empty columns are left out.
+ * What Oraqul tests in a category, shared by the help dialog and the public categories page so they
+ * never disagree. Empty columns are left out.
  */
 export function coverageColumns(info: CategoryInfo) {
   return [

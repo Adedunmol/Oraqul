@@ -5,7 +5,6 @@ import { liftZones, Scale } from '../scale';
 import { wrap } from '../section';
 import { SectionNav } from '../section-nav';
 
-/** The formula beside the page title, set like a page from a notebook. */
 export function FormulaCard() {
   return (
     <div className="flex flex-col gap-6 rounded-2xl bg-card p-[clamp(20px,3vw,32px)]">

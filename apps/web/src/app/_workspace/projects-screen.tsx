@@ -128,10 +128,8 @@ function NewProject({ category }: { category?: Category }) {
   );
 }
 
-/**
- * Categories are a filter on one list, not sections to choose first: the agent reads the category
- * from the first message. Each is a link, so a category list keeps its own address.
- */
+// Categories are a filter on one list, not sections to choose first: the agent reads the category
+// from the first message. Each is a link, so a category list keeps its own address.
 function CategoryFilter({ scope }: { scope: CategoryScope }) {
   const items: { key: CategoryScope; label: string }[] = [
     { key: 'all', label: 'All' },
@@ -205,11 +203,9 @@ function ProjectGroup({
   );
 }
 
-/**
- * A help button beside the filter: what Oraqul can and cannot do in one category, in a dialog, so
- * the list stays about projects. The views it has, what it tests, where it is less certain, and what
- * the team must bring. Gaps are said plainly, the same as on every output (PRD E3).
- */
+// A help button beside the filter: what Oraqul can and cannot do in one category, in a dialog, so
+// the list stays about projects. The views it has, what it tests, where it is less certain, and what
+// the team must bring. Gaps are said plainly, the same as on every output (PRD E3).
 function CategoryHelp({ category }: { category: Category }) {
   const info = getCategory(category);
   const [open, setOpen] = useState(false);
@@ -275,7 +271,6 @@ function CategoryDetails({ category }: { category: Category }) {
   );
 }
 
-/** A project in the list. The shared card, with its status, a hover date and a pin. */
 function ProjectCard({
   project,
   pinned,

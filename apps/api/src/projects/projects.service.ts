@@ -1,7 +1,9 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type {
   Category,
+  CompareResponse,
   NeedsYouItem,
+  OutputDetail,
   Overview,
   Project,
   ProjectDetail,
@@ -30,12 +32,12 @@ import {
   threads,
   users,
 } from '../db/schema.js';
+import { OutputsService } from '../outputs/outputs.service.js';
 
 /** A person keeps three pins at most; pinning a fourth drops the oldest (spec §7). */
 export const MAX_PINS = 3;
 const RECENT_THREADS = 4;
 
-/** What a list shows as the project's status, from the job it was started for. */
 const STATUS_BY_MODE: Record<StartMode, string> = {
   build: 'Planning',
   audit: 'Audit',
@@ -53,6 +55,7 @@ export class ProjectsService {
     @Inject(DB) private readonly db: Database,
     @Inject(ThreadStore) private readonly store: ThreadStore,
     @Inject(RunService) private readonly runs: RunService,
+    @Inject(OutputsService) private readonly outputs: OutputsService,
   ) {}
 
   /** The team's projects, newest first. Drafts the router is still reading are left out. */
@@ -82,13 +85,15 @@ export class ProjectsService {
       .innerJoin(users, eq(users.id, threads.createdBy))
       .where(eq(threads.projectId, projectId))
       .orderBy(desc(threads.createdAt));
-    const summaries = await this.summaries(rows, userId);
+    const [summaries, all] = await Promise.all([
+      this.summaries(rows, userId),
+      this.outputs.forProject(projectId),
+    ]);
     return {
       project: toWorkspaceProject(project),
       threads: summaries,
-      // Outputs are listed once runs save them (agent core, outputs and receipts).
-      outputs: [],
-      currentPlanId: null,
+      outputs: all,
+      currentPlanId: this.outputs.currentPlanId(all),
       myRole: role,
     };
   }
@@ -103,15 +108,48 @@ export class ProjectsService {
       .limit(1);
     if (!row) throw new NotFoundException('No such thread');
     const busy = this.runs.isBusy(threadId);
-    const stored = await this.store.rows(threadId);
+    const [stored, all] = await Promise.all([
+      this.store.rows(threadId),
+      this.outputs.forProject(row.project.id),
+    ]);
     return {
       thread: toThread(row.thread, row.by),
       project: toWorkspaceProject(row.project),
       items: toItems(stored, busy),
-      outputs: [],
-      projectOutputs: [],
+      outputs: all.filter((o) => o.threadId === threadId),
+      projectOutputs: all,
       busy,
       lastSeq: stored.at(-1)?.seq ?? 0,
+    };
+  }
+
+  /** `GET /projects/:projectId/compare`: the lines that differ between two of its outputs. */
+  async compare(projectId: string, a: string, b: string): Promise<CompareResponse> {
+    const result = await this.outputs.compare(projectId, a, b);
+    if (!result) throw new NotFoundException('Both outputs must belong to this project');
+    return result;
+  }
+
+  /** `GET /outputs/:outputId`: the output, its project and chat, and what it was built on. */
+  async outputDetail(outputId: string): Promise<OutputDetail> {
+    const owner = await this.outputs.owner(outputId);
+    if (!owner) throw new NotFoundException('No such output');
+    const [row] = await this.db
+      .select({ project: projects, thread: threads, by: users.name })
+      .from(threads)
+      .innerJoin(projects, eq(projects.id, threads.projectId))
+      .innerJoin(users, eq(users.id, threads.createdBy))
+      .where(eq(threads.id, owner.threadId))
+      .limit(1);
+    const project = row ? toProject(row.project) : null;
+    const all = await this.outputs.forProject(owner.projectId);
+    const output = all.find((o) => o.id === outputId);
+    if (!row || !project || !output) throw new NotFoundException('No such output');
+    return {
+      output,
+      project,
+      thread: toThread(row.thread, row.by),
+      builtOn: all.find((o) => o.id === output.parentId) ?? null,
     };
   }
 
@@ -255,7 +293,6 @@ export class ProjectsService {
     }));
   }
 
-  /** Threads whose last run is waiting, with the open card's prompt. */
   private async openQuestions(threadIds: string[]): Promise<Map<string, string>> {
     if (!threadIds.length) return new Map();
     const rows = await this.db
@@ -279,7 +316,7 @@ export class ProjectsService {
     return new Map(questions.map((q) => [q.threadId, q.prompt]));
   }
 
-  /** Threads with an agent item this person has not seen. Their own messages never count. */
+  // Threads with an agent item this person has not seen. Their own messages never count.
   private async unreadThreads(threadIds: string[], userId: string): Promise<Set<string>> {
     if (!threadIds.length) return new Set();
     const rows = await this.db

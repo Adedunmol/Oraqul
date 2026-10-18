@@ -6,7 +6,7 @@ import { apiUrl } from '@/lib/api/http';
 
 export type StreamStatus = 'live' | 'reconnecting' | 'lost';
 
-/** Event types kept in the thread's transcript, whose SSE id is their seq. */
+// Event types kept in the thread's transcript, whose SSE id is their seq.
 const STORED = new Set<ThreadEvent['type']>([
   'trace.step',
   'question',
@@ -16,9 +16,8 @@ const STORED = new Set<ThreadEvent['type']>([
 ]);
 
 /**
- * Follows a thread's event stream (spec §8) from `afterSeq`. Each event is parsed at the boundary;
- * a malformed one is reported and skipped. Stored events carry their seq as the SSE id, so an
- * event already seen is not handled twice when the browser reconnects and the server replays.
+ * Follows a thread's event stream (spec §8). Stored events carry their seq as the SSE id, so an
+ * event already seen is not handled twice when the browser reconnects.
  */
 export function useThreadEvents(
   threadId: string,

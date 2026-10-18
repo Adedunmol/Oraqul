@@ -2,6 +2,8 @@
 
 NestJS in `apps/api`. Endpoints are listed in [spec §7](../product/spec.md), tables in [spec §6](../product/spec.md), failure behaviour in [spec §10](../product/spec.md).
 
+How Film planning works end to end, from the first message to a saved plan and its follow ups: [film-overview.md](film-overview.md).
+
 ## Conventions
 
 - ESM. Relative imports end in `.js`.
@@ -57,7 +59,3 @@ Runs stream over server sent events at `GET /threads/:id/events`. Event shapes a
 ## Commands
 
 `pnpm --filter @oraqul/api dev | build | test | test:e2e | typecheck`. See [testing.md](../testing.md).
-
-## TODO
-
-Revoke a pending invite, rename or delete a team, and team scoped projects behind `RolesGuard`. Upload parsing (drop personal columns, delete the raw file, spec §6 privacy). Share link and export endpoints.

@@ -1,4 +1,4 @@
-import { apiUrl, parseResponse } from './http';
+import { ApiError, apiUrl, parseResponse } from './http';
 
 /**
  * Browser-side request for writes. A 401 sends the person to `/sign-in` and the promise never settles,
@@ -21,4 +21,31 @@ export async function clientRequest<T>(
     return new Promise<never>(() => {});
   }
   return parseResponse(response, path, schema);
+}
+
+/**
+ * Browser-side read for data a person asks for with a click inside an open panel, such as
+ * comparing two plans. Call it from the event handler, never from an effect (frontend/data.md).
+ */
+export async function clientGet<T>(path: string, schema: { parse(data: unknown): T }): Promise<T> {
+  const response = await fetch(apiUrl(path), { credentials: 'include' });
+  if (response.status === 401) {
+    window.location.assign('/sign-in');
+    return new Promise<never>(() => {});
+  }
+  return parseResponse(response, path, schema);
+}
+
+/**
+ * Browser-side download of a file the person asked for with a click, such as an exported plan.
+ * Fetched rather than linked, so the session cookie goes with it to the API's origin.
+ */
+export async function clientFile(path: string): Promise<Blob> {
+  const response = await fetch(apiUrl(path), { credentials: 'include' });
+  if (response.status === 401) {
+    window.location.assign('/sign-in');
+    return new Promise<never>(() => {});
+  }
+  if (!response.ok) throw new ApiError(response.status, path);
+  return response.blob();
 }

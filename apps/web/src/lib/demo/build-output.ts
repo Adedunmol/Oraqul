@@ -184,7 +184,7 @@ function endpointOf(f: FoundLine): string {
   return ENDPOINT[k ?? 'geo'];
 }
 
-/** Lines that carry a receipt: everything but risks and lines with no Qloo data behind them. */
+// Lines that carry a receipt: everything but risks and lines with no Qloo data behind them.
 function hasReceipt(f: FoundLine | undefined): f is FoundLine {
   if (!f || f.k === 'risks') return false;
   return !('k' in f.it) || f.it.k !== 'none';
@@ -785,6 +785,8 @@ export function buildOutput(r: Project, o: DOutput, all: DOutput[]): Output {
     sections: pack.sec.map((s) => ({ key: s.k, title: s.t, one: s.one })),
     glance: isPlanKind(o.kind) ? glanceFor(pack, r, o.brief) : [],
     brief: toBrief(o.brief, r.category),
+    // The demo keeps the older brief shape; launch plans come from the API.
+    plan: null,
     evidence: evidenceFor(pack, o, moves),
     receipts: receiptsFor(r, o),
     limits: `Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. ${pack.cov.none[0] ?? ''}. For titles and names Qloo does not know, Oraqul falls back to ${pack.fallback} at lower confidence.`,

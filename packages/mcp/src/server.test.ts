@@ -12,7 +12,7 @@ async function connect(callBudget?: number) {
     fetch: demoFetch,
     callBudget,
   });
-  const server = createServer({ qloo, source: 'demo' });
+  const server = createServer({ qloo, source: 'demo', entities: new Map() });
   const client = new Client({ name: 'test', version: '0.0.0' });
   const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(serverSide), client.connect(clientSide)]);
@@ -40,7 +40,7 @@ describe('mcp server', () => {
     });
     const body = JSON.parse(textOf(result));
     expect(body.data.candidates[0].entityId).toBe('DEMO-FILM-0003');
-    expect(receiptSchema.parse(body.receipt).source).toBe('demo');
+    expect(receiptSchema.parse(body.receipts[0]).source).toBe('demo');
   });
 
   it('answers a spent call budget as an error result, not a crash', async () => {

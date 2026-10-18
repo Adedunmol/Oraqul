@@ -2,15 +2,15 @@
 
 ## One liner
 
-Oraqul is a verifiable AI agent for launch planning in media and entertainment.
+Launch plans grounded in what audiences actually like.
 
-Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
+Oraqul is a culturally grounded launch agent for media and entertainment. It builds, checks and repairs launch plans across films, series, music, books, podcasts and games. Its cultural claims (which artists, series, cinemas, brands and communities the audience likes, in which cities) are measured in Qloo taste data, so the plan is better than a chat assistant's, not just better documented.
 
 ## What it is
 
-Oraqul is a verifiable AI agent that builds, checks and repairs launch plans in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and rescues a launch that underperformed, which is a relaunch. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
+Oraqul is a culturally grounded agent that builds, checks and repairs launch plans in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and rescues a launch that underperformed, which is a relaunch. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
 
-The agent works through several steps, shows its trace, and ends with a decision first summary and the evidence behind it. It gives direction, never forecasts.
+Every reply has two stages. First, findings: the model reads the brief and shapes the questions, code asks Qloo and turns each answer into a sentence, and the findings stream into the chat while they land. Then the reply: the model writes the plan from the findings and its launch knowledge, and code checks every line. It gives direction, never forecasts.
 
 ## Who it is for
 
@@ -28,7 +28,7 @@ The problem is the same everywhere. Launch plans rest on audience assumptions th
 
 The three jobs are also the three start modes, called `build`, `audit` and `rescue` in code.
 
-**Build (plan).** From a description, Oraqul builds a launch plan: the audience by age band and place, comparable titles, which territories or cities to prioritise, partner brands, and positioning angles. Each part is tested against Qloo before it is shown.
+**Build (plan).** From a description, Oraqul builds a launch plan with a small core (bottom line, positioning, audience, markets, gaps) and the modules that fit the ask: partnerships, creative placement, publicity, community, release route, timeline, cadence, budget split, what to measure and risks. It plans for the team's own cities, age band and window, tests them, and puts alternatives under Worth a look. It uses everything the user gives and asks for nothing beyond it.
 
 **Audit.** The user brings an existing plan. Oraqul pulls out the audience and taste assumptions it makes, tests each one, and marks it as holds, weak, breaks, or could not test. It then looks for stronger alternatives to whatever broke and tests those too.
 
@@ -69,10 +69,11 @@ Qloo is a taste graph, not a catalogue of releases. A launch is usually not in i
 
 The output is always a direction: holds, weak, breaks, or could not test.
 
-## Trust and receipts
+## Trust and evidence
 
-* Every line carries a verdict, a confidence level and a receipt showing the calls made, their parameters, the time, and the values used.
-* Every entity the agent names must appear in data Qloo returned in that run.
+* Two kinds of line. A **grounded** line claims something about taste, audience or place and cites findings; its names and numbers must match them. A **playbook** line is launch practice, labelled, citing nothing, and may not claim what an audience likes. Code checks every line and drops one that fails.
+* A finding is a sentence built by code from one Qloo call, such as "In Lagos, the Afrobeats artists that rank highest with your comps' audience are Tems, Libianca and Rema." It opens to the raw call. Call ids appear only in the Evidence tab.
+* Every number, verdict and confidence is computed by code from what Qloo returned.
 * Gaps are stated plainly as not found, thin, or not supported, with what the agent did next and what input would change the answer.
 * Each saved version records the date of its data and can be rerun with fresh data.
 * Share links show receipt summaries. Raw Qloo data stays with signed in team members until Qloo confirms what may be shown publicly.
@@ -101,7 +102,7 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 * Every agent output states its bottom line in the chat and opens its takeaway card, up to three moves with their receipts, in one click, then opens its own details page with only the tabs that fit it. Common tabs are Summary, Audience, Assumptions (with what could not be tested at the end), Plan (with its risks at the end) and Evidence. Each category adds its own: territory ladder for film, tour route and support act grid for music, comp shelf and adaptation bridge for books, topic map for podcasts, fan base bridge and regions for games.
 * After each output the agent suggests up to three next steps built from it, such as a scenario not yet tried or adding results. Every capability is something you can ask for in the chat, not a separate screen.
 * Every line has a receipt. Charts have a table view.
-* Versions can be compared. A one page brief exports with an evidence appendix and a confidence level per line.
+* Versions can be compared. A plan exports as PDF, Word or Markdown, with grounded lines footnoted to their findings, playbook lines labelled and an evidence appendix.
 * A read only share link can be turned off.
 * The overview, the team's home after sign in, opens with a message box: "What are you working on?". Under it, three optional hints (plan a launch, check a plan I have, rescue one that missed) change the prompt and say what to bring. The project is made from the first message, never from an empty form.
 * Every output tab opens with one plain sentence on what it shows, and output pages show four main tabs with the rest under More.
@@ -119,22 +120,14 @@ Oraqul is a global product. A title from any market is a normal entity, and citi
 
 ## What makes it different
 
-* A receipt on every claim, with limits stated.
-* Relaunch and scenario diffs, not only a first plan.
-* One engine and one agent per category, so each category gets its own questions, charts and checks.
-* Territory logic that ranks cities from every region in one list.
+* The plan's cultural claims are measured, not guessed: the model shapes the questions with cultural context (a music scene, a release country, a city, an age band), which is what makes Qloo's answers sharp.
+* The team's decisions are respected: Oraqul plans for their cities and audience, and says what it found about them.
+* Every claim about taste cites a finding; launch practice is labelled, so a reader can tell the two apart.
+* Plans export to the formats teams send: PDF, Word and Markdown.
 * Honest gaps instead of confident guesses.
 
-The demo leads with rescue and scenario diffs, because auditing a plan alone is no longer unique among entrants.
+The demo leads with the plan side by side with a chat assistant's answer to the same brief.
 
 ## Stack
 
 TypeScript monorepo. Next.js front end. A Node backend on a VPS that calls the Qloo hackathon API directly through our own client. Vercel AI SDK with a configurable model provider (OpenAI, Google Gemini, or any OpenAI compatible endpoint). Postgres and Docker. A public repository with an open source licence for the submission.
-
-## Open points
-
-* Keep testing Qloo's coverage, per category (age and gender profiles are measured; books have them for about half of titles): cross-domain taste tests (for example musicians' fans for a book), Nigerian artists, titles and authors, Lagos against no location, and whether location changes the age and gender splits.
-* Check Qloo's terms on showing receipts on public links.
-* Confirm the monthly call quota, reported at about 10,000, and set a call budget per audit.
-* Confirm Devpost's rules for a two person submission.
-* The Qloo API details come from secondhand sources. Confirm them against Qloo's public docs repository and your own key.

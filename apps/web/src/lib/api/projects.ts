@@ -1,6 +1,8 @@
 import {
+  type CompareResponse,
   type CreateProjectInput,
   type CreateProjectResult,
+  compareResponseSchema,
   createProjectResultSchema,
   createThreadResultSchema,
   emptyResponseSchema,
@@ -8,7 +10,7 @@ import {
   type PostMessage,
   pinnedProjectsSchema,
 } from '@oraqul/schema';
-import { clientRequest } from './client';
+import { clientFile, clientGet, clientRequest } from './client';
 
 /** Spec §9.2: the first message makes the project and its first chat. */
 export function createProject(
@@ -54,4 +56,14 @@ export function setPinned(projectId: string, pinned: boolean): Promise<PinnedPro
     { method: pinned ? 'PUT' : 'DELETE' },
     pinnedProjectsSchema,
   );
+}
+
+/** `GET /projects/:id/compare`: the lines that differ between two of the project's plans. */
+export function comparePlans(projectId: string, a: string, b: string): Promise<CompareResponse> {
+  return clientGet(`/projects/${projectId}/compare?a=${a}&b=${b}`, compareResponseSchema);
+}
+
+/** A launch plan as Markdown, Word or PDF, built by the API from the stored plan. */
+export function exportOutput(outputId: string, format: 'md' | 'docx' | 'pdf'): Promise<Blob> {
+  return clientFile(`/outputs/${outputId}/export/${format}`);
 }

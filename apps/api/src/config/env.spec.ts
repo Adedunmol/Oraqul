@@ -10,7 +10,7 @@ describe('envSchema', () => {
   it('applies defaults', () => {
     const env = envSchema.parse(valid);
     expect(env.PORT).toBe(4000);
-    expect(env.QLOO_CALL_BUDGET).toBe(60);
+    expect(env.QLOO_CALL_BUDGET).toBe(80);
   });
 
   it('rejects a short session secret', () => {
@@ -88,5 +88,27 @@ describe('envSchema sign in settings', () => {
     const env = envSchema.parse(valid);
     expect(env.BREVO_API_KEY).toBe('');
     expect(env.COOKIE_DOMAIN).toBe('');
+  });
+});
+
+describe('envSchema plan writer', () => {
+  const main = { LLM_PROVIDER: 'google', LLM_API_KEY: 'g-key', LLM_MODEL: 'gemini-3.5-flash-lite' };
+
+  it('reads an empty writer provider, as in .env.example, as the main provider', () => {
+    const env = envSchema.parse({ ...valid, ...main, LLM_WRITER_PROVIDER: '' });
+    expect(env.LLM_WRITER_PROVIDER).toBeUndefined();
+    expect(env.LLM_WRITER_REASONING).toBe('low');
+    expect(env.LLM_WEB_SEARCH).toBe('on');
+  });
+
+  it('never lets a writer on another provider borrow the main key', () => {
+    const openai = {
+      ...valid,
+      ...main,
+      LLM_WRITER_PROVIDER: 'openai',
+      LLM_WRITER_MODEL: 'gpt-6.1-sol',
+    };
+    expect(envSchema.safeParse(openai).success).toBe(false);
+    expect(envSchema.safeParse({ ...openai, LLM_WRITER_API_KEY: 'sk-x' }).success).toBe(true);
   });
 });

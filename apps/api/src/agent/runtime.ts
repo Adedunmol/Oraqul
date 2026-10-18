@@ -15,7 +15,6 @@ import type { AgentContext, HistoryItem, Planner, Step } from './types.js';
 
 type CategoryPack = (typeof packs)[Category];
 
-/** One agent's turn-by-turn state. */
 interface Loop {
   /** `film`, or `books→film` for a consult. */
   agent: string;
@@ -35,6 +34,10 @@ export interface RunState {
   status: 'active' | 'waiting' | 'done';
   pending: Question | null;
   receipts: Receipt[];
+  /** Receipts from the plan this run answers about: citable by id, never rerun (agent.md, Memory). */
+  prior: Receipt[];
+  /** The plan and the chat as text, labelled context and never evidence. */
+  context: string | null;
   main: Loop;
 }
 
@@ -49,18 +52,26 @@ export interface RuntimeDeps {
 /** The answer does not fit the run: nothing is waiting, or it names a question or option that is not. */
 export class AnswerError extends Error {}
 
-export function newRunState(project: ProjectInput, job: Job, maxSteps: number): RunState {
+export function newRunState(
+  project: ProjectInput,
+  job: Job,
+  maxSteps: number,
+  answer?: { prior: Receipt[]; context: string; question: string },
+): RunState {
   return {
     project,
     status: 'active',
     pending: null,
     receipts: [],
+    prior: answer?.prior ?? [],
+    context: answer?.context ?? null,
     main: {
       agent: project.category,
       pack: packs[project.category],
       job,
-      consultQuestion: undefined,
-      canAsk: true,
+      consultQuestion: answer?.question,
+      // An answer about a plan never stops on a card: it says what it would need instead.
+      canAsk: !answer,
       history: [],
       maxSteps,
       stepsUsed: 0,
@@ -153,6 +164,8 @@ async function runLoop(state: RunState, deps: RuntimeDeps, loop: Loop): Promise<
       canAsk: loop.canAsk,
       history: loop.history,
       receipts: state.receipts,
+      prior: state.prior,
+      context: state.context,
     };
     const step = await deps.planner.next(context);
     loop.stepsUsed += 1;
@@ -186,7 +199,7 @@ async function runLoop(state: RunState, deps: RuntimeDeps, loop: Loop): Promise<
       }
       case 'finish': {
         trace('Writing up what the receipts show');
-        const bad = ungroundedClaims(step.reply, state.receipts);
+        const bad = ungroundedClaims(step.reply, [...state.receipts, ...state.prior]);
         if (bad.length === 0) return { outcome: 'finished', reply: step.reply };
         loop.groundingRetries += 1;
         if (loop.groundingRetries > 1) return { outcome: 'ungrounded' };
@@ -218,10 +231,18 @@ async function runTool(
     return 'ok';
   }
   try {
-    const { data, receipt } = await tools[name].run(deps.tools, input);
-    state.receipts.push(receipt);
-    deps.emit({ type: 'receipt', receipt });
-    loop.history.push({ kind: 'tool', name, input, data, receiptId: receipt.callId });
+    const { data, receipts } = await tools[name].run(deps.tools, input);
+    for (const receipt of receipts) {
+      state.receipts.push(receipt);
+      deps.emit({ type: 'receipt', receipt });
+    }
+    loop.history.push({
+      kind: 'tool',
+      name,
+      input,
+      data,
+      receiptIds: receipts.map((r) => r.callId),
+    });
   } catch (err) {
     if (err instanceof QlooBudgetError) return 'budget';
     if (err instanceof QlooError) {
@@ -257,7 +278,7 @@ async function runTool(
   return 'ok';
 }
 
-/** Spec §3.4: one question, a small step cap, no questions back to the user, receipts shared. */
+// Spec §3.4: one question, a small step cap, no questions back to the user, receipts shared.
 async function consult(
   state: RunState,
   deps: RuntimeDeps,

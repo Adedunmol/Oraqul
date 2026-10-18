@@ -1,5 +1,7 @@
 import {
+  type OutputDetail,
   type Overview,
+  outputDetailSchema,
   overviewSchema,
   type PinnedProjects,
   type Project,
@@ -16,10 +18,8 @@ import type { CategoryScope } from '../routes';
 import { ApiError } from './http';
 import { serverGet, serverGetIfSignedIn } from './server';
 
-/**
- * A project or thread the person cannot open answers 403, the same as one that does not exist
- * (spec §7), so both show the not found page rather than an error to retry.
- */
+// A project or thread the person cannot open answers 403, the same as one that does not exist
+// (spec §7), so both show the not found page rather than an error to retry.
 async function orNotFound<T>(read: Promise<T>): Promise<T> {
   try {
     return await read;
@@ -43,6 +43,10 @@ export function getProjectDetail(projectId: string, returnTo: string): Promise<P
 
 export function getThreadDetail(threadId: string, returnTo: string): Promise<ThreadDetail> {
   return orNotFound(serverGet(`/threads/${threadId}`, threadDetailSchema, { returnTo }));
+}
+
+export function getOutputDetail(outputId: string, returnTo: string): Promise<OutputDetail> {
+  return orNotFound(serverGet(`/outputs/${outputId}`, outputDetailSchema, { returnTo }));
 }
 
 export function getOverview(teamId: string, returnTo: string): Promise<Overview> {

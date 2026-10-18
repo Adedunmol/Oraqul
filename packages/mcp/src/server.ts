@@ -3,7 +3,7 @@ import { type ToolContext, tools } from '@oraqul/engine';
 
 /**
  * Exposes the engine tools, the same ones the agents call (spec §1). Each result is
- * `{ data, receipt }` as JSON text, so a client can cite the receipt.
+ * `{ data, receipts }` as JSON text, so a client can cite the receipts.
  */
 export function createServer(context: ToolContext): McpServer {
   const server = new McpServer({ name: 'oraqul', version: '0.0.0' });

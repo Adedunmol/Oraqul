@@ -64,11 +64,7 @@ export function newRouterState(hints: { category?: Category; mode?: StartMode })
   };
 }
 
-/**
- * One router turn (spec §3.1). A pick on the card settles what that option names with no model
- * call; anything typed is added to the conversation and the whole conversation is read again.
- * Mutates `state`. Returns the decision and the tokens the model used.
- */
+/** One router turn (spec §3.1). A pick on the card needs no model call. Mutates `state`. */
 export async function routeTurn(
   state: RouterState,
   turn: RouterTurn,
@@ -132,7 +128,6 @@ function settlesOf(state: RouterState, answer: Answer) {
   return settles;
 }
 
-/** Returns what the picked option settles, or null for a typed answer to the open card. */
 function pick(state: RouterState, answer: Answer) {
   const settles = settlesOf(state, answer);
   if (answer.kind === 'text') state.transcript.push({ from: 'person', text: answer.text });
@@ -141,11 +136,9 @@ function pick(state: RouterState, answer: Answer) {
 
 const MAX_TITLE_CHARS = 80;
 
-/**
- * The reply to "What is it called?" is the title itself, so it is taken as typed rather than
- * searched for a quote: a bare name has no "called" or quotation marks to find. Only the first
- * line counts, so an attached file's text (added after it) never becomes the title.
- */
+// The reply to "What is it called?" is the title itself, so it is taken as typed rather than
+// searched for a quote: a bare name has no "called" or quotation marks to find. Only the first
+// line counts, so an attached file's text (added after it) never becomes the title.
 function titleFrom(text: string): string | null {
   const line = text.trim().split('\n')[0]?.trim() ?? '';
   if (line === '' || line.startsWith('[File:') || line.startsWith('[Attached file:')) return null;

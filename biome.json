@@ -6,6 +6,7 @@
       "!**/node_modules",
       "!**/dist",
       "!packages/engine/fixtures",
+      "!**/*.live.json",
       "!**/.next",
       "!**/.turbo",
       "!**/drizzle/meta",

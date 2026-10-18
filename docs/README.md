@@ -9,7 +9,8 @@ Product docs say **what** and **why**. The rest say **how we build it**. Each fa
 3. [product/spec.md](product/spec.md) – technical spec: agents, tools, scoring, data model, API
 4. [architecture.md](architecture.md) – how the repo and the running system fit together
 
-Ideas agreed but not yet in the PRD: [product/backlog.md](product/backlog.md).
+
+Principles every category agent follows: [product/principles.md](product/principles.md). What makes a good Film plan, and how we judge one: [product/film-agent.md](product/film-agent.md).
 
 ## Pick by task
 

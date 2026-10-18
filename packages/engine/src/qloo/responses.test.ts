@@ -5,7 +5,7 @@ import {
   trendingResponseSchema,
 } from './responses';
 
-// Each case is a quirk seen in a live Qloo response on 2026-10-13.
+// Each case is a quirk seen in a live Qloo response.
 describe('response schemas accept what Qloo really sends', () => {
   it('a title with a null or missing popularity', () => {
     const parsed = entityListResponseSchema.parse({

@@ -106,10 +106,8 @@ export class TeamsService {
     });
   }
 
-  /**
-   * Locks the team's owner rows until the transaction ends, so two owners cannot demote or
-   * remove each other at the same moment and leave the team with none.
-   */
+  // Locks the team's owner rows until the transaction ends, so two owners cannot demote or
+  // remove each other at the same moment and leave the team with none.
   private async lockOwners(tx: Pick<Database, 'select'>, teamId: string): Promise<string[]> {
     const rows = await tx
       .select({ userId: memberships.userId })

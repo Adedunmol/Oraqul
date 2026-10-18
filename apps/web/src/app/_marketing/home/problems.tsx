@@ -19,11 +19,11 @@ const pairs = [
   {
     problem:
       'Tools give a plan with no evidence, or audience data with no decision. Neither shows its work.',
-    answer: 'A decision first, then the plan, with a receipt on every line you can check.',
+    answer:
+      'A decision first, then the plan, with every claim about the audience measured and every line of practice labelled.',
   },
 ];
 
-/** Today against with Oraqul, as three rows the reader can scan straight across. */
 export function Problems() {
   return (
     <section aria-labelledby="problems-title" className={band}>

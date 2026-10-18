@@ -11,9 +11,8 @@ export interface Step {
 }
 
 /**
- * Scroll told as steps: the text scrolls past while one picture stays pinned beside it and swaps
- * to match whichever step crosses the middle of the screen. Inactive steps fade back. From
- * 1000px; below that each step shows its own picture under its text, with nothing pinned.
+ * Scroll told as steps with one pinned picture. From 1000px; below that each step shows its own
+ * picture under its text.
  */
 export function StickySteps({ steps, label }: { steps: Step[]; label: string }) {
   const [active, setActive] = useState(steps[0]?.id ?? '');

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Output, QuestionAnswer, ThreadItem } from '@oraqul/schema';
+import type { Finding, LaunchPlan, Output, QuestionAnswer, ThreadItem } from '@oraqul/schema';
 import {
   Button,
   buttonClassName,
@@ -22,6 +22,8 @@ import {
 import { useDemo } from '@/lib/demo/use-demo';
 import { toneClass, verdictTone } from '../charts';
 import { plural } from '../format';
+import { ExportMenu } from '../output/export-menu';
+import { PlanDocument } from '../output/plan-document';
 import { ReceiptDrawer } from '../output/receipt-drawer';
 import { copyText } from '../toast';
 import { type Attachment, Composer } from './composer';
@@ -255,8 +257,18 @@ function Item({
         />
       );
     case 'trace':
-      return <Trace steps={item.steps} done={item.done} isNew={isNew} />;
+      return <Trace steps={item.steps} done={item.done} findings={item.findings} isNew={isNew} />;
     case 'output':
+      if (output?.plan) {
+        return (
+          <PlanCard
+            output={output}
+            plan={output.plan}
+            isNew={isNew}
+            onReceipt={(lineId) => onReceipt(output, lineId)}
+          />
+        );
+      }
       return output ? (
         <OutputCard
           output={output}
@@ -264,10 +276,15 @@ function Item({
           onReceipt={(lineId) => onReceipt(output, lineId)}
         />
       ) : null;
+    case 'context':
+      return (
+        <p className={`text-[13px] text-muted ${isNew ? 'item-new' : ''}`}>
+          Using: {item.items.map((i) => i.label).join(' · ')}
+        </p>
+      );
   }
 }
 
-/** Agent text, revealed word by word the first time it shows. design-system §8 */
 function AgentText({ text, isNew }: { text: string; isNew: boolean }) {
   if (!isNew) return <div className="whitespace-pre-wrap text-[15.5px] leading-[1.6]">{text}</div>;
   let n = 0;
@@ -296,8 +313,22 @@ function AgentText({ text, isNew }: { text: string; isNew: boolean }) {
   );
 }
 
-/** The agent's steps. Runs with a progress bar, then folds into a summary. design-system §7.15 */
-function Trace({ steps, done, isNew }: { steps: string[]; done: number; isNew: boolean }) {
+// Findings shown while a run is going. The rest are in the folded trace.
+const LIVE_FINDINGS = 3;
+
+// The agent's steps and what Qloo found, as plain sentences. Runs with a progress bar, then
+// folds into a summary. design-system §7.15
+function Trace({
+  steps,
+  done,
+  findings,
+  isNew,
+}: {
+  steps: string[];
+  done: number;
+  findings: Finding[];
+  isNew: boolean;
+}) {
   if (done < steps.length) {
     const pct = Math.max(6, Math.round((done / steps.length) * 100));
     return (
@@ -322,6 +353,7 @@ function Trace({ steps, done, isNew }: { steps: string[]; done: number; isNew: b
             <Step key={s} text={s} running={i === done} />
           ))}
         </div>
+        {findings.length ? <Findings findings={findings.slice(-LIVE_FINDINGS)} /> : null}
       </div>
     );
   }
@@ -335,7 +367,21 @@ function Trace({ steps, done, isNew }: { steps: string[]; done: number; isNew: b
           <Step key={s} text={s} running={false} />
         ))}
       </div>
+      {findings.length ? <Findings findings={findings} /> : null}
     </details>
+  );
+}
+
+// What Qloo returned, one sentence per finding. The plan cites them; the ids stay in Evidence.
+function Findings({ findings }: { findings: Finding[] }) {
+  return (
+    <ul className="mt-3 flex flex-col gap-1">
+      {findings.map((f) => (
+        <li key={f.id} className="fade-in text-muted">
+          {f.text}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -360,11 +406,50 @@ function Step({ text, running }: { text: string; running: boolean }) {
   );
 }
 
-/**
- * An output in the conversation: one line naming it. The agent's message just above already says
- * the bottom line, so the summary card opens in a dialog instead of filling the chat.
- * design-system §7.13
- */
+// A launch plan in the conversation is the plan itself, in full, as a document: the agent's
+// message above is one line, and everything a reader needs follows. Actions sit in its header.
+function PlanCard({
+  output,
+  plan,
+  isNew,
+  onReceipt,
+}: {
+  output: Output;
+  plan: LaunchPlan;
+  isNew: boolean;
+  onReceipt: (lineId: string) => void;
+}) {
+  const changes = new Map(output.changes.map((c) => [c.lineId, c]));
+  return (
+    <article
+      className={`flex flex-col gap-6 rounded-2xl bg-card px-5 py-5 min-[640px]:px-7 ${isNew ? 'item-new' : ''}`}
+    >
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <KindTag kind={output.kind} label={output.kindLabel} />
+          <h3 className="truncate font-display text-[18px] font-semibold tracking-[-0.02em]">
+            {output.label}
+          </h3>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportMenu output={output} />
+          <Link
+            href={`/outputs/${output.id}`}
+            className={buttonClassName('primary', 'default', 'icon')}
+          >
+            <Icon name="external" className="size-4" />
+            Open plan
+          </Link>
+        </div>
+      </header>
+      <PlanDocument plan={plan} changes={changes} onSource={onReceipt} />
+    </article>
+  );
+}
+
+// An output in the conversation: one line naming it. The agent's message just above already says
+// the bottom line, so the summary card opens in a dialog instead of filling the chat.
+// design-system §7.13
 function OutputCard({
   output,
   isNew,

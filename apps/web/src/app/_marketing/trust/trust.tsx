@@ -6,7 +6,6 @@ import { FlowDiagram } from '../flow-diagram';
 import { Reveal } from '../reveal';
 import { band, h2Class, wrap } from '../section';
 
-/** The page title's companion: the four promises, short enough to quote. */
 export function Promises() {
   const items = [
     'Only public names, places and age bands go to Qloo.',

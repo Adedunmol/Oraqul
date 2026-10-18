@@ -4,7 +4,7 @@ import { type TagInsightsResponse, tagInsightsResponseSchema } from '../response
 import type { DiversifyBy } from '../urns';
 import type { EntityBaseParams, SignalParams } from './filters';
 
-// Parameters from the taste analysis guide. An entity signal works (verified 2026-10-13).
+// Parameters from the taste analysis guide. An entity signal works.
 // `filter.tag.types`, `filter.parents.types` and the location signal are not yet tried live.
 // TODO(verify) which of those Qloo applies.
 export type TagInsightsRequest = SignalParams &

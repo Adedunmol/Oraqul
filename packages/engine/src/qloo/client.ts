@@ -52,6 +52,40 @@ export class QlooBudgetError extends Error {
   }
 }
 
+/**
+ * Name lookups change slowly, so they are kept across runs: a plan names the same telecoms and
+ * comps as the last one. Only `/search` and `/entities` are kept; an insight depends on the signal.
+ */
+export class LookupCache {
+  private readonly kept = new Map<string, { at: number; fetched: Fetched }>();
+
+  constructor(
+    // How long an answer may be reused. Default 14 days.
+    private readonly ttlMs = 14 * 24 * 60 * 60 * 1000,
+    private readonly max = 2000,
+  ) {}
+
+  get(key: string): Fetched | null {
+    const hit = this.kept.get(key);
+    if (!hit) return null;
+    if (Date.now() - hit.at > this.ttlMs) {
+      this.kept.delete(key);
+      return null;
+    }
+    return hit.fetched;
+  }
+
+  set(key: string, fetched: Fetched): void {
+    if (this.kept.size >= this.max) {
+      const oldest = this.kept.keys().next().value;
+      if (oldest !== undefined) this.kept.delete(oldest);
+    }
+    this.kept.set(key, { at: Date.now(), fetched });
+  }
+}
+
+const LOOKUP_ENDPOINTS = new Set(['/search', '/entities']);
+
 export interface QlooClientOptions {
   baseUrl: string;
   apiKey: string;
@@ -61,6 +95,13 @@ export interface QlooClientOptions {
   callBudget?: number;
   /** Wait before the retry when Qloo sends no `Retry-After`. Default 500. */
   retryDelayMs?: number;
+  /**
+   * Most requests in flight at once. Default 2: the hackathon host answers 429 to a plan's
+   * parallel calls, so the rest wait their turn.
+   */
+  maxConcurrent?: number;
+  /** Name lookups kept across runs. Without one, every run asks again. */
+  lookupCache?: LookupCache;
   /** Replaces the global `fetch`. Demo mode and tests pass one so no request leaves the process. */
   fetch?: typeof fetch;
 }
@@ -68,6 +109,10 @@ export interface QlooClientOptions {
 const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_RETRY_DELAY_MS = 500;
 const MAX_RETRY_AFTER_MS = 10_000;
+const DEFAULT_MAX_CONCURRENT = 2;
+// A 429 with no Retry-After needs longer than a network blip before the one retry: 2 s by default.
+const RATE_LIMIT_FACTOR = 4;
+const RATE_LIMIT_RETRIES = 2;
 
 interface Fetched {
   returned: Receipt['returned'];
@@ -93,8 +138,12 @@ export class QlooClient {
   private readonly retryDelayMs: number;
   private readonly callBudget: number | undefined;
   private readonly fetchImpl: typeof fetch;
+  private readonly lookupCache: LookupCache | undefined;
   private readonly answers = new Map<string, Promise<Fetched>>();
   private networkCalls = 0;
+  private readonly maxConcurrent: number;
+  private inFlight = 0;
+  private readonly waiting: (() => void)[] = [];
 
   constructor(options: QlooClientOptions) {
     this.baseUrl = options.baseUrl;
@@ -102,7 +151,16 @@ export class QlooClient {
     this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
     this.callBudget = options.callBudget;
+    this.maxConcurrent = options.maxConcurrent ?? DEFAULT_MAX_CONCURRENT;
     this.fetchImpl = options.fetch ?? fetch;
+    this.lookupCache = options.lookupCache;
+  }
+
+  /** Network calls still allowed. Infinity with no budget. */
+  get callsLeft(): number {
+    return this.callBudget === undefined
+      ? Number.POSITIVE_INFINITY
+      : this.callBudget - this.networkCalls;
   }
 
   /** Network calls made so far. Cache hits do not count. */
@@ -128,6 +186,16 @@ export class QlooClient {
       };
     }
 
+    // A name looked up in an earlier run is free. Its record keeps the day it was really asked.
+    const lookup = LOOKUP_ENDPOINTS.has(endpoint) ? this.lookupCache?.get(key) : undefined;
+    if (lookup) {
+      this.answers.set(key, Promise.resolve(lookup));
+      return {
+        data: this.validate(schema, endpoint, lookup.returned, lookup.call),
+        call: { ...lookup.call, callId: randomUUID(), durationMs: 0, cached: true },
+      };
+    }
+
     if (this.callBudget !== undefined && this.networkCalls >= this.callBudget) {
       throw new QlooBudgetError(endpoint, this.callBudget);
     }
@@ -137,7 +205,9 @@ export class QlooClient {
     this.answers.set(key, pending);
     try {
       const { returned, call } = await pending;
-      return { data: this.validate(schema, endpoint, returned, call), call };
+      const data = this.validate(schema, endpoint, returned, call);
+      if (LOOKUP_ENDPOINTS.has(endpoint)) this.lookupCache?.set(key, { returned, call });
+      return { data, call };
     } catch (err) {
       // Failures are not remembered: the next identical call goes out again.
       this.answers.delete(key);
@@ -170,10 +240,13 @@ export class QlooClient {
 
     const calledAt = now();
     const started = Date.now();
-    let attempt = await this.attempt(url);
-    if (attempt.retryAfterMs !== undefined) {
-      await sleep(attempt.retryAfterMs);
-      attempt = await this.attempt(url);
+    let attempt = await this.slot(() => this.attempt(url));
+    // One retry for a failure; a rate limit gets a second one, after a longer wait.
+    for (let retry = 1; attempt.retryAfterMs !== undefined; retry++) {
+      const limited = attempt.status === 429;
+      if (retry > (limited ? RATE_LIMIT_RETRIES : 1)) break;
+      await sleep(attempt.retryAfterMs * (limited ? retry : 1));
+      attempt = await this.slot(() => this.attempt(url));
     }
 
     const call: QlooCall = {
@@ -196,6 +269,19 @@ export class QlooClient {
       throw new QlooError(`Qloo ${endpoint} failed with status ${attempt.status}`, 'http', call);
     }
     return { returned: attempt.returned, call };
+  }
+
+  // Runs one request when a slot is free. A finished request hands its slot to the next one.
+  private async slot<T>(work: () => Promise<T>): Promise<T> {
+    if (this.inFlight < this.maxConcurrent) this.inFlight += 1;
+    else await new Promise<void>((resolve) => this.waiting.push(resolve));
+    try {
+      return await work();
+    } finally {
+      const next = this.waiting.shift();
+      if (next) next();
+      else this.inFlight -= 1;
+    }
   }
 
   private async attempt(url: URL): Promise<Attempt> {
@@ -224,11 +310,11 @@ export class QlooClient {
     const seconds = Number(response.headers.get('retry-after'));
     if (Number.isFinite(seconds) && seconds > 0)
       return Math.min(seconds * 1000, MAX_RETRY_AFTER_MS);
-    return this.retryDelayMs;
+    return response.status === 429 ? this.retryDelayMs * RATE_LIMIT_FACTOR : this.retryDelayMs;
   }
 }
 
-/** The body as JSON, or as text when it is not JSON (an HTML error page, say). */
+// The body as JSON, or as text when it is not JSON (an HTML error page, say).
 async function readBody(response: Response): Promise<Receipt['returned']> {
   const text = await response.text();
   if (text === '') return null;

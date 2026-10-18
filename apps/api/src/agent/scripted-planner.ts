@@ -16,11 +16,7 @@ function latest(history: HistoryItem[], name: string): ToolHistory | undefined {
 const typeWord = (urn: string) => urn.replace('urn:entity:', '').replace('_', ' ');
 const bandWord = (band: string) => band.replaceAll('_', ' ');
 
-/**
- * Deterministic stand-in for the model: find the lead title, ask which one when the name is
- * ambiguous, read its audience, let Books ask Film, then write up only what the receipts say.
- * It runs the demo and the tests with no key, and shows the shape a real planner must follow.
- */
+/** Deterministic stand-in for the model, for the demo and the tests with no key. */
 export class ScriptedPlanner implements Planner {
   async next(context: AgentContext): Promise<Step> {
     const { history, project, pack } = context;
@@ -40,7 +36,7 @@ export class ScriptedPlanner implements Planner {
     if (!first) {
       return finish({
         message: `Qloo has no match for ${project.lead}, so nothing about it could be tested.`,
-        claims: [{ text: `No Qloo match for ${project.lead}.`, receiptIds: [search.receiptId] }],
+        claims: [{ text: `No Qloo match for ${project.lead}.`, receiptIds: search.receiptIds }],
       });
     }
 
@@ -88,7 +84,7 @@ export class ScriptedPlanner implements Planner {
     const claims: Claim[] = [
       {
         text: `${chosen.name} is in Qloo as a ${chosen.types.map(typeWord).join(' or ')}.`,
-        receiptIds: [search.receiptId],
+        receiptIds: search.receiptIds,
       },
     ];
     const segment = audienceOutputSchema
@@ -98,12 +94,12 @@ export class ScriptedPlanner implements Planner {
       const affinity = segment.age[segment.topAgeBand];
       claims.push({
         text: `Its audience skews most to the ${bandWord(segment.topAgeBand)} age band (affinity ${affinity}).`,
-        receiptIds: [audience.receiptId],
+        receiptIds: audience.receiptIds,
       });
     } else {
       claims.push({
         text: `Qloo returned no audience skew for ${chosen.name}, so this is not tested.`,
-        receiptIds: [audience.receiptId],
+        receiptIds: audience.receiptIds,
       });
     }
     for (const item of history) {

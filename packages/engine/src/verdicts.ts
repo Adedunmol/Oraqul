@@ -1,0 +1,104 @@
+import type { Verdict } from '@oraqul/schema';
+
+// The rules and their thresholds are docs/product/spec.md section 5.2. Change them there first.
+
+export interface VerdictResult {
+  verdict: Verdict;
+  /** How the verdict was reached, in words a marketer can read. Published on the line. */
+  why: string;
+}
+
+const AGE_NEAR_TOP = 0.05;
+const GENDER_LEAN = 0.05;
+
+/** Spec §5.2: an age or gender affinity as a 0 to 100 index, 50 neutral. Never a share. */
+export function audienceIndex(affinity: number): number {
+  return Math.min(100, Math.max(0, Math.round(50 + 50 * affinity)));
+}
+
+/** Averages each band over the rows Qloo returned, one row per comp that has a profile. */
+export function averageBands(rows: Record<string, number>[]): Record<string, number> {
+  const sums = new Map<string, { total: number; n: number }>();
+  for (const row of rows) {
+    for (const [band, value] of Object.entries(row)) {
+      const s = sums.get(band) ?? { total: 0, n: 0 };
+      sums.set(band, { total: s.total + value, n: s.n + 1 });
+    }
+  }
+  return Object.fromEntries([...sums].map(([band, s]) => [band, s.total / s.n]));
+}
+
+export function ageVerdict(band: string, ages: Record<string, number>): VerdictResult {
+  const entries = Object.entries(ages);
+  const value = ages[band];
+  if (entries.length === 0 || value === undefined) {
+    return { verdict: 'cant', why: 'Qloo returned no age profile for these comps.' };
+  }
+  const top = Math.max(...entries.map(([, v]) => v));
+  const shown = `affinity ${value.toFixed(2)}, top band ${top.toFixed(2)}`;
+  if (top - value <= AGE_NEAR_TOP) {
+    return { verdict: 'holds', why: `It is the top age band, or close to it (${shown}).` };
+  }
+  if (value > 0) {
+    return { verdict: 'weak', why: `The band leans in, but other bands lean in more (${shown}).` };
+  }
+  return { verdict: 'breaks', why: `The comps' audience leans away from this band (${shown}).` };
+}
+
+export function genderVerdict(
+  gender: 'male' | 'female',
+  genders: Record<string, number>,
+): VerdictResult {
+  const value = genders[gender];
+  if (value === undefined) {
+    return { verdict: 'cant', why: 'Qloo returned no gender profile for these comps.' };
+  }
+  const shown = `affinity ${value.toFixed(2)}`;
+  if (value > GENDER_LEAN)
+    return { verdict: 'holds', why: `The audience leans this way (${shown}).` };
+  if (value >= -GENDER_LEAN)
+    return { verdict: 'weak', why: `The audience is close to even (${shown}).` };
+  return { verdict: 'breaks', why: `The audience leans the other way (${shown}).` };
+}
+
+export function placeVerdict(place: {
+  status: 'ranked' | 'not_ranked' | 'unknown_place';
+  lift: number | null;
+  cells: number;
+}): VerdictResult {
+  if (place.status === 'unknown_place') {
+    return { verdict: 'cant', why: 'This city is not in the city table, so it was not tested.' };
+  }
+  if (place.status === 'not_ranked' || place.lift === null) {
+    return {
+      verdict: 'cant',
+      why: `Only ${place.cells} cells came back, too few to rank the city.`,
+    };
+  }
+  const shown = `lift ${place.lift.toFixed(2)} over an average city in the same call`;
+  if (place.lift >= 1.2)
+    return { verdict: 'holds', why: `The audience concentrates here (${shown}).` };
+  if (place.lift >= 1)
+    return { verdict: 'weak', why: `About average for this audience (${shown}).` };
+  return { verdict: 'breaks', why: `The audience is thinner here than elsewhere (${shown}).` };
+}
+
+export function compsVerdict(
+  check:
+    | { result: 'holds' }
+    | { result: 'changes'; restsOn: string }
+    | { result: 'skipped' }
+    | null,
+): VerdictResult {
+  if (check === null) {
+    return { verdict: 'cant', why: 'Needs at least 3 comps that Qloo found to check.' };
+  }
+  switch (check.result) {
+    case 'holds':
+      return { verdict: 'holds', why: 'The city order held with each comp left out.' };
+    case 'changes':
+      return { verdict: 'weak', why: `The city order rests on ${check.restsOn}.` };
+    case 'skipped':
+      return { verdict: 'cant', why: 'The call budget did not cover the check.' };
+  }
+}

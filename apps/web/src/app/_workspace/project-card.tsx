@@ -7,10 +7,8 @@ export const cardGridClass =
   'grid grid-cols-1 gap-4 min-[900px]:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]';
 
 /**
- * The one card for a project or work on one: tinted with its category colour, a title that
- * covers the card as its link, one muted line, then a footer. Used by the project lists and by
- * Overview, so both read as one family. design-system §7.12. The link covers the card, so a pin
- * can sit on top of it without a button inside a link.
+ * The one card for a project, used by the project lists and Overview. The link covers the card so a
+ * pin can sit on top without a button inside a link. design-system §7.12
  */
 export function CardShell({
   category,

@@ -4,11 +4,9 @@ Owners: Wahab and Adedunmola.
 
 ## 1. Summary
 
-Oraqul is a verifiable AI agent for launch planning in media and entertainment.
+Oraqul is a culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like.
 
-Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Each audience assumption is tested against real taste data from Qloo, so you see what holds and what breaks, with a receipt on every claim.
-
-Oraqul is a verifiable AI agent that builds, checks and repairs launch plans in media and entertainment.
+Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Every reply has two stages. First code asks Qloo, the taste data API, the questions the launch needs and turns each answer into a finding. Then the model writes the plan from those findings and its launch knowledge. Every claim about taste, audience or place cites a finding; launch practice is labelled as playbook. Evidence serves the plan, not the other way round.
 
 This document says what to build and why. The spec says how. The design system file says how it looks and reads.
 
@@ -16,7 +14,7 @@ This document says what to build and why. The spec says how. The design system f
 
 Launch plans in media rest on audience assumptions nobody writes down. They come from a few comparable titles and instinct. When a launch underperforms, the team can see what happened but not which assumption was wrong, so the relaunch repeats the same guess.
 
-Existing tools either produce a generic plan with no evidence, or report audience data without saying what to do with it. Neither shows its work in a form a team can check line by line.
+Existing tools either produce a generic plan with no evidence, or report audience data without saying what to do with it. A chat assistant gives a usable plan in which every cultural claim is a guess. Oraqul gives a plan whose cultural claims are measured: which artists, series, cinemas, brands and communities the launch's audience actually likes, in the team's own cities.
 
 ## 3. Users
 
@@ -36,12 +34,13 @@ Roles inside a team: owner, editor, viewer.
 
 Goals
 
-1. Turn a description or an existing plan into a list of explicit audience assumptions, each tested.
-2. Give a verdict per assumption: holds, weak, breaks, or could not test, with a receipt.
-3. Find a better plan than the one given, and show what changed.
-4. Compare who showed up with who the plan assumed, and build a relaunch plan.
-5. Let a user change one assumption and see the before and after.
-6. State gaps plainly. Never fill them with a guess.
+1. Turn a description, however thin, into a launch plan a team can send to distributors, financiers and partners. Use everything the user gives; ask for nothing beyond it.
+2. Plan for the team's decisions (cities, age band, window). Test them and say what was found, but never replace them in the bottom line. Alternatives go under Worth a look.
+3. Ground every claim about taste, audience or place in a finding from Qloo; label launch practice as playbook.
+4. Give a verdict per assumption the plan rests on: holds, weak, breaks, or could not test.
+5. Compare who showed up with who the plan assumed, and build a relaunch plan.
+6. Let a user change one assumption and see the before and after.
+7. State gaps plainly. Never fill them with a guess.
 
 Non goals
 
@@ -73,9 +72,9 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 
 | ID | Requirement | P |
 |---|---|---|
-| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, and the job. It asks only when a wrong assumption would waste the run (no category or title found, an ambiguous Qloo match). Otherwise it guesses, says what it read and guessed in one line, and the user corrects it by typing. | P0 |
+| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, comps, age band, cast, soundtrack, route, budget, partners and the job. It asks only when the minimum is missing: a description or genre, and at least one market. Comps the user names lead; with fewer than 3 the agent proposes more, kept apart ("You named 2. I added 2 more."). A same-name Qloo match is settled by code from year, country and popularity, and the plan states the choice. The user corrects anything by typing. | P0 |
 | C2 | The agent asks question cards instead of forms: single, multiple, text, split sliders, date, file, confirm, and entity match. | P0 |
-| C3 | The agent trace is shown live and kept collapsed afterwards. | P0 |
+| C3 | The agent trace is shown live and kept collapsed afterwards. Findings appear in it as plain sentences while the queries run. | P0 |
 | C4 | A project holds several threads, shown as chats beside the project's current chat. A new one builds on the current plan without asking and says what context it pulled in. The user can type "start fresh" or "use an older plan" to change that. | P0 |
 | C5 | The agent refuses forecasts and sending, and says why. | P0 |
 | C6 | Each category changes the questions, suggested next steps and results format. | P0 |
@@ -88,20 +87,21 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 
 | ID | Requirement | P |
 |---|---|---|
-| J1 | Plan: audience by segment, assumptions, plan sections for the category, risks with early warning signals, and what could not be tested. | P0 |
+| J1 | Plan: a minimum core (bottom line, positioning, audience, markets, gaps) plus the modules that fit the ask and the launch (partnerships, creative placement, publicity, community, release route, timeline, cadence, budget split, what to measure, risks). A full plan is the common case; a narrow ask gets the core plus the one module it names. | P0 |
 | J2 | Audit: read a pasted or uploaded plan, extract stated and unstated assumptions, test each, mark the source in the plan, and find stronger alternatives for what broke. | P0 |
 | J3 | Rescue: accept results as aggregates by form, file or chat. Compare planned and actual audience, find the assumption that broke, rebuild the plan, and write next steps, places still to plan and what to stop. | P0 |
 | J4 | Scenario: change one assumption, rerun only what depends on it, mark changed lines with what they were before. | P0 |
 | J5 | Rival date check: user supplies rivals and dates, or uses a public calendar. Oraqul measures shared audience with each rival from one ranking call. | P1 |
-| J6 | Partner brief: a draft message with the evidence attached. Never sent. | P1 |
+| J6 | Partner brief: a draft message that cites its findings. Never sent. | P1 |
+| J7 | Answer: a question about the plan is answered from its findings, with the same line kinds and check. If the answer would change a decision, the agent offers it as a scenario. | P0 |
 
 ### 6.3 Category packs
 
-Each category supplies its own inputs, plan sections, assumption checklist, scenarios, results format, and signature charts.
+Each category supplies its own inputs, query catalog, modules, assumption checklist, scenarios, results format, and signature charts. Film is built on the two stages first; the other categories follow with their own catalog and modules.
 
 | Category | Plan sections | Signature views | Rescue takes |
 |---|---|---|---|
-| Film and series | Trailer pairings, partner brands, press and podcasts, cities | Territory ladder | Opening results by age and territory |
+| Film and series | Core plus modules: partnerships (music, brands), creative placement, publicity, community, route, timeline, cadence, budget, measures, risks | Plan tab, territory ladder | Opening results by age and territory |
 | Music | Support acts, partner brands, press and playlists, cities | Tour route with route score, support act grid | Tickets and streams by city and age |
 | Books | Comp titles, partner brands, press and events, cities | Comp shelf, adaptation bridge | Pre orders by market and age |
 | Podcasts | Cross promotion shows, sponsors, guests, markets | Topic map against rival shows | Downloads by age and market |
@@ -111,8 +111,8 @@ Each category supplies its own inputs, plan sections, assumption checklist, scen
 
 | ID | Requirement | P |
 |---|---|---|
-| E1 | Every line has a verdict or fit score, a confidence level, and a receipt: endpoint, input, what came back, how the verdict was reached, time. | P0 |
-| E2 | Every entity the agent names must appear in data Qloo returned in that run. | P0 |
+| E1 | Two kinds of line, shown the same way. A grounded line claims something about taste, audience or place and cites findings, shown as a quiet number that opens the evidence; its names and numbers must match them. A playbook line is launch practice, which may name anything real (distributors, regulators, rival releases, neighbourhoods) but never claims what an audience likes or states a market figure with no source. The plan speaks plainly: no confidence, data-limit or jargon wording, which live in the Evidence and Assumptions views. Code checks every line and drops one that fails, and the plan still saves. | P0 |
+| E2 | Every entity a line names must be in a finding it cites or in the brief. A finding opens to the raw call; call ids appear only in the Evidence tab. | P0 |
 | E3 | Gaps are stated as not found, thin, or not supported, with what the agent did next and what input would change the answer. | P0 |
 | E4 | Every chart has a table view. | P0 |
 | E5 | Evidence tab lists all calls, with the lines that drove the recommendations first. | P0 |
@@ -123,11 +123,11 @@ Each category supplies its own inputs, plan sections, assumption checklist, scen
 
 | ID | Requirement | P |
 |---|---|---|
-| O1 | Every output ends in a summary, a decision first takeaway card one click from the chat (the agent's message states the bottom line; the card opens in a dialog), and its own details page with only the tabs that fit. | P0 |
+| O1 | The chat shows the whole launch plan as a readable document, with Export and Open plan in its header. The plan's page opens on the Plan tab, with Audience, Assumptions and Evidence behind it. Other outputs keep their summary card and the tabs that fit. | P0 |
 | O2 | Compare any two plans line by line. | P0 |
-| O3 | Export a one page brief with an evidence appendix and confidence per line. | P0 |
+| O3 | Export a plan as PDF, Word (DOCX) or Markdown, each built by the API as a document: the moves first, then the sections, with footnotes to where the audience insights come from and the sources at the end. Raw Qloo data stays out until O4 is settled. | P0 |
 | O4 | A read only share link for one output, with an off switch. Raw Qloo data is not shown on public links until Qloo confirms what may be shown. | P0 |
-| O5 | Copy summary and copy draft. | P0 |
+| O5 | Copy summary, copy draft and copy as Markdown. | P0 |
 
 ### 6.6 Accounts
 
@@ -153,7 +153,7 @@ The product has many new words and a deep structure, so it must explain itself b
 |---|---|---|
 | U1 | The overview opens with a message box. Three optional hints under it, Make a plan, Check my plan, Fix one that missed, change the prompt and say what to bring. The first message creates the project. The agent states the job it read in its first reply and the user corrects it by typing ("check my plan instead"); it does not ask a confirm card. | P0 |
 | U2 | Every output tab opens with one plain sentence on what it shows. The Assumptions and Evidence notes explain Holds, Breaks and receipts. | P0 |
-| U3 | Output pages show Summary, Plan, Assumptions and Evidence by default, plus the current tab. The rest sit under More. Could not test sits at the end of Assumptions and Risks at the end of Plan, not on tabs of their own. | P0 |
+| U3 | A launch plan opens on Plan, then Audience, Assumptions and Evidence. Other outputs show Summary, Plan, Assumptions and Evidence by default, plus the current tab, and the rest sit under More. Could not test sits at the end of Assumptions; Gaps closes the plan. | P0 |
 | U4 | Words stay plain. Verdicts are Holds, Weak, Breaks and Could not test. No jargon without a one line explanation beside it. | P0 |
 | U5 | Search on Ctrl K or Cmd K reaches categories, projects, outputs and actions. Number keys pick options on question cards. Both are extras, never the only way. | P1 |
 | U7 | Motion marks arrival and progress only: agent text appearing, the trace advancing, views opening. Reduced motion settings are respected. | P1 |
@@ -164,48 +164,25 @@ Calm and clear, with a wide geometric grotesque (Space Grotesk) for titles and t
 
 ## 7. Every market
 
-Oraqul is a global product. Titles and artists from any market are normal entities, and cities from every region are ranked by lift in one list. Examples and marketing copy span regions and never lean on one. If the data for a place is too thin to rank, the product says so on the line and lowers its confidence.
+Oraqul is a global product. Titles and artists from any market are normal entities. The team's cities are ranked by lift in one call, together with nearby cities shown only under Worth a look. Examples and marketing copy span regions and never lean on one. If the data for a place is too thin to rank, the product says so on the line and lowers its confidence.
 
 ## 8. Success measures
 
-Hackathon
-
-* The recorded walkthrough shows a rescue and a scenario diff in under three minutes.
-* Every claim in the walkthrough opens a receipt.
-* Each of the five categories runs end to end with its own views.
-* A first time viewer types one message and reaches a first result without help.
-
-Product
-
+* Share of plans exported or shared (the plan is the product).
+* Share of grounded lines against playbook lines, and lines dropped by the check, per category.
 * Share of assumptions that end as holds, weak, breaks, could not test, per category.
-* Share of outputs where the user opens at least one receipt.
 * Rescue completion: share of rescue threads that finish with results applied.
 * Rerun cost: Qloo calls per audit, kept under the call budget.
 * First use comprehension: in a test with five or six launch marketers, most can say what Holds and Breaks mean and find a receipt without help.
 
-## 9. Risks and open points
+## 9. Risks
 
 | Risk | What we do |
 |---|---|
 | Qloo may know little about the surroundings of a launch (measured so far, on hand picked and mostly popular titles: age and gender profiles exist for about half of books and for 37 of 40 films, series, artists, podcasts and games, Nigerian ones included; nothing else is measured, and obscure titles are untested) | The launch is described by its anchors, not looked up. Probe coverage per category first. State gaps on the line. Confidence follows how many and how strong the anchors are. |
 | A cross-domain overlap is read as a verdict without a baseline | A clear gap above the baseline is evidence for. Qloo always returns a score, so a low score means little alone and counts as weak only against a baseline scored in the same call. |
 | Qloo terms may limit public receipts | Share links show summaries only until confirmed. |
-| Call quota (reported near 10,000 a month) | Set a call budget per audit. Cache within a run. Rerun only what changed. |
+| Call quota (reported near 10,000 a month) | Set a call budget per run. Cache within a run. Rerun only what changed. |
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |
-| Qloo details came from secondhand sources | Confirm against Qloo's docs and our own key before building. |
-| Devpost team rules for two people | Confirm before submission. |
 | The product is hard to understand at first | One message box to start, few questions, the answer shown in the chat, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
 | Five categories is a lot of surface | One engine, one toolbox, five packs. A new category is a new pack, not new code. |
-
-Open points to close first: cross-domain tests per category, Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.
-
-## 10. Milestones to October 31
-
-| When | Done |
-|---|---|
-| Oct 13 to 15 | Qloo live tests. Monorepo, Qloo client, receipts, verdict engine. Design tokens and base components from the design system. |
-| Oct 16 to 20 | Film and Music agents end to end. Chat, trace, outputs, evidence. |
-| Oct 21 to 25 | Books, Podcasts, Games packs. Rescue and scenarios in all five. |
-| Oct 26 to 28 | Accounts, share, export, compare. MCP server. |
-| Oct 29 to 30 | Testing, demo video, write up, public repository and licence. |
-| Oct 31, 4:45am GMT+1 | Submitted. |

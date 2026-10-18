@@ -1,7 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { QlooBudgetError, QlooError } from './client';
-import { entityListBody, jsonResponse, stubFetch, testClient } from './fake-fetch';
-import { entityListResponseSchema } from './responses';
+import { LookupCache, QlooBudgetError, QlooError } from './client';
+import {
+  entityInsightsBody,
+  entityListBody,
+  jsonResponse,
+  stubFetch,
+  testClient,
+} from './fake-fetch';
+import * as lookup from './lookup';
+import { entityInsightsResponseSchema, entityListResponseSchema } from './responses';
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -125,6 +132,17 @@ describe('QlooClient.get', () => {
       expect(fetch).toHaveBeenCalledTimes(2);
     });
 
+    it('gives a rate limit a second retry, then stops', async () => {
+      const limited = () => jsonResponse({}, { status: 429 });
+      const twice = stubFetch(limited(), limited(), jsonResponse(entityListBody));
+      await get();
+      expect(twice).toHaveBeenCalledTimes(3);
+
+      const always = stubFetch(limited(), limited(), limited());
+      await expect(get()).rejects.toMatchObject({ kind: 'http', call: { status: 429 } });
+      expect(always).toHaveBeenCalledTimes(3);
+    });
+
     it('retries once after a network error', async () => {
       const fetch = stubFetch(new TypeError('fetch failed'), jsonResponse(entityListBody));
       await get();
@@ -180,6 +198,23 @@ describe('QlooClient.get', () => {
     });
   });
 
+  describe('concurrency', () => {
+    it('keeps at most maxConcurrent requests in flight', async () => {
+      let inFlight = 0;
+      let most = 0;
+      const slow: typeof fetch = async () => {
+        inFlight += 1;
+        most = Math.max(most, inFlight);
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        inFlight -= 1;
+        return new Response(JSON.stringify({ success: true, results: [] }), { status: 200 });
+      };
+      const client = testClient({ fetch: slow, maxConcurrent: 2 });
+      await Promise.all(['a', 'b', 'c', 'd', 'e'].map((query) => lookup.search(client, { query })));
+      expect(most).toBe(2);
+    });
+  });
+
   describe('budget', () => {
     it('stops before calling Qloo once the budget is spent', async () => {
       const fetch = stubFetch(jsonResponse(entityListBody));
@@ -195,5 +230,36 @@ describe('QlooClient.get', () => {
       await get(client);
       await expect(get(client)).resolves.toMatchObject({ call: { cached: true } });
     });
+  });
+});
+
+describe('LookupCache', () => {
+  it('serves a name looked up in an earlier run without a call, and keeps other endpoints per run', async () => {
+    const cache = new LookupCache();
+    const search = jsonResponse(entityListBody);
+    const fetchSpy = stubFetch(
+      search,
+      jsonResponse(entityInsightsBody),
+      jsonResponse(entityInsightsBody),
+    );
+    const first = testClient({ lookupCache: cache });
+    await first.get('/search', { query: 'MTN' }, entityListResponseSchema);
+    await first.get(
+      '/v2/insights',
+      { 'filter.type': 'urn:entity:brand' },
+      entityInsightsResponseSchema,
+    );
+
+    const second = testClient({ lookupCache: cache });
+    const again = await second.get('/search', { query: 'MTN' }, entityListResponseSchema);
+    expect(again.call.cached).toBe(true);
+    expect(second.callsUsed).toBe(0);
+    await second.get(
+      '/v2/insights',
+      { 'filter.type': 'urn:entity:brand' },
+      entityInsightsResponseSchema,
+    );
+    expect(second.callsUsed).toBe(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
   });
 });

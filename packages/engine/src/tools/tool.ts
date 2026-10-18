@@ -7,6 +7,16 @@ export interface ToolContext {
   /** One client per run, so the call budget and the cache are the run's. */
   qloo: QlooClient;
   source: Receipt['source'];
+  /**
+   * Each entity a search in this run returned, so confidence can count the anchors Qloo knows
+   * from a receipt, never from the model. `popularity` null is thin data.
+   */
+  entities: Map<string, SeenEntity>;
+}
+
+export interface SeenEntity {
+  name: string;
+  popularity: number | null;
 }
 
 /** What the model and MCP clients see in `data`. Plain JSON, so it can sit on a receipt too. */

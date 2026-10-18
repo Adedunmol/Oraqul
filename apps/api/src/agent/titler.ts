@@ -16,7 +16,6 @@ export interface FirstMessage {
   files: string[];
 }
 
-/** Names a chat from its first message. */
 export interface Titler {
   title(message: FirstMessage): Promise<string>;
 }

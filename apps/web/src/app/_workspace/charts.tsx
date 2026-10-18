@@ -169,7 +169,6 @@ export function HBars({ items }: { items: BarItem[] }) {
   );
 }
 
-/** One stacked bar of verdict counts, with glyph and word in the legend. */
 export function VerdictBar({ counts }: { counts: VerdictCounts }) {
   const total = verdicts.reduce((sum, v) => sum + counts[v], 0) || 1;
   const summary = verdicts.map((v) => `${counts[v]} ${verdictWord[v].toLowerCase()}`).join(', ');
@@ -264,7 +263,6 @@ export function GroupedColumns({
   );
 }
 
-/** One stacked column of verdict counts per output, for how a plan moved. */
 export function StackedColumns({
   columns,
 }: {

@@ -9,9 +9,7 @@ import {
 import type { CompareModel, CompareSubtype } from './urns';
 
 export type CompareRequest = {
-  /** First group of entity ids. */
   a: string[];
-  /** Second group of entity ids. */
   b: string[];
   'filter.type'?: QlooEntityType[];
   'filter.subtype'?: CompareSubtype;

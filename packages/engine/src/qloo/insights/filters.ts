@@ -51,7 +51,7 @@ export type UnconfirmedParams = {
 export type EntityBaseParams = SignalParams &
   UnconfirmedParams &
   Paging & {
-    // Verified live on 2026-10-13 for movie, tv_show, artist, book, podcast and videogame:
+    // Verified for movie, tv_show, artist, book, podcast and videogame:
     /** A place name such as `Lagos`. Changes the ranking. */
     'signal.location.query'?: string;
     /** Changes the ranking when mixed with another signal. */

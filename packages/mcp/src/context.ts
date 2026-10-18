@@ -26,7 +26,7 @@ export function contextFromEnv(raw: NodeJS.ProcessEnv): ToolContext {
       fetch: demoFetch,
       callBudget: env.QLOO_CALL_BUDGET,
     });
-    return { qloo, source: 'demo' };
+    return { qloo, source: 'demo', entities: new Map() };
   }
   const qloo = new QlooClient({
     baseUrl: env.QLOO_BASE_URL,
@@ -34,5 +34,5 @@ export function contextFromEnv(raw: NodeJS.ProcessEnv): ToolContext {
     timeoutMs: env.QLOO_TIMEOUT_MS,
     callBudget: env.QLOO_CALL_BUDGET,
   });
-  return { qloo, source: 'qloo' };
+  return { qloo, source: 'qloo', entities: new Map() };
 }

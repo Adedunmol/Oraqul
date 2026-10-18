@@ -1,16 +1,17 @@
 'use client';
 
-import type { OutputTabKey } from '@oraqul/schema';
+import type { OutputDetail, OutputTabKey } from '@oraqul/schema';
 import { Button, buttonClassName, Icon, TabNote, Tabs } from '@oraqul/ui';
 import Link from 'next/link';
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
-import type { OutputDetail, ThreadDetail } from '@/lib/demo/queries';
+import { exportOutput } from '@/lib/api/projects';
 import { projectPath, projectsPath } from '@/lib/routes';
-import { ChatPanel, KindTag } from '../chat/chat-panel';
+import { KindTag } from '../chat/chat-panel';
 import { Crumbs } from '../crumbs';
 import { formatDay } from '../format';
-import { copyText } from '../toast';
+import { copyText, toast } from '../toast';
 import { makeView, OutputContext } from './context';
+import { ExportMenu } from './export-menu';
 import { ExportModal, ShareModal } from './modals';
 import { ReceiptDrawer } from './receipt-drawer';
 import {
@@ -40,7 +41,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   audience: AudienceTab,
   assumptions: AssumptionsTab,
   plan: PlanTab,
-  // No output lists these two any more; their lists sit at the end of Plan and Assumptions.
+  // Their lists sit at the end of Plan and Assumptions.
   risks: PlanTab,
   cannot: AssumptionsTab,
   evidence: EvidenceTab,
@@ -59,7 +60,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
 };
 
 const PRIMARY: OutputTabKey[] = ['summary', 'plan', 'assumptions', 'evidence'];
-/** Tabs that became part of another, so an old link still lands on the right list. */
+// Tabs that became part of another, so an old link still lands on the right list.
 const FOLDED: Partial<Record<OutputTabKey, OutputTabKey>> = {
   risks: 'plan',
   cannot: 'assumptions',
@@ -74,42 +75,50 @@ export function OutputView({
   teamName,
   share,
   dock,
+  shared = false,
   publicExample = false,
 }: {
   detail: OutputDetail;
   initialTab: OutputTabKey | undefined;
   canEdit: boolean;
   teamName: string | null;
-  /** Present in the app. Absent on a shared link, which is read only. */
+  /** The output's share link, when it has one. Without it there is no Share button. */
   share?: { token: string; enabled: boolean };
-  dock?: { thread: ThreadDetail; unread: boolean };
+  /** The chat beside the output on desktop, and whether it has something new. */
+  dock?: { chat: ReactNode; unread: boolean };
+  /** A shared link or a public example: read only, with no trail back into the app. */
+  shared?: boolean;
   /** The public example page: the receipt drawer leaves out what could read as raw Qloo data. */
   publicExample?: boolean;
 }) {
   const { output, project, thread, builtOn } = detail;
-  const shared = !share;
   const keys = output.tabs.map((t) => t.key);
+  // The API lists the tabs in order: a launch plan opens on Plan, the older outputs on Summary.
+  const first = keys[0] ?? 'summary';
   const asked = initialTab ? (FOLDED[initialTab] ?? initialTab) : undefined;
-  const [tab, setTab] = useState<OutputTabKey>(asked && keys.includes(asked) ? asked : 'summary');
+  const [tab, setTab] = useState<OutputTabKey>(asked && keys.includes(asked) ? asked : first);
   const [more, setMore] = useState(false);
-  const [receipt, setReceipt] = useState<string | null>(null);
+  const [receipt, setReceipt] = useState<{ lineId: string; ids: boolean } | null>(null);
   const [modal, setModal] = useState<'share' | 'export' | null>(null);
   const [dockOpen, setDockOpen] = useState(false);
 
   // The URL keeps the tab so a link opens it, without a server round trip for every click. Other
   // query values stay (the public examples page keeps its ?case= beside it).
-  const goToTab = useCallback((key: OutputTabKey) => {
-    setTab(key);
-    const url = new URL(window.location.href);
-    if (key === 'summary') url.searchParams.delete('tab');
-    else url.searchParams.set('tab', key);
-    window.history.replaceState(null, '', url);
-  }, []);
+  const goToTab = useCallback(
+    (key: OutputTabKey) => {
+      setTab(key);
+      const url = new URL(window.location.href);
+      if (key === first) url.searchParams.delete('tab');
+      else url.searchParams.set('tab', key);
+      window.history.replaceState(null, '', url);
+    },
+    [first],
+  );
 
   const view = useMemo(
     () =>
       makeView(output, {
-        openReceipt: setReceipt,
+        openReceipt: (lineId, options) => setReceipt({ lineId, ids: options?.ids ?? false }),
         openExport: () => setModal('export'),
         goToTab,
         builtOn: builtOn ? { id: builtOn.id, label: builtOn.label } : undefined,
@@ -127,7 +136,7 @@ export function OutputView({
   const items: { key: TabChoice; label: string; count?: number }[] = visible.map((t) => ({
     key: t.key,
     label: t.label,
-    count: t.key === 'evidence' ? output.evidence.length : undefined,
+    count: t.key === 'evidence' && !output.plan ? output.evidence.length : undefined,
   }));
   if (collapsible) items.push({ key: 'more', label: more ? 'Fewer' : `More (${hidden})` });
 
@@ -174,15 +183,31 @@ export function OutputView({
                     Share
                   </Button>
                 ) : null}
+                {output.plan ? (
+                  <div className="max-[899px]:hidden">
+                    <ExportMenu output={output} />
+                  </div>
+                ) : (
+                  <Button
+                    icon="export"
+                    className="max-[899px]:hidden"
+                    onClick={() => setModal('export')}
+                  >
+                    Export brief
+                  </Button>
+                )}
                 <Button
-                  icon="export"
-                  className="max-[899px]:hidden"
-                  onClick={() => setModal('export')}
+                  icon="copy"
+                  onClick={() =>
+                    output.plan
+                      ? void exportOutput(output.id, 'md').then(
+                          async (file) => copyText(await file.text(), 'Plan copied'),
+                          () => toast('Could not copy the plan. Try again.'),
+                        )
+                      : copyText(output.summary, 'Summary copied')
+                  }
                 >
-                  Export brief
-                </Button>
-                <Button icon="copy" onClick={() => copyText(output.summary, 'Summary copied')}>
-                  Copy summary
+                  {output.plan ? 'Copy plan' : 'Copy summary'}
                 </Button>
                 {shared ? null : (
                   // On desktop the dock chat does this; below 900px the dock is hidden.
@@ -203,7 +228,7 @@ export function OutputView({
               onSelect={(key) => (key === 'more' ? setMore((m) => !m) : goToTab(key))}
             />
           </header>
-          {current ? <TabNote>{current.note}</TabNote> : null}
+          {current?.note ? <TabNote>{current.note}</TabNote> : null}
           <div key={tab} className="tab-enter flex flex-col gap-[18px] pb-16">
             <Body />
           </div>
@@ -223,7 +248,7 @@ export function OutputView({
                 aria-label="Close chat"
               />
             </div>
-            <ChatPanel detail={dock.thread} canEdit={canEdit} />
+            {dock.chat}
           </aside>
         ) : null}
       </div>
@@ -244,7 +269,8 @@ export function OutputView({
       ) : null}
       <ReceiptDrawer
         output={output}
-        lineId={receipt}
+        lineId={receipt?.lineId ?? null}
+        ids={receipt?.ids ?? false}
         onClose={() => setReceipt(null)}
         publicExample={publicExample}
       />

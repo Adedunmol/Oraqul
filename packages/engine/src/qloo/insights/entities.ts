@@ -3,9 +3,8 @@ import { type EntityInsightsResponse, entityInsightsResponseSchema } from '../re
 import type { EntityInsightsRequest } from './filters';
 
 /**
- * `/v2/insights` for one entity type: what is closest to the signal, as a ranked list of
- * entities. `filter.type` picks the parameters you may use, so a book filter on a movie
- * request does not compile.
+ * `/v2/insights` for one entity type. `filter.type` picks the parameters you may use, so a book
+ * filter on a movie request does not compile.
  */
 export function entities(
   client: QlooClient,

@@ -8,21 +8,26 @@ import {
   Param,
   Post,
   Query,
+  Res,
   Sse,
+  StreamableFile,
   UseGuards,
 } from '@nestjs/common';
 import {
   type Category,
+  type CompareResponse,
   type CreateProjectResult,
   type CreateThreadResult,
   categorySchema,
   createProjectInputSchema,
+  type OutputDetail,
   type Overview,
   type Project,
   type ProjectDetail,
   postMessageSchema,
   type ThreadDetail,
 } from '@oraqul/schema';
+import type { Response } from 'express';
 import { map, type Observable } from 'rxjs';
 import { z } from 'zod';
 import { RunService } from '../agent/run.service.js';
@@ -30,6 +35,7 @@ import { CurrentMembership } from '../auth/current-membership.decorator.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { type Membership, Roles, RolesGuard } from '../auth/roles.guard.js';
 import { SessionGuard, type SessionUser } from '../auth/session.guard.js';
+import { exportFormats, fileName, toDocx, toMarkdown, toPdf } from '../outputs/export.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
 import { ProjectsService } from './projects.service.js';
 
@@ -81,6 +87,16 @@ export class ProjectsController {
     return this.projects.detail(projectId, membership.userId, membership.role);
   }
 
+  @Get('projects/:projectId/compare')
+  @Roles('owner', 'editor', 'viewer')
+  compare(
+    @Param('projectId') projectId: string,
+    @Query('a', new ZodPipe(z.uuid())) a: string,
+    @Query('b', new ZodPipe(z.uuid())) b: string,
+  ): Promise<CompareResponse> {
+    return this.projects.compare(projectId, a, b);
+  }
+
   @Delete('projects/:projectId')
   @Roles('owner')
   @HttpCode(204)
@@ -95,6 +111,40 @@ export class ProjectsController {
     @Param('projectId') projectId: string,
   ): Promise<CreateThreadResult> {
     return this.projects.createThread(projectId, user.id);
+  }
+
+  @Get('outputs/:outputId')
+  @Roles('owner', 'editor', 'viewer')
+  output(@Param('outputId') outputId: string): Promise<OutputDetail> {
+    return this.projects.outputDetail(outputId);
+  }
+
+  /** The plan as a file to send or paste (PRD O3). */
+  @Get('outputs/:outputId/export/:format')
+  @Roles('owner', 'editor', 'viewer')
+  async export(
+    @Param('outputId') outputId: string,
+    @Param('format', new ZodPipe(z.enum(exportFormats))) format: (typeof exportFormats)[number],
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<StreamableFile> {
+    const { output } = await this.projects.outputDetail(outputId);
+    const name = fileName(output, format);
+    if (format === 'md') {
+      res.set({ 'Content-Type': 'text/markdown; charset=utf-8' });
+      return new StreamableFile(Buffer.from(toMarkdown(output), 'utf8'));
+    }
+    if (format === 'pdf') {
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${name}"`,
+      });
+      return new StreamableFile(await toPdf(output));
+    }
+    res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'Content-Disposition': `attachment; filename="${name}"`,
+    });
+    return new StreamableFile(await toDocx(output));
   }
 
   @Get('threads/:threadId')

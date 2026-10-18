@@ -21,7 +21,7 @@ export function SharedScreen({ token }: { token: string }) {
       </div>
       <DemoNote />
       {detail ? (
-        <OutputView detail={detail} initialTab={undefined} canEdit={false} teamName={null} />
+        <OutputView detail={detail} initialTab={undefined} canEdit={false} teamName={null} shared />
       ) : (
         <Card className="flex max-w-xl flex-col items-start gap-3 p-6">
           <h1 className="font-display text-2xl font-semibold">This link does not work.</h1>

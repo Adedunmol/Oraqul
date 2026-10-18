@@ -33,7 +33,7 @@ const themeScript =
 export const metadata: Metadata = {
   title: 'Oraqul',
   description:
-    'A verifiable AI agent for launch planning in media and entertainment, grounded in Qloo taste data.',
+    'A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like, from Qloo taste data.',
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

@@ -39,8 +39,8 @@ export function Hero() {
 
         <div className="mk-word" style={at(300)}>
           <p className="max-w-[44ch] text-balance text-[clamp(17px,1.5vw,20px)] leading-[1.5] text-ink/75">
-            A verifiable AI agent for launch planning across film, music, books, podcasts and games.
-            Every claim comes with the Qloo taste data behind it.
+            Launch plans grounded in what audiences actually like, across film, music, books,
+            podcasts and games. Every claim comes with the Qloo taste data behind it.
           </p>
         </div>
 

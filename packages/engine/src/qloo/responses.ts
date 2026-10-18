@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 // Objects are loose so the whole body can be stored on the call record as `returned`.
-// Shapes were checked live on 2026-10-13 (docs/backend/qloo.md). Fields not seen live stay
-// optional with a TODO(verify).
+// Shapes were checked live (docs/backend/qloo.md). Fields not seen live stay optional with a
+// TODO(verify).
 
 /** A tag as `/v2/tags` lists it. Lookups use `id`, not `tag_id`. */
 export const tagLookupSchema = z.looseObject({
@@ -49,6 +49,8 @@ export const entitySchema = z.looseObject({
   subtype: z.string().optional(),
   /** Null or missing for some titles. */
   popularity: z.number().nullish(),
+  /** `/search` only: a short tell-apart, such as the release year `2018`. */
+  disambiguation: z.string().optional(),
   properties: z.looseObject({}).optional(),
   tags: z.array(entityTagSchema).optional(),
   query: z

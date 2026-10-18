@@ -20,7 +20,7 @@ function setup(
   });
   const deps: RuntimeDeps = {
     planner: options.planner ?? new ScriptedPlanner(),
-    tools: { qloo, source: 'demo' },
+    tools: { qloo, source: 'demo', entities: new Map() },
     consultMaxSteps: 4,
     emit: (event) => events.push(event),
   };

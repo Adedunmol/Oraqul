@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { setPinned } from '@/lib/api/projects';
 import { toast } from './toast';
 
-/** Pins a project to the top of the project lists, or takes it off. */
 export function PinButton({
   projectId,
   name,

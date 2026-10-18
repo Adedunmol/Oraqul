@@ -10,7 +10,7 @@ export const GATE = Symbol('GATE');
 const MIN_OPTIONS = 2;
 
 export interface GateInput {
-  project: Handoff;
+  project: Pick<Handoff, 'category' | 'mode' | 'title'>;
   /** The last lines of the chat. The last `person` line is the message to judge. */
   recent: TranscriptLine[];
 }

@@ -4,6 +4,7 @@ import { codeRequestSchema, codeSchema, nextPathSchema, passwordSchema } from '.
 import { claimSchema } from './claim';
 import { threadEventSchema } from './events';
 import { pinnedProjectsSchema } from './pin';
+import { launchPlanSchema } from './plan';
 import { questionCardSchema, threadItemSchema } from './thread';
 
 const receiptId = '3f2b8c1e-6d6a-4c53-9b0e-0a1f4f1d2e11';
@@ -115,5 +116,72 @@ describe('pinnedProjectsSchema', () => {
   it('rejects an empty id or a value that is not a list', () => {
     expect(pinnedProjectsSchema.safeParse(['']).success).toBe(false);
     expect(pinnedProjectsSchema.safeParse({ kind: 'project', id: 'a' }).success).toBe(false);
+  });
+});
+
+describe('launch plan and findings', () => {
+  const finding = {
+    id: 'f-music-lagos',
+    query: 'music',
+    text: 'In Lagos, the Afrobeats artists that rank highest with your comps’ audience are Tems.',
+    entities: [{ entityId: null, name: 'Tems', affinity: 0.9, detail: null }],
+    numbers: {},
+    verdict: null,
+    confidence: 'high',
+    why: 'high: 3 anchors with data',
+    context: {
+      city: 'Lagos',
+      ages: [],
+      tags: ['Afrobeats'],
+      country: null,
+      yearFrom: null,
+      audience: null,
+    },
+    callIds: ['00000000-0000-4000-8000-000000000001'],
+  };
+
+  it('streams a finding as a thread event and stores it on a trace item', () => {
+    expect(threadEventSchema.parse({ type: 'finding', finding }).type).toBe('finding');
+    const trace = threadItemSchema.parse({ id: 't', role: 'trace', steps: ['Reading'], done: 1 });
+    expect(trace.role === 'trace' && trace.findings).toEqual([]);
+  });
+
+  it('keeps grounded and playbook lines apart and rejects an unknown section', () => {
+    const plan = {
+      scope: 'full',
+      sections: [
+        {
+          key: 'partnerships',
+          title: 'Partnerships',
+          lines: [
+            {
+              id: 'p-1',
+              kind: 'grounded',
+              text: 'Approach Tems.',
+              findingIds: ['f-music-lagos'],
+              names: ['Tems'],
+              group: null,
+            },
+            {
+              id: 'p-2',
+              kind: 'playbook',
+              text: 'Watermark screeners.',
+              findingIds: [],
+              names: [],
+              group: null,
+            },
+          ],
+        },
+      ],
+      comps: [{ name: 'King of Boys', source: 'you', match: '2018 · Nigeria', choice: null }],
+      findings: [finding],
+      dropped: [],
+      writer: 'template',
+    };
+    expect(launchPlanSchema.parse(plan).sections[0]?.lines).toHaveLength(2);
+    expect(
+      launchPlanSchema.safeParse({ ...plan, sections: [{ ...plan.sections[0], key: 'trailers' }] })
+        .success,
+    ).toBe(false);
   });
 });

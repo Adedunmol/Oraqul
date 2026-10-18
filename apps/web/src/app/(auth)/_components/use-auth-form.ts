@@ -34,7 +34,7 @@ export function useAuthForm(step: AuthStep) {
       : '',
   );
 
-  /** A link to another auth page that keeps the page to return to after sign in. */
+  // A link to another auth page that keeps the page to return to after sign in.
   function href(path: string, extra?: { email?: string }): string {
     const query = new URLSearchParams();
     if (extra?.email) query.set('email', extra.email);

@@ -131,7 +131,7 @@ function options(list: { v: string; l: string; d?: string }[]) {
 function runTrace(threadId: string, steps: string[], done: () => void): void {
   const id = itemId();
   setBusy(threadId, true);
-  pushItem(threadId, { id, role: 'trace', steps, done: 0 });
+  pushItem(threadId, { id, role: 'trace', steps, done: 0, findings: [] });
   let shown = 0;
   const tick = () => {
     if (shown < steps.length) {
@@ -794,7 +794,6 @@ function reply(threadId: string, text: string): void {
   );
 }
 
-/** Line by line, what moved between the plan this thread works from and the one before it. */
 function comparePlansInChat(t: Thread): void {
   const b = baseOf(t);
   if (!b) return;

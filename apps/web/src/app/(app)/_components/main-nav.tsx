@@ -12,10 +12,8 @@ const RECENT = 3;
 
 const groupLabel = 'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
-/**
- * The project the current page belongs to, so its sidebar row stays lit inside it. A chat's
- * address does not name its project, so inside a chat Projects stays lit instead.
- */
+// The project the current page belongs to, so its sidebar row stays lit inside it. A chat's
+// address does not name its project, so inside a chat Projects stays lit instead.
 function currentProjectId(pathname: string): string | undefined {
   const [, section, , , projectId] = pathname.split('/');
   return section === 'categories' ? projectId : undefined;
@@ -54,7 +52,6 @@ function Item({
   );
 }
 
-/** One project row: its category tile, so the list reads at a glance and in the rail. */
 function ProjectItem({ project, active }: { project: Project; active: boolean }) {
   return (
     <Link

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-// The page was renamed to /examples when it grew to three cases. Old links still land.
+// Old links to /example still land on /examples.
 export default function Example(): never {
   redirect('/examples');
 }

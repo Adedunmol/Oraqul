@@ -35,20 +35,21 @@ export const searchEntity = defineTool({
       types: e.types ?? [],
       popularity: e.popularity ?? null,
     }));
+    for (const c of candidates) ctx.entities.set(c.entityId, c);
     const top = candidates[0];
     const ambiguous =
       top !== undefined &&
       candidates.filter((c) => c.name.toLowerCase() === top.name.toLowerCase()).length > 1;
 
-    // TODO(spec §5): confidence also depends on comps behind the signal and thin coverage lists.
+    // Spec §5.1, lookups: a search backs a match, not a taste claim.
     const confidence = candidates.length === 0 || ambiguous ? 'lower' : 'high';
     const receipt = toReceipt(call, {
       returned: { candidates },
-      rule: 'Candidates are the names Qloo matched. More than one with the top name means the user picks.',
+      rule: `Candidates are the names Qloo matched. More than one with the top name means the user picks. Confidence ${confidence}: ${candidates.length === 0 ? 'no match' : ambiguous ? 'several share the top name' : 'one clear match'}.`,
       confidence,
       source: ctx.source,
     });
     const data: z.infer<typeof searchEntityOutputSchema> = { candidates, ambiguous };
-    return { data, receipt };
+    return { data, receipts: [receipt] };
   },
 });

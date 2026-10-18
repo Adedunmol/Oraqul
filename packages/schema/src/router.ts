@@ -4,7 +4,7 @@ import { categorySchema, startModeSchema } from './categories';
 // What the router model returns for the start of a project (spec §3.1, §9.2). Flat rather than a
 // union because not every provider's structured output takes `anyOf` at the top level.
 
-/** The exact words in the person's messages that the value was read from. */
+// The exact words in the person's messages that the value was read from.
 const quote = z.string().min(1);
 
 export const routerOptionSchema = z.object({
