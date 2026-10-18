@@ -22,6 +22,10 @@ export const launchModuleKeys = [
   'budget',
   'measure',
   'risks',
+  // Music only. Each category picks its own modules from this list (`pickModules` in its pack).
+  'tour',
+  'support',
+  'sync',
 ] as const;
 export const launchSectionKeys = [...launchCoreKeys, ...launchModuleKeys] as const;
 export const launchSectionKeySchema = z.enum(launchSectionKeys);

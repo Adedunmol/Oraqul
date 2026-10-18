@@ -1,23 +1,23 @@
-import { type LaunchModuleKey, launchModuleKeys } from '@oraqul/schema';
+import type { LaunchModuleKey } from '@oraqul/schema';
 
-/** Section titles, as the Plan tab and the exports show them. */
-export const SECTION_TITLES = {
-  'bottom-line': 'Bottom line',
-  positioning: 'Positioning',
-  audience: 'Audience',
-  markets: 'Markets',
-  gaps: 'To sharpen this plan',
-  partnerships: 'Partnerships',
-  placement: 'Creative placement',
-  publicity: 'Publicity and media',
-  community: 'Community and grassroots',
-  route: 'Release route and window',
-  timeline: 'Timeline',
-  cadence: 'Release cadence',
-  budget: 'Budget split',
-  measure: 'What to measure',
-  risks: 'Risks',
-} as const;
+export { SECTION_TITLES, TASTE_CLAIM } from '../launch';
+
+/**
+ * The modules a Film plan can carry, in order. Frozen here so the modules other categories add to
+ * the schema never reach a Film plan or the Film reader's prompt.
+ */
+export const FILM_MODULES = [
+  'partnerships',
+  'placement',
+  'publicity',
+  'community',
+  'route',
+  'timeline',
+  'cadence',
+  'budget',
+  'measure',
+  'risks',
+] as const satisfies readonly LaunchModuleKey[];
 
 export type ReleaseRoute = 'theatrical' | 'streaming' | 'festival' | 'hybrid';
 
@@ -42,7 +42,7 @@ export interface ModulePick {
  */
 export function pickModules(input: ModuleInput): ModulePick {
   const ruledOut: ModulePick['ruledOut'] = [];
-  const allowed = launchModuleKeys.filter((key) => {
+  const allowed: LaunchModuleKey[] = FILM_MODULES.filter((key) => {
     const why = ruleOut(key, input);
     if (why) ruledOut.push({ key, why });
     return why === null;
@@ -79,10 +79,3 @@ export const BUDGET_CONVENTION: { line: string; share: number }[] = [
   { line: 'Partnerships and tie-ins', share: 0.05 },
   { line: 'Contingency', share: 0.1 },
 ];
-
-/**
- * Words that claim what an audience likes. A playbook line may not use them: taste claims must
- * cite a finding (spec §6.2).
- */
-export const TASTE_CLAIM =
-  /\b(fans?|fandoms?|loves?|loved|likes?|liked|prefers?|preferred|resonat\w*|affinit\w*|skews?|skewed|over-?index\w*|popular (?:with|among)|tastes?|enjoys?|enjoyed|devoted)\b/i;

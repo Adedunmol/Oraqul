@@ -30,7 +30,7 @@ export type FindingContext = z.infer<typeof findingContextSchema>;
  */
 export const findingSchema = z.object({
   id: z.string().min(1),
-  /** The Film query catalog key, such as `music`. */
+  /** The category's query catalog key, such as `music` for Film or `support` for Music. */
   query: z.string().min(1),
   text: z.string().min(1),
   entities: z.array(findingEntitySchema),
