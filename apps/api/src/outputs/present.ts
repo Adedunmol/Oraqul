@@ -274,9 +274,9 @@ function glance(brief: Brief, sections: Sections, category: Category): GlanceRow
     }
   }
   const top = [...brief.places].sort((a, b) => b.lift - a.lift)[0];
-  if (category === 'film' && top) {
+  if ((category === 'film' || category === 'music') && top) {
     rows.push({
-      label: 'Top territory',
+      label: category === 'film' ? 'Top territory' : 'Top city',
       name: top.name,
       value: `${top.lift.toFixed(2)}x`,
       lineId: top.id,

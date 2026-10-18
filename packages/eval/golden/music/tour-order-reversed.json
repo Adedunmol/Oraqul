@@ -1,0 +1,80 @@
+{
+  "title": "Long Road",
+  "brief": "Launch plan for \"Long Road\", an afrobeats tour from artist \"Neon Tide\" for 25 to 34 year olds, playing Houston, London and Lagos. Sound-alikes: \"Ada Lux\" and \"Kola Wave\".",
+  "replies": [],
+  "expect": {
+    "headline": "Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "weak",
+      "a-place-houston": "breaks",
+      "a-place-london": "breaks",
+      "a-place-lagos": "weak",
+      "a-comps": "weak",
+      "a-route": "holds"
+    },
+    "cities": ["Lagos", "London", "Houston"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-houston": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-a-route": ["Lagos", "London", "Houston"],
+      "f-markets": ["Lagos", "London", "Houston"],
+      "f-worth-a-look": ["Manchester"],
+      "f-support-houston": ["Sade Rhythm"],
+      "f-support-lagos": ["Sade Rhythm"],
+      "f-support-london": ["Sade Rhythm"],
+      "f-brands-beverage-houston": ["Night Market Cola"],
+      "f-brands-telecom-houston": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"],
+      "f-shows-houston": ["Midnight Harbor", "Eko Nights", "Harbor Precinct"],
+      "f-shows-lagos": ["Midnight Harbor", "Eko Nights", "Harbor Precinct"],
+      "f-shows-london": ["Midnight Harbor", "Eko Nights", "Harbor Precinct"],
+      "f-community-university-houston": ["Gulf Coast University"],
+      "f-community-university-lagos": ["Lagoon City University"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "8/0",
+      "markets": "4/0",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "community": "2/1",
+      "tour": "1/0",
+      "support": "3/0",
+      "sync": "3/0",
+      "timeline": "0/5",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "3/1",
+      "gaps": "0/2"
+    },
+    "moves": ["f-markets", "f-audience", "f-support-houston"],
+    "grounding": {
+      "lines": 44,
+      "backed": 68,
+      "rankKept": 100,
+      "findingsUsed": 18,
+      "cities": {
+        "Lagos": 8,
+        "London": 7,
+        "Houston": 12
+      }
+    },
+    "dropped": 0,
+    "cannot": ["Streams, ticket sales and revenue", "Recent films", "Universities in London"]
+  }
+}

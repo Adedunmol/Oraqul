@@ -1,0 +1,69 @@
+{
+  "title": "Slow Burn",
+  "brief": "Launch plan for \"Slow Burn\", an afrobeats single, playing Lagos.",
+  "replies": [],
+  "expect": {
+    "headline": "Start in Lagos: that is where the artist's audience is strongest among your cities.",
+    "assumptions": {
+      "a-place-lagos": "weak",
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos"],
+    "comps": [
+      {
+        "name": "Neon Tide",
+        "source": "added"
+      },
+      {
+        "name": "Ada Lux",
+        "source": "added"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "added"
+      },
+      {
+        "name": "Sade Rhythm",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-markets": ["Lagos"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
+      "f-shows-lagos": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
+      "f-community-university-lagos": ["Lagoon City University"]
+    },
+    "sections": {
+      "bottom-line": "2/0",
+      "positioning": "0/2",
+      "audience": "2/0",
+      "markets": "1/0",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "community": "1/1",
+      "sync": "1/0",
+      "timeline": "0/5",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "1/1",
+      "gaps": "0/4"
+    },
+    "moves": ["f-markets", "f-audience"],
+    "grounding": {
+      "lines": 25,
+      "backed": 44,
+      "rankKept": 100,
+      "findingsUsed": 8,
+      "cities": {
+        "Lagos": 8
+      }
+    },
+    "dropped": 0,
+    "cannot": ["Streams, ticket sales and revenue", "Recent films"]
+  }
+}

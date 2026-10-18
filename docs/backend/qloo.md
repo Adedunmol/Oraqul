@@ -105,13 +105,13 @@ Each pack declares the Qloo types it uses in `qloo` (`packages/packs`). Every ca
 | Podcasts | `podcast` | `person` | `brand` | same |
 | Games | `videogame` | `person` | `brand` | same |
 
-The anchors that stand in for an item not yet in Qloo differ by category, and only Film's are worked out and tested.
+The anchors that stand in for an item not yet in Qloo differ by category. Film's are worked out and tested; Music's are built on demo data and unverified on the live host.
 
 | Category | Likely anchors, strongest first (`TODO(verify)`) |
 |---|---|
 | Film and series | comparable titles, director and cast, source material, genre and theme tags |
 | Books | comparable books, the author (weak for a debut), themes and tags |
-| Music | the artist, sound-alike artists, tags |
+| Music | the artist when Qloo knows it by name, sound-alike artists, a genre tag when it knows neither (`TODO(verify)`: whether an artist works as a signal for support acts, series, films, brands, podcasts and campuses, and the genre fallback; run `qloo:music-probes`) |
 | Podcasts | the host, comparable shows, topic tags |
 | Games | the studio or franchise, comparable games, genre tags |
 
@@ -223,4 +223,5 @@ Checked once in `responses.ts`.
 1. Put `QLOO_API_KEY` and `QLOO_BASE_URL` in `.env`.
 2. `pnpm --filter @oraqul/engine qloo:smoke` makes about 50 calls, prints counts and yes/no only, and saves one response per endpoint and category type to `packages/engine/fixtures` (gitignored).
 3. `pnpm --filter @oraqul/engine qloo:film-probes` (about 50 calls) reruns the Film query catalog checks. It prints titles and scores so they can be judged by eye, and saves nothing. Copy conclusions into this file, not names or scores.
+4. `pnpm --filter @oraqul/engine qloo:music-probes` (about 60 calls) does the same for the Music catalog: an artist as an anchor and a debut as a miss, heatmap cells for artist anchors, support acts with the anchors excluded, a genre tag as the only signal, series, films, brands, podcasts, campuses and theme tags on an artist signal.
 4. Settle anything open above, fix the schemas and types, and remove the `TODO(verify)` markers that are confirmed.

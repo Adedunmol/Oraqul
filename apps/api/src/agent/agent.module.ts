@@ -1,6 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { demoFetch, LookupCache, QlooClient, type ToolContext } from '@oraqul/engine';
+import type { Output } from '@oraqul/schema';
 import type { Env } from '../config/env.js';
 import { LLM, type Llm } from '../llm/llm.js';
 import { OutputsService } from '../outputs/outputs.service.js';
@@ -28,6 +29,28 @@ import {
 import { FallbackPlanWriter, ModelPlanWriter, TemplatePlanWriter } from './film/writer.js';
 import { FallbackGate, GATE, ModelGate, ScriptedGate } from './gate/gate.js';
 import { ModelPlanner } from './model-planner.js';
+import { MusicAgent } from './music/agent.js';
+import { ModelFollowUpReader as ModelMusicFollowUpReader } from './music/follow-up.js';
+import {
+  FallbackQueryPlanner as FallbackMusicQueryPlanner,
+  ModelQueryPlanner as ModelMusicQueryPlanner,
+  ScriptedQueryPlanner as ScriptedMusicQueryPlanner,
+} from './music/planner.js';
+import { FallbackMusicReader, ModelMusicReader, ScriptedMusicReader } from './music/read.js';
+import {
+  FallbackReportWriter as FallbackMusicReportWriter,
+  ModelReportWriter as ModelMusicReportWriter,
+  TemplateReportWriter as TemplateMusicReportWriter,
+} from './music/report-writer.js';
+import {
+  FallbackResearcher as FallbackMusicResearcher,
+  ModelResearcher as ModelMusicResearcher,
+} from './music/research.js';
+import {
+  FallbackPlanWriter as FallbackMusicPlanWriter,
+  ModelPlanWriter as ModelMusicPlanWriter,
+  TemplatePlanWriter as TemplateMusicPlanWriter,
+} from './music/writer.js';
 import { OutputStore } from './output-store.js';
 import { ModelReader } from './router/model-reader.js';
 import { FallbackReader } from './router/router.js';
@@ -138,6 +161,9 @@ const lookups = new LookupCache();
               )
             : new NoResearch();
         const tools = (): ToolContext => toolContext(config);
+        const planFor = (plan: Output) =>
+          llm ? new ModelPlanner(llm.model('agent')) : new PlanSummaryPlanner(plan);
+        const maxSteps = config.get('AGENT_MAX_STEPS', { infer: true });
         const film = new FilmAgent({
           reader,
           queries,
@@ -148,11 +174,73 @@ const lookups = new LookupCache();
           followUps,
           tools,
           plan: (id) => outputs.plan(id),
-          planner: (plan) =>
-            llm ? new ModelPlanner(llm.model('agent')) : new PlanSummaryPlanner(plan),
-          maxSteps: config.get('AGENT_MAX_STEPS', { infer: true }),
+          planner: planFor,
+          maxSteps,
         });
-        return { ...placeholderAgents(), film };
+
+        // Music shares the tools, the results reader and the search; its readers, planner and
+        // writers carry music's own prompts.
+        const scriptedMusic = new ScriptedMusicReader();
+        const musicFollowUps = llm
+          ? new FallbackFollowUpReader(
+              new ModelMusicFollowUpReader(llm.model('agent'), llm.timeoutMs),
+              scriptedFollowUps,
+              (err) => logger.warn(`Model follow-up reader failed, using the scripted one: ${err}`),
+            )
+          : scriptedFollowUps;
+        const music = new MusicAgent({
+          reader: llm
+            ? new FallbackMusicReader(
+                new ModelMusicReader(llm.model('agent'), llm.timeoutMs),
+                scriptedMusic,
+                (err) =>
+                  logger.warn(`Model reader failed, reading with the scripted reader: ${err}`),
+              )
+            : scriptedMusic,
+          queries: llm
+            ? new FallbackMusicQueryPlanner(
+                new ModelMusicQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                new ScriptedMusicQueryPlanner(),
+                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+              )
+            : new ScriptedMusicQueryPlanner(),
+          writer: llm
+            ? new FallbackMusicPlanWriter(
+                new ModelMusicPlanWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateMusicPlanWriter(),
+                (err) => logger.warn(`Model writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateMusicPlanWriter(),
+          results,
+          report: llm
+            ? new FallbackMusicReportWriter(
+                new ModelMusicReportWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateMusicReportWriter(),
+                (err) => logger.warn(`Model report writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateMusicReportWriter(),
+          research:
+            llm && search
+              ? new FallbackMusicResearcher(
+                  new ModelMusicResearcher(search, llm.model('agent'), llm.writerTimeoutMs),
+                  (err) => logger.warn(`Web research failed, writing without it: ${err}`),
+                )
+              : new NoResearch(),
+          followUps: musicFollowUps,
+          tools,
+          plan: (id) => outputs.plan(id),
+          planner: planFor,
+          maxSteps,
+        });
+        return { ...placeholderAgents(), film, music };
       },
     },
     OutputStore,
