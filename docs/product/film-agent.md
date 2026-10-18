@@ -46,7 +46,7 @@ Run the same brief through Oraqul and plain models, then score 1 to 5 on:
 
 Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the model, prompt or rules, and is fixable. If we do not win 4 and 5, Qloo is not helping.
 
-Also tracked in code: the **grounding report** (`apps/api/src/agent/film/grounding-report.ts`): lines that cite Qloo or a page, findings used, lines dropped, a floor of 3 Qloo-backed lines for every chosen city in the live golden run, and **rank kept**: of the pairs of names a line takes from one Qloo list, the share written in Qloo's order (100 means the plan never put a lower-ranked pick ahead of a higher one). It counts citations, not whether they are right: a person still reads the plan.
+Also tracked in code: the **grounding report** (`apps/api/src/agent/launch/grounding-report.ts`): lines that cite Qloo or a page, findings used, lines dropped, a floor of 3 Qloo-backed lines for every chosen city in the live golden run, and **rank kept**: of the pairs of names a line takes from one Qloo list, the share written in Qloo's order (100 means the plan never put a lower-ranked pick ahead of a higher one). It counts citations, not whether they are right: a person still reads the plan.
 
 ## Known limits
 

@@ -261,14 +261,14 @@ Privacy: only public entity names, place names and age bands go to Qloo. Uploade
 
 ### 6.2 Line check
 
-`checkLine` in `apps/api/src/agent/film/check.ts`, on every line the model writes. A line that fails is dropped and logged in `dropped`; the plan still saves. A core section left empty is filled from the templates and checked again.
+`checkLine` in `apps/api/src/agent/launch/check.ts`, on every line the model writes. A line that fails is dropped and logged in `dropped`; the plan still saves. A core section left empty is filled from the templates and checked again.
 
 | Rule | Grounded | Playbook |
 |---|---|---|
 | Citations | at least one, each a finding of this run | none |
 | Names | every name in `names` or written in the text that is a finding entity must be in a finding it cites, or in the brief | only names in the brief |
 | Numbers | every number in the text must be one the cited findings state, or one in the brief | not checked |
-| Taste | — | no claim about what an audience likes (`TASTE_CLAIM` in the Film pack). Playbook lines may name any real launch entity; a name a finding returned makes the line grounded and cites that finding |
+| Taste | — | no claim about what an audience likes (`TASTE_CLAIM`, shared by the packs in `packages/packs/src/launch.ts`). Playbook lines may name any real launch entity; a name a finding returned makes the line grounded and cites that finding |
 | Plain words | no data jargon (lift, index, affinity, cells, findings, confidence) and no talk of what could not be measured | same |
 | Market figures | no money, admissions or screen counts the findings or a cited web fact do not state | none, unless a cited web fact states it |
 | Web sources | every `sourceId` is a source of this plan; every number in a line citing a page is the page's own or the brief's | same |

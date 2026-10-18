@@ -21,10 +21,10 @@ Web composer ──POST /teams/:id/projects──▶ RunService.createProject
                                          Router (agent/router)        model or scripted
                                               │ reads title, category, mode; asks a card if unsure
                                               ▼
-                                         Handoff  ──▶  FilmAgent.run (agent/film/agent.ts)
+                                         Handoff  ──▶  FilmAgent.run (agent/launch/agent.ts)
                                                           │ no plan in this chat yet
                                                           ▼
-                                                   runFilmBuild (agent/film/pipeline.ts)
+                                                   runFilmBuild → runBuild (agent/launch/pipeline.ts)
                                                           │ read → comps → pick → ground → write → check
                                                           ▼
                                          RunService saves receipts + output (OutputStore)
@@ -38,26 +38,28 @@ The request returns at once; the run goes on in the background and streams event
 
 ## The pieces
 
+Film is a configuration of the shared launch runtime in `apps/api/src/agent/launch/` (spec §3.2). `agent/launch/` holds what every category does the same way; `agent/film/` holds what is Film's own: its reading, its queries and their wording, its prompts and its templates, wired together in `film/config.ts` (`filmLaunch`). The Music agent is the second configuration. The `film/*.ts` files that share a name with a runtime file (`pipeline.ts`, `audit.ts`, `fix.ts`) are thin wrappers that keep Film's signatures.
+
 | Piece | File | Job |
 |---|---|---|
 | Run service | `apps/api/src/agent/run.service.ts` | Starts runs, picks router, gate or agent, resumes a run waiting on a card, saves, streams events |
 | Router | `agent/router/` | First message only: title, category, mode. Quote checked |
 | Gate | `agent/gate/` | Every later message: on topic, off topic (fixed refusal) or unclear (a card) |
 | Handoff | `agent/category-agents.ts` | What the agent gets: title, category, mode, `inputs`, `message`, `recent` (last 8 chat lines), `planId` |
-| Film agent | `agent/film/agent.ts` | Does the job the project started with (build, audit or fix) if the chat has no plan; otherwise refuse, or read the follow up and pick its job |
+| Film agent | `agent/launch/agent.ts` (`LaunchAgent`), `film/agent.ts`, `film/config.ts` | Does the job the project started with (build, audit or fix) if the chat has no plan; otherwise refuse, or read the follow up and pick its job |
 | Brief reader | `agent/film/read.ts` | Model (or scripted) turns the brief into every field it gives, each with the words it came from |
-| Researcher | `agent/film/research.ts` | Web search for release timing and the market, facts tied to source pages |
-| Query planner | `agent/film/planner.ts` | Model (or the pack's defaults) shapes the catalog queries; code keeps only what the rules allow |
-| Findings | `agent/film/findings.ts` | Runs the queries, builds the brief's verdicts, turns each result into a finding and streams it |
-| Writer | `agent/film/writer.ts` | Model (or templates) writes the sections, or an answer, from the findings |
-| Line check | `agent/film/check.ts` | Every written line against spec §6.2; failures dropped and logged |
-| Build pipeline | `agent/film/pipeline.ts` | The steps of a plan, comp settling, "To sharpen" and Budget split, the one question it may ask. Split into stages (`askQloo`, `writePlan`) that the audit and the fix share |
-| Audit | `agent/film/audit.ts`, `audit-verdicts.ts`, `results.ts`, `results-read.ts`, `report-writer.ts` | Reads the plan (asking for it, and for results when the launch is out), tests each belief, compares results with the plan, writes the risks and alternatives, checks every line; saves a report |
-| Fix | `agent/film/fix.ts` | Runs the audit, then writes a new plan from it; saves both. Asks whether the launch is out when nothing says |
-| Brief builder | `agent/film/brief.ts` | Audience segments, the team's cities in order, verdicts on the team's assumptions, one receipt per line |
-| Follow-up reader | `agent/film/follow-up.ts` | Reads a later message; code picks the job |
-| Follow ups | `agent/film/follow-ups.ts` | Answer (findings, writer, check), rival date check, partner brief |
-| Baseline | `agent/film/baseline.ts` | Mass-market names a named partner is scored against, as a confidence aid |
+| Researcher | `agent/launch/research.ts`, prompts in `film/research.ts` | Web search for release timing and the market, facts tied to source pages |
+| Query planner | `agent/film/planner.ts`, shared checks in `launch/planner.ts` | Model (or the pack's defaults) shapes the catalog queries; code keeps only what the rules allow |
+| Findings | `agent/launch/findings.ts` (audience, cities, areas), `film/findings.ts` (Film's queries) | Runs the queries, builds the brief's verdicts, turns each result into a finding and streams it |
+| Writer | `agent/launch/writer.ts`, prompts and templates in `film/writer.ts` | Model (or templates) writes the sections, or an answer, from the findings |
+| Line check | `agent/launch/check.ts`, Film's rules in `film/check.ts` | Every written line against spec §6.2; failures dropped and logged |
+| Build pipeline | `agent/launch/pipeline.ts`, Film's sections in `film/config.ts` | The steps of a plan, comp settling, "To sharpen" and Budget split, the one question it may ask. Split into stages (`askQloo`, `writePlan`) that the audit and the fix share |
+| Audit | `agent/launch/audit.ts`, `audit-verdicts.ts`, `results.ts`, `results-read.ts`, `report-writer.ts` | Reads the plan (asking for it, and for results when the launch is out), tests each belief, compares results with the plan, writes the risks and alternatives, checks every line; saves a report |
+| Fix | `agent/launch/fix.ts` | Runs the audit, then writes a new plan from it; saves both. Asks whether the launch is out when nothing says |
+| Brief builder | `agent/launch/brief.ts` | Audience segments, the team's cities in order, verdicts on the team's assumptions, one receipt per line |
+| Follow-up reader | `agent/launch/follow-up.ts` | Reads a later message; code picks the job |
+| Follow ups | `agent/launch/follow-ups.ts` | Answer (findings, writer, check), rival date check, partner brief |
+| Baseline | `agent/launch/baseline.ts` | Mass-market names a named partner is scored against, as a confidence aid |
 | Engine | `packages/engine` | Qloo client, tools (`findTaste`, `resolveTags`, `themeTags`, `rankPlaces`, …), confidence, verdicts |
 | Pack | `packages/packs/src/film` | Prompt, query catalog and defaults (`catalog.ts`), module rules, budget convention, taste words (`modules.ts`) |
 | Saving | `agent/output-store.ts` | Receipts and the output (brief, plan, inputs) in one transaction |
@@ -90,12 +92,12 @@ Code sets the steps and their order. Each step is a `trace.step` in the chat.
 | Which same-name title a comp is | Code | `pipeline.ts` `settle` | Country, then popularity |
 | Which modules | Code | pack `pickModules` | Spec §6.1 |
 | Which queries, and their context | Code, shaped by the model | `planner.ts` | Catalog, team cities, resolved tags |
-| Every number, verdict, confidence | Code | `packages/engine`, `film/brief.ts`, `film/findings.ts` | Spec §5 |
-| Each finding's sentence | Code | `film/findings.ts` | Templates over what Qloo returned |
+| Every number, verdict, confidence | Code | `packages/engine`, `launch/brief.ts`, `launch/findings.ts` | Spec §5 |
+| Each finding's sentence | Code | `launch/findings.ts`, `film/findings.ts` | Templates over what Qloo returned |
 | The plan's wording | Model (templates with no key) | `film/writer.ts` | Checked line by line |
 | To sharpen, Budget split | Code | `pipeline.ts` | Convention table in the pack |
-| Every team city and comp answered, home-market premiere | Code | `film/decisions.ts` | Backstop for what the writer missed |
-| Follow-up job | Code, from the model's reading | `film/follow-up.ts` | Rivals with dates → date; "partner" → brief; a change → what-if; else answer |
+| Every team city and comp answered, home-market premiere | Code | `launch/decisions.ts` | Backstop for what the writer missed |
+| Follow-up job | Code, from the model's reading | `launch/follow-up.ts` | Rivals with dates → date; "partner" → brief; a change → what-if; else answer |
 | Refusals | Code | `REFUSALS` in `packages/packs` | Regex, fixed words, before any call |
 
 ## Where the model comes in (and where it never does)
@@ -174,12 +176,12 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 | Which queries exist, and their defaults | spec §4.1, then `packages/packs/src/film/catalog.ts` and `findings.ts` |
 | How the model shapes queries | `QUERY_PLAN_SYSTEM` and `checkPlan` in `film/planner.ts` |
 | Which modules a plan gets | spec §6.1, then `pickModules` in `packages/packs/src/film/modules.ts` |
-| A finding's sentence | `film/findings.ts` |
+| A finding's sentence | `film/findings.ts` (Film's queries), `launch/findings.ts` (audience and cities) |
 | What the writer is told | `PLAN_WRITER_SYSTEM`, `ANSWER_WRITER_SYSTEM` in `film/writer.ts` |
 | The template wording | `templateSection` in `film/writer.ts` |
-| A check rule | spec §6.2, then `film/check.ts` |
+| A check rule | spec §6.2, then `launch/check.ts` (Film's words in `film/check.ts`) |
 | Words a playbook line may not use | `TASTE_CLAIM` in the Film pack |
 | Cities that can be ranked, their regions and countries | `engine/src/places.ts` |
-| Follow-up job rules | `decideFollowUp` in `film/follow-up.ts` |
+| Follow-up job rules | `decideFollowUp` in `launch/follow-up.ts` |
 | Tabs and Evidence rows | `apps/api/src/outputs/present.ts` |
 | Expected results of the golden runs | `packages/eval/golden/film/*.json` (`UPDATE_GOLDEN=1`; `RECORD_LIVE=1` for the live one) |

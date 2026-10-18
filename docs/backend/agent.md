@@ -88,7 +88,7 @@ The tool loop is for conversation, not plans (see [Shape](#shape)). In it the pl
 
 ## Plan pipeline
 
-Film's build job, in `film/pipeline.ts` (the audit and the fix reuse its stages: [film-overview.md](film-overview.md#the-audit-and-the-fix)); [film-overview.md](film-overview.md) is the step by step map. Product behaviour is [spec §3.2](../product/spec.md) and the Film tests are [spec §5.2](../product/spec.md#52-film-assumption-tests-build). Every reply runs two stages, findings and then the reply:
+Film's build job, in `launch/pipeline.ts` (the audit and the fix reuse its stages: [film-overview.md](film-overview.md#the-audit-and-the-fix)); [film-overview.md](film-overview.md) is the step by step map. Product behaviour is [spec §3.2](../product/spec.md) and the Film tests are [spec §5.2](../product/spec.md#52-film-assumption-tests-build). Every reply runs two stages, findings and then the reply:
 
 1. Read the brief (model, every value carries the words it came from, checked by code).
 2. Find the comps with `resolveBundle`, settling same-name titles in code and proposing comps only below 3.
@@ -128,7 +128,7 @@ An agent's finish step has two kinds of reply. The product behaviour is in [spec
 
 ## Follow ups
 
-Built for Film (`film/agent.ts`, `film/follow-up.ts`, `film/follow-ups.ts`). Once a chat has a plan (`threads.base_output_id`), a message is a follow up on it. The gate still judges whether it is on topic; the Film agent then reads the job, because only the category knows its jobs:
+Built for Film (`launch/agent.ts`, `launch/follow-up.ts`, `launch/follow-ups.ts`). Once a chat has a plan (`threads.base_output_id`), a message is a follow up on it. The gate still judges whether it is on topic; the Film agent then reads the job, because only the category knows its jobs:
 
 - **Refusals first.** A forecast, pricing advice or a request to send anything gets fixed words from `REFUSALS` in `packages/packs`, before any model or Qloo call (spec §10).
 - **Reading.** The follow-up reader (model with quotes checked, or scripted) pulls out places and comps to add or drop, an age group or gender, rival titles with dates, and a partner's name. Code picks the job from those: rivals with dates make a date check, the word partner with a partner job makes a brief, any change makes a what-if, and only otherwise is the model's own job used.
