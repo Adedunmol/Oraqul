@@ -23,6 +23,58 @@ const finding = (id: string) => ({
   callIds: [],
 });
 
+describe('rank kept', () => {
+  const finding = (id: string, names: string[]) => ({
+    id,
+    query: 'music',
+    text: 'x',
+    entities: names.map((name) => ({ entityId: null, name, affinity: 0.9, detail: null })),
+    numbers: {},
+    verdict: null,
+    confidence: 'high' as const,
+    why: '',
+    context: { city: null, ages: [], tags: [], country: null, yearFrom: null, audience: null },
+    callIds: [],
+  });
+  const planWith = (text: string): LaunchPlan => ({
+    scope: 'full',
+    writer: 'model',
+    comps: [],
+    sources: [],
+    dropped: [],
+    findings: [finding('f1', ['Burna Boy', 'Tems', 'Rema'])],
+    sections: [
+      {
+        key: 'partnerships',
+        title: 'Partnerships',
+        lines: [
+          {
+            id: 'p',
+            kind: 'grounded',
+            text,
+            findingIds: ['f1'],
+            sourceIds: [],
+            names: [],
+            group: null,
+          },
+        ],
+      },
+    ],
+  });
+
+  it('is 100 when names appear in the order Qloo ranked them, skipping is fine', () => {
+    const r = groundingReport(planWith('Approach Burna Boy first, and Rema after.'), []);
+    expect(r).toMatchObject({ rankKept: 100, rankPairs: 1 });
+  });
+
+  it('counts a lower-ranked pick put ahead of a higher-ranked one', () => {
+    const r = groundingReport(planWith('Lead with Rema, then Tems, then Burna Boy.'), []);
+    expect(r).toMatchObject({ rankKept: 0, rankPairs: 3 });
+    const mixed = groundingReport(planWith('Tems and Burna Boy, then Rema.'), []);
+    expect(mixed).toMatchObject({ rankKept: 67, rankPairs: 3 });
+  });
+});
+
 describe('groundingReport', () => {
   const plan: LaunchPlan = {
     scope: 'full',

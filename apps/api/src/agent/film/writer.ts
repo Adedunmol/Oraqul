@@ -102,6 +102,9 @@ const RULES = `How to write:
 - Pick from the candidates. Leave out any that do not fit the genre, tone or market, or are not the kind of thing the finding is about (a hotel in a list of cinemas), or are global mass-market giants an independent film would not land (a soft-drink brand), or are not a fit for a film tie-in (a calling app), and list each in "skipped" with a short reason.
 - Say each thing once. A fact true for every city is one line, not one per city. Never write a line a team could not act on, such as "position the film around its roots".
 - "names": every entity a grounded line recommends because of the audience, exactly as the finding writes it.
+- Candidates are listed in the order Qloo ranks them for this audience. Keep that order: lead with the highest-ranked candidate you keep and name the others after it. You may skip a poor fit, but never put a lower-ranked candidate ahead of a higher-ranked one you also name, and never reorder to suit a story.
+- A neighbourhood finding says where in a city this audience is strongest. Use the top two or three to place community screenings, street teams, outdoor media and creator events, and name the neighbourhood. Treat it as a lead to confirm on the ground, not a measurement.
+- Partner brands in the findings were chosen as brands that could realistically say yes, then ranked by Qloo for the audience. Pick from them in Qloo's order.
 - Brand partnerships are asks, so say who gives what. A brand seldom pays an independent film in cash. The realistic ask is in kind or a co-promotion: product, a venue or hospitality, ticket giveaways, data or ride credits, ad space or airtime, in return for premiere presence, stills, clip rights and access to the film's audience. A global giant or a luxury brand will not partner on a small campaign, so leave it out and prefer a challenger, local or category brand the findings return; if none fits, say so rather than naming a poor fit. Write it as an ask a producer can make: who to approach, what to ask for, what the film offers. Scale to the budget in the brief; with none given, plan for an independent release.
 - Keep it readable: a person should read the whole plan in about five minutes. Each line is one or two sentences, usually under 35 words, with the move first and the reason after it. Put a venue, a church or a partner in a line only when it earns its place: two or three names per city, not every candidate. No caveats stacked inside a line; if something needs approval or a licence, say it once, briefly. About 1,200 words in all.
 - Never start a line with a label ("Hook:", "Key message:", "Risk:", a comp's name followed by a colon). The group already names it. Write each line as a sentence a strategist would say; a risk and its fix are one sentence.
@@ -177,7 +180,7 @@ export class ModelPlanWriter implements PlanWriter {
   constructor(
     private readonly model: LanguageModel,
     private readonly timeoutMs: number,
-    /** Provider settings, such as how hard a reasoning model thinks before writing. */
+    // Provider settings, such as how hard a reasoning model thinks before writing.
     private readonly options: ProviderOptions = {},
   ) {}
 
@@ -561,6 +564,14 @@ export function templateSection(key: LaunchSectionKey, input: WriteInput): Writt
       return lines;
     }
     case 'community': {
+      const areaLines: WrittenLine[] = byQuery('areas').map((f) =>
+        grounded(
+          `In ${f.context.city}, put the street teams and community screenings in ${list(top(f, 2))}.`,
+          f,
+          [...top(f, 2), f.context.city ?? ''].filter(Boolean),
+          f.context.city,
+        ),
+      );
       const lines: WrittenLine[] = byQuery('community').map((f) =>
         grounded(
           `Host a community screening with ${list(top(f, 2))} in ${f.context.city}.`,
@@ -576,7 +587,7 @@ export function templateSection(key: LaunchSectionKey, input: WriteInput): Writt
           null,
         ),
       );
-      return lines;
+      return [...areaLines, ...lines];
     }
     case 'route':
       return [

@@ -1,4 +1,4 @@
-import { citiesNear, cityCountry, cityNames } from '@oraqul/engine';
+import { citiesNear, cityBox, cityCountry, cityNames } from '@oraqul/engine';
 import { filmPlan } from '@oraqul/packs';
 import type { LaunchModuleKey } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
@@ -32,6 +32,18 @@ export const queryPlanSchema = z.object({
   podcastCity: z.string().nullable(),
   communityPlaces: z.array(z.string()),
   communityCities: z.array(z.string()),
+  /**
+   * Neighbourhoods inside the team's cities with their centres, to read from the same heatmap
+   * (no extra Qloo call). The model names them; Qloo says which the audience is strongest in.
+   */
+  areas: z.array(
+    z.object({ city: z.string(), name: z.string(), latitude: z.number(), longitude: z.number() }),
+  ),
+  /**
+   * Brands that could realistically partner with an independent film, per city. Qloo ranks only
+   * these, so a giant that would never say yes cannot be the answer.
+   */
+  brandCandidates: z.array(z.object({ city: z.string(), names: z.array(z.string()) })),
 });
 export type QueryPlan = z.infer<typeof queryPlanSchema>;
 
@@ -90,6 +102,8 @@ export function defaultPlan(input: QueryPlanInput): QueryPlan {
     podcastCity: away[0] ?? cities[0] ?? null,
     communityPlaces: filmPlan.COMMUNITY_PLACES,
     communityCities: cities,
+    areas: [],
+    brandCandidates: [],
   };
 }
 
@@ -99,14 +113,12 @@ export class ScriptedQueryPlanner implements QueryPlanner {
   }
 }
 
-/**
- * Short words only, so no sentence or personal detail can reach Qloo through a phrase. Checked
- * in code (`checkPlan`), not in the schema: some providers reject a text pattern in a schema.
- */
+// Short words only, so no sentence or personal detail can reach Qloo through a phrase. Checked
+// in code (`checkPlan`), not in the schema: some providers reject a text pattern in a schema.
 const PHRASE = /^[\p{L}\p{N} &'-]{1,40}$/u;
 const phrase = z.string().max(40);
 
-/** What the model may change about the defaults. Flat and nullable, for every provider. */
+// What the model may change about the defaults. Flat and nullable, for every provider.
 const modelPlanSchema = z.object({
   musicScene: phrase.nullable(),
   musicCities: z.array(z.string()).max(5),
@@ -120,6 +132,12 @@ const modelPlanSchema = z.object({
   communityCities: z.array(z.string()).max(5),
   worthALook: z.array(z.string()).max(4),
   country: z.string().nullable(),
+  areas: z
+    .array(
+      z.object({ city: z.string(), name: phrase, latitude: z.number(), longitude: z.number() }),
+    )
+    .max(20),
+  brandCandidates: z.array(z.object({ city: z.string(), names: z.array(phrase).max(4) })).max(5),
 });
 
 export const QUERY_PLAN_SYSTEM = `You shape the questions Oraqul asks Qloo, a taste data API, for a film or series launch. Oraqul describes the launch by its comps (comparable titles) and asks what their audience likes. On its own that drifts to what is popular overall; context makes it sharp. You pick the context from your knowledge of the launch's culture and markets.
@@ -132,6 +150,8 @@ You are given the brief and default choices. Return the choices, changed only wh
 - filmGenre: a genre name for the recent-films query, only when there is no country of origin.
 - podcastGenre: a podcast genre that fits the launch ("true crime", "comedy", "pop culture").
 - communityPlaces: kinds of place where this audience gathers in the diaspora cities ("church", "university", "event venue").
+- areas: for each of the team's cities, up to 5 neighbourhoods or districts where this community lives, goes out or gathers (for Nigerian diaspora: Peckham, Croydon and Thamesmead in London; Sugar Land and Alief in Houston; Stonecrest and Lithonia in Atlanta), each with the latitude and longitude of its centre. Real, well-known places only, inside the city. Qloo then says which the audience is strongest in.
+- brandCandidates: for each of the team's cities, up to 4 brands that operate in that city and could realistically partner with an independent film as an in-kind or co-promotion tie-in: telecoms, ride-hailing, fintech, food delivery, drinks and challenger brands. Write each as the company's usual name ("MTN", "Bolt"). Never a global giant that does not do small tie-ins (soft-drink and fast-food majors, car and luxury brands). Qloo then ranks only these, per city, for the audience.
 - worthALook: up to 4 other cities from the city table where this audience may be strong. They are only shown as alternatives, never in place of the team's cities.
 - country: the launch's country of origin as a full name, or null.
 
@@ -204,7 +224,46 @@ export function checkPlan(chosen: z.infer<typeof modelPlanSchema>, defaults: Que
       : defaults.communityPlaces,
     communityCities: keep(chosen.communityCities, defaults.communityCities),
     worthALook: worth.length ? [...new Set(worth)].slice(0, 4) : defaults.worthALook,
+    areas: checkAreas(chosen.areas, defaults.cities, phrases),
+    brandCandidates: chosen.brandCandidates.flatMap(({ city, names }) => {
+      const team = defaults.cities.find((c) => normalise(c) === normalise(city));
+      const seen = new Set<string>();
+      // The first spelling of a name is the one kept.
+      const kept = phrases(names)
+        .filter((n) => !seen.has(normalise(n)) && seen.add(normalise(n)))
+        .slice(0, MAX_BRAND_CANDIDATES);
+      return team && kept.length ? [{ city: team, names: kept }] : [];
+    }),
   };
+}
+
+const MAX_AREAS_PER_CITY = 5;
+const MAX_BRAND_CANDIDATES = 4;
+
+// Keeps a neighbourhood only when its city is one of the team's, its name is a short plain name,
+// and its centre is inside that city's box, so a wrong coordinate cannot read another place.
+function checkAreas(
+  chosen: z.infer<typeof modelPlanSchema>['areas'],
+  cities: string[],
+  phrases: (list: string[]) => string[],
+): QueryPlan['areas'] {
+  const kept: QueryPlan['areas'] = [];
+  for (const area of chosen) {
+    const city = cities.find((c) => normalise(c) === normalise(area.city));
+    const box = city ? cityBox(city) : null;
+    if (!city || !box || phrases([area.name]).length === 0) continue;
+    const inside =
+      area.longitude >= box.west &&
+      area.longitude <= box.east &&
+      area.latitude >= box.south &&
+      area.latitude <= box.north;
+    const same = (a: { city: string; name: string }) =>
+      a.city === city && normalise(a.name) === normalise(area.name);
+    if (!inside || kept.some(same)) continue;
+    if (kept.filter((a) => a.city === city).length >= MAX_AREAS_PER_CITY) continue;
+    kept.push({ city, name: area.name.trim(), latitude: area.latitude, longitude: area.longitude });
+  }
+  return kept;
 }
 
 export class FallbackQueryPlanner implements QueryPlanner {

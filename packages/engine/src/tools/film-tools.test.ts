@@ -7,7 +7,7 @@ import { findTasteOutputSchema } from './find-taste';
 import { tools } from './index';
 import { leaveOneOut } from './leave-one-out';
 import { liftOutputSchema } from './lift';
-import { rankPlacesOutputSchema } from './rank-places';
+import { rankPlacesOutputSchema, readAreas } from './rank-places';
 import { resolveBundleOutputSchema, sameTitle } from './resolve-bundle';
 import { resolveTagsOutputSchema } from './resolve-tags';
 import { themeTagsOutputSchema } from './theme-tags';
@@ -25,7 +25,7 @@ function demoContext(callBudget?: number): ToolContext {
   return { qloo, source: 'demo', entities: new Map<string, SeenEntity>() };
 }
 
-/** A context that already searched the three demo films, as a pipeline would have. */
+// A context that already searched the three demo films, as a pipeline would have.
 function searched(callBudget?: number): ToolContext {
   const ctx = demoContext(callBudget);
   ctx.entities.set('DEMO-FILM-0001', { name: 'Midnight Harbor', popularity: 0.31 });
@@ -264,5 +264,50 @@ describe('themeTags', () => {
     expect(out.kinds.map((k) => k.kind)).toEqual(['theme', 'archetype']);
     expect(out.kinds[0]?.tags.length).toBeGreaterThan(0);
     expect(receipts).toHaveLength(2);
+  });
+});
+
+describe('readAreas', () => {
+  const box = { name: 'London', west: -0.43, east: 0.17, south: 51.26, north: 51.76 };
+  const scored = new Map([['London', { affinity: 0.4, cells: 200 }]]);
+  // A grid of cells with a hot spot near Peckham and a cold one near Croydon.
+  const cells = Array.from({ length: 80 }, (_, i) => {
+    const latitude = 51.35 + (i % 8) * 0.02;
+    const longitude = -0.15 + Math.floor(i / 8) * 0.02;
+    const nearPeckham = Math.hypot(latitude - 51.47, longitude + 0.07) < 0.06;
+    return { location: { latitude, longitude }, query: { affinity: nearPeckham ? 0.8 : 0.2 } };
+  });
+
+  it('ranks neighbourhoods by their nearest cells over the city mean', () => {
+    const read = readAreas(
+      cells,
+      [
+        { city: 'London', name: 'Croydon', latitude: 51.376, longitude: -0.098 },
+        { city: 'London', name: 'Peckham', latitude: 51.47, longitude: -0.07 },
+      ],
+      [box],
+      scored,
+    );
+    expect(read.map((a) => [a.name, a.rank])).toEqual([
+      ['Peckham', 1],
+      ['Croydon', 2],
+    ]);
+    expect(read[0]?.lift).toBeGreaterThan(1);
+    expect(read[1]?.lift).toBeLessThan(1);
+  });
+
+  it('leaves out a centre outside its city, with too few cells near it, or given twice', () => {
+    const read = readAreas(
+      cells,
+      [
+        { city: 'London', name: 'Brighton', latitude: 50.82, longitude: -0.14 },
+        { city: 'London', name: 'Far', latitude: 51.7, longitude: 0.15 },
+        { city: 'London', name: 'Peckham', latitude: 51.47, longitude: -0.07 },
+        { city: 'London', name: 'peckham', latitude: 51.47, longitude: -0.07 },
+      ],
+      [box],
+      scored,
+    );
+    expect(read.map((a) => a.name)).toEqual(['Peckham']);
   });
 });

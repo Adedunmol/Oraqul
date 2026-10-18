@@ -64,6 +64,7 @@
     "grounding": {
       "lines": 34,
       "backed": 59,
+      "rankKept": 100,
       "findingsUsed": 13,
       "cities": {
         "London": 5,

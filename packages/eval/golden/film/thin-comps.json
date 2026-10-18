@@ -57,6 +57,7 @@
     "grounding": {
       "lines": 34,
       "backed": 53,
+      "rankKept": 100,
       "findingsUsed": 12,
       "cities": {
         "Accra": 4,

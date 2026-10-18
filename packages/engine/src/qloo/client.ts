@@ -52,6 +52,40 @@ export class QlooBudgetError extends Error {
   }
 }
 
+/**
+ * Name lookups change slowly, so they are kept across runs: a plan names the same telecoms and
+ * comps as the last one. Only `/search` and `/entities` are kept; an insight depends on the signal.
+ */
+export class LookupCache {
+  private readonly kept = new Map<string, { at: number; fetched: Fetched }>();
+
+  constructor(
+    // How long an answer may be reused. Default 14 days.
+    private readonly ttlMs = 14 * 24 * 60 * 60 * 1000,
+    private readonly max = 2000,
+  ) {}
+
+  get(key: string): Fetched | null {
+    const hit = this.kept.get(key);
+    if (!hit) return null;
+    if (Date.now() - hit.at > this.ttlMs) {
+      this.kept.delete(key);
+      return null;
+    }
+    return hit.fetched;
+  }
+
+  set(key: string, fetched: Fetched): void {
+    if (this.kept.size >= this.max) {
+      const oldest = this.kept.keys().next().value;
+      if (oldest !== undefined) this.kept.delete(oldest);
+    }
+    this.kept.set(key, { at: Date.now(), fetched });
+  }
+}
+
+const LOOKUP_ENDPOINTS = new Set(['/search', '/entities']);
+
 export interface QlooClientOptions {
   baseUrl: string;
   apiKey: string;
@@ -62,10 +96,12 @@ export interface QlooClientOptions {
   /** Wait before the retry when Qloo sends no `Retry-After`. Default 500. */
   retryDelayMs?: number;
   /**
-   * Most requests in flight at once. Default 2: the hackathon host answered 429 to a plan's
-   * parallel calls on 2026-10-16 (qloo:film-tools recording), so the rest wait their turn.
+   * Most requests in flight at once. Default 2: the hackathon host answers 429 to a plan's
+   * parallel calls, so the rest wait their turn.
    */
   maxConcurrent?: number;
+  /** Name lookups kept across runs. Without one, every run asks again. */
+  lookupCache?: LookupCache;
   /** Replaces the global `fetch`. Demo mode and tests pass one so no request leaves the process. */
   fetch?: typeof fetch;
 }
@@ -102,6 +138,7 @@ export class QlooClient {
   private readonly retryDelayMs: number;
   private readonly callBudget: number | undefined;
   private readonly fetchImpl: typeof fetch;
+  private readonly lookupCache: LookupCache | undefined;
   private readonly answers = new Map<string, Promise<Fetched>>();
   private networkCalls = 0;
   private readonly maxConcurrent: number;
@@ -116,6 +153,7 @@ export class QlooClient {
     this.callBudget = options.callBudget;
     this.maxConcurrent = options.maxConcurrent ?? DEFAULT_MAX_CONCURRENT;
     this.fetchImpl = options.fetch ?? fetch;
+    this.lookupCache = options.lookupCache;
   }
 
   /** Network calls still allowed. Infinity with no budget. */
@@ -148,6 +186,16 @@ export class QlooClient {
       };
     }
 
+    // A name looked up in an earlier run is free. Its record keeps the day it was really asked.
+    const lookup = LOOKUP_ENDPOINTS.has(endpoint) ? this.lookupCache?.get(key) : undefined;
+    if (lookup) {
+      this.answers.set(key, Promise.resolve(lookup));
+      return {
+        data: this.validate(schema, endpoint, lookup.returned, lookup.call),
+        call: { ...lookup.call, callId: randomUUID(), durationMs: 0, cached: true },
+      };
+    }
+
     if (this.callBudget !== undefined && this.networkCalls >= this.callBudget) {
       throw new QlooBudgetError(endpoint, this.callBudget);
     }
@@ -157,7 +205,9 @@ export class QlooClient {
     this.answers.set(key, pending);
     try {
       const { returned, call } = await pending;
-      return { data: this.validate(schema, endpoint, returned, call), call };
+      const data = this.validate(schema, endpoint, returned, call);
+      if (LOOKUP_ENDPOINTS.has(endpoint)) this.lookupCache?.set(key, { returned, call });
+      return { data, call };
     } catch (err) {
       // Failures are not remembered: the next identical call goes out again.
       this.answers.delete(key);
@@ -221,7 +271,7 @@ export class QlooClient {
     return { returned: attempt.returned, call };
   }
 
-  /** Runs one request when a slot is free. A finished request hands its slot to the next one. */
+  // Runs one request when a slot is free. A finished request hands its slot to the next one.
   private async slot<T>(work: () => Promise<T>): Promise<T> {
     if (this.inFlight < this.maxConcurrent) this.inFlight += 1;
     else await new Promise<void>((resolve) => this.waiting.push(resolve));
@@ -264,7 +314,7 @@ export class QlooClient {
   }
 }
 
-/** The body as JSON, or as text when it is not JSON (an HTML error page, say). */
+// The body as JSON, or as text when it is not JSON (an HTML error page, say).
 async function readBody(response: Response): Promise<Receipt['returned']> {
   const text = await response.text();
   if (text === '') return null;

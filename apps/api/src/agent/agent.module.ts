@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { demoFetch, QlooClient, type ToolContext } from '@oraqul/engine';
+import { demoFetch, LookupCache, QlooClient, type ToolContext } from '@oraqul/engine';
 import type { Env } from '../config/env.js';
 import { LLM, type Llm } from '../llm/llm.js';
 import { OutputsService } from '../outputs/outputs.service.js';
@@ -27,6 +27,10 @@ import { ThreadStore } from './thread-store.js';
 import { createTitler, THREAD_TITLER } from './titler.js';
 
 const logger = new Logger('Router');
+
+// Names looked up in Qloo (comps, partner brands) are kept across runs: the next plan asks for the
+// same telecoms and the same comps, and each lookup it skips is a call saved against the quota.
+const lookups = new LookupCache();
 
 @Module({
   providers: [
@@ -131,7 +135,7 @@ const logger = new Logger('Router');
 })
 export class AgentModule {}
 
-/** One Qloo client per run, so the call budget and the cache are the run's (spec §3.5). */
+// One Qloo client per run, so the call budget and the cache are the run's (spec §3.5).
 function toolContext(config: ConfigService<Env, true>): ToolContext {
   const callBudget = config.get('QLOO_CALL_BUDGET', { infer: true });
   if (config.get('QLOO_MODE', { infer: true }) === 'demo') {
@@ -148,6 +152,7 @@ function toolContext(config: ConfigService<Env, true>): ToolContext {
     apiKey: config.get('QLOO_API_KEY', { infer: true }),
     timeoutMs: config.get('QLOO_TIMEOUT_MS', { infer: true }),
     callBudget,
+    lookupCache: lookups,
   });
   return { qloo, source: 'qloo', entities: new Map() };
 }

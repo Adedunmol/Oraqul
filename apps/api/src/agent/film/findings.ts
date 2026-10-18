@@ -4,6 +4,7 @@ import {
   QlooBudgetError,
   QlooError,
   rankPlacesOutputSchema,
+  resolveBundleOutputSchema,
   resolveTagsOutputSchema,
   type TasteType,
   type ToolContext,
@@ -22,6 +23,7 @@ import type {
   Verdict,
 } from '@oraqul/schema';
 import type { z } from 'zod';
+import { normalise } from '../router/decide.js';
 import { buildBrief, type FilmBrief, round2, slug, type Tested } from './brief.js';
 import type { QueryPlan } from './planner.js';
 import { type AgeBand, BAND_RANGES, type FilmRead } from './read.js';
@@ -29,12 +31,11 @@ import { type AgeBand, BAND_RANGES, type FilmRead } from './read.js';
 const { CINEMA_TAG, RECENT_FILMS, RECENT_SHOWS, TAG_SPACES, MAX_CITIES_PER_QUERY } = filmPlan;
 type FilmQueryKey = filmPlan.FilmQueryKey;
 
-/** Candidates a finding keeps for the writer to pick from. Its sentence names the first three. */
+// Candidates a finding keeps for the writer to pick from. Its sentence names the first three.
 const KEEP = 6;
 const NAMED = 3;
-/** Most calls the brand and community queries make between them, so they cannot spend the run. */
+// Most calls the brand and community queries make between them, so they cannot spend the run.
 const MAX_BRAND_CALLS = 4;
-/** Churches and campuses, for each of up to four cities. */
 const MAX_COMMUNITY_CALLS = 8;
 
 export interface GroundDeps {
@@ -65,9 +66,8 @@ export interface Grounded {
 const rank: Record<Confidence, number> = { lower: 0, medium: 1, high: 2 };
 
 /**
- * Stage 1 (spec §4.1): run the plan's queries and turn each result into a finding, a sentence
- * built by code from one call. Each finding is streamed into the chat as it lands. Numbers and
- * verdicts are computed here or in the engine, never by the model.
+ * Stage 1 (spec §4.1). Each finding is streamed to the chat as it lands. Numbers and verdicts are
+ * computed here or in the engine, never by the model.
  */
 export async function ground(deps: GroundDeps, input: GroundInput): Promise<Grounded> {
   const { read, plan } = input;
@@ -108,12 +108,16 @@ export async function ground(deps: GroundDeps, input: GroundInput): Promise<Grou
     deps.emit({ type: 'finding', finding: full });
   };
 
-  // Core: the comps' audience and the team's cities, in parallel.
+  const want = (key: FilmQueryKey) => plan.queries.includes(key);
+
+  // Core: the comps' audience and the team's cities, in parallel. The neighbourhoods are read
+  // from the same heatmap, so they cost no call of their own.
   const places = [...plan.cities, ...plan.worthALook].slice(0, 30);
+  const areas = want('areas') ? plan.areas : [];
   const [audience, ranked] = await Promise.all([
     test(deps, 'audienceBySegment', { entityIds: ids }, audienceOutputSchema),
     places.length
-      ? test(deps, 'rankPlaces', { entityIds: ids, places }, rankPlacesOutputSchema)
+      ? test(deps, 'rankPlaces', { entityIds: ids, places, areas }, rankPlacesOutputSchema)
       : Promise.resolve<Tested<z.infer<typeof rankPlacesOutputSchema>>>({
           data: null,
           why: 'No cities were given, so none could be ranked.',
@@ -128,8 +132,8 @@ export async function ground(deps: GroundDeps, input: GroundInput): Promise<Grou
     worthALook: plan.worthALook,
   });
   coreFindings(brief, read, add, gaps, audience, ranked);
+  areaFindings(ranked, add);
 
-  const want = (key: FilmQueryKey) => plan.queries.includes(key);
   const ages = read.ages;
   const agesText = read.ages.length ? ` ${agesPhrase(read.ages)}` : '';
 
@@ -175,6 +179,8 @@ export async function ground(deps: GroundDeps, input: GroundInput): Promise<Grou
         country?: string | null;
         yearFrom?: number | null;
         ages?: string[];
+        /** Rank only these, so the answer is among candidates that could really say yes. */
+        only?: string[];
       },
       sentence: (names: string) => string,
       context: Partial<FindingContext>,
@@ -182,7 +188,7 @@ export async function ground(deps: GroundDeps, input: GroundInput): Promise<Grou
       const run = await safely(deps, gaps, label, () =>
         tools.findTaste.run(deps.tools, {
           entityIds: ids,
-          take: KEEP,
+          take: Math.min(Math.max(KEEP, shape.only?.length ?? 0), 10),
           ...shape,
           exclude: [],
         }),
@@ -278,25 +284,52 @@ export async function ground(deps: GroundDeps, input: GroundInput): Promise<Grou
     }
 
     if (want('brands')) {
-      const pairs = tags.brands.flatMap((tag) => plan.brandCities.map((city) => ({ tag, city })));
-      for (const { tag, city } of pairs.slice(0, MAX_BRAND_CALLS)) {
-        jobs.push(
-          taste(
-            'brands',
-            `${capitalise(tag.name)} brands in ${city}`,
-            `f-brands-${slug(tag.name)}-${slug(city)}`,
-            { type: 'urn:entity:brand', tags: [tag.id], city },
-            (names) =>
-              `In ${city}, the ${tag.name.toLowerCase()} brands that rank highest with your comps' audience are ${names}.`,
-            { city, tags: [tag.name] },
-          ),
-        );
-      }
-      if (tags.brands.length === 0) {
-        gaps.push({
-          item: 'Brand partners',
-          why: 'Qloo had no brand category for the ones asked.',
-        });
+      // Brands Qloo likes best are the biggest names, which would never say yes to a small film.
+      // So the model names brands that could, Qloo finds them, and Qloo ranks only those.
+      const pools = (
+        await Promise.all(
+          plan.brandCandidates.map(async ({ city, names }) => ({
+            city,
+            pool: await brandPool(deps, names),
+          })),
+        )
+      ).filter((p) => p.pool.length >= 2);
+      if (pools.length > 0) {
+        for (const { city, pool } of pools.slice(0, MAX_CITIES_PER_QUERY)) {
+          jobs.push(
+            taste(
+              'brands',
+              `Partner brands in ${city}`,
+              `f-brands-${slug(city)}`,
+              { type: 'urn:entity:brand', city, only: pool },
+              (names) =>
+                `In ${city}, among brands that could realistically partner with a film like this, your comps' audience likes ${names} best.`,
+              { city },
+            ),
+          );
+        }
+      } else {
+        // No usable candidates: ask Qloo by category.
+        const pairs = tags.brands.flatMap((tag) => plan.brandCities.map((city) => ({ tag, city })));
+        for (const { tag, city } of pairs.slice(0, MAX_BRAND_CALLS)) {
+          jobs.push(
+            taste(
+              'brands',
+              `${capitalise(tag.name)} brands in ${city}`,
+              `f-brands-${slug(tag.name)}-${slug(city)}`,
+              { type: 'urn:entity:brand', tags: [tag.id], city },
+              (names) =>
+                `In ${city}, the ${tag.name.toLowerCase()} brands that rank highest with your comps' audience are ${names}.`,
+              { city, tags: [tag.name] },
+            ),
+          );
+        }
+        if (tags.brands.length === 0) {
+          gaps.push({
+            item: 'Brand partners',
+            why: 'Qloo had no brand category for the ones asked.',
+          });
+        }
       }
     }
 
@@ -377,7 +410,6 @@ export async function ground(deps: GroundDeps, input: GroundInput): Promise<Grou
   return { findings, receipts, brief, gaps, budgetOut };
 }
 
-/** Findings for the audience, the team's cities and the team's decisions, from the brief. */
 function coreFindings(
   b: FilmBrief,
   read: FilmRead,
@@ -488,7 +520,7 @@ function coreFindings(
   }
 }
 
-/** A verdict in the words a marketing team would use. The technical reason stays on the finding. */
+// A verdict in the words a marketing team would use. The technical reason stays on the finding.
 function plainVerdict(id: string, verdict: Verdict, subject: string, read: FilmRead): string {
   if (id === 'a-age') {
     const band = agesPhrase(read.ages);
@@ -525,12 +557,74 @@ function plainVerdict(id: string, verdict: Verdict, subject: string, read: FilmR
   }[verdict];
 }
 
+// Brands the planner named that Qloo found: by exact name, or by the company's fuller name ("MTN"
+// is "MTN Group"), which is how a brand is usually written and how Qloo often lists it. This is
+// the pool Qloo ranks for the audience.
+async function brandPool(deps: GroundDeps, names: string[]): Promise<string[]> {
+  if (names.length === 0) return [];
+  try {
+    const { data, receipts } = await tools.resolveBundle.run(deps.tools, {
+      names: names.slice(0, 4),
+      types: ['urn:entity:brand'],
+    });
+    deps.keep(receipts);
+    const ids = resolveBundleOutputSchema.parse(data).anchors.flatMap((a) => {
+      if (a.status === 'found' && a.entityId) return [a.entityId];
+      const want = normalise(a.name);
+      const fuller = a.candidates
+        .filter((c) => normalise(c.name).startsWith(`${want} `))
+        .sort((x, y) => (y.popularity ?? 0) - (x.popularity ?? 0))[0];
+      return fuller ? [fuller.entityId] : [];
+    });
+    return [...new Set(ids)];
+  } catch (err) {
+    // A failed lookup leaves the pool empty and the brands asked by category instead.
+    if (err instanceof QlooBudgetError || !(err instanceof QlooError)) throw err;
+    keepFailure(deps, err);
+    return [];
+  }
+}
+
+function areaFindings(
+  ranked: Tested<z.infer<typeof rankPlacesOutputSchema>>,
+  add: (
+    f: Omit<Finding, 'callIds' | 'numbers' | 'context'> & {
+      numbers?: Record<string, number>;
+      context?: Partial<FindingContext>;
+    },
+    call: Receipt,
+  ) => void,
+) {
+  if (!ranked.data) return;
+  const cities = [...new Set(ranked.data.areas.map((a) => a.city))];
+  for (const city of cities) {
+    const rows = ranked.data.areas.filter((a) => a.city === city).sort((a, b) => a.rank - b.rank);
+    if (rows.length < 2) continue;
+    const place = ranked.data.places.find((p) => p.place === city);
+    add(
+      {
+        id: `f-areas-${slug(city)}`,
+        query: 'areas',
+        text: `In ${city}, your comps' audience is strongest in ${list(rows.slice(0, 4).map((r) => r.name))}.`,
+        entities: rows.map((r) => entity(r.name, r.affinity, null)),
+        numbers: Object.fromEntries(rows.map((r) => [`lift ${r.name}`, round2(r.lift ?? 0)])),
+        verdict: null,
+        // A few cells near each centre is a lead, not a measurement: never above medium.
+        confidence: place && rank[place.confidence] < rank.medium ? place.confidence : 'medium',
+        why: place?.why ?? '',
+        context: { city },
+      },
+      ranked.receipt,
+    );
+  }
+}
+
 interface Tag {
   id: string;
   name: string;
 }
 
-/** Every phrase the plan needs, resolved to Qloo tags in one tool run. Unmatched ones drop out. */
+// Every phrase the plan needs, resolved to Qloo tags in one tool run. Unmatched ones drop out.
 async function resolve(
   deps: GroundDeps,
   plan: QueryPlan,
@@ -596,7 +690,7 @@ async function resolve(
   };
 }
 
-/** Runs one core test. A failed call is "could not test" with its receipt, never a filled-in value. */
+// Runs one core test. A failed call is "could not test" with its receipt, never a filled-in value.
 async function test<S extends z.ZodType>(
   deps: GroundDeps,
   name: 'audienceBySegment' | 'rankPlaces',
@@ -616,7 +710,7 @@ async function test<S extends z.ZodType>(
   }
 }
 
-/** A query that failed becomes a gap with its receipt. A spent budget stops every query. */
+// A query that failed becomes a gap with its receipt. A spent budget stops every query.
 async function safely<T extends { receipts: Receipt[] }>(
   deps: GroundDeps,
   gaps: Grounded['gaps'],
@@ -647,9 +741,8 @@ function keepFailure(deps: GroundDeps, err: QlooError) {
 }
 
 // A place list for a category also returns landmarks and businesses that merely carry the tag
-// (live, 2026-10-17: Leicester Square, The O2 and Westminster Abbey at popularity 1.0, a luxury
-// hotel and a mall among Lagos cinemas). Neither is somewhere to screen a film or hold an event
-// with a community, so code leaves them out before the writer sees the list.
+// (a square or abbey at popularity 1.0, a hotel or mall among cinemas). Neither is somewhere to
+// screen a film or meet a community, so code leaves them out before the writer sees the list.
 const LANDMARK_POPULARITY = 0.999;
 const NOT_A_VENUE = /\b(hotel|mall|shopping|flea|market|resort|spa|square)\b/i;
 
@@ -666,7 +759,7 @@ function entity(
   return { entityId, name, affinity, detail };
 }
 
-/** Every number written in a finding's text, so a line may quote any of them. */
+// Every number written in a finding's text, so a line may quote any of them.
 function numbersIn(text: string): Record<string, number> {
   return Object.fromEntries(
     [...text.matchAll(/-?\d+(?:\.\d+)?/g)].map((m, i) => [`n${i}`, Number(m[0])]),

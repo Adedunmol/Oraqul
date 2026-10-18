@@ -25,7 +25,7 @@ export const envSchema = z
     QLOO_API_KEY: z.string().default(''),
     QLOO_BASE_URL: z.string().default(''),
     QLOO_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
-    QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(60),
+    QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(80),
     QLOO_MODE: z.enum(['demo', 'live']).default('demo'),
     AGENT_MAX_STEPS: z.coerce.number().int().positive().default(12),
     LLM_PROVIDER: z.enum(llmProviders).default('openai'),

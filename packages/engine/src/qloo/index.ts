@@ -1,6 +1,7 @@
 export type { CompareRequest, TrendingRequest } from './analysis';
 export * as analysis from './analysis';
 export {
+  LookupCache,
   QlooBudgetError,
   type QlooCall,
   QlooClient,

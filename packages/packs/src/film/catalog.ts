@@ -2,7 +2,7 @@ import type { LaunchModuleKey, LaunchSectionKey } from '@oraqul/schema';
 
 // The Film query catalog (spec §4.1). The model picks from these and fills in their context;
 // code runs them, within the call budget, and turns each result into a finding. Every shaping
-// parameter here is verified in qloo.md (2026-10-17, qloo:film-probes).
+// parameter here is verified in qloo.md.
 
 export const filmQueryKeys = [
   'audience',
@@ -15,6 +15,7 @@ export const filmQueryKeys = [
   'films',
   'podcasts',
   'community',
+  'areas',
 ] as const;
 export type FilmQueryKey = (typeof filmQueryKeys)[number];
 
@@ -82,6 +83,12 @@ export const FILM_QUERIES: Record<FilmQueryKey, FilmQuerySpec> = {
     for: 'publicity',
     feeds: ['publicity'],
     label: 'the podcasts that audience hears',
+  },
+  areas: {
+    key: 'areas',
+    for: 'community',
+    feeds: ['community', 'markets', 'publicity'],
+    label: 'which neighbourhoods in each city that audience is strongest in',
   },
   community: {
     key: 'community',

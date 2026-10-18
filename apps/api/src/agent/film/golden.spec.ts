@@ -27,18 +27,19 @@ const dir = fileURLToPath(new URL('../../../../../packages/eval/golden/film/', i
 const expectSchema = z.object({
   headline: z.string(),
   assumptions: z.record(z.string(), verdictSchema),
-  /** The team's cities in the order the plan opens them. */
+  // The team's cities in the order the plan opens them.
   cities: z.array(z.string()),
   comps: z.array(z.object({ name: z.string(), source: z.enum(['you', 'added']) })),
-  /** Each finding's id and the first three names it returned. */
+  // Each finding's id and the first three names it returned.
   findings: z.record(z.string(), z.array(z.string())),
-  /** Lines per section by kind, as `grounded/playbook`. */
+  // Lines per section by kind, as `grounded/playbook`.
   sections: z.record(z.string(), z.string()),
   moves: z.array(z.string().nullable()),
-  /** How well backed the plan is (`groundingReport`): a fall here is a plan that cites less. */
+  // How well backed the plan is (`groundingReport`): a fall here is a plan that cites less.
   grounding: z.object({
     lines: z.number().int(),
     backed: z.number().int(),
+    rankKept: z.number().int(),
     findingsUsed: z.number().int(),
     cities: z.record(z.string(), z.number().int()),
   }),
@@ -48,14 +49,14 @@ const expectSchema = z.object({
 type Expected = z.infer<typeof expectSchema>;
 
 const caseSchema = z.object({
-  /** `demo` runs on the committed demo data; `live` names real titles and runs only on recordings. */
+  // `demo` runs on the committed demo data; `live` names real titles and runs only on recordings.
   data: z.enum(['demo', 'live']).default('demo'),
   title: z.string(),
   brief: z.string(),
   replies: z.array(
     z.union([z.object({ optionIds: z.array(z.string()) }), z.object({ text: z.string() })]),
   ),
-  /** An expectation in an older shape reads as missing, so `UPDATE_GOLDEN=1` can replace it. */
+  // An expectation in an older shape reads as missing, so `UPDATE_GOLDEN=1` can replace it.
   expect: expectSchema.nullable().catch(null),
 });
 type GoldenCase = z.infer<typeof caseSchema>;
@@ -132,9 +133,10 @@ function summarise(result: PlanRun): Expected {
       ]),
     ),
     moves: output.moves.map((m) => m.lineId),
-    grounding: (({ lines, backed, findingsUsed, cities }) => ({
+    grounding: (({ lines, backed, rankKept, findingsUsed, cities }) => ({
       lines,
       backed,
+      rankKept,
       findingsUsed,
       cities,
     }))(
@@ -148,10 +150,8 @@ function summarise(result: PlanRun): Expected {
   };
 }
 
-/**
- * The rules every plan's wording must keep (spec §6.2): the bottom line names only the
- * team's cities, no line shows a receipt or call id, and every grounded line cites a finding.
- */
+// The rules every plan's wording must keep (spec §6.2): the bottom line names only the
+// team's cities, no line shows a receipt or call id, and every grounded line cites a finding.
 function checkRules(result: PlanRun, teamCities: string[]) {
   const plan = result.output?.plan;
   if (!plan) throw new Error('Expected a plan');
@@ -203,10 +203,8 @@ describe('Film golden runs on demo data', { timeout: 20_000 }, () => {
   });
 });
 
-/**
- * The same inputs over live Qloo, recorded once with `RECORD_LIVE=1` and a key, then replayed
- * offline. Recordings stay local until Qloo confirms they may be committed.
- */
+// The same inputs over live Qloo, recorded once with `RECORD_LIVE=1` and a key, then replayed
+// offline. Recordings stay local until Qloo confirms they may be committed.
 describe('Film golden runs on recorded live responses', () => {
   const key = process.env.QLOO_API_KEY;
   const base = process.env.QLOO_BASE_URL;

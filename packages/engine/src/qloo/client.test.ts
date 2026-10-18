@@ -1,8 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { QlooBudgetError, QlooError } from './client';
-import { entityListBody, jsonResponse, stubFetch, testClient } from './fake-fetch';
+import { LookupCache, QlooBudgetError, QlooError } from './client';
+import {
+  entityInsightsBody,
+  entityListBody,
+  jsonResponse,
+  stubFetch,
+  testClient,
+} from './fake-fetch';
 import * as lookup from './lookup';
-import { entityListResponseSchema } from './responses';
+import { entityInsightsResponseSchema, entityListResponseSchema } from './responses';
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -224,5 +230,36 @@ describe('QlooClient.get', () => {
       await get(client);
       await expect(get(client)).resolves.toMatchObject({ call: { cached: true } });
     });
+  });
+});
+
+describe('LookupCache', () => {
+  it('serves a name looked up in an earlier run without a call, and keeps other endpoints per run', async () => {
+    const cache = new LookupCache();
+    const search = jsonResponse(entityListBody);
+    const fetchSpy = stubFetch(
+      search,
+      jsonResponse(entityInsightsBody),
+      jsonResponse(entityInsightsBody),
+    );
+    const first = testClient({ lookupCache: cache });
+    await first.get('/search', { query: 'MTN' }, entityListResponseSchema);
+    await first.get(
+      '/v2/insights',
+      { 'filter.type': 'urn:entity:brand' },
+      entityInsightsResponseSchema,
+    );
+
+    const second = testClient({ lookupCache: cache });
+    const again = await second.get('/search', { query: 'MTN' }, entityListResponseSchema);
+    expect(again.call.cached).toBe(true);
+    expect(second.callsUsed).toBe(0);
+    await second.get(
+      '/v2/insights',
+      { 'filter.type': 'urn:entity:brand' },
+      entityInsightsResponseSchema,
+    );
+    expect(second.callsUsed).toBe(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
   });
 });

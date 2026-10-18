@@ -26,6 +26,25 @@ export const rankPlacesOutputSchema = z.object({
       why: z.string(),
     }),
   ),
+  /**
+   * Neighbourhoods read from the same heatmap, strongest first within each city. An area with too
+   * few cells near it has no reading and is left out.
+   */
+  areas: z
+    .array(
+      z.object({
+        city: z.string(),
+        name: z.string(),
+        /** Mean affinity of the cells nearest the area's centre. */
+        affinity: z.number(),
+        /** That affinity over the city's own mean in the same call: above 1.0 beats the city. */
+        lift: z.number().nullable(),
+        cells: z.number().int(),
+        /** 1 is the strongest in its city. */
+        rank: z.number().int(),
+      }),
+    )
+    .default([]),
   /** The call every ranked place cites. Null when no place was in the city table. */
   receiptId: z.string().nullable(),
   /** Whether the city order held with each anchor left out. Null when the check did not run. */
@@ -47,12 +66,28 @@ export const rankPlaces = defineTool({
   input: z.object({
     entityIds: z.array(z.string()).min(1),
     places: z.array(z.string().min(1)).min(1).max(30),
+    /**
+     * Neighbourhoods to read from the same call. Coordinates come from the planner and are checked
+     * against the city's box.
+     */
+    areas: z
+      .array(
+        z.object({
+          city: z.string().min(1),
+          name: z.string().min(1),
+          latitude: z.number().min(-90).max(90),
+          longitude: z.number().min(-180).max(180),
+        }),
+      )
+      .max(24)
+      .default([]),
   }),
-  async run(ctx, { entityIds, places }) {
+  async run(ctx, { entityIds, places, areas }) {
     const boxes = places.flatMap((p) => cityBox(p) ?? []);
     if (boxes.length === 0) {
       const data: z.infer<typeof rankPlacesOutputSchema> = {
         places: places.map((place) => unknownPlace(place)),
+        areas: [],
         receiptId: null,
         leaveOneOut: null,
       };
@@ -121,20 +156,85 @@ export const rankPlaces = defineTool({
     const headline: ConfidenceResult = top
       ? { level: top.confidence, reason: top.why }
       : { level: 'lower', reason: 'lower: no city had enough cells to rank' };
+    const read = readAreas(response.results.heatmap, areas, boxes, full);
     const receipt = toReceipt(call, {
-      returned: { places: Object.fromEntries(full) },
-      rule: `${RANK_RULE} Confidence ${headline.reason}.`,
+      returned: { places: Object.fromEntries(full), ...(read.length ? { areas: read } : {}) },
+      rule: `${RANK_RULE}${read.length ? " A neighbourhood is the mean affinity of the heatmap cells nearest its centre, over its city's mean." : ''} Confidence ${headline.reason}.`,
       confidence: headline.level,
       source: ctx.source,
     });
     const data: z.infer<typeof rankPlacesOutputSchema> = {
       places: rows,
+      areas: read,
       receiptId: receipt.callId,
       leaveOneOut: loo.check ?? null,
     };
     return { data, receipts: [receipt, ...loo.receipts] };
   },
 });
+
+// Cells nearest a neighbourhood's centre. More than this blurs it into the next one.
+const AREA_CELLS = 8;
+// Farther than this (in degrees, about 11 km) a cell is not near the neighbourhood.
+const AREA_REACH = 0.1;
+// Fewer cells than this is a guess, not a reading.
+const AREA_MIN_CELLS = 3;
+
+type HeatCell = { location: { latitude: number; longitude: number }; query: { affinity: number } };
+
+/**
+ * Reads neighbourhoods from cells the call already returned (no extra call). A centre outside its
+ * city's box, or with too few cells near it, has no reading.
+ */
+export function readAreas(
+  cells: HeatCell[],
+  areas: { city: string; name: string; latitude: number; longitude: number }[],
+  boxes: CityBox[],
+  scored: Scored,
+): z.infer<typeof rankPlacesOutputSchema>['areas'] {
+  const read = areas.flatMap((area) => {
+    const box = boxes.find((b) => b.name.toLowerCase() === area.city.toLowerCase());
+    if (!box || !inBox(box, area.latitude, area.longitude)) return [];
+    const near = cells
+      .map((c) => ({
+        affinity: c.query.affinity,
+        d: Math.hypot(
+          c.location.latitude - area.latitude,
+          (c.location.longitude - area.longitude) * Math.cos((area.latitude * Math.PI) / 180),
+        ),
+      }))
+      .filter((c) => c.d <= AREA_REACH)
+      .sort((a, b) => a.d - b.d)
+      .slice(0, AREA_CELLS);
+    if (near.length < AREA_MIN_CELLS) return [];
+    const affinity = near.reduce((sum, c) => sum + c.affinity, 0) / near.length;
+    const cityMean = scored.get(box.name)?.affinity ?? 0;
+    return [
+      {
+        city: box.name,
+        name: area.name,
+        affinity,
+        lift: cityMean > 0 ? lift(affinity, cityMean) : null,
+        cells: near.length,
+        rank: 0,
+      },
+    ];
+  });
+  // Strongest first, numbered within each city. A name given twice is read once.
+  const seen = new Set<string>();
+  const unique = read.filter((a) => {
+    const key = `${a.city}|${a.name}`.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return unique
+    .sort((a, b) => b.affinity - a.affinity)
+    .map((a) => ({
+      ...a,
+      rank: unique.filter((x) => x.city === a.city && x.affinity > a.affinity).length + 1,
+    }));
+}
 
 function unknownPlace(place: string) {
   return {
@@ -166,7 +266,6 @@ function score(
   return scored;
 }
 
-/** Ranked places, strongest first. A place under the cell floor is left out. */
 function ranked(scored: Scored): string[] {
   return [...scored.entries()]
     .filter(([, s]) => s.cells >= MIN_PLACE_CELLS)

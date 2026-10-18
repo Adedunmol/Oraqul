@@ -69,6 +69,7 @@
     "grounding": {
       "lines": 39,
       "backed": 62,
+      "rankKept": 100,
       "findingsUsed": 16,
       "cities": {
         "Nairobi": 6,

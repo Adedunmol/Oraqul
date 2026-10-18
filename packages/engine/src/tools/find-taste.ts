@@ -7,8 +7,8 @@ import { toReceipt } from '../receipts';
 import { defineTool } from './tool';
 
 // What a comp signal returns once it carries context: a tag, a city, an age band, a release
-// country, a year. Each shaping parameter is verified in qloo.md (2026-10-17, qloo:film-probes);
-// without one an open-ended list drifts to what is popular overall.
+// country, a year. Each shaping parameter is verified in qloo.md; without
+// one an open-ended list drifts to what is popular overall.
 export const tasteTypes = [
   'urn:entity:artist',
   'urn:entity:movie',
@@ -62,6 +62,12 @@ export const findTaste = defineTool({
     yearFrom: z.number().int().nullable().default(null),
     take: z.number().int().min(1).max(MAX_TAKE).default(6),
     exclude: z.array(z.string()).default([]),
+    /**
+     * Rank only these entities (Qloo's `filter.results.entities`): candidates we chose, such as
+     * brands that could realistically partner, ranked by Qloo for this audience. Without it the
+     * list is whatever Qloo finds closest, which for brands is the biggest names.
+     */
+    only: z.array(z.string()).max(50).default([]),
   }),
   async run(ctx, input) {
     const left = [...input.entityIds, ...input.exclude];
@@ -118,6 +124,7 @@ interface Shape {
   country: string | null;
   yearFrom: number | null;
   take: number;
+  only: string[];
 }
 
 function request(input: Shape, left: string[]): EntityInsightsRequest {
@@ -126,6 +133,7 @@ function request(input: Shape, left: string[]): EntityInsightsRequest {
     'filter.exclude.entities': left,
     // Exclusions come back out of the take, so ask for enough to fill it.
     take: Math.min(input.take + left.length, 50),
+    ...(input.only.length ? { 'filter.results.entities': input.only } : {}),
     ...(input.tags.length ? { 'filter.tags': input.tags } : {}),
     ...(input.ages.length ? { 'signal.demographics.age': input.ages } : {}),
     ...(input.audiences.length ? { 'signal.demographics.audiences': input.audiences } : {}),
