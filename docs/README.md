@@ -24,6 +24,7 @@ Principles every category agent follows: [product/principles.md](product/princip
 | Qloo calls, `packages/engine` | [backend/qloo.md](backend/qloo.md) |
 | Tests, evals | [testing.md](testing.md) |
 | Commits, branches, PRs, how we ship features | [git.md](git.md) |
+| How the Film agent works end to end, and what it still lacks | [end-to-end-flow/film-agent.md](end-to-end-flow/film-agent.md) |
 
 ## Maintaining these docs
 
