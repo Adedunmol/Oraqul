@@ -7,8 +7,8 @@ import {
   resolveBundleOutputSchema,
   resolveTagsOutputSchema,
   type ToolContext,
-  toReceipt,
   tools,
+  toReceipt,
 } from '@oraqul/engine';
 import { filmPlan } from '@oraqul/packs';
 import {
@@ -633,14 +633,12 @@ export async function findGenreComps(
       if (err instanceof QlooBudgetError || !(err instanceof QlooError)) throw err;
       continue;
     }
-    const titles = made.data.results.entities
-      .slice(0, GENRE_COMPS - resolved.length)
-      .map((e) => ({
-        entityId: e.entity_id,
-        name: e.name,
-        popularity: e.popularity ?? null,
-        year: releaseYear.safeParse(e.properties ?? {}).data?.release_year,
-      }));
+    const titles = made.data.results.entities.slice(0, GENRE_COMPS - resolved.length).map((e) => ({
+      entityId: e.entity_id,
+      name: e.name,
+      popularity: e.popularity ?? null,
+      year: releaseYear.safeParse(e.properties ?? {}).data?.release_year,
+    }));
     if (titles.length === 0) continue;
     keep([
       toReceipt(made.call, {
