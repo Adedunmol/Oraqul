@@ -2,6 +2,7 @@
 
 import { Button, Icon } from '@oraqul/ui';
 import { type DragEvent, type FormEvent, type KeyboardEvent, useId, useRef, useState } from 'react';
+import { readUpload, UploadRefused } from '@/lib/api/uploads';
 
 export interface Attachment {
   name: string;
@@ -13,17 +14,22 @@ export interface Attachment {
 const MAX_FILES = 5;
 const MAX_BYTES = 20 * 1024 * 1024;
 const READ_BYTES = 200 * 1024;
-const ACCEPT = '.pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.csv,.xls,.xlsx,.json';
+const ACCEPT = '.pdf,.docx,.txt,.md,.csv,.json';
 const TEXT_FILE = /\.(txt|md|csv|json)$/i;
+const READ_BY_API = /\.(pdf|docx)$/i;
 
 function sizeLabel(bytes: number): string {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-// Read in the browser only to let the demo use what is in the file. Nothing is uploaded yet:
-// spec §7 `POST /uploads` takes over once the API serves it.
+// Plain text is read in the browser. PDF and Word go to `POST /uploads`, which returns their
+// text and keeps nothing (spec §7). A file that cannot be read is not attached.
 async function toAttachment(file: File): Promise<Attachment> {
+  if (READ_BY_API.test(file.name)) {
+    const { text } = await readUpload(file);
+    return { name: file.name, size: file.size, text };
+  }
   const readable = TEXT_FILE.test(file.name) && file.size <= READ_BYTES;
   return { name: file.name, size: file.size, text: readable ? await file.text() : undefined };
 }
@@ -69,7 +75,17 @@ export function Composer({
           ? `Attach up to ${MAX_FILES} files.`
           : '',
     );
-    const read = await Promise.all(kept.map(toAttachment));
+    const results = await Promise.allSettled(kept.map(toAttachment));
+    const read = results.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : []));
+    const failed = results.findIndex((r) => r.status === 'rejected');
+    const why = failed < 0 ? null : results[failed];
+    if (why?.status === 'rejected') {
+      setProblem(
+        why.reason instanceof UploadRefused
+          ? why.reason.message
+          : `${kept[failed]?.name} could not be read. Try again.`,
+      );
+    }
     setFiles((current) => [
       ...current,
       ...read.filter((f) => !current.some((c) => c.name === f.name)),

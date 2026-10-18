@@ -7,6 +7,7 @@ import { HealthModule } from './health/health.module.js';
 import { LlmModule } from './llm/llm.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
 import { TeamsModule } from './teams/teams.module.js';
+import { UploadsModule } from './uploads/uploads.module.js';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TeamsModule } from './teams/teams.module.js';
     AuthModule,
     HealthModule,
     ProjectsModule,
+    UploadsModule,
     TeamsModule,
   ],
 })
