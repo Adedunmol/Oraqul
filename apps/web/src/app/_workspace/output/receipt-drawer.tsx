@@ -32,7 +32,6 @@ export function lineLabel(output: Output, lineId: string): string {
 
 const confidenceText = { high: 'High', medium: 'Medium', lower: 'Lower, thin data' } as const;
 
-/** What a receipt's `returned` says, in words: the names it lists, or the text it holds. */
 function returnedText(returned: unknown): string {
   if (typeof returned === 'string') return returned;
   if (returned && typeof returned === 'object') {
@@ -49,9 +48,8 @@ function returnedText(returned: unknown): string {
 }
 
 /**
- * The receipt behind one line, in a sheet from the right. A finding opens here too, with what
- * Qloo was asked and what it returned; the call id and endpoint show only from Evidence.
- * design-system §7.17
+ * The receipt behind one line. A finding opens here too; the call id and endpoint show only from
+ * Evidence. design-system §7.17
  */
 export function ReceiptDrawer({
   output,

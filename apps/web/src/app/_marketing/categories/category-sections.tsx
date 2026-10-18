@@ -8,7 +8,6 @@ import { wrap } from '../section';
 
 const field = 'bg-[color-mix(in_srgb,var(--cat)_74%,var(--ink))] text-bg';
 
-/** The title's companion: the five categories as full width rows that jump to each one. */
 export function CategoryTiles() {
   return (
     <ul className="flex flex-col gap-2">

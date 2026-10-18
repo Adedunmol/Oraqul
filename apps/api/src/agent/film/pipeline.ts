@@ -108,18 +108,13 @@ export interface FilmDeps {
   emit(event: ThreadEvent): void;
 }
 
-/** The order a plan's sections are shown in: core, modules, then Gaps last. */
 function sectionOrder(modules: LaunchModuleKey[]): LaunchSectionKey[] {
   return ['bottom-line', 'positioning', 'audience', 'markets', ...modules, 'gaps'];
 }
 
 const rank: Record<Confidence, number> = { lower: 0, medium: 1, high: 2 };
 
-/**
- * The Film build (spec §4.1, §6.1). Stage 1 is findings: the model reads the brief and shapes the
- * queries, code runs them and turns each result into a finding, streamed into the chat. Stage 2
- * is the plan: the model writes it from the findings, and code checks every line.
- */
+/** The Film build (spec §4.1, §6.1): findings first, then the plan, every line checked. */
 export async function runFilmBuild(
   handoff: Handoff,
   deps: FilmDeps,
@@ -394,10 +389,8 @@ export async function runFilmBuild(
   });
 }
 
-/**
- * The team's comps always, and they lead. Below 3, the model's proposals fill to 4, kept apart.
- * A same-name match is settled by code from the country and popularity, and the choice is said.
- */
+// The team's comps always, and they lead. Below 3, the model's proposals fill to 4, kept apart.
+// A same-name match is settled by code from the country and popularity, and the choice is said.
 async function findComps(
   deps: FilmDeps,
   keep: (made: Receipt[]) => void,
@@ -457,12 +450,11 @@ async function findComps(
       });
     }
   }
-  // The team's comps lead, the agent's follow.
   used.sort((x, y) => (x.source === y.source ? 0 : x.source === 'you' ? -1 : 1));
   return { resolved, used, dropped };
 }
 
-/** The same-name title to use: from the launch's country if one is, then the best known. */
+// The same-name title to use: from the launch's country if one is, then the best known.
 function settle(
   candidates: {
     entityId: string;
@@ -478,7 +470,6 @@ function settle(
   return [...candidates].sort((a, b) => score(b) - score(a))[0] as (typeof candidates)[number];
 }
 
-/** The release country most of the comps share, from the details on their Qloo matches. */
 function commonCountry(used: CompUsed[]): string | null {
   const counts = new Map<string, number>();
   for (const u of used) {
@@ -539,7 +530,6 @@ export function applyChange(
   };
 }
 
-/** The team's city in the film's country of origin, if there is one. */
 function homeMarket(cities: string[], country: string | null): string | null {
   return country ? (cities.find((c) => cityCountry(c) === country) ?? null) : null;
 }
@@ -578,7 +568,6 @@ function budgetSection(read: FilmRead): LaunchSection {
   };
 }
 
-/** What the plan could not test, and what each missing input would add. Written by code. */
 function gapsSection(read: FilmRead, comps: { used: CompUsed[] }): LaunchSection {
   // Only inputs the team could add. What could not be asked goes to the Assumptions tab instead.
   const texts = [
@@ -613,7 +602,7 @@ function gapsSection(read: FilmRead, comps: { used: CompUsed[] }): LaunchSection
   };
 }
 
-/** Spec §5.1: the lowest confidence of the findings behind the bottom line. */
+// Spec §5.1: the lowest confidence of the findings behind the bottom line.
 function overall(bottom: LaunchLine[], findings: Finding[]): OverallConfidence {
   const behind = bottom.flatMap((l) =>
     l.findingIds.flatMap((id) => findings.find((f) => f.id === id) ?? []),
@@ -671,10 +660,8 @@ function unique(values: string[]): string[] {
   });
 }
 
-/**
- * The chat gives the bottom line and opens the plan (spec §4.1, §6.1). Every grounded move is a
- * claim citing the calls behind its findings.
- */
+// The chat gives the bottom line and opens the plan (spec §4.1, §6.1). Every grounded move is a
+// claim citing the calls behind its findings.
 function writeReply(
   title: string,
   bottom: LaunchLine[],

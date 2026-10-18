@@ -4,9 +4,8 @@ import { Input } from '@oraqul/ui';
 import { type ComponentProps, useState } from 'react';
 
 /**
- * An Input that can show what was typed. Use it for every password field. It lives in web, not
- * `packages/ui`, because `ui` ships as one bundle and a hook there breaks the server components
- * that import VerdictPill.
+ * An Input that can show what was typed. It lives in web, not `packages/ui`: `ui` ships as one
+ * bundle and a hook there breaks the server components that import VerdictPill.
  */
 export function PasswordInput(props: Omit<ComponentProps<typeof Input>, 'type' | 'trailing'>) {
   const [shown, setShown] = useState(false);

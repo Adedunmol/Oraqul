@@ -183,7 +183,6 @@ function agentItem(text: string): ThreadItem {
   return { id: `agent:${crypto.randomUUID()}`, role: 'agent', text };
 }
 
-/** Adds a step to the running trace, or starts one. */
 function withStep(list: ThreadItem[], text: string): ThreadItem[] {
   const last = list.at(-1);
   if (last?.role === 'trace' && last.done < last.steps.length) {
@@ -196,14 +195,12 @@ function withStep(list: ThreadItem[], text: string): ThreadItem[] {
   ];
 }
 
-/** Adds a finding to the running trace, as each Qloo result lands. */
 function withFinding(list: ThreadItem[], finding: Finding): ThreadItem[] {
   const last = list.at(-1);
   if (last?.role !== 'trace') return list;
   return [...list.slice(0, -1), { ...last, findings: [...last.findings, finding] }];
 }
 
-/** Marks the running trace finished, so it folds. */
 function finishTrace(list: ThreadItem[]): ThreadItem[] {
   return list.map((i) => (i.role === 'trace' ? { ...i, done: i.steps.length } : i));
 }
@@ -212,7 +209,6 @@ function openQuestion(list: ThreadItem[]) {
   return list.findLast((i) => i.role === 'question' && i.answer === null);
 }
 
-/** Typed text answers the open card, which folds to show it. */
 function answerOpen(list: ThreadItem[], text: string): ThreadItem[] {
   const open = openQuestion(list);
   return open
@@ -220,7 +216,6 @@ function answerOpen(list: ThreadItem[], text: string): ThreadItem[] {
     : list;
 }
 
-/** A question event as the card the chat draws. */
 function toCard(event: Extract<ThreadEvent, { type: 'question' }>): QuestionCard {
   const { id, prompt, options, hint } = event;
   switch (event.card) {
@@ -235,7 +230,6 @@ function toCard(event: Extract<ThreadEvent, { type: 'question' }>): QuestionCard
   }
 }
 
-/** The card's answer as the API takes it, and the words the folded card shows. */
 function toAnswer(
   question: QuestionCard,
   value: QuestionAnswer,

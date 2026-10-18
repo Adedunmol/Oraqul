@@ -13,7 +13,7 @@ import { type AgeBand, bandsBetween } from './read.js';
 import type { WrittenLine, WrittenSection } from './writer.js';
 
 const MAX_MOVES = 3;
-/** Shorter names are too likely to match an ordinary word ("Up", "Us"). */
+// Shorter names are too likely to match an ordinary word ("Up", "Us").
 const MIN_NAME = 4;
 
 export interface CheckContext {
@@ -35,18 +35,18 @@ const has = (haystack: string, needle: string) => {
   return n.length > 0 && ` ${normalise(haystack)} `.includes(` ${n} `);
 };
 
-/** Words a marketing team would not use, and talk about the measurement instead of the move. */
+// Words a marketing team would not use, and talk about the measurement instead of the move.
 const JARGON =
   /\b(lift|index(?:es)?|indexing|affinity|cells|qloo|findings?|could not be (?:tested|ranked|measured)|not enough data|limited (?:market )?(?:testing )?data|low confidence)\b/i;
 
-/** Money, sales or audience sizes: facts that need a source, never the model's memory. */
+// Money, sales or audience sizes: facts that need a source, never the model's memory.
 const MARKET_FIGURE =
   /[₦$£€]\s?\d|\b\d[\d,.]*\s?(billion|million|bn|thousand|admissions|tickets|screens)\b/i;
 
-/** "T-4 weeks", "8 weeks", "90 days": the plan's own schedule, not a claim about the data. */
+// "T-4 weeks", "8 weeks", "90 days": the plan's own schedule, not a claim about the data.
 const TIMING = /\bT\s?[-–]\s?\d+\b|\b\d+\s?(?:weeks?|days?|months?|hours?)\b/gi;
 
-/** Every name a finding returned. Theme tags are ordinary words ("community"), so they are out. */
+// Every name a finding returned. Theme tags are ordinary words ("community"), so they are out.
 function dictionaryOf(findings: Finding[]): string[] {
   return [
     ...new Set(
@@ -59,8 +59,7 @@ function dictionaryOf(findings: Finding[]): string[] {
 }
 
 /**
- * Cites what a line names. A line that names something Qloo returned rests on that finding,
- * so it becomes grounded and cites it, instead of being dropped for a missing citation. The
+ * A line that names something Qloo returned is grounded and cites it, rather than dropped. The
  * team's cities alone do not ground a line: every plan names them.
  */
 export function citeWhatIsNamed(written: WrittenLine, ctx: CheckContext): WrittenLine {
@@ -95,19 +94,17 @@ export function citeWhatIsNamed(written: WrittenLine, ctx: CheckContext): Writte
   return asKind({ ...line, findingIds });
 }
 
-/** A line with no finding behind it is a playbook line, whatever the writer called it. */
+// A line with no finding behind it is a playbook line, whatever the writer called it.
 function asKind(line: WrittenLine): WrittenLine {
   return { ...line, kind: line.findingIds.length ? 'grounded' : 'playbook' };
 }
 
-/** "f-a-place-houston" and "f-place-houston" are the same finding to a reader, and to us. */
+// "f-a-place-houston" and "f-place-houston" are the same finding to a reader, and to us.
 const canon = (id: string) => id.toLowerCase().replace(/^f-a-/, 'f-').replace(/-a-/g, '-');
 
-/**
- * Models garble ids: a web source in the finding list, or a finding id with a segment dropped.
- * Put each id where it belongs and drop one that matches nothing, instead of dropping a whole
- * line for a typo. A line left with no citation still has to pass as a playbook line.
- */
+// Models garble ids: a web source in the finding list, or a finding id with a segment dropped.
+// Put each id where it belongs and drop one that matches nothing, instead of dropping a whole
+// line for a typo. A line left with no citation still has to pass as a playbook line.
 function resolveCitations(line: WrittenLine, ctx: CheckContext): WrittenLine {
   const asSource = (id: string) => ctx.sources.find((src) => src.id === id)?.id;
   const asFinding = (id: string) =>
@@ -127,7 +124,7 @@ function resolveCitations(line: WrittenLine, ctx: CheckContext): WrittenLine {
   return { ...line, findingIds, sourceIds };
 }
 
-/** A name written as a name: same case, whole words. So "Industry" the series, not the word. */
+// A name written as a name: same case, whole words. So "Industry" the series, not the word.
 const names = (text: string, name: string) =>
   new RegExp(`(^|[^\\p{L}\\p{N}])${escapeName(name)}($|[^\\p{L}\\p{N}])`, 'u').test(
     text.replace(/[’‘]/g, "'"),
@@ -142,12 +139,7 @@ const numbers = (text: string) =>
     Number(m[0].replace(/,/g, '')),
   );
 
-/**
- * Spec §6.2: the line check. A grounded line must cite real findings and name only what they or
- * the brief name, with only their numbers. A playbook line cites nothing, names only the brief,
- * and makes no claim about taste. The bottom line keeps the team's cities and age band. Returns
- * why a line fails, or null.
- */
+/** The line check (spec §6.2). Returns why a line fails, or null. */
 export function checkLine(
   section: LaunchSectionKey,
   line: WrittenLine,
@@ -244,7 +236,7 @@ export function checkLine(
   return null;
 }
 
-/** The team's decisions are constraints: no city they did not choose in the bottom line. */
+// The team's decisions are constraints: no city they did not choose in the bottom line.
 function checkBottomLine(line: WrittenLine, ctx: CheckContext): string | null {
   const cities = [
     ...cityNames(),
@@ -291,10 +283,8 @@ export function checkSections(
   return { sections, dropped };
 }
 
-/**
- * A name can arrive with a tell-apart in brackets, such as a year or an address, and Qloo's own
- * names carry brackets too ("Dominion Chapel Houston (DCH)"). Compared without them.
- */
+// A name can arrive with a tell-apart in brackets, such as a year or an address, and Qloo's own
+// names carry brackets too ("Dominion Chapel Houston (DCH)"). Compared without them.
 const bare = (name: string) => name.replace(/\s*\([^)]*\)/g, '').trim();
 
 function same(a: string, b: string): boolean {

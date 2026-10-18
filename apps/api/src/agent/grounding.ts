@@ -12,9 +12,8 @@ export function ungroundedClaims(reply: AgentReply, receipts: Receipt[]): string
 }
 
 /**
- * Lines of a brief that are not grounded (spec §10, hard rule 2): a tested line with no receipt,
- * or a named title, brand, podcast, city or rival that no receipt of the run returned. Lines that
- * could not be tested, risks and the untested list carry no receipt by design.
+ * Brief lines that are not grounded (spec §10, hard rule 2). Lines that could not be tested, risks
+ * and the untested list carry no receipt by design.
  */
 export function ungroundedLines(brief: Brief, receipts: Receipt[]): string[] {
   const byLine = new Map<string, Receipt[]>();

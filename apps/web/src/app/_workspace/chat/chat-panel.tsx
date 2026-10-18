@@ -285,7 +285,6 @@ function Item({
   }
 }
 
-/** Agent text, revealed word by word the first time it shows. design-system §8 */
 function AgentText({ text, isNew }: { text: string; isNew: boolean }) {
   if (!isNew) return <div className="whitespace-pre-wrap text-[15.5px] leading-[1.6]">{text}</div>;
   let n = 0;
@@ -314,13 +313,11 @@ function AgentText({ text, isNew }: { text: string; isNew: boolean }) {
   );
 }
 
-/** Findings shown while a run is going. The rest are in the folded trace. */
+// Findings shown while a run is going. The rest are in the folded trace.
 const LIVE_FINDINGS = 3;
 
-/**
- * The agent's steps and what Qloo found, as plain sentences. Runs with a progress bar, then
- * folds into a summary. design-system §7.15
- */
+// The agent's steps and what Qloo found, as plain sentences. Runs with a progress bar, then
+// folds into a summary. design-system §7.15
 function Trace({
   steps,
   done,
@@ -375,7 +372,7 @@ function Trace({
   );
 }
 
-/** What Qloo returned, one sentence per finding. The plan cites them; the ids stay in Evidence. */
+// What Qloo returned, one sentence per finding. The plan cites them; the ids stay in Evidence.
 function Findings({ findings }: { findings: Finding[] }) {
   return (
     <ul className="mt-3 flex flex-col gap-1">
@@ -409,10 +406,8 @@ function Step({ text, running }: { text: string; running: boolean }) {
   );
 }
 
-/**
- * A launch plan in the conversation is the plan itself, in full, as a document: the agent's
- * message above is one line, and everything a reader needs follows. Actions sit in its header.
- */
+// A launch plan in the conversation is the plan itself, in full, as a document: the agent's
+// message above is one line, and everything a reader needs follows. Actions sit in its header.
 function PlanCard({
   output,
   plan,
@@ -452,11 +447,9 @@ function PlanCard({
   );
 }
 
-/**
- * An output in the conversation: one line naming it. The agent's message just above already says
- * the bottom line, so the summary card opens in a dialog instead of filling the chat.
- * design-system §7.13
- */
+// An output in the conversation: one line naming it. The agent's message just above already says
+// the bottom line, so the summary card opens in a dialog instead of filling the chat.
+// design-system §7.13
 function OutputCard({
   output,
   isNew,

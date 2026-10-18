@@ -90,7 +90,6 @@ export function createLlm(env: LlmEnv): Llm | null {
 
 type ProviderEnv = Pick<LlmEnv, 'LLM_PROVIDER' | 'LLM_API_KEY' | 'LLM_BASE_URL'>;
 
-/** Reads a search call's answer and the pages it used, whichever provider ran it. */
 async function answered(
   run: Promise<{
     text: string;
@@ -108,7 +107,7 @@ async function answered(
   };
 }
 
-/** The provider's own web search, run on its side. Only OpenAI and Google offer one. */
+// The provider's own web search, run on its side. Only OpenAI and Google offer one.
 function webSearch(env: ProviderEnv, model: LanguageModel): WebSearch | null {
   const apiKey = env.LLM_API_KEY;
   const baseURL = env.LLM_BASE_URL || undefined;

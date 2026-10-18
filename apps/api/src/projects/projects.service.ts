@@ -38,7 +38,6 @@ import { OutputsService } from '../outputs/outputs.service.js';
 export const MAX_PINS = 3;
 const RECENT_THREADS = 4;
 
-/** What a list shows as the project's status, from the job it was started for. */
 const STATUS_BY_MODE: Record<StartMode, string> = {
   build: 'Planning',
   audit: 'Audit',
@@ -294,7 +293,6 @@ export class ProjectsService {
     }));
   }
 
-  /** Threads whose last run is waiting, with the open card's prompt. */
   private async openQuestions(threadIds: string[]): Promise<Map<string, string>> {
     if (!threadIds.length) return new Map();
     const rows = await this.db
@@ -318,7 +316,7 @@ export class ProjectsService {
     return new Map(questions.map((q) => [q.threadId, q.prompt]));
   }
 
-  /** Threads with an agent item this person has not seen. Their own messages never count. */
+  // Threads with an agent item this person has not seen. Their own messages never count.
   private async unreadThreads(threadIds: string[], userId: string): Promise<Set<string>> {
     if (!threadIds.length) return new Set();
     const rows = await this.db

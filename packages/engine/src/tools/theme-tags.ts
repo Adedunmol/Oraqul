@@ -5,7 +5,7 @@ import { toReceipt } from '../receipts';
 import { defineTool } from './tool';
 
 // `urn:tag:theme:qloo`, `archetype:qloo` and `audience:qloo` on a comp signal are verified in
-// qloo.md (2026-10-17). With no tag type the call returns mostly style adjectives.
+// qloo.md. With no tag type the call returns mostly style adjectives.
 export const themeTagTypes = ['theme', 'archetype', 'audience', 'plot'] as const;
 
 export const themeTagsOutputSchema = z.object({

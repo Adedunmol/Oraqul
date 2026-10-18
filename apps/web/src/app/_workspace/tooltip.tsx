@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * One hover and focus tooltip for every chart mark with a `data-tip` attribute, so charts stay
- * plain markup. `data-rail-tip` shows only while the sidebar is collapsed, where labels are
- * hidden. Mount it once per page tree.
+ * One tooltip for every chart mark with `data-tip`. `data-rail-tip` shows only while the sidebar is
+ * collapsed. Mount it once per page tree.
  */
 export function Tooltip() {
   const [tip, setTip] = useState<{ text: string; x: number; y: number } | null>(null);

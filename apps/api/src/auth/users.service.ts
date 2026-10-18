@@ -15,9 +15,9 @@ export class UsersService {
   }
 
   /**
-   * The one place accounts are linked: a verified email always maps to one user, whichever
-   * sign in method proved it. Callers must have verified the email before calling.
-   * A new account gets a personal team it owns, in the same transaction.
+   * The one place accounts are linked: a verified email maps to one user, whichever sign in method
+   * proved it. Callers must have verified it. A new account gets a personal team in the same
+   * transaction.
    */
   async findOrCreateVerified(email: string, name: string): Promise<SessionUser> {
     // Only the request that wins the insert gets a row back, so a race creates one team.

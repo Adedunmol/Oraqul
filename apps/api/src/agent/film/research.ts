@@ -7,7 +7,6 @@ import type { FilmRead } from './read.js';
 /** What a plan may look up on the web: release timing and the market, never the film itself. */
 export interface ResearchInput {
   read: FilmRead;
-  /** The film's country of origin, as the plan settled it. */
   country: string | null;
   /** The team's cities, home market first. */
   cities: string[];
@@ -41,7 +40,6 @@ Search for each of these on its own, naming the industry and the market in the q
 
 Only report what is about this industry and these markets. Ignore global blockbuster calendars and unrelated releases unless the same audience would choose between them and the launch. Write short bullet points. Each states one fact with its date or figure exactly as the source gives it, and names the market it is about. If a search finds nothing reliable, leave it out. Never guess a date or a number.`;
 
-/** The facts a model pulled from what the search read, each tied to one page it came from. */
 const factsSchema = z.object({
   facts: z
     .array(
@@ -78,7 +76,7 @@ export function numbered(sources: PlanSource[]): PlanSource[] {
   return sources.map((s, i) => ({ ...s, id: `w${i + 1}` }));
 }
 
-/** The industry's own name in searches, which finds far more than the country alone. */
+// The industry's own name in searches, which finds far more than the country alone.
 function industryOf(country: string): string {
   const names: Record<string, string> = {
     nigeria: 'Nollywood and Nigerian cinema',
@@ -92,9 +90,8 @@ function industryOf(country: string): string {
 }
 
 /**
- * Looks up release timing and market facts on the web through the writer's provider, then pulls
- * them out as facts tied to the pages they came from. The film's title and story are never sent:
- * only its genre, country, format and the cities, so an unreleased film's name stays private.
+ * Web research for release timing and the market. The film's title and story are never sent, so an
+ * unreleased name stays private.
  */
 export class ModelResearcher implements Researcher {
   readonly enabled = true;

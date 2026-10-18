@@ -281,7 +281,6 @@ export const demoEntities: DemoEntity[] = [
   demoPlace('DEMO-PLACE-0009', 'Lagoon City University', 'Lagos', 'university'),
 ];
 
-/** Demo themes, archetypes and audience traits for `urn:tag` insights. */
 const demoTagNames: Record<string, string[]> = {
   theme: ['Ambition', 'Family', 'Power', 'Loyalty', 'Survival', 'Community'],
   archetype: ['The Matriarch', 'The Rival', 'The Outsider', 'The Fixer'],
@@ -316,7 +315,7 @@ function demographics(params: URLSearchParams): Response {
   return json({ success: true, results: { demographics: demographicsRows } });
 }
 
-/** A stable number from 0 to 1 for a pair of strings, so demo answers repeat. */
+// A stable number from 0 to 1 for a pair of strings, so demo answers repeat.
 function hashed(a: string, b: string): number {
   let h = 2166136261;
   for (const ch of `${a}|${b}`) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
@@ -329,7 +328,6 @@ function signalOf(params: URLSearchParams): string[] {
 
 const CELLS_PER_BOX = 120;
 
-/** Cells inside each box of a `MULTIPOLYGON` or `POLYGON`, scored from the signal's entities. */
 function heatmap(params: URLSearchParams): Response {
   const signal = signalOf(params);
   const rings = [...(params.get('filter.location') ?? '').matchAll(/\(\(([^()]+)\)\)/g)];
@@ -361,7 +359,7 @@ function heatmap(params: URLSearchParams): Response {
   return json({ success: true, results: { heatmap: cells } });
 }
 
-/** Scores the requested demo entities against the signal, as `filter.results.entities` does. */
+// Scores the requested demo entities against the signal, as `filter.results.entities` does.
 function scored(params: URLSearchParams): Response {
   const signal = signalOf(params);
   const wanted = params.get('filter.results.entities')?.split(',') ?? [];
@@ -381,7 +379,6 @@ function scored(params: URLSearchParams): Response {
   return json({ success: true, results: { entities: results } });
 }
 
-/** The demo entities of one type closest to the signal, as an open-ended insights call returns. */
 function discovered(params: URLSearchParams): Response {
   const signal = signalOf(params);
   const excluded = params.get('filter.exclude.entities')?.split(',') ?? [];

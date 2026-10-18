@@ -5,9 +5,8 @@ import type { ReactNode } from 'react';
 import { Modal } from './modal';
 
 /**
- * The one confirmation for any action that removes something or cannot be undone. Back is the
- * first button and the default way out, so the destructive choice is never the easy one. Say what
- * is lost in `children`, in plain words.
+ * The one confirmation for anything that removes something or cannot be undone. Back is first and
+ * the default, so the destructive choice is never the easy one.
  */
 export function ConfirmDialog({
   open,

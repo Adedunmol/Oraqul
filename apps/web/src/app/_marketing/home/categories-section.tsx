@@ -29,7 +29,6 @@ function CategoryText({ info }: { info: CategoryInfo }) {
   );
 }
 
-/** The pinned picture: the category's colour as a solid field, with what Oraqul tests there. */
 function CategoryVisual({ info }: { info: CategoryInfo }) {
   return (
     <div
@@ -64,10 +63,6 @@ function CategoryVisual({ info }: { info: CategoryInfo }) {
   );
 }
 
-/**
- * The five categories told as sticky steps: each one scrolls past while its colour panel stays
- * pinned beside it and swaps as the next arrives.
- */
 export function CategoriesSection() {
   const infos = categories.map((id) => getCategory(id));
   return (

@@ -40,7 +40,7 @@ const stepBody = z.object({
   of: z.number().int(),
   text: z.string(),
 });
-/** A finding is stored with the trace it streamed in, so the chat folds both into one item. */
+// A finding is stored with the trace it streamed in, so the chat folds both into one item.
 const findingBody = z.object({ finding: findingSchema });
 const traceBody = z.union([findingBody, stepBody]);
 const outputBody = z.object({ outputId: z.uuid() });

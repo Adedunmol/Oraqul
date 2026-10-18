@@ -5,8 +5,8 @@ import type { EntityInsightsRequest } from '../qloo/insights';
 import { toReceipt } from '../receipts';
 import { defineTool } from './tool';
 
-// Cross-domain results for a movie signal (brands, podcasts, series) are verified in qloo.md
-// (conflict 16); whether they are good picks was only judged by eye on a few.
+// Cross-domain results for a movie signal (brands, podcasts, series) are verified in qloo.md;
+// whether they are good picks was only judged by eye on a few.
 const discoverTypes = z.enum([
   'urn:entity:movie',
   'urn:entity:tv_show',

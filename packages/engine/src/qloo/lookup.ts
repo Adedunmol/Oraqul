@@ -72,7 +72,7 @@ export type TagSearchParams = Page & {
   /** Partial text match on the tag name. */
   'filter.query'?: string;
   'filter.tag.types'?: string[];
-  /** Entity types such as `urn:entity:brand` narrow a phrase to that type's tags (verified 2026-10-17). */
+  /** Entity types such as `urn:entity:brand` narrow a phrase to that type's tags. */
   'filter.parents.types'?: (AudienceParentType | QlooEntityType)[];
   'filter.results.tags'?: string[];
   'filter.popularity.min'?: number;

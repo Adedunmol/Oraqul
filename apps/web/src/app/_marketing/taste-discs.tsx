@@ -34,9 +34,8 @@ const sets: Record<'hero' | 'closing' | 'auth', Disc[]> = {
 };
 
 /**
- * The art: each category's audience as a disc, overlapping where tastes meet, which is what
- * Oraqul measures. Decoration only, so it is hidden from screen readers. Never put it inside a
- * transformed layer: that isolates the discs and their blend mode stops mixing with the page.
+ * Decoration only, so hidden from screen readers. Never put it inside a transformed layer: that
+ * isolates the discs and their blend mode stops mixing with the page.
  */
 export function TasteDiscs({ set, className }: { set: keyof typeof sets; className?: string }) {
   return (

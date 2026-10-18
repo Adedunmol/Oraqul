@@ -66,9 +66,8 @@ const RECENT_LINES = 8;
 const NO_INPUTS: Said = { text: '', files: [] };
 
 /**
- * Runs the agent in the background and streams what it does (spec §8). The request that starts
- * a run returns at once; the web follows along on `GET /threads/:id/events`. Runs live in this
- * process, so the API runs as one process (agent.md).
+ * Runs the agent in the background and streams what it does (spec §8). Runs live in this process,
+ * so the API runs as one process.
  */
 @Injectable()
 export class RunService implements OnModuleInit {
@@ -326,11 +325,9 @@ export class RunService implements OnModuleInit {
     }
   }
 
-  /**
-   * Judges a message sent to an active project (backend/agent.md). Returns true when the agent
-   * should run. An off topic message gets the fixed refusal and an unclear one gets a card of
-   * close readings, and in both the run stops here.
-   */
+  // Judges a message sent to an active project (backend/agent.md). Returns true when the agent
+  // should run. An off topic message gets the fixed refusal and an unclear one gets a card of
+  // close readings, and in both the run stops here.
   private async gateSegment(threadId: string, handoff: Handoff): Promise<boolean> {
     const runId = await this.newRun(threadId, 'gate', null, null);
     try {
@@ -367,7 +364,6 @@ export class RunService implements OnModuleInit {
     }
   }
 
-  /** The gate card waiting for an answer, if the thread's last run left one open. */
   private async gatePending(threadId: string): Promise<GatePending | null> {
     const [run] = await this.db
       .select({ agent: runs.agent, status: runs.status, state: runs.state })
@@ -419,7 +415,6 @@ export class RunService implements OnModuleInit {
     }
   }
 
-  /** The agent run waiting on a card, if the thread's last run left one open. */
   private async agentWaiting(
     threadId: string,
     category: string,
@@ -434,7 +429,7 @@ export class RunService implements OnModuleInit {
     return { state: run.state };
   }
 
-  /** Names a chat from its first message. Only an unnamed chat is renamed, so this runs once. */
+  // Names a chat from its first message. Only an unnamed chat is renamed, so this runs once.
   private async nameThread(threadId: string, text: string, attachments: Attachment[]) {
     try {
       const name = await this.titler.title({ text, files: attachments.map((a) => a.name) });
@@ -517,7 +512,7 @@ export class RunService implements OnModuleInit {
     return run?.stopReason ?? 'finished';
   }
 
-  /** The router's state from its last run on this thread, checked on the way out of the database. */
+  // The router's state from its last run on this thread, checked on the way out of the database.
   private async routerState(threadId: string): Promise<RouterState> {
     const [run] = await this.db
       .select({ state: runs.state })
@@ -566,7 +561,6 @@ interface RunRecord {
   job?: Handoff['mode'];
 }
 
-/** The words the router reads: the message, then the text of any small text file. */
 function forRouter({ text, files }: Said): string {
   const parts = files.map((f) =>
     f.text ? `[File: ${f.name}]\n${f.text}` : `[Attached file: ${f.name}]`,

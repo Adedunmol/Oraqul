@@ -18,7 +18,7 @@ const word: Record<Verdict, string> = {
   cant: 'Could not test',
 };
 
-/** A marked span: the colour paints in, and a glyph plus a hidden word says the verdict. */
+// A marked span: the colour paints in, and a glyph plus a hidden word says the verdict.
 function Mark({ v, i, children }: { v: Verdict; i: number; children: ReactNode }) {
   return (
     <>

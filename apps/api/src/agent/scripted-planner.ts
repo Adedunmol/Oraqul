@@ -16,11 +16,7 @@ function latest(history: HistoryItem[], name: string): ToolHistory | undefined {
 const typeWord = (urn: string) => urn.replace('urn:entity:', '').replace('_', ' ');
 const bandWord = (band: string) => band.replaceAll('_', ' ');
 
-/**
- * Deterministic stand-in for the model: find the lead title, ask which one when the name is
- * ambiguous, read its audience, let Books ask Film, then write up only what the receipts say.
- * It runs the demo and the tests with no key, and shows the shape a real planner must follow.
- */
+/** Deterministic stand-in for the model, for the demo and the tests with no key. */
 export class ScriptedPlanner implements Planner {
   async next(context: AgentContext): Promise<Step> {
     const { history, project, pack } = context;

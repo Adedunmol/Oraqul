@@ -19,11 +19,7 @@ const top = [
 const linkClass =
   'rounded-md px-2.5 py-1.5 text-[13.5px] text-muted transition-colors duration-150 hover:text-ink focus-visible:outline-2 focus-visible:outline-accent aria-[current=page]:font-semibold aria-[current=page]:text-ink motion-reduce:transition-none';
 
-/**
- * The header's links. A Product menu on a wide screen and, below 900px, a hamburger that opens a
- * side sheet over a dimmed page. Both close on Escape, and focus returns to the button that opened
- * them. The sheet also closes from its close icon or a click on the dim.
- */
+/** Both menus close on Escape, and focus returns to the button that opened them. */
 export function NavMenu({ extra }: { extra: ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState<'product' | 'menu' | null>(null);

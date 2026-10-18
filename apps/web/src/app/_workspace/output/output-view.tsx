@@ -41,7 +41,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   audience: AudienceTab,
   assumptions: AssumptionsTab,
   plan: PlanTab,
-  // No output lists these two any more; their lists sit at the end of Plan and Assumptions.
+  // Their lists sit at the end of Plan and Assumptions.
   risks: PlanTab,
   cannot: AssumptionsTab,
   evidence: EvidenceTab,
@@ -60,7 +60,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
 };
 
 const PRIMARY: OutputTabKey[] = ['summary', 'plan', 'assumptions', 'evidence'];
-/** Tabs that became part of another, so an old link still lands on the right list. */
+// Tabs that became part of another, so an old link still lands on the right list.
 const FOLDED: Partial<Record<OutputTabKey, OutputTabKey>> = {
   risks: 'plan',
   cannot: 'assumptions',

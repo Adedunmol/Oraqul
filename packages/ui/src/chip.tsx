@@ -3,7 +3,6 @@ import type { ButtonHTMLAttributes, HTMLAttributes } from 'react';
 const base =
   'inline-flex items-center gap-1.5 rounded-md bg-surface2 px-2.5 py-1 text-[12.5px] text-ink';
 
-/** A quiet label. design-system §7.4 */
 export function Chip({ className, ...props }: HTMLAttributes<HTMLSpanElement>) {
   return <span className={`${base} ${className ?? ''}`} {...props} />;
 }

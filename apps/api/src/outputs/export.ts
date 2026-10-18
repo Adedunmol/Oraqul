@@ -20,7 +20,7 @@ interface DocSection {
   groups: { name: string | null; lines: DocLine[] }[];
 }
 
-/** One shape for every format, so the Markdown, the Word file and the PDF read the same. */
+// One shape for every format, so the Markdown, the Word file and the PDF read the same.
 interface PlanDoc {
   title: string;
   byline: string;

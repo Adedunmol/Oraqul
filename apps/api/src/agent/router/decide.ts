@@ -52,9 +52,8 @@ function quoted(quote: string, said: string): boolean {
 }
 
 /**
- * Takes from the reading only what the person actually said. A value whose quote is not in their
- * words is dropped, so a model that guesses or invents a title leaves the field unknown and the
- * router asks instead. A quoted value replaces an earlier one: a later message can correct.
+ * Keeps only what the person said: a value whose quote is not in their words is dropped, so the
+ * router asks instead of guessing. A later quoted value replaces an earlier one.
  */
 export function applyReading(known: Known, reading: RouterReading, said: string): Known {
   const next = { ...known };
@@ -99,7 +98,7 @@ export function decide(
   return { kind: 'routed', title, category, mode };
 }
 
-/** Uses the model's own wording when its options settle what is missing, else fixed options. */
+// Uses the model's own wording when its options settle what is missing, else fixed options.
 function choiceQuestion(known: Known, reading: RouterReading | null, id: string): PendingQuestion {
   const useful = (reading?.question?.options ?? []).filter((o) => settlesMissing(known, o));
   if (reading?.question && useful.length >= MIN_OPTIONS) {

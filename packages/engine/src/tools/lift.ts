@@ -6,8 +6,8 @@ import { isNearEdge, liftBand, lift as liftOf } from '../scoring';
 import { leaveOneOut, nameOf } from './leave-one-out';
 import { defineTool } from './tool';
 
-// Scoring a candidate list with `filter.results.entities` is verified live for books (qloo.md,
-// conflict 18) and films (2026-10-16, qloo:film-tools). TODO(verify): series, brands, podcasts.
+// Scoring a candidate list with `filter.results.entities` is verified for books and films
+// (qloo.md). TODO(verify): series, brands, podcasts.
 const scoredTypes = z.enum([
   'urn:entity:movie',
   'urn:entity:tv_show',

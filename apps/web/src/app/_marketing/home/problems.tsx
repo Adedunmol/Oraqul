@@ -24,7 +24,6 @@ const pairs = [
   },
 ];
 
-/** Today against with Oraqul, as three rows the reader can scan straight across. */
 export function Problems() {
   return (
     <section aria-labelledby="problems-title" className={band}>

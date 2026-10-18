@@ -25,9 +25,8 @@ export const findingContextSchema = z.object({
 export type FindingContext = z.infer<typeof findingContextSchema>;
 
 /**
- * One result from Qloo turned into a sentence by code (stage 1). Plan lines cite findings, and a
- * finding cites the calls behind it. Ids are stable for the same query and context, so a
- * scenario can mark what changed.
+ * One result from Qloo as a sentence built by code. Ids are stable for the same query and context,
+ * so a scenario can mark what changed.
  */
 export const findingSchema = z.object({
   id: z.string().min(1),

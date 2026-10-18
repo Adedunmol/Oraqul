@@ -45,7 +45,6 @@ export type FollowUp =
   | { job: 'partner'; partner: string | null };
 
 export interface FollowUpInput {
-  /** The message to read. */
   text: string;
   /** The chat before it, oldest first, so "and London?" can be read. */
   recent: TranscriptLine[];
@@ -62,9 +61,8 @@ function inWords(quoteText: string, text: string): boolean {
 }
 
 /**
- * Keeps only what the person said, then code decides the job: rivals with dates make a date
- * check, a named change makes a what-if, the word partner makes a brief. The model's own job is
- * used only when none of those is in the words.
+ * Keeps only what the person said, then code picks the job. The model's own job is used only when
+ * no rule matches.
  */
 export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput): FollowUp {
   const values = (items: { value: string; quote: string }[]) =>
@@ -137,11 +135,7 @@ export class ModelFollowUpReader implements FollowUpReader {
 
 const DROP = /\b(drop|without|remove|skip|not|instead of|no)\s+$/i;
 
-/**
- * Reads only what is plainly written, for runs with no model key: cities from the city table,
- * quoted titles, number ranges for age, ISO dates paired with the quoted titles before them, and
- * "partner brief for X".
- */
+/** Scripted reader for runs with no model key: reads only what is plainly written. */
 export class ScriptedFollowUpReader implements FollowUpReader {
   async read({ text }: FollowUpInput) {
     const before = (index: number) => text.slice(Math.max(0, index - 16), index);

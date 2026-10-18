@@ -92,9 +92,8 @@ export function planContext(plan: Output, recent: Handoff['recent']): string {
 }
 
 /**
- * A question about a launch plan (PRD J7): stage 1 is the plan's findings, stage 2 is the
- * writer in answer mode, and the same line check as a plan. If the answer would change a
- * decision, the agent offers a what-if instead of changing the plan.
+ * Answers a question about a plan (PRD J7). If the answer would change a decision, offers a what-if
+ * instead of changing the plan.
  */
 export async function runPlanAnswer(
   handoff: Handoff,
@@ -541,10 +540,8 @@ export async function runPartnerBrief(
   }
 }
 
-/**
- * The pitch, drafted by the writer from the partner's fit and the plan's findings, every line
- * checked like a plan line. Null when no line survives, so the template is used. Never sent.
- */
+// The pitch, drafted by the writer from the partner's fit and the plan's findings, every line
+// checked like a plan line. Null when no line survives, so the template is used. Never sent.
 async function draftPitch(
   handoff: Handoff,
   deps: FollowUpDeps & { writer: PlanWriter },
@@ -582,7 +579,6 @@ async function draftPitch(
   return kept.some((l) => l.kind === 'grounded') ? kept.map((l) => l.text).join('\n\n') : null;
 }
 
-/** A partner brief for an artist the plan's music findings ranked. No new Qloo call. */
 async function artistBrief(
   handoff: Handoff,
   deps: FollowUpDeps & { writer: PlanWriter },
@@ -647,7 +643,6 @@ async function artistBrief(
   };
 }
 
-/** The first brand the plan's Partnerships section names, else the older brief's top brand. */
 function suggestedPartner(plan: Output): string | null {
   const brands = new Set(
     plan.plan?.findings
@@ -661,7 +656,7 @@ function suggestedPartner(plan: Output): string | null {
   return named ?? plan.brief.s2[0]?.name ?? null;
 }
 
-/** A brief with the plan's lines taken out, so a check covers only what this run made. */
+// A brief with the plan's lines taken out, so a check covers only what this run made.
 function onlyOwnLines(brief: Brief): Brief {
   return {
     ...brief,

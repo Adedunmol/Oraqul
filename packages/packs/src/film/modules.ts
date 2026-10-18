@@ -37,10 +37,8 @@ export interface ModulePick {
 }
 
 /**
- * Which modules a plan carries on top of the core (spec §6.1). A full plan gets every module the
- * brief does not rule out; a narrow ask gets only the module it names. Only a format that does
- * not fit rules a module out. Budget split is always offered: as percentages with no budget, as
- * amounts with one.
+ * Modules a plan carries on top of the core (spec §6.1). Only a format that does not fit rules one
+ * out. Budget split is always offered: percentages with no budget, amounts with one.
  */
 export function pickModules(input: ModuleInput): ModulePick {
   const ruledOut: ModulePick['ruledOut'] = [];
@@ -70,9 +68,8 @@ function ruleOut(key: LaunchModuleKey, input: ModuleInput): string | null {
 }
 
 /**
- * The fixed convention a Budget split uses, as shares of the total. Labelled as a starting split
- * in the plan; the amounts are computed by code, never set by the model.
- * TODO(verify): with a distribution partner. These are a starting split, not a benchmark.
+ * Shares for a Budget split, labelled a starting split in the plan. Amounts are computed by code.
+ * TODO(verify): with a distribution partner.
  */
 export const BUDGET_CONVENTION: { line: string; share: number }[] = [
   { line: 'Paid media and trailer placement', share: 0.4 },

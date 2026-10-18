@@ -60,7 +60,7 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
   const as = (who: keyof typeof emails) => ({ 'x-test-user': emails[who] });
   const http = () => app.getHttpServer();
 
-  /** Waits for the background run to stop, then returns the thread as the web would read it. */
+  // Waits for the background run to stop, then returns the thread as the web would read it.
   async function settled(threadId: string): Promise<ThreadDetail> {
     for (let i = 0; i < 100 && runs.isBusy(threadId); i++) {
       await new Promise((resolve) => setTimeout(resolve, 20));

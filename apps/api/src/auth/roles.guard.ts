@@ -23,11 +23,9 @@ export type Membership = { teamId: string; userId: string; role: Role };
 export type TeamRequest = AuthedRequest & { membership: Membership };
 
 /**
- * Checks the caller's role in the route's team (`:teamId`, or the team of `:projectId`,
- * `:threadId` or `:outputId`) against @Roles()
- * (roles per action: docs/product/spec.md section 7). Run it after SessionGuard, which sets
- * `request.user`. A route without @Roles() is denied, so forgetting one fails closed.
- * Every refusal is the same 403, so the answer does not say whether a team exists.
+ * Checks the caller's role in the route's team against @Roles() (spec §7); run it after
+ * SessionGuard. A route without @Roles() is denied, so forgetting one fails closed. Every refusal
+ * is the same 403, so the answer does not say whether a team exists.
  */
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -60,10 +58,8 @@ export class RolesGuard implements CanActivate {
     return true;
   }
 
-  /**
-   * The team the route acts in: `:teamId` itself, or the team that owns `:projectId`,
-   * `:threadId` or `:outputId`. A malformed or unknown id gives null, which is the same 403 as no membership.
-   */
+  // The team the route acts in: `:teamId` itself, or the team that owns `:projectId`,
+  // `:threadId` or `:outputId`. A malformed or unknown id gives null, which is the same 403 as no membership.
   private async teamOf(params: Record<string, unknown>): Promise<string | null> {
     const uuid = (value: unknown) => {
       const parsed = z.uuid().safeParse(value);

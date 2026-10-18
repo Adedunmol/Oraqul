@@ -15,7 +15,6 @@ import type { AgentContext, HistoryItem, Planner, Step } from './types.js';
 
 type CategoryPack = (typeof packs)[Category];
 
-/** One agent's turn-by-turn state. */
 interface Loop {
   /** `film`, or `books→film` for a consult. */
   agent: string;
@@ -279,7 +278,7 @@ async function runTool(
   return 'ok';
 }
 
-/** Spec §3.4: one question, a small step cap, no questions back to the user, receipts shared. */
+// Spec §3.4: one question, a small step cap, no questions back to the user, receipts shared.
 async function consult(
   state: RunState,
   deps: RuntimeDeps,

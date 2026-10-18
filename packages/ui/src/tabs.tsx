@@ -57,7 +57,6 @@ export function TabNote({ children }: { children: ReactNode }) {
   return <p className="max-w-[68ch] text-[13.5px] text-muted">{children}</p>;
 }
 
-/** A keycap. */
 export function Kbd({ children }: { children: ReactNode }) {
   return (
     <kbd className="inline-block min-w-[22px] rounded-[5px] border border-line bg-surface px-1.5 py-[3px] text-center font-mono text-[11px] leading-none font-medium text-muted">

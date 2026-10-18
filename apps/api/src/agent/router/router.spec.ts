@@ -18,7 +18,7 @@ const reading = (over: Partial<RouterReading>): RouterReading => ({
   ...over,
 });
 
-/** A reader that returns fixed readings in turn, standing in for the model. */
+// A reader that returns fixed readings in turn, standing in for the model.
 function fixed(...readings: RouterReading[]): Reader & { calls: number } {
   const reader = {
     calls: 0,

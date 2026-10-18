@@ -291,7 +291,7 @@ function lines(brief: Brief, sections: Sections): Line[] {
   ];
 }
 
-/** Each line's shown value, so two briefs can be compared line by line. */
+// Each line's shown value, so two briefs can be compared line by line.
 function values(brief: Brief, sections: Sections): Map<string, { label: string; value: string }> {
   const out = new Map<string, { label: string; value: string }>();
   for (const a of brief.assumptions) {
@@ -349,7 +349,7 @@ function evidence(
     }));
 }
 
-/** Evidence rows for a launch plan's findings. A finding the bottom line cites drives the plan. */
+// Evidence rows for a launch plan's findings. A finding the bottom line cites drives the plan.
 function findingRows(plan: LaunchPlan, receipts: ReceiptRow[]): EvidenceRow[] {
   const backed = new Set(receipts.flatMap((r) => (r.lineId ? [r.lineId] : [])));
   const drivers = new Set(

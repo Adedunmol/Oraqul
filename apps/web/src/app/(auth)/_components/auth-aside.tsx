@@ -7,9 +7,8 @@ import { TasteDiscs } from '../../_marketing/taste-discs';
 const line = heroLines[0];
 
 /**
- * The marketing side of the auth screens: the pitch and a receipt, on the dark band the landing
- * page uses. Wide screens only; on a phone the form is the whole page. The discs stay on the
- * right edge, clear of the text.
+ * The pitch beside the auth form, wide screens only. The discs stay on the right edge, clear of the
+ * text.
  */
 export function AuthAside() {
   return (

@@ -47,9 +47,8 @@ const OPENING =
   'Tell me about your film, series, album, book, podcast or game, and what you need. A title and a line is enough. Paste or attach a plan or results if you have them, and I will work out the rest.';
 
 /**
- * The one way to start: a message box. The first message creates the project and its first
- * thread, so nothing is saved by opening this. The agent reads the category and the job from the
- * message; `category` and the chips only give it a head start. spec §9.2
+ * The one way to start: the first message creates the project and its first thread. `category` and
+ * the chips only give the agent a head start. spec §9.2
  */
 export function StartComposer({
   teamId,

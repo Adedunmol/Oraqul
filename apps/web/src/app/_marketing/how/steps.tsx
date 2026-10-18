@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Reveal } from '../reveal';
 import { band, h2Class, wrap } from '../section';
 
-/** An icon, not a count: the steps are told apart by what they do, and the arrow at each seam moves you on. */
+// An icon, not a count: the steps are told apart by what they do, and the arrow at each seam moves you on.
 function StepHead({
   n,
   icon,
@@ -35,7 +35,6 @@ function StepHead({
   );
 }
 
-/** The arrow at the seam between two steps, half on each, so the page reads as one way down. */
 function NextStep() {
   return (
     <div
@@ -51,7 +50,6 @@ function NextStep() {
 
 const stagger = (i: number) => ({ '--i': i }) as CSSProperties;
 
-/** The agent's working, ticking off as it scrolls in. Used beside the page title. */
 export function TraceCard() {
   const steps = [
     'Reading the message: series, crime drama',

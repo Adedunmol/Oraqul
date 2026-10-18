@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from 'react';
 
-/** Just under the sticky header, matching the `scroll-mt-24` on each section. */
+// Just under the sticky header, matching the `scroll-mt-24` on each section.
 const LINE = 120;
 
 /**
- * The contents list beside a long page. The section the reader is in is lit: the last one whose
- * top has passed the header, or the last section once the page ends, since a short final section
- * never reaches the line on its own.
+ * Lights the last section whose top has passed the header, or the last section once the page ends:
+ * a short final section never reaches the line on its own.
  */
 export function SectionNav({ sections }: { sections: readonly { id: string; title: string }[] }) {
   const [active, setActive] = useState(sections[0]?.id ?? '');

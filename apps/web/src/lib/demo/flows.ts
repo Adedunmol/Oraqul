@@ -794,7 +794,6 @@ function reply(threadId: string, text: string): void {
   );
 }
 
-/** Line by line, what moved between the plan this thread works from and the one before it. */
 function comparePlansInChat(t: Thread): void {
   const b = baseOf(t);
   if (!b) return;

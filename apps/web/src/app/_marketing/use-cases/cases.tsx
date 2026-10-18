@@ -29,7 +29,6 @@ export const cases = [
   },
 ] as const;
 
-/** The page title's companion: the four jobs as a large index that jumps to each. */
 export function CaseIndex() {
   return (
     <ol className="flex flex-col">
@@ -78,7 +77,6 @@ function ExampleLink({ href }: { href: string }) {
   );
 }
 
-/** What a person types, as the chat shows it: right aligned in a soft bubble. */
 function UserBubble({ children }: { children: ReactNode }) {
   return (
     <p className="mk-in max-w-[46ch] self-end rounded-xl bg-inset px-4 py-3 text-[15px] leading-[1.5]">

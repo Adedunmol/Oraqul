@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 // Objects are loose so the whole body can be stored on the call record as `returned`.
-// Shapes were checked live on 2026-10-13 (docs/backend/qloo.md). Fields not seen live stay
-// optional with a TODO(verify).
+// Shapes were checked live (docs/backend/qloo.md). Fields not seen live stay optional with a
+// TODO(verify).
 
 /** A tag as `/v2/tags` lists it. Lookups use `id`, not `tag_id`. */
 export const tagLookupSchema = z.looseObject({

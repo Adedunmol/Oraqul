@@ -13,7 +13,6 @@ function demoContext(callBudget?: number) {
   return { qloo, source: 'demo' as const, entities: new Map() };
 }
 
-/** The one receipt a one-call tool returns. */
 function onlyReceipt({ receipts }: { receipts: Receipt[] }): Receipt {
   expect(receipts).toHaveLength(1);
   const [receipt] = receipts;

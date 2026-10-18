@@ -13,7 +13,7 @@ function isTyping(target: EventTarget | null): boolean {
   );
 }
 
-/** Sets the choice on the page and remembers it. Returns whether the sidebar is now collapsed. */
+// Sets the choice on the page and remembers it. Returns whether the sidebar is now collapsed.
 function apply(next: boolean): boolean {
   const root = document.documentElement;
   if (next) root.dataset.sidebar = 'collapsed';

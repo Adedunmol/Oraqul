@@ -33,14 +33,12 @@ export const releaseRoutes = ['theatrical', 'streaming', 'festival', 'hybrid'] a
 export const filmReadingSchema = z.object({
   format: said(z.enum(['film', 'series'])).nullable(),
   genre: said(z.string().min(1)).nullable(),
-  /** What the film or series is about, in a sentence of the person's. */
   logline: said(z.string().min(1)).nullable(),
   /** Country of origin, as a full country name. */
   country: said(z.string().min(1)).nullable(),
   language: said(z.string().min(1)).nullable(),
   cast: z.array(said(z.string().min(1))).max(6),
   director: said(z.string().min(1)).nullable(),
-  /** Artists already on the soundtrack. */
   soundtrack: z.array(said(z.string().min(1))).max(4),
   route: said(z.enum(releaseRoutes)).nullable(),
   /** The budget as written, such as "$50,000". Code reads the number from the quote. */
@@ -53,10 +51,8 @@ export const filmReadingSchema = z.object({
   ask: z.enum(launchModuleKeys).nullable(),
   /** Comparable titles the person named, exactly as written. */
   comps: z.array(said(z.string().min(1))).max(8),
-  /** Cities the person named as markets. */
   places: z.array(said(z.string().min(1))).max(12),
   window: said(z.string().min(1)).nullable(),
-  /** Qloo age bands the person said the audience is in. */
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
   /**
@@ -163,7 +159,7 @@ export function checkReading(reading: FilmReading, { title, text }: FilmReaderIn
   };
 }
 
-/** Words that always mean a full plan, whatever the model read. */
+// Words that always mean a full plan, whatever the model read.
 const FULL_ASK =
   /\b(launch plan|plan (?:the|our|my) launch|go[- ]to[- ]market|release plan|rollout plan|marketing plan)\b/i;
 
@@ -290,7 +286,6 @@ export class ScriptedFilmReader implements FilmReader {
   }
 }
 
-/** Country words a brief often uses, for the scripted reader's country of origin. */
 const DEMONYMS: Record<string, string> = {
   nigerian: 'Nigeria',
   nollywood: 'Nigeria',

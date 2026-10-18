@@ -14,9 +14,8 @@ export function footnotes(plan: LaunchPlan): Map<string, number> {
 }
 
 /**
- * The launch plan as a document a person reads and moves on with: the three moves first, then
- * each section in plain paragraphs. What a line rests on is a quiet number that opens the
- * evidence; nothing else about the data is shown here. Used in the chat and on the plan page.
+ * The launch plan as a document, used in the chat and on the plan page. What a line rests on is a
+ * quiet number that opens the evidence.
  */
 export function PlanDocument({
   plan,

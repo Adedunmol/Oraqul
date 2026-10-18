@@ -13,9 +13,8 @@ const min = 0.6;
 const max = 2.2;
 
 /**
- * The receipt is the arithmetic. One worked lift: two values Qloo returned, the division, and the
- * rule that turns the result into a verdict. Scores like this are computed by code, never by the
- * model.
+ * One worked lift: two values Qloo returned, the division, and the rule that makes a verdict.
+ * Computed by code, never by the model.
  */
 export function Lift() {
   return (

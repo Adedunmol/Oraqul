@@ -36,9 +36,8 @@ const isPlan = (o: Output): boolean => (planKinds as readonly string[]).includes
 const bar = 'rounded-md bg-surface2 motion-safe:animate-pulse';
 
 /**
- * The project is the workspace: its chat in the middle, its other chats beside it, and the current
- * plan on top. Everything else about the project sits behind Project details. While the router
- * is still reading the first message, the name, category and chat name show as skeletons.
+ * The project workspace. While the router is still reading the first message, the name, category
+ * and chat name show as skeletons.
  */
 export function ProjectWorkspace({
   detail,
@@ -237,7 +236,6 @@ export function builtOnText(
   return thread.fresh ? 'Started fresh, no earlier plan used' : 'Started from the project inputs';
 }
 
-/** The plan every new chat builds on, kept beside the chat as one small card. */
 function CurrentPlan({ output }: { output: Output }) {
   return (
     <section aria-label="Current plan" className="flex flex-col gap-1.5 rounded-xl bg-card p-3">

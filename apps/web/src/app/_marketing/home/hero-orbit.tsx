@@ -6,9 +6,8 @@ const cats: Category[] = ['film', 'music', 'books', 'podcasts', 'games'];
 const RADIUS = 36;
 
 /**
- * Art for the hero: the agent as a hub, the five kinds of media it works on orbiting it. Drawn
- * faint and with no words, so it says "an AI agent for media" without adding to the text. Tiles
- * use each category's colour, as everywhere else on the marketing pages.
+ * Hero art, faint and with no words so it adds nothing to the text. Tiles use each category's
+ * colour.
  */
 export function HeroOrbit() {
   const nodes = cats.map((cat, i) => {

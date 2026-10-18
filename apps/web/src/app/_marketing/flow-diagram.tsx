@@ -11,7 +11,6 @@ const inYourTeam: [string, boolean][] = [
 
 const sent = ['Night Ferry', 'Mexico City', '25 to 34'];
 
-/** A lane with tokens moving along it. Horizontal on a wide screen, downwards on a narrow one. */
 function Lane() {
   return (
     <div

@@ -9,9 +9,8 @@ export type DemographicsRequest = Pick<
 >;
 
 /**
- * `/v2/insights` with `filter.type=urn:demographics`: how age and gender skew for the signal,
- * as affinities that can be negative. Returns one row per signal, so several entities in one
- * request are not averaged by Qloo.
+ * `urn:demographics`: age and gender skew as affinities that can be negative, one row per signal
+ * and not averaged by Qloo.
  */
 export function demographics(
   client: QlooClient,

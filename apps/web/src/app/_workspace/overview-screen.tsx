@@ -12,7 +12,6 @@ import { StartComposer } from './start-composer';
 
 const sectionTitle = 'text-[15px] font-semibold tracking-[-0.01em]';
 const emptyBox = 'flex items-center gap-3 rounded-2xl bg-card px-5 py-5 text-[13.5px] text-muted';
-/** The team's home: the message box to start, what needs a person, and threads to pick up. */
 export function OverviewScreen({ viewer, overview }: { viewer: Viewer; overview: Overview }) {
   const canEdit = viewer.role !== 'viewer' && viewer.teamId !== null;
 

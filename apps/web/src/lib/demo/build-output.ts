@@ -184,7 +184,7 @@ function endpointOf(f: FoundLine): string {
   return ENDPOINT[k ?? 'geo'];
 }
 
-/** Lines that carry a receipt: everything but risks and lines with no Qloo data behind them. */
+// Lines that carry a receipt: everything but risks and lines with no Qloo data behind them.
 function hasReceipt(f: FoundLine | undefined): f is FoundLine {
   if (!f || f.k === 'risks') return false;
   return !('k' in f.it) || f.it.k !== 'none';

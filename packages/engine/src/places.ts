@@ -1,13 +1,11 @@
-// City boxes for ranking places in one heatmap call (qloo.md, conflict 21). Qloo has no verified
-// way to turn a city name into a shape (the locality path is out, conflict 22), so a place not in
-// this table is "cannot rank", never guessed.
-// TODO(verify): box size. Every city gets the same box around its centre so means compare; how big
-// a box should be is still open in qloo.md.
+// City boxes for ranking places in one heatmap call (qloo.md). Qloo has no verified way to turn a
+// city name into a shape, so a place not in this table is "cannot rank", never guessed.
+// TODO(verify): box size. Every city gets the same box around its centre so means compare.
 
 const HALF_LAT = 0.25;
 const HALF_LON = 0.3;
 
-/** Centre of each city as [latitude, longitude]. Keys are lower case. */
+// Centre of each city as [latitude, longitude]. Keys are lower case.
 const centres: Record<string, [number, number]> = {
   lagos: [6.52, 3.38],
   abuja: [9.06, 7.49],

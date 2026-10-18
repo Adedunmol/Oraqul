@@ -18,10 +18,8 @@ import type { CategoryScope } from '../routes';
 import { ApiError } from './http';
 import { serverGet, serverGetIfSignedIn } from './server';
 
-/**
- * A project or thread the person cannot open answers 403, the same as one that does not exist
- * (spec §7), so both show the not found page rather than an error to retry.
- */
+// A project or thread the person cannot open answers 403, the same as one that does not exist
+// (spec §7), so both show the not found page rather than an error to retry.
 async function orNotFound<T>(read: Promise<T>): Promise<T> {
   try {
     return await read;

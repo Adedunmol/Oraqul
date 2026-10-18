@@ -33,7 +33,6 @@ export interface BriefResults {
   read: FilmRead;
   /** The comps Qloo found, with how well it knows each. */
   anchors: { entityId: string; name: string; popularity: number | null }[];
-  /** Comps that could not be used, and why. */
   dropped: { name: string; why: string }[];
   audience: Tested<AudienceData>;
   /** One heatmap call over the team's cities and the "Worth a look" cities. */
@@ -86,9 +85,8 @@ export const ageLabel = (band: string): string =>
 const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
 /**
- * Spec §5.2: the audience, the team's cities and the team's assumptions, each computed here
- * from what Qloo returned. The team's decisions are tested, never replaced: a city that does
- * not hold gets a fix within the team's own cities.
+ * The team's decisions are tested, never replaced: a city that does not hold gets a fix within the
+ * team's own cities (spec §5.2).
  */
 export function buildBrief(r: BriefResults): FilmBrief {
   const receipts: Receipt[] = [];

@@ -11,9 +11,8 @@ const mentions = (lines: LaunchLine[], name: string) =>
   lines.some((l) => normalise(l.text).includes(normalise(name)));
 
 /**
- * The team's decisions always get an answer (PRD goal 2): the bottom line names every city
- * they chose, in the order the findings support, and Markets has a line for each. A city Qloo
- * could not rank is said plainly, never left out. Written by code when the writer missed it.
+ * The team's decisions always get an answer (PRD goal 2). A city Qloo could not rank is said
+ * plainly, never left out.
  */
 export function ensureDecisions(
   sections: LaunchSection[],
@@ -23,7 +22,6 @@ export function ensureDecisions(
     findings: Finding[];
     /** The team's city in the film's country of origin, which anchors the premiere. */
     home: string | null;
-    /** The comps the team named. */
     comps: string[];
   },
 ): LaunchSection[] {
@@ -110,7 +108,7 @@ function ensureCities(
   return out;
 }
 
-/** Every comp the team named gets a line in Positioning, so none is passed over in silence. */
+// Every comp the team named gets a line in Positioning, so none is passed over in silence.
 function ensureComps(sections: LaunchSection[], comps: string[]): LaunchSection[] {
   if (comps.length === 0) return sections;
   const positioning = sections.find((s) => s.key === 'positioning');
