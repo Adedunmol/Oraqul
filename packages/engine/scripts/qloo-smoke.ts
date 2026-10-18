@@ -1,6 +1,6 @@
 /**
  * Live check of the Qloo client against our own key. Settles the open questions in
- * docs/backend/qloo.md ("Conflicts to settle live") and saves one real response per endpoint
+ * docs/backend/qloo.md and saves one real response per endpoint
  * and category type to packages/engine/fixtures, for offline tests.
  *
  *   pnpm --filter @oraqul/engine qloo:smoke

@@ -22,11 +22,6 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "qloo:smoke": "tsx --env-file=../../.env scripts/qloo-smoke.ts",
-    "qloo:cross-domain": "tsx --env-file=../../.env scripts/qloo-cross-domain.ts",
-    "qloo:proxy-bundle": "tsx --env-file=../../.env scripts/qloo-proxy-bundle.ts",
-    "qloo:demographics-coverage": "tsx --env-file=../../.env scripts/qloo-demographics-coverage.ts",
-    "qloo:places-stability": "tsx --env-file=../../.env scripts/qloo-places-stability.ts",
-    "qloo:film-tools": "tsx --env-file=../../.env scripts/qloo-film-tools.ts",
     "qloo:film-probes": "tsx --env-file=../../.env scripts/qloo-film-probes.ts"
   },
   "devDependencies": {
