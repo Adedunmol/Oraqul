@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { categorySchema, startModeSchema } from './categories';
 import { claimSchema } from './claim';
+import { findingSchema } from './finding';
 import { receiptSchema } from './receipt';
 
 export const questionCardTypeSchema = z.enum([
@@ -20,6 +21,13 @@ export const questionOptionSchema = z.object({
   label: z.string(),
   description: z.string().optional(),
 });
+
+/** Something a run started from, for the chat's "Using" line (spec §3.7). Context, never evidence. */
+export const contextItemSchema = z.object({
+  source: z.enum(['project', 'plan', 'chat']),
+  label: z.string().min(1),
+});
+export type ContextItem = z.infer<typeof contextItemSchema>;
 
 export const threadEventSchema = z.discriminatedUnion('type', [
   z.object({
@@ -50,7 +58,10 @@ export const threadEventSchema = z.discriminatedUnion('type', [
   }),
   z.object({ type: z.literal('message'), body: z.string(), claims: z.array(claimSchema) }),
   z.object({ type: z.literal('receipt'), receipt: receiptSchema }),
+  /** A Qloo result turned into a sentence, streamed while the rest of the queries run. */
+  z.object({ type: z.literal('finding'), finding: findingSchema }),
   z.object({ type: z.literal('output.created'), outputId: z.string().uuid() }),
+  z.object({ type: z.literal('memory.used'), items: z.array(contextItemSchema).min(1) }),
   z.object({
     type: z.literal('run.stopped'),
     reason: z.enum(['finished', 'waiting', 'budget', 'steps', 'error']),

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { confidenceSchema } from './verdict';
 
+export const receiptSources = ['qloo', 'demo'] as const;
+
 export const receiptSchema = z.object({
   callId: z.string().uuid(),
   lineId: z.string().optional(),
@@ -11,6 +13,6 @@ export const receiptSchema = z.object({
   confidence: confidenceSchema,
   calledAt: z.string().datetime(),
   /** `demo` receipts come from hand-written data and must never be shown as Qloo's. */
-  source: z.enum(['qloo', 'demo']),
+  source: z.enum(receiptSources),
 });
 export type Receipt = z.infer<typeof receiptSchema>;

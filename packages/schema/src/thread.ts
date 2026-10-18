@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { questionOptionSchema } from './events';
+import { contextItemSchema, questionOptionSchema } from './events';
+import { findingSchema } from './finding';
 
 // Draft: `GET /threads/:id` (spec §7) as the web demo uses it. Items follow the `messages` table
 // roles in spec §6. The live run streams `threadEventSchema`; this is the stored transcript.
@@ -81,8 +82,12 @@ export const threadItemSchema = z.discriminatedUnion('role', [
     steps: z.array(z.string()),
     /** Steps finished so far. Equal to `steps.length` once the run is done. */
     done: z.number().int().min(0),
+    /** What the queries found, in the order they landed. */
+    findings: z.array(findingSchema).default([]),
   }),
   z.object({ id: z.string(), role: z.literal('output'), outputId: z.uuid() }),
+  /** What a run started from: the brief, the plan, the chat. Shown as one "Using" line. */
+  z.object({ id: z.string(), role: z.literal('context'), items: z.array(contextItemSchema) }),
 ]);
 
 /** Body of `POST /threads/:id/messages` for the richer demo cards. */

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { briefSchema, planSectionKeys } from './brief';
 import { jobSchema } from './categories';
+import { launchPlanSchema } from './plan';
 import { receiptSchema } from './receipt';
 import { verdictSchema } from './verdict';
 
@@ -127,6 +128,8 @@ export const outputSchema = z.object({
   sections: z.array(planSectionSchema),
   glance: z.array(glanceRowSchema),
   brief: briefSchema,
+  /** The launch plan for outputs built on findings (Film). Null for the older brief shape. */
+  plan: launchPlanSchema.nullable(),
   evidence: z.array(evidenceRowSchema),
   receipts: z.array(receiptSchema),
   /** What the evidence cannot show for this category, for the note under the Evidence tab. */
