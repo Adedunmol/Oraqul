@@ -20,17 +20,21 @@ const releaseSchema = z.looseObject({
   release_country: z.union([z.string(), z.array(z.string())]).optional(),
 });
 
-/** Same name, ignoring case, spacing and the style of quotes and apostrophes. */
+/** A title with case, accents, spacing and the style of quotes and apostrophes removed. */
+export function normalizeTitle(s: string): string {
+  return s
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[\u2018\u2019\u02bc`]/g, "'")
+    .replace(/[\u201c\u201d]/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+/** Same name, ignoring case, accents, spacing and the style of quotes and apostrophes. */
 export function sameTitle(a: string, b: string): boolean {
-  const norm = (s: string) =>
-    s
-      .normalize('NFKC')
-      .replace(/[\u2018\u2019\u02bc`]/g, "'")
-      .replace(/[\u201c\u201d]/g, '"')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .toLowerCase();
-  return norm(a) === norm(b);
+  return normalizeTitle(a) === normalizeTitle(b);
 }
 
 function detailOf(entity: { disambiguation?: string; properties?: unknown }): string | null {

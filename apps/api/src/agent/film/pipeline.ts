@@ -1,8 +1,13 @@
 import {
   cityCountry,
+  insights,
+  normalizeTitle,
   QlooBudgetError,
+  QlooError,
   resolveBundleOutputSchema,
+  resolveTagsOutputSchema,
   type ToolContext,
+  toReceipt,
   tools,
 } from '@oraqul/engine';
 import { filmPlan } from '@oraqul/packs';
@@ -303,6 +308,15 @@ export async function runFilmBuild(
     throw err;
   }
   if (comps.resolved.length === 0) {
+    ctx.trace('No comp found, so reading the genre in Qloo');
+    try {
+      comps = { ...comps, ...(await findGenreComps(deps, ctx.keep, read)) };
+    } catch (err) {
+      if (err instanceof QlooBudgetError) return budgetStop(deps, ctx);
+      throw err;
+    }
+  }
+  if (comps.resolved.length === 0) {
     noCompsStop(deps, ctx, read);
     return ctx.stop('finished');
   }
@@ -484,7 +498,7 @@ export function noCompsStop(deps: Pick<FilmDeps, 'emit'>, ctx: RunCtx, read: Fil
   deps.emit({
     type: 'message',
     body: tried.length
-      ? `Qloo did not find any of the comps by name (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few films or series your audience watches, as they are usually written.`
+      ? `Qloo had nothing close to any of the comps (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few films or series your audience watches and I will plan from them.`
       : 'I could not find comps for this launch, so there is nothing to describe the audience with. Name a few films or series your audience watches and I will plan from them.',
     claims: ctx.receipts
       .slice(0, 1)
@@ -543,18 +557,121 @@ export async function findComps(
         match: pick.detail,
         choice: `Qloo has ${a.candidates.length} titles called “${a.name}”. I used the ${pick.detail ?? 'best known'} one, ${read.country && pick.detail?.includes(read.country) ? `from ${read.country} and ` : ''}the best known. Say which you mean if it is another.`,
       });
+    } else if (a.status === 'not_found' && a.candidates.length) {
+      // No exact name, so the nearest title Qloo has stands in, and the plan says so.
+      const pick = closest(a.name, a.candidates);
+      if (resolved.some((r) => r.entityId === pick.entityId)) continue;
+      resolved.push({ entityId: pick.entityId, name: pick.name, popularity: pick.popularity });
+      used.push({
+        name: pick.name,
+        source: mine ? 'you' : 'added',
+        match: pick.detail,
+        choice: `Qloo has no title called “${a.name}”. I used the closest one it has, “${pick.name}”${pick.detail ? ` (${pick.detail})` : ''}. Say which you mean if it is another.`,
+      });
     } else if (mine) {
       dropped.push({
         name: a.name,
         why:
           a.status === 'failed'
             ? 'The search failed, so it was left out.'
-            : 'Not found in Qloo by its exact name, so it was left out.',
+            : 'Qloo had nothing close to this name, so it was left out.',
       });
     }
   }
   used.sort((x, y) => (x.source === y.source ? 0 : x.source === 'you' ? -1 : 1));
   return { resolved, used, dropped };
+}
+
+const GENRE_COMPS = 4;
+const releaseYear = z.looseObject({ release_year: z.number().optional() });
+
+/**
+ * No comp was found by name, so the brief's genre stands in. Qloo lists the films (then series)
+ * of that genre tag, from the launch's country, and the best of them become the comps. They are
+ * labelled as found from the genre so the plan never presents them as the team's choice.
+ * TODO(verify): `signal.interests.tags` with `filter.release_country` on movie and tv_show is not
+ * yet checked live in docs/backend/qloo.md.
+ */
+export async function findGenreComps(
+  deps: FilmDeps,
+  keep: (made: Receipt[]) => void,
+  read: FilmRead,
+): Promise<Pick<Anchors, 'resolved' | 'used'>> {
+  const none = { resolved: [], used: [] };
+  if (!read.genre) return none;
+  const words = read.genre.split(/[^\p{L}]+/u).filter((w) => w.length >= 4);
+  const phrases = [...new Set([read.genre, ...words])].slice(0, 5);
+  const found = await tools.resolveTags.run(deps.tools, {
+    phrases: phrases.map((phrase) => ({
+      phrase,
+      prefix: filmPlan.TAG_SPACES.films.prefix,
+      parent: null,
+    })),
+  });
+  keep(found.receipts);
+  const tags = resolveTagsOutputSchema
+    .parse(found.data)
+    .tags.flatMap((t) => (t.tagId && t.name ? [{ id: t.tagId, name: t.name }] : []))
+    .filter((t, i, all) => all.findIndex((x) => x.id === t.id) === i)
+    .slice(0, 3);
+  if (tags.length === 0) return none;
+
+  const resolved: Anchor[] = [];
+  const used: CompUsed[] = [];
+  const named = tags.map((t) => t.name.toLowerCase());
+  for (const type of FILM_TYPES) {
+    if (resolved.length >= GENRE_COMPS) break;
+    let made: Awaited<ReturnType<typeof insights.entities>>;
+    try {
+      made = await insights.entities(deps.tools.qloo, {
+        'filter.type': type,
+        'signal.interests.tags': tags.map((t) => t.id),
+        ...(read.country ? { 'filter.release_country': [read.country] } : {}),
+        take: GENRE_COMPS,
+      });
+    } catch (err) {
+      if (err instanceof QlooBudgetError || !(err instanceof QlooError)) throw err;
+      continue;
+    }
+    const titles = made.data.results.entities
+      .slice(0, GENRE_COMPS - resolved.length)
+      .map((e) => ({
+        entityId: e.entity_id,
+        name: e.name,
+        popularity: e.popularity ?? null,
+        year: releaseYear.safeParse(e.properties ?? {}).data?.release_year,
+      }));
+    if (titles.length === 0) continue;
+    keep([
+      toReceipt(made.call, {
+        returned: { candidates: titles.map((t) => ({ name: t.name, popularity: t.popularity })) },
+        rule: `The titles Qloo lists for the genre tags ${list(named)}${read.country ? ` from ${read.country}` : ''}, in Qloo's order. Used in place of comps because none of the named ones was found. Confidence lower.`,
+        confidence: 'lower',
+        source: deps.tools.source,
+      }),
+    ]);
+    for (const t of titles) {
+      resolved.push({ entityId: t.entityId, name: t.name, popularity: t.popularity });
+      used.push({
+        name: t.name,
+        source: 'added',
+        match: t.year ? String(t.year) : null,
+        choice: `Qloo had none of the comps by name, so I used “${t.name}”, which it lists for ${list(named)}${read.country ? ` from ${read.country}` : ''}. Name comps to sharpen the read.`,
+      });
+    }
+  }
+  return { resolved, used };
+}
+
+// With no exact name: a title that contains the name or sits inside it ("Anikulapo: Rise of the
+// Spectre" for "Anikulapo"), else Qloo's own best match, which search lists first.
+function closest<T extends { name: string }>(name: string, candidates: T[]): T {
+  const want = normalizeTitle(name);
+  const near = candidates.find((c) => {
+    const got = normalizeTitle(c.name);
+    return got.includes(want) || want.includes(got);
+  });
+  return near ?? (candidates[0] as T);
 }
 
 // The same-name title to use: from the launch's country if one is, then the best known.
