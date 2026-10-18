@@ -6,7 +6,9 @@ import { music } from './music/index';
 import { podcasts } from './podcasts/index';
 import type { CategoryPack } from './types';
 
+export { agentSystemPrompt, BASE_PROMPT, REFUSALS, refusalFor } from './base-prompt';
 export type { CategoryPack } from './types';
 
 export const packs: Record<Category, CategoryPack> = { film, music, books, podcasts, games };
 export { demoProjects } from './demo';
+export * as filmPlan from './film/plan';

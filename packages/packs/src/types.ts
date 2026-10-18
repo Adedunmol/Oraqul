@@ -1,4 +1,10 @@
-import type { Category, QlooCoverage, ToolName } from '@oraqul/schema';
+import type {
+  Category,
+  PlanSectionKey,
+  QlooCoverage,
+  QlooEntityType,
+  ToolName,
+} from '@oraqul/schema';
 
 /**
  * One category agent is a configuration of the shared runtime.
@@ -13,11 +19,17 @@ export interface CategoryPack {
   covers: string;
   systemPrompt: string;
   assumptionChecklist: string[];
-  planSections: { key: string; title: string }[];
+  /** The plan's four sections, as the output's Plan tab shows them. `one` names a single line. */
+  planSections: { key: PlanSectionKey; title: string; one: string }[];
   toolAllowlist: ToolName[];
   /** Other categories this agent may ask one bounded question (spec §3.4). Only Books lists Film. */
   consults: Category[];
   /** Qloo entity types this category tests, by role. */
   qloo: QlooCoverage;
   coverage: { tests: string[]; thin: string[]; notSupported: string[] };
+  /**
+   * Mass-market names per entity type that plan lines are scored against in the same call, so
+   * fit is lift over the biggest titles or brands (spec §5). Found by exact name each run.
+   */
+  baselines: Partial<Record<QlooEntityType, string[]>>;
 }
