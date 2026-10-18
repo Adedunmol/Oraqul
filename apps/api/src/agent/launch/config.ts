@@ -65,6 +65,13 @@ export interface LaunchConfig<
    */
   lead?(read: R): string | null;
 
+  /**
+   * Names the person tied to the launch besides the comps (an artist featured on the release).
+   * They are looked up and used as audience anchors like the person's own comps, and count toward
+   * the three a plan wants, but never push out the comps that were named.
+   */
+  teamAnchors?(read: R): string[];
+
   /** The one question a build may ask: there is nothing to plan from without these. */
   minimum: { id: string; example: string; missing(read: R): string[] };
   pickModules(read: R): ModulePick;

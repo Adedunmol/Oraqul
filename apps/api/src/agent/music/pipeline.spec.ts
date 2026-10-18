@@ -137,6 +137,18 @@ describe('Music build pipeline on demo data', { timeout: 20_000 }, () => {
     expect(run.output?.brief.cannot.some((c) => c.item === 'Zanzibar Quill Ensemble')).toBe(true);
   });
 
+  it('uses an act featured on the release as an audience anchor, not as a sound-alike', async () => {
+    const { handoff, deps } = setup(
+      'Launch plan for "Night Songs", an afrobeats album from artist "Neon Tide" featuring "Sade Rhythm", touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave".',
+    );
+    const run = await runMusicBuild(handoff, deps());
+    expect(run.reason).toBe('finished');
+    const inputs = musicInputsSchema.parse(run.output?.inputs);
+    expect(inputs.read.featuredActs).toEqual(['Sade Rhythm']);
+    expect(inputs.read.comps).toEqual(['Ada Lux', 'Kola Wave']);
+    expect(inputs.resolved.map((a) => a.name)).toContain('Sade Rhythm');
+  });
+
   it('stops with no plan when the budget runs out', async () => {
     const { handoff, deps } = setup(BRIEF, 2);
     const run = await runMusicBuild(handoff, deps());

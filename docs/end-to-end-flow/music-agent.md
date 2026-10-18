@@ -20,6 +20,7 @@ Status: built on the shared launch runtime, and tested on demo data (unit specs,
 
 - **The artist is an anchor.** When Qloo knows the artist by name, it leads the audience question. It is never listed as a comp. A debut Qloo does not know is planned from the sound-alikes, and Gaps and the Assumptions tab say so.
 - **The tour order is tested.** The team's order is scored against the strongest order. A weaker order keeps its place, with the stronger one offered beside it.
+- **Featured acts help describe the audience.** An act featured on the release or tour, named in the brief, anchors the audience question beside the sound-alikes and the genre. It is the team's own word, so it is never invented, and the plan tests whether the audience plays it.
 - **Support acts and sync.** The plan names the artists each city's audience plays, as support, and the series and films it watches, as sync targets.
 - **No cinemas, no themes, no venues.** The Film queries that make no sense for a record are not asked, and the Qloo place category for music venues is not verified.
 

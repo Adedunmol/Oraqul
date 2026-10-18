@@ -85,6 +85,9 @@ export function briefBlock(title: string, read: MusicRead, comps: CompUsed[]): s
       ? `Marketing budget: ${read.budget.currency}${Math.round(read.budget.amount).toLocaleString('en-US')}`
       : 'No marketing budget given: plan for an independent release',
     read.supportActs.length ? `Support acts already booked: ${read.supportActs.join(', ')}` : '',
+    read.featuredActs.length
+      ? `Featured on the release or tour: ${read.featuredActs.join(', ')}. Their fans are part of the audience: speak to them, and never invent anything about the music itself.`
+      : '',
     read.partners.length ? `Partners already signed: ${read.partners.join(', ')}` : '',
     comps.length
       ? `Sound-alike artists: ${comps.map((c) => `${c.name}${c.source === 'added' ? ' (added by Oraqul)' : ''}`).join(', ')}`

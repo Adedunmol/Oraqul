@@ -16,7 +16,7 @@ The two stages are Film's: code runs the queries and turns each result into a fi
 |---|---|---|
 | Config | `music/config.ts` | Anchor and rival types (artist), the one question a build may ask, the module rules, the budget split and "To sharpen" texts, the check and decision wording, `lead`, `beliefs` |
 | Agent | `music/agent.ts` | `MusicAgent`, a `LaunchAgent` with `musicLaunch` |
-| Reader | `music/read.ts` | Artist, release type, sound, country, cities in the order written, age bands, gender, budget, partners, booked support acts, sound-alikes. Every value is kept only if its quote is in the person's words; the artist's name must also be in its own quote |
+| Reader | `music/read.ts` | Artist, release type, sound, country, cities in the order written, age bands, gender, budget, partners, booked support acts, featured acts, sound-alikes. Every value is kept only if its quote is in the person's words; the artist's name must also be in its own quote |
 | Query planner | `music/planner.ts` | The pack's defaults, or the model's choices checked by code (scene, cities, brand candidates, neighbourhoods) |
 | Findings | `music/findings.ts` | The Music queries (spec §4.2) and the route finding |
 | Writer | `music/writer.ts` | The prompts, the brief block and the template lines for no key |
@@ -29,7 +29,7 @@ The two stages are Film's: code runs the queries and turns each result into a fi
 
 ## Where Music differs from Film
 
-**Anchors.** `findComps` looks the artist up with the comps (`config.lead`). An exact name, or a same-name pick settled by country, becomes an anchor. A close name is never used for the artist, since a guess would describe the wrong audience. Not found goes to Gaps. With no sound-alike found either, the genre fallback is the runtime's: the artists Qloo lists for the sound's genre tag stand in, and the comps are labelled as found from the genre.
+**Anchors.** `findComps` looks the artist up with the comps (`config.lead`). An exact name, or a same-name pick settled by country, becomes an anchor. **Featured acts** (a feature or guest on the release or tour) join the lookup through `config.teamAnchors`: they anchor the audience question like the team's own sound-alikes, but come after the named sound-alikes so they never crowd one out, and count toward the three a plan wants. They are not listed as sound-alikes in the brief, and the audit tests each one like a support act. A close name is never used for the artist, since a guess would describe the wrong audience. Not found goes to Gaps. With no sound-alike found either, the genre fallback is the runtime's: the artists Qloo lists for the sound's genre tag stand in, and the comps are labelled as found from the genre.
 
 **Modules.** `pickModules` in the Music pack (spec §6.1): Tour route needs two or more cities, Support acts are dropped for a single, Budget split is always offered. A narrow ask names one of these.
 

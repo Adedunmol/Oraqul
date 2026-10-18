@@ -41,6 +41,7 @@ const EMPTY_READ: MusicRead = {
   budget: null,
   partners: [],
   supportActs: [],
+  featuredActs: [],
   scope: 'full',
   ask: null,
   comps: [],
@@ -119,6 +120,7 @@ export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
   genreTagPrefix: musicPlan.TAG_SPACES.support.prefix,
   artistQueries: ['support'],
   lead: (read) => read.artist,
+  teamAnchors: (read) => read.featuredActs,
   words: {
     comps: 'artists',
     entity: 'artist',
@@ -151,6 +153,7 @@ export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
       ...read.places,
       ...(read.artist ? [read.artist] : []),
       ...read.supportActs,
+      ...read.featuredActs,
       ...read.partners,
       ...(read.country ? [read.country] : []),
     ],
@@ -159,6 +162,7 @@ export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
       ...(read.artist ? [read.artist] : []),
       ...read.partners,
       ...read.supportActs,
+      ...read.featuredActs,
     ],
   },
   codeSections: { budget: budgetSection, gaps: gapsSection },
@@ -170,10 +174,17 @@ export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
     read.ages.length +
     read.partners.length +
     read.supportActs.length +
+    read.featuredActs.length +
     read.comps.length +
     (read.artist ? 1 : 0) +
     (read.gender ? 1 : 0) +
     (read.window ? 1 : 0),
   beliefs: (read, text, grounded) =>
-    testArtists(read.supportActs, ['support'], grounded, text, 'your artist’s audience'),
+    testArtists(
+      [...read.supportActs, ...read.featuredActs],
+      ['support'],
+      grounded,
+      text,
+      'your artist’s audience',
+    ),
 };

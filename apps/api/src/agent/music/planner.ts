@@ -143,6 +143,7 @@ export class ModelQueryPlanner implements QueryPlanner {
     const brief = [
       `Launch: ${input.title} (${read.releaseType ?? 'release or tour'})`,
       read.genre ? `Sound: ${read.genre}` : '',
+      read.featuredActs.length ? `Featured acts: ${read.featuredActs.join(', ')}` : '',
       read.country ? `Country: ${read.country}` : '',
       `Team's cities: ${defaults.cities.join(', ') || 'none'}`,
       read.ages.length ? `Age bands: ${read.ages.join(', ')}` : '',

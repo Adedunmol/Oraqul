@@ -18,7 +18,7 @@ A plan is a set of decisions, not a document:
 
 ## Requirements (what "done" means)
 
-1. **Plan for the team's decisions.** Their cities, the order they set, age band, sound-alike artists and window are constraints. Test them and say what Qloo found, never replace them. The tour order is scored against the strongest order and the plan says so, but it keeps the team's order and offers the other beside it. Every named city and sound-alike gets an answer.
+1. **Plan for the team's decisions.** Their cities, the order they set, age band, sound-alike artists and window are constraints. Test them and say what Qloo found, never replace them. The tour order is scored against the strongest order and the plan says so, but it keeps the team's order and offers the other beside it. Every named city and sound-alike gets an answer. An act featured on the release or tour is part of what the team told us about the audience: it anchors the read like a sound-alike and is tested like a support act.
 2. **Work with thin input.** Use everything given, ask for nothing beyond what is being released and one city, and end with what would sharpen the plan.
 3. **Know whether Qloo knows the artist.** An artist Qloo finds by exact name leads the audience question. A debut it does not know is planned from the sound-alike artists named, and the plan says that is what it rests on. With neither, the genre's audience stands in and the line says so.
 4. **Be realistic about scale.** An independent artist gets in-kind support, not sponsorship cash. Brand fit (what the audience likes) and ability to partner (who will say yes) are different questions, and so are a support act the audience plays and one who is free and willing. Qloo answers only the first of each pair.

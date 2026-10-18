@@ -493,7 +493,10 @@ export function noCompsStop(
 // The team's comps always, and they lead. Below 3, the model's proposals fill to 4, kept apart.
 // A same-name match is settled by code from the country and popularity, and the choice is said.
 export async function findComps(
-  deps: { config: Pick<LaunchConfig, 'anchorTypes' | 'lead' | 'words'>; tools: ToolContext },
+  deps: {
+    config: Pick<LaunchConfig, 'anchorTypes' | 'lead' | 'teamAnchors' | 'words'>;
+    tools: ToolContext;
+  },
   keep: (made: Receipt[]) => void,
   read: LaunchRead,
   known: Anchor[],
@@ -504,13 +507,16 @@ export async function findComps(
   const resolved = [...known];
   const used = knownUsed.filter((u) => resolved.some((a) => same(a.name, u.name)));
   const dropped = [...knownDropped];
-  const yours = read.comps
-    .filter((c) => !resolved.some((a) => same(a.name, c)))
-    .slice(0, MAX_COMPS);
+  // Anchors the launch names besides its comps come last, so they never crowd out a named comp.
+  const named = [
+    ...read.comps,
+    ...(deps.config.teamAnchors?.(read) ?? []).filter((n) => !read.comps.some((c) => same(c, n))),
+  ];
+  const yours = named.filter((c) => !resolved.some((a) => same(a.name, c))).slice(0, MAX_COMPS);
   const proposals =
-    read.comps.length >= MIN_COMPS
+    named.length >= MIN_COMPS
       ? []
-      : read.suggestedComps.filter((c) => !read.comps.some((y) => same(y, c)));
+      : read.suggestedComps.filter((c) => !named.some((y) => same(y, c)));
   const lead = deps.config.lead?.(read) ?? null;
   const leadName = lead && !resolved.some((a) => same(a.name, lead)) ? lead : null;
   const names = [...(leadName ? [leadName] : []), ...yours, ...proposals].slice(0, MAX_SEARCH);

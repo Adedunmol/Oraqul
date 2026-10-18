@@ -35,6 +35,8 @@ export const musicReadingSchema = z.object({
   partners: z.array(said(z.string().min(1))).max(6),
   /** Support acts already booked, as written. */
   supportActs: z.array(said(z.string().min(1))).max(6),
+  /** Artists featured on the release or guesting on the tour, as written. Their fans are part of the audience. */
+  featuredActs: z.array(said(z.string().min(1))).max(6),
   /** `full` for a launch plan or an unclear ask, `narrow` for one question such as cities. */
   scope: z.enum(['full', 'narrow']),
   /** The module a narrow ask is about, or null when it is about the core (cities, audience). */
@@ -62,6 +64,7 @@ export const musicReadSchema = z.object({
   budget: budgetSchema.nullable(),
   partners: z.array(z.string()),
   supportActs: z.array(z.string()),
+  featuredActs: z.array(z.string()),
   scope: z.enum(['full', 'narrow']),
   ask: z.enum(musicPlan.MUSIC_MODULES).nullable(),
   comps: z.array(z.string()),
@@ -109,6 +112,10 @@ export function checkReading(reading: MusicReading, input: MusicReaderInput): Mu
     artist,
     releaseType,
     supportActs: namedIn(reading.supportActs, text),
+    // The artist is never featured on their own record.
+    featuredActs: namedIn(reading.featuredActs, text).filter(
+      (f) => !artist || normalise(f) !== normalise(artist),
+    ),
   };
 }
 
@@ -127,6 +134,7 @@ Rules:
 - budget: the marketing or release budget exactly as written, with its currency.
 - partners: brands, media or organisations already signed as partners.
 - supportActs: artists already booked to open or play alongside.
+- featuredActs: artists featured on the release (a feature, a guest verse, a collaboration) or guesting on the tour. Exactly as written. Never the artist themself, and never a support act.
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which cities, or who should support. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: partnerships (brands, media partners), publicity (press, podcasts, playlists), community (campuses, grassroots), tour (the order of cities), support (support acts), sync (series and films), timeline, budget, measure (what to track), risks. Null when it is about cities or the audience, or when scope is full.
 - suggestedComps: only when they named fewer than 3 comps. Propose well known, real artists whose audience is likely the same, from the genre, country and market, enough to reach 3 to 5 in all. Names only. Code checks each in Qloo.
@@ -183,9 +191,14 @@ export class ScriptedMusicReader implements MusicReader {
     const support = [
       ...text.matchAll(/\bsupport(?:ed)?(?: acts?)?(?: by| from)?\s+["“]([^"”]{2,80})["”]/gi),
     ].flatMap((m) => (m[1] ? [m[1]] : []));
+    const featured = [
+      ...text.matchAll(
+        /\b(?:featuring|feat\.?|ft\.?|features|with a feature from)\s+["“]([^"”]{2,80})["”]/gi,
+      ),
+    ].flatMap((m) => (m[1] ? [m[1]] : []));
     const quotes = [...text.matchAll(/["“]([^"”]{2,80})["”]/g)]
       .flatMap(([, q]) => (q ? [q] : []))
-      .filter((q) => q !== artist && !support.includes(q));
+      .filter((q) => q !== artist && !support.includes(q) && !featured.includes(q));
     const lower = normalise(text);
     // In the order the person wrote them: the tour order is theirs to set, and is tested.
     const places = cityNames()
@@ -215,6 +228,7 @@ export class ScriptedMusicReader implements MusicReader {
       budget: budget ? { value: budget, quote: budget } : null,
       partners: [],
       supportActs: support.map((s) => ({ value: s, quote: s })),
+      featuredActs: featured.map((f) => ({ value: f, quote: f })),
       scope: 'full',
       ask: null,
       comps: quotes
