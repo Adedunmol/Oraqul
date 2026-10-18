@@ -1,0 +1,78 @@
+{
+  "data": "demo",
+  "title": "Blue Hour",
+  "brief": "We are releasing \"Blue Hour\", a slow-burn drama series. The only comp we have is \"Salt Road\".",
+  "replies": [
+    {
+      "text": "It opens in Lagos and Accra."
+    }
+  ],
+  "expect": {
+    "headline": "Open in Accra first, then Lagos: that is where your comps' audience is strongest among your cities.",
+    "assumptions": {
+      "a-place-lagos": "breaks",
+      "a-place-accra": "holds",
+      "a-comps": "cant"
+    },
+    "cities": ["Accra", "Lagos"],
+    "comps": [
+      {
+        "name": "Salt Road",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-accra": [],
+      "f-a-place-lagos": [],
+      "f-markets": ["Accra", "Lagos"],
+      "f-themes": ["Community", "Survival", "Ambition"],
+      "f-shows-accra": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-shows-lagos": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-cinemas-lagos": ["Lekki Screens", "Marina Picturehouse"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["The Joe Rogan Experience", "Crime Junkie", "Late Signal"],
+      "f-community-university-lagos": ["Lagoon City University"]
+    },
+    "sections": {
+      "bottom-line": "2/0",
+      "positioning": "4/1",
+      "audience": "3/0",
+      "markets": "2/0",
+      "partnerships": "2/0",
+      "placement": "2/0",
+      "publicity": "1/1",
+      "community": "1/1",
+      "route": "0/2",
+      "timeline": "0/5",
+      "cadence": "0/1",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "1/1",
+      "gaps": "0/4"
+    },
+    "moves": ["f-markets", "f-audience"],
+    "grounding": {
+      "lines": 34,
+      "backed": 53,
+      "findingsUsed": 12,
+      "cities": {
+        "Accra": 4,
+        "Lagos": 8
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "The comps describe one audience",
+      "Box office and viewing numbers",
+      "Music and soundtrack",
+      "Cinemas in Accra",
+      "Recent films",
+      "Churches in Lagos",
+      "Churches in Accra",
+      "Universities in Accra"
+    ]
+  }
+}
