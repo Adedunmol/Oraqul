@@ -17,6 +17,7 @@ import {
 import { copyText } from '../toast';
 import { useOutputView } from './context';
 import { Evidence, FitBar, Line, Mark, Num, Section, Stack, TabTitle } from './line';
+import { LaunchPlanTab } from './tabs-plan';
 
 const NEXT_STEP: Record<Verdict, string> = {
   holds: 'Safe to rely on. No action needed.',
@@ -348,6 +349,7 @@ export function AssumptionsTab() {
 
 export function PlanTab() {
   const { output } = useOutputView();
+  if (output.plan) return <LaunchPlanTab plan={output.plan} />;
   return (
     <>
       <TabTitle title="Plan" note="Ranked by fit, 0 to 100. 75 and above is recommended." />
@@ -897,7 +899,10 @@ function EvidenceTable({
                   {r ? <Confidence level={r.confidence} suffix="" /> : null}
                 </td>
                 <td className="border-b border-line px-2 py-1.5">
-                  <ReceiptChip onClick={() => openReceipt(row.lineId)} aria-label="Open receipt" />
+                  <ReceiptChip
+                    onClick={() => openReceipt(row.lineId, { ids: true })}
+                    aria-label="Open receipt"
+                  />
                 </td>
               </tr>
             );

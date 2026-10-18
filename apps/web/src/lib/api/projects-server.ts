@@ -1,5 +1,7 @@
 import {
+  type OutputDetail,
   type Overview,
+  outputDetailSchema,
   overviewSchema,
   type PinnedProjects,
   type Project,
@@ -43,6 +45,10 @@ export function getProjectDetail(projectId: string, returnTo: string): Promise<P
 
 export function getThreadDetail(threadId: string, returnTo: string): Promise<ThreadDetail> {
   return orNotFound(serverGet(`/threads/${threadId}`, threadDetailSchema, { returnTo }));
+}
+
+export function getOutputDetail(outputId: string, returnTo: string): Promise<OutputDetail> {
+  return orNotFound(serverGet(`/outputs/${outputId}`, outputDetailSchema, { returnTo }));
 }
 
 export function getOverview(teamId: string, returnTo: string): Promise<Overview> {

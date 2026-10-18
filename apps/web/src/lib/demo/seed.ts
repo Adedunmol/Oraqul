@@ -172,7 +172,7 @@ function seedChat(r: Project, t: Thread, made: DOutput[]): void {
     const summary = getState().outputs.find((x) => x.id === o.id)?.summary ?? '';
     const key = `${t.id}-${i}`;
     pushItem(t.id, { id: `${key}-u`, role: 'user', text: asked });
-    pushItem(t.id, { id: `${key}-t`, role: 'trace', steps, done: steps.length });
+    pushItem(t.id, { id: `${key}-t`, role: 'trace', steps, done: steps.length, findings: [] });
     pushItem(t.id, { id: `${key}-a`, role: 'agent', text: summary });
     pushItem(t.id, { id: `${key}-o`, role: 'output', outputId: o.id });
   });

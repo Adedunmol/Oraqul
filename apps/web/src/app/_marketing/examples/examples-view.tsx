@@ -91,6 +91,7 @@ export function ExamplesView({
               initialTab={tab}
               canEdit={false}
               teamName={null}
+              shared
               publicExample
             />
           ) : (

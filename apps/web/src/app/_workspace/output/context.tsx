@@ -7,7 +7,8 @@ export interface OutputView {
   output: Output;
   receipt: (lineId: string) => Receipt | undefined;
   change: (lineId: string) => LineChange | undefined;
-  openReceipt: (lineId: string) => void;
+  /** `ids` shows the call id and endpoint: only the Evidence tab asks for them (PRD E2). */
+  openReceipt: (lineId: string, options?: { ids?: boolean }) => void;
   openExport: () => void;
   goToTab: (key: Output['tabs'][number]['key']) => void;
   /** The output this one was built on, for "open that evidence". */

@@ -2,6 +2,7 @@
 
 import {
   type Category,
+  type CompareResponse,
   type Job,
   type Output,
   type ProjectDetail,
@@ -13,7 +14,7 @@ import {
 import { Button, buttonClassName, ChipButton, Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Dropdown } from '@/app/_components/dropdown';
 import { ChartCard, StackedColumns } from '@/app/_workspace/charts';
 import { KindTag } from '@/app/_workspace/chat/chat-panel';
@@ -21,10 +22,9 @@ import { LiveChat } from '@/app/_workspace/chat/live-chat';
 import { Crumbs } from '@/app/_workspace/crumbs';
 import { formatDay, plural } from '@/app/_workspace/format';
 import { toast } from '@/app/_workspace/toast';
-import { createThread, deleteProject } from '@/lib/api/projects';
+import { comparePlans, createThread, deleteProject } from '@/lib/api/projects';
 import type { Viewer } from '@/lib/api/viewer';
 import { getCategory } from '@/lib/demo/catalog';
-import { comparePlans } from '@/lib/demo/queries';
 import { projectsPath } from '@/lib/routes';
 import { ConfirmDialog } from '../../../../_components/confirm-dialog';
 import { Modal } from '../../../../_components/modal';
@@ -457,6 +457,19 @@ function OutputsList({
 
 function Lineage({ plans }: { plans: Output[] }) {
   const [comparing, setComparing] = useState(false);
+  const [pair, setPair] = useState<{ a: string; b: string }>({
+    a: plans.at(-2)?.id ?? '',
+    b: plans.at(-1)?.id ?? '',
+  });
+  const [result, setResult] = useState<CompareResponse | 'loading' | 'failed'>('loading');
+  // Read when the person opens the comparison or picks a plan, never from an effect.
+  const load = (next: { a: string; b: string }) => {
+    setPair(next);
+    const projectId = plans[0]?.projectId;
+    if (!projectId || !next.a || !next.b) return;
+    setResult('loading');
+    comparePlans(projectId, next.a, next.b).then(setResult, () => setResult('failed'));
+  };
   const byId = new Map(plans.map((o) => [o.id, o]));
   return (
     <section className="rounded-2xl bg-card px-5 py-[18px]">
@@ -468,12 +481,19 @@ function Lineage({ plans }: { plans: Output[] }) {
           </p>
         </div>
         {plans.length > 1 ? (
-          <Button size="small" aria-expanded={comparing} onClick={() => setComparing((c) => !c)}>
+          <Button
+            size="small"
+            aria-expanded={comparing}
+            onClick={() => {
+              if (!comparing) load(pair);
+              setComparing((c) => !c);
+            }}
+          >
             {comparing ? 'Hide comparison' : 'Compare two plans'}
           </Button>
         ) : null}
       </div>
-      {comparing ? <Compare plans={plans} /> : null}
+      {comparing ? <Compare plans={plans} pair={pair} result={result} onPick={load} /> : null}
       <div className="flex flex-col gap-3">
         {plans.length ? (
           plans.map((o) => (
@@ -502,22 +522,53 @@ function Lineage({ plans }: { plans: Output[] }) {
   );
 }
 
-function Compare({ plans }: { plans: Output[] }) {
-  const [a, setA] = useState(plans.at(-2)?.id ?? '');
-  const [b, setB] = useState(plans.at(-1)?.id ?? '');
-  const result = useMemo(() => (a && b ? comparePlans(a, b) : undefined), [a, b]);
+function Compare({
+  plans,
+  pair,
+  result,
+  onPick,
+}: {
+  plans: Output[];
+  pair: { a: string; b: string };
+  result: CompareResponse | 'loading' | 'failed';
+  onPick: (pair: { a: string; b: string }) => void;
+}) {
+  const { a, b } = pair;
   const planOptions = plans.map((o) => ({ value: o.id, label: o.label }));
+  if (result === 'failed') {
+    return (
+      <div className="mb-4 rounded-xl bg-inset p-4 text-muted">
+        The comparison did not load.{' '}
+        <Button size="small" variant="ghost" onClick={() => onPick(pair)}>
+          Try again
+        </Button>
+      </div>
+    );
+  }
+  const changes = result === 'loading' ? null : result.changes;
   return (
     <div className="mb-4 flex flex-col gap-3 rounded-xl bg-inset p-4">
       <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">
-        <Dropdown id="compare-a" label="From" value={a} options={planOptions} onChange={setA} />
-        <Dropdown id="compare-b" label="To" value={b} options={planOptions} onChange={setB} />
+        <Dropdown
+          id="compare-a"
+          label="From"
+          value={a}
+          options={planOptions}
+          onChange={(next) => onPick({ a: next, b })}
+        />
+        <Dropdown
+          id="compare-b"
+          label="To"
+          value={b}
+          options={planOptions}
+          onChange={(next) => onPick({ a, b: next })}
+        />
       </div>
       <p className="text-[12px] font-semibold text-muted">
-        {plural(result?.changes.length ?? 0, 'line')} differ
+        {changes === null ? 'Comparing…' : `${plural(changes.length, 'line')} differ`}
       </p>
-      {result?.changes.length ? (
-        result.changes.map((c) => (
+      {changes === null ? null : changes.length ? (
+        changes.map((c) => (
           <div key={c.lineId}>
             <h4 className="mb-1.5 text-sm font-semibold">{c.label}</h4>
             <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-2">

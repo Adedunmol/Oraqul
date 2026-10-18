@@ -6,6 +6,8 @@ import { useEffect, useId, useRef } from 'react';
 
 /** Display name of a line, from whichever brief group holds it. */
 export function lineLabel(output: Output, lineId: string): string {
+  const finding = output.plan?.findings.find((f) => f.id === lineId);
+  if (finding) return finding.text;
   const b = output.brief;
   const assumption = b.assumptions.find((x) => x.id === lineId);
   if (assumption) return assumption.text;
@@ -30,15 +32,38 @@ export function lineLabel(output: Output, lineId: string): string {
 
 const confidenceText = { high: 'High', medium: 'Medium', lower: 'Lower, thin data' } as const;
 
-/** The receipt behind one line, in a sheet from the right. design-system §7.17 */
+/** What a receipt's `returned` says, in words: the names it lists, or the text it holds. */
+function returnedText(returned: unknown): string {
+  if (typeof returned === 'string') return returned;
+  if (returned && typeof returned === 'object') {
+    const names = Object.values(returned)
+      .flatMap((v) => (Array.isArray(v) ? v : []))
+      .flatMap((item) =>
+        item && typeof item === 'object' && 'name' in item && typeof item.name === 'string'
+          ? [item.name]
+          : [],
+      );
+    if (names.length) return names.join(', ');
+  }
+  return '';
+}
+
+/**
+ * The receipt behind one line, in a sheet from the right. A finding opens here too, with what
+ * Qloo was asked and what it returned; the call id and endpoint show only from Evidence.
+ * design-system §7.17
+ */
 export function ReceiptDrawer({
   output,
   lineId,
+  ids = true,
   onClose,
   publicExample = false,
 }: {
   output: Output;
   lineId: string | null;
+  /** Show the call id, endpoint and response shape. Off for findings opened from the plan. */
+  ids?: boolean;
   onClose: () => void;
   /** On the public example page: no endpoint and no response shape, so nothing reads as raw Qloo data. */
   publicExample?: boolean;
@@ -57,9 +82,29 @@ export function ReceiptDrawer({
     if (!receipt && dialog.open) dialog.close();
   }, [receipt]);
 
-  const entities =
-    receipt && Array.isArray(receipt.input.entities) ? receipt.input.entities.join(', ') : '';
-  const returned = receipt && typeof receipt.returned === 'string' ? receipt.returned : '';
+  const finding = lineId ? output.plan?.findings.find((f) => f.id === lineId) : undefined;
+  const asked = finding
+    ? [
+        finding.context.city,
+        ...finding.context.tags,
+        finding.context.ages.length ? 'your age band' : null,
+        finding.context.country,
+        finding.context.yearFrom ? `since ${finding.context.yearFrom}` : null,
+      ]
+        .filter(Boolean)
+        .join(', ')
+    : '';
+  const entities = finding
+    ? `Your comps${asked ? `, with ${asked}` : ''}`
+    : receipt && Array.isArray(receipt.input.entities)
+      ? receipt.input.entities.join(', ')
+      : '';
+  const returned = finding
+    ? finding.entities.map((e) => (e.detail ? `${e.name} (${e.detail})` : e.name)).join(', ')
+    : receipt
+      ? returnedText(receipt.returned)
+      : '';
+  const showIds = ids && !finding;
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: the backdrop click is a mouse shortcut; Esc and Close are the keyboard ways out
@@ -75,7 +120,9 @@ export function ReceiptDrawer({
       {receipt && lineId ? (
         <div className="flex flex-col gap-3.5">
           <div className="flex items-center justify-between">
-            <p className="text-[12px] font-semibold text-muted">Receipt</p>
+            <p className="text-[12px] font-semibold text-muted">
+              {finding ? 'Finding' : 'Receipt'}
+            </p>
             <Button
               size="small"
               variant="ghost"
@@ -93,24 +140,28 @@ export function ReceiptDrawer({
             </div>
           ) : null}
           <dl className="grid grid-cols-[110px_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[13px]">
-            <dt className="text-muted">Call id</dt>
-            <dd className="font-mono text-xs break-words">{receipt.callId}</dd>
-            {publicExample ? null : (
+            {showIds ? (
+              <>
+                <dt className="text-muted">Call id</dt>
+                <dd className="font-mono text-xs break-words">{receipt.callId}</dd>
+              </>
+            ) : null}
+            {publicExample || !showIds ? null : (
               <>
                 <dt className="text-muted">Endpoint</dt>
                 <dd className="font-mono text-xs">{receipt.endpoint}</dd>
               </>
             )}
-            <dt className="text-muted">Input</dt>
+            <dt className="text-muted">{finding ? 'Asked' : 'Input'}</dt>
             <dd className="break-words">{entities}</dd>
             <dt className="text-muted">Returned</dt>
-            <dd className="break-words">{returned}</dd>
+            <dd className="break-words">{returned || 'Nothing listed'}</dd>
             <dt className="text-muted">How it was decided</dt>
             <dd className="break-words">{receipt.rule}</dd>
             <dt className="text-muted">Confidence</dt>
             <dd>{confidenceText[receipt.confidence]}</dd>
           </dl>
-          {publicExample ? null : (
+          {publicExample || !showIds ? null : (
             <>
               <p className="text-[12px] font-semibold text-muted">Example response shape</p>
               <pre className="whitespace-pre-wrap break-words rounded-lg bg-surface2 px-3 py-2.5 font-mono text-xs">

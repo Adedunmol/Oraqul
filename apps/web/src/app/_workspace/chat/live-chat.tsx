@@ -2,6 +2,7 @@
 
 import type {
   Answer,
+  Finding,
   Output,
   QuestionAnswer,
   QuestionCard,
@@ -49,6 +50,9 @@ export function LiveChat({
           setBusy(true);
           setItems((list) => withStep(list, event.text));
           return;
+        case 'finding':
+          setItems((list) => withFinding(list, event.finding));
+          return;
         case 'question':
           setItems((list) => [
             ...finishTrace(list),
@@ -65,6 +69,12 @@ export function LiveChat({
           setItems((list) => [
             ...finishTrace(list),
             { id: `output:${event.outputId}`, role: 'output', outputId: event.outputId },
+          ]);
+          return;
+        case 'memory.used':
+          setItems((list) => [
+            ...list,
+            { id: `context:${Date.now()}`, role: 'context', items: event.items },
           ]);
           return;
         case 'project.updated':
@@ -180,7 +190,17 @@ function withStep(list: ThreadItem[], text: string): ThreadItem[] {
     const steps = [...last.steps, text];
     return [...list.slice(0, -1), { ...last, steps, done: steps.length - 1 }];
   }
-  return [...list, { id: `trace:${crypto.randomUUID()}`, role: 'trace', steps: [text], done: 0 }];
+  return [
+    ...list,
+    { id: `trace:${crypto.randomUUID()}`, role: 'trace', steps: [text], done: 0, findings: [] },
+  ];
+}
+
+/** Adds a finding to the running trace, as each Qloo result lands. */
+function withFinding(list: ThreadItem[], finding: Finding): ThreadItem[] {
+  const last = list.at(-1);
+  if (last?.role !== 'trace') return list;
+  return [...list.slice(0, -1), { ...last, findings: [...last.findings, finding] }];
 }
 
 /** Marks the running trace finished, so it folds. */

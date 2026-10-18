@@ -131,7 +131,7 @@ function options(list: { v: string; l: string; d?: string }[]) {
 function runTrace(threadId: string, steps: string[], done: () => void): void {
   const id = itemId();
   setBusy(threadId, true);
-  pushItem(threadId, { id, role: 'trace', steps, done: 0 });
+  pushItem(threadId, { id, role: 'trace', steps, done: 0, findings: [] });
   let shown = 0;
   const tick = () => {
     if (shown < steps.length) {
