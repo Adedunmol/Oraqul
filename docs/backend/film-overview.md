@@ -44,14 +44,16 @@ The request returns at once; the run goes on in the background and streams event
 | Router | `agent/router/` | First message only: title, category, mode. Quote checked |
 | Gate | `agent/gate/` | Every later message: on topic, off topic (fixed refusal) or unclear (a card) |
 | Handoff | `agent/category-agents.ts` | What the agent gets: title, category, mode, `inputs`, `message`, `recent` (last 8 chat lines), `planId` |
-| Film agent | `agent/film/agent.ts` | Build if the chat has no plan; otherwise refuse, or read the follow up and pick its job |
+| Film agent | `agent/film/agent.ts` | Does the job the project started with (build, audit or fix) if the chat has no plan; otherwise refuse, or read the follow up and pick its job |
 | Brief reader | `agent/film/read.ts` | Model (or scripted) turns the brief into every field it gives, each with the words it came from |
 | Researcher | `agent/film/research.ts` | Web search for release timing and the market, facts tied to source pages |
 | Query planner | `agent/film/planner.ts` | Model (or the pack's defaults) shapes the catalog queries; code keeps only what the rules allow |
 | Findings | `agent/film/findings.ts` | Runs the queries, builds the brief's verdicts, turns each result into a finding and streams it |
 | Writer | `agent/film/writer.ts` | Model (or templates) writes the sections, or an answer, from the findings |
 | Line check | `agent/film/check.ts` | Every written line against spec §6.2; failures dropped and logged |
-| Build pipeline | `agent/film/pipeline.ts` | The steps of a plan, comp settling, "To sharpen" and Budget split, the one question it may ask |
+| Build pipeline | `agent/film/pipeline.ts` | The steps of a plan, comp settling, "To sharpen" and Budget split, the one question it may ask. Split into stages (`askQloo`, `writePlan`) that the audit and the fix share |
+| Audit | `agent/film/audit.ts`, `audit-verdicts.ts`, `results.ts`, `results-read.ts`, `report-writer.ts` | Reads the plan (asking for it, and for results when the launch is out), tests each belief, compares results with the plan, writes the risks and alternatives, checks every line; saves a report |
+| Fix | `agent/film/fix.ts` | Runs the audit, then writes a new plan from it; saves both. Asks whether the launch is out when nothing says |
 | Brief builder | `agent/film/brief.ts` | Audience segments, the team's cities in order, verdicts on the team's assumptions, one receipt per line |
 | Follow-up reader | `agent/film/follow-up.ts` | Reads a later message; code picks the job |
 | Follow ups | `agent/film/follow-ups.ts` | Answer (findings, writer, check), rival date check, partner brief |
@@ -117,6 +119,18 @@ The model **never**: sets a number, verdict or confidence; names an entity that 
 
 **Confidence** (spec §5.1) is set per call and carried by each finding. A plan's confidence is the lowest of the findings behind its bottom line.
 
+## The audit and the fix
+
+An audit is a pipeline like the build, in `audit.ts`. Each step is a `trace.step`:
+
+1. **Read the plan.** The first message and its files, whole (up to 40,000 characters of each file; the router and a build read the first 8,000). The brief reader pulls out cities, ages, gender, comps, partners and artists, and a results reader pulls out whether the launch is out and what it produced, each value with the words it came from, checked by code. Cities are kept in the order the plan names them. If there is nothing to test it asks for the plan; if the launch is out and there are no results it asks for them once ("skip" goes on without); a fix also asks whether the launch is out when nothing says.
+2. **Find the comps, choose the queries, ask Qloo.** The same `findComps` and `askQloo` as a build, asking about the whole plan. Brands the plan names join the candidates Qloo ranks.
+3. **Test each assumption** (`audit-verdicts.ts`). Spec §5.3. Fix lines are templates over the findings.
+4. **Write the risks and alternatives** (model, or templates), then **check every line** (spec §6.2).
+5. **Save.** An `audit` output with the report and the same brief an older output had. The report becomes the chat's base, so a message works on it.
+
+A fix (`fix.ts`) runs these, saves the report, then asks about the cities the results add (if any) and runs the build's `writePlan` for the reordered brief, with the fixes as notes for the writer. It saves the plan with the report as its parent. Fixing a saved report reuses its reading and comps.
+
 ## Follow ups (after the chat has a plan)
 
 `FilmAgent` loads the plan, emits a "Using" line (the plan, your brief, the chat), refuses forecasts, pricing or sending with fixed words, then reads the message and lets code pick the job:
@@ -125,6 +139,8 @@ The model **never**: sets a number, verdict or confidence; names an entity that 
 |---|---|---|---|
 | Answer | default | The plan's findings, the writer in answer mode, the same line check. If the answer would change a decision it offers a what-if. Plans saved before findings use the older tool loop | Message only |
 | What-if | any change to places, comps, ages or gender | The build from the plan's `inputs` with the change; every query reruns | `scenario` output; "What changed" compares plan lines by id; becomes the chat's plan |
+| Audit | "audit", "check my plan", "why did it fail" | The audit of the plan the chat has: a saved audit is rerun with the new message (results, say); an Oraqul plan is read back as text | `audit` output |
+| Fix | "fix this plan", "write a better plan" (also the Fix this plan button on a report) | The fix; on a saved report only the plan is new | `fix` output (and an `audit` when there was none) |
 | Rival date check | rival titles with YYYY-MM-DD dates | `compareAudiences`: rivals scored against the comps | `date` output |
 | Partner brief | "partner" + a name, or the first brand the plan names | An artist the plan's music findings ranked is backed by that finding; a brand or podcast is scored with `lift` against the baseline. The model drafts the pitch from findings, checked; the template is the fallback | `partner` output |
 

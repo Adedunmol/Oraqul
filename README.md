@@ -1,6 +1,6 @@
 # Oraqul
 
-A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like. Plan a launch, audit a plan, or rescue one that missed, across film, music, books, podcasts and games. Every claim about taste, audience or place cites a finding from Qloo taste data.
+A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like. Plan a launch, audit a plan, or fix one, before or after launch, across film, music, books, podcasts and games. Every claim about taste, audience or place cites a finding from Qloo taste data.
 
 Product background: [docs/product/overview.md](docs/product/overview.md).
 

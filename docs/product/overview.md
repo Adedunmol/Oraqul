@@ -8,7 +8,7 @@ Oraqul is a culturally grounded launch agent for media and entertainment. It bui
 
 ## What it is
 
-Oraqul is a culturally grounded agent that builds, checks and repairs launch plans in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and rescues a launch that underperformed, which is a relaunch. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
+Oraqul is a culturally grounded agent that builds, checks and repairs launch plans in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and fixes one, before the launch or after it. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
 
 Every reply has two stages. First, findings: the model reads the brief and shapes the questions, code asks Qloo and turns each answer into a sentence, and the findings stream into the chat while they land. Then the reply: the model writes the plan from the findings and its launch knowledge, and code checks every line. It gives direction, never forecasts.
 
@@ -26,25 +26,25 @@ The problem is the same everywhere. Launch plans rest on audience assumptions th
 
 ## The three jobs
 
-The three jobs are also the three start modes, called `build`, `audit` and `rescue` in code.
+The three jobs are also the three start modes, called `build`, `audit` and `fix` in code. A job gives one of three kinds of reply: a **plan** (build, and the plan a fix writes), a **report** (audit) or an **answer** (a question inside a project, with no saved output).
 
 **Build (plan).** From a description, Oraqul builds a launch plan with a small core (bottom line, positioning, audience, markets, gaps) and the modules that fit the ask: partnerships, creative placement, publicity, community, release route, timeline, cadence, budget split, what to measure and risks. It plans for the team's own cities, age band and window, tests them, and puts alternatives under Worth a look. It uses everything the user gives and asks for nothing beyond it.
 
-**Audit.** The user brings an existing plan. Oraqul pulls out the audience and taste assumptions it makes, tests each one, and marks it as holds, weak, breaks, or could not test. It then looks for stronger alternatives to whatever broke and tests those too.
+**Audit.** The user brings an existing plan, as pasted text or an uploaded file. Oraqul pulls out the audience and taste assumptions it makes, tests each one, and marks it as holds, weak, breaks, or could not test, with the sentence of the plan that states it. The answer is a **report**, not a plan: the assumptions grouped by verdict, the risks, the stronger options that Qloo's data points to (worth a look), and what the person can do about each weak or broken one. A team's choices are never advised away: a fix reorders them or adds a stronger option beside them. Audit also answers why a launch fell short. When the launch is out, the user adds the results as aggregates and the report sets each city's results against where the plan put it. Any report ends with one step, Fix this plan, in the same project.
 
-**Rescue.** The launch is out and results are weak. The user adds actual results as aggregates, such as sales or streams by region, or age bands from a platform dashboard. Oraqul compares who actually showed up with who the plan assumed, finds which assumption was wrong, and builds a relaunch plan around the audience that is really there.
+**Fix.** The user brings a plan, before or after launch, and gets a better one. Oraqul audits it under the hood, saves the report, and writes a new plan from it, so the project holds both and the plan says what changed. Before launch it reorders the team's cities by where the audience is strongest and answers each weak or broken assumption. After launch it first asks whether the launch is out, then for the results as aggregates, such as sales or streams by region, or age bands from a platform dashboard, and builds the new plan around the audience that is really there. A report that already exists can be fixed by asking, with no second audit.
 
 **Scenario testing** works inside all three. Change one assumption, such as an older opening audience or a different lead city, and Oraqul shows what changes, as a clear before and after.
 
 ## The five categories
 
-All five run on one engine. Each has its own questions, output tabs, scenario presets and results format for rescue. A generic template handles anything else and says plainly that it is less certain.
+All five run on one engine. Each has its own questions, output tabs, scenario presets and results format for a launch that is out. A generic template handles anything else and says plainly that it is less certain.
 
-* **Film and series distribution.** Audience by age and territory, comparable titles, partner brands, and overlap with rival titles the user names. Rescue takes opening results by territory.
-* **Music releases and tours.** Support acts, tour cities, partner brands, and home and fan markets for the artist. Rescue takes streams and ticket sales by city.
-* **Book publishing.** Comparable books, audience by age and place, adaptation and cross media angles, and retail or event partners. Rescue takes pre orders, sales by region and review aggregates.
-* **Podcasts.** Audience and topic tags, sponsor brands, and guest fit. Rescue takes downloads by region and age band from the host dashboard.
-* **Games.** Comparable games, fan bases to collaborate with across music and film, and which regions to prioritise. Rescue takes wishlists and player counts by region.
+* **Film and series distribution.** Audience by age and territory, comparable titles, partner brands, and overlap with rival titles the user names. A launch that is out brings opening results by territory.
+* **Music releases and tours.** Support acts, tour cities, partner brands, and home and fan markets for the artist. A launch that is out brings streams and ticket sales by city.
+* **Book publishing.** Comparable books, audience by age and place, adaptation and cross media angles, and retail or event partners. A launch that is out brings pre orders, sales by region and review aggregates.
+* **Podcasts.** Audience and topic tags, sponsor brands, and guest fit. A launch that is out brings downloads by region and age band from the host dashboard.
+* **Games.** Comparable games, fan bases to collaborate with across music and film, and which regions to prioritise. A launch that is out brings wishlists and player counts by region.
 
 ## How Oraqul uses Qloo, and what it adds
 
@@ -104,7 +104,7 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 * Every line has a receipt. Charts have a table view.
 * Versions can be compared. A plan exports as PDF, Word or Markdown, with grounded lines footnoted to their findings, playbook lines labelled and an evidence appendix.
 * A read only share link can be turned off.
-* The overview, the team's home after sign in, opens with a message box: "What are you working on?". Under it, three optional hints (plan a launch, check a plan I have, rescue one that missed) change the prompt and say what to bring. The project is made from the first message, never from an empty form.
+* The overview, the team's home after sign in, opens with a message box: "What are you working on?". Under it, three optional hints (make a plan, check my plan, fix my plan) change the prompt and say what to bring. The project is made from the first message, never from an empty form.
 * Every output tab opens with one plain sentence on what it shows, and output pages show four main tabs with the rest under More.
 * Search on Ctrl K or Cmd K finds categories, projects, outputs and actions.
 * Signed out visitors see sign in and an example answer. Live runs need an account, so the demo shows what the product really does.

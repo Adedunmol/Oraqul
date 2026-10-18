@@ -6,7 +6,7 @@ Oraqul's agents (not the coding agents that work on this repo, see `AGENTS.md`).
 
 One router, one front door (gate), one runtime with two paths, five category packs. A new category is a new pack, not new runtime code.
 
-- **Plan pipeline** for build, scenario, date and partner. Fixed steps in code, so a plan is repeatable. See [Plan pipeline](#plan-pipeline).
+- **Plan pipeline** for build, audit, fix, scenario, date and partner. Fixed steps in code, so a plan is repeatable. See [Plan pipeline](#plan-pipeline).
 - **Tool loop** (`runtime.ts`, built) for answers, clarifying questions and consults. The planner picks the next step; code runs it.
 
 Plans must not run on the tool loop. A model choosing which tests a plan runs gives different tests for the same input, which breaks the promise that a plan was checked and makes golden runs meaningless.
@@ -65,7 +65,7 @@ Code is in `apps/api/src/agent`:
 | `gate/` | The front door for an active project. Every message goes through `gateSegment` in `run.service.ts` before a category agent sees it. A model (`ModelGate`, role `router`) returns `on_topic`, `off_topic` or `unclear`, and code decides: `off_topic` gets the fixed `OFF_TOPIC_REPLY` and no agent run; `unclear` asks a `single` card of two or three close readings (a follow up we mistook for something new, or a nearby idea the agent can use), whose pick goes straight to the agent; `on_topic` passes. With no model key, or when the call fails, `ScriptedGate` passes everything, since it cannot tell the cases apart. The gate is one run row (`agent: gate`) per message, and an open card is kept in its `state` |
 | `category-agents.ts` | `CategoryAgent`: `run(handoff, emit, resume?)` returns an `AgentRun` (stop reason, the state to resume from, receipts, the output if it made one, tokens, Qloo calls), and `replyLabel` checks a reply against the open card before a run starts. Film is the real agent; the other four are placeholders: one trace step and a message saying the agent is not connected yet |
 | `film/` | The Film agent ([film-overview.md](film-overview.md)). `read.ts` reads the brief, `planner.ts` shapes the queries, `findings.ts` runs them and builds the findings, `writer.ts` writes the plan, `check.ts` checks every line, `pipeline.ts` runs the steps, `brief.ts` builds the audience and verdicts, `agent.ts` wires them to `CategoryAgent` |
-| `output-store.ts` | Saves a run's receipts, and its output when it made a plan, in one transaction, and points the chat's `base_output_id` at the new plan |
+| `output-store.ts` | Saves a run's receipts, and its outputs when it made a plan or a report, in one transaction (a fix saves two, each the child of the one before, and each with the calls it rests on), and points the chat's `base_output_id` at the last |
 | `run.service.ts` | Creates the draft project, posts messages (409 while a run is going), runs the router and then the category agent in the background, stores every event and streams it. On start up, runs left `running` by a stopped process are marked `error` |
 | `thread-store.ts` | The transcript in `messages`: one row per stored event, `seq` in order. Turns rows into chat items for `GET /threads/:id` and back into events for a stream that joins late |
 | `runtime.ts` | `advance(state, deps, answer?)`: the tool loop the real category agents will use. Runs until the agent finishes, asks, or hits a limit, then emits `run.stopped`. The answer resumes it |
@@ -88,7 +88,7 @@ The tool loop is for conversation, not plans (see [Shape](#shape)). In it the pl
 
 ## Plan pipeline
 
-Film's build job, in `film/pipeline.ts`; [film-overview.md](film-overview.md) is the step by step map. Product behaviour is [spec §3.2](../product/spec.md) and the Film tests are [spec §5.2](../product/spec.md#52-film-assumption-tests-build). Every reply runs two stages, findings and then the reply:
+Film's build job, in `film/pipeline.ts` (the audit and the fix reuse its stages: [film-overview.md](film-overview.md#the-audit-and-the-fix)); [film-overview.md](film-overview.md) is the step by step map. Product behaviour is [spec §3.2](../product/spec.md) and the Film tests are [spec §5.2](../product/spec.md#52-film-assumption-tests-build). Every reply runs two stages, findings and then the reply:
 
 1. Read the brief (model, every value carries the words it came from, checked by code).
 2. Find the comps with `resolveBundle`, settling same-name titles in code and proposing comps only below 3.
@@ -115,14 +115,14 @@ No model writes a number, verdict or confidence. Each step is a `trace.step`. A 
 
 **Resuming.** When the agent's last run in a chat stopped `waiting` on a card, the next message or card answer resumes that run with its saved `runs.state`, and the gate does not judge it. `replyLabel` checks the answer first, so a wrong option is a 400 before anything runs.
 
-A file's text is cut to 8 000 characters (`ATTACHMENT_CHARS`) wherever it is kept or read, so a long plan does not fill a model's context. The gate gets only the category, mode and title, never the files. The structured `ProjectInput` (lead, comps, places) that `newRunState` and `AgentContext.project` take is not in the handoff: the plan pipeline's read step builds it from `inputs` and `message`.
+A file's text is kept whole on the project (an upload allows 200 000 characters), and each reader cuts it to what its model should see: the router and a build read the first 8 000 characters of each file (`ATTACHMENT_CHARS`, `cutFiles`), so a long brief does not fill a model's context, and an audit or a fix reads up to 40 000 (`PLAN_CHARS`), since the plan is the thing being tested. The gate gets only the category, mode and title, never the files. The structured `ProjectInput` (lead, comps, places) that `newRunState` and `AgentContext.project` take is not in the handoff: the plan pipeline's read step builds it from `inputs` and `message`.
 
 ## Replies: a plan and not a plan (partly built)
 
 An agent's finish step has two kinds of reply. The product behaviour is in [spec §3.6](../product/spec.md). For Film, the kind comes from the job (see [Follow ups](#follow-ups)): a build, what-if, date check or partner brief is a plan, a question is an answer. The rest below is still to build for the general case:
 
 - **A way to say which kind it is.** `AgentReply` in `packages/schema` gets a `kind`: `plan` or `answer`. The model's word for it is not trusted alone: the runtime checks that a `plan` carries the brief and receipts a plan needs, and rejects it otherwise.
-- **A plan** (build, audit, rescue, scenario, date, partner) writes an `outputs` row with its receipts and streams `output.created`.
+- **A plan** (build, scenario, and the plan a fix writes) or **a report** (audit) writes an `outputs` row with its receipts and streams `output.created`. A fix writes two in one run, the report and then the plan whose parent it is, so a run returns its last output as `output` and the ones before it as `earlier`.
 - **An answer** is a `message` event with claims, no `outputs` row. On a launch plan it is written from the plan's findings and passes the same line check as the plan (spec §6.2); each claim cites the calls behind its findings. Plans saved before findings still use the tool loop and the grounding check.
 - **When the agent cannot tell, it asks.** A `single` card, worded by the agent: "Do you want a plan for this, or just an answer?" The answer picks the kind and the run continues. The base prompt says to ask rather than draft a full plan nobody asked for.
 
