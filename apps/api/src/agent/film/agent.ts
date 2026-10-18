@@ -1,6 +1,7 @@
 import type { ToolContext } from '@oraqul/engine';
 import { refusalFor } from '@oraqul/packs';
 import type { Output, ThreadEvent } from '@oraqul/schema';
+import { toMarkdown } from '../../outputs/export.js';
 import {
   type AgentRun,
   type CategoryAgent,
@@ -9,12 +10,17 @@ import {
   ReplyError,
 } from '../category-agents.js';
 import type { Planner } from '../types.js';
+import { type AuditDeps, filmAuditInputsSchema, runFilmAudit } from './audit.js';
+import { runFilmFix } from './fix.js';
 import { decideFollowUp, type FollowUpReader } from './follow-up.js';
 import { runAnswer, runDateCheck, runPartnerBrief, runPlanAnswer } from './follow-ups.js';
-import { filmInputsSchema, filmStateSchema, type PlanRun, runFilmBuild } from './pipeline.js';
+import { filmInputsSchema, type PlanRun, runFilmBuild } from './pipeline.js';
 import type { QueryPlanner } from './planner.js';
 import type { FilmReader } from './read.js';
+import type { ReportWriter } from './report-writer.js';
 import type { Researcher } from './research.js';
+import type { ResultsReader } from './results-read.js';
+import { filmStateSchema } from './state.js';
 import type { PlanWriter } from './writer.js';
 
 export interface FilmAgentDeps {
@@ -23,6 +29,10 @@ export interface FilmAgentDeps {
   queries: QueryPlanner;
   /** Writes the plan and answers from the findings (stage 2). */
   writer: PlanWriter;
+  /** Reads a launch's results from the person's words, for an audit or a fix. */
+  results: ResultsReader;
+  /** Writes an audit's risks and alternatives from the verdicts. */
+  report: ReportWriter;
   /** Web research for release timing and the market, or none. */
   research: Researcher;
   followUps: FollowUpReader;
@@ -36,8 +46,9 @@ export interface FilmAgentDeps {
 }
 
 /**
- * The Film agent. Before a chat has a plan, a message builds one. After, a message is read as a
- * question, a what-if, a rival date check or a partner brief, and code picks the job (agent.md).
+ * The Film agent. Before a chat has a plan, a message does the job the project started with: a
+ * build, an audit or a fix. After, a message is read as a question, a what-if, a rival date check,
+ * a partner brief, an audit or a fix, and code picks the job (agent.md).
  */
 export class FilmAgent implements CategoryAgent {
   constructor(private readonly deps: FilmAgentDeps) {}
@@ -66,12 +77,24 @@ export class FilmAgent implements CategoryAgent {
       tools,
       emit,
     };
+    const audit: AuditDeps = { ...build, results: this.deps.results, report: this.deps.report };
     if (resume) {
       const state = filmStateSchema.parse(resume.state);
-      return runFilmBuild(handoff, build, { state, reply: resume.reply });
+      switch (state.job) {
+        case 'build':
+          return runFilmBuild(handoff, build, { state, reply: resume.reply });
+        case 'audit':
+          return runFilmAudit(handoff, audit, { state, reply: resume.reply });
+        case 'fix':
+          return runFilmFix(handoff, audit, { state, reply: resume.reply });
+      }
     }
     const saved = handoff.planId ? await this.deps.plan(handoff.planId) : null;
-    if (!saved) return runFilmBuild(handoff, build);
+    if (!saved) {
+      if (handoff.mode === 'audit') return runFilmAudit(handoff, audit);
+      if (handoff.mode === 'fix') return runFilmFix(handoff, audit);
+      return runFilmBuild(handoff, build);
+    }
 
     // Refused in code with fixed words, before any model or Qloo call (spec §10).
     const refusal = refusalFor(handoff.message.text);
@@ -105,6 +128,26 @@ export class FilmAgent implements CategoryAgent {
       title: handoff.title,
     });
     const withTokens = (run: PlanRun): PlanRun => ({ ...run, tokens: run.tokens + tokens });
+
+    if (job.job === 'audit' || job.job === 'fix') {
+      // A report is fixed from what it was made from. An Oraqul plan is read back as text.
+      if (output.report) {
+        const from = filmAuditInputsSchema.safeParse(saved.inputs);
+        if (job.job === 'audit') return withTokens(await runFilmAudit(handoff, audit));
+        if (from.success) {
+          return withTokens(
+            await runFilmFix(handoff, audit, undefined, { from: { inputs: from.data } }),
+          );
+        }
+        return withTokens(await runFilmFix(handoff, audit));
+      }
+      const planText = toMarkdown(output);
+      return withTokens(
+        job.job === 'audit'
+          ? await runFilmAudit(handoff, audit, undefined, { planText })
+          : await runFilmFix(handoff, audit, undefined, { planText }),
+      );
+    }
 
     if (job.job === 'answer' && output.plan) {
       return withTokens(

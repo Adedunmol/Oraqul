@@ -40,7 +40,7 @@ export const exampleCases: ExampleCase[] = [
   {
     id: 'podcasts',
     category: 'podcasts',
-    job: 'Fix one that missed',
+    job: 'Fix my plan',
     noun: 'podcast',
     title: 'The Long Table',
     meta: 'Podcast, season two · results by region and age band',

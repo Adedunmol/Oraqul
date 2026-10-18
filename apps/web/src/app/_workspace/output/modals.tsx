@@ -92,7 +92,7 @@ export function ExportModal({
             </div>
           </div>
         ) : null}
-        {output.kind === 'rescue' && b.course ? (
+        {output.kind === 'fix' && b.course ? (
           <div>
             <H3>Next steps</H3>
             <ul className="list-disc pl-5">
@@ -102,7 +102,7 @@ export function ExportModal({
             </ul>
           </div>
         ) : null}
-        {output.kind !== 'date' && output.kind !== 'partner' && output.kind !== 'rescue' ? (
+        {output.kind !== 'date' && output.kind !== 'partner' && output.kind !== 'fix' ? (
           <div>
             <H3>Plan at a glance</H3>
             <ul className="list-disc pl-5">

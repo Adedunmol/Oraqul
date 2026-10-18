@@ -21,7 +21,7 @@ export const books: DemoPack = {
       'Debut authors and small press titles. With few anchors the read rests on comps and themes',
       'A book with no close comps. Cross-domain taste is read instead, and less certain',
     ],
-    none: ['Sales, pre orders, bestseller lists and review quality. You supply them for a rescue'],
+    none: ['Sales, pre orders, bestseller lists and review quality. You supply them for a fix'],
   },
   fields: [
     ['Format', 'kind'],
@@ -106,7 +106,7 @@ export const books: DemoPack = {
       'Checking affinity for each candidate',
       'Drafting the brief with the evidence attached',
     ],
-    rescue: [
+    fix: [
       'Reading the pre order and sales numbers by market and format',
       'Comparing who bought with who the plan assumed',
       'Finding which assumption broke',
@@ -433,7 +433,7 @@ export const books: DemoPack = {
       },
     },
   ],
-  rescue(b, g) {
+  fix(b, g) {
     const a2 = assumption(b, 'as2');
     if (a2) {
       a2.verdict = 'breaks';

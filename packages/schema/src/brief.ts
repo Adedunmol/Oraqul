@@ -144,7 +144,7 @@ export const fanBaseSchema = z.object({
   note: z.string().optional(),
 });
 
-/** Numbers the person supplied for a rescue. Percent values add up to 100 per group. */
+/** Numbers the person supplied for a fix. Percent values add up to 100 per group. */
 export const resultsSchema = z.object({
   date: z.string(),
   /** Actual share per label in `brief.groupLabels`, in percent. */
@@ -175,7 +175,7 @@ export const briefSchema = z.object({
   partners: z.array(partnerSchema),
   risks: z.array(riskSchema),
   cannot: z.array(untestedSchema),
-  /** Labels for the planned and actual splits on a rescue. */
+  /** Labels for the planned and actual splits on a fix. */
   groupLabels: z.array(z.string()),
   /** Planned share per label in `groupLabels`, in percent. */
   planned: z.array(z.number()),

@@ -1,4 +1,4 @@
-import type { LaunchPlan, Output } from '@oraqul/schema';
+import type { AuditReport, LaunchLine, LaunchPlan, Output, Verdict } from '@oraqul/schema';
 import { Document, FootnoteReferenceRun, HeadingLevel, Packer, Paragraph, TextRun } from 'docx';
 import PDFDocument from 'pdfkit';
 
@@ -82,14 +82,122 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
   };
 }
 
+const VERDICT_WORD: Record<Verdict, string> = {
+  breaks: 'Breaks',
+  weak: 'Weak',
+  holds: 'Holds',
+  cant: 'Could not test',
+};
+const GAP_WORD = {
+  under: 'Behind the plan',
+  over: 'Ahead of the plan',
+  'as-planned': 'As planned',
+};
+const ORDINAL = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'];
+const nth = (n: number | null) => (n === null ? 'not in the plan' : (ORDINAL[n - 1] ?? `${n}th`));
+
+/**
+ * An audit report in the same shape as a plan, so it exports the same way: each assumption with
+ * its verdict and what to do, the results, the risks and what is worth a look. Footnotes are
+ * numbered in the order the document first cites a finding.
+ */
+function reportDoc(output: Output, report: AuditReport): PlanDoc {
+  const order = new Map<string, number>();
+  const refs = (ids: string[]) =>
+    ids.flatMap((id) => {
+      if (!order.has(id)) order.set(id, order.size + 1);
+      return order.get(id) ?? [];
+    });
+  const docLine = (l: LaunchLine): DocLine => ({
+    text: l.text,
+    refs: refs([...l.findingIds, ...l.sourceIds]),
+  });
+  const lists = (lines: LaunchLine[]): DocSection['groups'] => {
+    const out: DocSection['groups'] = [];
+    for (const l of lines) {
+      const last = out.at(-1);
+      if (last && last.name === l.group) last.lines.push(docLine(l));
+      else out.push({ name: l.group, lines: [docLine(l)] });
+    }
+    return out;
+  };
+  const inBrief: DocLine[] = [
+    { text: output.headline, refs: [] },
+    ...output.moves.map((m) => ({ text: m.text, refs: refs(m.lineId ? [m.lineId] : []) })),
+  ];
+  const assumptions: DocSection = {
+    title: 'Assumptions',
+    groups: (['breaks', 'weak', 'holds', 'cant'] as const).flatMap((verdict) => {
+      const items = report.items.filter((i) => i.verdict === verdict);
+      if (items.length === 0) return [];
+      return [
+        {
+          name: VERDICT_WORD[verdict],
+          lines: items.map((i) => ({
+            text: `${i.claim}. ${i.why}${i.fix ? ` What to do: ${i.fix.text}` : ''}`,
+            refs: refs([...i.findingIds, ...(i.fix?.findingIds ?? [])]),
+          })),
+        },
+      ];
+    }),
+  };
+  const results: DocSection[] = report.results
+    ? [
+        {
+          title: 'Your results',
+          groups: [
+            {
+              name: null,
+              lines: report.results.rows.map((r) => ({
+                text: `${r.place}: ${r.actualShare}% of the total. The plan put it ${nth(r.plannedRank)}, and it finished ${nth(r.actualRank)}. ${GAP_WORD[r.gap]}.`,
+                refs: [],
+              })),
+            },
+          ],
+        },
+      ]
+    : [];
+  const sections = [
+    assumptions,
+    ...results,
+    { title: 'Risks', groups: lists(report.risks) },
+    { title: 'Worth a look', groups: lists(report.alternatives) },
+  ].filter((s) => s.groups.length > 0);
+  return {
+    title: output.title,
+    byline: `Audit report · ${output.createdBy} · ${day(output.createdAt)}`,
+    inBrief,
+    sections,
+    sharpen: [],
+    sources: [...order].flatMap(([id, n]) => {
+      const web = report.sources.find((src) => src.id === id);
+      if (web) return [{ n, text: web.fact, from: `${web.title}, ${web.url}` }];
+      const finding = report.findings.find((f) => f.id === id);
+      if (!finding) return [];
+      const receipt = output.receipts.find((r) => r.lineId === id);
+      const from =
+        receipt?.source === 'demo'
+          ? 'Demo data, not Qloo.'
+          : `Qloo taste data, ${receipt ? day(receipt.calledAt) : day(output.createdAt)}.`;
+      return [{ n, text: finding.text, from }];
+    }),
+  };
+}
+
+/** What an output exports as: an audit as a report, a plan as a plan, anything else as no document. */
+function docOf(output: Output): PlanDoc | null {
+  if (output.kind === 'audit' && output.report) return reportDoc(output, output.report);
+  return output.plan ? planDoc(output, output.plan) : null;
+}
+
 const IN_BRIEF = 'In brief';
 const SHARPEN = 'To sharpen this plan';
 const SOURCES = 'Sources';
 
 /** The plan as Markdown, for email, Slack or Notion. */
 export function toMarkdown(output: Output): string {
-  if (!output.plan) return `# ${output.title}\n\n${output.summary}\n`;
-  const doc = planDoc(output, output.plan);
+  const doc = docOf(output);
+  if (!doc) return `# ${output.title}\n\n${output.summary}\n`;
   const line = (l: DocLine) => `${l.text}${l.refs.map((n) => `[^${n}]`).join('')}`;
   const out: string[] = [`# ${doc.title}`, '', `_${doc.byline}_`, ''];
   out.push(`## ${IN_BRIEF}`, '', ...doc.inBrief.map((l, i) => `${i + 1}. ${line(l)}`), '');
@@ -116,10 +224,10 @@ export async function toDocx(output: Output): Promise<Buffer> {
     new Paragraph({ text: output.title, heading: HeadingLevel.TITLE }),
   ];
   const footnotes: Record<number, { children: Paragraph[] }> = {};
-  if (!output.plan) {
+  const doc = docOf(output);
+  if (!doc) {
     children.push(...output.summary.split('\n').map((t) => new Paragraph({ text: t })));
   } else {
-    const doc = planDoc(output, output.plan);
     for (const s of doc.sources) {
       footnotes[s.n] = { children: [new Paragraph(`${s.text} ${s.from}`)] };
     }
@@ -212,12 +320,12 @@ export function toPdf(output: Output): Promise<Buffer> {
 
   pdf.font('Helvetica-Bold').fontSize(24).fillColor(ink).text(pdfSafe(output.title));
   pdf.moveDown(0.2);
-  if (!output.plan) {
+  const doc = docOf(output);
+  if (!doc) {
     pdf.font('Helvetica').fontSize(11).text(pdfSafe(output.summary));
     pdf.end();
     return done;
   }
-  const doc = planDoc(output, output.plan);
   pdf.font('Helvetica').fontSize(10).fillColor(muted).text(pdfSafe(doc.byline));
 
   heading(IN_BRIEF);

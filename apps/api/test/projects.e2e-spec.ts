@@ -158,7 +158,7 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
     expect(question.question.options.map((o) => o.label)).toEqual([
       'Make a plan',
       'Check my plan',
-      'Fix one that missed',
+      'Fix my plan',
     ]);
 
     await request(http())
@@ -197,7 +197,8 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
     await settled(threadId);
     const first = {
       text: 'Launch plan for my film "Salt Road"',
-      files: [{ name: 'plan.txt', text: plan.slice(0, 8_000) }, { name: 'poster.png' }],
+      // The agent gets the whole file: each reader cuts it to what its model should see.
+      files: [{ name: 'plan.txt', text: plan }, { name: 'poster.png' }],
     };
     expect(handoffs.at(-1)).toEqual({
       category: 'film',

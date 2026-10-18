@@ -1,7 +1,7 @@
 import type { Category, Project, Thread } from '@oraqul/schema';
 import { dedupe, diffIds, lcf, splitList } from './brief';
 import type { DOutput } from './build-output';
-import { applyRescue, auditBrief, mkOut, mkThread, traceForScenario, withSeedClock } from './flows';
+import { applyFix, auditBrief, mkOut, mkThread, traceForScenario, withSeedClock } from './flows';
 import { uuidFrom } from './ids';
 import { PACKS } from './packs';
 import { getState, insertProject, markRead, patchProject, pushItem } from './store';
@@ -20,7 +20,7 @@ interface SeedProject {
   updated: string;
   first: 'build' | 'audit';
   extras: ('date' | 'partner')[];
-  second?: { kind: 'scenario'; id: string } | { kind: 'rescue' };
+  second?: { kind: 'scenario'; id: string } | { kind: 'fix' };
 }
 
 const SEEDS: SeedProject[] = [
@@ -30,7 +30,7 @@ const SEEDS: SeedProject[] = [
     name: 'Salt Road',
     kind: 'Film',
     genre: 'Crime drama',
-    status: 'Opened, ready for rescue',
+    status: 'Opened, ready for a fix',
     places: ['UK', 'Canada', 'Mexico'],
     window: 'Nov 2026',
     lead: 'Nia Calloway, Teo Brandt',
@@ -116,7 +116,7 @@ const SEEDS: SeedProject[] = [
     updated: '2026-10-07',
     first: 'build',
     extras: [],
-    second: { kind: 'rescue' },
+    second: { kind: 'fix' },
   },
   {
     key: 'r7',
@@ -163,7 +163,7 @@ function seedChat(r: Project, t: Thread, made: DOutput[]): void {
       scenario: `Run scenario: ${o.title.replace('Scenario: ', '')}`,
       date: 'Check the dates.',
       partner: `Draft the ${pk.partnerWord} brief.`,
-      rescue: 'Add the results.',
+      fix: 'Add the results.',
     }[o.kind];
     const steps =
       o.kind === 'scenario'
@@ -296,7 +296,7 @@ export function seed(): void {
           const nb = structuredClone(o1.brief);
           const x = pk.res;
           const labels = x.tLabels(r);
-          applyRescue(r, nb, {
+          applyFix(r, nb, {
             date: x.confirmRows[0]?.[1] ?? '',
             a: x.demoA(r),
             t: labels ? labels.map((label, i) => ({ label, share: x.demoT(r)[i] ?? 0 })) : null,
@@ -306,8 +306,8 @@ export function seed(): void {
           const o2 = mkOut(
             r,
             t2,
-            'rescue',
-            'Rescue: results',
+            'fix',
+            'Fix: results',
             nb,
             { parentId: o1.id, changed: diffIds(o1.brief, nb), by: 'Dan' },
             `output:${s.key}:2`,

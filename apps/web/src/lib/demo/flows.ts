@@ -535,7 +535,7 @@ function confirmFile(threadId: string, name: string): void {
     },
     (a) => {
       if (a.card !== 'confirm') return;
-      runRescue(threadId, {
+      runFix(threadId, {
         date: demo.date,
         a: a.primary,
         t:
@@ -620,7 +620,7 @@ function askResultsHold(
     },
     (a) => {
       const n = textOf(a).match(/\d+/)?.[0];
-      runRescue(threadId, {
+      runFix(threadId, {
         date,
         a: actual,
         t: secondary,
@@ -630,27 +630,27 @@ function askResultsHold(
   );
 }
 
-function runRescue(threadId: string, res: DResultsInput): void {
+function runFix(threadId: string, res: DResultsInput): void {
   const t = thread(threadId);
   const b = baseOf(t);
   if (!b) return;
   const r = project(t.projectId);
-  runTrace(threadId, pack(r).trace.rescue.slice(), () => {
+  runTrace(threadId, pack(r).trace.fix.slice(), () => {
     const current = project(t.projectId);
     const nb = structuredClone(b.brief);
-    applyRescue(current, nb, res);
+    applyFix(current, nb, res);
     dedupe(nb);
     const changed = diffIds(b.brief, nb);
-    const o = mkOut(current, t, 'rescue', 'Rescue: results', nb, { parentId: b.id, changed });
+    const o = mkOut(current, t, 'fix', 'Fix: results', nb, { parentId: b.id, changed });
     patchProject(current.id, { status: 'Launched, replanned' });
     finish(threadId, o);
   });
 }
 
-export function applyRescue(r: Project, b: DBrief, res: DResultsInput): void {
+export function applyFix(r: Project, b: DBrief, res: DResultsInput): void {
   const g = gaps(b, res.a);
   b.results = { ...res, a: res.a.slice(), g };
-  pack(r).rescue(b, g);
+  pack(r).fix(b, g);
 }
 
 function askOlderPlan(t: Thread): void {

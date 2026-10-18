@@ -273,4 +273,125 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       })
       .expect(400);
   });
+
+  it('audits a plan as a report, then fixes it in the same project', async () => {
+    const res = await request(http())
+      .post(`/teams/${teamId}/projects`)
+      .set(as)
+      .send({
+        text: 'Our plan for "Night Ferry", a thriller film for women aged 25 to 34, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor".',
+        mode: 'audit',
+        category: 'film',
+      })
+      .expect(201);
+    const { threadId } = res.body as { threadId: string };
+
+    const audited = await settled(threadId);
+    expect(audited.items.some((i) => i.role === 'question')).toBe(false);
+
+    const report = audited.outputs[0];
+    if (!report?.report) throw new Error('Expected an audit report');
+    expect(audited.outputs).toHaveLength(1);
+    expect(report.kind).toBe('audit');
+    expect(report.kindLabel).toBe('Audit report');
+    expect(report.plan).toBeNull();
+    expect(report.tabs.map((t) => t.key)).toEqual([
+      'summary',
+      'assumptions',
+      'risks',
+      'alternatives',
+      'evidence',
+    ]);
+    expect(
+      report.counts.holds + report.counts.weak + report.counts.breaks + report.counts.cant,
+    ).toBe(report.report.items.length);
+    // The report is the chat's base, so the next message works on it; it is not the project's plan.
+    expect(audited.thread.baseOutputId).toBe(report.id);
+    const cited = new Set(report.receipts.flatMap((r) => (r.lineId ? [r.lineId] : [])));
+    for (const f of report.report.findings) expect(cited.has(f.id)).toBe(true);
+
+    // It exports like a plan: verdict words, footnotes and no call ids.
+    const md = await request(http()).get(`/outputs/${report.id}/export/md`).set(viewer).expect(200);
+    expect(md.text).toContain('## Assumptions');
+    expect(md.text).toMatch(/Breaks|Holds|Weak/);
+    for (const r of report.receipts) expect(md.text).not.toContain(r.callId);
+    await request(http())
+      .get(`/outputs/${report.id}/export/pdf`)
+      .set(viewer)
+      .buffer(true)
+      .expect(200);
+
+    await request(http())
+      .post(`/threads/${threadId}/messages`)
+      .set(as)
+      .send({ kind: 'text', text: 'Fix this plan' })
+      .expect(202);
+    const fixed = await settled(threadId);
+    expect(fixed.outputs.map((o) => o.kind)).toEqual(['audit', 'fix']);
+    const plan = fixed.outputs[1];
+    if (!plan?.plan) throw new Error('Expected a fixed plan');
+    expect(plan.parentId).toBe(report.id);
+    expect(plan.kindLabel).toBe('Fixed plan');
+    // The fixed plan carries the report it answers, for its "What was fixed" tab.
+    expect(plan.report?.items.length).toBe(report.report.items.length);
+    expect(plan.tabs.map((t) => t.key)).toEqual([
+      'plan',
+      'fixes',
+      'audience',
+      'assumptions',
+      'evidence',
+    ]);
+    expect(fixed.thread.baseOutputId).toBe(plan.id);
+    expect(fixed.projectOutputs.map((o) => o.id)).toEqual([report.id, plan.id]);
+    // Each output has its own evidence.
+    expect(plan.receipts.length).toBeGreaterThan(0);
+    expect(plan.receipts.every((r) => r.source === 'demo')).toBe(true);
+  });
+
+  it('asks whether a fix is for a launch that is out, then for its results', async () => {
+    const res = await request(http())
+      .post(`/teams/${teamId}/projects`)
+      .set(as)
+      .send({
+        text: 'Our plan for "Night Ferry", a thriller film for women aged 25 to 34, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor".',
+        mode: 'fix',
+        category: 'film',
+      })
+      .expect(201);
+    const { threadId } = res.body as { threadId: string };
+
+    const asked = await settled(threadId);
+    const phase = asked.items.findLast((i) => i.role === 'question');
+    if (phase?.role !== 'question') throw new Error('Expected the launch question');
+    if (phase.question.card !== 'single') throw new Error('Expected a single card');
+    expect(phase.question.options.map((o) => o.label)).toEqual(['Not out yet', 'It is out']);
+
+    await request(http())
+      .post(`/threads/${threadId}/messages`)
+      .set(as)
+      .send({
+        kind: 'answer',
+        answer: { kind: 'options', questionId: phase.question.id, optionIds: ['post'] },
+      })
+      .expect(202);
+    const results = await settled(threadId);
+    const card = results.items.findLast((i) => i.role === 'question');
+    if (card?.role !== 'question') throw new Error('Expected the results question');
+    expect(card.question.card).toBe('text');
+
+    await request(http())
+      .post(`/threads/${threadId}/messages`)
+      .set(as)
+      .send({
+        kind: 'answer',
+        answer: { kind: 'text', questionId: card.question.id, text: 'Lagos: 1,100\nLondon: 4,200' },
+      })
+      .expect(202);
+    const done = await settled(threadId);
+    expect(done.outputs.map((o) => o.kind)).toEqual(['audit', 'fix']);
+    const [report] = done.outputs;
+    expect(report?.report?.phase).toBe('post');
+    expect(report?.tabs.map((t) => t.key)).toContain('results');
+    expect(report?.report?.results?.rows.map((r) => r.place)).toEqual(['London', 'Lagos']);
+  });
 });

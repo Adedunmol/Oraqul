@@ -20,7 +20,7 @@ export const podcasts: DemoPack = {
       'New shows with no listeners yet. The read rests on hosts and comp shows',
       'Niche topics with few comparable shows',
     ],
-    none: ['Downloads, retention and ad revenue. You supply them for a rescue'],
+    none: ['Downloads, retention and ad revenue. You supply them for a fix'],
   },
   fields: [
     ['Format', 'kind'],
@@ -102,7 +102,7 @@ export const podcasts: DemoPack = {
       'Checking affinity for each candidate',
       'Drafting the brief with the evidence attached',
     ],
-    rescue: [
+    fix: [
       'Reading the dashboard export: age, region, retention',
       'Comparing who listens with who the plan assumed',
       'Finding which assumption broke',
@@ -439,7 +439,7 @@ export const podcasts: DemoPack = {
       },
     },
   ],
-  rescue(b, g) {
+  fix(b, g) {
     const a1 = assumption(b, 'as1');
     if (a1) {
       a1.verdict = 'breaks';

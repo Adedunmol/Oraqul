@@ -355,7 +355,7 @@ function Details({
       {plans.length ? (
         <ChartCard
           title="How the plan moved"
-          note="Verdicts for each plan, audit, scenario and rescue."
+          note="Verdicts for each plan, scenario and fix."
           table={{
             head: ['Output', 'Holds', 'Weak', 'Breaks', 'Could not test'],
             rows: plans.map((o) => [
@@ -396,7 +396,7 @@ function OutputsList({
   threads: ThreadSummary[];
 }) {
   const [kind, setKind] = useState<Job | 'all'>('all');
-  const kinds = (['build', 'audit', 'scenario', 'rescue', 'date', 'partner'] as const).filter((k) =>
+  const kinds = (['build', 'audit', 'scenario', 'fix', 'date', 'partner'] as const).filter((k) =>
     outputs.some((o) => o.kind === k),
   );
   const names = new Map(threads.map(({ thread }) => [thread.id, thread.name]));

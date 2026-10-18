@@ -4,8 +4,13 @@ import type { LaunchLine, LaunchPlan, LineChange, PlanSource } from '@oraqul/sch
 
 /** Finding ids in the order the plan first cites them, numbered from 1, as in the exports. */
 export function footnotes(plan: LaunchPlan): Map<string, number> {
+  return footnotesOf(plan.sections.flatMap((s) => s.lines));
+}
+
+/** The same numbering for any lines, such as the ones an audit report is made of. */
+export function footnotesOf(lines: LaunchLine[]): Map<string, number> {
   const order = new Map<string, number>();
-  for (const line of plan.sections.flatMap((s) => s.lines)) {
+  for (const line of lines) {
     for (const id of [...line.findingIds, ...line.sourceIds]) {
       if (!order.has(id)) order.set(id, order.size + 1);
     }
@@ -51,7 +56,7 @@ export function PlanDocument({
                   {i + 1}
                 </span>
                 <p className="font-display text-[19px] leading-[1.4] font-medium tracking-[-0.01em]">
-                  <Text
+                  <LineText
                     line={line}
                     notes={notes}
                     sources={plan.sources}
@@ -83,7 +88,7 @@ export function PlanDocument({
   );
 }
 
-function Groups({
+export function Groups({
   lines,
   notes,
   sources,
@@ -114,7 +119,7 @@ function Groups({
                 key={line.id}
                 className="relative pl-4 text-[15.5px] leading-[1.65] before:absolute before:top-[0.8em] before:left-0 before:size-1 before:rounded-full before:bg-muted"
               >
-                <Text
+                <LineText
                   line={line}
                   notes={notes}
                   sources={sources}
@@ -130,7 +135,7 @@ function Groups({
   );
 }
 
-function Text({
+export function LineText({
   line,
   notes,
   sources,

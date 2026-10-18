@@ -1,10 +1,11 @@
 import { demoFetch, QlooClient, type SeenEntity, type ToolContext } from '@oraqul/engine';
 import { briefSchema, launchPlanSchema, type ThreadEvent } from '@oraqul/schema';
 import type { Handoff } from '../category-agents.js';
-import { type FilmState, type PlanRun, runFilmBuild } from './pipeline.js';
+import { type PlanRun, runFilmBuild } from './pipeline.js';
 import { ScriptedQueryPlanner } from './planner.js';
 import { ScriptedFilmReader } from './read.js';
 import { NoResearch } from './research.js';
+import type { BuildState } from './state.js';
 import { TemplatePlanWriter } from './writer.js';
 
 function setup(text: string, callBudget = 60) {
@@ -44,9 +45,9 @@ function setup(text: string, callBudget = 60) {
 const BRIEF =
   'Launch plan for "Night Ferry", a thriller film for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor".';
 
-function waiting(run: PlanRun): FilmState {
+function waiting(run: PlanRun): BuildState {
   expect(run.reason).toBe('waiting');
-  if (!run.state) throw new Error('Expected a paused state');
+  if (run.state?.job !== 'build') throw new Error('Expected a paused build');
   return run.state;
 }
 

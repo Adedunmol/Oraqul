@@ -38,15 +38,15 @@ export interface DOutput {
   src?: 'you' | 'calendar';
 }
 
-const KIND_LABEL: Record<'build' | 'audit' | 'scenario' | 'rescue', string> = {
+const KIND_LABEL: Record<'build' | 'audit' | 'scenario' | 'fix', string> = {
   build: 'Plan',
   audit: 'Audit',
   scenario: 'Scenario',
-  rescue: 'Rescue',
+  fix: 'Fix',
 };
 
-const isPlanKind = (k: Job): k is 'build' | 'audit' | 'scenario' | 'rescue' =>
-  k === 'build' || k === 'audit' || k === 'scenario' || k === 'rescue';
+const isPlanKind = (k: Job): k is 'build' | 'audit' | 'scenario' | 'fix' =>
+  k === 'build' || k === 'audit' || k === 'scenario' || k === 'fix';
 
 export function kindLabel(pack: DemoPack, kind: Job): string {
   if (kind === 'date') return pack.dateLabel;
@@ -92,6 +92,8 @@ const TAB_NOTE: Record<OutputTabKey, string> = {
   topics: 'Topics your listeners like that rival shows do not own.',
   fanbase: 'Other fan bases that overlap with your players.',
   regions: 'Regions ranked by fit, against the lead region the plan names.',
+  alternatives: 'Stronger options the data points to. Your own choices stay in the plan.',
+  fixes: 'What the audit found weak or broken, and what the new plan does about it.',
 };
 
 const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
@@ -115,7 +117,7 @@ function tabsFor(pack: DemoPack, o: DOutput): OutputTab[] {
     build: ['summary', 'audience', 'assumptions', 'plan', ...sig, 'evidence'],
     audit: ['summary', 'assumptions', 'plan', ...sig, 'evidence'],
     scenario: ['summary', 'changes', 'assumptions', 'plan', ...sig, 'evidence'],
-    rescue: ['summary', 'results', 'changes', 'assumptions', ...sig, 'evidence'],
+    fix: ['summary', 'results', 'changes', 'assumptions', ...sig, 'evidence'],
     date: ['summary', 'date', 'evidence'],
     partner: ['summary', 'partners', 'evidence'],
   };
@@ -536,9 +538,9 @@ function headlineFor(
       if (weak) stats.push(weak);
       return { headline: `${label}. ${tail}`, moves, stats };
     }
-    case 'rescue': {
+    case 'fix': {
       const g = b.results?.g;
-      if (!g || !b.course) throw new Error('A rescue output needs results and a course');
+      if (!g || !b.course) throw new Error('A fix output needs results and a course');
       for (const t of b.course.actions.slice(0, 3)) moves.push({ text: t, lineId: null });
       const stats: OutputStat[] = pack.res.stats(b, g).map((s) => ({ label: s.l, value: s.v }));
       if (b.results?.hold) {
@@ -618,7 +620,7 @@ function confidenceFor(r: Project, pack: DemoPack, o: DOutput): Output['confiden
       why: 'Based on a direct Qloo affinity match for the segments the plan targets.',
     };
   }
-  if (o.kind === 'rescue') {
+  if (o.kind === 'fix') {
     return {
       level: 'medium',
       why: `The numbers are yours. The new picks rest on Qloo data for ${pack.fallback}.`,
@@ -704,7 +706,7 @@ function evidenceFor(pack: DemoPack, o: DOutput, moves: Move[]): EvidenceRow[] {
   const b = o.brief;
   let ids = allLineIds(b);
   if (o.focusIds.length) ids = o.focusIds;
-  else if (o.kind === 'scenario' || o.kind === 'rescue') ids = o.changed;
+  else if (o.kind === 'scenario' || o.kind === 'fix') ids = o.changed;
   const driverIds = new Set(moves.map((m) => m.lineId));
   const rows: EvidenceRow[] = [];
   for (const id of ids) {
@@ -753,7 +755,7 @@ export function buildOutput(r: Project, o: DOutput, all: DOutput[]): Output {
   const parent = o.parentId ? all.find((x) => x.id === o.parentId) : undefined;
   const { headline, moves, stats } = headlineFor(r, pack, o, parent);
   const confidence = confidenceFor(r, pack, o);
-  const prefix = { build: 'v', scenario: 'S', audit: 'A', rescue: 'R', date: 'D', partner: 'B' };
+  const prefix = { build: 'v', scenario: 'S', audit: 'A', fix: 'R', date: 'D', partner: 'B' };
   const summary = [
     headline,
     ...moves.map((m, i) => `${i + 1}. ${m.text}`),
@@ -787,11 +789,12 @@ export function buildOutput(r: Project, o: DOutput, all: DOutput[]): Output {
     brief: toBrief(o.brief, r.category),
     // The demo keeps the older brief shape; launch plans come from the API.
     plan: null,
+    report: null,
     evidence: evidenceFor(pack, o, moves),
     receipts: receiptsFor(r, o),
     limits: `Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. ${pack.cov.none[0] ?? ''}. For titles and names Qloo does not know, Oraqul falls back to ${pack.fallback} at lower confidence.`,
     resultsCopy:
-      o.kind === 'rescue'
+      o.kind === 'fix'
         ? {
             dateLabel: pack.res.dateLabel,
             chartTitle: pack.res.chartA,

@@ -20,22 +20,28 @@ import {
   type OverallConfidence,
   type PlanSource,
   type Question,
-  questionSchema,
   type Receipt,
   type StopReason,
   type ThreadEvent,
 } from '@oraqul/schema';
 import { z } from 'zod';
-import type { Handoff, NewOutput, Reply } from '../category-agents.js';
+import {
+  ATTACHMENT_CHARS,
+  cutFiles,
+  type Handoff,
+  type NewOutput,
+  type Reply,
+} from '../category-agents.js';
 import { ungroundedClaims } from '../grounding.js';
 import { capital } from './brief.js';
 import { type CheckContext, checkSections } from './check.js';
 import { ensureDecisions } from './decisions.js';
-import { ground, list } from './findings.js';
+import { type Grounded, ground, list } from './findings.js';
 import type { Change } from './follow-up.js';
-import type { QueryPlanner } from './planner.js';
+import type { QueryPlan, QueryPlanner } from './planner.js';
 import { checkReading, type FilmRead, type FilmReader, filmReadSchema } from './read.js';
 import type { Researcher } from './research.js';
+import type { BuildState, FilmState } from './state.js';
 import { CODE_SECTIONS, type PlanWriter, templateSection, type WriteInput } from './writer.js';
 
 const { BUDGET_CONVENTION, pickModules } = filmPlan;
@@ -45,7 +51,6 @@ const MIN_COMPS = 3;
 const FILL_TO = 4;
 const MAX_COMPS = 5;
 const MAX_SEARCH = 8;
-const STEPS = 6;
 const FILM_TYPES = ['urn:entity:movie' as const, 'urn:entity:tv_show' as const];
 
 const anchorSchema = z.object({
@@ -53,7 +58,7 @@ const anchorSchema = z.object({
   name: z.string(),
   popularity: z.number().nullable(),
 });
-type Anchor = z.infer<typeof anchorSchema>;
+export type Anchor = z.infer<typeof anchorSchema>;
 
 const compUsedSchema = z.object({
   name: z.string(),
@@ -73,28 +78,16 @@ export const filmInputsSchema = z.object({
 });
 export type FilmInputs = z.infer<typeof filmInputsSchema>;
 
-/**
- * What a paused build needs to resume. A build pauses only when the brief has no description
- * or no market (PRD C1): one question, then it plans with whatever it has.
- */
-export const filmStateSchema = z.object({
-  job: z.literal('build'),
-  kind: z.enum(['build', 'scenario']).default('build'),
-  title: z.string().optional(),
-  /** What the person typed to the question, added to the brief before it is read again. */
-  extra: z.string().default(''),
-  asked: z.boolean().default(true),
-  pending: questionSchema.nullable(),
-});
-export type FilmState = z.infer<typeof filmStateSchema>;
-
 export interface PlanRun {
   reason: StopReason;
   /** Set when the run stopped `waiting`, so the answer can resume it. */
   state: FilmState | null;
   /** Every receipt the run made, ready to save. Line receipts carry their `lineId`. */
   receipts: Receipt[];
+  /** The run's last output, the one the chat works on next. */
   output: NewOutput | null;
+  /** Outputs the run made before `output`, oldest first: the audit a fix is written from. */
+  earlier?: NewOutput[];
   tokens: number;
 }
 
@@ -114,32 +107,133 @@ function sectionOrder(modules: LaunchModuleKey[]): LaunchSectionKey[] {
 
 const rank: Record<Confidence, number> = { lower: 0, medium: 1, high: 2 };
 
+export interface Anchors {
+  resolved: Anchor[];
+  used: CompUsed[];
+  dropped: { name: string; why: string }[];
+}
+
+/** What one run keeps as it goes: its receipts, its tokens and its place in the trace. */
+export interface RunCtx {
+  receipts: Receipt[];
+  tokens: number;
+  trace(text: string): void;
+  keep(made: Receipt[]): void;
+  stop(
+    reason: StopReason,
+    state?: FilmState | null,
+    output?: NewOutput | null,
+    earlier?: NewOutput[],
+  ): PlanRun;
+}
+
+export function runCtx(deps: Pick<FilmDeps, 'emit'>, total: number): RunCtx {
+  const receipts: Receipt[] = [];
+  let step = 0;
+  const ctx: RunCtx = {
+    receipts,
+    tokens: 0,
+    trace: (text) =>
+      deps.emit({ type: 'trace.step', agent: 'film', step: ++step, of: total, text }),
+    keep: (made) => {
+      for (const receipt of made) {
+        receipts.push(receipt);
+        deps.emit({ type: 'receipt', receipt });
+      }
+    },
+    stop: (reason, state = null, output = null, earlier) => ({
+      reason,
+      state,
+      receipts,
+      output,
+      ...(earlier?.length ? { earlier } : {}),
+      tokens: ctx.tokens,
+    }),
+  };
+  return ctx;
+}
+
+/** The steps of a build, not counting the web step that exists only when search is configured. */
+export const BUILD_STEPS = 6;
+
+export interface Asked {
+  modules: LaunchModuleKey[];
+  queryPlan: QueryPlan;
+  grounded: Grounded;
+  sources: PlanSource[];
+}
+
+/**
+ * Choose the queries, ask Qloo, and look up release timing on the web. Shared by the build and the
+ * audit, so both test a plan against the same findings (spec §4.1).
+ */
+export async function askQloo(
+  deps: FilmDeps,
+  ctx: RunCtx,
+  input: {
+    title: string;
+    read: FilmRead;
+    comps: Anchors;
+    /** The audit adds the partners a plan names to the candidates Qloo ranks. */
+    adjust?: (plan: QueryPlan) => QueryPlan;
+  },
+): Promise<Asked> {
+  const { title, read, comps } = input;
+  ctx.trace('Choosing what to ask Qloo');
+  const { modules } = pickModules({
+    scope: read.scope,
+    ask: read.ask,
+    format: read.format,
+    route: read.route,
+    hasBudget: read.budget !== null,
+  });
+  const compsCountry = commonCountry(comps.used);
+  const { plan: planned, tokens } = await deps.queries.plan({
+    title,
+    read,
+    modules,
+    compsCountry,
+  });
+  ctx.tokens += tokens;
+  const queryPlan = input.adjust ? input.adjust(planned) : planned;
+
+  ctx.trace('Asking Qloo about your audience');
+  const grounded = await ground(
+    { tools: deps.tools, emit: deps.emit, keep: ctx.keep },
+    {
+      read,
+      anchors: comps.resolved,
+      dropped: comps.dropped,
+      plan: queryPlan,
+      year: new Date().getFullYear(),
+    },
+  );
+
+  let sources: PlanSource[] = [];
+  if (deps.research.enabled) {
+    ctx.trace('Checking release timing and the market');
+    const found = await deps.research.research({
+      read,
+      country: queryPlan.country,
+      cities: queryPlan.cities,
+      today: new Date().toISOString().slice(0, 10),
+    });
+    sources = found.sources;
+    ctx.tokens += found.tokens;
+  }
+  return { modules, queryPlan, grounded, sources };
+}
+
 /** The Film build (spec §4.1, §6.1): findings first, then the plan, every line checked. */
 export async function runFilmBuild(
   handoff: Handoff,
   deps: FilmDeps,
-  resume?: { state: FilmState; reply: Reply },
+  resume?: { state: BuildState; reply: Reply },
   /** A what-if: start from a saved plan's inputs with a change, instead of reading the brief. */
   from?: { inputs: FilmInputs; change: Change },
 ): Promise<PlanRun> {
-  const receipts: Receipt[] = [];
-  let tokens = 0;
   // The web step exists only when search is configured, so the count is set up front.
-  const total = STEPS + (deps.research.enabled ? 1 : 0);
-  let step = 0;
-  const trace = (text: string) =>
-    deps.emit({ type: 'trace.step', agent: 'film', step: ++step, of: total, text });
-  const keep = (made: Receipt[]) => {
-    for (const receipt of made) {
-      receipts.push(receipt);
-      deps.emit({ type: 'receipt', receipt });
-    }
-  };
-  const stop = (
-    reason: StopReason,
-    state: FilmState | null = null,
-    output: NewOutput | null = null,
-  ): PlanRun => ({ reason, state, receipts, output, tokens });
+  const ctx = runCtx(deps, BUILD_STEPS + (deps.research.enabled ? 1 : 0));
 
   let read: FilmRead;
   let kind: 'build' | 'scenario' = 'build';
@@ -150,7 +244,7 @@ export async function runFilmBuild(
   let knownDropped: { name: string; why: string }[] = [];
 
   if (from) {
-    trace('Applying your what-if to the plan');
+    ctx.trace('Applying your what-if to the plan');
     const changed = applyChange(from.inputs, from.change, handoff.title);
     ({ read, title } = changed);
     kind = 'scenario';
@@ -173,16 +267,16 @@ export async function runFilmBuild(
         ],
       });
     }
-    trace('Reading your brief');
+    ctx.trace('Reading your brief');
     const input = {
       title: handoff.title,
       text: [briefText(handoff), extra].filter(Boolean).join('\n\n'),
     };
     const { reading, tokens: used } = await deps.reader.read(input);
-    tokens += used;
+    ctx.tokens += used;
     read = checkReading(reading, input);
 
-    // The only question a build asks: there is nothing to plan from without these (PRD C1).
+    // The only question a build ever asks: there is nothing to plan from without these (PRD C1).
     const missing = [
       read.genre || read.logline ? null : 'what the film or series is',
       read.places.length ? null : 'at least one city it opens in',
@@ -196,78 +290,67 @@ export async function runFilmBuild(
         hint: 'For example: “A Nigerian crime thriller, opening in Lagos and London.”',
       };
       deps.emit({ type: 'question', agent: 'film', ...question });
-      return stop('waiting', { job: 'build', kind, extra, asked: true, pending: question });
+      return ctx.stop('waiting', { job: 'build', kind, extra, asked: true, pending: question });
     }
   }
 
-  trace('Finding the comps in Qloo');
-  let comps: { resolved: Anchor[]; used: CompUsed[]; dropped: { name: string; why: string }[] };
+  ctx.trace('Finding the comps in Qloo');
+  let comps: Anchors;
   try {
-    comps = await findComps(deps, keep, read, known, knownUsed, knownDropped);
+    comps = await findComps(deps, ctx.keep, read, known, knownUsed, knownDropped);
   } catch (err) {
-    if (err instanceof QlooBudgetError) return budgetStop(deps, stop);
+    if (err instanceof QlooBudgetError) return budgetStop(deps, ctx);
     throw err;
   }
   if (comps.resolved.length === 0) {
-    const tried = [...read.comps, ...read.suggestedComps];
-    deps.emit({
-      type: 'message',
-      body: tried.length
-        ? `Qloo did not find any of the comps by name (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few films or series your audience watches, as they are usually written.`
-        : 'I could not find comps for this launch, so there is nothing to describe the audience with. Name a few films or series your audience watches and I will plan from them.',
-      claims: receipts.slice(0, 1).map((r) => ({ text: 'Searched Qloo.', receiptIds: [r.callId] })),
-    });
-    return stop('finished');
+    noCompsStop(deps, ctx, read);
+    return ctx.stop('finished');
   }
   for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);
 
-  trace('Choosing what to ask Qloo');
-  const { modules, ruledOut } = pickModules({
-    scope: read.scope,
-    ask: read.ask,
-    format: read.format,
-    route: read.route,
-    hasBudget: read.budget !== null,
-  });
-  const compsCountry = commonCountry(comps.used);
-  const { plan: queryPlan, tokens: planned } = await deps.queries.plan({
+  const asked = await askQloo(deps, ctx, { title, read, comps });
+  return writePlan(deps, ctx, {
+    handoff,
     title,
     read,
-    modules,
-    compsCountry,
+    comps,
+    asked,
+    extra,
+    kind,
+    intro: `Here is the launch plan for “${title}”.`,
   });
-  tokens += planned;
+}
 
-  trace('Asking Qloo about your audience');
-  const grounded = await ground(
-    { tools: deps.tools, emit: deps.emit, keep },
-    {
-      read,
-      anchors: comps.resolved,
-      dropped: comps.dropped,
-      plan: queryPlan,
-      year: new Date().getFullYear(),
-    },
-  );
+/** Stage 2 and the check (spec §4.1, §6.2): write the plan from the findings, then check every line. */
+export async function writePlan(
+  deps: FilmDeps,
+  ctx: RunCtx,
+  input: {
+    handoff: Handoff;
+    title: string;
+    read: FilmRead;
+    comps: Anchors;
+    asked: Asked;
+    /** More of the person's words: the answer to a question, or the fixes an audit found. */
+    extra: string;
+    kind: 'build' | 'scenario' | 'fix';
+    /** The chat line that introduces the plan. */
+    intro: string;
+    /** Characters of each file the writer may read. */
+    chars?: number;
+    /** The outputs this run made first, saved before the plan. */
+    earlier?: NewOutput[];
+  },
+): Promise<PlanRun> {
+  const { handoff, title, read, comps, asked, extra, kind } = input;
+  const { modules, queryPlan, grounded, sources } = asked;
+  const text = briefText(handoff, input.chars);
 
-  let sources: PlanSource[] = [];
-  if (deps.research.enabled) {
-    trace('Checking release timing and the market');
-    const found = await deps.research.research({
-      read,
-      country: queryPlan.country,
-      cities: queryPlan.cities,
-      today: new Date().toISOString().slice(0, 10),
-    });
-    sources = found.sources;
-    tokens += found.tokens;
-  }
-
-  trace('Writing the plan');
+  ctx.trace('Writing the plan');
   const order = sectionOrder(modules);
   const writeInput: WriteInput = {
     title,
-    request: [briefText(handoff), extra].filter(Boolean).join('\n\n'),
+    request: [text, extra].filter(Boolean).join('\n\n'),
     read,
     comps: comps.used,
     sections: order,
@@ -275,10 +358,10 @@ export async function runFilmBuild(
     sources,
   };
   const written = await deps.writer.write(writeInput);
-  tokens += written.tokens;
+  ctx.tokens += written.tokens;
 
-  trace('Checking every line');
-  const ctx: CheckContext = {
+  ctx.trace('Checking every line');
+  const checkCtx: CheckContext = {
     findings: grounded.findings,
     sources,
     briefNames: [
@@ -291,20 +374,20 @@ export async function runFilmBuild(
       ...read.partners,
       ...(read.country ? [read.country] : []),
     ],
-    briefText: [briefText(handoff), extra].join('\n'),
+    briefText: [text, extra].join('\n'),
     teamCities: read.places,
     teamAges: read.ages,
     allowed: order,
   };
   const writerSections = written.sections.filter((s) => !CODE_SECTIONS.includes(s.key));
-  const checked = checkSections(writerSections, ctx);
+  const checked = checkSections(writerSections, checkCtx);
   // A core section the writer left out, or whose every line failed, comes from the templates.
   const core: LaunchSectionKey[] = ['bottom-line', 'positioning', 'audience', 'markets'];
   const empty = core.filter((key) => !checked.sections.some((s) => s.key === key));
   const filled = empty.length
     ? checkSections(
         empty.map((key) => ({ key, lines: templateSection(key, writeInput) })),
-        ctx,
+        checkCtx,
       )
     : { sections: [], dropped: [] };
   const codeSections = [
@@ -346,52 +429,72 @@ export async function runFilmBuild(
     bottom[0]?.text ?? 'Qloo could not test enough of this plan to lead with anything yet.';
   const confidence = overall(bottom, grounded.findings);
 
-  const reply = writeReply(title, bottom, comps.used, grounded.findings, deps.tools.source);
-  if (ungroundedClaims(reply, receipts).length) {
+  const reply = writeReply(input.intro, bottom, grounded.findings, deps.tools.source);
+  if (ungroundedClaims(reply, ctx.receipts).length) {
     deps.emit({
       type: 'error',
       message: 'The plan cited a call this run did not make, so it was not saved.',
     });
-    return stop('error');
+    return ctx.stop('error');
   }
   deps.emit({ type: 'message', body: reply.message, claims: reply.claims });
 
   // Line receipts replace the call receipts they copy, so each call shows once per line.
   const lineReceipts = [...grounded.brief.lineReceipts, ...grounded.receipts];
   const cited = new Set(lineReceipts.map((r) => r.callId));
-  receipts.splice(
+  ctx.receipts.splice(
     0,
-    receipts.length,
+    ctx.receipts.length,
     ...lineReceipts,
-    ...receipts.filter((r) => !cited.has(r.callId)),
+    ...ctx.receipts.filter((r) => !cited.has(r.callId)),
   );
-  return stop('finished', null, {
-    kind,
-    title,
-    brief: {
-      ...grounded.brief.brief,
-      cannot: [
-        ...grounded.brief.brief.cannot,
-        ...grounded.gaps.map((g, i) => ({ id: `cant-q-${i + 1}`, item: g.item, reason: g.why })),
-      ],
+  return ctx.stop(
+    'finished',
+    null,
+    {
+      kind,
+      title,
+      brief: {
+        ...grounded.brief.brief,
+        cannot: [
+          ...grounded.brief.brief.cannot,
+          ...grounded.gaps.map((g, i) => ({ id: `cant-q-${i + 1}`, item: g.item, reason: g.why })),
+        ],
+      },
+      plan,
+      report: null,
+      headline,
+      moves,
+      confidence,
+      inputs: {
+        read,
+        comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+        resolved: comps.resolved,
+        dropped: comps.dropped,
+        used: comps.used,
+      } satisfies FilmInputs,
     },
-    plan,
-    headline,
-    moves,
-    confidence,
-    inputs: {
-      read,
-      comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
-      resolved: comps.resolved,
-      dropped: comps.dropped,
-      used: comps.used,
-    } satisfies FilmInputs,
+    input.earlier,
+  );
+}
+
+/** No comp was found in Qloo, so there is nothing to describe the audience with. */
+export function noCompsStop(deps: Pick<FilmDeps, 'emit'>, ctx: RunCtx, read: FilmRead): void {
+  const tried = [...read.comps, ...read.suggestedComps];
+  deps.emit({
+    type: 'message',
+    body: tried.length
+      ? `Qloo did not find any of the comps by name (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few films or series your audience watches, as they are usually written.`
+      : 'I could not find comps for this launch, so there is nothing to describe the audience with. Name a few films or series your audience watches and I will plan from them.',
+    claims: ctx.receipts
+      .slice(0, 1)
+      .map((r) => ({ text: 'Searched Qloo.', receiptIds: [r.callId] })),
   });
 }
 
 // The team's comps always, and they lead. Below 3, the model's proposals fill to 4, kept apart.
 // A same-name match is settled by code from the country and popularity, and the choice is said.
-async function findComps(
+export async function findComps(
   deps: FilmDeps,
   keep: (made: Receipt[]) => void,
   read: FilmRead,
@@ -470,7 +573,7 @@ function settle(
   return [...candidates].sort((a, b) => score(b) - score(a))[0] as (typeof candidates)[number];
 }
 
-function commonCountry(used: CompUsed[]): string | null {
+export function commonCountry(used: CompUsed[]): string | null {
   const counts = new Map<string, number>();
   for (const u of used) {
     const country = u.match?.split('·').at(-1)?.trim();
@@ -530,7 +633,7 @@ export function applyChange(
   };
 }
 
-function homeMarket(cities: string[], country: string | null): string | null {
+export function homeMarket(cities: string[], country: string | null): string | null {
   return country ? (cities.find((c) => cityCountry(c) === country) ?? null) : null;
 }
 
@@ -619,27 +722,33 @@ function overall(bottom: LaunchLine[], findings: Finding[]): OverallConfidence {
   };
 }
 
-function budgetStop(deps: FilmDeps, stop: (reason: StopReason) => PlanRun): PlanRun {
+export function budgetStop(deps: Pick<FilmDeps, 'emit'>, ctx: RunCtx): PlanRun {
   deps.emit({
     type: 'message',
     body: 'I stopped because the Qloo call budget for this run is spent. Nothing past this point was tested, so no plan was saved.',
     claims: [],
   });
-  return stop('budget');
+  return ctx.stop('budget');
 }
 
 /** The first message, its files, and this run's message when it is a different one. */
-export function briefText({ inputs, message }: Handoff): string {
-  const part = ({ text, files }: Handoff['inputs']) =>
-    [text, ...files.flatMap((f) => (f.text ? [`[File: ${f.name}]\n${f.text}`] : []))]
+export function briefText(
+  { inputs, message }: Handoff,
+  /** Most characters of each file to read: a brief is cut short, a plan to audit is not. */
+  chars = ATTACHMENT_CHARS,
+): string {
+  const part = (said: Handoff['inputs']) => {
+    const { text, files } = cutFiles(said, chars);
+    return [text, ...files.flatMap((f) => (f.text ? [`[File: ${f.name}]\n${f.text}`] : []))]
       .filter(Boolean)
       .join('\n\n');
+  };
   const first = part(inputs);
   const now = part(message);
   return now && now !== first ? `${first}\n\n${now}` : first;
 }
 
-function replyText(state: FilmState, reply: Reply): string {
+export function replyText(state: { pending: Question | null }, reply: Reply): string {
   if (reply.kind === 'typed' || reply.kind === 'text') return reply.text;
   const pending = state.pending;
   return pending
@@ -663,9 +772,8 @@ function unique(values: string[]): string[] {
 // The chat gives the bottom line and opens the plan (spec §4.1, §6.1). Every grounded move is a
 // claim citing the calls behind its findings.
 function writeReply(
-  title: string,
+  intro: string,
   bottom: LaunchLine[],
-  used: CompUsed[],
   findings: Finding[],
   source: Receipt['source'],
 ): { message: string; claims: Claim[] } {
@@ -674,10 +782,7 @@ function writeReply(
     return ids.length ? [{ text: l.text, receiptIds: [...new Set(ids)] }] : [];
   });
   // The plan follows in full below this line, so the message only introduces it.
-  const message = [
-    `Here is the launch plan for “${title}”.`,
-    source === 'demo' ? 'This run used demo data, not live Qloo.' : '',
-  ]
+  const message = [intro, source === 'demo' ? 'This run used demo data, not live Qloo.' : '']
     .filter(Boolean)
     .join(' ');
   return { message, claims };

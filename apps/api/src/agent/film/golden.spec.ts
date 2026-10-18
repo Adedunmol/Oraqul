@@ -101,7 +101,7 @@ async function run(golden: GoldenCase, fetchImpl: typeof fetch, source: Receipt[
   };
   let result: PlanRun = await runFilmBuild(handoff, deps());
   for (const r of golden.replies) {
-    if (!result.state?.pending) break;
+    if (result.state?.job !== 'build' || !result.state.pending) break;
     const reply: Reply =
       'optionIds' in r
         ? { kind: 'options', questionId: result.state.pending.id, optionIds: r.optionIds }

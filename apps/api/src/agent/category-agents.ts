@@ -2,6 +2,7 @@ import { packs } from '@oraqul/packs';
 import {
   type Answer,
   type Attachment,
+  type AuditReport,
   attachmentSchema,
   type Brief,
   type Category,
@@ -17,18 +18,25 @@ import {
 import { z } from 'zod';
 import type { TranscriptLine } from './router/reader.js';
 
-// Spec: a file's text is read, but a long plan should not fill the model's context.
-const ATTACHMENT_CHARS = 8_000;
+// A file's text is kept whole, up to what an upload allows. Each reader cuts it to what its model
+// should see: the router and a build read the start, an audit reads a whole plan (spec §3.1).
+export const ATTACHMENT_CHARS = 8_000;
+export const PLAN_CHARS = 40_000;
 
-/** Something the person sent, with the text of each file cut to what a model reads. */
+/** Something the person sent, with the text of each file as uploaded. */
 export const saidSchema = z.object({ text: z.string(), files: z.array(attachmentSchema) });
 export type Said = z.infer<typeof saidSchema>;
 
 export function said(text: string, attachments: Attachment[]): Said {
+  return { text, files: attachments };
+}
+
+/** The same message with each file's text cut to `chars`. */
+export function cutFiles(message: Said, chars: number): Said {
   return {
-    text,
-    files: attachments.map((a) =>
-      a.text === undefined ? a : { ...a, text: a.text.slice(0, ATTACHMENT_CHARS) },
+    ...message,
+    files: message.files.map((f) =>
+      f.text === undefined ? f : { ...f, text: f.text.slice(0, chars) },
     ),
   };
 }
@@ -55,11 +63,18 @@ export interface NewOutput {
   brief: Brief;
   /** The launch plan, for outputs built on findings. Null for the older brief shape. */
   plan: LaunchPlan | null;
+  /** The audit report, for an audit. Null for every other kind. */
+  report: AuditReport | null;
   headline: string;
   moves: Move[];
   confidence: OverallConfidence;
   /** What it was built from, so a follow up can rerun it. Opaque outside the agent that made it. */
   inputs: object | null;
+  /**
+   * The ids of the run's calls this output rests on, so a run that makes a report and then a plan
+   * shows each its own evidence. Unset means every call the run made.
+   */
+  callIds?: string[];
 }
 
 /** What the person sent to a card the agent left open: a card answer, or text typed instead. */
@@ -74,7 +89,10 @@ export interface AgentRun {
   state: object | null;
   /** Every receipt the run made. Line receipts carry their `lineId`. */
   receipts: Receipt[];
+  /** The run's last output, the one the chat works on next. */
   output: NewOutput | null;
+  /** Outputs made before `output` in the same run, oldest first: the audit a fix is written from. */
+  earlier?: NewOutput[];
   tokens: number;
   qlooCalls: number;
 }
@@ -95,8 +113,8 @@ export interface CategoryAgent {
 
 const WORK: Record<StartMode, string> = {
   build: 'plan',
-  audit: 'check of your plan',
-  rescue: 'relaunch plan',
+  audit: 'report on your plan',
+  fix: 'fixed plan',
 };
 
 /**

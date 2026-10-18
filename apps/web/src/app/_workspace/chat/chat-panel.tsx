@@ -1,6 +1,13 @@
 'use client';
 
-import type { Finding, LaunchPlan, Output, QuestionAnswer, ThreadItem } from '@oraqul/schema';
+import type {
+  AuditReport,
+  Finding,
+  LaunchPlan,
+  Output,
+  QuestionAnswer,
+  ThreadItem,
+} from '@oraqul/schema';
 import {
   Button,
   buttonClassName,
@@ -25,6 +32,7 @@ import { plural } from '../format';
 import { ExportMenu } from '../output/export-menu';
 import { PlanDocument } from '../output/plan-document';
 import { ReceiptDrawer } from '../output/receipt-drawer';
+import { ReportDocument } from '../output/report-document';
 import { copyText } from '../toast';
 import { type Attachment, Composer } from './composer';
 import { QuestionCard } from './question-card';
@@ -117,6 +125,7 @@ export function ChatView({
   const openQuestion = [...items].reverse().find((x) => x.role === 'question' && x.answer === null);
   const textOpen = openQuestion?.role === 'question' && openQuestion.question.card === 'text';
   const idle = !busy && !openQuestion;
+  const lastOutputId = items.findLast((x) => x.role === 'output')?.outputId;
   // Callers pass a new function each render; reading it from a ref keeps the effect below to
   // real changes in what is on screen.
   const seenCallback = useRef(onSeen);
@@ -176,6 +185,11 @@ export function ChatView({
               onAnswer={onAnswer}
               output={item.role === 'output' ? outputs.get(item.outputId) : undefined}
               onReceipt={(output, lineId) => setReceipt({ output, lineId })}
+              onFix={
+                canEdit && idle && item.role === 'output' && item.outputId === lastOutputId
+                  ? () => send('Fix this plan', [])
+                  : undefined
+              }
             />
           ))}
         </div>
@@ -228,6 +242,7 @@ function Item({
   onAnswer,
   output,
   onReceipt,
+  onFix,
 }: {
   item: ThreadItem;
   isNew: boolean;
@@ -235,6 +250,8 @@ function Item({
   onAnswer: (itemId: string, answer: QuestionAnswer) => void;
   output: Output | undefined;
   onReceipt: (output: Output, lineId: string) => void;
+  /** Set on the newest output when the person may fix it: asks for a fixed plan. */
+  onFix: (() => void) | undefined;
 }) {
   switch (item.role) {
     case 'user':
@@ -259,6 +276,17 @@ function Item({
     case 'trace':
       return <Trace steps={item.steps} done={item.done} findings={item.findings} isNew={isNew} />;
     case 'output':
+      if (output?.kind === 'audit' && output.report) {
+        return (
+          <ReportCard
+            output={output}
+            report={output.report}
+            isNew={isNew}
+            onReceipt={(lineId) => onReceipt(output, lineId)}
+            onFix={onFix}
+          />
+        );
+      }
       if (output?.plan) {
         return (
           <PlanCard
@@ -447,6 +475,53 @@ function PlanCard({
   );
 }
 
+// An audit report in the conversation is the report itself, as a document, with the one next step
+// that follows from it: a fixed plan, in the same project.
+function ReportCard({
+  output,
+  report,
+  isNew,
+  onReceipt,
+  onFix,
+}: {
+  output: Output;
+  report: AuditReport;
+  isNew: boolean;
+  onReceipt: (lineId: string) => void;
+  onFix: (() => void) | undefined;
+}) {
+  return (
+    <article
+      className={`flex flex-col gap-6 rounded-2xl bg-card px-5 py-5 min-[640px]:px-7 ${isNew ? 'item-new' : ''}`}
+    >
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <KindTag kind={output.kind} label={output.kindLabel} />
+          <h3 className="truncate font-display text-[18px] font-semibold tracking-[-0.02em]">
+            {output.label}
+          </h3>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportMenu output={output} />
+          <Link
+            href={`/outputs/${output.id}`}
+            className={buttonClassName('default', 'default', 'icon')}
+          >
+            <Icon name="external" className="size-4" />
+            Open report
+          </Link>
+          {onFix ? (
+            <Button variant="primary" onClick={onFix}>
+              Fix this plan
+            </Button>
+          ) : null}
+        </div>
+      </header>
+      <ReportDocument report={report} onSource={onReceipt} />
+    </article>
+  );
+}
+
 // An output in the conversation: one line naming it. The agent's message just above already says
 // the bottom line, so the summary card opens in a dialog instead of filling the chat.
 // design-system §7.13
@@ -570,7 +645,7 @@ function OutputCard({
 }
 
 export function KindTag({ kind, label }: { kind: Output['kind']; label: string }) {
-  const planLike = kind === 'build' || kind === 'audit';
+  const planLike = kind === 'build' || kind === 'audit' || kind === 'fix';
   return (
     <span
       className={`inline-block rounded-full px-2 py-px align-middle text-[11px] font-semibold tracking-[0.02em] ${planLike ? 'bg-accent-soft' : 'bg-surface2'}`}

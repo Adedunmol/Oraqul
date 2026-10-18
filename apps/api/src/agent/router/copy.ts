@@ -16,18 +16,18 @@ export const MODE_OPTIONS: Record<StartMode, { label: string; description: strin
   build: { label: 'Make a plan', description: 'A new launch, planned from what you tell me.' },
   audit: {
     label: 'Check my plan',
-    description: 'Test the audience assumptions in a plan you already have.',
+    description: 'Test the assumptions in a plan you have, or find out why a launch fell short.',
   },
-  rescue: {
-    label: 'Fix one that missed',
-    description: 'It is out and did worse than hoped. Find which assumption was wrong.',
+  fix: {
+    label: 'Fix my plan',
+    description: 'Before or after launch. I check it, then write a better one.',
   },
 };
 
 const READINGS: Record<StartMode, string> = {
   build: 'a new launch plan',
   audit: 'a check of your plan',
-  rescue: 'a fix for a launch that missed',
+  fix: 'a fix for your plan',
 };
 
 export function readingLine(mode: StartMode, title: string, categoryTitle: string): string {

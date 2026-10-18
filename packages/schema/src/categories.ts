@@ -5,11 +5,11 @@ export const categorySchema = z.enum(categories);
 export type Category = z.infer<typeof categorySchema>;
 
 /** The three ways a project starts. Each is also the job of the run it starts. */
-export const startModes = ['build', 'audit', 'rescue'] as const;
+export const startModes = ['build', 'audit', 'fix'] as const;
 export const startModeSchema = z.enum(startModes);
 export type StartMode = z.infer<typeof startModeSchema>;
 
-export const jobs = ['build', 'audit', 'rescue', 'scenario', 'date', 'partner'] as const;
+export const jobs = ['build', 'audit', 'fix', 'scenario', 'date', 'partner'] as const;
 export const jobSchema = z.enum(jobs);
 export type Job = z.infer<typeof jobSchema>;
 

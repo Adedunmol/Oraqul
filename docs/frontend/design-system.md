@@ -181,7 +181,7 @@ A segmented control: `--surface2` track, radius 8, padding 4. Each tab radius 6,
 A single muted sentence above the content, 13.5px, max 68 characters wide. Every tab has one. Keep the wording in section 10.
 
 ### 7.11 Start message box
-One card: an opening line from the agent, the message box, then "Not sure how to put it? Start from:" with three filter chips, Make a plan, Check my plan, Fix one that missed. The chips are hints, not steps: none is needed, picking one changes the opening line, the placeholder and a "You bring: ..." line, and picking it again clears it. Typed text is kept when a chip changes. A muted line says Oraqul works out the category and the job, and that the project is saved when you send. The same card sits on the overview and on `/start`. The message box takes text and files (button or drop, up to 5, 20 MB each), Enter sends and Shift Enter adds a line. Never label any of this "New project": the project is made by the first message.
+One card: an opening line from the agent, the message box, then "Not sure how to put it? Start from:" with three filter chips, Make a plan, Check my plan, Fix my plan. The chips are hints, not steps: none is needed, picking one changes the opening line, the placeholder and a "You bring: ..." line, and picking it again clears it. Typed text is kept when a chip changes. A muted line says Oraqul works out the category and the job, and that the project is saved when you send. The same card sits on the overview and on `/start`. The message box takes text and files (button or drop, up to 5, 20 MB each), Enter sends and Shift Enter adds a line. Never label any of this "New project": the project is made by the first message.
 
 ### 7.12 Project card
 No icon: the whole card is tinted with its category colour (`.cat-card`, §3.3), with the lift and no outline. Title, then one muted line of meta on a single line (the category name first in the All list, then kind and genre; the window lives in the chat), then a footer with the status chip on a translucent `--surface`. The updated date and the pin show only on hover or keyboard focus of the card (always on touch screens), so a resting card carries the least it can. Hover deepens the tint.
@@ -205,6 +205,9 @@ A finding opens in the same sheet, labelled "Finding": its sentence, Asked (the 
 
 ### 7.17a Plan document
 A launch plan reads as a document, in the chat and on the plan page (`PlanDocument`): no cards, chips or badges. "In brief" first: three numbered moves in the display face at 19px, each with a small accent number tile. Then each section under a 20px display heading, with groups under a 14px bold subheading and lines as plain 15.5px paragraphs with a small muted bullet. The reading column is 720px. What a line rests on is a quiet raised number after it (muted, dotted underline, accent on hover) that opens the finding in the receipt drawer; a line with nothing behind it carries no mark. Nothing about confidence, tests or data limits appears in the plan. In the chat the plan is the whole card: a header with the kind tag and label, the Export menu and "Open plan", then the document. A changed line gets "New" or "Updated" and "Was: …".
+
+### 7.17b Report document
+An audit reads as a document, in the chat and on the report page (`ReportDocument`). The assumptions come first, grouped by verdict, most urgent first: what breaks, what is weak, what holds, what could not be tested. Each group has a 20px display heading that is its verdict pill (glyph and word) and a count. Each assumption is a row on `--surface2` with radius 12: the belief in 15.5px semibold, "Unstated" when the plan relies on it without saying so, confidence and the receipt chip at the right, "In your plan:" with the sentence that states it, one muted line of why, "Your results:" when the launch is out, and "What to do:" with the fix as a plan line with its footnote number. Then "Your results" as a table (city, share, where the plan put it, where it finished, against the plan; the words are plain text, never a verdict colour), Risks and Worth a look as plan bullets. In the chat the report is the whole card, like a plan: the kind tag and label, the Export menu, "Open report", and the one primary button, "Fix this plan", on the newest output only. A fixed plan has a "What was fixed" tab that lists what the audit found weak or broken beside what changed.
 
 ### 7.18 Search palette (⌘K)
 A centred 600px panel, radius 12, on the scrim. Search field with an esc keycap. Results grouped as Go to, Categories, Projects, Outputs, Actions, each with its icon. Arrow keys move, Enter opens. A footer shows the keys.
@@ -261,7 +264,7 @@ Use plain words. Short sentences. No jargon without a one line explanation next 
 
 | Use | Avoid |
 |---|---|
-| Make a plan, Check my plan, Fix one that missed | Generate, Analyse, Run audit |
+| Make a plan, Check my plan, Fix my plan | Generate, Analyse, Run audit |
 | Project, the one name for what the first message creates, whatever the job | Launch, Campaign, Release, as a name for it |
 | Chat (in the UI; "thread" in code and the API) | Thread, Conversation, Session, Run |
 | Launch for the discipline and the plan: launch planning, launch plan, launch team, the week after launch | Release, go to market or rollout as the umbrella word |

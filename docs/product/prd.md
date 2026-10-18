@@ -6,7 +6,7 @@ Owners: Wahab and Adedunmola.
 
 Oraqul is a culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like.
 
-Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or rescue and relaunch one that missed, across films, series, music, books, podcasts and games. Every reply has two stages. First code asks Qloo, the taste data API, the questions the launch needs and turns each answer into a finding. Then the model writes the plan from those findings and its launch knowledge. Every claim about taste, audience or place cites a finding; launch practice is labelled as playbook. Evidence serves the plan, not the other way round.
+Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or fix one, before the launch or after it, across films, series, music, books, podcasts and games. Every reply has two stages. First code asks Qloo, the taste data API, the questions the launch needs and turns each answer into a finding. Then the model writes the plan from those findings and its launch knowledge. Every claim about taste, audience or place cites a finding; launch practice is labelled as playbook. Evidence serves the plan, not the other way round.
 
 This document says what to build and why. The spec says how. The design system file says how it looks and reads.
 
@@ -59,7 +59,7 @@ Hierarchy: Team, Category, Project, Job, Output.
 * **Team.** Members and roles. Plans, results and briefs are visible only to the team.
 * **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, where it is less certain, and what is not supported.
 * **Project.** The launch. Holds inputs, threads and outputs.
-* **Job.** Plan, Audit, Rescue (includes relaunch). Scenario testing, rival date check and partner brief run inside a project.
+* **Job.** Plan, Audit, Fix (before or after launch). A job replies with a plan, a report or an answer. Scenario testing, rival date check and partner brief run inside a project.
 * **Output.** A saved result with its own details page, evidence and version.
 
 Categories are separate sections, not lanes inside one project. This was chosen because most users never need two categories in one project.
@@ -88,8 +88,8 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | ID | Requirement | P |
 |---|---|---|
 | J1 | Plan: a minimum core (bottom line, positioning, audience, markets, gaps) plus the modules that fit the ask and the launch (partnerships, creative placement, publicity, community, release route, timeline, cadence, budget split, what to measure, risks). A full plan is the common case; a narrow ask gets the core plus the one module it names. | P0 |
-| J2 | Audit: read a pasted or uploaded plan, extract stated and unstated assumptions, test each, mark the source in the plan, and find stronger alternatives for what broke. | P0 |
-| J3 | Rescue: accept results as aggregates by form, file or chat. Compare planned and actual audience, find the assumption that broke, rebuild the plan, and write next steps, places still to plan and what to stop. | P0 |
+| J2 | Audit: read a pasted or uploaded plan, extract stated and unstated assumptions, test each, mark the source in the plan, and find stronger alternatives for what is weak or broken, without ever advising a team to drop its own choice. The reply is a report: assumptions by verdict, risks, worth a look, and what to do about each. After launch, accept the results and set them against the plan to show why it fell short. Any report offers Fix this plan in the same project. | P0 |
+| J3 | Fix, before launch: audit the plan, save the report, and write a new plan from it. Fix, after launch: ask whether it is out, accept results as aggregates by form, file or chat, compare planned and actual audience, find the assumption that broke, and write a new plan around the audience that is there. A fix saves the report and then the plan, and the plan keeps every city and comp the team chose. | P0 |
 | J4 | Scenario: change one assumption, rerun only what depends on it, mark changed lines with what they were before. | P0 |
 | J5 | Rival date check: user supplies rivals and dates, or uses a public calendar. Oraqul measures shared audience with each rival from one ranking call. | P1 |
 | J6 | Partner brief: a draft message that cites its findings. Never sent. | P1 |
@@ -99,7 +99,7 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 
 Each category supplies its own inputs, query catalog, modules, assumption checklist, scenarios, results format, and signature charts. Film is built on the two stages first; the other categories follow with their own catalog and modules.
 
-| Category | Plan sections | Signature views | Rescue takes |
+| Category | Plan sections | Signature views | A launch that is out brings |
 |---|---|---|---|
 | Film and series | Core plus modules: partnerships (music, brands), creative placement, publicity, community, route, timeline, cadence, budget, measures, risks | Plan tab, territory ladder | Opening results by age and territory |
 | Music | Support acts, partner brands, press and playlists, cities | Tour route with route score, support act grid | Tickets and streams by city and age |
@@ -151,7 +151,7 @@ The product has many new words and a deep structure, so it must explain itself b
 
 | ID | Requirement | P |
 |---|---|---|
-| U1 | The overview opens with a message box. Three optional hints under it, Make a plan, Check my plan, Fix one that missed, change the prompt and say what to bring. The first message creates the project. The agent states the job it read in its first reply and the user corrects it by typing ("check my plan instead"); it does not ask a confirm card. | P0 |
+| U1 | The overview opens with a message box. Three optional hints under it, Make a plan, Check my plan, Fix my plan, change the prompt and say what to bring. The first message creates the project. The agent states the job it read in its first reply and the user corrects it by typing ("check my plan instead"); it does not ask a confirm card. | P0 |
 | U2 | Every output tab opens with one plain sentence on what it shows. The Assumptions and Evidence notes explain Holds, Breaks and receipts. | P0 |
 | U3 | A launch plan opens on Plan, then Audience, Assumptions and Evidence. Other outputs show Summary, Plan, Assumptions and Evidence by default, plus the current tab, and the rest sit under More. Could not test sits at the end of Assumptions; Gaps closes the plan. | P0 |
 | U4 | Words stay plain. Verdicts are Holds, Weak, Breaks and Could not test. No jargon without a one line explanation beside it. | P0 |
@@ -171,7 +171,7 @@ Oraqul is a global product. Titles and artists from any market are normal entiti
 * Share of plans exported or shared (the plan is the product).
 * Share of grounded lines against playbook lines, and lines dropped by the check, per category.
 * Share of assumptions that end as holds, weak, breaks, could not test, per category.
-* Rescue completion: share of rescue threads that finish with results applied.
+* Fix completion: share of fixes for a launch that is out that finish with results applied.
 * Rerun cost: Qloo calls per audit, kept under the call budget.
 * First use comprehension: in a test with five or six launch marketers, most can say what Holds and Breaks mean and find a receipt without help.
 

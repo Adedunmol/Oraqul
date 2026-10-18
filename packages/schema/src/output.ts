@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { briefSchema, planSectionKeys } from './brief';
-import { jobSchema } from './categories';
+import { type Job, jobSchema } from './categories';
 import { launchPlanSchema } from './plan';
 import { receiptSchema } from './receipt';
+import { auditReportSchema } from './report';
 import { verdictSchema } from './verdict';
 
 // Draft: the responses of `GET /outputs/:id` and `GET /projects/:id/compare` (spec §7) as the web
@@ -29,6 +30,8 @@ export const outputTabKeys = [
   'topics',
   'fanbase',
   'regions',
+  'alternatives',
+  'fixes',
 ] as const;
 export const outputTabKeySchema = z.enum(outputTabKeys);
 
@@ -130,11 +133,16 @@ export const outputSchema = z.object({
   brief: briefSchema,
   /** The launch plan for outputs built on findings (Film). Null for the older brief shape. */
   plan: launchPlanSchema.nullable(),
+  /**
+   * The audit report, for an audit. A fixed plan carries the report it was written from, for its
+   * "What was fixed" tab. Null for every other kind.
+   */
+  report: auditReportSchema.nullable(),
   evidence: z.array(evidenceRowSchema),
   receipts: z.array(receiptSchema),
   /** What the evidence cannot show for this category, for the note under the Evidence tab. */
   limits: z.string(),
-  /** Category wording for the Results tab. Present on rescues. */
+  /** Category wording for the Results tab. Present on fixes. */
   resultsCopy: z
     .object({
       dateLabel: z.string(),
@@ -155,7 +163,17 @@ export const compareResponseSchema = z.object({
   changes: z.array(lineChangeSchema),
 });
 
-export const planKinds = ['build', 'audit', 'scenario', 'rescue'] as const;
+/** Kinds whose output is a launch plan. A fix is a plan written from an audit. */
+export const planKinds = ['build', 'scenario', 'fix'] as const;
+/** Kinds whose output is a findings report on a plan someone brought. */
+export const reportKinds = ['audit'] as const;
+
+/** The three shapes of reply (spec §3.6). Date and partner are small briefs on a plan. */
+export function outputNature(kind: Job): 'plan' | 'report' | 'brief' {
+  if ((planKinds as readonly Job[]).includes(kind)) return 'plan';
+  if ((reportKinds as readonly Job[]).includes(kind)) return 'report';
+  return 'brief';
+}
 
 export type OutputTabKey = z.infer<typeof outputTabKeySchema>;
 export type OutputTab = z.infer<typeof outputTabSchema>;

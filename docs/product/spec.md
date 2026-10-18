@@ -35,11 +35,11 @@ Rules: `engine` and `packs` never import from `apps`. `schema` has no dependenci
 
 ### 3.1 Router
 
-Input: the first message (text and the words of any small text file) and the `/start` hints. Output: the project's title, its category, the start mode (build, audit, rescue), and so the category agent to run. It does not call tools and it never guesses: a value counts only when the person's own words say it, which code checks by finding the model's quote in what they wrote. When the category or the mode is unclear it asks one `single` card, worded from what it read, with two to four close options that each settle the category, the mode or both, and the person may type their own answer instead. When only the title is missing it asks a `text` card. A message that is not about launching a film, series, music, book, podcast or game gets a fixed refusal. Once all three are known it states the job in its first reply and hands the project to the category agent. The model is configured, not fixed (backend/llm.md); with no model key a scripted router takes only what is plainly written and asks about the rest.
+Input: the first message (text and the words of any small text file) and the `/start` hints. Output: the project's title, its category, the start mode (build, audit, fix), and so the category agent to run. It does not call tools and it never guesses: a value counts only when the person's own words say it, which code checks by finding the model's quote in what they wrote. When the category or the mode is unclear it asks one `single` card, worded from what it read, with two to four close options that each settle the category, the mode or both, and the person may type their own answer instead. When only the title is missing it asks a `text` card. A message that is not about launching a film, series, music, book, podcast or game gets a fixed refusal. Once all three are known it states the job in its first reply and hands the project to the category agent. The model is configured, not fixed (backend/llm.md); with no model key a scripted router takes only what is plainly written and asks about the rest.
 
 **Front door for an active project.** Once the project is saved, every later message passes a check before the category agent sees it. A message with nothing to do with launching or marketing a film, series, music, book, podcast or game gets the same fixed refusal as at the start. A message that may be about this project, or may be a new idea, gets one `single` card of two or three close readings, such as "Check how this plays in Lagos" or "Start a different project", and the person may type their own. A message that plainly follows the conversation goes through. With no model key the check passes everything. The refusal wording is fixed in code. The model may word the card's options, but never decides which agent runs: the project's category does.
 
-The jobs a run can do are build, audit, rescue, scenario, date and partner. The first three are the start modes; the others are follow ups inside a project.
+The jobs a run can do are build, audit, fix, scenario, date and partner. The first three are the start modes; the others are follow ups inside a project. A mode chosen with the start page hints (Check my plan, Fix my plan) is kept when the plan's own words say launch and release all through, since every plan does.
 
 ### 3.2 Category agent
 
@@ -58,7 +58,7 @@ One per category. Each is a configuration of the same runtime:
 
 The runtime is shared by all five and has two paths:
 
-* **Plans (build, audit, rescue, and scenario, date, partner) run a fixed pipeline.** Code sets the steps and their order, so the same input always runs the same tests: read the input into assumptions and anchors, choose a test for each assumption from the pack, run the tests, compute verdicts and scores (§5), write the brief, check it. The model only reads the input and writes the brief from results already computed. Repeatable runs are what make a plan trustworthy and what golden runs (§11) test.
+* **Plans, reports and the briefs on them (build, audit, fix, and scenario, date, partner) run a fixed pipeline.** Code sets the steps and their order, so the same input always runs the same tests: read the input into assumptions and anchors, choose a test for each assumption from the pack, run the tests, compute verdicts and scores (§5), write the brief, check it. The model only reads the input and writes the brief from results already computed. Repeatable runs are what make a plan trustworthy and what golden runs (§11) test.
 * **Conversation runs a tool loop.** Follow up questions, suggestions and other answers (§3.6), clarifying questions and the Books to Film consult (§3.4) let the model choose the next tool call, because their route cannot be fixed in advance. Code still runs each call, makes the receipts and computes every number.
 
 Both paths share the tools, receipts, scoring and grounding check.
@@ -75,9 +75,9 @@ Agents do not call each other. One exception: Books may call `askAgent("film", q
 
 Max steps per run, max Qloo calls per run (call budget, `QLOO_CALL_BUDGET`), and a stop rule. The budget is per run, not per thread or team: a run is one `runs` row, so a run that resumes after a question starts a new budget, and a consult spends its caller's. The stop rule: stop when no candidate beats the current plan by a set margin, or say what input would change the verdict. Follow up requests rerun only the lines whose inputs changed.
 
-### 3.6 Plan and not a plan
+### 3.6 Plan, report and answer
 
-A category agent replies in one of two ways. A plan (build, audit, rescue, scenario, date, partner) is a saved output with a brief and receipts, as in §6 and §9. Anything else the person asks inside a project, a follow up question, a request for suggestions or recommendations, is an answer: a short message in the chat whose claims each carry a receipt, with no output page and no saved brief. When the agent cannot tell which the person wants, it asks "Do you want a plan for this, or just an answer?" on a card instead of drafting a full plan nobody asked for. An answer may offer a plan as the next step. Refusals, no forecasts and no invented numbers (§5) apply to both.
+A category agent replies in one of three ways. A plan (build, scenario, and the plan a fix writes) is a saved output with a launch plan and receipts, as in §6.1. A report (audit) is a saved output with an audit report and receipts (§6.3): a plan someone else wrote, tested one belief at a time, which is not itself a plan. The small briefs (date, partner) are saved outputs on a plan. Anything else the person asks inside a project, a follow up question, a request for suggestions or recommendations, is an answer: a short message in the chat whose claims each carry a receipt, with no output page and no saved brief. When the agent cannot tell which the person wants, it asks "Do you want a plan for this, or just an answer?" on a card instead of drafting a full plan nobody asked for. An answer may offer a plan as the next step. Refusals, no forecasts and no invented numbers (§5) apply to both.
 
 ### 3.7 Memory
 
@@ -199,6 +199,22 @@ The read step turns the person's words into assumptions. Each kind below is test
 * **The team's decisions are constraints.** A place that is weak or breaks keeps its place in the plan; its fix orders it after the team's strongest city. An age band that breaks keeps the band and leads with its strongest part. Cities the team did not name are ranked in the same call but shown only under Worth a look, and only when they beat the team's weakest city.
 * **Plan lines** come from findings (§4.1, §6.1), not from lift over a baseline: lift rewards anything niche. Lift is kept as a confidence aid, such as a partner brief's fit.
 
+### 5.3 Film audit tests (audit and fix)
+
+An audit reads a plan someone else wrote and tests each belief in it with the same findings a build asks for (§4.1). The age, gender, place and comps beliefs are tested exactly as in §5.2. The rest are tested here. Each belief becomes an item with a verdict, a confidence (§5.1), the findings behind it, the sentence of the plan that states it (or `unstated`), and, when it is weak or breaks, a fix line. Every value is computed from what Qloo returned; the model never sets one.
+
+| Belief | Test | Holds | Weak | Breaks |
+|---|---|---|---|---|
+| A partner brand the plan names is the right one | The brands the plan names join the candidates Qloo ranks in one `findTaste` call per city (`only`); its place in that ranking | top third | middle third | bottom third |
+| An artist the plan names suits the audience | Its place among the artists `findTaste` ranks for the scene and city | in the top 3 | listed, below the top 3 | |
+| The release window | Not in Qloo | | | |
+
+* **Not tested, said plainly.** A brand or artist Qloo did not rank is could not test, never weak: not being in a list is not a score. So is a ranking of fewer than three, a window, a budget and anything else Qloo holds no data for.
+* **Fixes never drop.** A team's choices are constraints (§5.2), so a fix reorders them ("keep Lagos, and open it after London") or adds a stronger option beside them ("also approach X"). No audit text tells a team to drop a city, a comp or a partner it chose.
+* **Alternatives.** The Worth a look cities, and the brands and artists that rank above a weak or broken one, each citing the finding that names it.
+* **Results.** After launch the person gives results as aggregates, by city and optionally by age group. Code computes each city's share of the total and its place, and compares that with the place the plan put it (the order the plan names its cities in). A city is *behind the plan* when it finished 2 or more places below its planned place, or any place below it with under half the average city's share; *ahead of the plan* by the same rule upward, with one and a half times the average. A city the plan did not name that finished in the top 3 is ahead of the plan. The item whose city is furthest behind is the one the results contradict most, and the report's bottom line names it. None of these numbers goes to Qloo or to a model (hard rule 7), and a result is kept only when the person's own words contain it.
+* **Starting values.** The thirds, the top 3, the two places and the half and one and a half times are starting values, tuned on the golden runs. `TODO(verify)` on a live run before a report leads with them. Change them here first.
+
 ## 6. Data model
 
 Postgres. All ids are UUIDs. Every row has `created_at`.
@@ -212,10 +228,10 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 | `teams` | name |
 | `memberships` | team_id, user_id, role (owner, editor, viewer); unique per team and user |
 | `invites` | team_id, email, role, token_hash, invited_by, expires_at, accepted_at; one pending invite per team and email |
-| `projects` | team_id, category, name, mode (build, audit, rescue), kind, genre, places[], window, lead, comps, inputs jsonb, status, created_by, updated_at. Saved from the first message as a draft (`status` intake, no name, category or mode) that no list shows until the router has read it, then `active` |
+| `projects` | team_id, category, name, mode (build, audit, fix), kind, genre, places[], window, lead, comps, inputs jsonb, status, created_by, updated_at. Saved from the first message as a draft (`status` intake, no name, category or mode) that no list shows until the router has read it, then `active` |
 | `threads` | project_id, name, base_output_id, from_output_id, fresh bool, team_memory bool (planned, default true), summary (planned, a long chat's summary), created_by, updated_at |
 | `messages` | thread_id, role (user, agent, question, trace, output), body jsonb (a trace row holds a step or a finding), seq; unique per thread and seq, which is where an event stream resumes |
-| `outputs` | thread_id, project_id, kind (build, audit, scenario, rescue, date, partner), parent_id, title, brief jsonb, plan jsonb (the launch plan, §6.1; null for the older brief shape), inputs jsonb (what the agent built it from, so a what-if can rerun it), changed_ids[], headline, moves jsonb, confidence jsonb, data_as_of |
+| `outputs` | thread_id, project_id, kind (build, audit, scenario, fix, date, partner), parent_id, title, brief jsonb, plan jsonb (the launch plan, §6.1; null for the older brief shape and for an audit), report jsonb (the audit report, §6.3; null for every other kind), inputs jsonb (what the agent built it from, so a what-if can rerun it), changed_ids[], headline, moves jsonb, confidence jsonb, data_as_of |
 | `receipts` | run_id, thread_id, output_id (nullable), line_id, endpoint, input jsonb, returned jsonb, rule text, confidence (high, medium, lower), source (qloo, demo), called_at, call_id. A receipt belongs to the run that made the call; an answer (§3.6) has no output, so `output_id` is set only when a plan saves one |
 | `share_links` | output_id, token, enabled |
 | `runs` | thread_id, agent, job, steps jsonb, state jsonb, qloo_calls int, tokens int, status (running, waiting, done, error), stop_reason, finished_at. One row per run segment; `state` holds what the next segment needs, such as the router's open question |
@@ -260,6 +276,19 @@ Privacy: only public entity names, place names and age bands go to Qloo. Uploade
 | Worth a look | only lines citing the Worth a look finding | none |
 | Anywhere | no receipts, call ids or endpoints; the section must be in the plan; no repeated line in a section | same |
 | Bottom line | at most three moves; no city the team did not choose. It may say who to lead the creative with, even when that is not the team's age band | same |
+
+### 6.3 Audit report
+
+`auditReportSchema` in `packages/schema/src/report.ts`, saved in `outputs.report` for an audit. It holds:
+
+* **`items`**: one per belief in the plan: `subject` (age, gender, place, comps, partner, artist, media or other), `claim`, `source` (where the plan says it, or null), `unstated`, `verdict`, `confidence`, `findingIds`, `why` (built by code), and `fix`, a checked launch line or null.
+* **`risks`** and **`alternatives`**: lines written from the verdicts by a model, or by templates with no key, and checked like plan lines (§6.2). An alternative that names a city cites the Worth a look finding.
+* **`results`**: when the launch is out and the person gave results, each city's share, its planned and actual place, Qloo's lift for it, and whether it was ahead of, behind or as planned (§5.3), with the item the results contradict most.
+* **`phase`** (`pre` or `post` launch), the comps used, the findings, the web sources and the lines the check dropped.
+
+The headline is written by code: how many assumptions hold, are weak, break or could not be tested, and after launch the city the plan leaned on that fell short. Its moves are the fixes for what breaks, then for what is weak. The output's `brief` still holds the age, gender, place and comps assumptions, so older readers of an output keep working.
+
+A **fix** saves two outputs in one run: the audit, then a plan written from it whose parent is the audit. The plan is written for the same brief with the team's cities ordered by where the audience is strongest (before launch) or by how the launch did (after it, with any city the results add), and the writer is told each weak or broken item and its fix. When a saved audit is fixed in a later message, its reading and comps are reused and only the plan is new. A fixed plan is presented with the report it answers, for its "What was fixed" tab.
 
 ## 7. API
 
@@ -343,7 +372,7 @@ The look is defined in the design system file. In code:
 
 ### 9.2 Start modes
 
-There is no form. Work starts in one message box, on the overview or on `/start` (opened from New project in the sidebar or on a project list, with the category when opened from a category's list). New project is the one name for it, whatever the job: an audit or a fix is still a project. The box saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a box nobody uses leaves no empty project. Three optional hints under the box, Make a plan, Check my plan and Fix one that missed, set a `mode` of `build`, `audit` or `rescue`; they only change the prompt and the default reading of the job. With no hint the agent reads the job from the message.
+There is no form. Work starts in one message box, on the overview or on `/start` (opened from New project in the sidebar or on a project list, with the category when opened from a category's list). New project is the one name for it, whatever the job: an audit or a fix is still a project. The box saves nothing. The first message, text, files or both, creates the project and its first thread (`POST /projects`), so a box nobody uses leaves no empty project. Three optional hints under the box, Make a plan, Check my plan and Fix my plan, set a `mode` of `build`, `audit` or `fix`; they change the prompt and the default reading of the job, and a plan's own words cannot turn Check my plan or Fix my plan into a build. With no hint the agent reads the job from the message.
 
 After sending, the person lands on the new chat at once. The project's name, category and chat name show as skeletons while the router reads the message, and fill in when it has (`project.updated`). A chat's name is a short summary of its first message; a chat made with New chat is named the same way once its first message is sent. The router never guesses the title, the category or the mode. It asks only when one of them is unclear: the category and the mode first, on one card that says back what it understood ("Looks like a music release or a game. What would you like to do?") with close options such as "Work on a song release" and "Work on a game launch"; then the title on a text card. Typing in the message box answers the open card too, for an answer the options miss. A message about something else ("what's my blood pressure") gets "Oraqul works on launches for films, series, music, books, podcasts and games, so I can't help with that here", and the draft stays hidden. The category agent asks which Qloo entity is theirs. Nobody is asked for the places or the category's extra input. The first reply says what was read, for example "Reading this as a new launch plan for “Tomorrow” (Music)." A correction typed later reruns what it changes: "check my plan instead" runs an audit, naming places replans with them.
 
@@ -396,7 +425,7 @@ The marketing and trust pages a signed out visitor sees.
 
 * **Unit.** Scoring functions, verdict rules, diff and changed marks, results gap logic.
 * **Contract.** Recorded Qloo responses per tool. A live smoke test runs against our key.
-* **Golden runs.** Per category, three fixed inputs (build, audit, rescue) with expected verdicts, run on the plan pipeline (§3.2) over recorded Qloo responses in `packages/engine/fixtures`. Run on every change. A category does not ship without its golden runs, and the second category is not started until Film's pass with the grounding check and refusal tests.
+* **Golden runs.** Per category, fixed inputs for build, for audit and for fix, before and after launch, with expected verdicts, run on the plan pipeline (§3.2) over recorded Qloo responses in `packages/engine/fixtures`. Run on every change. A category does not ship without its golden runs, and the second category is not started until Film's pass with the grounding check and refusal tests.
 * **Grounding check.** Every entity and number in an output must trace to a receipt. Fails the build if not.
 * **Refusal tests.** Forecast, pricing and send requests are refused with the right message.
 * **Coverage tests.** Cross-domain taste tests per category, Nigerian titles, Lagos against no location, podcasts and games, diaspora ranking.

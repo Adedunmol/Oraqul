@@ -87,7 +87,7 @@ export interface PlanWriter {
 /** Sections code writes itself: Gaps from what was not tested, Budget split from the convention. */
 export const CODE_SECTIONS: LaunchSectionKey[] = ['gaps', 'budget'];
 
-const RULES = `How to write:
+export const RULES = `How to write:
 - You are a senior film and series launch strategist. Write the plan a distributor, a financier or a partner would act on this week. Decisions with reasons: each line is the move, why, and how, in one to three sentences. Be specific: names, places, weeks, who does what.
 - Answer what the person asked, using everything they gave. Their cities, age band, comps and window are decisions to plan for, not hypotheses to replace. If the audience data shows one is weak, keep it, say so plainly, and say what to do about it.
 - What you know about the film is only what the person wrote: its genre, country, cities, audience and comps. Never describe its plot, characters, themes, tone or cast beyond that. The themes and archetypes in the data are what the comps' audience responds to: you may say the campaign should speak to them ("lean into power, loyalty and survival"), never that the film contains them.
@@ -136,7 +136,7 @@ ${RULES}
 
 If the honest answer would change a decision in the plan (a city, the order of cities, the age band, a comp), set changesDecision to true and say what you would change. Do not change the plan yourself: the agent offers to run it as a what-if.`;
 
-function findingsBlock(findings: Finding[]): string {
+export function findingsBlock(findings: Finding[]): string {
   return findings
     .map(
       (f) =>
@@ -145,11 +145,11 @@ function findingsBlock(findings: Finding[]): string {
     .join('\n');
 }
 
-function sourcesBlock(sources: PlanSource[]): string {
+export function sourcesBlock(sources: PlanSource[]): string {
   return sources.map((s) => `[${s.id}] ${s.fact} (${s.title})`).join('\n');
 }
 
-function briefBlock(title: string, read: FilmRead, comps: CompUsed[]): string {
+export function briefBlock(title: string, read: FilmRead, comps: CompUsed[]): string {
   return [
     `Launch: ${title} (${read.format ?? 'film or series'})`,
     read.genre ? `Genre: ${read.genre}` : '',

@@ -22,7 +22,7 @@ export const film: DemoPack = {
       'Original ideas with no close comps. The read rests on cast and themes',
       'Titles from outside the US and UK. Only Nigerian titles have been checked: present in Qloo, some with low popularity',
     ],
-    none: ['Box office, viewing numbers and reviews. You supply them for a rescue'],
+    none: ['Box office, viewing numbers and reviews. You supply them for a fix'],
   },
   fields: [
     ['Format', 'kind'],
@@ -104,7 +104,7 @@ export const film: DemoPack = {
       'Checking affinity for each candidate',
       'Drafting the brief with the evidence attached',
     ],
-    rescue: [
+    fix: [
       'Reading the results: split, scores, territories',
       'Comparing who showed up with who the plan assumed',
       'Finding which assumption broke',
@@ -439,7 +439,7 @@ export const film: DemoPack = {
       },
     },
   ],
-  rescue(b, g) {
+  fix(b, g) {
     const a1 = assumption(b, 'as1');
     if (a1) {
       a1.verdict = 'breaks';

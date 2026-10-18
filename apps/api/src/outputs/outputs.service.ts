@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { briefSchema, type CompareResponse, type Output } from '@oraqul/schema';
+import { briefSchema, type CompareResponse, type Output, outputNature } from '@oraqul/schema';
 import { asc, eq, inArray } from 'drizzle-orm';
 import { type Database, DB } from '../db/db.module.js';
 import { outputs, projects, receipts, threads, users } from '../db/schema.js';
-import { compareBriefs, comparePlans, presentOutput, storedPlan } from './present.js';
+import { compareBriefs, comparePlans, presentOutput, storedPlan, storedReport } from './present.js';
 
 /** Saved outputs as the screens read them (spec §7). Writing them is `OutputStore`'s job. */
 @Injectable()
@@ -49,6 +49,7 @@ export class OutputsService {
         : undefined;
       return presentOutput({
         parentPlan: parentRow ? storedPlan(parentRow.output.plan) : null,
+        parentReport: parentRow ? storedReport(parentRow.output.report) : null,
         row: output,
         receipts: saved.filter((r) => r.outputId === output.id),
         category,
@@ -61,7 +62,7 @@ export class OutputsService {
 
   /** The plan a chat or project works on now: the newest plan-kind output. */
   currentPlanId(all: Output[]): string | null {
-    const plans = all.filter((o) => o.kind === 'build' || o.kind === 'scenario');
+    const plans = all.filter((o) => outputNature(o.kind) === 'plan');
     return plans.at(-1)?.id ?? null;
   }
 
