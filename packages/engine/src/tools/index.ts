@@ -12,6 +12,7 @@ import { themeTags, themeTagsOutputSchema } from './theme-tags';
 import type { Tool } from './tool';
 
 export { type TasteType, tasteTypes } from './find-taste';
+export { normalizeTitle } from './resolve-bundle';
 export { themeTagTypes } from './theme-tags';
 export type { SeenEntity, Tool, ToolContext, ToolData } from './tool';
 

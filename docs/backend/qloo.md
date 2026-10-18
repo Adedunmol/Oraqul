@@ -80,7 +80,7 @@ Tools live in `packages/engine/src/tools`. Their confidence follows [spec §5.1]
 | Tool | Qloo call |
 |---|---|
 | `searchEntity` | `lookup.search`, or `lookup.entitiesByExternalId` for an IMDb, Spotify or ISBN id |
-| `resolveBundle` | `lookup.search` per name, exact match only |
+| `resolveBundle` | `lookup.search` per name, exact match first (ignoring case and accents). The Film pipeline takes the closest result when there is none |
 | `resolveTags` | `lookup.tags` per phrase, keeping the first tag under the wanted urn prefix (brand categories need `filter.parents.types=urn:entity:brand`) |
 | `findTaste` | `insights.entities` for one type with the comps as the signal and context: `filter.tags`, `signal.location.query` (or `filter.location.query` for places), `signal.demographics.age`, `filter.release_country`, `filter.release_year.min`, and `only` (sent as `filter.results.entities`) to rank a candidate list |
 | `themeTags` | `insights.tags` with `filter.tag.types=urn:tag:<kind>:qloo`, one call per kind |
