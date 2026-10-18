@@ -2,7 +2,7 @@
 
 NestJS in `apps/api`. Endpoints are listed in [spec §7](../product/spec.md), tables in [spec §6](../product/spec.md), failure behaviour in [spec §10](../product/spec.md).
 
-How Film planning works end to end, from the first message to a saved plan and its follow ups: [film-overview.md](film-overview.md).
+How Film planning works end to end, from the first message to a saved plan and its follow ups: [film-overview.md](film-overview.md). Film and Music share one runtime (`apps/api/src/agent/launch/`); what Music changes is in [music-overview.md](music-overview.md).
 
 ## Conventions
 

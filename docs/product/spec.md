@@ -149,6 +149,26 @@ Stage 1 of every Film reply (direction: findings, then the reply). The model sha
 
 The model (`ModelQueryPlanner`) may change the scene, categories, genres, place kinds and which of the team's cities each query uses. Code keeps only cities on the team's list, Worth a look cities from the city table, and short phrases with no personal detail, and resolves every phrase through `resolveTags`. With no key, `ScriptedQueryPlanner` uses the pack's defaults. The same brief gives the same queries.
 
+### 4.2 Music query catalog
+
+Stage 1 of every Music reply, in the same two stages as Film (§4.1): the model shapes the queries, code runs them and turns each result into a finding. The catalog is `MUSIC_QUERIES` in `packages/packs/src/music/catalog.ts`; which queries run is decided by the plan's modules (§6.1).
+
+**Anchors.** The artist, when Qloo finds it by exact name (an ambiguous name is settled in code by country, then popularity, and the plan says which), plus up to four sound-alike artists the team named. Below three sound-alikes the model proposes more, kept apart and checked in Qloo. The artist is an anchor but not a comp: it is not listed under Comps in the plan. A debut that Qloo does not know is planned from the sound-alikes, and the plan says that is what it rests on. With no sound-alikes, the genre's scene tag stands in, the audience line is labelled the genre's, and its confidence is lower (§5.1, Stand-ins). `TODO(verify)` on the live host for each of these.
+
+| Query | Runs for | Call | Shaped by |
+|---|---|---|---|
+| `audience` | core | `audienceBySegment` on the anchors; also tests the team's age band and gender (§5.4) | — |
+| `markets` | core | `rankPlaces` over the team's cities plus up to 4 nearby table cities, which only ever appear as Worth a look. Its lifts also feed the route score (§5.4) | — |
+| `support` | support | `findTaste` artist per tour city, the anchors excluded. Acts the team has already booked are not excluded in Qloo: the writer is told which they are and does not propose them again | a scene tag (the model's, or the pack default by country of origin), the team's age band. No scene: not asked, and Gaps says why |
+| `brands` | partnerships | As Film §4.1: the model proposes up to 4 brands per city that could realistically partner, code resolves them, `findTaste` brand ranks only those. Falls back to one call per brand category | brand candidates per city, or brand categories |
+| `podcasts` | publicity | `findTaste` podcast | a podcast genre tag, one city |
+| `shows` | sync | `findTaste` tv_show per city | the last 6 years |
+| `films` | sync | `findTaste` movie | release country (full name) or a genre tag, films from the last 3 years |
+| `areas` | community | No extra call: `rankPlaces` reads the heatmap cells already fetched for `markets`, as in Film §4.1 | neighbourhoods per team city, named by the model |
+| `community` | community | `findTaste` place with the university category per city, 8 calls at most | — |
+
+Not in the catalog: `themes` (whether `themeTags` works on an artist signal is `TODO(verify)`), venues (no place category for them has been verified), and radio or playlists (not in Qloo). The planner is the same: with no key the pack's defaults run, and code keeps only the team's cities, table cities for Worth a look, and short phrases.
+
 ## 5. Scoring layer
 
 Computed in code, from values Qloo returned in the same run. The model explains and never sets a score.
@@ -157,7 +177,7 @@ Computed in code, from values Qloo returned in the same run. The model explains 
 * **Verdict.** Per assumption: holds, weak, breaks, or cannot test. Rules are published in the receipt. An assumption with no Qloo signal is cannot test, never weak.
 * **Fit.** 0 to 100 for plan lines: lift on a 0 to 100 scale, `fit = 50 + (lift − 1.2) × 250 / 3`, rounded and kept between 0 and 100. Lift 1.2 is fit 50 and lift 1.5 is fit 75, so the fit bands line up with the lift bands. 75 and above recommended, 50 to 74 usable, below 50 not recommended.
 * **Confidence.** High, medium or lower, on every line. Rule in §5.1.
-* **Route score (music).** Weighted mean of lift over stops, weights `1, 0.9, 0.8, 0.7, ...` by position, plus the best order by lift for comparison.
+* **Route score (music).** Weighted mean of lift over stops, weights `1, 0.9, 0.8, 0.7, ...` by position (`routeScore`), plus the best order by lift for comparison (`bestRoute`). The verdict on a tour order is in §5.4.
 * **Rival overlap.** How much your audience also likes a rival: each rival is scored against your comps in one scoring call (the call `lift` uses), and `overlap = affinity × 100`, rounded. Above 60 risky, 35 to 60 moderate, below 35 low. The band edges are checked on a live run before a plan leads with them. `TODO(verify)`
 * **Topic ownership (podcasts).** Tag weight in your audience divided by its weight in rival shows' audiences. Above 1 means yours.
 * **Held back.** Values signal and early adopter score stay out of the headline until validated. Premium tolerance is a taste proxy only.
@@ -215,6 +235,31 @@ An audit reads a plan someone else wrote and tests each belief in it with the sa
 * **Results.** After launch the person gives results as aggregates, by city and optionally by age group. Code computes each city's share of the total and its place, and compares that with the place the plan put it (the order the plan names its cities in). A city is *behind the plan* when it finished 2 or more places below its planned place, or any place below it with under half the average city's share; *ahead of the plan* by the same rule upward, with one and a half times the average. A city the plan did not name that finished in the top 3 is ahead of the plan. The item whose city is furthest behind is the one the results contradict most, and the report's bottom line names it. None of these numbers goes to Qloo or to a model (hard rule 7), and a result is kept only when the person's own words contain it.
 * **Starting values.** The thirds, the top 3, the two places and the half and one and a half times are starting values, tuned on the golden runs. `TODO(verify)` on a live run before a report leads with them. Change them here first.
 
+### 5.4 Music assumption tests (build)
+
+The age, gender, place and anchors tests are exactly §5.2, run on the artist and its sound-alikes as one bundle. The "anchors describe one audience" test is the leave one out check inside `rankPlaces`, and reads "The artist and its sound-alikes describe one audience". One test is new:
+
+| Assumption | Test | Holds | Weak | Breaks |
+|---|---|---|---|---|
+| The tour order is the strongest (stated when the team names its cities in an order) | `routeScore` of the team's ranked cities in their order, over `bestRoute` (the same lifts, strongest first), both from the `markets` call. Cities that are not ranked are left out; fewer than two ranked cities is cannot test | the team's score is 95% or more of the best | 85% to 95% | below 85% |
+
+* **The team's order is a constraint.** A tour order that is weak or breaks keeps its order in the plan. Its fix opens the stronger order beside it ("keep your order, or open in Lagos and then London"). It never tells the team to drop a city.
+* **Starting values.** 95% and 85% are starting values, tuned on the golden runs. `TODO(verify)` on a live run before a plan leads with them. Change them here first.
+* **Not a routing.** The route score orders cities by audience strength. Travel, venue availability and dates are not in Qloo and are never claimed.
+
+### 5.5 Music audit tests (audit and fix)
+
+An audit reads a plan someone else wrote and tests each belief with the findings a build asks for (§4.2). The age, gender, place, anchors and tour order beliefs are tested as in §5.4. The rest:
+
+| Belief | Test | Holds | Weak | Breaks |
+|---|---|---|---|---|
+| A partner brand the plan names is the right one | As §5.3 | top third | middle third | bottom third |
+| A support act the plan names suits the audience | Its place among the artists `findTaste` ranks for the scene and city | in the top 3 | listed, below the top 3 | |
+| The release window | Not in Qloo | | | |
+
+* **Not tested, said plainly.** A support act or brand Qloo did not rank is could not test, never weak (§5.3). Fixes never drop: a fix reorders the team's choices or adds a stronger option beside them.
+* **Results.** After launch the person gives streams or ticket sales by city and optionally by age group, and the comparison is §5.3. Totals only, and none of it goes to Qloo or a model.
+
 ## 6. Data model
 
 Postgres. All ids are UUIDs. Every row has `created_at`.
@@ -249,7 +294,9 @@ Privacy: only public entity names, place names and age bands go to Qloo. Uploade
 `launchPlanSchema` in `packages/schema/src/plan.ts`. A minimum core plus modules, written by the model from the findings (stage 2) and checked by code (§6.2).
 
 * **Core, always:** Bottom line (up to three moves), Positioning (hook, three key messages, the comps and what each stands for), Audience, Markets (the team's cities in order, then Worth a look), Gaps (last).
-* **Modules:** Partnerships, Creative placement, Publicity and media, Community and grassroots, Release route and window, Timeline, Release cadence, Budget split, What to measure, Risks. `pickModules` in the Film pack: a full plan (a launch plan, a go-to-market, or an unclear ask) gets every module the brief does not rule out; a narrow ask gets only the module it names. Release cadence is for series, and Creative placement is dropped for a film going straight to streaming. Budget split is always offered: shares with no budget, amounts with one.
+* **Modules:** each category picks its own from `launchModuleKeys`, with `pickModules` in its pack. A full plan (a launch plan, a go-to-market, or an unclear ask) gets every module the brief does not rule out; a narrow ask gets only the module it names. Budget split is always offered: shares with no budget, amounts with one.
+  * **Film** (`FILM_MODULES`): Partnerships, Creative placement, Publicity and media, Community and grassroots, Release route and window, Timeline, Release cadence, Budget split, What to measure, Risks. Release cadence is for series, and Creative placement is dropped for a film going straight to streaming. The list is frozen: modules other categories add never reach a Film plan.
+  * **Music** (`MUSIC_MODULES`): Partnerships, Press and playlists (`publicity`), Community and grassroots, Tour route (`tour`), Support acts (`support`), Sync and placement (`sync`), Timeline, Budget split, What to measure, Risks. Tour route needs at least two cities, and Support acts are dropped for a single. Markets is titled Cities.
 * **Lines:** `{ id, kind, text, findingIds, sourceIds, names, group }`. `grounded` lines cite findings; `playbook` lines cite no finding. Either may cite web sources (`sourceIds`), which is the only way a line may state a date, a rival release or a market figure.
 * **Written by code:** "To sharpen this plan" (the section key stays `gaps`: only inputs the team could add and what each would change; what could not be asked goes to the Assumptions tab) and Budget split (the pack's fixed convention table as shares, with amounts computed when a budget is given, labelled a starting split).
 * **Guaranteed by code:** the bottom line names every city the team chose and anchors the premiere in the home market (the city in the film's country of origin), with the rest following within days; Markets has a line for each city; every comp the team named has a line in Positioning. Code writes any of these the model missed (`decisions.ts`).
