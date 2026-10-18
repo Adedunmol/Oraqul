@@ -48,8 +48,8 @@ export function QuestionCard({
   const q = item.question;
   if (item.answer !== null) {
     return (
-      <details className="group self-start rounded-lg text-[13px] text-muted">
-        <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-surface2 [&::-webkit-details-marker]:hidden">
+      <details className="group max-w-full min-w-0 self-start rounded-lg text-[13px] text-muted">
+        <summary className="flex min-w-0 cursor-pointer list-none items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-surface2 [&::-webkit-details-marker]:hidden">
           <Icon name="check" className="size-3.5 shrink-0" />
           <span className="min-w-0 truncate">
             Answered: <span className="text-ink">{item.answer}</span>
