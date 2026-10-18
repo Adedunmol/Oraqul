@@ -49,6 +49,8 @@ export const entitySchema = z.looseObject({
   subtype: z.string().optional(),
   /** Null or missing for some titles. */
   popularity: z.number().nullish(),
+  /** `/search` only: a short tell-apart, such as the release year `2018`. */
+  disambiguation: z.string().optional(),
   properties: z.looseObject({}).optional(),
   tags: z.array(entityTagSchema).optional(),
   query: z

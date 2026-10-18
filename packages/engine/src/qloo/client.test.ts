@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { QlooBudgetError, QlooError } from './client';
 import { entityListBody, jsonResponse, stubFetch, testClient } from './fake-fetch';
+import * as lookup from './lookup';
 import { entityListResponseSchema } from './responses';
 
 afterEach(() => {
@@ -125,6 +126,17 @@ describe('QlooClient.get', () => {
       expect(fetch).toHaveBeenCalledTimes(2);
     });
 
+    it('gives a rate limit a second retry, then stops', async () => {
+      const limited = () => jsonResponse({}, { status: 429 });
+      const twice = stubFetch(limited(), limited(), jsonResponse(entityListBody));
+      await get();
+      expect(twice).toHaveBeenCalledTimes(3);
+
+      const always = stubFetch(limited(), limited(), limited());
+      await expect(get()).rejects.toMatchObject({ kind: 'http', call: { status: 429 } });
+      expect(always).toHaveBeenCalledTimes(3);
+    });
+
     it('retries once after a network error', async () => {
       const fetch = stubFetch(new TypeError('fetch failed'), jsonResponse(entityListBody));
       await get();
@@ -177,6 +189,23 @@ describe('QlooClient.get', () => {
       await expect(get(client)).rejects.toBeInstanceOf(QlooError);
       await get(client);
       expect(fetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('concurrency', () => {
+    it('keeps at most maxConcurrent requests in flight', async () => {
+      let inFlight = 0;
+      let most = 0;
+      const slow: typeof fetch = async () => {
+        inFlight += 1;
+        most = Math.max(most, inFlight);
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        inFlight -= 1;
+        return new Response(JSON.stringify({ success: true, results: [] }), { status: 200 });
+      };
+      const client = testClient({ fetch: slow, maxConcurrent: 2 });
+      await Promise.all(['a', 'b', 'c', 'd', 'e'].map((query) => lookup.search(client, { query })));
+      expect(most).toBe(2);
     });
   });
 

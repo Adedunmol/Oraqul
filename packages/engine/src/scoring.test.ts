@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { fitBand, lift, liftBand, overlapBand, routeScore } from './scoring';
+import {
+  fitBand,
+  fitFromLift,
+  lift,
+  liftBand,
+  overlapBand,
+  overlapFromAffinity,
+  routeScore,
+} from './scoring';
 
 describe('lift', () => {
   it('divides score by baseline', () => {
@@ -51,5 +59,30 @@ describe('routeScore', () => {
 
   it('throws on an empty route', () => {
     expect(() => routeScore([])).toThrow();
+  });
+});
+
+describe('fitFromLift', () => {
+  it.each([
+    [1.2, 50],
+    [1.5, 75],
+    [1.0, 33],
+    [2.0, 100],
+    [0.5, 0],
+  ] as const)('lift %s is fit %s', (value, fit) => {
+    expect(fitFromLift(value)).toBe(fit);
+  });
+
+  it('lines the fit bands up with the lift bands', () => {
+    expect(fitBand(fitFromLift(1.5))).toBe('recommended');
+    expect(fitBand(fitFromLift(1.2))).toBe('usable');
+    expect(fitBand(fitFromLift(1.19))).toBe('not_recommended');
+  });
+});
+
+describe('overlapFromAffinity', () => {
+  it('turns affinity into a 0 to 100 overlap', () => {
+    expect(overlapFromAffinity(0.614)).toBe(61);
+    expect(overlapBand(overlapFromAffinity(0.614))).toBe('risky');
   });
 });

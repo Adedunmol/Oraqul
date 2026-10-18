@@ -61,6 +61,11 @@ export interface QlooClientOptions {
   callBudget?: number;
   /** Wait before the retry when Qloo sends no `Retry-After`. Default 500. */
   retryDelayMs?: number;
+  /**
+   * Most requests in flight at once. Default 2: the hackathon host answered 429 to a plan's
+   * parallel calls on 2026-10-16 (qloo:film-tools recording), so the rest wait their turn.
+   */
+  maxConcurrent?: number;
   /** Replaces the global `fetch`. Demo mode and tests pass one so no request leaves the process. */
   fetch?: typeof fetch;
 }
@@ -68,6 +73,10 @@ export interface QlooClientOptions {
 const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_RETRY_DELAY_MS = 500;
 const MAX_RETRY_AFTER_MS = 10_000;
+const DEFAULT_MAX_CONCURRENT = 2;
+// A 429 with no Retry-After needs longer than a network blip before the one retry: 2 s by default.
+const RATE_LIMIT_FACTOR = 4;
+const RATE_LIMIT_RETRIES = 2;
 
 interface Fetched {
   returned: Receipt['returned'];
@@ -95,6 +104,9 @@ export class QlooClient {
   private readonly fetchImpl: typeof fetch;
   private readonly answers = new Map<string, Promise<Fetched>>();
   private networkCalls = 0;
+  private readonly maxConcurrent: number;
+  private inFlight = 0;
+  private readonly waiting: (() => void)[] = [];
 
   constructor(options: QlooClientOptions) {
     this.baseUrl = options.baseUrl;
@@ -102,7 +114,15 @@ export class QlooClient {
     this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
     this.callBudget = options.callBudget;
+    this.maxConcurrent = options.maxConcurrent ?? DEFAULT_MAX_CONCURRENT;
     this.fetchImpl = options.fetch ?? fetch;
+  }
+
+  /** Network calls still allowed. Infinity with no budget. */
+  get callsLeft(): number {
+    return this.callBudget === undefined
+      ? Number.POSITIVE_INFINITY
+      : this.callBudget - this.networkCalls;
   }
 
   /** Network calls made so far. Cache hits do not count. */
@@ -170,10 +190,13 @@ export class QlooClient {
 
     const calledAt = now();
     const started = Date.now();
-    let attempt = await this.attempt(url);
-    if (attempt.retryAfterMs !== undefined) {
-      await sleep(attempt.retryAfterMs);
-      attempt = await this.attempt(url);
+    let attempt = await this.slot(() => this.attempt(url));
+    // One retry for a failure; a rate limit gets a second one, after a longer wait.
+    for (let retry = 1; attempt.retryAfterMs !== undefined; retry++) {
+      const limited = attempt.status === 429;
+      if (retry > (limited ? RATE_LIMIT_RETRIES : 1)) break;
+      await sleep(attempt.retryAfterMs * (limited ? retry : 1));
+      attempt = await this.slot(() => this.attempt(url));
     }
 
     const call: QlooCall = {
@@ -196,6 +219,19 @@ export class QlooClient {
       throw new QlooError(`Qloo ${endpoint} failed with status ${attempt.status}`, 'http', call);
     }
     return { returned: attempt.returned, call };
+  }
+
+  /** Runs one request when a slot is free. A finished request hands its slot to the next one. */
+  private async slot<T>(work: () => Promise<T>): Promise<T> {
+    if (this.inFlight < this.maxConcurrent) this.inFlight += 1;
+    else await new Promise<void>((resolve) => this.waiting.push(resolve));
+    try {
+      return await work();
+    } finally {
+      const next = this.waiting.shift();
+      if (next) next();
+      else this.inFlight -= 1;
+    }
   }
 
   private async attempt(url: URL): Promise<Attempt> {
@@ -224,7 +260,7 @@ export class QlooClient {
     const seconds = Number(response.headers.get('retry-after'));
     if (Number.isFinite(seconds) && seconds > 0)
       return Math.min(seconds * 1000, MAX_RETRY_AFTER_MS);
-    return this.retryDelayMs;
+    return response.status === 429 ? this.retryDelayMs * RATE_LIMIT_FACTOR : this.retryDelayMs;
   }
 }
 

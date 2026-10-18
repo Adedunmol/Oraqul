@@ -72,7 +72,8 @@ export type TagSearchParams = Page & {
   /** Partial text match on the tag name. */
   'filter.query'?: string;
   'filter.tag.types'?: string[];
-  'filter.parents.types'?: AudienceParentType[];
+  /** Entity types such as `urn:entity:brand` narrow a phrase to that type's tags (verified 2026-10-17). */
+  'filter.parents.types'?: (AudienceParentType | QlooEntityType)[];
   'filter.results.tags'?: string[];
   'filter.popularity.min'?: number;
   'filter.popularity.max'?: number;
@@ -92,7 +93,7 @@ export function tags(
 /** `/v2/tags/types`: the tag namespaces, for `filter.tag.types`. */
 export function tagTypes(
   client: QlooClient,
-  params: Page & { 'filter.parents.types'?: AudienceParentType[] } = {},
+  params: Page & { 'filter.parents.types'?: (AudienceParentType | QlooEntityType)[] } = {},
 ): Promise<QlooResult<TagTypesResponse>> {
   return client.get('/v2/tags/types', params, tagTypesResponseSchema);
 }
