@@ -168,16 +168,6 @@ Oraqul is a global product. Titles and artists from any market are normal entiti
 
 ## 8. Success measures
 
-Hackathon
-
-* The demo shows the Third Bridge plan side by side with a chat assistant's answer to the same brief, and Oraqul's is clearly better.
-* The recorded walkthrough shows a plan, a scenario diff and an export in under three minutes.
-* Every grounded claim in the walkthrough opens its finding.
-* Each of the five categories runs end to end with its own views.
-* A first time viewer types one message and reaches a first result without help.
-
-Product
-
 * Share of plans exported or shared (the plan is the product).
 * Share of grounded lines against playbook lines, and lines dropped by the check, per category.
 * Share of assumptions that end as holds, weak, breaks, could not test, per category.
@@ -185,7 +175,7 @@ Product
 * Rerun cost: Qloo calls per audit, kept under the call budget.
 * First use comprehension: in a test with five or six launch marketers, most can say what Holds and Breaks mean and find a receipt without help.
 
-## 9. Risks and open points
+## 9. Risks
 
 | Risk | What we do |
 |---|---|
@@ -194,20 +184,5 @@ Product
 | Qloo terms may limit public receipts | Share links show summaries only until confirmed. |
 | Call quota (reported near 10,000 a month) | Set a call budget per run. Cache within a run. Rerun only what changed. |
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |
-| Qloo details came from secondhand sources | Confirm against Qloo's docs and our own key before building. |
-| Devpost team rules for two people | Confirm before submission. |
 | The product is hard to understand at first | One message box to start, few questions, the answer shown in the chat, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
 | Five categories is a lot of surface | One engine, one toolbox, five packs. A new category is a new pack, not new code. |
-
-Open points to close first: cross-domain tests per category, Africa entity coverage, Lagos against no location, whether location changes age and gender splits, podcast and game coverage, quota header.
-
-## 10. Milestones to October 31
-
-| When | Done |
-|---|---|
-| Oct 13 to 15 | Qloo live tests. Monorepo, Qloo client, receipts, verdict engine. Design tokens and base components from the design system. |
-| Oct 16 to 20 | Film and Music agents end to end. Chat, trace, outputs, evidence. |
-| Oct 21 to 25 | Books, Podcasts, Games packs. Rescue and scenarios in all five. |
-| Oct 26 to 28 | Accounts, share, export, compare. MCP server. |
-| Oct 29 to 30 | Testing, demo video, write up, public repository and licence. |
-| Oct 31, 4:45am GMT+1 | Submitted. |

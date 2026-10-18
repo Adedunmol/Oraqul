@@ -19,28 +19,22 @@ Vercel AI SDK (v7), called from the API. The provider and model are configuratio
 
 `LlmModule` provides `LLM`: `model(role)` for `router`, `agent` or `writer`, or null with no key. A new provider is one case in `providerFor`.
 
-**Models for plans (checked 2026-10-18, one brief, live Qloo and web search).** The reader, query planner and gate are short structured jobs and stay cheap (Gemini `gemini-3.5-flash-lite`, or OpenAI `gpt-6-luna` at $0.10 / $0.50 per 1M tokens). The writer is the step that decides how good a plan is, so it gets a stronger model:
+**Models.** The reader, query planner and gate are short structured jobs and stay cheap (Gemini `gemini-3.5-flash-lite`, answering the router in about a second). The writer decides how good a plan is, so it can run on a stronger model from another provider:
 
-| Writer | Time per plan | Tokens per plan | Rough cost | What the plan looked like |
-|---|---|---|---|---|
-| `gpt-6.1-sol` (deeper, for plans that go to financiers) | about 7 minutes | about 150K | about $0.50 | Real December slate, named distributors, NFVCB classification, comps judged correctly (Gangs of Lagos streamed, Citation a Netflix drama) |
-| `gpt-6-astra` | about 5 minutes | about 130K | about $2 | About the same as Sol, a little more specific |
-| `gpt-5.4-mini` (**default**) | about 2 minutes | about 25K | about $0.04 | Strong audience work from the Qloo findings, and enough launch knowledge once the research prompt targets the industry and markets (below) |
+| Writer | Time per plan | Rough cost | Use |
+|---|---|---|---|
+| `gpt-5.4-mini` (**default**) | about 2 minutes | about $0.04 | Strong audience work from the findings and enough launch knowledge |
+| `gpt-6-astra` | about 5 minutes | about $2 | A little more specific |
+| `gpt-6.1-sol` | about 7 minutes | about $0.50 | Deeper research, for plans that go to financiers |
 
-Prices are OpenAI's ($2 / $10 for Sol, $10 / $50 for Astra, $0.75 / $4.50 for mini, per 1M tokens). The cost column assumes about 80% of tokens are input, so check OpenAI's usage page for real figures. The token counts include the reader, planner and web search. OpenAI's GPT-6 models are reasoning models: they ignore `temperature` (the SDK warns), and `LLM_WRITER_REASONING` sets how hard they think. The research step runs on the writer's model, so on mini its facts depend on the prompt: it searches the industry by name ("Nollywood", not only "Nigeria"), runs one search per question and per diaspora city, and keeps only facts about that industry and those markets. On the Third Bridge brief that gave the home market's rival releases with dates and distributors, the monthly box-office pattern, the classification rules and, for London, the UK distributor and chains; Houston and Atlanta returned nothing. Results vary a little between runs. Set the writer's key and model in `.env` ([.env.example](../../.env.example) has the block). A writer on another provider needs its own key, and the main key is never sent to it.
-
-Today: Google Gemini, `gemini-3.5-flash-lite`. It answers the router in about a second on the free tier. `gemini-3.8-flash` read messages the same way but took 10 to 130 seconds per call there, and `gemini-2.5-flash` is no longer served to new keys (checked 2026-10-15).
+Costs are rough and assume about 80% input tokens; check the provider's usage page. OpenAI's GPT-6 models are reasoning models: they ignore `temperature`, and `LLM_WRITER_REASONING` sets how hard they think (unset, a plan took 7 minutes and 130K tokens on Sol). Web research runs on the writer's model. It searches the industry by name ("Nollywood", not only "Nigeria"), runs one search per question and per diaspora city, and keeps only facts about that industry and those markets, so results vary a little between runs and a thin diaspora city can return nothing. Set the writer's key and model in `.env` ([.env.example](../../.env.example) has the block). A writer on another provider needs its own key, and the main key is never sent to it.
 
 ## Conventions
 
 - Structured output uses Zod schemas from `packages/schema`. Parse model output at the boundary like any other untrusted input ([typescript.md](../typescript.md)).
 - Structured output uses `generateText` with `Output.object`. `generateObject` is deprecated in v7. Keep output schemas flat objects with nullable fields: not every provider accepts a union at the top level.
 - The router (`apps/api/src/agent/router/`) reads with `ModelReader`; its prompt is `ROUTER_SYSTEM` in `model-reader.ts`. What it returns is checked in code (`decide.ts`): a value counts only when its quote is in the person's words. `FallbackReader` reads with the scripted router if the model call fails, so a quota error never stops a project.
-- Chats are named from their first message by `ModelTitler` (`apps/api/src/agent/titler.ts`, prompt `TITLER_SYSTEM`) on the router model. `FallbackTitler` uses the scripted title, the message's opening line, if the call fails. Chats from before this have their names backfilled once with `pnpm --filter @oraqul/api db:backfill-thread-names` (`--dry-run` first lists the changes); it renames only chats still called "New chat", "First plan", "First check" or "First fix".
+- Chats are named from their first message by `ModelTitler` (`apps/api/src/agent/titler.ts`, prompt `TITLER_SYSTEM`) on the router model. `FallbackTitler` uses the scripted title, the message's opening line, if the call fails.
 - The model plans one step at a time through the `Planner` interface (`apps/api/src/agent/types.ts`). `ModelPlanner` builds its output schema from the pack: only the pack's allowed tools, and `ask` and `consult` only where the agent may use them. `ScriptedPlanner` is the deterministic stand-in with the same shape. The category agents are placeholders for now and do not plan yet.
 - Prompts live next to what they configure: category prompts in `packages/packs/src/<category>`, the router's in `model-reader.ts`.
 - Calls run at temperature 0 with one retry. The router's token use is saved in `runs.tokens`.
-
-## TODO
-
-Prompt versioning, token and cost logging for the category agents, evals for prompt changes ([testing.md](../testing.md)).

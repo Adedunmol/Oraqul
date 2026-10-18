@@ -70,7 +70,7 @@ Code sets the steps and their order. Each step is a `trace.step` in the chat.
 2. **Read** (model, quotes checked). The reader returns format, genre, logline, country of origin, language, comps, cities, window, age bands, gender, cast, director, soundtrack, route, budget (the number is read by code from the quote), signed partners, the scope (full or narrow) and the module a narrow ask names. `checkReading` keeps a value only if its quote is in your words; "launch plan", "go-to-market" and the like always make a full plan. If you named fewer than 3 comps, the model proposes more, kept apart.
 3. **The one question.** Only when there is no description or genre, or no city at all: one text card. After it, the run plans with what it has.
 4. **Find the comps** (`resolveBundle`). Your comps lead; proposals fill to 4 (5 at most). A comp counts on an exact name match. Same-name matches are settled by code: the one from the brief's country, then the best known. The plan states the choice. Not found: listed in Gaps.
-5. **Choose what to ask** (`pickModules`, then the query planner). The modules come from the scope and the brief (spec §6.1); the queries from the modules (spec §4.1). The model may change the music scene, brand categories, genres, place kinds and which of your cities each query uses; code keeps only your cities, table cities for Worth a look, and short phrases.
+5. **Choose what to ask** (`pickModules`, then the query planner). The modules come from the scope and the brief (spec §6.1); the queries from the modules (spec §4.1). The model may change the music scene, brand categories, genres, place kinds and which of your cities each query uses; code keeps only your cities, table cities for Worth a look, and short phrases. It also names up to 4 partner brands per city that could realistically say yes (Qloo ranks only those) and neighbourhoods with a centre inside the city (read from the heatmap cells already fetched, no extra call). Lookups of names are kept for 14 days across runs.
 6. **Ask Qloo** (`ground`). The audience and the cities run first, in parallel (one heatmap call over your cities and up to 4 nearby ones, with leave one out). Then every phrase is resolved to a tag in one `resolveTags` run, and the other queries run. Each result becomes a finding, streamed as a `finding` event. A query that fails or returns nothing becomes a Gap; a spent budget stops the rest.
 7. **Look up the market** (only when the writer's provider has search). `research.ts` asks the provider's web search about release timing, rivals, distributors and exhibitors, and market numbers for the genre, country and cities, never the title or story, then extracts facts each tied to a source page. A failure writes the plan without it.
 8. **Write** (model, or templates with no key). The writer gets the brief, the comps and the findings, and writes every section but "To sharpen" and Budget split, which code writes. `decisions.ts` then makes sure every city and every comp the team named is answered.
@@ -144,7 +144,7 @@ The model **never**: sets a number, verdict or confidence; names an entity that 
 | Setting | Default | Meaning |
 |---|---|---|
 | `QLOO_MODE` | `demo` | `live` for real Qloo. Demo data is made up and every receipt says so |
-| `QLOO_CALL_BUDGET` | 60 | Qloo calls per run. The live Third Bridge plan uses about 35 to 60 |
+| `QLOO_CALL_BUDGET` | 80 | Qloo calls per run. A live Third Bridge plan uses about 45 to 65 |
 | `AGENT_MAX_STEPS` | 12 | Tool loop steps for an answer on an older plan |
 | `LLM_API_KEY`, `LLM_MODEL` | empty | No key → scripted reader, default queries and the template writer |
 | Qloo client | 2 in flight, 1 retry, 2 on a 429 | `packages/engine/src/qloo/client.ts` |
@@ -167,7 +167,3 @@ The model **never**: sets a number, verdict or confidence; names an entity that 
 | Follow-up job rules | `decideFollowUp` in `film/follow-up.ts` |
 | Tabs and Evidence rows | `apps/api/src/outputs/present.ts` |
 | Expected results of the golden runs | `packages/eval/golden/film/*.json` (`UPDATE_GOLDEN=1`; `RECORD_LIVE=1` for the live one) |
-
-## Not built yet
-
-Share links (button hidden on real outputs), saved project and team memory, rerunning only the queries a what-if changed, new queries inside an answer, the writer for the rival date check (its advice is still a code template), cast as an anchor (a person is not a usable signal), community audiences as a signal (verified in Qloo but outside hard rule 7's list), and the audit and rescue modes.

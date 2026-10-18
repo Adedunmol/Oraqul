@@ -59,7 +59,3 @@ Runs stream over server sent events at `GET /threads/:id/events`. Event shapes a
 ## Commands
 
 `pnpm --filter @oraqul/api dev | build | test | test:e2e | typecheck`. See [testing.md](../testing.md).
-
-## TODO
-
-Revoke a pending invite, rename or delete a team, and team scoped projects behind `RolesGuard`. Upload parsing (drop personal columns, delete the raw file, spec §6 privacy). Share link and export endpoints.

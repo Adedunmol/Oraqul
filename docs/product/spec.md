@@ -109,14 +109,14 @@ Every tool returns `{ data, receipts }`, one receipt per Qloo call it made, and 
 | Tool | What it does |
 |---|---|
 | `searchEntity(name, type)` | Qloo search. Returns candidates. Ambiguous results become an entity match question card. |
-| `resolveBundle(names, types)` | Describes the launch as a bundle of anchors by finding each comparable title in Qloo, one search each. An anchor counts only on one exact name match; several are a pick for the user, none is not found. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. Talent and tags are not anchors yet: a person was rejected as a signal and tags alone were noisy ([qloo.md](../backend/qloo.md#what-the-live-run-showed)). |
+| `resolveBundle(names, types)` | Describes the launch as a bundle of anchors by finding each comparable title in Qloo, one search each. An anchor counts only on one exact name match; several are a pick for the user, none is not found. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. Talent and tags are not anchors: a person is rejected as a signal and tags alone are noisy ([qloo.md](../backend/qloo.md#behaviour-to-know)). |
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
 | `lift(entities, type, candidates, baseline)` | Lift of candidate titles over a baseline of other kinds for the anchors' audience, from one scoring call, then one rerun per anchor left out (§5.1). Verified for books; for films and series `TODO(verify)`. |
 | `rankPlaces(entities, places)` | City ranking by mean cell affinity, from one heatmap call over every city's box, then one rerun per anchor left out (§5.1). Cities from any region in the engine's city table (`places.ts`); a city not in it, or with fewer than 25 cells, is not ranked. Box size `TODO(verify)`. |
 | `compareAudiences(entities, rivals)` | Rival overlap: each rival scored against the anchors in one call, overlap = affinity × 100 (§5), with leave one out. Built for the rival date check. |
-| `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. Worked on one live run, see [qloo.md](../backend/qloo.md#what-the-live-run-showed). The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
+| `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
 | `partnerFit(entities, type, take, releasedFrom?, exclude?)` | The films, series, brands or podcasts the anchors' audience likes most, from one open call. Not used by Film builds any more: an open list drifts to what is popular overall (§4.1). |
-| `findTaste(entities, type, tags?, city?, ages?, audiences?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, brand, place), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md) (2026-10-17). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. |
+| `findTaste(entities, type, tags?, city?, ages?, audiences?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, brand, place), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. |
 | `resolveTags(phrases)` | A phrase and the urn prefix it must start with to a Qloo tag, one lookup each. Brand categories need the parent type `urn:entity:brand`. No match is null, never a guess. |
 | `themeTags(entities, kinds)` | The theme, archetype, audience or plot tags that best describe the anchors, one call per kind. |
 | `tagWeights(entities)` | Tag weights in an audience, for the podcast topic map. |
@@ -141,10 +141,11 @@ Stage 1 of every Film reply (direction: findings, then the reply). The model sha
 | `shows` | core | `findTaste` tv_show per city | diaspora cities first, series from the last 6 years |
 | `cinemas` | core, unless streaming | `findTaste` place with the movie theater category per city | the team's cities |
 | `music` | partnerships | `findTaste` artist per city | a music scene tag (pack default by country of origin, or the model's), the team's age band. No scene: not asked, and Gaps says why |
-| `brands` | partnerships | `findTaste` brand per category and city, 4 calls at most | brand categories (`urn:tag:genre:brand:*`), never luxury |
+| `brands` | partnerships | per city: the model proposes up to 4 brands that could realistically partner; code resolves them and `findTaste` brand ranks only those (`only`, sent as `filter.results.entities`). Falls back to one call per category (`urn:tag:genre:brand:*`, never luxury) when no candidates resolve. 4 calls at most | brand candidates the model names per city, or brand categories |
 | `films` | placement | `findTaste` movie | release country (full name), films from the last 3 years, or a genre tag with no country |
 | `podcasts` | publicity | `findTaste` podcast | a podcast genre tag, one city |
-| `community` | community | `findTaste` place per kind and city, 4 calls at most | place kinds such as church and university |
+| `community` | community | `findTaste` place per kind and city, 8 calls at most | place kinds such as church and university |
+| `areas` | community | no extra call: `rankPlaces` reads the heatmap cells already fetched for `markets`. For each neighbourhood the model names (a name and a centre inside the city box, 5 a city at most), the nearest 8 cells within 0.1 degrees are compared with the city's mean. Fewer than 3 cells gives no reading. Confidence is capped at medium | neighbourhoods per team city |
 
 The model (`ModelQueryPlanner`) may change the scene, categories, genres, place kinds and which of the team's cities each query uses. Code keeps only cities on the team's list, Worth a look cities from the city table, and short phrases with no personal detail, and resolves every phrase through `resolveTags`. With no key, `ScriptedQueryPlanner` uses the pack's defaults. The same brief gives the same queries.
 
@@ -163,7 +164,7 @@ Computed in code, from values Qloo returned in the same run. The model explains 
 
 ### 5.1 Confidence
 
-Confidence says how much the line rests on, not how good the result is. One function in `packages/engine` computes it from what the line's calls returned, and every tool uses it. Each check below sets a ceiling and the line takes the lowest. The receipt's rule names the check that set it, such as "medium: 2 of 4 comps returned an audience row". The thresholds are starting values, chosen from the 2026-10-15 runs in [qloo.md](../backend/qloo.md#what-the-live-run-showed), and are tuned on the Film golden runs. Change them here first.
+Confidence says how much the line rests on, not how good the result is. One function in `packages/engine` computes it from what the line's calls returned, and every tool uses it. Each check below sets a ceiling and the line takes the lowest. The receipt's rule names the check that set it, such as "medium: 2 of 4 comps returned an audience row". The thresholds are starting values, tuned on the Film golden runs. Change them here first.
 
 | Check | High | Medium | Lower |
 |---|---|---|---|
@@ -294,7 +295,7 @@ GET    /outputs/:id/export/:format    md, docx or pdf, built from the stored pla
 GET    /projects/:id/compare?a=&b=
 POST   /outputs/:id/share     PATCH /shares/:token (on or off)
 GET    /s/:token              read only view
-POST   /uploads               plan or results file, parsed to aggregates
+POST   /uploads               a PDF or Word (.docx) file as multipart `file`; answers `{name, text}`. Text only, nothing stored, 20 MB at most, text cut at 200,000 characters. A scanned PDF with no text layer is refused with a plain reason
 ```
 
 Sign in details: codes are 6 digits, expire in 10 minutes, work once, and lock after 5 wrong tries. Accounts are linked by verified email, so the same person reaches one account by password, Google or code. Passwords are at least 8 characters.
@@ -327,7 +328,7 @@ Routes: `/` the landing page (see §9.5), `/sign-in`, `/sign-up`, `/forgot-passw
 
 Output page tabs come from the output kind and the category pack: Summary, Audience, Assumptions, Plan, the category's signature tabs, Evidence, plus Changes, Results, Rival dates and Partner briefs where they fit. Could not test is listed at the end of Assumptions and Risks at the end of Plan; old `?tab=cannot` and `?tab=risks` links open those tabs. Scenarios have one way in: the chat. Typed text with "what if" or matching a pack's scenario matcher runs it, and a suggested next step can start one. Receipts open in a side drawer. A dock chat on the output page continues the thread on desktop; below 900px an Open chat button goes to it.
 
-In the chat, an output is one line that opens its summary card in a dialog: bottom line, confidence, up to three moves with receipt chips that open the drawer, the verdict counts, and View full details. Answered question cards fold to one line with the answer, and the trace folds once it finishes, so the chat stays clean. Above the message box sit up to three suggested next steps built from the thread's plan and the project (a scenario not yet tried, results if none are in, a partner brief or rival date check not yet made). The message box takes text and files on every chat, not only the first. Typed corrections work at any point: "check my plan instead", "start fresh", "use an older plan", "compare with the last plan", or naming places, which replans with them.
+In the chat, a launch plan appears as a readable document with Export and Open plan in its header; its grounded lines carry a quiet number that opens the finding behind them. Other outputs are one line that opens a summary card. Answered question cards fold to one line with the answer, and the trace folds once it finishes, so the chat stays clean. Above the message box sit up to three suggested next steps built from the thread's plan and the project (a scenario not yet tried, results if none are in, a partner brief or rival date check not yet made). The message box takes text and files on every chat, not only the first. Typed corrections work at any point: "check my plan instead", "start fresh", "use an older plan", "compare with the last plan", or naming places, which replans with them.
 
 Charts are inline SVG or CSS, each with a table toggle, a legend, and hover text. Colour never carries meaning alone: verdicts also carry an icon and a word.
 
@@ -358,7 +359,7 @@ Motion uses CSS only. New chat items are marked by a per thread seen count so a 
 
 ### 9.5 Public pages
 
-The marketing and trust pages a signed out visitor sees. Decided, in this order of work: content outline per page, then design, then build.
+The marketing and trust pages a signed out visitor sees.
 
 **Launch set**
 
@@ -374,13 +375,9 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 | `/about` | Why it exists, the team, the global angle |
 | `/privacy`, `/terms` | Required. Google sign in needs both links |
 
-**Next:** `/developers` (the MCP server, with a quickstart), `/faq`, `/markets` (cities from every region ranked in one list). **Later:** `/compare` (against a generic chatbot and against audience dashboards), one page per category, `/changelog`, a blog.
-
 **No pricing page for now**, and no mention of pricing anywhere until there is real pricing. Access is by creating an account.
 
-**Built:** every page in the launch set except `/terms`. `/` runs: the hero (positioning line, app preview with the agent at work), the prompts people type, the problem against Oraqul's answer (prd §2), an agent run streaming its tool calls and red team step, a taste map that explains Qloo, the four jobs in launch order as sticky steps, a plan marked up with verdicts, one lift worked out, the five categories as sticky steps, an FAQ and the closing call to action. The data flow diagram lives on `/trust`. `/examples` renders the real output screen, read only, for three seeded outputs (`output:r1:1`, `output:r3:1`, `output:r6:2`); `?case=` and `?tab=` are checked at the page boundary, and the output screen keeps other query values when it changes tab; the receipt drawer there leaves out the endpoint and the response shape (`publicExample`). `/categories` and the in app help dialog read the same columns (`_workspace/category-coverage.ts`). `/method` draws lift, fit and rival overlap with the thresholds in §5. `/trust` and `/privacy` state only what the code does: cookies `oraqul_session` (30 days), `oraqul_team`, `oraqul_oauth`; Qloo, the model provider (Google Gemini today), Brevo, Google, Vercel and a VPS as processors. **Terms is deferred**: this is a hackathon project with no lawyer, and `/privacy` is a plain account of what the product does; add Terms and the privacy contact (`TODO(contact)` in `_marketing/privacy/privacy.tsx`) before Google sign in leaves testing mode. `/examples` has no video until a real one exists.
-
-**Navigation.** A short header: Product (How it works, Examples, Method), Use cases, Categories, Sign in, Create account; Developers joins it when that page exists. The footer carries the rest in four columns: Product, Resources, Company, Legal. This follows what Linear, Notion, Harvey, Glean and Elicit do. As built: Product is a small menu (Escape or a click outside closes it and returns focus to it); below 900px one Menu button opens a panel with every link; below 600px Sign in moves into that panel so the bar stays on one row.
+**Navigation.** A short header: Product (How it works, Examples, Method), Use cases, Categories, Sign in, Create account; Developers joins it when that page exists. The footer carries the rest in four columns: Product, Resources, Company, Legal. Product is a small menu (Escape or a click outside closes it and returns focus to it); below 900px one Menu button opens a panel with every link; below 600px Sign in moves into that panel so the bar stays on one row.
 
 **Rules.** Marketing pages use the app's tokens and Space Grotesk headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 400px. Words follow design-system §10: launch is the umbrella word (launch planning, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
 
@@ -409,13 +406,3 @@ The marketing and trust pages a signed out visitor sees. Decided, in this order 
 ## 12. Deployment
 
 Vercel for web. VPS with Docker Compose for API and Postgres. Environment variables for the Qloo key, model key and session secret. Backups of Postgres nightly. Public repository with an open source licence and a README that runs the demo locally.
-
-## 13. Build order
-
-1. Live Qloo tests and notes on real coverage.
-2. `engine` with receipts and verdicts, tested against recorded responses.
-3. Runtime with the router and the Film agent, end to end through plan, audit, scenario and rescue.
-4. Web: design tokens and components, chat, trace, outputs, evidence, receipts, the start message box, tab notes.
-5. Music agent, then Books, Podcasts, Games as packs.
-6. Accounts, share, export, compare.
-7. MCP server, evals, demo video.

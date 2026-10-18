@@ -49,6 +49,6 @@ From [spec §9.1](../product/spec.md). Tick as built.
 
 Items marked `[~]` hold state or read a context, so they stay in `apps/web` until `packages/ui` has a client entry (see the Modal note).
 
-## TODO
+## Theme
 
-Chart conventions. The theme toggle sets `data-theme` and saves it in `localStorage` (`oraqul-theme`); an inline script in the root layout applies it before first paint.
+The theme toggle sets `data-theme` and saves it in `localStorage` (`oraqul-theme`); an inline script in the root layout applies it before first paint.

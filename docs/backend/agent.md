@@ -1,29 +1,29 @@
 # Agent runtime
 
-Oraqul's agents (not the coding agents that work on this repo, see `AGENTS.md`). Design is in [spec §3 to §5](../product/spec.md). This file is the working checklist. Code goes in `apps/api/src/agent` (runtime) and `packages/packs` (per category).
+Oraqul's agents (not the coding agents that work on this repo, see `AGENTS.md`). Design is in [spec §3 to §5](../product/spec.md). Code goes in `apps/api/src/agent` (runtime) and `packages/packs` (per category).
 
 ## Shape
 
 One router, one front door (gate), one runtime with two paths, five category packs. A new category is a new pack, not new runtime code.
 
-- **Plan pipeline (planned)** for build, audit, rescue, scenario, date and partner. Fixed steps in code, so a plan is repeatable. See [Plan pipeline](#plan-pipeline-planned).
+- **Plan pipeline** for build, scenario, date and partner. Fixed steps in code, so a plan is repeatable. See [Plan pipeline](#plan-pipeline).
 - **Tool loop** (`runtime.ts`, built) for answers, clarifying questions and consults. The planner picks the next step; code runs it.
 
-Decided 2026-10-16: plans must not run on the tool loop. A model choosing which tests a plan runs gives different tests for the same input, which breaks the promise that a plan was checked and makes golden runs meaningless.
+Plans must not run on the tool loop. A model choosing which tests a plan runs gives different tests for the same input, which breaks the promise that a plan was checked and makes golden runs meaningless.
 
 ## A category pack
 
 Defined by `CategoryPack` in `packages/packs/src/types.ts`. Fill these per category (film, music, books, podcasts, games):
 
-- [ ] System prompt
-- [ ] Assumption checklist
-- [ ] Assumption tests: for each kind of assumption, the tool calls that test it and the rule that turns their results into a verdict (used by the plan pipeline)
-- [ ] Plan sections
-- [ ] Tool allowlist
-- [ ] Coverage lists (tests, thin, not supported)
-- [ ] Scenarios (matcher and apply function)
-- [ ] Results format
-- [ ] Output schema
+- System prompt
+- Assumption checklist
+- Assumption tests: for each kind of assumption, the tool calls that test it and the rule that turns their results into a verdict (used by the plan pipeline)
+- Plan sections
+- Tool allowlist
+- Coverage lists (tests, thin, not supported)
+- Scenarios (matcher and apply function)
+- Results format
+- Output schema
 
 **Shared base prompt.** The rules every agent follows live once in `BASE_PROMPT` (`packages/packs/src/base-prompt.ts`): cite a receipt for every claim, never set a number, a score, a verdict or a confidence level, say when a tool could not test something, treat memory as context and never evidence, and refuse forecasts, pricing advice and sending (drafts only). A pack's `systemPrompt` adds only what is its own (how to read its inputs, its tone), and `agentSystemPrompt(pack)` joins the two. The model planner's own rules are only about choosing a step.
 
@@ -84,25 +84,20 @@ The tool loop is for conversation, not plans (see [Shape](#shape)). In it the pl
 - **Ask step.** The question is stored as pending, a `question` event goes out, and the run stops with `waiting`. The answer must name that question id and option ids on the card.
 - **Consult step.** Only if the pack lists the target. A nested loop for the target pack runs with a 4 step cap and no questions, shares the run's receipts, and shows in the trace as `books→film`. Its claims come back to the caller, which can cite them.
 - **Finish step.** Every receipt id in every claim must exist in the run. One retry, then the run stops with `error`. This is a first cut of the output validator: it does not yet check entity names or numbers in the text.
-- **Limits.** `AGENT_MAX_STEPS` per agent, `QLOO_CALL_BUDGET` per run: `ToolContext` makes one `QlooClient` per run and the budget is that client's. A run is one `runs` row, so a run that resumes after a question gets a new client, budget and cache, and a consult shares its caller's client. There is no cap per thread or team; `runs.qloo_calls` keeps each run's count, so one can be added from it if the monthly quota needs it. A Film build made 33 calls on the live host (2026-10-16): comp searches, audience, one call over every city in the table, three section discoveries and scorings, baseline searches (once per process), and the leave one out reruns ([spec §5.1](../product/spec.md#51-confidence)). It took about 16 seconds, inside the default budget of 60. The client keeps 2 requests in flight, because the hackathon host answered 429 to more ([qloo.md](qloo.md#the-client-packagesengineqloo)).
+- **Limits.** `AGENT_MAX_STEPS` per agent, `QLOO_CALL_BUDGET` per run: `ToolContext` makes one `QlooClient` per run and the budget is that client's. A run is one `runs` row, so a run that resumes after a question gets a new client, budget and cache, and a consult shares its caller's client. There is no cap per thread or team; `runs.qloo_calls` keeps each run's count, so one can be added from it if the monthly quota needs it.
 
 ## Plan pipeline
 
-Built for Film's build job in `film/pipeline.ts`; the other jobs and categories follow. Product behaviour is [spec §3.2](../product/spec.md) and the Film tests are [spec §5.2](../product/spec.md#52-film-assumption-tests-build). Every reply runs two stages: findings, then the reply. Film's build: read (model, quotes checked); find the comps with `resolveBundle`, settling same-name titles in code and proposing comps only below 3; pick the modules and shape the queries (model, bounded by code, spec §4.1); ground: run the queries and turn each result into a finding, streamed to the chat; write (model, or templates with no key); check every line (spec §6.2); save. No model writes a number, verdict or confidence.
+Film's build job, in `film/pipeline.ts`; [film-overview.md](film-overview.md) is the step by step map. Product behaviour is [spec §3.2](../product/spec.md) and the Film tests are [spec §5.2](../product/spec.md#52-film-assumption-tests-build). Every reply runs two stages, findings and then the reply:
 
-| Step | Who | What |
-|---|---|---|
-| 1. Read | Model, structured output | The input (message, files, project inputs, memory) into assumptions and anchors (comps, talent, tags, places). Each value carries its quote, checked by code as the router does. Audit reads the person's plan; rescue also reads their results |
-| 2. Choose tests | Code | Each assumption is matched to the pack's assumption tests, which say which tools to call with which anchors. An assumption with no test is "could not test" (spec §5), never skipped silently |
-| 3. Run tests | Code | Independent tool calls run in parallel through one `QlooClient`, inside the call budget. Each call becomes a receipt. A failed call is retried once, then its line is "could not test" |
-| 4. Score | Code (`packages/engine`) | Lift, verdict, fit and confidence from the receipts' values (spec §5) |
-| 5. Search | Code, then step 3 again | For what broke or is weak, candidates from the pack (other places, comps, segments) are tested the same way. Stops by the stop rule (spec §3.5) |
-| 6. Write | Model | The brief's words, from the computed results only. Claims are structured (`{ text, receiptId, value }`) and numbers are filled in from the receipts, so the model never types a number |
-| 7. Check | Code | Grounding check (every claim cites a receipt of this run or of the plan it builds on), then save the output and its receipts |
+1. Read the brief (model, every value carries the words it came from, checked by code).
+2. Find the comps with `resolveBundle`, settling same-name titles in code and proposing comps only below 3.
+3. Pick the modules and shape the queries (model, bounded by code, spec §4.1).
+4. Ground: run the queries and turn each result into a finding, streamed to the chat.
+5. Write the plan (model, or templates with no key).
+6. Check every line (spec §6.2), then save.
 
-Each step is a `trace.step`, so the trace shows the same steps for every plan. A clarifying question (an ambiguous Qloo match, a missing anchor) pauses the pipeline as an ask does in the loop, and the answer resumes it at the step that asked. Scenario, date and partner are the same pipeline started from a saved plan, rerunning only the lines whose inputs changed. The red team step, when built, sits between 6 and 7.
-
-Golden runs (testing.md) run this pipeline on recorded Qloo responses and expect the same verdicts every time. Only step 6's wording may differ between runs.
+No model writes a number, verdict or confidence. Each step is a `trace.step`. A clarifying question pauses the pipeline as an ask does in the loop, and the answer resumes it at the step that asked. Scenario, date and partner are the same pipeline started from a saved plan. Golden runs ([testing.md](../testing.md)) run it on recorded Qloo responses and expect the same findings every time.
 
 ## Agent factory
 
@@ -160,10 +155,6 @@ Product behaviour is [spec §3.7](../product/spec.md): three layers (chat, proje
 
 **Other.** The gate also gets the project's title and the team's market, so "what about Lagos?" reads as on topic. A run still starts with an empty tool history: receipts from an earlier run are cited by id, not re run, unless an input changed.
 
-## Stopping a run (planned)
-
-There is no cancel today, and a restart marks a running run `error` (`onModuleInit` in `run.service.ts`). A cancel route stops the thread's active run, ends it with a new stop reason `cancelled`, and the web shows a Stop button while the agent works. Resume after a restart is not planned: runs live in one process, and the person asks again. Revisit if the API ever runs as more than one process.
-
 ## Demo mode
 
 `QLOO_MODE=demo` (default) runs everything on hand-written data from `packages/engine/src/qloo/demo-fetch.ts`. Every receipt carries `source: 'demo'`, the trace says so, and the final message says "demo data".
@@ -171,23 +162,3 @@ There is no cancel today, and a restart marks a running run `error` (`onModuleIn
 ## MCP
 
 `packages/mcp` registers the same tool objects from `packages/engine`. `pnpm --filter @oraqul/mcp build` then `node packages/mcp/dist/stdio.js` (demo data unless `QLOO_MODE=live`). Results are `{ data, receipts }` as JSON text.
-
-## Build order
-
-Each item is one feature, end to end (schema, API, web), in its own PR. Items 1 and 2 come before any real agent.
-
-**Blockers before the Film agent (item 3).** These block the core promise, every claim about taste grounded in a finding, so they are settled first:
-
-- **Receipts are saved per run.** The table has `run_id`, `thread_id` and `source`, and `output_id` is nullable, as [spec §6](../product/spec.md) says. Nothing writes it yet: the Film agent (item 3) saves each run's receipts, and sets `output_id` when a plan saves an output.
-- **The confidence rule is coded.** Done: `confidenceFor` in `packages/engine/src/confidence.ts` follows [spec §5.1](../product/spec.md#51-confidence), and both built tools use it. Popularity comes from the run's own searches (`ToolContext.popularity`), never from tool input, so the model cannot raise a confidence. New tools use the same function.
-- **Evals gate the second category.** Film's golden runs, the grounding check and the refusal tests ([testing.md](../testing.md)) pass in CI before item 7 starts. Items marked *Planned* below are specified here and not built.
-
-1. **Handoff carries the person's content** (see [Handoff](#handoff)). Built.
-2. **Shared base prompt and pack contract test** (see [A category pack](#a-category-pack)). Built. Backend only, since no screen changes; it says so in its PR.
-3. **Film agent: the agent factory, the plan pipeline for build, the tool loop for answers, and chat memory** (see [Agent factory](#agent-factory-planned), [Replies](#replies-a-plan-and-not-a-plan-planned) and the chat layer of [Memory](#memory-planned)). Replaces the Film placeholder in `category-agents.ts`. Saves outputs and receipts. This PR changes output and receipt shapes, so check them against `packages/schema` before it merges, and split it into plan output and not a plan reply if it grows.
-4. **Project and team memory**: `memory_items`, the memory lists, the new chat choice (continue or fresh), `remember` cards and the "Using" line (see [Memory](#memory-planned)). Needs item 3.
-5. **Follow up jobs and typed corrections** (see [Follow ups](#follow-ups-planned)). Needs item 3.
-6. **Stop a run** (see [Stopping a run](#stopping-a-run-planned)).
-7. **Books, Music, Podcasts, Games** as packs on the same factory, each with its deep pass.
-
-Also open: red team step, the remaining spec §4 tools, and the pack fields the spec lists that `CategoryPack` does not have yet (scenarios, results format, output schema), added as the agent that needs each is built.
