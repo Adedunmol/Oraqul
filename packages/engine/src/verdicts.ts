@@ -83,6 +83,30 @@ export function placeVerdict(place: {
   return { verdict: 'breaks', why: `The audience is thinner here than elsewhere (${shown}).` };
 }
 
+// Spec §5.4. How close the team's tour order scores to the best order. Starting values,
+// TODO(verify) on a live run before a plan leads with them.
+const ROUTE_HOLDS = 0.95;
+const ROUTE_WEAK = 0.85;
+
+/** Spec §5.4: the team's route score as a share of the best order's. */
+export function routeVerdict(actual: number, best: number): VerdictResult {
+  if (best <= 0) {
+    return { verdict: 'cant', why: 'The route could not be scored: no stop had a positive lift.' };
+  }
+  const ratio = actual / best;
+  const shown = `route score ${actual.toFixed(2)} against ${best.toFixed(2)} for the strongest order`;
+  if (ratio >= ROUTE_HOLDS) {
+    return {
+      verdict: 'holds',
+      why: `The tour order is at or near the strongest order (${shown}).`,
+    };
+  }
+  if (ratio >= ROUTE_WEAK) {
+    return { verdict: 'weak', why: `A different order would start stronger (${shown}).` };
+  }
+  return { verdict: 'breaks', why: `The strongest cities come late in this order (${shown}).` };
+}
+
 export function compsVerdict(
   check:
     | { result: 'holds' }
