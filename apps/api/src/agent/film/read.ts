@@ -1,31 +1,33 @@
 import { cityNames } from '@oraqul/engine';
-import { launchModuleKeys } from '@oraqul/schema';
+import { filmPlan } from '@oraqul/packs';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
+import {
+  type AgeBand,
+  ageBands,
+  BAND_RANGES,
+  type Budget,
+  bandsBetween,
+  budgetSchema,
+  escapeRegExp,
+  FULL_ASK,
+  inWords,
+  parseBudget,
+  said,
+  unique,
+} from '../launch/read-core.js';
 import { normalise } from '../router/decide.js';
 
-/** Qloo's age bands, as `urn:demographics` returns them. */
-export const ageBands = [
-  '24_and_younger',
-  '25_to_29',
-  '30_to_34',
-  '35_to_44',
-  '45_to_54',
-  '55_and_older',
-] as const;
-export type AgeBand = (typeof ageBands)[number];
-
-export const BAND_RANGES: Record<AgeBand, [number, number]> = {
-  '24_and_younger': [0, 24],
-  '25_to_29': [25, 29],
-  '30_to_34': [30, 34],
-  '35_to_44': [35, 44],
-  '45_to_54': [45, 54],
-  '55_and_older': [55, 200],
+export {
+  type AgeBand,
+  ageBands,
+  BAND_RANGES,
+  type Budget,
+  bandsBetween,
+  budgetSchema,
+  escapeRegExp,
+  parseBudget,
 };
-
-const quote = z.string().min(1);
-const said = <T extends z.ZodType>(value: T) => z.object({ value, quote });
 
 export const releaseRoutes = ['theatrical', 'streaming', 'festival', 'hybrid'] as const;
 
@@ -48,7 +50,7 @@ export const filmReadingSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question such as cities. */
   scope: z.enum(['full', 'narrow']),
   /** The module a narrow ask is about, or null when it is about the core (cities, audience). */
-  ask: z.enum(launchModuleKeys).nullable(),
+  ask: z.enum(filmPlan.FILM_MODULES).nullable(),
   /** Comparable titles the person named, exactly as written. */
   comps: z.array(said(z.string().min(1))).max(8),
   places: z.array(said(z.string().min(1))).max(12),
@@ -62,14 +64,6 @@ export const filmReadingSchema = z.object({
   suggestedComps: z.array(z.string().min(1)).max(5),
 });
 export type FilmReading = z.infer<typeof filmReadingSchema>;
-
-export const budgetSchema = z.object({
-  /** In the currency's main unit. */
-  amount: z.number().positive(),
-  /** A symbol or code as written, such as `$` or `NGN`. Empty when none was written. */
-  currency: z.string(),
-});
-export type Budget = z.infer<typeof budgetSchema>;
 
 /** The reading after code kept only what the person said. Stored in a paused run's state. */
 export const filmReadSchema = z.object({
@@ -92,7 +86,7 @@ export const filmReadSchema = z.object({
   budget: budgetSchema.nullable().default(null),
   partners: z.array(z.string()).default([]),
   scope: z.enum(['full', 'narrow']).default('full'),
-  ask: z.enum(launchModuleKeys).nullable().default(null),
+  ask: z.enum(filmPlan.FILM_MODULES).nullable().default(null),
 });
 export type FilmRead = z.infer<typeof filmReadSchema>;
 
@@ -104,11 +98,6 @@ export interface FilmReaderInput {
 
 export interface FilmReader {
   read(input: FilmReaderInput): Promise<{ reading: FilmReading; tokens: number }>;
-}
-
-function inWords(quoteText: string, text: string): boolean {
-  const q = normalise(quoteText);
-  return q !== '' && normalise(text).includes(q);
 }
 
 /**
@@ -157,32 +146,6 @@ export function checkReading(reading: FilmReading, { title, text }: FilmReaderIn
     scope,
     ask: scope === 'full' ? null : reading.ask,
   };
-}
-
-// Words that always mean a full plan, whatever the model read.
-const FULL_ASK =
-  /\b(launch plan|plan (?:the|our|my) launch|go[- ]to[- ]market|release plan|rollout plan|marketing plan)\b/i;
-
-const MULTIPLIER: Record<string, number> = { k: 1e3, thousand: 1e3, m: 1e6, million: 1e6 };
-
-/** The amount a person wrote, such as "$50k" or "NGN 20 million". Null when there is no number. */
-export function parseBudget(written: string): Budget | null {
-  const m = written.match(
-    /([$£€₦]|usd|gbp|eur|ngn|cad)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k|m|million|thousand)?\b/i,
-  );
-  if (!m?.[2]) return null;
-  const amount = Number(m[2].replaceAll(',', '')) * (MULTIPLIER[m[3]?.toLowerCase() ?? ''] ?? 1);
-  return amount > 0 ? { amount, currency: (m[1] ?? '').toUpperCase() } : null;
-}
-
-function unique<T>(values: T[]): T[] {
-  const seen = new Set<string>();
-  return values.filter((v) => {
-    const key = typeof v === 'string' ? normalise(v) : String(v);
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
 }
 
 export const FILM_READ_SYSTEM = `You read a launch brief for a film or series and pull out what the person said, for Oraqul, a launch planner that tests every claim against Qloo taste data.
@@ -306,18 +269,6 @@ function routeOf(word: string): (typeof releaseRoutes)[number] {
   if (/streaming|netflix|prime/i.test(word)) return 'streaming';
   if (/festival/i.test(word)) return 'festival';
   return 'theatrical';
-}
-
-/** The Qloo age bands a written range such as 18 to 34 overlaps. */
-export function bandsBetween(from: number, to: number): AgeBand[] {
-  return ageBands.filter((band) => {
-    const [low, high] = BAND_RANGES[band];
-    return low <= to && high >= from;
-  });
-}
-
-export function escapeRegExp(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /** Falls back to the scripted reader when the model fails, so a run never stops at reading. */

@@ -1,7 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { pickModules, TASTE_CLAIM } from './modules';
+import { FILM_MODULES, pickModules, TASTE_CLAIM } from './modules';
 
 const full = { scope: 'full', ask: null, format: 'film', route: null, hasBudget: false } as const;
+
+describe('FILM_MODULES', () => {
+  it('stays the ten modules Film plans have always had, whatever other categories add', () => {
+    expect([...FILM_MODULES]).toEqual([
+      'partnerships',
+      'placement',
+      'publicity',
+      'community',
+      'route',
+      'timeline',
+      'cadence',
+      'budget',
+      'measure',
+      'risks',
+    ]);
+  });
+});
 
 describe('pickModules', () => {
   it('gives a full film plan every module but cadence, budget split included', () => {

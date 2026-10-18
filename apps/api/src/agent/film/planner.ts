@@ -1,10 +1,26 @@
-import { citiesNear, cityBox, cityCountry, cityNames } from '@oraqul/engine';
+import { citiesNear, cityCountry, cityNames } from '@oraqul/engine';
 import { filmPlan } from '@oraqul/packs';
 import type { LaunchModuleKey } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
-import { normalise } from '../router/decide.js';
+import {
+  areaChoiceSchema,
+  brandChoiceSchema,
+  checkAreas,
+  checkBrandCandidates,
+  checkWorth,
+  FallbackQueryPlanner as LaunchFallbackPlanner,
+  type QueryPlanInput as LaunchPlanInput,
+  type QueryPlanner as LaunchQueryPlanner,
+  orderCities,
+  phrase,
+  phrases,
+  type QueryPlanCore,
+  teamCities,
+} from '../launch/planner.js';
 import type { FilmRead } from './read.js';
+
+export { orderCities };
 
 const { FILM_QUERIES, MAX_CITIES_PER_QUERY } = filmPlan;
 type FilmQueryKey = filmPlan.FilmQueryKey;
@@ -45,19 +61,10 @@ export const queryPlanSchema = z.object({
    */
   brandCandidates: z.array(z.object({ city: z.string(), names: z.array(z.string()) })),
 });
-export type QueryPlan = z.infer<typeof queryPlanSchema>;
+export type QueryPlan = z.infer<typeof queryPlanSchema> & QueryPlanCore;
 
-export interface QueryPlanInput {
-  title: string;
-  read: FilmRead;
-  modules: LaunchModuleKey[];
-  /** The comps' most common release country, from their Qloo matches. */
-  compsCountry: string | null;
-}
-
-export interface QueryPlanner {
-  plan(input: QueryPlanInput): Promise<{ plan: QueryPlan; tokens: number }>;
-}
+export type QueryPlanInput = LaunchPlanInput<FilmRead>;
+export type QueryPlanner = LaunchQueryPlanner<FilmRead, QueryPlan>;
 
 /** Which catalog queries a plan with these modules runs (spec §4.1). */
 export function queriesFor(modules: LaunchModuleKey[], read: FilmRead): FilmQueryKey[] {
@@ -66,13 +73,6 @@ export function queriesFor(modules: LaunchModuleKey[], read: FilmRead): FilmQuer
     if (key === 'cinemas') return read.route !== 'streaming';
     return spec.for === 'core' || modules.includes(spec.for);
   });
-}
-
-/** The team's cities, home market first: the country of origin leads, then the team's order. */
-export function orderCities(places: string[], country: string | null): string[] {
-  if (!country) return places;
-  const home = places.filter((p) => cityCountry(p) === country);
-  return [...home, ...places.filter((p) => !home.includes(p))];
 }
 
 /** The defaults: the pack's tables applied to the brief. Also the scripted planner's answer. */
@@ -113,11 +113,6 @@ export class ScriptedQueryPlanner implements QueryPlanner {
   }
 }
 
-// Short words only, so no sentence or personal detail can reach Qloo through a phrase. Checked
-// in code (`checkPlan`), not in the schema: some providers reject a text pattern in a schema.
-const PHRASE = /^[\p{L}\p{N} &'-]{1,40}$/u;
-const phrase = z.string().max(40);
-
 // What the model may change about the defaults. Flat and nullable, for every provider.
 const modelPlanSchema = z.object({
   musicScene: phrase.nullable(),
@@ -132,12 +127,8 @@ const modelPlanSchema = z.object({
   communityCities: z.array(z.string()).max(5),
   worthALook: z.array(z.string()).max(4),
   country: z.string().nullable(),
-  areas: z
-    .array(
-      z.object({ city: z.string(), name: phrase, latitude: z.number(), longitude: z.number() }),
-    )
-    .max(20),
-  brandCandidates: z.array(z.object({ city: z.string(), names: z.array(phrase).max(4) })).max(5),
+  areas: z.array(areaChoiceSchema).max(20),
+  brandCandidates: z.array(brandChoiceSchema).max(5),
 });
 
 export const QUERY_PLAN_SYSTEM = `You shape the questions Oraqul asks Qloo, a taste data API, for a film or series launch. Oraqul describes the launch by its comps (comparable titles) and asks what their audience likes. On its own that drifts to what is popular overall; context makes it sharp. You pick the context from your knowledge of the launch's culture and markets.
@@ -195,17 +186,11 @@ export class ModelQueryPlanner implements QueryPlanner {
  * look" must be table cities the team did not name, and a list left empty keeps the default.
  */
 export function checkPlan(chosen: z.infer<typeof modelPlanSchema>, defaults: QueryPlan): QueryPlan {
-  const team = (list: string[]) =>
-    list.flatMap((c) => defaults.cities.find((t) => normalise(t) === normalise(c)) ?? []);
+  const team = (list: string[]) => teamCities(list, defaults.cities);
   const keep = (list: string[], fallback: string[]) => {
     const kept = [...new Set(team(list))].slice(0, MAX_CITIES_PER_QUERY);
     return kept.length ? kept : fallback;
   };
-  const phrases = (list: string[]) => list.map((p) => p.trim()).filter((p) => PHRASE.test(p));
-  const table = cityNames();
-  const worth = chosen.worthALook
-    .flatMap((c) => table.find((t) => normalise(t) === normalise(c)) ?? [])
-    .filter((c) => !defaults.cities.some((t) => normalise(t) === normalise(c)));
   return {
     ...defaults,
     country: defaults.country ?? chosen.country,
@@ -223,62 +208,10 @@ export function checkPlan(chosen: z.infer<typeof modelPlanSchema>, defaults: Que
       ? phrases(chosen.communityPlaces)
       : defaults.communityPlaces,
     communityCities: keep(chosen.communityCities, defaults.communityCities),
-    worthALook: worth.length ? [...new Set(worth)].slice(0, 4) : defaults.worthALook,
-    areas: checkAreas(chosen.areas, defaults.cities, phrases),
-    brandCandidates: chosen.brandCandidates.flatMap(({ city, names }) => {
-      const team = defaults.cities.find((c) => normalise(c) === normalise(city));
-      const seen = new Set<string>();
-      // The first spelling of a name is the one kept.
-      const kept = phrases(names)
-        .filter((n) => !seen.has(normalise(n)) && seen.add(normalise(n)))
-        .slice(0, MAX_BRAND_CANDIDATES);
-      return team && kept.length ? [{ city: team, names: kept }] : [];
-    }),
+    worthALook: checkWorth(chosen.worthALook, defaults.cities, defaults.worthALook),
+    areas: checkAreas(chosen.areas, defaults.cities),
+    brandCandidates: checkBrandCandidates(chosen.brandCandidates, defaults.cities),
   };
 }
 
-const MAX_AREAS_PER_CITY = 5;
-const MAX_BRAND_CANDIDATES = 4;
-
-// Keeps a neighbourhood only when its city is one of the team's, its name is a short plain name,
-// and its centre is inside that city's box, so a wrong coordinate cannot read another place.
-function checkAreas(
-  chosen: z.infer<typeof modelPlanSchema>['areas'],
-  cities: string[],
-  phrases: (list: string[]) => string[],
-): QueryPlan['areas'] {
-  const kept: QueryPlan['areas'] = [];
-  for (const area of chosen) {
-    const city = cities.find((c) => normalise(c) === normalise(area.city));
-    const box = city ? cityBox(city) : null;
-    if (!city || !box || phrases([area.name]).length === 0) continue;
-    const inside =
-      area.longitude >= box.west &&
-      area.longitude <= box.east &&
-      area.latitude >= box.south &&
-      area.latitude <= box.north;
-    const same = (a: { city: string; name: string }) =>
-      a.city === city && normalise(a.name) === normalise(area.name);
-    if (!inside || kept.some(same)) continue;
-    if (kept.filter((a) => a.city === city).length >= MAX_AREAS_PER_CITY) continue;
-    kept.push({ city, name: area.name.trim(), latitude: area.latitude, longitude: area.longitude });
-  }
-  return kept;
-}
-
-export class FallbackQueryPlanner implements QueryPlanner {
-  constructor(
-    private readonly primary: QueryPlanner,
-    private readonly fallback: QueryPlanner,
-    private readonly onError: (err: unknown) => void,
-  ) {}
-
-  async plan(input: QueryPlanInput) {
-    try {
-      return await this.primary.plan(input);
-    } catch (err) {
-      this.onError(err);
-      return this.fallback.plan(input);
-    }
-  }
-}
+export class FallbackQueryPlanner extends LaunchFallbackPlanner<FilmRead, QueryPlan> {}

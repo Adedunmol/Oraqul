@@ -1,3 +1,4 @@
+import { BASELINE_BRANDS, BASELINE_PODCASTS } from '../launch';
 import { sharedQlooCoverage } from '../qloo';
 import type { CategoryPack } from '../types';
 
@@ -38,8 +39,8 @@ export const film: CategoryPack = {
       'Avatar: The Way of Water',
       'Spider-Man: No Way Home',
     ],
-    'urn:entity:brand': ['Coca-Cola', 'Nike', "McDonald's"],
-    'urn:entity:podcast': ['The Joe Rogan Experience', 'Crime Junkie', 'Serial'],
+    'urn:entity:brand': BASELINE_BRANDS,
+    'urn:entity:podcast': BASELINE_PODCASTS,
   },
   coverage: { tests: [], thin: [], notSupported: [] },
 };

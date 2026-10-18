@@ -108,34 +108,14 @@ export const TAG_SPACES = {
   cinemas: { prefix: 'urn:tag:category:place', parent: null },
 } as const;
 
-/** Most calls one query may make, so one module cannot spend the run's budget. */
-export const MAX_CITIES_PER_QUERY = 5;
-
 // Defaults the scripted planner uses with no model, and the model's starting point. Phrases are
 // resolved to tags in Qloo, never sent as they are.
-
-/** A music scene by the launch's country of origin. No scene means the artist query is skipped. */
-export const MUSIC_SCENES: Record<string, string> = {
-  nigeria: 'afrobeats',
-  ghana: 'afrobeats',
-  'south africa': 'amapiano',
-  jamaica: 'dancehall',
-  'south korea': 'k-pop',
-  korea: 'k-pop',
-  'puerto rico': 'reggaeton',
-  colombia: 'reggaeton',
-};
-
-/** A podcast genre by the launch's genre words. No match means the podcast query uses none. */
-export const PODCAST_GENRES: { match: RegExp; phrase: string }[] = [
-  { match: /crime|thriller|gangster|heist|detective|mystery/i, phrase: 'true crime' },
-  { match: /comedy|comic/i, phrase: 'comedy' },
-  { match: /horror/i, phrase: 'horror' },
-  { match: /documentar/i, phrase: 'documentary' },
-];
-
-/** Brand categories verified to give brands that operate in a city. Fashion gave luxury names. */
-export const BRAND_CATEGORIES = ['telecom', 'beverage'];
+export {
+  BRAND_CATEGORIES,
+  MAX_CITIES_PER_QUERY,
+  MUSIC_SCENES,
+  PODCAST_GENRES,
+} from '../launch';
 
 export const COMMUNITY_PLACES = ['church', 'university'];
 

@@ -1,33 +1,18 @@
-import type { PlanSource } from '@oraqul/schema';
-import { generateText, type LanguageModel, Output } from 'ai';
-import { z } from 'zod';
+import type { LanguageModel } from 'ai';
 import type { WebSearch } from '../../llm/llm.js';
+import {
+  FallbackResearcher as LaunchFallbackResearcher,
+  ModelResearcher as LaunchModelResearcher,
+  type Researcher as LaunchResearcher,
+  type ResearchInput as LaunchResearchInput,
+  type ResearchKit,
+} from '../launch/research.js';
 import type { FilmRead } from './read.js';
 
-/** What a plan may look up on the web: release timing and the market, never the film itself. */
-export interface ResearchInput {
-  read: FilmRead;
-  country: string | null;
-  /** The team's cities, home market first. */
-  cities: string[];
-  /** Today, so "the next twelve months" means something. */
-  today: string;
-}
+export { NoResearch, numbered, toSources } from '../launch/research.js';
 
-export interface Researcher {
-  /** False when there is nothing to search with, so the plan skips the step and says nothing about it. */
-  readonly enabled: boolean;
-  research(input: ResearchInput): Promise<{ sources: PlanSource[]; tokens: number }>;
-}
-
-export class NoResearch implements Researcher {
-  readonly enabled = false;
-  async research() {
-    return { sources: [], tokens: 0 };
-  }
-}
-
-const MAX_FACTS = 12;
+export type ResearchInput = LaunchResearchInput<FilmRead>;
+export type Researcher = LaunchResearcher<FilmRead>;
 
 export const RESEARCH_SYSTEM = `You research the release context for a film or series launch, for a launch planner. Use web search, and run the separate searches below. Be factual and brief: no advice, no marketing talk.
 
@@ -40,41 +25,9 @@ Search for each of these on its own, naming the industry and the market in the q
 
 Only report what is about this industry and these markets. Ignore global blockbuster calendars and unrelated releases unless the same audience would choose between them and the launch. Write short bullet points. Each states one fact with its date or figure exactly as the source gives it, and names the market it is about. If a search finds nothing reliable, leave it out. Never guess a date or a number.`;
 
-const factsSchema = z.object({
-  facts: z
-    .array(
-      z.object({
-        fact: z.string().min(1),
-        /** The number of the source in the list, from 1. */
-        source: z.number().int().min(1),
-      }),
-    )
-    .max(MAX_FACTS),
-});
-
 export const EXTRACT_SYSTEM = `You turn research notes into discrete facts for a launch planner. Each fact is one sentence stating one thing the notes say, with its date or figure exactly as written, and the market or industry it is about. Tie each to the number of the source in the list that supports it best.
 
 Keep a fact only if a listed source supports it and it matters to launching a film from the industry and markets in the notes: rival releases from that industry, release timing and box-office scale, who distributes and exhibits, and rules before release. Drop general film-industry news, releases from other industries or other genres, advice and opinion, and any fact that only says a page exists. Prefer a fact with a date, a title or a figure to a vague one. Do not add anything the notes do not say.`;
-
-/** Facts whose source number is not in the list, or that repeat a page's fact, are dropped. */
-export function toSources(
-  facts: { fact: string; source: number }[],
-  pages: { title: string; url: string }[],
-): PlanSource[] {
-  const seen = new Set<string>();
-  return facts.flatMap(({ fact, source }) => {
-    const page = pages[source - 1];
-    const key = fact.trim().toLowerCase();
-    if (!page || seen.has(key)) return [];
-    seen.add(key);
-    return [{ id: '', fact: fact.trim(), title: page.title, url: page.url }];
-  });
-}
-
-/** Gives the sources the ids a line cites, in order: w1, w2, and so on. */
-export function numbered(sources: PlanSource[]): PlanSource[] {
-  return sources.map((s, i) => ({ ...s, id: `w${i + 1}` }));
-}
 
 // The industry's own name in searches, which finds far more than the country alone.
 function industryOf(country: string): string {
@@ -89,23 +42,13 @@ function industryOf(country: string): string {
   return names[country.toLowerCase()] ?? `${country} cinema`;
 }
 
-/**
- * Web research for release timing and the market. The film's title and story are never sent, so an
- * unreleased name stays private.
- */
-export class ModelResearcher implements Researcher {
-  readonly enabled = true;
-
-  constructor(
-    private readonly search: WebSearch,
-    private readonly extract: LanguageModel,
-    private readonly timeoutMs: number,
-  ) {}
-
-  async research({ read, country, cities, today }: ResearchInput) {
+const filmKit: ResearchKit<FilmRead> = {
+  searchSystem: RESEARCH_SYSTEM,
+  extractSystem: EXTRACT_SYSTEM,
+  prompt({ read, country, cities, today }) {
     const kind = read.format === 'series' ? 'series' : 'film';
     const genre = read.genre ? `${read.genre} ` : '';
-    const prompt = [
+    return [
       `Today is ${today}.`,
       `Launch: a ${genre}${kind}${country ? ` from ${country}` : ''}${country ? ` (search for it as ${industryOf(country)})` : ''}.`,
       `Markets: ${cities.join(', ')}${country ? `. The home market is in ${country}` : ''}.`,
@@ -114,53 +57,18 @@ export class ModelResearcher implements Researcher {
     ]
       .filter(Boolean)
       .join('\n');
-    const found = await this.search({
-      system: RESEARCH_SYSTEM,
-      prompt,
-      abortSignal: AbortSignal.timeout(this.timeoutMs),
-    });
-    const pages = [...new Map(found.sources.map((s) => [s.url, s])).values()];
-    if (pages.length === 0 || !found.text.trim()) return { sources: [], tokens: found.tokens };
+  },
+};
 
-    const { output, usage } = await generateText({
-      model: this.extract,
-      system: EXTRACT_SYSTEM,
-      prompt: [
-        'Research notes:',
-        found.text,
-        '',
-        'Sources:',
-        ...pages.map((p, i) => `${i + 1}. ${p.title} (${p.url})`),
-      ].join('\n'),
-      output: Output.object({ schema: factsSchema }),
-      temperature: 0,
-      maxRetries: 1,
-      abortSignal: AbortSignal.timeout(this.timeoutMs),
-    });
-    return {
-      sources: numbered(toSources(output.facts, pages)),
-      tokens: found.tokens + (usage.totalTokens ?? 0),
-    };
+/**
+ * Web research for release timing and the market. The film's title and story are never sent, so an
+ * unreleased name stays private.
+ */
+export class ModelResearcher extends LaunchModelResearcher<FilmRead> {
+  constructor(search: WebSearch, extract: LanguageModel, timeoutMs: number) {
+    super(search, extract, timeoutMs, filmKit);
   }
 }
 
 /** A failed search never stops a plan: it is written without the web facts. */
-export class FallbackResearcher implements Researcher {
-  readonly enabled: boolean;
-
-  constructor(
-    private readonly primary: Researcher,
-    private readonly onError: (err: unknown) => void,
-  ) {
-    this.enabled = primary.enabled;
-  }
-
-  async research(input: ResearchInput) {
-    try {
-      return await this.primary.research(input);
-    } catch (err) {
-      this.onError(err);
-      return { sources: [], tokens: 0 };
-    }
-  }
-}
+export class FallbackResearcher extends LaunchFallbackResearcher<FilmRead> {}

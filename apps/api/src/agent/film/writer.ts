@@ -1,91 +1,39 @@
 import { filmPlan } from '@oraqul/packs';
-import {
-  type CompUsed,
-  type Finding,
-  type LaunchSectionKey,
-  launchSectionKeys,
-  lineKindSchema,
-  type PlanSource,
-} from '@oraqul/schema';
-import { generateText, type LanguageModel, Output } from 'ai';
-import { z } from 'zod';
+import type { CompUsed, Finding, LaunchSectionKey } from '@oraqul/schema';
+import type { LanguageModel } from 'ai';
 import type { ProviderOptions } from '../../llm/llm.js';
+import {
+  grounded,
+  type AnswerInput as LaunchAnswerInput,
+  FallbackPlanWriter as LaunchFallbackWriter,
+  ModelPlanWriter as LaunchModelWriter,
+  type PlanWriter as LaunchPlanWriter,
+  TemplatePlanWriter as LaunchTemplateWriter,
+  type WriteInput as LaunchWriteInput,
+  NAMED,
+  playbook,
+  type WriterKit,
+  type WrittenLine,
+} from '../launch/writer.js';
 import { slug } from './brief.js';
 import { agesPhrase, list } from './findings.js';
 import type { FilmRead } from './read.js';
 
 const { SECTION_TITLES } = filmPlan;
 
-/** A line as the writer gives it, before code checks it and gives it an id. */
-export const writtenLineSchema = z.object({
-  kind: lineKindSchema,
-  text: z.string().min(1),
-  findingIds: z.array(z.string()),
-  /** The web facts the line states, by id. Empty when it states none. */
-  sourceIds: z.array(z.string()),
-  names: z.array(z.string()),
-  group: z.string().nullable(),
-});
-export type WrittenLine = z.infer<typeof writtenLineSchema>;
+export {
+  CODE_SECTIONS,
+  findingsBlock,
+  sourcesBlock,
+  type WrittenLine,
+  type WrittenSection,
+  writtenLineSchema,
+  writtenSectionSchema,
+} from '../launch/writer.js';
 
-export const writtenSectionSchema = z.object({
-  key: z.enum(launchSectionKeys),
-  lines: z.array(writtenLineSchema),
-});
-export type WrittenSection = z.infer<typeof writtenSectionSchema>;
-
-const writtenPlanSchema = z.object({
-  sections: z.array(writtenSectionSchema),
-  /** Candidates the writer left out as off-genre or off-brief, with a reason for each. */
-  skipped: z.array(z.object({ name: z.string(), why: z.string() })),
-});
-
-const writtenAnswerSchema = z.object({
-  lines: z.array(writtenLineSchema),
-  /** True when the answer would change a decision in the plan, so the agent offers a what-if. */
-  changesDecision: z.boolean(),
-});
-
-export interface WriteInput {
-  title: string;
-  /** The person's own words: the brief and its files, as sent. */
-  request: string;
-  read: FilmRead;
-  comps: CompUsed[];
-  /** The sections to write, core first. Gaps and Budget split are written by code. */
-  sections: LaunchSectionKey[];
-  findings: Finding[];
-  /** Facts found on the web, each with an id a line may cite. Empty when search is off. */
-  sources: PlanSource[];
-}
-
-export interface AnswerInput {
-  title: string;
-  read: FilmRead;
-  question: string;
-  /** The plan's lines as plain text, for context. */
-  plan: string;
-  chat: string;
-  findings: Finding[];
-}
-
-export interface PlanWriter {
-  write(input: WriteInput): Promise<{
-    sections: WrittenSection[];
-    skipped: { name: string; why: string }[];
-    tokens: number;
-    by: 'model' | 'template';
-  }>;
-  answer(input: AnswerInput): Promise<{
-    lines: WrittenLine[];
-    changesDecision: boolean;
-    tokens: number;
-    by: 'model' | 'template';
-  }>;
-}
-
-/** Sections code writes itself: Gaps from what was not tested, Budget split from the convention. */
-export const CODE_SECTIONS: LaunchSectionKey[] = ['gaps', 'budget'];
+export type WriteInput = LaunchWriteInput<FilmRead>;
+export type AnswerInput = LaunchAnswerInput<FilmRead>;
+export type PlanWriter = LaunchPlanWriter<FilmRead>;
 
 export const RULES = `How to write:
 - You are a senior film and series launch strategist. Write the plan a distributor, a financier or a partner would act on this week. Decisions with reasons: each line is the move, why, and how, in one to three sentences. Be specific: names, places, weeks, who does what.
@@ -136,19 +84,6 @@ ${RULES}
 
 If the honest answer would change a decision in the plan (a city, the order of cities, the age band, a comp), set changesDecision to true and say what you would change. Do not change the plan yourself: the agent offers to run it as a what-if.`;
 
-export function findingsBlock(findings: Finding[]): string {
-  return findings
-    .map(
-      (f) =>
-        `[${f.id}] ${f.text}${f.entities.length ? ` Candidates: ${f.entities.map((e) => (e.detail ? `${e.name} (${e.detail})` : e.name)).join('; ')}.` : ''} Confidence ${f.confidence}.`,
-    )
-    .join('\n');
-}
-
-export function sourcesBlock(sources: PlanSource[]): string {
-  return sources.map((s) => `[${s.id}] ${s.fact} (${s.title})`).join('\n');
-}
-
 export function briefBlock(title: string, read: FilmRead, comps: CompUsed[]): string {
   return [
     `Launch: ${title} (${read.format ?? 'film or series'})`,
@@ -175,166 +110,6 @@ export function briefBlock(title: string, read: FilmRead, comps: CompUsed[]): st
     .filter(Boolean)
     .join('\n');
 }
-
-export class ModelPlanWriter implements PlanWriter {
-  constructor(
-    private readonly model: LanguageModel,
-    private readonly timeoutMs: number,
-    // Provider settings, such as how hard a reasoning model thinks before writing.
-    private readonly options: ProviderOptions = {},
-  ) {}
-
-  async write(input: WriteInput) {
-    const wanted = input.sections.filter((s) => !CODE_SECTIONS.includes(s));
-    const { output, usage } = await generateText({
-      model: this.model,
-      system: PLAN_WRITER_SYSTEM,
-      prompt: [
-        'The request, as the person wrote it:',
-        input.request,
-        '',
-        'The brief as read:',
-        briefBlock(input.title, input.read, input.comps),
-        '',
-        `Write these sections, in order: ${wanted.join(', ')}.`,
-        '',
-        'Findings:',
-        findingsBlock(input.findings),
-        ...(input.sources.length ? ['', 'Web facts:', sourcesBlock(input.sources)] : []),
-      ].join('\n'),
-      output: Output.object({ schema: writtenPlanSchema }),
-      providerOptions: this.options,
-      temperature: 0,
-      maxRetries: 1,
-      abortSignal: AbortSignal.timeout(this.timeoutMs),
-    });
-    return {
-      sections: output.sections,
-      skipped: output.skipped,
-      tokens: usage.totalTokens ?? 0,
-      by: 'model' as const,
-    };
-  }
-
-  async answer(input: AnswerInput) {
-    const { output, usage } = await generateText({
-      model: this.model,
-      system: ANSWER_WRITER_SYSTEM,
-      prompt: [
-        briefBlock(input.title, input.read, []),
-        '',
-        'The plan:',
-        input.plan,
-        '',
-        'Chat so far:',
-        input.chat,
-        '',
-        'Findings:',
-        findingsBlock(input.findings),
-        '',
-        `Question: ${input.question}`,
-      ].join('\n'),
-      output: Output.object({ schema: writtenAnswerSchema }),
-      providerOptions: this.options,
-      temperature: 0,
-      maxRetries: 1,
-      abortSignal: AbortSignal.timeout(this.timeoutMs),
-    });
-    return { ...output, tokens: usage.totalTokens ?? 0, by: 'model' as const };
-  }
-}
-
-/** Falls back to the template writer when the model fails, so a plan never stops at writing. */
-export class FallbackPlanWriter implements PlanWriter {
-  constructor(
-    private readonly primary: PlanWriter,
-    private readonly fallback: PlanWriter,
-    private readonly onError: (err: unknown) => void,
-  ) {}
-
-  async write(input: WriteInput) {
-    try {
-      return await this.primary.write(input);
-    } catch (err) {
-      this.onError(err);
-      return this.fallback.write(input);
-    }
-  }
-
-  async answer(input: AnswerInput) {
-    try {
-      return await this.primary.answer(input);
-    } catch (err) {
-      this.onError(err);
-      return this.fallback.answer(input);
-    }
-  }
-}
-
-const grounded = (
-  text: string,
-  finding: Finding,
-  names: string[],
-  group: string | null = null,
-): WrittenLine => ({
-  kind: 'grounded',
-  text,
-  findingIds: [finding.id],
-  sourceIds: [],
-  names,
-  group,
-});
-
-const playbook = (
-  text: string,
-  names: string[] = [],
-  group: string | null = null,
-): WrittenLine => ({
-  kind: 'playbook',
-  text,
-  findingIds: [],
-  sourceIds: [],
-  names,
-  group,
-});
-
-/**
- * Writes the plan from templates, for runs with no model key, a failed call and the evals. It
- * names the findings' top candidates as they are, with no judgment of genre or tone.
- */
-export class TemplatePlanWriter implements PlanWriter {
-  async write(input: WriteInput) {
-    const sections = input.sections
-      .filter((key) => !CODE_SECTIONS.includes(key))
-      .map((key) => ({ key, lines: templateSection(key, input) }));
-    return { sections, skipped: [], tokens: 0, by: 'template' as const };
-  }
-
-  async answer(input: AnswerInput) {
-    const words = new Set(input.question.toLowerCase().match(/\p{L}{4,}/gu) ?? []);
-    const scored = input.findings
-      .map((f) => ({
-        f,
-        score: [...words].filter((w) => f.text.toLowerCase().includes(w)).length,
-      }))
-      .sort((a, b) => b.score - a.score);
-    const picked = scored
-      .filter((s) => s.score > 0)
-      .slice(0, 3)
-      .map((s) => s.f);
-    const use = picked.length ? picked : input.findings.slice(0, 2);
-    const lines = use.map((f) =>
-      grounded(
-        f.text,
-        f,
-        f.entities.slice(0, NAMED).map((e) => e.name),
-      ),
-    );
-    return { lines, changesDecision: false, tokens: 0, by: 'template' as const };
-  }
-}
-
-const NAMED = 3;
 
 /** The default lines for one section, from the findings and the brief. */
 export function templateSection(key: LaunchSectionKey, input: WriteInput): WrittenLine[] {
@@ -669,4 +444,26 @@ export function marketRole(verdict: Finding['verdict']): string {
 
 export function sectionTitle(key: LaunchSectionKey): string {
   return SECTION_TITLES[key];
+}
+
+const filmKit: WriterKit<FilmRead> = {
+  planSystem: PLAN_WRITER_SYSTEM,
+  answerSystem: ANSWER_WRITER_SYSTEM,
+  brief: briefBlock,
+  templateSection,
+};
+
+export class ModelPlanWriter extends LaunchModelWriter<FilmRead> {
+  constructor(model: LanguageModel, timeoutMs: number, options: ProviderOptions = {}) {
+    super(model, timeoutMs, filmKit, options);
+  }
+}
+
+/** Falls back to the template writer when the model fails, so a plan never stops at writing. */
+export class FallbackPlanWriter extends LaunchFallbackWriter<FilmRead> {}
+
+export class TemplatePlanWriter extends LaunchTemplateWriter<FilmRead> {
+  constructor() {
+    super(filmKit);
+  }
 }
