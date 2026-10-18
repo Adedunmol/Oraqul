@@ -21,8 +21,19 @@ import { Observable, Subject } from 'rxjs';
 import type { z } from 'zod';
 import { type Database, DB } from '../db/db.module.js';
 import { projects, runs, threads } from '../db/schema.js';
-import { CATEGORY_AGENTS, type CategoryAgents, type Handoff } from './category-agents.js';
+import {
+  type AgentRun,
+  CATEGORY_AGENTS,
+  type CategoryAgents,
+  type Handoff,
+  type Reply,
+  ReplyError,
+  type Said,
+  said,
+  saidSchema,
+} from './category-agents.js';
 import { GATE, type Gate, type GatePending, gateDecide, gateStateSchema } from './gate/gate.js';
+import { OutputStore } from './output-store.js';
 import { OFF_TOPIC_REPLY, readingLine } from './router/copy.js';
 import type { Reader } from './router/reader.js';
 import {
@@ -48,10 +59,11 @@ export interface LiveEvent {
 type CreateProject = z.output<typeof createProjectInputSchema>;
 type PostMessage = z.output<typeof postMessageSchema>;
 
-const GATE_LINES = 8;
+// What the gate judges a message against, and what the agent reads of the chat before it.
+const RECENT_LINES = 8;
 
-// Spec: a file's text is read for the router, but a long plan should not fill the model's context.
-const ATTACHMENT_CHARS = 8_000;
+// Projects started before the first message was kept on the project have none.
+const NO_INPUTS: Said = { text: '', files: [] };
 
 /**
  * Runs the agent in the background and streams what it does (spec §8). The request that starts
@@ -71,6 +83,7 @@ export class RunService implements OnModuleInit {
     @Inject(CATEGORY_AGENTS) private readonly agents: CategoryAgents,
     @Inject(THREAD_TITLER) private readonly titler: Titler,
     @Inject(GATE) private readonly gate: Gate,
+    @Inject(OutputStore) private readonly outputs: OutputStore,
   ) {}
 
   /** A run that was going when the process stopped will never finish, so say so. */
@@ -91,10 +104,11 @@ export class RunService implements OnModuleInit {
     userId: string,
     input: CreateProject,
   ): Promise<CreateProjectResult> {
+    const first = said(input.text, input.attachments);
     const { projectId, threadId } = await this.db.transaction(async (tx) => {
       const [project] = await tx
         .insert(projects)
-        .values({ teamId, createdBy: userId, status: 'intake' })
+        .values({ teamId, createdBy: userId, status: 'intake', inputs: first })
         .returning({ id: projects.id });
       if (!project) throw new Error('Project insert returned no row');
       const [thread] = await tx
@@ -106,7 +120,7 @@ export class RunService implements OnModuleInit {
     });
     await this.store.appendUser(threadId, input.text, input.attachments);
     const state = newRouterState({ category: input.category, mode: input.mode });
-    const turn: RouterTurn = { kind: 'message', text: forRouter(input.text, input.attachments) };
+    const turn: RouterTurn = { kind: 'message', text: forRouter(first) };
     this.launch(threadId, async () => {
       await this.nameThread(threadId, input.text, input.attachments);
       await this.routerSegment(threadId, projectId, state, turn);
@@ -136,15 +150,47 @@ export class RunService implements OnModuleInit {
         }
         await this.store.appendUser(threadId, body.text, body.attachments);
         if (state.pending) await this.store.answerOpenQuestion(threadId, body.text);
-        turn = { kind: 'message', text: forRouter(body.text, body.attachments) };
+        turn = { kind: 'message', text: forRouter(said(body.text, body.attachments)) };
       }
       this.launch(threadId, () => this.routerSegment(threadId, project.id, state, turn));
       return;
     }
 
-    const { category, mode, name } = project;
+    const { category, mode, name, inputs, planId } = project;
     if (!category || !mode || !name) throw new Error('An active project has no category or mode');
-    const handoff: Handoff = { category, mode, title: name };
+    const handoff = async (message: Said): Promise<Handoff> => ({
+      category,
+      mode,
+      title: name,
+      inputs,
+      message,
+      recent: await this.store.recentLines(threadId, RECENT_LINES),
+      planId,
+    });
+
+    // A card the agent asked: the reply resumes that run, and the gate does not judge it.
+    const waiting = await this.agentWaiting(threadId, category);
+    if (waiting) {
+      const reply: Reply =
+        body.kind === 'answer' ? body.answer : { kind: 'typed', text: body.text };
+      let label: string;
+      try {
+        label = this.agents[category].replyLabel(waiting.state, reply);
+      } catch (err) {
+        if (err instanceof ReplyError) throw new BadRequestException(err.message);
+        throw err;
+      }
+      if (body.kind === 'text') await this.store.appendUser(threadId, body.text, body.attachments);
+      await this.store.answerOpenQuestion(threadId, label);
+      this.launch(threadId, async () =>
+        this.agentSegment(threadId, project.id, await handoff(said(label, [])), {
+          state: waiting.state,
+          reply,
+        }),
+      );
+      return;
+    }
+
     const pending = await this.gatePending(threadId);
 
     if (body.kind === 'answer' && !pending) {
@@ -161,7 +207,9 @@ export class RunService implements OnModuleInit {
         throw new BadRequestException('That option is not on the card');
       }
       await this.store.answerOpenQuestion(threadId, label);
-      this.launch(threadId, () => this.agentSegment(threadId, handoff));
+      this.launch(threadId, async () =>
+        this.agentSegment(threadId, project.id, await handoff(said(label, []))),
+      );
       return;
     }
 
@@ -176,7 +224,10 @@ export class RunService implements OnModuleInit {
     const unnamed = project.threadName === UNNAMED_THREAD;
     this.launch(threadId, async () => {
       if (unnamed) await this.nameThread(threadId, text, attachments);
-      if (await this.gateSegment(threadId, handoff)) await this.agentSegment(threadId, handoff);
+      const ready = await handoff(said(text, attachments));
+      if (await this.gateSegment(threadId, ready)) {
+        await this.agentSegment(threadId, project.id, ready);
+      }
     });
   }
 
@@ -243,7 +294,7 @@ export class RunService implements OnModuleInit {
             .update(projects)
             .set({ name: title, category, mode, status: 'active', updatedAt: new Date() })
             .where(eq(projects.id, projectId));
-          const threadName = (await this.projectOf(threadId)).threadName;
+          const { threadName, inputs } = await this.projectOf(threadId);
           await this.emit(threadId, {
             type: 'project.updated',
             projectId,
@@ -259,7 +310,15 @@ export class RunService implements OnModuleInit {
             claims: [],
           });
           await this.finishRun(runId, 'finished', { state, steps, tokens, job: mode });
-          return await this.agentSegment(threadId, { category, mode, title });
+          return await this.agentSegment(threadId, projectId, {
+            category,
+            mode,
+            title,
+            inputs,
+            message: inputs,
+            recent: [],
+            planId: null,
+          });
         }
       }
     } catch (err) {
@@ -275,8 +334,11 @@ export class RunService implements OnModuleInit {
   private async gateSegment(threadId: string, handoff: Handoff): Promise<boolean> {
     const runId = await this.newRun(threadId, 'gate', null, null);
     try {
-      const recent = await this.store.recentLines(threadId, GATE_LINES);
-      const { reading, tokens } = await this.gate.check({ project: handoff, recent });
+      const { category, mode, title, recent } = handoff;
+      const { reading, tokens } = await this.gate.check({
+        project: { category, mode, title },
+        recent,
+      });
       const decision = gateDecide(reading, `gate.${runId}`);
       const record = { state: null, steps: [], tokens };
       switch (decision.kind) {
@@ -317,22 +379,59 @@ export class RunService implements OnModuleInit {
     return gateStateSchema.parse(run.state).pending;
   }
 
-  private async agentSegment(threadId: string, handoff: Handoff): Promise<void> {
+  private async agentSegment(
+    threadId: string,
+    projectId: string,
+    handoff: Handoff,
+    resume?: { state: unknown; reply: Reply },
+  ): Promise<void> {
     const runId = await this.newRun(threadId, handoff.category, handoff.mode, null);
     const steps: string[] = [];
     // The agent emits without waiting on the store, so events are chained to keep their order.
     let stored: Promise<void> = Promise.resolve();
     try {
-      const reason = await this.agents[handoff.category].run(handoff, (event) => {
-        if (event.type === 'trace.step') steps.push(event.text);
-        stored = stored.then(() => this.emit(threadId, event));
-      });
+      const run: AgentRun = await this.agents[handoff.category].run(
+        handoff,
+        (event) => {
+          if (event.type === 'trace.step') steps.push(event.text);
+          stored = stored.then(() => this.emit(threadId, event));
+        },
+        resume,
+      );
       await stored;
-      await this.stop(threadId, runId, reason, { state: null, steps, tokens: 0 });
+      const outputId = await this.outputs.save({
+        threadId,
+        projectId,
+        runId,
+        output: run.output,
+        receipts: run.receipts,
+      });
+      if (outputId) await this.emit(threadId, { type: 'output.created', outputId });
+      await this.stop(threadId, runId, run.reason, {
+        state: run.state,
+        steps,
+        tokens: run.tokens,
+        qlooCalls: run.qlooCalls,
+      });
     } catch (err) {
       await stored.catch(() => undefined);
       await this.fail(threadId, runId, err, { state: null, steps, tokens: 0 });
     }
+  }
+
+  /** The agent run waiting on a card, if the thread's last run left one open. */
+  private async agentWaiting(
+    threadId: string,
+    category: string,
+  ): Promise<{ state: unknown } | null> {
+    const [run] = await this.db
+      .select({ agent: runs.agent, status: runs.status, state: runs.state })
+      .from(runs)
+      .where(eq(runs.threadId, threadId))
+      .orderBy(desc(runs.createdAt))
+      .limit(1);
+    if (run?.agent !== category || run.status !== 'waiting' || !run.state) return null;
+    return { state: run.state };
   }
 
   /** Names a chat from its first message. Only an unnamed chat is renamed, so this runs once. */
@@ -401,6 +500,7 @@ export class RunService implements OnModuleInit {
         finishedAt: new Date(),
         steps: record.steps,
         tokens: record.tokens,
+        ...(record.qlooCalls ? { qlooCalls: record.qlooCalls } : {}),
         ...(record.state ? { state: record.state } : {}),
         ...(record.job ? { job: record.job } : {}),
       })
@@ -436,14 +536,16 @@ export class RunService implements OnModuleInit {
         name: projects.name,
         category: projects.category,
         mode: projects.mode,
+        inputs: projects.inputs,
         threadName: threads.name,
+        planId: threads.baseOutputId,
       })
       .from(threads)
       .innerJoin(projects, eq(projects.id, threads.projectId))
       .where(eq(threads.id, threadId))
       .limit(1);
     if (!row) throw new NotFoundException('No such thread');
-    return row;
+    return { ...row, inputs: saidSchema.nullable().parse(row.inputs) ?? NO_INPUTS };
   }
 
   private bus(threadId: string): Subject<LiveEvent> {
@@ -460,15 +562,14 @@ interface RunRecord {
   state: object | null;
   steps: string[];
   tokens: number;
+  qlooCalls?: number;
   job?: Handoff['mode'];
 }
 
 /** The words the router reads: the message, then the text of any small text file. */
-function forRouter(text: string, attachments: Attachment[]): string {
-  const files = attachments.map((a) =>
-    a.text
-      ? `[File: ${a.name}]\n${a.text.slice(0, ATTACHMENT_CHARS)}`
-      : `[Attached file: ${a.name}]`,
+function forRouter({ text, files }: Said): string {
+  const parts = files.map((f) =>
+    f.text ? `[File: ${f.name}]\n${f.text}` : `[Attached file: ${f.name}]`,
   );
-  return [text, ...files].filter(Boolean).join('\n\n');
+  return [text, ...parts].filter(Boolean).join('\n\n');
 }

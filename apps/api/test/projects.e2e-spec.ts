@@ -16,6 +16,12 @@ import {
 import { and, eq } from 'drizzle-orm';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
+import {
+  CATEGORY_AGENTS,
+  type CategoryAgent,
+  type Handoff,
+  PlaceholderAgent,
+} from '../src/agent/category-agents.js';
 import { RunService } from '../src/agent/run.service.js';
 import { AuthModule } from '../src/auth/auth.module.js';
 import { type AuthedRequest, SessionGuard } from '../src/auth/session.guard.js';
@@ -42,6 +48,15 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
   let runs: RunService;
   let teamId: string;
   const ids = {} as Record<keyof typeof emails, string>;
+  const handoffs: Handoff[] = [];
+  const placeholder = new PlaceholderAgent();
+  const recording: CategoryAgent = {
+    run: (handoff, emit) => {
+      handoffs.push(handoff);
+      return placeholder.run(handoff, emit);
+    },
+    replyLabel: () => placeholder.replyLabel(),
+  };
   const as = (who: keyof typeof emails) => ({ 'x-test-user': emails[who] });
   const http = () => app.getHttpServer();
 
@@ -102,6 +117,14 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
       .useValue(database.db)
       .overrideGuard(SessionGuard)
       .useValue(sessionStub)
+      .overrideProvider(CATEGORY_AGENTS)
+      .useValue({
+        film: recording,
+        music: recording,
+        books: recording,
+        podcasts: recording,
+        games: recording,
+      })
       .compile();
     app = moduleRef.createNestApplication();
     await app.init();
@@ -164,6 +187,51 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
       .get(`/teams/${teamId}/projects?category=music`)
       .set(as('viewer'));
     expect(projectListSchema.parse(listed.body).map((p) => p.id)).toContain(projectId);
+  });
+
+  it('hands the agent the first message, its files and, on a follow up, the chat', async () => {
+    const plan = 'x'.repeat(9_000);
+    const { projectId, threadId } = await start('Launch plan for my film "Salt Road"', {
+      attachments: [{ name: 'plan.txt', text: plan }, { name: 'poster.png' }],
+    });
+    await settled(threadId);
+    const first = {
+      text: 'Launch plan for my film "Salt Road"',
+      files: [{ name: 'plan.txt', text: plan.slice(0, 8_000) }, { name: 'poster.png' }],
+    };
+    expect(handoffs.at(-1)).toEqual({
+      category: 'film',
+      mode: 'build',
+      title: 'Salt Road',
+      inputs: first,
+      message: first,
+      recent: [],
+      planId: null,
+    });
+    const [row] = await database.db
+      .select({ inputs: projects.inputs })
+      .from(projects)
+      .where(eq(projects.id, projectId));
+    expect(row?.inputs).toEqual(first);
+
+    await request(http())
+      .post(`/threads/${threadId}/messages`)
+      .set(as('editor'))
+      .send({
+        kind: 'text',
+        text: 'What about London?',
+        attachments: [{ name: 'a.txt', text: 'b' }],
+      })
+      .expect(202);
+    await settled(threadId);
+    const followUp = handoffs.at(-1);
+    expect(followUp?.inputs).toEqual(first);
+    expect(followUp?.message).toEqual({
+      text: 'What about London?',
+      files: [{ name: 'a.txt', text: 'b' }],
+    });
+    expect(followUp?.recent.at(0)).toEqual({ from: 'person', text: first.text });
+    expect(followUp?.recent.at(-1)).toEqual({ from: 'person', text: 'What about London?' });
   });
 
   it('replays stored events and ends with the run status', async () => {

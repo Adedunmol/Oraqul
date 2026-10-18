@@ -40,7 +40,7 @@ export class ScriptedPlanner implements Planner {
     if (!first) {
       return finish({
         message: `Qloo has no match for ${project.lead}, so nothing about it could be tested.`,
-        claims: [{ text: `No Qloo match for ${project.lead}.`, receiptIds: [search.receiptId] }],
+        claims: [{ text: `No Qloo match for ${project.lead}.`, receiptIds: search.receiptIds }],
       });
     }
 
@@ -88,7 +88,7 @@ export class ScriptedPlanner implements Planner {
     const claims: Claim[] = [
       {
         text: `${chosen.name} is in Qloo as a ${chosen.types.map(typeWord).join(' or ')}.`,
-        receiptIds: [search.receiptId],
+        receiptIds: search.receiptIds,
       },
     ];
     const segment = audienceOutputSchema
@@ -98,12 +98,12 @@ export class ScriptedPlanner implements Planner {
       const affinity = segment.age[segment.topAgeBand];
       claims.push({
         text: `Its audience skews most to the ${bandWord(segment.topAgeBand)} age band (affinity ${affinity}).`,
-        receiptIds: [audience.receiptId],
+        receiptIds: audience.receiptIds,
       });
     } else {
       claims.push({
         text: `Qloo returned no audience skew for ${chosen.name}, so this is not tested.`,
-        receiptIds: [audience.receiptId],
+        receiptIds: audience.receiptIds,
       });
     }
     for (const item of history) {

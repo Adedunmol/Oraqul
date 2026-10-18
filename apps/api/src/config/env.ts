@@ -35,6 +35,22 @@ export const envSchema = z
     LLM_ROUTER_MODEL: z.string().default(''),
     LLM_BASE_URL: z.string().default(''),
     LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+    // The step that writes plans and answers can run on a stronger model, even from another
+    // provider. Each value falls back to the main setting when empty.
+    // An empty value, as in .env.example, means the writer uses the main provider.
+    LLM_WRITER_PROVIDER: z.preprocess(
+      (v) => (v === '' ? undefined : v),
+      z.enum(llmProviders).optional(),
+    ),
+    LLM_WRITER_API_KEY: z.string().default(''),
+    LLM_WRITER_MODEL: z.string().default(''),
+    LLM_WRITER_BASE_URL: z.string().default(''),
+    // How hard an OpenAI reasoning model thinks before writing. Lower is faster and cheaper.
+    LLM_WRITER_REASONING: z.enum(['minimal', 'low', 'medium', 'high']).default('low'),
+    // Web search for release timing and market facts, through the writer's provider.
+    LLM_WEB_SEARCH: z.enum(['on', 'off']).default('on'),
+    // A whole plan is a long answer, so the writer gets more time than a short read.
+    LLM_WRITER_TIMEOUT_MS: z.coerce.number().int().positive().default(180_000),
   })
   .refine(
     (env) => env.QLOO_MODE === 'demo' || (env.QLOO_API_KEY !== '' && env.QLOO_BASE_URL !== ''),
@@ -57,6 +73,19 @@ export const envSchema = z
     message: 'LLM_API_KEY needs LLM_MODEL',
     path: ['LLM_MODEL'],
   })
+  // A key belongs to one provider. Without this, a writer on another provider would be sent the
+  // main provider's key.
+  .refine(
+    (env) =>
+      env.LLM_WRITER_PROVIDER === undefined ||
+      env.LLM_WRITER_PROVIDER === env.LLM_PROVIDER ||
+      env.LLM_WRITER_API_KEY !== '',
+    {
+      message:
+        'LLM_WRITER_PROVIDER differs from LLM_PROVIDER, so it needs its own LLM_WRITER_API_KEY',
+      path: ['LLM_WRITER_API_KEY'],
+    },
+  )
   .refine(
     (env) =>
       env.LLM_API_KEY === '' ||

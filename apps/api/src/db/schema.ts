@@ -1,8 +1,10 @@
 import {
   categories,
   codePurposes,
+  confidences,
   jobs,
   oauthProviders,
+  receiptSources,
   roles,
   startModes,
   stopReasons,
@@ -191,7 +193,7 @@ export const threads = pgTable(
   (table) => [index('threads_project_idx').on(table.projectId)],
 );
 
-export const messageRoles = ['user', 'agent', 'question', 'trace', 'output'] as const;
+export const messageRoles = ['user', 'agent', 'question', 'trace', 'output', 'context'] as const;
 
 /** A thread's stored transcript. `seq` orders it and is the event stream's resume point. */
 export const messages = pgTable(
@@ -221,6 +223,10 @@ export const outputs = pgTable('outputs', {
   parentId: uuid('parent_id').references((): AnyPgColumn => outputs.id),
   title: text('title').notNull(),
   brief: jsonb('brief').notNull(),
+  /** The launch plan (core sections, modules, findings) for outputs built on findings. */
+  plan: jsonb('plan'),
+  /** What the plan was built from (the agent's reading and the comps it used), so a follow up can rerun it. */
+  inputs: jsonb('inputs'),
   changedIds: text('changed_ids').array().notNull().default([]),
   headline: text('headline'),
   moves: jsonb('moves'),
@@ -229,21 +235,37 @@ export const outputs = pgTable('outputs', {
   createdAt: createdAt(),
 });
 
-export const receipts = pgTable('receipts', {
-  id: id(),
-  outputId: uuid('output_id')
-    .notNull()
-    .references(() => outputs.id, { onDelete: 'cascade' }),
-  lineId: text('line_id'),
-  endpoint: text('endpoint').notNull(),
-  input: jsonb('input').notNull(),
-  returned: jsonb('returned').notNull(),
-  rule: text('rule').notNull(),
-  confidence: text('confidence').notNull(),
-  calledAt: timestamp('called_at', { withTimezone: true }).notNull(),
-  callId: uuid('call_id').notNull(),
-  createdAt: createdAt(),
-});
+/**
+ * One Qloo call as a line cites it. A receipt belongs to the run that made the call; an answer
+ * saves no output, so `output_id` is set only when a plan does.
+ */
+export const receipts = pgTable(
+  'receipts',
+  {
+    id: id(),
+    runId: uuid('run_id')
+      .notNull()
+      .references((): AnyPgColumn => runs.id, { onDelete: 'cascade' }),
+    threadId: uuid('thread_id')
+      .notNull()
+      .references(() => threads.id, { onDelete: 'cascade' }),
+    outputId: uuid('output_id').references(() => outputs.id, { onDelete: 'cascade' }),
+    lineId: text('line_id'),
+    endpoint: text('endpoint').notNull(),
+    input: jsonb('input').notNull(),
+    returned: jsonb('returned').notNull(),
+    rule: text('rule').notNull(),
+    confidence: text('confidence', { enum: confidences }).notNull(),
+    source: text('source', { enum: receiptSources }).notNull(),
+    calledAt: timestamp('called_at', { withTimezone: true }).notNull(),
+    callId: uuid('call_id').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    index('receipts_run_idx').on(table.runId),
+    index('receipts_output_idx').on(table.outputId),
+  ],
+);
 
 export const shareLinks = pgTable('share_links', {
   id: id(),

@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   type Attachment,
   claimSchema,
+  contextItemSchema,
+  findingSchema,
   type QuestionCard,
   questionSchema,
   type ThreadEvent,
@@ -32,13 +34,17 @@ const questionBody = z.object({
   /** What the person answered, shown on the folded card. Null while the card is open. */
   answer: z.string().nullable(),
 });
-const traceBody = z.object({
+const stepBody = z.object({
   agent: z.string(),
   step: z.number().int(),
   of: z.number().int(),
   text: z.string(),
 });
+/** A finding is stored with the trace it streamed in, so the chat folds both into one item. */
+const findingBody = z.object({ finding: findingSchema });
+const traceBody = z.union([findingBody, stepBody]);
 const outputBody = z.object({ outputId: z.uuid() });
+const contextBody = z.object({ items: z.array(contextItemSchema) });
 
 type Row = typeof messages.$inferSelect;
 
@@ -72,8 +78,12 @@ export class ThreadStore {
         const { type: _type, ...step } = event;
         return this.insert(threadId, 'trace', step);
       }
+      case 'finding':
+        return this.insert(threadId, 'trace', { finding: event.finding });
       case 'output.created':
         return this.insert(threadId, 'output', { outputId: event.outputId });
+      case 'memory.used':
+        return this.insert(threadId, 'context', { items: event.items });
       case 'receipt':
       case 'project.updated':
       case 'run.stopped':
@@ -173,10 +183,16 @@ function toEvent(row: Row): ThreadEvent | null {
       const { agent, question } = questionBody.parse(row.body);
       return { type: 'question', agent, ...question };
     }
-    case 'trace':
-      return { type: 'trace.step', ...traceBody.parse(row.body) };
+    case 'trace': {
+      const body = traceBody.parse(row.body);
+      return 'finding' in body
+        ? { type: 'finding', finding: body.finding }
+        : { type: 'trace.step', ...body };
+    }
     case 'output':
       return { type: 'output.created', outputId: outputBody.parse(row.body).outputId };
+    case 'context':
+      return { type: 'memory.used', items: contextBody.parse(row.body).items };
   }
 }
 
@@ -206,18 +222,26 @@ export function toItems(rows: Row[], busy: boolean): ThreadItem[] {
         break;
       }
       case 'trace': {
-        const { text } = traceBody.parse(row.body);
+        const body = traceBody.parse(row.body);
         const last = items.at(-1);
-        if (last?.role === 'trace') {
-          last.steps.push(text);
-          last.done = last.steps.length - 1;
+        const trace =
+          last?.role === 'trace'
+            ? last
+            : { id, role: 'trace' as const, steps: [], done: 0, findings: [] };
+        if (trace !== last) items.push(trace);
+        if ('finding' in body) {
+          trace.findings.push(body.finding);
         } else {
-          items.push({ id, role: 'trace', steps: [text], done: 0 });
+          trace.steps.push(body.text);
+          trace.done = trace.steps.length - 1;
         }
         break;
       }
       case 'output':
         items.push({ id, role: 'output', outputId: outputBody.parse(row.body).outputId });
+        break;
+      case 'context':
+        items.push({ id, role: 'context', items: contextBody.parse(row.body).items });
         break;
     }
   }
