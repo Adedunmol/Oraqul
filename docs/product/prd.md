@@ -126,7 +126,7 @@ Each category supplies its own inputs, query catalog, modules, assumption checkl
 | O1 | The chat shows the whole launch plan as a readable document, with Export and Open plan in its header. The plan's page opens on the Plan tab, with Audience, Assumptions and Evidence behind it. Other outputs keep their summary card and the tabs that fit. | P0 |
 | O2 | Compare any two plans line by line. | P0 |
 | O3 | Export a plan as PDF, Word (DOCX) or Markdown, each built by the API as a document: the moves first, then the sections, with footnotes to where the audience insights come from and the sources at the end. Raw Qloo data stays out until O4 is settled. | P0 |
-| O4 | A read only share link for one output, with an off switch. Raw Qloo data is not shown on public links until Qloo confirms what may be shown. | P0 |
+| O4 | A read only share link for one output, with an off switch. Receipts on a public link keep their rule and confidence but not what was sent to Qloo or what came back, until Qloo confirms what may be shown. | P0 |
 | O5 | Copy summary, copy draft and copy as Markdown. | P0 |
 
 ### 6.6 Accounts
@@ -142,7 +142,7 @@ Each category supplies its own inputs, query catalog, modules, assumption checkl
 | ID | Requirement | P |
 |---|---|---|
 | G1 | One agent per category, plus a thin router. | P0 |
-| G2 | All agents share one toolbox and one red team step. | P0 |
+| G2 | All agents share one toolbox. | P0 |
 | G3 | The engine is exposed as an MCP server. | P1 |
 
 ### 6.8 Getting started and guidance

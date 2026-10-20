@@ -2,7 +2,7 @@
 
 A plain-language map of what the Film agent does from the first message to the saved output, what it can produce, and where it falls short of the docs. Product behaviour is in [product/spec.md](../product/spec.md); the step-by-step build map is in [backend/film-overview.md](../backend/film-overview.md). Where this file and those disagree, they win.
 
-Status as of the audit and fix work (branch `feat/audit-fix`), with the paths now in the shared launch runtime. Film and Music have real agents ([music-agent.md](music-agent.md)). Books, Podcasts and Games are placeholders.
+Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film and Music have real agents ([music-agent.md](music-agent.md)). Books, Podcasts and Games are placeholders.
 
 ## The path of a message
 
@@ -46,10 +46,8 @@ Status as of the audit and fix work (branch `feat/audit-fix`), with the paths no
 
 ### Not built for Film
 
-- **Red team step** (spec §3.3): a second model call that tries to break the top recommendation. Nothing in the code does this.
 - **Memory** (spec §3.7): team and project memory, and summaries of long chats. The agent uses only the current plan and the last 8 chat lines.
 - **Next-step suggestions after each output.** The web passes none to the chat. The only suggested step is the Fix this plan button on a report.
-- **Share links.** The docs describe read-only share links and a `/s/:token` page. The projects controller has no share route, and the public share page still reads demo data.
 - **Missing engine tools:** `crossTaste`, `tagWeights`, `momentum`, `explain`, `applyScenario` and `compareResults`. Rerunning only what changed in a what-if (spec §3.5) is still a `TODO`, so a what-if reruns every query.
 - **Results cards.** The docs describe split, confirm and date cards for entering results. Results come in through a text card, parsed from lines like "Lagos: 4,200", or by the model reader. There is no form or file column mapping.
 - **Dropped-line visibility.** Lines the check drops are stored but not shown anywhere in the product.
@@ -66,9 +64,8 @@ Status as of the audit and fix work (branch `feat/audit-fix`), with the paths no
 
 ### Gaps in audit and fix
 
-- The scripted reader does not extract named partners, so without a model key a partner is never tested. A lone partner with no other brand candidates shows as "could not test".
+- The scripted reader takes a partner only when a capitalised name sits next to "partner" or "sponsor" ("with Nike as a partner", "sponsored by MTN"), so without a model key other phrasings are not tested. A lone partner with no other brand candidates shows as "could not test".
 - Window, budget and forecasts are always "could not test". Cast, director and media or podcast placements are not extracted as claims.
 - Auditing an Oraqul plan reads it back as exported Markdown, which works but is rough.
 - Audit and fix have only run on demo data, so the wording a model writes for risks and alternatives is untested.
-- The follow-up pattern for "fix" also matches phrases like "fix the budget in this plan", which starts a full audit and rewrite.
 - The new report screen was built from the design system and has not been compared with the prototype.

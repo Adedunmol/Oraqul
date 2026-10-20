@@ -26,7 +26,7 @@ Two people, one feature at a time, end to end. A feature is a vertical slice: sh
 ```
 feat(engine): add rival overlap band
 fix(api): reject expired sessions
-docs(agent): describe the red team step
+docs(agent): describe the follow-up jobs
 ```
 
 ## Pull requests

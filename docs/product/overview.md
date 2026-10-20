@@ -81,7 +81,7 @@ The output is always a direction: holds, weak, breaks, or could not test.
 ## How the agent behaves
 
 * There is one category agent per category: Film and series, Music, Books, Podcasts and Games. A thin router reads the title, category and job from the first message and hands the project to that agent. The router speaks only to ask what it could not read, or to decline an off-topic request.
-* The five agents share one toolbox: the Qloo client, the verdict engine, the receipt writer and a red team step that did not see the plan being built. They differ in instructions, assumption checklist, scenarios and output schema.
+* The five agents share one toolbox: the Qloo client, the verdict engine, and the receipt writer. They differ in instructions, assumption checklist, scenarios and output schema.
 * Category agents do not call each other freely. The one bounded exception is a book with a screen adaptation, where the Books agent can ask the Film agent one question and cite the answer as a receipt.
 * The language model chooses its tools. Every Qloo call and every scoring function is a tool.
 * It tries to find a better plan, not only score the one it was given.
