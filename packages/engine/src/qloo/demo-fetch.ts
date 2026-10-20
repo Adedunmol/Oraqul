@@ -14,7 +14,17 @@ interface DemoEntity {
   city?: string;
   /** Matched against `filter.release_country`. */
   country?: string;
+  /** What `/entities` returns under `properties`, such as a game's platforms. */
+  properties?: Record<string, unknown>;
+  /** Tag names by kind (`gameplay_type`, `emotional_tone`), returned as typed tags. */
+  tagGroups?: Record<string, string[]>;
+  /** Only shown to a signal that holds a game, so film and music demos keep their answers. */
+  gameOnly?: boolean;
+  /** Found by name and scored, but never listed by an open discovery call. */
+  searchOnly?: boolean;
 }
+
+const GAME = 'urn:entity:videogame';
 
 const bands = ['24_and_younger', '25_to_29', '30_to_34', '35_to_44', '45_to_54', '55_and_older'];
 
@@ -38,7 +48,7 @@ function demoPlace(id: string, name: string, city: string, tag: string): DemoEnt
   };
 }
 
-export const demoEntities: DemoEntity[] = [
+const baseEntities: DemoEntity[] = [
   {
     id: 'DEMO-FILM-0001',
     name: 'Midnight Harbor',
@@ -102,6 +112,15 @@ export const demoEntities: DemoEntity[] = [
     popularity: 0.36,
     age: ages([0.35, 0.3, 0.05, -0.2, -0.4, -0.55]),
     gender: { male: 0.3, female: -0.3 },
+    tags: ['roguelike'],
+    properties: {
+      platforms: ['PC (Windows)', 'Nintendo Switch'],
+      genre: ['Action'],
+      content_rating: 'T',
+      developer: 'Cinder Works',
+      universe: 'Ember',
+    },
+    tagGroups: { gameplay_type: ['Single-player'], emotional_tone: ['tense'] },
   },
   {
     id: 'DEMO-FILM-0101',
@@ -281,6 +300,210 @@ export const demoEntities: DemoEntity[] = [
   demoPlace('DEMO-PLACE-0009', 'Lagoon City University', 'Lagos', 'university'),
 ];
 
+const gaming = ['video_games'];
+const pc = 'PC (Windows)';
+
+function demoGame(
+  id: string,
+  name: string,
+  popularity: number,
+  tags: string[],
+  properties: Record<string, unknown>,
+  tagGroups: Record<string, string[]>,
+): DemoEntity {
+  return {
+    id,
+    name,
+    type: 'urn:entity:videogame',
+    popularity,
+    age: ages([0.35, 0.3, 0.05, -0.2, -0.4, -0.55]),
+    gender: { male: 0.3, female: -0.3 },
+    tags,
+    properties,
+    tagGroups,
+  };
+}
+
+// Stand-ins for what each fan base of a game looks like. Not Qloo data.
+const gameFanBase: DemoEntity[] = [
+  demoGame(
+    'DEMO-GAME-0002',
+    'Hollow Hills',
+    0.52,
+    ['roguelike'],
+    {
+      platforms: [pc, 'Nintendo Switch'],
+      genre: ['Action'],
+      content_rating: 'T',
+      developer: 'Cinder Works',
+    },
+    { gameplay_type: ['Single-player'], emotional_tone: ['tense'], player_mode: ['Single-player'] },
+  ),
+  demoGame(
+    'DEMO-GAME-0003',
+    'Crown of Ash',
+    0.47,
+    ['roguelike'],
+    {
+      platforms: [pc, 'PlayStation 5'],
+      genre: ['Role-Playing'],
+      content_rating: 'M',
+      publisher: 'Gilt Tower',
+    },
+    {
+      gameplay_type: ['Single-player'],
+      emotional_tone: ['dark', 'epic'],
+      player_mode: ['Single-player'],
+    },
+  ),
+  demoGame(
+    'DEMO-GAME-0004',
+    'Tidewalker',
+    0.31,
+    ['cozy'],
+    {
+      platforms: [pc, 'Nintendo Switch', 'Xbox Series X/S'],
+      genre: ['Adventure'],
+      content_rating: 'E10+',
+    },
+    { gameplay_type: ['Single-player', 'Co-operative multiplayer'], emotional_tone: ['calm'] },
+  ),
+  demoGame(
+    'DEMO-GAME-0005',
+    'Void Courier',
+    0.28,
+    ['roguelike'],
+    { platforms: ['iOS', 'Android'], genre: ['Strategy'], content_rating: 'T' },
+    { gameplay_type: ['Single-player'], emotional_tone: ['tense'] },
+  ),
+  demoGame(
+    'DEMO-GAME-0006',
+    'Lantern Row',
+    0.22,
+    ['cozy'],
+    { platforms: ['iOS', 'Android'], genre: ['Simulation'], content_rating: 'E' },
+    { gameplay_type: ['Single-player'], emotional_tone: ['calm', 'humorous'] },
+  ),
+  // Well known games the Games agent falls back to for a short brief. Found by name only.
+  ...(
+    [
+      ['DEMO-GAME-0201', 'Call of Duty: Mobile', 0.9],
+      ['DEMO-GAME-0202', 'PUBG MOBILE', 0.88],
+      ['DEMO-GAME-0203', 'Garena Free Fire', 0.85],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      ...demoGame(
+        id,
+        name,
+        popularity,
+        [],
+        { platforms: ['iOS', 'Android'], genre: ['Shooter'], content_rating: 'T' },
+        { gameplay_type: ['Online multiplayer'] },
+      ),
+      searchOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-MUSIC-0101', 'Pixel Choir', 0.44],
+      ['DEMO-MUSIC-0102', 'Synthwave Kid', 0.37],
+      ['DEMO-MUSIC-0103', 'Low Battery', 0.21],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:artist',
+      popularity,
+      age: young,
+      gender: { male: 0.1, female: -0.1 },
+      tags: ['synthwave'],
+      gameOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-TV-0101', 'Kitsune Drift', 0.58, ['anime']],
+      ['DEMO-TV-0102', 'Iron Sparrow', 0.4, ['anime']],
+      ['DEMO-TV-0103', 'The Long Watch', 0.33, []],
+    ] as const
+  ).map(
+    ([id, name, popularity, tags]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:tv_show',
+      popularity,
+      age: young,
+      gender: { male: 0.15, female: -0.15 },
+      tags: [...tags],
+      gameOnly: true,
+    }),
+  ),
+  {
+    id: 'DEMO-FILM-0201',
+    name: 'Ashfall',
+    type: 'urn:entity:movie',
+    popularity: 0.45,
+    age: young,
+    gender: { male: 0.2, female: -0.2 },
+    gameOnly: true,
+  },
+  ...(
+    [
+      ['DEMO-POD-0101', 'Respawn Hour', 0.34],
+      ['DEMO-POD-0102', 'Save Point', 0.26],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:podcast',
+      popularity,
+      age: young,
+      gender: { male: 0.25, female: -0.25 },
+      tags: gaming,
+      gameOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-BRAND-0101', 'Voltage Energy', 0.5, 'beverage'],
+      ['DEMO-BRAND-0102', 'Rival Gear', 0.36, 'peripherals'],
+    ] as const
+  ).map(
+    ([id, name, popularity, tag]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:brand',
+      popularity,
+      age: young,
+      gender: { male: 0.2, female: -0.2 },
+      tags: [tag],
+      gameOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-PERSON-0101', 'Nova Plays', 0.42],
+      ['DEMO-PERSON-0102', 'Kenji Streams', 0.3],
+      ['DEMO-PERSON-0103', 'Ola Speedruns', 0.18],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:person',
+      popularity,
+      age: young,
+      gender: { male: 0.1, female: -0.1 },
+      gameOnly: true,
+    }),
+  ),
+];
+
+export const demoEntities: DemoEntity[] = [...baseEntities, ...gameFanBase];
+
 const demoTagNames: Record<string, string[]> = {
   theme: ['Ambition', 'Family', 'Power', 'Loyalty', 'Survival', 'Community'],
   archetype: ['The Matriarch', 'The Rival', 'The Outsider', 'The Fixer'],
@@ -303,6 +526,24 @@ function search(params: URLSearchParams): Response {
       name: e.name,
       types: [e.type],
       popularity: e.popularity,
+    }));
+  return json({ success: true, results });
+}
+
+// Qloo's `/entities`: the entities for these ids, with the properties and typed tags a game has.
+function entitiesById(params: URLSearchParams): Response {
+  const wanted = params.get('entity_ids')?.split(',') ?? [];
+  const results = demoEntities
+    .filter((e) => wanted.includes(e.id))
+    .map((e) => ({
+      entity_id: e.id,
+      name: e.name,
+      types: [e.type],
+      popularity: e.popularity,
+      properties: e.properties ?? {},
+      tags: Object.entries(e.tagGroups ?? {}).flatMap(([kind, names]) =>
+        names.map((name) => ({ type: `urn:tag:${kind}:qloo`, name })),
+      ),
     }));
   return json({ success: true, results });
 }
@@ -386,8 +627,12 @@ function discovered(params: URLSearchParams): Response {
   const tags = params.get('filter.tags')?.split(',') ?? [];
   const city = params.get('filter.location.query')?.toLowerCase();
   const country = params.get('filter.release_country')?.toLowerCase();
+  const aboutGames = signal.some((id) => demoEntities.find((e) => e.id === id)?.type === GAME);
   const results = demoEntities
     .filter((e) => e.type === params.get('filter.type'))
+    .filter((e) => !e.searchOnly)
+    .filter((e) => !e.gameOnly || aboutGames)
+    .filter((e) => !aboutGames || e.gameOnly || e.type === GAME || e.type === 'urn:entity:place')
     .filter((e) => !signal.includes(e.id) && !excluded.includes(e.id))
     .filter((e) => tags.every((t) => e.tags?.includes(t.split(':').at(-1) ?? '')))
     .filter((e) => !city || e.city?.toLowerCase() === city)
@@ -456,6 +701,7 @@ export const demoFetch: typeof fetch = async (input) => {
   const url = new URL(input instanceof Request ? input.url : input);
   if (url.pathname === '/search') return search(url.searchParams);
   if (url.pathname === '/v2/tags') return tagLookup(url.searchParams);
+  if (url.pathname === '/entities') return entitiesById(url.searchParams);
   const type = url.searchParams.get('filter.type');
   if (url.pathname === '/v2/insights' && type === 'urn:demographics') {
     return demographics(url.searchParams);

@@ -1,5 +1,6 @@
 import {
   compareAudiencesOutputSchema,
+  compareTypeOf,
   fitBand,
   fitFromLift,
   liftOutputSchema,
@@ -278,8 +279,11 @@ export async function runDateCheck<R extends LaunchRead>(
     }
 
     trace(2, 'Measuring how much of your audience each rival shares');
+    const rivalType = compareTypeOf(deps.config.rivalTypes);
+    if (!rivalType) return done('error');
     const scored = await tools.compareAudiences.run(deps.tools, {
       entityIds: anchors,
+      type: rivalType,
       rivals: resolved.map((r) => r.entityId),
     });
     keep(scored.receipts);
