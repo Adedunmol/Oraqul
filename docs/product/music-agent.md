@@ -50,7 +50,7 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 
 ## Known limits
 
-- **Artist signals are not verified yet.** Whether an artist works as a signal for support acts, series, films, brands and podcasts is checked by `pnpm --filter @oraqul/engine qloo:music-probes`. Until [qloo.md](../backend/qloo.md) says so, Music findings from those queries carry `TODO(verify)` in the spec and the plan is not claimed to beat a chatbot on them.
+- **Artist signals are verified on one brief.** An artist works as a signal for support acts, series, films, brands, podcasts and campuses (an Afrobeats artist, 2026-10-20, [qloo.md](../backend/qloo.md)). Other genres and markets are not checked. Series for African cities lean on American shows, so those lines are leads, not facts about the city.
 - **A debut is planned from its sound-alikes.** If those are off, the audience is off. The plan says what it rests on, and the sound-alikes test shows when one title carries the result.
 - **No venues, promoters, radio or playlists.** Qloo does not rank them, so the plan gives practice, not names, and does not claim a venue fits.
 - **The strongest order is not a routing.** The route score orders cities by audience strength, not by travel, venue availability or dates.
