@@ -9,6 +9,7 @@ import {
   platformVerdict,
   routeVerdict,
   storeTagVerdict,
+  topicVerdict,
 } from './verdicts';
 
 const ages = { '24_and_younger': 0.3, '25_to_29': 0.27, '35_to_44': 0.1, '55_and_older': -0.4 };
@@ -133,5 +134,17 @@ describe('storeTagVerdict', () => {
   it('cannot test without shared tags or enough comps', () => {
     expect(storeTagVerdict(0, 0, 3).verdict).toBe('cant');
     expect(storeTagVerdict(2, 5, 1).verdict).toBe('cant');
+  });
+});
+
+describe('topicVerdict', () => {
+  it('holds for a topic that is yours, is weak when shared and breaks when the rivals own it', () => {
+    expect(topicVerdict('yours').verdict).toBe('holds');
+    expect(topicVerdict('shared').verdict).toBe('weak');
+    expect(topicVerdict('rivals').verdict).toBe('breaks');
+  });
+
+  it('does not test a topic Qloo did not return', () => {
+    expect(topicVerdict(null).verdict).toBe('cant');
   });
 });

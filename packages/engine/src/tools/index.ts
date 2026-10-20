@@ -11,6 +11,7 @@ import { resolveTags, resolveTagsOutputSchema } from './resolve-tags';
 import { searchEntity, searchEntityOutputSchema } from './search-entity';
 import { themeTags, themeTagsOutputSchema } from './theme-tags';
 import type { Tool } from './tool';
+import { topicMap, topicMapOutputSchema, topicOwnership } from './topic-map';
 
 export { type CompareType, compareTypeOf, compareTypes } from './compare-audiences';
 export { type TasteType, tasteTypes } from './find-taste';
@@ -18,6 +19,7 @@ export { gameTagKinds } from './game-profiles';
 export { normalizeTitle } from './resolve-bundle';
 export { themeTagTypes } from './theme-tags';
 export type { SeenEntity, Tool, ToolContext, ToolData } from './tool';
+export { topicOwnership };
 
 export const tools: Record<ToolName, Tool> = {
   searchEntity,
@@ -31,6 +33,7 @@ export const tools: Record<ToolName, Tool> = {
   resolveTags,
   themeTags,
   gameProfiles,
+  topicMap,
 };
 
 export {
@@ -45,4 +48,5 @@ export {
   resolveTagsOutputSchema,
   searchEntityOutputSchema,
   themeTagsOutputSchema,
+  topicMapOutputSchema,
 };
