@@ -91,7 +91,7 @@ Tools live in `packages/engine/src/tools`. Their confidence follows [spec §5.1]
 | `compareAudiences` | one `insights.entities` call with `filter.results.entities` set to the rivals, and `filter.type` set to the rivals' type (movie, series, artist, video game, brand or podcast): a rival of another type is not scored |
 | `gameProfiles` | `lookup.entities` for the anchors. The platforms, genres, store tags, age rating and franchise a game carries. Field names come from one recorded `insights` response and are `TODO(verify)` on `/entities` |
 | `partnerFit` | `insights.entities` with no context. Not used by Film builds: open lists drift |
-| `tagWeights` | `insights.tags` (not built) |
+| `topicMap` | one `analysis.compare` call with the anchors as `a` and the rival shows as `b`. Tags only `a` lists are the show's own, tags in `results.tags` are shared, tags only `b` lists are the rivals'. `TODO(verify)`: the shape for podcast signals (`query.count` on each side, `query.score` on shared tags) |
 | `momentum` | `analysis.trending` (not built) |
 
 ## Categories
@@ -113,7 +113,7 @@ The anchors that stand in for an item not yet in Qloo differ by category. Film's
 | Film and series | comparable titles, director and cast, source material, genre and theme tags |
 | Books | comparable books, the author (weak for a debut), themes and tags |
 | Music | the artist when Qloo knows it by name, sound-alike artists, a genre tag when it knows neither (`TODO(verify)`: whether an artist works as a signal for support acts, series, films, brands, podcasts and campuses, and the genre fallback; run `qloo:music-probes`) |
-| Podcasts | the host, comparable shows, topic tags |
+| Podcasts | the show when Qloo knows it by name, its earlier shows, comparable shows, a genre tag when it knows none (`TODO(verify)`: whether a podcast works as a signal for shows, brands, artists, series and the heatmap, whether `analysis.compare` gives each side's own tags for two groups of shows, and whether Qloo returns people for a podcast signal; run `qloo:podcasts-probes`). A host is not an anchor: a person is rejected as a signal |
 | Games | the game when Qloo knows it by name, its franchise (earlier games), comparable games, a genre tag when it knows none (`TODO(verify)`: whether a game works as a signal for each kind of media, for the heatmap, for theme tags and for creators; whether `/entities` returns the properties `gameProfiles` reads; run `qloo:games-probes`) |
 
 ## Parameters by `filter.type`
@@ -227,4 +227,5 @@ Checked once in `responses.ts`.
 3. `pnpm --filter @oraqul/engine qloo:film-probes` (about 50 calls) reruns the Film query catalog checks. It prints titles and scores so they can be judged by eye, and saves nothing. Copy conclusions into this file, not names or scores.
 4. `pnpm --filter @oraqul/engine qloo:music-probes` (about 60 calls) does the same for the Music catalog: an artist as an anchor and a debut as a miss, heatmap cells for artist anchors, support acts with the anchors excluded, a genre tag as the only signal, series, films, brands, podcasts, campuses and theme tags on an artist signal.
 5. `pnpm --filter @oraqul/engine qloo:games-probes` (about 70 calls) does the same for the Games catalog: a game as an anchor and a debut as a miss, `/entities` metadata, heatmap cells for game anchors, a location query on a game list, tag lookup for a genre, anime and gaming podcasts, what a game audience likes in each kind of media and whether scoring a candidate list agrees with the open list, theme and gameplay tags, gaming podcasts, people as creators, brands, campuses and a genre tag as the only signal.
-6. Settle anything open above, fix the schemas and types, and remove the `TODO(verify)` markers that are confirmed.
+6. `pnpm --filter @oraqul/engine qloo:podcasts-probes` (about 40 calls) does the same for the Podcasts catalog: a podcast as an anchor and a debut as a miss, heatmap cells for podcast anchors, tag lookup for a podcast genre, the shows a podcast audience hears with a genre tag and a city, scoring a candidate list of shows in one call, the shape of `analysis.compare` for two groups of shows (the topic map), brands, artists and series, people as guests, and a genre tag as the only signal.
+7. Settle anything open above, fix the schemas and types, and remove the `TODO(verify)` markers that are confirmed.
