@@ -1,5 +1,5 @@
 export * from './confidence';
-export { citiesNear, cityBox, cityCountry, cityNames } from './places';
+export { citiesInCountry, citiesNear, cityBox, cityCountry, cityNames } from './places';
 export * from './qloo';
 export * from './receipts';
 export * from './scoring';

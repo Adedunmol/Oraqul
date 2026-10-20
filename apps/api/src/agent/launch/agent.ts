@@ -14,7 +14,7 @@ import type { Planner } from '../types.js';
 import { type AuditDeps, type LaunchAuditInputs, runAudit } from './audit.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
 import { runFix } from './fix.js';
-import { decideFollowUp, type FollowUpReader } from './follow-up.js';
+import { askedJob, decideFollowUp, type FollowUpReader } from './follow-up.js';
 import { runAnswer, runDateCheck, runPartnerBrief, runPlanAnswer } from './follow-ups.js';
 import { type LaunchInputs, type PlanRun, runBuild } from './pipeline.js';
 import type { QueryPlanCore, QueryPlanner } from './planner.js';
@@ -110,8 +110,11 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
     }
     const saved = handoff.planId ? await this.deps.plan(handoff.planId) : null;
     if (!saved) {
-      if (handoff.mode === 'audit') return runAudit(handoff, audit);
-      if (handoff.mode === 'fix') return runFix(handoff, audit);
+      // Plain words win over the project's mode: a person in a build project who attaches a plan
+      // and asks to audit it wants the audit, not a build that reads the plan as a brief.
+      const job = askedJob(handoff.message.text) ?? handoff.mode;
+      if (job === 'audit') return runAudit(handoff, audit);
+      if (job === 'fix') return runFix(handoff, audit);
       return runBuild(handoff, build);
     }
 

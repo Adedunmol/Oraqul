@@ -46,7 +46,7 @@ Film is a configuration of the shared launch runtime in `apps/api/src/agent/laun
 | Router | `agent/router/` | First message only: title, category, mode. Quote checked |
 | Gate | `agent/gate/` | Every later message: on topic, off topic (fixed refusal) or unclear (a card) |
 | Handoff | `agent/category-agents.ts` | What the agent gets: title, category, mode, `inputs`, `message`, `recent` (last 8 chat lines), `planId` |
-| Film agent | `agent/launch/agent.ts` (`LaunchAgent`), `film/agent.ts`, `film/config.ts` | Does the job the project started with (build, audit or fix) if the chat has no plan; otherwise refuse, or read the follow up and pick its job |
+| Film agent | `agent/launch/agent.ts` (`LaunchAgent`), `film/agent.ts`, `film/config.ts` | Does the job the project started with (build, audit or fix) if the chat has no plan, unless the message plainly asks for an audit or a fix, which wins (`askedJob`); otherwise refuse, or read the follow up and pick its job |
 | Brief reader | `agent/film/read.ts` | Model (or scripted) turns the brief into every field it gives, each with the words it came from |
 | Researcher | `agent/launch/research.ts`, prompts in `film/research.ts` | Web search for release timing and the market, facts tied to source pages |
 | Query planner | `agent/film/planner.ts`, shared checks in `launch/planner.ts` | Model (or the pack's defaults) shapes the catalog queries; code keeps only what the rules allow |

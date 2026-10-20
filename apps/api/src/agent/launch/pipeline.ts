@@ -240,7 +240,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
-    const changed = applyChange(from.inputs, from.change, handoff.title);
+    const changed = applyChange(from.inputs, from.change, handoff.title, deps.config.applyChange);
     ({ read, title } = changed);
     kind = 'scenario';
     known = changed.resolved;
@@ -265,7 +265,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.trace('Reading your brief');
     const input = {
       title: handoff.title,
-      text: [briefText(handoff), extra].filter(Boolean).join('\n\n'),
+      text: [briefText(handoff, undefined, true), extra].filter(Boolean).join('\n\n'),
     };
     const reading = await deps.read(input);
     ctx.tokens += reading.tokens;
@@ -273,7 +273,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
 
     // The only question a build ever asks: there is nothing to plan from without these (PRD C1).
     const missing = deps.config.minimum.missing(read);
-    if (missing.length && !resume) {
+    if (missing.length && (!resume || deps.config.minimum.strict)) {
       const question: Question = {
         id: deps.config.minimum.id,
         card: 'text',
@@ -345,18 +345,22 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
 ): Promise<PlanRun> {
   const { handoff, title, read, comps, asked, extra, kind } = input;
   const { modules, queryPlan, grounded, sources } = asked;
-  const text = briefText(handoff, input.chars);
+  const text = briefText(handoff, input.chars, kind !== 'fix');
 
   ctx.trace('Writing the plan');
   const order = sectionOrder(modules);
+  const today = new Date().toISOString().slice(0, 10);
+  // A section code writes whole, such as Games' launch beats, is not the writer's to write.
+  const byCode = deps.config.codeSections.timeline && modules.includes('timeline');
   const writeInput: WriteInput<R> = {
     title,
     request: [text, extra].filter(Boolean).join('\n\n'),
     read,
     comps: comps.used,
-    sections: order,
+    sections: byCode ? order.filter((key) => key !== 'timeline') : order,
     findings: grounded.findings,
     sources,
+    today,
   };
   const written = await deps.writer.write(writeInput);
   ctx.tokens += written.tokens;
@@ -372,7 +376,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     allowed: order,
     rules: deps.config.rules,
   };
-  const writerSections = written.sections.filter((s) => !CODE_SECTIONS.includes(s.key));
+  const writerSections = written.sections.filter(
+    (s) => !CODE_SECTIONS.includes(s.key) && !(byCode && s.key === 'timeline'),
+  );
   const checked = checkSections(writerSections, checkCtx);
   // A core section the writer left out, or whose every line failed, comes from the templates.
   const core: LaunchSectionKey[] = ['bottom-line', 'positioning', 'audience', 'markets'];
@@ -385,6 +391,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     : { sections: [], dropped: [] };
   const codeSections = [
     ...(modules.includes('budget') ? [deps.config.codeSections.budget(read)] : []),
+    ...(byCode && deps.config.codeSections.timeline
+      ? [deps.config.codeSections.timeline(read, today)]
+      : []),
     deps.config.codeSections.gaps(read, comps),
   ];
   const sections = ensureDecisions(
@@ -482,8 +491,8 @@ export function noCompsStop(
   deps.emit({
     type: 'message',
     body: tried.length
-      ? `Qloo had nothing close to any of the comps (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience watches and I will plan from them.`
-      : `I could not find comps for this launch, so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience watches and I will plan from them.`,
+      ? `Qloo had nothing close to any of the comps (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`
+      : `I could not find comps for this launch, so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`,
     claims: ctx.receipts
       .slice(0, 1)
       .map((r) => ({ text: 'Searched Qloo.', receiptIds: [r.callId] })),
@@ -723,6 +732,8 @@ export function applyChange<R extends LaunchRead>(
   inputs: LaunchInputs<R>,
   change: Change,
   title: string,
+  /** A category's own part of a what-if, such as the collabs a Games plan adds. */
+  extend?: (read: R, change: Change) => R,
 ): {
   title: string;
   read: R;
@@ -740,6 +751,7 @@ export function applyChange<R extends LaunchRead>(
     change.dropPlaces.length ? `drop ${change.dropPlaces.join(', ')}` : '',
     change.addComps.length ? `add ${change.addComps.join(', ')}` : '',
     change.dropComps.length ? `drop ${change.dropComps.join(', ')}` : '',
+    change.addCollabs.length ? `collab with ${change.addCollabs.join(', ')}` : '',
     change.ages.length ? 'another age group' : '',
     change.gender ? `mostly ${change.gender === 'female' ? 'women' : 'men'}` : '',
   ].filter(Boolean);
@@ -754,15 +766,18 @@ export function applyChange<R extends LaunchRead>(
       }));
   return {
     title: `${title}: ${parts.join(', ') || 'what-if'}`,
-    read: {
-      ...inputs.read,
-      places,
-      comps,
-      ages: change.ages.length ? change.ages : inputs.read.ages,
-      gender: change.gender ?? inputs.read.gender,
-      // A what-if keeps the comps it was given; it does not propose more.
-      suggestedComps: [],
-    },
+    read: (extend ?? ((r: R) => r))(
+      {
+        ...inputs.read,
+        places,
+        comps,
+        ages: change.ages.length ? change.ages : inputs.read.ages,
+        gender: change.gender ?? inputs.read.gender,
+        // A what-if keeps the comps it was given; it does not propose more.
+        suggestedComps: [],
+      },
+      change,
+    ),
     resolved: inputs.resolved.filter((a) => kept(a.name)),
     used: used.filter((u) => kept(u.name)),
     dropped: inputs.dropped.filter((d) => comps.some((k) => same(k, d.name))),
@@ -799,11 +814,16 @@ export function budgetStop(deps: { emit(event: ThreadEvent): void }, ctx: RunCtx
   return ctx.stop('budget');
 }
 
-/** The first message, its files, and this run's message when it is a different one. */
+/**
+ * The first message, its files, and this run's message when it is a different one. A build also
+ * reads what the person typed earlier in the chat (`chat`): an answer to a question lived only in
+ * the run that asked it, so a retry would otherwise start from the first message alone.
+ */
 export function briefText(
-  { inputs, message }: Handoff,
+  { inputs, message, recent }: Handoff,
   /** Most characters of each file to read: a brief is cut short, a plan to audit is not. */
   chars = ATTACHMENT_CHARS,
+  chat = false,
 ): string {
   const part = (said: Handoff['inputs']) => {
     const { text, files } = cutFiles(said, chars);
@@ -813,7 +833,13 @@ export function briefText(
   };
   const first = part(inputs);
   const now = part(message);
-  return now && now !== first ? `${first}\n\n${now}` : first;
+  const earlier = chat
+    ? recent
+        .filter((l) => l.from === 'person')
+        .map((l) => l.text.trim())
+        .filter((t, i, all) => t && t !== first && t !== now && all.indexOf(t) === i)
+    : [];
+  return [first, ...earlier, now && now !== first ? now : ''].filter(Boolean).join('\n\n');
 }
 
 export function replyText(state: { pending: Question | null }, reply: Reply): string {

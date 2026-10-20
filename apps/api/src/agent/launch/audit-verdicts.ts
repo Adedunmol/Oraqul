@@ -99,9 +99,9 @@ export function testPlan<R extends LaunchRead>(input: {
         ? 'age'
         : a.id === 'a-gender'
           ? 'gender'
-          : a.id === 'a-route'
-            ? 'other'
-            : 'comps';
+          : a.id === 'a-comps'
+            ? 'comps'
+            : 'other';
     const placeName =
       subject === 'place' ? read.places.find((p) => a.id === `a-place-${slug(p)}`) : null;
     items.push({
@@ -124,7 +124,7 @@ export function testPlan<R extends LaunchRead>(input: {
       why: a.why,
       fix:
         a.verdict === 'weak' || a.verdict === 'breaks'
-          ? fixFor(a.id, subject, placeName, grounded)
+          ? fixFor(a.id, subject, placeName, grounded, a.fix)
           : null,
     });
   }
@@ -207,6 +207,8 @@ function fixFor(
   subject: ReportSubject,
   place: string | null | undefined,
   grounded: Grounded,
+  /** The fix the grounding step wrote for the assumption, for a belief only the category tests. */
+  stated: string,
 ): WrittenLine | null {
   const has = (fid: string) => grounded.findings.some((f) => f.id === fid);
   if (subject === 'place' && place) {
@@ -245,6 +247,8 @@ function fixFor(
   if (subject === 'comps') {
     return line('Add or swap comps so no single title carries the result.', 'playbook', [], []);
   }
+  // A belief only the category tests, such as the platforms: its own finding carries the fix.
+  if (stated && has(`f-${id}`)) return line(stated, 'grounded', [`f-${id}`], []);
   return null;
 }
 

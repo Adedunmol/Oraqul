@@ -33,6 +33,13 @@ const centres: Record<string, [number, number]> = {
   seoul: [37.57, 126.98],
   tokyo: [35.68, 139.69],
   sydney: [-33.87, 151.21],
+  vancouver: [49.28, -123.12],
+  stockholm: [59.33, 18.07],
+  warsaw: [52.23, 21.01],
+  manila: [14.6, 120.98],
+  jakarta: [-6.2, 106.85],
+  singapore: [1.35, 103.82],
+  auckland: [-36.85, 174.76],
 };
 
 export interface CityBox {
@@ -99,6 +106,13 @@ const regions: Record<string, string> = {
   seoul: 'east-asia',
   tokyo: 'east-asia',
   sydney: 'oceania',
+  vancouver: 'canada',
+  stockholm: 'nordics',
+  warsaw: 'europe',
+  manila: 'southeast-asia',
+  jakarta: 'southeast-asia',
+  singapore: 'southeast-asia',
+  auckland: 'oceania',
 };
 
 const countries: Record<string, string> = {
@@ -128,7 +142,20 @@ const countries: Record<string, string> = {
   seoul: 'South Korea',
   tokyo: 'Japan',
   sydney: 'Australia',
+  vancouver: 'Canada',
+  stockholm: 'Sweden',
+  warsaw: 'Poland',
+  manila: 'Philippines',
+  jakarta: 'Indonesia',
+  singapore: 'Singapore',
+  auckland: 'New Zealand',
 };
+
+/** Every table city in a country, by display name. A country the table has no city in gives none. */
+export function citiesInCountry(country: string): string[] {
+  const wanted = country.trim().toLowerCase();
+  return cityNames().filter((c) => cityCountry(c)?.toLowerCase() === wanted);
+}
 
 /** The country a table city is in, or null for a city the table does not have. */
 export function cityCountry(name: string): string | null {

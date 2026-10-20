@@ -12,6 +12,7 @@ export const toolNames = [
   'findTaste',
   'resolveTags',
   'themeTags',
+  'gameProfiles',
 ] as const;
 export const toolNameSchema = z.enum(toolNames);
 export type ToolName = z.infer<typeof toolNameSchema>;

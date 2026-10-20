@@ -135,9 +135,15 @@ export const routeSummarySchema = z.object({
   isBestOrder: z.boolean(),
 });
 
+export const fanMediums = ['music', 'series', 'anime', 'film', 'brand', 'podcast', 'game'] as const;
+export const fanMediumSchema = z.enum(fanMediums);
+export type FanMedium = z.infer<typeof fanMediumSchema>;
+
 export const fanBaseSchema = z.object({
   id: lineIdSchema,
   name: z.string(),
+  /** What kind of fan base this is. Missing on older outputs. */
+  medium: fanMediumSchema.optional(),
   before: indexSchema,
   after: indexSchema,
   evidence: z.string(),

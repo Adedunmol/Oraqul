@@ -16,6 +16,8 @@ export const tasteTypes = [
   'urn:entity:podcast',
   'urn:entity:brand',
   'urn:entity:place',
+  'urn:entity:videogame',
+  'urn:entity:person',
 ] as const;
 const tasteTypeSchema = z.enum(tasteTypes);
 export type TasteType = (typeof tasteTypes)[number];
@@ -156,6 +158,8 @@ function request(input: Shape, left: string[]): EntityInsightsRequest {
     case 'urn:entity:artist':
     case 'urn:entity:podcast':
     case 'urn:entity:brand':
+    case 'urn:entity:videogame':
+    case 'urn:entity:person':
       return { ...base, ...near, 'filter.type': input.type };
   }
 }

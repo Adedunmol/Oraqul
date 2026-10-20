@@ -13,6 +13,23 @@ const RULE =
 
 const bandSchema = z.enum(['risky', 'moderate', 'low']);
 
+// The type the rivals are scored as. Qloo's scoring call filters on one type, so a film rival and
+// an artist rival cannot share a call.
+export const compareTypes = [
+  'urn:entity:movie',
+  'urn:entity:tv_show',
+  'urn:entity:artist',
+  'urn:entity:videogame',
+  'urn:entity:brand',
+  'urn:entity:podcast',
+] as const;
+export type CompareType = (typeof compareTypes)[number];
+
+/** The first of a category's rival types that Qloo can score, or undefined when none can. */
+export function compareTypeOf(types: readonly string[]): CompareType | undefined {
+  return compareTypes.find((t) => types.includes(t));
+}
+
 export const compareAudiencesOutputSchema = z.object({
   rivals: z.array(
     z.object({
@@ -36,17 +53,27 @@ export const compareAudiences = defineTool({
     "How much of the anchors' audience each rival title shares, as an overlap from 0 to 100, from one scoring call. Use it for a rival date check.",
   input: z.object({
     entityIds: z.array(z.string()).min(1),
+    /** What the rivals are. Must match their entity type, or Qloo scores none of them. */
+    type: z.enum(compareTypes),
     rivals: z.array(z.string()).min(1).max(12),
+    /** Off when the caller scores many groups and cannot spend a rerun per anchor on each. */
+    leaveOneOut: z.boolean().default(true),
   }),
-  async run(ctx, { entityIds, rivals }) {
+  async run(ctx, { entityIds, type, rivals, leaveOneOut: rerunWithout }) {
     const ask = (ids: string[]) =>
       qloo.insights.entities(ctx.qloo, {
-        'filter.type': 'urn:entity:movie',
+        'filter.type': type,
         'signal.interests.entities': ids,
         'filter.results.entities': rivals,
         take: rivals.length,
       });
-    const read = (results: { entity_id: string; name: string; query?: { affinity?: number } }[]) =>
+    const read = (
+      results: {
+        entity_id: string;
+        name: string;
+        query?: { affinity?: number };
+      }[],
+    ) =>
       new Map<string, { name: string; affinity: number | null }>(
         results.map((r) => [r.entity_id, { name: r.name, affinity: r.query?.affinity ?? null }]),
       );
@@ -57,31 +84,33 @@ export const compareAudiences = defineTool({
 
     const { data: response, call } = await ask(entityIds);
     const full = read(response.results.entities);
-    const loo = await leaveOneOut(
-      ctx,
-      entityIds,
-      full,
-      async (without, left) => {
-        const rerun = await ask(without);
-        const value = read(rerun.data.results.entities);
-        const receipt = toReceipt(rerun.call, {
-          returned: { rivals: Object.fromEntries(value) },
-          rule: `Leave one out: the same scoring without ${nameOf(ctx, left)}.`,
-          confidence: 'medium',
-          source: ctx.source,
-        });
-        return { value, receipt };
-      },
-      {
-        same: (a, b) => rivals.every((id) => band(a, id) === band(b, id)),
-        moved: (a, b) =>
-          rivals.some((id) => {
-            const x = a.get(id)?.affinity ?? null;
-            const y = b.get(id)?.affinity ?? null;
-            return x === null || y === null || Math.abs(x - y) >= 0.001;
-          }),
-      },
-    );
+    const loo = rerunWithout
+      ? await leaveOneOut(
+          ctx,
+          entityIds,
+          full,
+          async (without, left) => {
+            const rerun = await ask(without);
+            const value = read(rerun.data.results.entities);
+            const receipt = toReceipt(rerun.call, {
+              returned: { rivals: Object.fromEntries(value) },
+              rule: `Leave one out: the same scoring without ${nameOf(ctx, left)}.`,
+              confidence: 'medium',
+              source: ctx.source,
+            });
+            return { value, receipt };
+          },
+          {
+            same: (a, b) => rivals.every((id) => band(a, id) === band(b, id)),
+            moved: (a, b) =>
+              rivals.some((id) => {
+                const x = a.get(id)?.affinity ?? null;
+                const y = b.get(id)?.affinity ?? null;
+                return x === null || y === null || Math.abs(x - y) >= 0.001;
+              }),
+          },
+        )
+      : { contributing: entityIds, check: undefined, receipts: [] };
 
     const rows = rivals.map((id) => {
       const affinity = full.get(id)?.affinity ?? null;

@@ -1,0 +1,85 @@
+{
+  "title": "Ember Keep",
+  "brief": "Launch plan for the game \"Ember Keep\", a free-to-play mobile roguelike on iOS and Android. Comparable games: \"Void Courier\" and \"Lantern Row\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with Toronto, then Auckland and Manila: that is where your game's players are strongest of the regions checked.",
+    "assumptions": {
+      "a-comps": "weak",
+      "a-platform": "holds"
+    },
+    "cities": ["Toronto", "Auckland", "Manila", "Sydney", "Stockholm"],
+    "comps": [
+      {
+        "name": "Void Courier",
+        "source": "you"
+      },
+      {
+        "name": "Lantern Row",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-markets": ["Toronto", "Auckland", "Manila"],
+      "f-a-platform": [],
+      "f-profile": ["iOS", "Android", "PC"],
+      "f-fan-anime": ["Iron Sparrow", "Kitsune Drift"],
+      "f-fan-brand": ["Rival Gear", "Voltage Energy"],
+      "f-fan-film": ["Ashfall"],
+      "f-fan-game": ["Tidewalker", "Crown of Ash", "Hollow Hills"],
+      "f-fan-music": ["Pixel Choir", "Low Battery", "Synthwave Kid"],
+      "f-fan-podcast": ["Respawn Hour", "Save Point"],
+      "f-fan-series": ["The Long Watch"],
+      "f-tags-audience": ["Stylish", "Drama Fans", "Resilient"],
+      "f-tags-theme": ["Ambition", "Loyalty", "Community"],
+      "f-brands-beverage-sydney": ["Voltage Energy"],
+      "f-brands-beverage-toronto": ["Voltage Energy"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "5/0",
+      "markets": "1/0",
+      "softlaunch": "0/2",
+      "store": "2/1",
+      "collabs": "7/0",
+      "creators": "0/2",
+      "liveops": "1/1",
+      "community": "0/1",
+      "partnerships": "2/0",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/5",
+      "risks": "0/1",
+      "gaps": "0/5"
+    },
+    "moves": ["f-markets", "f-audience", "f-fan-anime"],
+    "grounding": {
+      "lines": 43,
+      "backed": 49,
+      "rankKept": 100,
+      "findingsUsed": 13,
+      "cities": {
+        "Toronto": 3,
+        "Auckland": 2,
+        "Manila": 2,
+        "Sydney": 2,
+        "Stockholm": 1
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Wishlists, sales, player counts and reviews",
+      "Creators and streamers",
+      "Telecom brands in Toronto",
+      "Telecom brands in Sydney",
+      "Universities in Toronto",
+      "Universities in Sydney",
+      "Universities in Stockholm",
+      "Universities in Manila",
+      "Universities in Auckland"
+    ]
+  }
+}

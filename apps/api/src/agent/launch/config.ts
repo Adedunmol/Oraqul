@@ -12,13 +12,18 @@ import type { DraftItem } from './audit-verdicts.js';
 import type { CheckRules } from './check.js';
 import type { DecisionWords } from './decisions.js';
 import type { GroundDeps, Grounded, GroundInput } from './findings.js';
+import type { Change } from './follow-up.js';
 import type { QueryPlanCore, QueryPlanner } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import type { Researcher } from './research.js';
 import type { PlanWriter, WriteInput, WrittenLine } from './writer.js';
 
 /** The kinds of work a comp can be: what a launch is described by. */
-export type AnchorType = 'urn:entity:movie' | 'urn:entity:tv_show' | 'urn:entity:artist';
+export type AnchorType =
+  | 'urn:entity:movie'
+  | 'urn:entity:tv_show'
+  | 'urn:entity:artist'
+  | 'urn:entity:videogame';
 
 /** The modules a plan carries, and the ones the brief rules out with why, for the Gaps section. */
 export interface ModulePick {
@@ -56,6 +61,8 @@ export interface LaunchConfig<
     planExample: string;
     /** What a pitch for an artist asks for. */
     artistPitch: string;
+    /** What the audience does with comps, for the message when none is found. Defaults to "watches". */
+    compsVerb?: string;
   };
 
   /**
@@ -72,8 +79,11 @@ export interface LaunchConfig<
    */
   teamAnchors?(read: R): string[];
 
-  /** The one question a build may ask: there is nothing to plan from without these. */
-  minimum: { id: string; example: string; missing(read: R): string[] };
+  /**
+   * The one question a build may ask: there is nothing to plan from without these. `strict` asks
+   * again when the answer still leaves something missing, instead of planning from nothing.
+   */
+  minimum: { id: string; example: string; strict?: boolean; missing(read: R): string[] };
   pickModules(read: R): ModulePick;
 
   rules: CheckRules;
@@ -87,7 +97,11 @@ export interface LaunchConfig<
   codeSections: {
     budget(read: R): LaunchSection;
     gaps(read: R, comps: { used: CompUsed[] }): LaunchSection;
+    /** A calendar code builds from the launch kind and `today`, so no past date is advised. */
+    timeline?(read: R, today: string): LaunchSection;
   };
+  /** The part of a what-if only this category reads, such as the collabs a person adds. */
+  applyChange?(read: R, change: Change): R;
   templateSection(key: LaunchSectionKey, input: WriteInput<R>): WrittenLine[];
   /** A reading with nothing in it, for an answer about a plan saved before readings. */
   emptyRead: R;

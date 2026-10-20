@@ -21,6 +21,8 @@ export interface CheckRules {
   tasteClaim: RegExp;
   /** Queries whose entities are ordinary words (theme tags), so they are not names to check. */
   tagOnly: readonly string[];
+  /** Counts a category sells in, such as wishlists, that need a source like any money figure. */
+  figureWords?: RegExp;
 }
 
 export interface CheckContext {
@@ -177,7 +179,9 @@ export function checkLine(
     if (ctx.rules.tasteClaim.test(line.text)) {
       return 'It claims what an audience likes without citing a finding.';
     }
-    if (MARKET_FIGURE.test(line.text) && !MARKET_FIGURE.test(sourceText)) {
+    const figure = (text: string) =>
+      MARKET_FIGURE.test(text) || (ctx.rules.figureWords?.test(text) ?? false);
+    if (figure(line.text) && !figure(sourceText)) {
       return 'It states a market figure with no source.';
     }
     // A line that cites a page may use only the page's own numbers.

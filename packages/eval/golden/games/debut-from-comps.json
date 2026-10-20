@@ -1,0 +1,82 @@
+{
+  "title": "Quill Odyssey",
+  "brief": "Launch plan for the game \"Zanzibar Quill Odyssey\", a cozy debut on Steam, launching in the UK. Comparable games: \"Tidewalker\" and \"Lantern Row\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with Manchester, then London: that is where your game's players are strongest.",
+    "assumptions": {
+      "a-comps": "cant",
+      "a-platform": "weak"
+    },
+    "cities": ["Manchester", "London"],
+    "comps": [
+      {
+        "name": "Tidewalker",
+        "source": "you"
+      },
+      {
+        "name": "Lantern Row",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-markets": ["Manchester", "London"],
+      "f-a-platform": [],
+      "f-profile": ["PC", "Xbox", "Switch"],
+      "f-fan-anime": ["Kitsune Drift", "Iron Sparrow"],
+      "f-fan-brand": ["Rival Gear", "Voltage Energy"],
+      "f-fan-film": ["Ashfall"],
+      "f-fan-game": ["Hollow Hills", "Ember Keep", "Crown of Ash"],
+      "f-fan-music": ["Synthwave Kid", "Pixel Choir", "Low Battery"],
+      "f-fan-podcast": ["Save Point", "Respawn Hour"],
+      "f-fan-series": ["The Long Watch"],
+      "f-tags-audience": ["Action Seekers", "Stylish", "Drama Fans"],
+      "f-tags-theme": ["Ambition", "Community", "Power"],
+      "f-brands-beverage-london": ["Voltage Energy"],
+      "f-brands-beverage-manchester": ["Voltage Energy"],
+      "f-podcasts": ["Save Point", "Respawn Hour"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "5/0",
+      "markets": "1/0",
+      "store": "2/1",
+      "events": "0/2",
+      "collabs": "7/0",
+      "creators": "0/2",
+      "publicity": "1/1",
+      "partnerships": "2/0",
+      "community": "0/1",
+      "timeline": "0/9",
+      "budget": "0/7",
+      "measure": "0/6",
+      "risks": "1/1",
+      "gaps": "0/6"
+    },
+    "moves": ["f-markets", "f-audience", "f-fan-anime"],
+    "grounding": {
+      "lines": 47,
+      "backed": 47,
+      "rankKept": 100,
+      "findingsUsed": 15,
+      "cities": {
+        "Manchester": 3,
+        "London": 3
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Zanzibar Quill Odyssey",
+      "The game and its comparable games describe one audience",
+      "Wishlists, sales, player counts and reviews",
+      "Creators and streamers",
+      "Telecom brands in London",
+      "Telecom brands in Manchester",
+      "Universities in London",
+      "Universities in Manchester"
+    ]
+  }
+}

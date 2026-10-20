@@ -6,7 +6,9 @@ import {
   compsVerdict,
   genderVerdict,
   placeVerdict,
+  platformVerdict,
   routeVerdict,
+  storeTagVerdict,
 } from './verdicts';
 
 const ages = { '24_and_younger': 0.3, '25_to_29': 0.27, '35_to_44': 0.1, '55_and_older': -0.4 };
@@ -90,5 +92,46 @@ describe('routeVerdict (spec §5.4)', () => {
 
   it('cannot test a route with no positive lift', () => {
     expect(routeVerdict(0, 0).verdict).toBe('cant');
+  });
+});
+
+describe('platformVerdict', () => {
+  it('holds when every platform is where at least two thirds of the comps live', () => {
+    expect(
+      platformVerdict([
+        { platform: 'PC', listing: 3, withData: 3 },
+        { platform: 'Switch', listing: 2, withData: 3 },
+      ]).verdict,
+    ).toBe('holds');
+  });
+
+  it('judges by the weakest platform named', () => {
+    const weak = platformVerdict([
+      { platform: 'PC', listing: 3, withData: 3 },
+      { platform: 'Xbox', listing: 1, withData: 3 },
+    ]);
+    expect(weak.verdict).toBe('weak');
+    expect(weak.why).toContain('Xbox');
+    expect(platformVerdict([{ platform: 'Switch', listing: 0, withData: 3 }]).verdict).toBe(
+      'breaks',
+    );
+  });
+
+  it('cannot test with fewer than two comps that have platform data', () => {
+    expect(platformVerdict([{ platform: 'PC', listing: 1, withData: 1 }]).verdict).toBe('cant');
+    expect(platformVerdict([]).verdict).toBe('cant');
+  });
+});
+
+describe('storeTagVerdict', () => {
+  it('holds with two matches, is weak with fewer, and never breaks', () => {
+    expect(storeTagVerdict(2, 5, 3).verdict).toBe('holds');
+    expect(storeTagVerdict(1, 5, 3).verdict).toBe('weak');
+    expect(storeTagVerdict(0, 5, 3).verdict).toBe('weak');
+  });
+
+  it('cannot test without shared tags or enough comps', () => {
+    expect(storeTagVerdict(0, 0, 3).verdict).toBe('cant');
+    expect(storeTagVerdict(2, 5, 1).verdict).toBe('cant');
   });
 });

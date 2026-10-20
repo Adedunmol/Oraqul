@@ -113,12 +113,13 @@ Every tool returns `{ data, receipts }`, one receipt per Qloo call it made, and 
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
 | `lift(entities, type, candidates, baseline)` | Lift of candidate titles over a baseline of other kinds for the anchors' audience, from one scoring call, then one rerun per anchor left out (§5.1). Verified for books; for films and series `TODO(verify)`. |
 | `rankPlaces(entities, places)` | City ranking by mean cell affinity, from one heatmap call over every city's box, then one rerun per anchor left out (§5.1). Cities from any region in the engine's city table (`places.ts`); a city not in it, or with fewer than 25 cells, is not ranked. Box size `TODO(verify)`. |
-| `compareAudiences(entities, rivals)` | Rival overlap: each rival scored against the anchors in one call, overlap = affinity × 100 (§5), with leave one out. Built for the rival date check. |
+| `compareAudiences(entities, type, rivals, leaveOneOut?)` | Rival overlap: each rival scored against the anchors in one call of the rivals' entity type, overlap = affinity × 100 (§5), with leave one out unless it is turned off. Built for the rival date check, and for the Games fan base bridge (§4.3), which scores each kind of media in its own call. |
 | `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned. The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
 | `partnerFit(entities, type, take, releasedFrom?, exclude?)` | The films, series, brands or podcasts the anchors' audience likes most, from one open call. Not used by Film builds any more: an open list drifts to what is popular overall (§4.1). |
-| `findTaste(entities, type, tags?, city?, ages?, audiences?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, brand, place), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. |
+| `findTaste(entities, type, tags?, city?, ages?, audiences?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, brand, place, video game, person), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. |
 | `resolveTags(phrases)` | A phrase and the urn prefix it must start with to a Qloo tag, one lookup each. Brand categories need the parent type `urn:entity:brand`. No match is null, never a guess. |
 | `themeTags(entities, kinds)` | The theme, archetype, audience or plot tags that best describe the anchors, one call per kind. |
+| `gameProfiles(entities)` | What Qloo lists for each game: platforms, genres, store and gameplay tags, age rating, developer, publisher and franchise, from one lookup. Nothing is scored. Field names `TODO(verify)`. |
 | `tagWeights(entities)` | Tag weights in an audience, for the podcast topic map. Not built. |
 | `momentum(entity)` | Trend over time, where Qloo supplies it. Not built. |
 | `explain(receiptId)` | Reads back a receipt in plain words. Not built. |
@@ -168,6 +169,28 @@ Stage 1 of every Music reply, in the same two stages as Film (§4.1): the model 
 | `community` | community | `findTaste` place with the university category per city, 8 calls at most | — |
 
 Not in the catalog: `themes` (whether `themeTags` works on an artist signal is `TODO(verify)`), venues (no place category for them has been verified), and radio or playlists (not in Qloo). The planner is the same: with no key the pack's defaults run, and code keeps only the team's cities, table cities for Worth a look, and short phrases.
+
+### 4.3 Games query catalog
+
+Stage 1 of every Games reply, in the same two stages as Film (§4.1): the model shapes the queries, code runs them and turns each result into a finding. The catalog is `GAMES_QUERIES` in `packages/packs/src/games/catalog.ts`; which queries run is decided by the plan's modules (§6.1), which depend on the launch kind.
+
+**Anchors.** The game, when Qloo finds it by exact name (an ambiguous name is settled in code, and the plan says which), the franchise (earlier games the team names), and up to four comparable games the team named. Below three, the model proposes more, kept apart and checked in Qloo; when it proposes none (no model key, or a one-line brief), code takes well known games from `FALLBACK_COMPS` for the genre words and the launch kind. A name Qloo has no exact match for stands in with the nearest game it has, and the plan says so. The person is never asked for comps. The game is an anchor but not a comp. A debut Qloo does not know is planned from the comparable games, and the plan says so. Only when none of these resolve does the genre tag stand in, labelled the genre's, with lower confidence (§5.1, Stand-ins). `TODO(verify)` on the live host for each of these.
+
+| Query | Runs for | Call | Shaped by |
+|---|---|---|---|
+| `audience` | core | `audienceBySegment` on the anchors; also tests the team's age band and gender (§5.2) | — |
+| `markets` | core | `rankPlaces` over the cities the team named and the cities its region words stand for (up to 8), plus up to 4 nearby table cities, which only ever appear as Worth a look. With no city or region named, the launch kind's five usual markets are ranked and shown as the plan's regions | cities, `REGION_CITIES` |
+| `profile` | core | `gameProfiles` on the anchors (20 at most). Tests the platforms and the store tags (§5.6) | — |
+| `fanbase` | collabs | For each of music, series, anime, film, brand, podcast and game: `findTaste` (4, the anchors excluded), then one `compareAudiences` of that type over those and any collab of that medium, without leave one out, 12 at most. Overlap = affinity × 100. A collab is found by name with `searchEntity` and belongs to the medium of its entity type. Anime is asked first and excluded from series | the team's age band; an anime tag and a "video games" podcast tag, resolved with `resolveTags` (a medium whose tag does not resolve is not asked, and Gaps says why) |
+| `tags` | store | `themeTags` for theme and audience on the anchors | — |
+| `brands` | partnerships | As Film §4.1: the model proposes up to 4 brands per city that could realistically partner, code resolves them, `findTaste` brand ranks only those. Falls back to one call per brand category, once when no city is named | brand candidates per city, or the categories beverage and telecom |
+| `podcasts` | publicity | `findTaste` podcast with the video games tag; not asked without the tag | one city, the team's age band |
+| `creators` | creators | `findTaste` person, only while `CREATORS_GROUNDED` is true. Otherwise Gaps says creators were not measured | the team's age band |
+| `community` | community | `findTaste` place with the university category per named city, 8 calls at most | — |
+
+Not in the catalog: esports and arcade venues (no place category for them has been verified), momentum and trends (no tool), and Steam or store data (not in Qloo). A rival game's overlap is the rival date check, with `compareAudiences` of type video game. The planner is the same as Music's: with no key the pack's defaults run, and code keeps only the team's cities, table cities for Worth a look, and short phrases.
+
+**Fan base overlap.** Qloo scores one entity type per call, and scores from separate calls are never compared (qloo.md). So a fan base is ranked only against the others of its own medium, in the call that scored them, and the bridge groups its rows by medium. A collab the team named is scored in that same call, so it shows as a ranked row. It does not move a bar: a what-if that adds a collab reruns the plan and adds the row.
 
 ## 5. Scoring layer
 
@@ -260,6 +283,33 @@ An audit reads a plan someone else wrote and tests each belief with the findings
 * **Not tested, said plainly.** A support act or brand Qloo did not rank is could not test, never weak (§5.3). Fixes never drop: a fix reorders the team's choices or adds a stronger option beside them.
 * **Results.** After launch the person gives streams or ticket sales by city and optionally by age group, and the comparison is §5.3. Totals only, and none of it goes to Qloo or a model.
 
+### 5.6 Games assumption tests (build)
+
+The age, gender, place and anchors tests are exactly §5.2, run on the game, its franchise and its comparable games as one bundle, and the place test only for the cities the person named (a region word's cities are ranked but not tested). The "anchors describe one audience" test is the leave one out check inside `rankPlaces`, and reads "The game and its comparable games describe one audience". Two tests are new, both from what Qloo lists for the comparable games (`gameProfiles`):
+
+| Assumption | Test | Holds | Weak | Breaks |
+|---|---|---|---|---|
+| The platforms named are where the comparable games live (stated when the team names platforms) | For each platform named, the comps that list it, of the comps Qloo holds platforms for; the lowest share decides. Under 2 comps with platform data is cannot test | 2/3 or more | 1/3 to 2/3 | below 1/3 |
+| The store tags fit the comparable games (stated when the team names tags) | The team's tags that match a tag at least half of the comps carry, among the comps Qloo holds tags for. Under 2 comps with tags, or no shared tag, is cannot test | 2 or more match | fewer than 2 match | — |
+
+* **The team's decisions are constraints.** A platform that is weak or breaks keeps its place in the plan; its fix names the platform more of the comps are on beside it. Store tags that do not match keep their place; the fix adds the shared tags beside them. A tag is wording, not audience, so a miss is weak and never breaks.
+* **Starting values.** 2/3, 1/3 and 2 matches are starting values, tuned on the golden runs. `TODO(verify)` on a live run before a plan leads with them. Change them here first.
+* **Content rating** is a fact in the profile finding, not a test.
+
+### 5.7 Games audit tests (audit and fix)
+
+An audit reads a plan someone else wrote and tests each belief with the findings a build asks for (§4.3). The age, gender, place, anchors, platforms and store tags beliefs are tested as in §5.6. The rest:
+
+| Belief | Test | Holds | Weak | Breaks |
+|---|---|---|---|---|
+| A partner brand the plan names is the right one | As §5.3 | top third | middle third | bottom third |
+| A collab the plan names suits the players | Its place among the partners of its medium that `compareAudiences` scored in one call. Under 3 ranked is cannot test | top third | middle third | bottom third |
+| A creator the plan names suits the players | Its place among the creators `findTaste` ranked, while `CREATORS_GROUNDED` is true. Otherwise cannot test | in the top 3 | listed, below the top 3 | |
+| The release window | Not in Qloo | | | |
+
+* **Not tested, said plainly.** A collab or creator Qloo did not score is could not test, never weak (§5.3). Fixes never drop: a fix keeps the team's choice and adds a higher-ranked option beside it.
+* **Results.** After launch the person gives wishlists, installs or sales by region, and the comparison is §5.3. Totals only, and none of it goes to Qloo or a model.
+
 ## 6. Data model
 
 Postgres. All ids are UUIDs. Every row has `created_at`.
@@ -297,8 +347,9 @@ Privacy: only public entity names, place names and age bands go to Qloo. Uploade
 * **Modules:** each category picks its own from `launchModuleKeys`, with `pickModules` in its pack. A full plan (a launch plan, a go-to-market, or an unclear ask) gets every module the brief does not rule out; a narrow ask gets only the module it names. Budget split is always offered: shares with no budget, amounts with one.
   * **Film** (`FILM_MODULES`): Partnerships, Creative placement, Publicity and media, Community and grassroots, Release route and window, Timeline, Release cadence, Budget split, What to measure, Risks. Release cadence is for series, and Creative placement is dropped for a film going straight to streaming. The list is frozen: modules other categories add never reach a Film plan.
   * **Music** (`MUSIC_MODULES`): Partnerships, Press and playlists (`publicity`), Community and grassroots, Tour route (`tour`), Support acts (`support`), Sync and placement (`sync`), Timeline, Budget split, What to measure, Risks. Tour route needs at least two cities, and Support acts are dropped for a single. Markets is titled Cities.
+  * **Games** (`GAMES_MODULES`): Store page and tags (`store`), Festivals and showcases (`events`), Soft launch (`softlaunch`), Early access roadmap (`earlyaccess`), Seasons and retention (`liveops`), Fan base collabs (`collabs`), Creators and streamers (`creators`), Press and podcasts (`publicity`), Brand partners (`partnerships`), Community, Launch beats (`timeline`), Budget split, What to measure, Risks. Which a plan gets, and in what order, depends on the **launch kind** the brief describes: premium (PC and console), early access, free to play and live service, or mobile (`KIND_PROFILES` in `packages/packs/src/games/modules.ts`). With no kind stated the plan is premium and Gaps says so. Festivals need a PC or console platform, a soft launch needs iOS or Android, and an early access roadmap only an early access launch. Markets is titled Regions. Each kind has its own calendar of beats in weeks from the release, its own measures and its own budget split.
 * **Lines:** `{ id, kind, text, findingIds, sourceIds, names, group }`. `grounded` lines cite findings; `playbook` lines cite no finding. Either may cite web sources (`sourceIds`), which is the only way a line may state a date, a rival release or a market figure.
-* **Written by code:** "To sharpen this plan" (the section key stays `gaps`: only inputs the team could add and what each would change; what could not be asked goes to the Assumptions tab) and Budget split (the pack's fixed convention table as shares, with amounts computed when a budget is given, labelled a starting split).
+* **Written by code:** "To sharpen this plan" (the section key stays `gaps`: only inputs the team could add and what each would change; what could not be asked goes to the Assumptions tab) and Budget split (the pack's fixed convention table as shares, with amounts computed when a budget is given, labelled a starting split). A Games plan's Launch beats are also written by code, from the launch kind, the platforms, the release date and today: each beat has dates when a day is known and weeks when not, and a beat already over is dropped. Festival, sale and showcase dates are never in it; they come from web facts (below) in the Festivals section.
 * **Guaranteed by code:** the bottom line names every city the team chose and anchors the premiere in the home market (the city in the film's country of origin), with the rest following within days; Markets has a line for each city; every comp the team named has a line in Positioning. Code writes any of these the model missed (`decisions.ts`).
 * **Web research:** when the writer's provider has search (OpenAI web search, Google Search grounding; `LLM_WEB_SEARCH`), a step before writing looks up release timing, rival releases, who distributes and shows films like this, and market numbers, then extracts discrete facts each tied to a page it came from (`research.ts`). Only genre, country, format, route, window and cities are sent, never the film's title or story. The writer may use a fact only by citing its id; the plan keeps only the pages a kept line cites, numbered with the audience footnotes, and exports list them under Sources. A failed or empty search writes the plan without the step.
 * **Also stored:** `comps` (each with `source` you or added, the Qloo match and the choice code made between same-name titles), `findings`, `dropped` (every line the check removed, with why), `writer` (`model` or `template`).

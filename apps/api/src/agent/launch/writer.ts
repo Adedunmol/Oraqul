@@ -52,6 +52,8 @@ export interface WriteInput<R extends LaunchRead = LaunchRead> {
   findings: Finding[];
   /** Facts found on the web, each with an id a line may cite. Empty when search is off. */
   sources: PlanSource[];
+  /** `YYYY-MM-DD`. A plan never advises around a date before it. Optional: older callers omit it. */
+  today?: string;
 }
 
 export interface AnswerInput<R extends LaunchRead = LaunchRead> {
@@ -123,6 +125,9 @@ export class ModelPlanWriter<R extends LaunchRead = LaunchRead> implements PlanW
         '',
         'The brief as read:',
         this.kit.brief(input.title, input.read, input.comps),
+        ...(input.today
+          ? ['', `Today is ${input.today}. Never advise around a date before it.`]
+          : []),
         '',
         `Write these sections, in order: ${wanted.join(', ')}.`,
         '',

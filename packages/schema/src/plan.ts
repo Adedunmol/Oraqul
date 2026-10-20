@@ -26,6 +26,14 @@ export const launchModuleKeys = [
   'tour',
   'support',
   'sync',
+  // Games only. Which of these a plan gets depends on the launch kind (`pickModules` in the pack).
+  'collabs',
+  'creators',
+  'store',
+  'events',
+  'softlaunch',
+  'liveops',
+  'earlyaccess',
 ] as const;
 export const launchSectionKeys = [...launchCoreKeys, ...launchModuleKeys] as const;
 export const launchSectionKeySchema = z.enum(launchSectionKeys);

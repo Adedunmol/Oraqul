@@ -197,8 +197,8 @@ function Comps({ plan }: { plan: LaunchPlan }) {
   if (added.length === 0) return null;
   return (
     <p className="text-[13px] text-muted">
-      Planned against {added.map((c) => c.name).join(', ')}. Name your own films in the chat to swap
-      them.
+      Planned against {added.map((c) => c.name).join(', ')}. Name your own comparable titles in the
+      chat to swap them.
     </p>
   );
 }

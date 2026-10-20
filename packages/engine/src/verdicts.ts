@@ -126,3 +126,61 @@ export function compsVerdict(
       return { verdict: 'cant', why: 'The call budget did not cover the check.' };
   }
 }
+
+// Spec §5.6: how many of a game's comps list a platform, from what Qloo holds on each comp. A
+// share needs at least this many comps with platform data behind it. Starting values,
+// TODO(verify) on a live run before a plan leads with them.
+const MIN_COMPS_WITH_DATA = 2;
+const PLATFORM_HOLDS = 2 / 3;
+const PLATFORM_WEAK = 1 / 3;
+
+export interface PlatformShare {
+  platform: string;
+  /** Comps that list the platform. */
+  listing: number;
+  /** Comps Qloo holds platform data for. */
+  withData: number;
+}
+
+/** Spec §5.6: the platforms the team named against where its comparable games live. */
+export function platformVerdict(shares: PlatformShare[]): VerdictResult {
+  const tested = shares.filter((s) => s.withData >= MIN_COMPS_WITH_DATA);
+  if (tested.length === 0) {
+    return {
+      verdict: 'cant',
+      why: 'Qloo holds platform data for fewer than two of the comparable games.',
+    };
+  }
+  const rows = tested.map((s) => ({ ...s, share: s.listing / s.withData }));
+  const lowest = rows.reduce((a, b) => (b.share < a.share ? b : a));
+  const shown = `${lowest.listing} of ${lowest.withData} comparable games list ${lowest.platform}`;
+  if (lowest.share >= PLATFORM_HOLDS) {
+    return {
+      verdict: 'holds',
+      why: `Every platform you named is where the comps live (${shown}).`,
+    };
+  }
+  if (lowest.share >= PLATFORM_WEAK) {
+    return { verdict: 'weak', why: `Some comparable games skip a platform you named (${shown}).` };
+  }
+  return { verdict: 'breaks', why: `Few comparable games are on a platform you named (${shown}).` };
+}
+
+/**
+ * Spec §5.6: store tags the team named against the tags at least half of its comps share. Wording
+ * is not audience, so a miss is weak and never breaks.
+ */
+export function storeTagVerdict(matched: number, shared: number, withData: number): VerdictResult {
+  if (withData < MIN_COMPS_WITH_DATA) {
+    return { verdict: 'cant', why: 'Qloo holds tags for fewer than two of the comparable games.' };
+  }
+  if (shared === 0) {
+    return {
+      verdict: 'cant',
+      why: 'The comparable games share no tag, so there is nothing to match.',
+    };
+  }
+  const shown = `${matched} of your tags match the ${shared} tags at least half of the comps share`;
+  if (matched >= 2) return { verdict: 'holds', why: `Your store tags fit the comps (${shown}).` };
+  return { verdict: 'weak', why: `Your store tags barely overlap with the comps (${shown}).` };
+}
