@@ -82,6 +82,8 @@ export interface Voice {
   theseComps: string;
   /** What the unstated "the anchors describe one audience" test says, by verdict. */
   compsVerdict: Record<Verdict, string>;
+  /** What the places are called in the markets finding. Defaults to "your cities". */
+  yourPlaces?: string;
 }
 
 /** What a category adds to the shared grounding step. */
@@ -92,6 +94,8 @@ export interface GroundSpec<R extends LaunchRead, P extends QueryPlanCore> {
   queryOrder: readonly string[];
   /** The category's own queries, run after the core ones. Push work onto `kit.jobs`. */
   runQueries(kit: GroundKit<R, P>): Promise<void>;
+  /** Cities to rank as the team's when it named none. They are in `plan.worthALook`. */
+  standInPlaces?(read: R, plan: P): string[];
 }
 
 /** The tools a category's queries use. */
@@ -200,6 +204,7 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
     audience,
     places: ranked,
     worthALook: plan.worthALook,
+    standInPlaces: read.places.length ? undefined : spec.standInPlaces?.(read, plan),
   });
   coreFindings(brief, read, add, gaps, audience, ranked, spec.voice);
   areaFindings(ranked, add, spec.voice);
@@ -345,7 +350,7 @@ function coreFindings<R extends LaunchRead>(
       {
         id: 'f-markets',
         query: 'markets',
-        text: `Among your cities, ${voice.yourAudience} is strongest in ${first?.place}${rest.length ? `, then ${list(rest.map((p) => p.place))}` : ''}.`,
+        text: `Among ${voice.yourPlaces ?? 'your cities'}, ${voice.yourAudience} is strongest in ${first?.place}${rest.length ? `, then ${list(rest.map((p) => p.place))}` : ''}.`,
         entities: b.teamOrder.map((p) => entity(p.place, p.affinity, null)),
         numbers: Object.fromEntries(
           b.teamOrder.map((p) => [`lift ${p.place}`, round2(p.lift ?? 0)]),

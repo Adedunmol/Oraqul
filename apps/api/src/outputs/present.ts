@@ -61,6 +61,8 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
   evidence: 'Every claim with its receipt. Use this to check any number.',
   changes: 'What moved compared with the plan before.',
   territories: 'Where to open first, ranked by how strongly each territory fits.',
+  fanbase: 'Which fan bases to collab with, ranked within each medium.',
+  regions: 'Which regions fit the game, ranked by how strongly each does.',
   date: 'How each date overlaps with rival releases. Lower overlap is better.',
   partners: 'Drafts for partners. Nothing is sent from here.',
 };
@@ -76,8 +78,16 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   evidence: 'Evidence',
   changes: 'What changed',
   territories: 'Territories',
+  fanbase: 'Fan base bridge',
+  regions: 'Regions',
   date: 'Rival date check',
   partners: 'Partner briefs',
+};
+
+const LIMITS = {
+  film: 'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Box office, viewing numbers and reviews are not in Qloo. Every number comes from the comps you confirmed.',
+  games:
+    'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Wishlists, sales, player counts and reviews are not in Qloo. Every number comes from the comparable games you confirmed.',
 };
 
 const movesSchema = z.array(moveSchema);
@@ -137,6 +147,15 @@ export function presentOutput({
   ].join('\n');
   const territories: OutputTabKey[] =
     category === 'film' && brief.places.length >= 2 ? ['territories'] : [];
+  // Games: the fan base bridge and the regions sit next to the plan, only when there is something
+  // to show (the bridge needs a fan base, the regions need two to compare).
+  const gameTabs: OutputTabKey[] =
+    category === 'games'
+      ? [
+          ...(brief.fan?.length ? (['fanbase'] as const) : []),
+          ...(brief.places.length >= 2 ? (['regions'] as const) : []),
+        ]
+      : [];
   // A launch plan opens on the plan itself (PRD O1); the evidence sits behind it.
   const tabKeys: OutputTabKey[] = audit
     ? [
@@ -149,10 +168,10 @@ export function presentOutput({
       ]
     : plan
       ? row.kind === 'scenario'
-        ? ['plan', 'changes', 'audience', 'assumptions', 'evidence']
+        ? ['plan', 'changes', ...gameTabs, 'audience', 'assumptions', 'evidence']
         : row.kind === 'fix' && report
-          ? ['plan', 'fixes', 'audience', 'assumptions', 'evidence']
-          : ['plan', 'audience', 'assumptions', 'evidence']
+          ? ['plan', 'fixes', ...gameTabs, 'audience', 'assumptions', 'evidence']
+          : ['plan', ...gameTabs, 'audience', 'assumptions', 'evidence']
       : row.kind === 'date'
         ? ['summary', 'date', 'evidence']
         : row.kind === 'partner'
@@ -217,8 +236,7 @@ export function presentOutput({
       ...evidence(brief, pack.planSections, receipts, moves, focusIds),
     ],
     receipts: receipts.map(toReceipt),
-    limits:
-      'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Box office, viewing numbers and reviews are not in Qloo. Every number comes from the comps you confirmed.',
+    limits: category === 'games' ? LIMITS.games : LIMITS.film,
   };
 }
 

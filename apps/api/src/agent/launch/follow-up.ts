@@ -19,6 +19,8 @@ export const followUpReadingSchema = z.object({
   dropPlaces: z.array(said(z.string().min(1))).max(6),
   addComps: z.array(said(z.string().min(1))).max(5),
   dropComps: z.array(said(z.string().min(1))).max(5),
+  /** Partners from another medium to collaborate with. Only a category that plans collabs reads it. */
+  addCollabs: z.array(said(z.string().min(1))).max(5),
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
   /** Rival releases: the title as written, and its opening date as YYYY-MM-DD. */
@@ -34,6 +36,7 @@ export interface Change {
   dropPlaces: string[];
   addComps: string[];
   dropComps: string[];
+  addCollabs: string[];
   ages: AgeBand[];
   gender: 'male' | 'female' | null;
 }
@@ -76,6 +79,16 @@ const AUDIT_ASK = new RegExp(
 );
 
 /**
+ * Whether a message plainly asks for an audit or a fix, in words code can read. It is what lets a
+ * new chat in a project that started as a build run an audit when the person asks for one.
+ */
+export function askedJob(text: string): 'audit' | 'fix' | null {
+  if (FIX_ASK.test(text)) return 'fix';
+  if (AUDIT_ASK.test(text)) return 'audit';
+  return null;
+}
+
+/**
  * Keeps only what the person said, then code picks the job. The model's own job is used only when
  * no rule matches.
  */
@@ -87,6 +100,7 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
     dropPlaces: values(reading.dropPlaces),
     addComps: values(reading.addComps).filter((c) => inWords(c, text)),
     dropComps: values(reading.dropComps),
+    addCollabs: values(reading.addCollabs).filter((c) => inWords(c, text)),
     ages: reading.ages.flatMap((a) => (inWords(a.quote, text) ? [a.value] : [])),
     gender: reading.gender && inWords(reading.gender.quote, text) ? reading.gender.value : null,
   };
@@ -102,12 +116,13 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
       change.dropPlaces.length +
       change.addComps.length +
       change.dropComps.length +
+      change.addCollabs.length +
       change.ages.length >
       0 || change.gender !== null;
 
   if (rivals.length) return { job: 'date', rivals };
-  if (FIX_ASK.test(text)) return { job: 'fix' };
-  if (AUDIT_ASK.test(text)) return { job: 'audit' };
+  const asked = askedJob(text);
+  if (asked) return { job: asked };
   if (/\bpartner|\boutreach\b|\bsponsor/i.test(text) && reading.job === 'partner') {
     return { job: 'partner', partner };
   }
@@ -118,7 +133,7 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
 }
 
 /** The prompt that reads a later message, in the words of the category's work. */
-export function followUpSystem(work: string, comps: string): string {
+export function followUpSystem(work: string, comps: string, collabs?: string): string {
   return `You read a message a person sent about their ${work} launch plan, for Oraqul, a launch planner that tests every claim against Qloo taste data.
 
 Rules:
@@ -126,6 +141,7 @@ Rules:
 - job: "scenario" when they ask what happens if something changes (other cities, other comps, another age group or gender). "date" when they name rival releases and dates to check. "partner" when they want a brief or outreach for a partner brand or podcast. Otherwise "answer".
 - addPlaces and dropPlaces: cities they want to add to or take out of the plan.
 - addComps and dropComps: comparable ${comps} to add or remove, titles exactly as written.
+- addCollabs: ${collabs ?? 'always empty'}
 - ages: map what they say about age to Qloo's bands (24_and_younger, 25_to_29, 30_to_34, 35_to_44, 45_to_54, 55_and_older).
 - rivals: each rival title as written and its opening date as YYYY-MM-DD. Quote the date as they wrote it.
 - partner: the partner's name as written, if they named one.`;
@@ -154,10 +170,15 @@ export class ModelFollowUpReader implements FollowUpReader {
   }
 }
 
+const COLLAB = /\b(collab\w*|crossover|cross-promo\w*|team(?:ing)? up with|tie-?in)\b/i;
+
 const DROP = /\b(drop|without|remove|skip|not|instead of|no)\s+$/i;
 
 /** Scripted reader for runs with no model key: reads only what is plainly written. */
 export class ScriptedFollowUpReader implements FollowUpReader {
+  /** `collabs` is on for a category that plans them: a quoted title near "collab" is one. */
+  constructor(private readonly options: { collabs?: boolean } = {}) {}
+
   async read({ text }: FollowUpInput) {
     const before = (index: number) => text.slice(Math.max(0, index - 16), index);
     const places = cityNames().flatMap((city) => {
@@ -189,7 +210,9 @@ export class ScriptedFollowUpReader implements FollowUpReader {
       const [phrase, from, to] = m;
       return bandsBetween(Number(from), Number(to)).map((value) => ({ value, quote: phrase }));
     });
-    const comps = rivals.length ? [] : titles;
+    const collabAsk = this.options.collabs && COLLAB.test(text);
+    const collabs = collabAsk && !rivals.length ? titles : [];
+    const comps = rivals.length || collabAsk ? [] : titles;
     const reading: FollowUpReading = {
       job: rivals.length
         ? 'date'
@@ -206,6 +229,7 @@ export class ScriptedFollowUpReader implements FollowUpReader {
       dropComps: comps
         .filter((t) => DROP.test(before(t.at)))
         .map((t) => ({ value: t.title, quote: t.title })),
+      addCollabs: collabs.map((t) => ({ value: t.title, quote: t.title })),
       ages,
       gender: null,
       rivals,

@@ -27,6 +27,28 @@ import {
   ScriptedResultsReader,
 } from './film/results-read.js';
 import { FallbackPlanWriter, ModelPlanWriter, TemplatePlanWriter } from './film/writer.js';
+import { GamesAgent } from './games/agent.js';
+import { ModelFollowUpReader as ModelGamesFollowUpReader } from './games/follow-up.js';
+import {
+  FallbackQueryPlanner as FallbackGamesQueryPlanner,
+  ModelQueryPlanner as ModelGamesQueryPlanner,
+  ScriptedQueryPlanner as ScriptedGamesQueryPlanner,
+} from './games/planner.js';
+import { FallbackGamesReader, ModelGamesReader, ScriptedGamesReader } from './games/read.js';
+import {
+  FallbackReportWriter as FallbackGamesReportWriter,
+  ModelReportWriter as ModelGamesReportWriter,
+  TemplateReportWriter as TemplateGamesReportWriter,
+} from './games/report-writer.js';
+import {
+  FallbackResearcher as FallbackGamesResearcher,
+  ModelResearcher as ModelGamesResearcher,
+} from './games/research.js';
+import {
+  FallbackPlanWriter as FallbackGamesPlanWriter,
+  ModelPlanWriter as ModelGamesPlanWriter,
+  TemplatePlanWriter as TemplateGamesPlanWriter,
+} from './games/writer.js';
 import { FallbackGate, GATE, ModelGate, ScriptedGate } from './gate/gate.js';
 import { ModelPlanner } from './model-planner.js';
 import { MusicAgent } from './music/agent.js';
@@ -240,7 +262,71 @@ const lookups = new LookupCache();
           planner: planFor,
           maxSteps,
         });
-        return { ...placeholderAgents(), film, music };
+
+        // Games shares the tools, the results reader and the search; its readers, planner and
+        // writers carry the games prompts. Its scripted follow-up reader also reads a collab.
+        const scriptedGames = new ScriptedGamesReader();
+        const scriptedGamesFollowUps = new ScriptedFollowUpReader({ collabs: true });
+        const gamesFollowUps = llm
+          ? new FallbackFollowUpReader(
+              new ModelGamesFollowUpReader(llm.model('agent'), llm.timeoutMs),
+              scriptedGamesFollowUps,
+              (err) => logger.warn(`Model follow-up reader failed, using the scripted one: ${err}`),
+            )
+          : scriptedGamesFollowUps;
+        const games = new GamesAgent({
+          reader: llm
+            ? new FallbackGamesReader(
+                new ModelGamesReader(llm.model('agent'), llm.timeoutMs),
+                scriptedGames,
+                (err) =>
+                  logger.warn(`Model reader failed, reading with the scripted reader: ${err}`),
+              )
+            : scriptedGames,
+          queries: llm
+            ? new FallbackGamesQueryPlanner(
+                new ModelGamesQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                new ScriptedGamesQueryPlanner(),
+                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+              )
+            : new ScriptedGamesQueryPlanner(),
+          writer: llm
+            ? new FallbackGamesPlanWriter(
+                new ModelGamesPlanWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateGamesPlanWriter(),
+                (err) => logger.warn(`Model writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateGamesPlanWriter(),
+          results,
+          report: llm
+            ? new FallbackGamesReportWriter(
+                new ModelGamesReportWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateGamesReportWriter(),
+                (err) => logger.warn(`Model report writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateGamesReportWriter(),
+          research:
+            llm && search
+              ? new FallbackGamesResearcher(
+                  new ModelGamesResearcher(search, llm.model('agent'), llm.writerTimeoutMs),
+                  (err) => logger.warn(`Web research failed, writing without it: ${err}`),
+                )
+              : new NoResearch(),
+          followUps: gamesFollowUps,
+          tools,
+          plan: (id) => outputs.plan(id),
+          planner: planFor,
+          maxSteps,
+        });
+        return { ...placeholderAgents(), film, music, games };
       },
     },
     OutputStore,

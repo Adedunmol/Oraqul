@@ -49,6 +49,11 @@ export interface BriefResults<R extends LaunchRead = LaunchRead> {
   /** One heatmap call over the team's cities and the "Worth a look" cities. */
   places: Tested<PlacesData>;
   worthALook: string[];
+  /**
+   * Cities that stand in for the team's when it named none, so the plan still reads somewhere.
+   * They are ranked as the team's cities but never become assumptions: the team did not state them.
+   */
+  standInPlaces?: string[];
 }
 
 export interface LaunchBrief {
@@ -156,7 +161,8 @@ export function buildBrief<R extends LaunchRead>(r: BriefResults<R>): LaunchBrie
   const ranked = placeRows
     .filter((p) => p.status === 'ranked' && p.lift !== null && p.band !== null)
     .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0));
-  const isTeam = (place: string) => r.read.places.some((p) => same(p, place));
+  const teamPlaces = r.read.places.length ? r.read.places : (r.standInPlaces ?? []);
+  const isTeam = (place: string) => teamPlaces.some((p) => same(p, place));
   const teamOrder = ranked.filter((p) => isTeam(p.place));
   const weakest = teamOrder.at(-1)?.lift ?? Number.POSITIVE_INFINITY;
   const worth = ranked.filter(

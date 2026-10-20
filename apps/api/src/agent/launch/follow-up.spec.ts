@@ -7,6 +7,7 @@ const reading: FollowUpReading = {
   dropPlaces: [],
   addComps: [],
   dropComps: [],
+  addCollabs: [],
   ages: [],
   gender: null,
   rivals: [],
