@@ -378,7 +378,7 @@ export function TopicsTab() {
     <span
       key={t.id}
       data-tip={`${t.name}: ${t.evidence}`}
-      style={{ fontSize: `${13 + t.weight * 2}px` }}
+      style={{ fontSize: `${Math.min(13 + t.weight * 2, 22)}px` }}
       className={`rounded-full px-3.5 py-1 ${t.ownership === 'distinct' ? 'bg-accent-soft font-semibold' : 'bg-surface2'}`}
     >
       {t.name}
@@ -447,21 +447,31 @@ export function FanBaseTab() {
   // in that order and never ranked across kinds.
   const label = (g: (typeof fan)[number]) =>
     g.medium ? `${g.medium.charAt(0).toUpperCase()}${g.medium.slice(1)} · ${g.name}` : g.name;
+  // The API names the tab. A category with its own words for it (Podcasts: a swap list) says them.
+  const tab = output.tabs.find((t) => t.key === 'fanbase');
+  const own = tab !== undefined && tab.label !== 'Fan base bridge';
+  const row = own ? 'Show' : 'Fan base';
   return (
     <>
       <TabTitle
-        title="Fan base bridge"
-        note="How much the people who follow other media overlap with your players. Compare rows within one kind of media, never across."
+        title={own ? tab.label : 'Fan base bridge'}
+        note={
+          own
+            ? tab.note
+            : 'How much the people who follow other media overlap with your players. Compare rows within one kind of media, never across.'
+        }
       />
       <ChartCard
-        title="Overlap with other fan bases"
+        title={own ? 'Overlap with your listeners' : 'Overlap with other fan bases'}
         note={
           moved
             ? 'Grey is before the change, blue is after.'
-            : 'Out of 100. Your collab is marked beside its row.'
+            : own
+              ? 'Out of 100. Your pick is marked beside its row.'
+              : 'Out of 100. Your collab is marked beside its row.'
         }
         table={{
-          head: moved ? ['Fan base', 'Before', 'After'] : ['Fan base', 'Overlap'],
+          head: moved ? [row, 'Before', 'After'] : [row, 'Overlap'],
           rows: fan.map((g) => (moved ? [label(g), g.before, g.after] : [label(g), g.after])),
         }}
       >
@@ -513,15 +523,19 @@ export function RegionsTab() {
   const sorted = places.slice().sort((a, b) => b.lift - a.lift);
   const lead = places[0];
   const top = sorted[0];
+  // The API names the tab: a category that says markets instead of regions (Podcasts) says so.
+  const noun =
+    output.tabs.find((t) => t.key === 'regions')?.label === 'Markets' ? 'market' : 'region';
+  const Noun = `${noun.charAt(0).toUpperCase()}${noun.slice(1)}`;
   return (
     <>
       <TabTitle
-        title="Regions"
-        note="Regions ranked by lift over a neutral audience. The plan names a lead region. Oraqul checks it against the ranking."
+        title={`${Noun}s`}
+        note={`${Noun}s ranked by lift over a neutral audience. The plan names a lead ${noun}. Oraqul checks it against the ranking.`}
       />
       <div className="flex flex-wrap gap-3.5">
         <Tile
-          label="Planned lead region"
+          label={`Planned lead ${noun}`}
           value={lead?.name ?? 'None'}
           note={
             lead
@@ -536,10 +550,10 @@ export function RegionsTab() {
         />
       </div>
       <ChartCard
-        title="Region ranking"
+        title={`${Noun} ranking`}
         note="Above 1.5 is strong, 1.2 to 1.5 usable, below 1.2 weak."
         table={{
-          head: ['Region', 'Lift', 'Confidence'],
+          head: [Noun, 'Lift', 'Confidence'],
           rows: sorted.map((p) => [p.name, `${p.lift.toFixed(1)}x`, p.confidence]),
         }}
       >
