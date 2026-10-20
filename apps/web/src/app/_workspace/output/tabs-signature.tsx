@@ -443,29 +443,45 @@ export function FanBaseTab() {
   const { output } = useOutputView();
   const fan = output.brief.fan ?? [];
   const moved = fan.some((g) => g.before !== g.after);
+  // A row says which kind of media it is. Overlap is scored within one kind, so rows are grouped
+  // in that order and never ranked across kinds.
+  const label = (g: (typeof fan)[number]) =>
+    g.medium ? `${g.medium.charAt(0).toUpperCase()}${g.medium.slice(1)} · ${g.name}` : g.name;
   return (
     <>
       <TabTitle
         title="Fan base bridge"
-        note="How much the fans of other media overlap with your players. Run a scenario such as a collab and the bars move."
+        note="How much the people who follow other media overlap with your players. Compare rows within one kind of media, never across."
       />
       <ChartCard
         title="Overlap with other fan bases"
         note={
           moved
             ? 'Grey is before the change, blue is after.'
-            : 'No scenario is applied. Grey and blue match.'
+            : 'Out of 100. Your collab is marked beside its row.'
         }
         table={{
-          head: ['Fan base', 'Before', 'After'],
-          rows: fan.map((g) => [g.name, g.before, g.after]),
+          head: moved ? ['Fan base', 'Before', 'After'] : ['Fan base', 'Overlap'],
+          rows: fan.map((g) => (moved ? [label(g), g.before, g.after] : [label(g), g.after])),
         }}
       >
-        <PairBars
-          items={fan.map((g) => ({ label: g.name, a: g.before, b: g.after }))}
-          nameA="Before"
-          nameB="After"
-        />
+        {moved ? (
+          <PairBars
+            items={fan.map((g) => ({ label: label(g), a: g.before, b: g.after }))}
+            nameA="Before"
+            nameB="After"
+          />
+        ) : (
+          <HBars
+            items={fan.map((g) => ({
+              label: g.note ? `${label(g)} (${g.note.toLowerCase()})` : label(g),
+              value: String(g.after),
+              width: g.after,
+              tone: g.note ? 'series2' : 'series',
+              tip: `${label(g)}: ${g.after} of 100`,
+            }))}
+          />
+        )}
       </ChartCard>
       <Stack>
         {fan.map((g) => (
