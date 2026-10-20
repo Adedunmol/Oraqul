@@ -63,10 +63,17 @@ function inWords(quoteText: string, text: string): boolean {
 }
 
 // Asking for a fix or an audit is plain words, so code reads it and no model decides it (spec §3.1).
-const FIX_ASK =
-  /\b(?:fix|improve|rebuild|redo|repair|relaunch)\b[^.?!\n]{0,30}\b(?:plan|it|this|launch)\b|\bnew (?:fixed |better )?plan\b|\b(?:write|make|generate|give me) (?:a |the )?(?:fixed|better|new) plan\b/i;
-const AUDIT_ASK =
-  /\b(?:audit|check|review|test)\b[^.?!\n]{0,20}\bplan\b|\bwhy (?:did|has|was|were)\b[^.?!\n]{0,60}\b(?:fail\w*|flop\w*|underperform\w*|miss\w*|sell|sold)\b/i;
+// The plan has to be the whole object of the verb: "check how the plan plays in Lagos" or "fix the
+// budget in this plan" ask about a part, and a full audit or rewrite would answer the wrong thing.
+const THE_PLAN = String.raw`(?:(?:my|our|the|this|that)\s+)?(?:launch\s+)?plan\b(?!\s+(?:for|in|with|on|by|against|if|when|plays?|works?|fits?))`;
+const FIX_ASK = new RegExp(
+  String.raw`\b(?:fix|improve|rebuild|redo|repair|relaunch)\s+(?:${THE_PLAN}|it\b|this\b(?!\s+\w))|\bnew (?:fixed|better) plan\b|\b(?:write|make|generate|give me) (?:a |the )?(?:fixed|better) plan\b`,
+  'i',
+);
+const AUDIT_ASK = new RegExp(
+  String.raw`\baudit\s+(?:it|this)\b|\b(?:audit|check|review|test)\s+${THE_PLAN}|\bwhy (?:did|has|was|were)\b[^.?!\n]{0,60}\b(?:fail\w*|flop\w*|underperform\w*|miss\w*|sell|sold)\b`,
+  'i',
+);
 
 /**
  * Keeps only what the person said, then code picks the job. The model's own job is used only when
