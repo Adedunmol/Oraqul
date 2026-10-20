@@ -1,0 +1,81 @@
+{
+  "title": "Cold Case Files",
+  "brief": "Launch plan for the podcast \"Cold Case Files\", a true crime interview show, launching on 2099-03-01 in London and Lagos. Comparable shows: \"Crime Junkie\" and \"Serial\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with Lagos, then London: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-place-london": "breaks",
+      "a-place-lagos": "weak",
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos", "London"],
+    "comps": [
+      {
+        "name": "Crime Junkie",
+        "source": "you"
+      },
+      {
+        "name": "Serial",
+        "source": "you"
+      },
+      {
+        "name": "My Favorite Murder",
+        "source": "added"
+      },
+      {
+        "name": "Casefile",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["Lagos", "London"],
+      "f-topics": ["Interviews", "Relationships", "Storytelling"],
+      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
+      "f-brands-beverage-london": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-telecom-london": ["Orbit Data", "Glide Mobile"],
+      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
+      "f-crossover-series": ["Harbour Lights", "The Understudy", "Quiet Hours"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "4/0",
+      "markets": "2/0",
+      "crosspromo": "1/1",
+      "guests": "0/1",
+      "partnerships": "2/0",
+      "publicity": "2/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "2/1",
+      "gaps": "0/7"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 37,
+      "backed": 49,
+      "rankKept": 100,
+      "findingsUsed": 10,
+      "cities": {
+        "Lagos": 4,
+        "London": 5
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Cold Case Files",
+      "Downloads, chart positions and ad revenue",
+      "The release window (2099-03-01)",
+      "Guests"
+    ]
+  }
+}

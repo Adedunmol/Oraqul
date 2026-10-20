@@ -1,0 +1,71 @@
+{
+  "title": "Serial",
+  "brief": "Launch plan for season 3 of the podcast \"Serial\", an audio only true crime show on Apple Podcasts, launching on 2099-09-01 in New York and London. Comparable shows: \"Crime Junkie\" and \"Casefile\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with New York, then London: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-place-new-york": "weak",
+      "a-place-london": "breaks",
+      "a-comps": "weak"
+    },
+    "cities": ["New York", "London"],
+    "comps": [
+      {
+        "name": "Crime Junkie",
+        "source": "you"
+      },
+      {
+        "name": "Casefile",
+        "source": "you"
+      },
+      {
+        "name": "My Favorite Murder",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-london": [],
+      "f-a-place-new-york": [],
+      "f-markets": ["New York", "London"],
+      "f-topics": ["Politics", "Interviews", "Diaspora life"],
+      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
+      "f-brands-beverage-new-york": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-telecom-new-york": ["Glide Mobile", "Orbit Data"],
+      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
+      "f-crossover-series": ["Harbour Lights", "The Understudy", "Quiet Hours"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "4/0",
+      "markets": "2/0",
+      "crosspromo": "1/1",
+      "partnerships": "2/0",
+      "publicity": "2/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/8",
+      "measure": "0/4",
+      "risks": "2/1",
+      "gaps": "0/5"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 36,
+      "backed": 50,
+      "rankKept": 100,
+      "findingsUsed": 10,
+      "cities": {
+        "New York": 6,
+        "London": 3
+      }
+    },
+    "dropped": 0,
+    "cannot": ["Downloads, chart positions and ad revenue", "The release window (2099-09-01)"]
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "title": "Fund Notes",
+  "brief": "Launch plan for the podcast \"Fund Notes\", a weekly business show for 25 to 44 year olds, launching on 2099-08-01 in Lagos and Accra. Comparable shows: \"How I Built This\" and \"Huberman Lab\". Swap with \"Armchair Expert\". Rival \"SmartLess\". Topics: money, technology.",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with Accra, then Lagos: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "breaks",
+      "a-place-accra": "weak",
+      "a-comps": "weak",
+      "a-topic-money": "weak",
+      "a-topic-technology": "breaks"
+    },
+    "cities": ["Accra", "Lagos"],
+    "comps": [
+      {
+        "name": "How I Built This",
+        "source": "you"
+      },
+      {
+        "name": "Huberman Lab",
+        "source": "you"
+      },
+      {
+        "name": "Planet Money",
+        "source": "added"
+      },
+      {
+        "name": "The Diary Of A CEO",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-accra": [],
+      "f-a-place-lagos": [],
+      "f-markets": ["Accra", "Lagos"],
+      "f-a-topic-money": [],
+      "f-a-topic-technology": [],
+      "f-topics": ["Interviews", "Humour", "Faith"],
+      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
+      "f-promo-armchair-expert": ["Armchair Expert"],
+      "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"],
+      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
+      "f-crossover-series": ["The Understudy", "Quiet Hours", "Harbour Lights"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "4/0",
+      "markets": "2/0",
+      "crosspromo": "2/1",
+      "guests": "0/1",
+      "partnerships": "2/0",
+      "publicity": "2/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "4/1",
+      "gaps": "0/4"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 40,
+      "backed": 53,
+      "rankKept": 89,
+      "findingsUsed": 13,
+      "cities": {
+        "Accra": 4,
+        "Lagos": 5
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Fund Notes",
+      "Downloads, chart positions and ad revenue",
+      "The release window (2099-08-01)",
+      "Guests"
+    ]
+  }
+}

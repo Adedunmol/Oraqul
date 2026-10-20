@@ -1,0 +1,79 @@
+{
+  "title": "The Last Ferry",
+  "brief": "Launch plan for the podcast \"The Last Ferry\", a narrative true crime storytelling show for Apple Podcasts, launching on 2099-04-01 in Toronto and New York. Comparable shows: \"Serial\" and \"Casefile\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with New York, then Toronto: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-place-toronto": "breaks",
+      "a-place-new-york": "holds",
+      "a-comps": "weak"
+    },
+    "cities": ["New York", "Toronto"],
+    "comps": [
+      {
+        "name": "Serial",
+        "source": "you"
+      },
+      {
+        "name": "Casefile",
+        "source": "you"
+      },
+      {
+        "name": "Crime Junkie",
+        "source": "added"
+      },
+      {
+        "name": "My Favorite Murder",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-new-york": [],
+      "f-a-place-toronto": [],
+      "f-markets": ["New York", "Toronto"],
+      "f-topics": ["Politics", "True stories", "Interviews"],
+      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
+      "f-brands-beverage-toronto": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-telecom-toronto": ["Glide Mobile", "Orbit Data"],
+      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
+      "f-crossover-series": ["Harbour Lights", "The Understudy", "Quiet Hours"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "4/0",
+      "markets": "2/0",
+      "crosspromo": "1/1",
+      "partnerships": "2/0",
+      "publicity": "2/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "1/1",
+      "gaps": "0/6"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 35,
+      "backed": 49,
+      "rankKept": 100,
+      "findingsUsed": 10,
+      "cities": {
+        "New York": 3,
+        "Toronto": 5
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "The Last Ferry",
+      "Downloads, chart positions and ad revenue",
+      "The release window (2099-04-01)"
+    ]
+  }
+}

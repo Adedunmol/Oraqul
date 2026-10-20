@@ -170,7 +170,7 @@ export class ModelFollowUpReader implements FollowUpReader {
   }
 }
 
-const COLLAB = /\b(collab\w*|crossover|cross-promo\w*|team(?:ing)? up with|tie-?in)\b/i;
+const COLLAB = /\b(collab\w*|swap\w*|crossover|cross-promo\w*|team(?:ing)? up with|tie-?in)\b/i;
 
 const DROP = /\b(drop|without|remove|skip|not|instead of|no)\s+$/i;
 

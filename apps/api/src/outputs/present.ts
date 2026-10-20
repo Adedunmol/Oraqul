@@ -84,10 +84,29 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   partners: 'Partner briefs',
 };
 
+// Podcasts name the same tabs in their own words: a swap list instead of a fan base bridge, markets
+// instead of regions, and the topic map.
+const PODCAST_TABS: Partial<Record<OutputTabKey, { label: string; note: string }>> = {
+  topics: {
+    label: 'Topic map',
+    note: 'The topics your listeners lean to, against the listeners of rival shows. Yours are the ones they do not share.',
+  },
+  fanbase: {
+    label: 'Cross promotion',
+    note: 'Which shows to swap with, ranked by how close their listeners are to yours.',
+  },
+  regions: {
+    label: 'Markets',
+    note: 'Which markets fit the show, ranked by how strongly each does.',
+  },
+};
+
 const LIMITS = {
   film: 'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Box office, viewing numbers and reviews are not in Qloo. Every number comes from the comps you confirmed.',
   games:
     'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Wishlists, sales, player counts and reviews are not in Qloo. Every number comes from the comparable games you confirmed.',
+  podcasts:
+    'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Downloads, chart positions, ratings and ad rates are not in Qloo. Every number comes from the comparable shows you confirmed.',
 };
 
 const movesSchema = z.array(moveSchema);
@@ -149,9 +168,11 @@ export function presentOutput({
     category === 'film' && brief.places.length >= 2 ? ['territories'] : [];
   // Games: the fan base bridge and the regions sit next to the plan, only when there is something
   // to show (the bridge needs a fan base, the regions need two to compare).
+  // Podcasts: the topic map and the swap list, with the markets, on the same terms.
   const gameTabs: OutputTabKey[] =
-    category === 'games'
+    category === 'games' || category === 'podcasts'
       ? [
+          ...(category === 'podcasts' && brief.topics?.length ? (['topics'] as const) : []),
           ...(brief.fan?.length ? (['fanbase'] as const) : []),
           ...(brief.places.length >= 2 ? (['regions'] as const) : []),
         ]
@@ -218,8 +239,14 @@ export function presentOutput({
     tabs: tabKeys.map(
       (key): OutputTab => ({
         key,
-        label: TAB_LABEL[key] ?? key,
-        note: plan && key === 'plan' ? '' : (TAB_NOTE[key] ?? ''),
+        label:
+          (category === 'podcasts' ? PODCAST_TABS[key]?.label : undefined) ?? TAB_LABEL[key] ?? key,
+        note:
+          plan && key === 'plan'
+            ? ''
+            : ((category === 'podcasts' ? PODCAST_TABS[key]?.note : undefined) ??
+              TAB_NOTE[key] ??
+              ''),
       }),
     ),
     sections: pack.planSections,
@@ -236,7 +263,8 @@ export function presentOutput({
       ...evidence(brief, pack.planSections, receipts, moves, focusIds),
     ],
     receipts: receipts.map(toReceipt),
-    limits: category === 'games' ? LIMITS.games : LIMITS.film,
+    limits:
+      category === 'games' ? LIMITS.games : category === 'podcasts' ? LIMITS.podcasts : LIMITS.film,
   };
 }
 

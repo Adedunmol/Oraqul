@@ -1,0 +1,74 @@
+{
+  "title": "Naija Money",
+  "brief": "A Nigerian business podcast, made for Nigerians.",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with Abuja, then Lagos: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-comps": "weak"
+    },
+    "cities": ["Abuja", "Lagos"],
+    "comps": [
+      {
+        "name": "How I Built This",
+        "source": "added"
+      },
+      {
+        "name": "Planet Money",
+        "source": "added"
+      },
+      {
+        "name": "The Diary Of A CEO",
+        "source": "added"
+      },
+      {
+        "name": "Freakonomics Radio",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-markets": ["Abuja", "Lagos"],
+      "f-topics": ["Storytelling", "True stories", "Diaspora life"],
+      "f-crosspromo": ["Case Closed Weekly", "Dead Air", "Midnight Ledger"],
+      "f-brands-beverage-abuja": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-telecom-abuja": ["Orbit Data", "Glide Mobile"],
+      "f-brands-telecom-lagos": ["Orbit Data", "Glide Mobile"],
+      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
+      "f-crossover-series": ["The Understudy", "Quiet Hours", "Harbour Lights"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/3",
+      "audience": "4/0",
+      "markets": "1/0",
+      "crosspromo": "1/1",
+      "guests": "0/1",
+      "partnerships": "4/0",
+      "publicity": "2/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "0/1",
+      "gaps": "0/9"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 37,
+      "backed": 46,
+      "rankKept": 100,
+      "findingsUsed": 10,
+      "cities": {
+        "Abuja": 5,
+        "Lagos": 4
+      }
+    },
+    "dropped": 0,
+    "cannot": ["Downloads, chart positions and ad revenue", "Guests"]
+  }
+}
