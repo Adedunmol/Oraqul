@@ -3,6 +3,7 @@ import {
   citiesForRegions,
   FALLBACK_COMPS,
   fallbackComps,
+  genreFallback,
   genrePhrase,
   PODCASTS_QUERIES,
   podcastsQueryKeys,
@@ -179,6 +180,16 @@ describe('catalog', () => {
     expect(genrePhrase('a true crime show')).toBe('true crime');
     expect(genrePhrase('football chat')).toBe('sports');
     expect(genrePhrase('a show')).toBeNull();
+  });
+
+  it('reads football as soccer outside the US, where Qloo means American football otherwise', () => {
+    expect(genrePhrase('a football chat show for Nigerians')).toBe('soccer');
+    expect(genrePhrase('football show in London')).toBe('soccer');
+    expect(genrePhrase('Premier League talk')).toBe('soccer');
+    expect(genrePhrase('a football show')).toBe('sports');
+    expect(genrePhrase('NFL football in Lagos')).toBe('sports');
+    expect(genreFallback('soccer')).toBe('sports');
+    expect(genreFallback('sports')).toBeNull();
   });
 
   it('always has fallback shows for a genre, with no repeats', () => {

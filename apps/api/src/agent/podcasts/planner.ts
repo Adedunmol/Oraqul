@@ -44,6 +44,8 @@ export interface PodcastsQueryPlan extends QueryPlanCore {
   askCities: string[];
   /** A podcast genre phrase. It narrows the shows asked for and the shows the topic map compares. */
   genre: string | null;
+  /** A broader genre asked when `genre` lists too few shows. */
+  genreFallback: string | null;
   /** The one city the show lists are asked in. */
   showCity: string | null;
   brandCategories: string[];
@@ -82,6 +84,14 @@ export function defaultPlan(input: QueryPlanInput): PodcastsQueryPlan {
     ]),
   ].slice(0, 8);
   const askCities = cities.length ? cities : worthALook.slice(0, MAX_CITIES_PER_QUERY);
+  // The markets and who the show is made for tell "football" in Lagos from "football" in Dallas.
+  const market = [...read.regions, ...read.places, read.audienceNote, read.country]
+    .filter(Boolean)
+    .join(' ');
+  // What the person said the show is about comes first; the title is only a last resort.
+  const genre =
+    (read.genre ? podcastsPlan.genrePhrase(`${read.genre} ${market}`) : null) ??
+    podcastsPlan.genrePhrase(`${input.title} ${market}`);
   return {
     queries: queriesFor(modules),
     cities,
@@ -93,7 +103,8 @@ export function defaultPlan(input: QueryPlanInput): PodcastsQueryPlan {
     regionCities: regional,
     askCities,
     platforms: platformsOf(read),
-    genre: podcastsPlan.genrePhrase(`${read.genre ?? ''} ${input.title}`),
+    genre,
+    genreFallback: podcastsPlan.genreFallback(genre),
     showCity: away[0] ?? askCities[0] ?? null,
     brandCategories: PODCASTS_BRAND_CATEGORIES,
     brandCities: (cities.length ? [home[0] ?? cities[0], away[0]] : askCities.slice(0, 2))
@@ -185,6 +196,7 @@ export function checkPlan(
   return {
     ...defaults,
     genre: phrases([chosen.genre ?? ''])[0] ?? defaults.genre,
+    genreFallback: podcastsPlan.genreFallback(phrases([chosen.genre ?? ''])[0] ?? defaults.genre),
     showCity: team(chosen.showCity ? [chosen.showCity] : [])[0] ?? defaults.showCity,
     crossoverCity:
       team(chosen.crossoverCity ? [chosen.crossoverCity] : [])[0] ?? defaults.crossoverCity,

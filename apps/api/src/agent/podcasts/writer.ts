@@ -145,11 +145,11 @@ function swapLine(promo: Finding, shows: Finding | undefined): WrittenLine {
     .map((e) => e.name);
   const strong = of < 3 || place <= Math.ceil(of / 3);
   return strong
-    ? grounded(`Take the ${name} swap forward: ${promo.text}`, promo, [name], 'Your pick')
+    ? grounded(`Take the swap with ${name} forward: ${promo.text}`, promo, [name], 'Your pick')
     : grounded(
         better.length
-          ? `Keep the ${name} swap, and approach ${list(better)} too: they rank higher with your listeners.`
-          : `Keep the ${name} swap, and add a second show in the same genre: it ranks low with your listeners.`,
+          ? `Keep the swap with ${name}, and approach ${list(better)} too: they rank higher with your listeners.`
+          : `Keep the swap with ${name}, and add a second show in the same genre: it ranks low with your listeners.`,
         promo,
         [name, ...better],
         'Your pick',

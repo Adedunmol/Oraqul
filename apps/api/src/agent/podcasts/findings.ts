@@ -37,6 +37,7 @@ export type { GroundDeps, Grounded } from '../launch/findings.js';
 const {
   CROSS_PROMO_SHOWS,
   CROSSOVER_GROUNDED,
+  MIN_GENRE_SHOWS,
   GUESTS_GROUNDED,
   MAX_CITIES_PER_QUERY,
   TAG_SPACES,
@@ -124,7 +125,7 @@ async function runQueries(kit: GroundKit<PodcastsRead, PodcastsQueryPlan>): Prom
   // map compares the audience with them when the team named no rival.
   let found: Promise<Show[]> | null = null;
   const discovered = (): Promise<Show[]> => {
-    found ??= discoverShows(kit, tags.genre);
+    found ??= discoverShows(kit, tags.genre, tags.fallback);
     return found;
   };
 
@@ -231,6 +232,7 @@ async function runQueries(kit: GroundKit<PodcastsRead, PodcastsQueryPlan>): Prom
 async function discoverShows(
   kit: GroundKit<PodcastsRead, PodcastsQueryPlan>,
   genre: Tag | null,
+  fallback: Tag | null,
 ): Promise<Show[]> {
   const { deps, read, plan, gaps } = kit;
   if (!genre) {
@@ -242,21 +244,32 @@ async function discoverShows(
     });
     return [];
   }
-  const run = await kit.safely('Shows your audience hears', () =>
-    tools.findTaste.run(deps.tools, {
-      entityIds: kit.ids,
-      type: 'urn:entity:podcast',
-      tags: [genre.id],
-      city: plan.showCity,
-      ages: read.ages,
-      take: CROSS_PROMO_SHOWS,
-      exclude: [],
-    }),
+  const ask = async (tag: Tag) => {
+    const run = await kit.safely('Shows your audience hears', () =>
+      tools.findTaste.run(deps.tools, {
+        entityIds: kit.ids,
+        type: 'urn:entity:podcast',
+        tags: [tag.id],
+        city: plan.showCity,
+        ages: read.ages,
+        take: CROSS_PROMO_SHOWS,
+        exclude: [],
+      }),
+    );
+    return run
+      ? findTasteOutputSchema
+          .parse(run.data)
+          .candidates.map((c) => ({ name: c.name, entityId: c.entityId }))
+      : [];
+  };
+  const narrow = await ask(genre);
+  // A narrow genre such as soccer is a small pool, so a broader one fills the list when it is short.
+  if (narrow.length >= MIN_GENRE_SHOWS || !fallback) return narrow;
+  const broad = await ask(fallback);
+  return [...narrow, ...broad.filter((b) => !narrow.some((n) => n.entityId === b.entityId))].slice(
+    0,
+    CROSS_PROMO_SHOWS,
   );
-  if (!run) return [];
-  return findTasteOutputSchema
-    .parse(run.data)
-    .candidates.map((c) => ({ name: c.name, entityId: c.entityId }));
 }
 
 /** Finds each show the team named in Qloo by exact name, and says so in a gap when it cannot. */
@@ -558,17 +571,20 @@ async function resolve(
   deps: GroundDeps,
   plan: PodcastsQueryPlan,
   want: (key: string) => boolean,
-): Promise<{ genre: Tag | null; brands: Tag[] }> {
+): Promise<{ genre: Tag | null; fallback: Tag | null; brands: Tag[] }> {
   type Ask = { phrase: string; space: keyof typeof TAG_SPACES };
   const asks: Ask[] = [
     ...((want('crosspromo') || want('topics')) && plan.genre
-      ? [{ phrase: plan.genre, space: 'podcastGenre' as const }]
+      ? [plan.genre, ...(plan.genreFallback ? [plan.genreFallback] : [])].map((phrase) => ({
+          phrase,
+          space: 'podcastGenre' as const,
+        }))
       : []),
     ...(want('brands')
       ? plan.brandCategories.slice(0, 2).map((phrase) => ({ phrase, space: 'brands' as const }))
       : []),
   ];
-  if (asks.length === 0) return { genre: null, brands: [] };
+  if (asks.length === 0) return { genre: null, fallback: null, brands: [] };
   const run = await tools.resolveTags.run(deps.tools, {
     phrases: asks.map(({ phrase, space }) => ({
       phrase,
@@ -584,5 +600,13 @@ async function resolve(
   };
   const of = (space: Ask['space']) =>
     asks.flatMap((a, i) => (a.space === space ? (tagFor(i) ?? []) : []));
-  return { genre: of('podcastGenre')[0] ?? null, brands: of('brands') };
+  const byPhrase = (p: string | null) => {
+    const i = asks.findIndex((a) => a.space === 'podcastGenre' && a.phrase === p);
+    return i === -1 ? null : tagFor(i);
+  };
+  return {
+    genre: byPhrase(plan.genre),
+    fallback: byPhrase(plan.genreFallback),
+    brands: of('brands'),
+  };
 }

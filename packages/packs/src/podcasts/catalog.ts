@@ -89,7 +89,11 @@ export const GENRE_PHRASES: { match: RegExp; phrase: string }[] = [
   { match: /comed(y|ian)|funny|humou?r|banter|sketch/i, phrase: 'comedy' },
   { match: /\bnews\b|politic\w*|current affairs|daily briefing|explainer/i, phrase: 'news' },
   { match: /business|entrepreneur|startup|finance|money|invest\w*|career/i, phrase: 'business' },
-  { match: /football|soccer|sport|basketball|nba|athlet\w*/i, phrase: 'sports' },
+  {
+    match: /soccer|premier league|la liga|champions league|afcon|super eagles|fifa/i,
+    phrase: 'soccer',
+  },
+  { match: /football|sport|basketball|nba|athlet\w*/i, phrase: 'sports' },
   { match: /tech|\bai\b|software|gadgets?|crypto/i, phrase: 'technology' },
   { match: /health|wellness|fitness|mental|therapy|self[- ]help|mindset/i, phrase: 'health' },
   { match: /music|album|songwriting|hip[- ]hop|afrobeats/i, phrase: 'music' },
@@ -98,10 +102,36 @@ export const GENRE_PHRASES: { match: RegExp; phrase: string }[] = [
   { match: /film|movie|tv\b|series|pop culture|celebrit\w*|entertainment/i, phrase: 'tv and film' },
 ];
 
+// In Qloo's podcast catalogue "football" is American football (a search for the Super Eagles returns
+// the Philadelphia Eagles), so a brief that says football for a market outside the US means soccer.
+const NOT_US =
+  /\b(nigeria\w*|naija|lagos|abuja|ghana\w*|accra|kenya\w*|nairobi|south africa\w*|johannesburg|africa\w*|uk|britain|british|london|manchester|europe\w*|spain|spanish|germany|german|france|french|brazil\w*|mexic\w*|india\w*|australia\w*)\b/i;
+const AMERICAN = /\b(nfl|american|college|fantasy|gridiron|quarterback)\b/i;
+
 /** The genre phrase for the words in a brief, or null. */
 export function genrePhrase(words: string): string | null {
-  return GENRE_PHRASES.find((g) => g.match.test(words))?.phrase ?? null;
+  const found = GENRE_PHRASES.find((g) => g.match.test(words))?.phrase ?? null;
+  if (
+    found === 'sports' &&
+    /\bfootball\b/i.test(words) &&
+    NOT_US.test(words) &&
+    !AMERICAN.test(words)
+  ) {
+    return 'soccer';
+  }
+  return found;
 }
+
+/**
+ * A broader genre to ask when a narrow one lists too few shows. Soccer is a small pool in Qloo (two
+ * shows in the live probe, 2026-10-20), where sports lists American sports shows.
+ */
+export function genreFallback(phrase: string | null): string | null {
+  return phrase === 'soccer' ? 'sports' : null;
+}
+
+/** Fewest shows a narrow genre must list before the broader one is asked instead. */
+export const MIN_GENRE_SHOWS = 3;
 
 /** Brand categories asked for a show: the verified ones that give brands that operate in a city. */
 export const PODCASTS_BRAND_CATEGORIES = ['beverage', 'telecom'];

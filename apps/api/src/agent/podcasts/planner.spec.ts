@@ -66,6 +66,13 @@ describe('Podcasts query plan', () => {
     ]);
   });
 
+  it('asks a football show for Nigerians with the soccer tag, and sports as the fallback', () => {
+    const plan = defaultPlan(input({ genre: 'football', places: ['Lagos', 'London'] }));
+    expect(plan.genre).toBe('soccer');
+    expect(plan.genreFallback).toBe('sports');
+    expect(defaultPlan(input({ genre: 'true crime' })).genreFallback).toBeNull();
+  });
+
   it('keeps the brands the model names for a ranked region, and drops any other city', () => {
     const plan = defaultPlan(input());
     const checked = checkPlan(

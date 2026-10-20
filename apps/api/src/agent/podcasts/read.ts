@@ -338,7 +338,7 @@ export class ScriptedPodcastsReader implements PodcastsReader {
     )?.[0];
     const window = text.match(WINDOW)?.[0];
     const builtFor = text.match(
-      /\b(?:made|built|designed|aimed|targeted)\s+(?:for|at)\s+([^.\n;]{3,100})/i,
+      /\b(?:made|built|designed|aimed|targeted)\s+(?:for|at)\s+([^.\n;,]{3,100})/i,
     )?.[1];
     const named = podcastsPlan.platformsFrom(text);
     const reading: PodcastsReading = {
