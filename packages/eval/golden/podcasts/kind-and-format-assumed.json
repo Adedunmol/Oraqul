@@ -1,0 +1,76 @@
+{
+  "title": "Naija Money",
+  "brief": "A Nigerian business podcast, made for Nigerians.",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with Lagos, then Abuja: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos", "Abuja"],
+    "comps": [
+      {
+        "name": "How I Built This with Guy Raz",
+        "source": "added"
+      },
+      {
+        "name": "Planet Money",
+        "source": "added"
+      },
+      {
+        "name": "The Diary Of A CEO with Steven Bartlett",
+        "source": "added"
+      },
+      {
+        "name": "Freakonomics Radio",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-markets": ["Lagos", "Abuja"],
+      "f-topics": ["Politics", "Interviews", "Humour"],
+      "f-crosspromo": ["Dead Air", "Second Draft", "Case Closed Weekly"],
+      "f-brands-beverage-abuja": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-telecom-abuja": ["Orbit Data", "Glide Mobile"],
+      "f-brands-telecom-lagos": ["Orbit Data", "Glide Mobile"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/3",
+      "audience": "2/0",
+      "markets": "1/0",
+      "crosspromo": "1/1",
+      "guests": "0/1",
+      "partnerships": "4/0",
+      "publicity": "0/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "0/1",
+      "gaps": "0/9"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 33,
+      "backed": 39,
+      "rankKept": 100,
+      "findingsUsed": 8,
+      "cities": {
+        "Lagos": 5,
+        "Abuja": 4
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Downloads, chart positions and ad revenue",
+      "Guests",
+      "Artists and series your audience follows"
+    ]
+  }
+}

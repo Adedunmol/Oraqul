@@ -184,3 +184,32 @@ export function storeTagVerdict(matched: number, shared: number, withData: numbe
   if (matched >= 2) return { verdict: 'holds', why: `Your store tags fit the comps (${shown}).` };
   return { verdict: 'weak', why: `Your store tags barely overlap with the comps (${shown}).` };
 }
+
+export type TopicPlacement = 'yours' | 'shared' | 'rivals';
+
+/**
+ * Spec §5.8: a topic the team wants to own, against where Qloo's one comparison call put it. Yours
+ * holds, a topic both audiences carry is weak, one only the rivals' audiences carry breaks, and a
+ * topic the call did not return is not tested.
+ */
+export function topicVerdict(placement: TopicPlacement | null): VerdictResult {
+  if (placement === null) {
+    return { verdict: 'cant', why: 'Qloo did not return this topic for either audience.' };
+  }
+  if (placement === 'yours') {
+    return {
+      verdict: 'holds',
+      why: 'Your listeners lean to this topic more than the listeners of the rival shows.',
+    };
+  }
+  if (placement === 'shared') {
+    return {
+      verdict: 'weak',
+      why: 'Your listeners and the rival shows’ listeners both carry this topic, so it is not yours alone.',
+    };
+  }
+  return {
+    verdict: 'breaks',
+    why: 'This topic belongs to the rival shows’ listeners, not to yours.',
+  };
+}

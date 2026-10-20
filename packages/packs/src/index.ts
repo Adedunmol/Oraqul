@@ -14,3 +14,4 @@ export { demoProjects } from './demo';
 export * as filmPlan from './film/plan';
 export * as gamesPlan from './games/plan';
 export * as musicPlan from './music/plan';
+export * as podcastsPlan from './podcasts/plan';

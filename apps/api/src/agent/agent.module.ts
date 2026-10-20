@@ -74,6 +74,32 @@ import {
   TemplatePlanWriter as TemplateMusicPlanWriter,
 } from './music/writer.js';
 import { OutputStore } from './output-store.js';
+import { PodcastsAgent } from './podcasts/agent.js';
+import { ModelFollowUpReader as ModelPodcastsFollowUpReader } from './podcasts/follow-up.js';
+import {
+  FallbackQueryPlanner as FallbackPodcastsQueryPlanner,
+  ModelQueryPlanner as ModelPodcastsQueryPlanner,
+  ScriptedQueryPlanner as ScriptedPodcastsQueryPlanner,
+} from './podcasts/planner.js';
+import {
+  FallbackPodcastsReader,
+  ModelPodcastsReader,
+  ScriptedPodcastsReader,
+} from './podcasts/read.js';
+import {
+  FallbackReportWriter as FallbackPodcastsReportWriter,
+  ModelReportWriter as ModelPodcastsReportWriter,
+  TemplateReportWriter as TemplatePodcastsReportWriter,
+} from './podcasts/report-writer.js';
+import {
+  FallbackResearcher as FallbackPodcastsResearcher,
+  ModelResearcher as ModelPodcastsResearcher,
+} from './podcasts/research.js';
+import {
+  FallbackPlanWriter as FallbackPodcastsPlanWriter,
+  ModelPlanWriter as ModelPodcastsPlanWriter,
+  TemplatePlanWriter as TemplatePodcastsPlanWriter,
+} from './podcasts/writer.js';
 import { ModelReader } from './router/model-reader.js';
 import { FallbackReader } from './router/router.js';
 import { ScriptedReader } from './router/scripted-reader.js';
@@ -326,7 +352,71 @@ const lookups = new LookupCache();
           planner: planFor,
           maxSteps,
         });
-        return { ...placeholderAgents(), film, music, games };
+
+        // Podcasts shares the tools, the results reader and the search; its readers, planner and
+        // writers carry the podcasts prompts. Its scripted follow-up reader also reads a swap.
+        const scriptedPodcasts = new ScriptedPodcastsReader();
+        const scriptedPodcastsFollowUps = new ScriptedFollowUpReader({ collabs: true });
+        const podcastsFollowUps = llm
+          ? new FallbackFollowUpReader(
+              new ModelPodcastsFollowUpReader(llm.model('agent'), llm.timeoutMs),
+              scriptedPodcastsFollowUps,
+              (err) => logger.warn(`Model follow-up reader failed, using the scripted one: ${err}`),
+            )
+          : scriptedPodcastsFollowUps;
+        const podcasts = new PodcastsAgent({
+          reader: llm
+            ? new FallbackPodcastsReader(
+                new ModelPodcastsReader(llm.model('agent'), llm.timeoutMs),
+                scriptedPodcasts,
+                (err) =>
+                  logger.warn(`Model reader failed, reading with the scripted reader: ${err}`),
+              )
+            : scriptedPodcasts,
+          queries: llm
+            ? new FallbackPodcastsQueryPlanner(
+                new ModelPodcastsQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                new ScriptedPodcastsQueryPlanner(),
+                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+              )
+            : new ScriptedPodcastsQueryPlanner(),
+          writer: llm
+            ? new FallbackPodcastsPlanWriter(
+                new ModelPodcastsPlanWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplatePodcastsPlanWriter(),
+                (err) => logger.warn(`Model writer failed, writing from templates: ${err}`),
+              )
+            : new TemplatePodcastsPlanWriter(),
+          results,
+          report: llm
+            ? new FallbackPodcastsReportWriter(
+                new ModelPodcastsReportWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplatePodcastsReportWriter(),
+                (err) => logger.warn(`Model report writer failed, writing from templates: ${err}`),
+              )
+            : new TemplatePodcastsReportWriter(),
+          research:
+            llm && search
+              ? new FallbackPodcastsResearcher(
+                  new ModelPodcastsResearcher(search, llm.model('agent'), llm.writerTimeoutMs),
+                  (err) => logger.warn(`Web research failed, writing without it: ${err}`),
+                )
+              : new NoResearch(),
+          followUps: podcastsFollowUps,
+          tools,
+          plan: (id) => outputs.plan(id),
+          planner: planFor,
+          maxSteps,
+        });
+        return { ...placeholderAgents(), film, music, games, podcasts };
       },
     },
     OutputStore,

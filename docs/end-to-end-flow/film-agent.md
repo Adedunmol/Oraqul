@@ -2,7 +2,7 @@
 
 A plain-language map of what the Film agent does from the first message to the saved output, what it can produce, and where it falls short of the docs. Product behaviour is in [product/spec.md](../product/spec.md); the step-by-step build map is in [backend/film-overview.md](../backend/film-overview.md). Where this file and those disagree, they win.
 
-Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Music and Games have real agents ([music-agent.md](music-agent.md), [games-agent.md](games-agent.md)). Books and Podcasts are placeholders.
+Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Music, Games and Podcasts have real agents ([music-agent.md](music-agent.md), [games-agent.md](games-agent.md), [podcasts-agent.md](podcasts-agent.md)). Books is a placeholder.
 
 ## The path of a message
 
@@ -58,9 +58,9 @@ Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Mu
 - Contract tests against recorded responses are "not started" in [testing.md](../testing.md).
 - The cut-offs for partner and artist verdicts and for results gaps (spec §5.3) are starting values and need a live run.
 
-### Only Film, Music and Games exist
+### Only Film, Music, Games and Podcasts exist
 
-- Books and Podcasts say they are not connected. The Books to Film consult exists only in the generic tool loop, which no other agent uses yet.
+- Books says it is not connected. The Books to Film consult exists only in the generic tool loop, which no other agent uses yet.
 
 ### Gaps in audit and fix
 

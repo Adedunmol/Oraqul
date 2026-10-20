@@ -1,0 +1,78 @@
+{
+  "title": "The Last Ferry",
+  "brief": "Launch plan for the podcast \"The Last Ferry\", a narrative true crime storytelling show for Apple Podcasts, launching on 2099-04-01 in Toronto and New York. Comparable shows: \"Serial\" and \"Casefile\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with New York, then Toronto: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-place-toronto": "breaks",
+      "a-place-new-york": "weak",
+      "a-comps": "weak"
+    },
+    "cities": ["New York", "Toronto"],
+    "comps": [
+      {
+        "name": "Serial",
+        "source": "you"
+      },
+      {
+        "name": "Casefile",
+        "source": "you"
+      },
+      {
+        "name": "Crime Junkie",
+        "source": "added"
+      },
+      {
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-new-york": [],
+      "f-a-place-toronto": [],
+      "f-markets": ["New York", "Toronto"],
+      "f-topics": ["Faith", "Humour", "Diaspora life"],
+      "f-crosspromo": ["Midnight Ledger", "The Long Con", "Case Closed Weekly"],
+      "f-brands-beverage-toronto": ["Lumen Coffee", "Fizz Cola"],
+      "f-brands-telecom-toronto": ["Orbit Data", "Glide Mobile"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "2/0",
+      "markets": "2/0",
+      "crosspromo": "1/1",
+      "partnerships": "2/0",
+      "publicity": "0/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "2/1",
+      "gaps": "0/6"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 32,
+      "backed": 44,
+      "rankKept": 100,
+      "findingsUsed": 8,
+      "cities": {
+        "New York": 4,
+        "Toronto": 5
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "The Last Ferry",
+      "Downloads, chart positions and ad revenue",
+      "The release window (2099-04-01)",
+      "Artists and series your audience follows"
+    ]
+  }
+}

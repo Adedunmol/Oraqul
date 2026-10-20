@@ -1,0 +1,80 @@
+{
+  "title": "Cold Case Files",
+  "brief": "Launch plan for the podcast \"Cold Case Files\", a true crime interview show, launching on 2099-03-01 in London and Lagos. Comparable shows: \"Crime Junkie\" and \"Serial\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with London, then Lagos: that is where your show's listeners are strongest.",
+    "assumptions": {
+      "a-place-london": "weak",
+      "a-place-lagos": "breaks",
+      "a-comps": "weak"
+    },
+    "cities": ["London", "Lagos"],
+    "comps": [
+      {
+        "name": "Crime Junkie",
+        "source": "you"
+      },
+      {
+        "name": "Serial",
+        "source": "you"
+      },
+      {
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
+        "source": "added"
+      },
+      {
+        "name": "Casefile True Crime",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["London", "Lagos"],
+      "f-topics": ["Diaspora life", "Technology", "Money"],
+      "f-crosspromo": ["The Long Con", "Case Closed Weekly", "Midnight Ledger"],
+      "f-brands-beverage-london": ["Fizz Cola", "Lumen Coffee"],
+      "f-brands-telecom-london": ["Glide Mobile", "Orbit Data"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "2/0",
+      "markets": "2/0",
+      "crosspromo": "1/1",
+      "guests": "0/1",
+      "partnerships": "2/0",
+      "publicity": "0/1",
+      "live": "1/0",
+      "community": "0/1",
+      "cadence": "0/1",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "2/1",
+      "gaps": "0/7"
+    },
+    "moves": ["f-markets", "f-audience", "f-topics"],
+    "grounding": {
+      "lines": 33,
+      "backed": 42,
+      "rankKept": 100,
+      "findingsUsed": 8,
+      "cities": {
+        "London": 6,
+        "Lagos": 3
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Cold Case Files",
+      "Downloads, chart positions and ad revenue",
+      "The release window (2099-03-01)",
+      "Guests",
+      "Artists and series your audience follows"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 import type { LaunchModuleKey } from '@oraqul/schema';
-import { SECTION_TITLES as SHARED_TITLES } from '../launch';
+import { SECTION_TITLES as SHARED_TITLES, type Beat as SharedBeat } from '../launch';
 
-export { TASTE_CLAIM } from '../launch';
+export { type DatedBeat, datedBeats, TASTE_CLAIM } from '../launch';
 
 /** Section titles for a Games plan: the shared ones, reworded where games say it differently. */
 export const SECTION_TITLES = {
@@ -155,18 +155,8 @@ function ruleOut(key: LaunchModuleKey, input: ModuleInput): string | null {
   }
 }
 
-/** One step of a launch calendar, in weeks from the release. Negative is before it. */
-export interface Beat {
-  /** First week of the beat. */
-  at: number;
-  /** Last week, when the beat spans weeks. */
-  until?: number;
-  key: string;
-  /** Playbook wording: it says what to do, never what an audience likes. */
-  text: string;
-  /** Only for a launch on one of these platforms. */
-  platforms?: readonly Platform[];
-}
+/** One step of a launch calendar, for a game on these platforms. */
+export type Beat = SharedBeat<Platform>;
 
 export interface KindProfile {
   label: string;
@@ -503,39 +493,6 @@ export function beatsFor(kind: LaunchKind, named: readonly Platform[]): Beat[] {
   return KIND_PROFILES[kind].beats
     .filter((b) => !b.platforms || b.platforms.some((p) => named.includes(p)))
     .sort((a, b) => a.at - b.at);
-}
-
-export interface DatedBeat extends Beat {
-  /** `YYYY-MM-DD`, or null when the release date is not known. */
-  from: string | null;
-  to: string | null;
-}
-
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-const day = (ms: number) => new Date(ms).toISOString().slice(0, 10);
-
-/**
- * Puts dates on the beats from a release date, and drops any beat that is already over on
- * `today`: a plan never advises around a date that has passed. With no release date the beats
- * keep their weeks and have no dates.
- */
-export function datedBeats(
-  beats: readonly Beat[],
-  release: string | null,
-  today: string,
-): DatedBeat[] {
-  const releaseMs = release ? Date.parse(`${release}T00:00:00Z`) : Number.NaN;
-  if (Number.isNaN(releaseMs)) return beats.map((b) => ({ ...b, from: null, to: null }));
-  const todayMs = Date.parse(`${today}T00:00:00Z`);
-  return beats.flatMap((b) => {
-    const fromMs = releaseMs + b.at * WEEK_MS;
-    const toMs =
-      releaseMs +
-      (b.until ?? b.at) * WEEK_MS +
-      (b.until === undefined ? 0 : 6 * 24 * 60 * 60 * 1000);
-    if (toMs < todayMs) return [];
-    return [{ ...b, from: day(fromMs), to: day(toMs) }];
-  });
 }
 
 /**

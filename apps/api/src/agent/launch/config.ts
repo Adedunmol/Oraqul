@@ -23,7 +23,8 @@ export type AnchorType =
   | 'urn:entity:movie'
   | 'urn:entity:tv_show'
   | 'urn:entity:artist'
-  | 'urn:entity:videogame';
+  | 'urn:entity:videogame'
+  | 'urn:entity:podcast';
 
 /** The modules a plan carries, and the ones the brief rules out with why, for the Gaps section. */
 export interface ModulePick {

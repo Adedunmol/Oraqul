@@ -20,11 +20,14 @@ interface DemoEntity {
   tagGroups?: Record<string, string[]>;
   /** Only shown to a signal that holds a game, so film and music demos keep their answers. */
   gameOnly?: boolean;
+  /** Only shown to a signal that holds a podcast, so film, music and games demos keep their answers. */
+  podcastOnly?: boolean;
   /** Found by name and scored, but never listed by an open discovery call. */
   searchOnly?: boolean;
 }
 
 const GAME = 'urn:entity:videogame';
+const PODCAST = 'urn:entity:podcast';
 
 const bands = ['24_and_younger', '25_to_29', '30_to_34', '35_to_44', '45_to_54', '55_and_older'];
 
@@ -502,7 +505,174 @@ const gameFanBase: DemoEntity[] = [
   ),
 ];
 
-export const demoEntities: DemoEntity[] = [...baseEntities, ...gameFanBase];
+const listeners = ages([0.1, 0.3, 0.25, 0, -0.2, -0.3]);
+const everyGenre = [
+  'true_crime',
+  'comedy',
+  'news',
+  'business',
+  'sports',
+  'technology',
+  'health',
+  'music',
+  'horror',
+  'education',
+  'tv_and_film',
+];
+
+// The audience of a podcast signal: shows like it, brands it uses, people and acts it follows. Only
+// a podcast signal sees them, and base podcasts are never listed, so the other demos are unchanged.
+const podcastFanBase: DemoEntity[] = [
+  ...(
+    [
+      ['DEMO-POD-0201', 'Midnight Ledger', 0.38],
+      ['DEMO-POD-0202', 'Case Closed Weekly', 0.31],
+      ['DEMO-POD-0203', 'The Long Con', 0.27],
+      ['DEMO-POD-0204', 'Dead Air', 0.22],
+      ['DEMO-POD-0205', 'Second Draft', 0.17],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:podcast',
+      popularity,
+      age: listeners,
+      gender: { male: -0.05, female: 0.05 },
+      tags: everyGenre,
+      podcastOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-BRAND-0201', 'Glide Mobile', 0.46, 'telecom'],
+      ['DEMO-BRAND-0202', 'Fizz Cola', 0.41, 'beverage'],
+      ['DEMO-BRAND-0203', 'Lumen Coffee', 0.28, 'beverage'],
+      ['DEMO-BRAND-0204', 'Orbit Data', 0.24, 'telecom'],
+    ] as const
+  ).map(
+    ([id, name, popularity, tag]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:brand',
+      popularity,
+      age: listeners,
+      gender: { male: 0, female: 0 },
+      tags: [tag],
+      podcastOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-PERSON-0201', 'Ife Adeyemi', 0.33],
+      ['DEMO-PERSON-0202', 'Marcus Holt', 0.25],
+      ['DEMO-PERSON-0203', 'Tolu Bakare', 0.16],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:person',
+      popularity,
+      age: listeners,
+      gender: { male: 0, female: 0 },
+      podcastOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-ARTIST-0201', 'Zuri Vale', 0.4],
+      ['DEMO-ARTIST-0202', 'The Night Shift', 0.3],
+      ['DEMO-ARTIST-0203', 'Kemi Ode', 0.2],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:artist',
+      popularity,
+      age: listeners,
+      gender: { male: 0, female: 0 },
+      tags: ['afrobeats'],
+      podcastOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-SHOW-0201', 'Harbour Lights', 0.36],
+      ['DEMO-SHOW-0202', 'The Understudy', 0.27],
+      ['DEMO-SHOW-0203', 'Quiet Hours', 0.19],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:tv_show',
+      popularity,
+      age: listeners,
+      gender: { male: 0, female: 0 },
+      podcastOnly: true,
+    }),
+  ),
+  // Shows a brief or a fallback list can name. Found by name and scored, never listed.
+  ...(
+    [
+      ['DEMO-POD-0211', 'SmartLess', 0.62],
+      ['DEMO-POD-0212', 'The Daily', 0.7],
+      ['DEMO-POD-0213', 'My Favorite Murder', 0.52],
+      ['DEMO-POD-0214', 'Casefile', 0.4],
+      ['DEMO-POD-0215', 'Armchair Expert', 0.55],
+      ['DEMO-POD-0216', 'Call Her Daddy', 0.6],
+      ['DEMO-POD-0217', 'How I Built This', 0.5],
+      ['DEMO-POD-0218', 'Huberman Lab', 0.58],
+      ['DEMO-POD-0219', 'Song Exploder', 0.35],
+      ['DEMO-POD-0220', 'Planet Money', 0.5],
+      ['DEMO-POD-0221', 'The Diary Of A CEO', 0.6],
+      ['DEMO-POD-0222', 'Freakonomics Radio', 0.48],
+      ['DEMO-POD-0223', 'Pod Save America', 0.55],
+      ['DEMO-POD-0224', 'Up First', 0.58],
+      ['DEMO-POD-0225', 'Today, Explained', 0.45],
+      ['DEMO-POD-0226', 'The Rest Is Football', 0.5],
+      ['DEMO-POD-0227', 'Pardon My Take', 0.46],
+      ['DEMO-POD-0228', 'Hard Fork', 0.44],
+      ['DEMO-POD-0229', 'Lex Fridman Podcast', 0.6],
+      ['DEMO-POD-0230', 'On Purpose with Jay Shetty', 0.52],
+      ['DEMO-POD-0231', 'Switched On Pop', 0.3],
+      ['DEMO-POD-0232', 'Radiolab', 0.5],
+      ['DEMO-POD-0233', 'Stuff You Should Know', 0.56],
+      ['DEMO-POD-0234', 'My Favorite Murder with Karen Kilgariff and Georgia Hardstark', 0.6],
+      ['DEMO-POD-0235', 'Casefile True Crime', 0.45],
+      ['DEMO-POD-0236', 'Armchair Expert with Dax Shepard', 0.6],
+      ['DEMO-POD-0237', 'Up First from NPR', 0.6],
+      ['DEMO-POD-0238', 'How I Built This with Guy Raz', 0.55],
+      ['DEMO-POD-0239', 'The Diary Of A CEO with Steven Bartlett', 0.62],
+      ['DEMO-POD-0240', 'Men In Blazers', 0.4],
+      ['DEMO-POD-0241', 'Pod Save the World', 0.4],
+      ['DEMO-POD-0242', 'Fantasy Footballers - Fantasy Football Podcast', 0.4],
+      ['DEMO-POD-0243', 'All-In with Chamath, Jason, Sacks & Friedberg', 0.58],
+      [
+        'DEMO-POD-0244',
+        'Broken Record with Rick Rubin, Malcolm Gladwell, Bruce Headlam and Justin Richmond',
+        0.35,
+      ],
+      ['DEMO-POD-0245', "Dan Carlin's Hardcore History", 0.55],
+      ['DEMO-POD-0246', "Conan O'Brien Needs A Friend", 0.6],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:podcast',
+      popularity,
+      age: listeners,
+      gender: { male: 0, female: 0 },
+      tags: everyGenre,
+      searchOnly: true,
+    }),
+  ),
+];
+
+export const demoEntities: DemoEntity[] = [...baseEntities, ...gameFanBase, ...podcastFanBase];
 
 const demoTagNames: Record<string, string[]> = {
   theme: ['Ambition', 'Family', 'Power', 'Loyalty', 'Survival', 'Community'],
@@ -627,11 +797,15 @@ function discovered(params: URLSearchParams): Response {
   const tags = params.get('filter.tags')?.split(',') ?? [];
   const city = params.get('filter.location.query')?.toLowerCase();
   const country = params.get('filter.release_country')?.toLowerCase();
-  const aboutGames = signal.some((id) => demoEntities.find((e) => e.id === id)?.type === GAME);
+  const heldTypes = signal.map((id) => demoEntities.find((e) => e.id === id)?.type);
+  const aboutGames = heldTypes.includes(GAME);
+  const aboutPodcasts = !aboutGames && heldTypes.includes(PODCAST);
   const results = demoEntities
     .filter((e) => e.type === params.get('filter.type'))
     .filter((e) => !e.searchOnly)
     .filter((e) => !e.gameOnly || aboutGames)
+    .filter((e) => !e.podcastOnly || aboutPodcasts)
+    .filter((e) => !aboutPodcasts || e.podcastOnly || e.type === 'urn:entity:place')
     .filter((e) => !aboutGames || e.gameOnly || e.type === GAME || e.type === 'urn:entity:place')
     .filter((e) => !signal.includes(e.id) && !excluded.includes(e.id))
     .filter((e) => tags.every((t) => e.tags?.includes(t.split(':').at(-1) ?? '')))
@@ -651,6 +825,49 @@ function discovered(params: URLSearchParams): Response {
     .sort((a, b) => b.query.affinity - a.query.affinity)
     .slice(0, take);
   return json({ success: true, results: { entities: results } });
+}
+
+const demoTopics = [
+  'Storytelling',
+  'Interviews',
+  'Humour',
+  'True stories',
+  'Diaspora life',
+  'Money',
+  'Relationships',
+  'Technology',
+  'Faith',
+  'Politics',
+];
+
+// Each topic lands on your side, on the rivals' side or on both, by a hash of the two groups. Like
+// `/v2/analysis/compare` live (qloo.md), each side lists every tag its group carries with a count of
+// the shows that carry it (a string), so a shared tag is on both sides and in `tags`.
+function compared(params: URLSearchParams): Response {
+  const a = params.get('a.signal.interests.entities') ?? '';
+  const b = params.get('b.signal.interests.entities') ?? '';
+  const size = (ids: string) => ids.split(',').filter(Boolean).length;
+  const tag = (name: string, query: object) => ({
+    tag_id: `urn:tag:keyword:qloo:${name.toLowerCase().replace(/[^a-z]+/g, '_')}`,
+    name,
+    type: 'urn:tag',
+    query,
+  });
+  const countFor = (name: string, ids: string) =>
+    String(1 + Math.floor(hashed(name, ids) * size(ids)));
+  const own: ReturnType<typeof tag>[] = [];
+  const shared: ReturnType<typeof tag>[] = [];
+  const rival: ReturnType<typeof tag>[] = [];
+  for (const name of demoTopics) {
+    const side = hashed(`${a}|${b}`, name);
+    if (side < 0.4) own.push(tag(name, { count: countFor(name, a) }));
+    else if (side < 0.7) {
+      shared.push(tag(name, { score: Math.round(side * 100) / 100 }));
+      own.push(tag(name, { count: countFor(name, a) }));
+      rival.push(tag(name, { count: countFor(name, b) }));
+    } else rival.push(tag(name, { count: countFor(name, b) }));
+  }
+  return json({ success: true, results: { tags: shared, a: own, b: rival } });
 }
 
 // Live, a phrase returns one tag per namespace (qloo.md), so the demo does the same.
@@ -702,6 +919,7 @@ export const demoFetch: typeof fetch = async (input) => {
   if (url.pathname === '/search') return search(url.searchParams);
   if (url.pathname === '/v2/tags') return tagLookup(url.searchParams);
   if (url.pathname === '/entities') return entitiesById(url.searchParams);
+  if (url.pathname === '/v2/analysis/compare') return compared(url.searchParams);
   const type = url.searchParams.get('filter.type');
   if (url.pathname === '/v2/insights' && type === 'urn:demographics') {
     return demographics(url.searchParams);

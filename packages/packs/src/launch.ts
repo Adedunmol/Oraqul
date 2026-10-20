@@ -30,6 +30,10 @@ export const SECTION_TITLES = {
   softlaunch: 'Soft launch',
   liveops: 'Seasons and retention',
   earlyaccess: 'Early access roadmap',
+  crosspromo: 'Cross promotion shows',
+  guests: 'Guests',
+  live: 'Live shows',
+  video: 'Video and clips',
 } as const satisfies Record<LaunchSectionKey, string>;
 
 /**
@@ -72,3 +76,49 @@ export const BASELINE_PODCASTS = ['The Joe Rogan Experience', 'Crime Junkie', 'S
 
 /** Most calls one query may make, so one module cannot spend the run's budget. */
 export const MAX_CITIES_PER_QUERY = 5;
+
+/** One step of a launch calendar, in weeks from the release. Negative is before it. */
+export interface Beat<P extends string = string> {
+  /** First week of the beat. */
+  at: number;
+  /** Last week, when the beat spans weeks. */
+  until?: number;
+  key: string;
+  /** Playbook wording: it says what to do, never what an audience likes. */
+  text: string;
+  /** Only for a launch on one of these platforms. */
+  platforms?: readonly P[];
+}
+
+export interface DatedBeat<P extends string = string> extends Beat<P> {
+  /** `YYYY-MM-DD`, or null when the release date is not known. */
+  from: string | null;
+  to: string | null;
+}
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const day = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+
+/**
+ * Puts dates on the beats from a release date, and drops any beat that is already over on
+ * `today`: a plan never advises around a date that has passed. With no release date the beats
+ * keep their weeks and have no dates.
+ */
+export function datedBeats<P extends string>(
+  beats: readonly Beat<P>[],
+  release: string | null,
+  today: string,
+): DatedBeat<P>[] {
+  const releaseMs = release ? Date.parse(`${release}T00:00:00Z`) : Number.NaN;
+  if (Number.isNaN(releaseMs)) return beats.map((b) => ({ ...b, from: null, to: null }));
+  const todayMs = Date.parse(`${today}T00:00:00Z`);
+  return beats.flatMap((b) => {
+    const fromMs = releaseMs + b.at * WEEK_MS;
+    const toMs =
+      releaseMs +
+      (b.until ?? b.at) * WEEK_MS +
+      (b.until === undefined ? 0 : 6 * 24 * 60 * 60 * 1000);
+    if (toMs < todayMs) return [];
+    return [{ ...b, from: day(fromMs), to: day(toMs) }];
+  });
+}
