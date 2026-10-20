@@ -34,6 +34,11 @@ export const launchModuleKeys = [
   'softlaunch',
   'liveops',
   'earlyaccess',
+  // Podcasts only. Which of these a plan gets depends on the launch kind and the format.
+  'crosspromo',
+  'guests',
+  'live',
+  'video',
 ] as const;
 export const launchSectionKeys = [...launchCoreKeys, ...launchModuleKeys] as const;
 export const launchSectionKeySchema = z.enum(launchSectionKeys);

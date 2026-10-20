@@ -25,3 +25,17 @@ export function agesPhrase(bands: AgeBand[]): string {
   if (high >= 200) return `aged ${low} and over`;
   return `aged ${low} to ${high}`;
 }
+
+const DATED = [
+  /\b\d{4}-\d{2}-\d{2}\b/,
+  /\b[A-Za-z]{3,9}\.? \d{1,2},? \d{4}\b/,
+  /\b\d{1,2} [A-Za-z]{3,9}\.? \d{4}\b/,
+];
+
+/** A release date as `YYYY-MM-DD`, only when the window names a day. A month or a quarter is not. */
+export function releaseDate(window: string | null): string | null {
+  const written = window ? DATED.map((p) => window.match(p)?.[0]).find(Boolean) : null;
+  if (!written) return null;
+  const t = Date.parse(`${written} UTC`);
+  return Number.isNaN(t) ? null : new Date(t).toISOString().slice(0, 10);
+}
