@@ -88,7 +88,8 @@ Tools live in `packages/engine/src/tools`. Their confidence follows [spec §5.1]
 | `lift` | one `insights.entities` call with `filter.results.entities` set to the candidates, so all scores share one ranking |
 | `rankPlaces` | `insights.heatmap` with all city boxes as one `MULTIPOLYGON`, one call; cells are assigned to cities in code |
 | `rankPlaces` (areas) | no call: `readAreas` reads neighbourhoods from the cells already returned (nearest 8 within 0.1 degrees, at least 3, relative to the city mean). A lead, not a measurement of the neighbourhood |
-| `compareAudiences` | one `insights.entities` call with `filter.results.entities` set to the rivals |
+| `compareAudiences` | one `insights.entities` call with `filter.results.entities` set to the rivals, and `filter.type` set to the rivals' type (movie, series, artist, video game, brand or podcast): a rival of another type is not scored |
+| `gameProfiles` | `lookup.entities` for the anchors. The platforms, genres, store tags, age rating and franchise a game carries. Field names come from one recorded `insights` response and are `TODO(verify)` on `/entities` |
 | `partnerFit` | `insights.entities` with no context. Not used by Film builds: open lists drift |
 | `tagWeights` | `insights.tags` (not built) |
 | `momentum` | `analysis.trending` (not built) |
@@ -113,7 +114,7 @@ The anchors that stand in for an item not yet in Qloo differ by category. Film's
 | Books | comparable books, the author (weak for a debut), themes and tags |
 | Music | the artist when Qloo knows it by name, sound-alike artists, a genre tag when it knows neither (`TODO(verify)`: whether an artist works as a signal for support acts, series, films, brands, podcasts and campuses, and the genre fallback; run `qloo:music-probes`) |
 | Podcasts | the host, comparable shows, topic tags |
-| Games | the studio or franchise, comparable games, genre tags |
+| Games | the game when Qloo knows it by name, its franchise (earlier games), comparable games, a genre tag when it knows none (`TODO(verify)`: whether a game works as a signal for each kind of media, for the heatmap, for theme tags and for creators; whether `/entities` returns the properties `gameProfiles` reads; run `qloo:games-probes`) |
 
 ## Parameters by `filter.type`
 
@@ -206,6 +207,7 @@ Checked once in `responses.ts`.
 - Whether location changes the demographics (no location parameter is documented for that call).
 - Whether tag-signal calls are slow on non-book types, and what Qloo returns for a true 404.
 - Cross-domain tests beyond the cases above: other kinds of book, podcasts and games as targets, low-popularity candidates, and how large a gap between kind and baseline counts as a real signal.
+- Games: a game as the only signal for artists, series (with and without an anime tag), films, brands, podcasts, other games and people; whether `filter.results.entities` scores each of those; whether an open discovery call and a scored call give the same affinity for one id; a heatmap for a game signal; theme tags and the gameplay, tone and platform tag kinds for games; the tag namespace of a game genre; whether `person` returns streamers and video creators. Creators stay playbook (`CREATORS_GROUNDED`) until that is settled.
 - Whether explainability (`feature.explainability`) can replace our leave-one-out reruns.
 - Quota header, and whether recorded responses may be committed or shown on a public share link.
 
@@ -224,4 +226,5 @@ Checked once in `responses.ts`.
 2. `pnpm --filter @oraqul/engine qloo:smoke` makes about 50 calls, prints counts and yes/no only, and saves one response per endpoint and category type to `packages/engine/fixtures` (gitignored).
 3. `pnpm --filter @oraqul/engine qloo:film-probes` (about 50 calls) reruns the Film query catalog checks. It prints titles and scores so they can be judged by eye, and saves nothing. Copy conclusions into this file, not names or scores.
 4. `pnpm --filter @oraqul/engine qloo:music-probes` (about 60 calls) does the same for the Music catalog: an artist as an anchor and a debut as a miss, heatmap cells for artist anchors, support acts with the anchors excluded, a genre tag as the only signal, series, films, brands, podcasts, campuses and theme tags on an artist signal.
-4. Settle anything open above, fix the schemas and types, and remove the `TODO(verify)` markers that are confirmed.
+5. `pnpm --filter @oraqul/engine qloo:games-probes` (about 70 calls) does the same for the Games catalog: a game as an anchor and a debut as a miss, `/entities` metadata, heatmap cells for game anchors, a location query on a game list, tag lookup for a genre, anime and gaming podcasts, what a game audience likes in each kind of media and whether scoring a candidate list agrees with the open list, theme and gameplay tags, gaming podcasts, people as creators, brands, campuses and a genre tag as the only signal.
+6. Settle anything open above, fix the schemas and types, and remove the `TODO(verify)` markers that are confirmed.

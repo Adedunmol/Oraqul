@@ -10,7 +10,7 @@ Product docs say **what** and **why**. The rest say **how we build it**. Each fa
 4. [architecture.md](architecture.md) – how the repo and the running system fit together
 
 
-Principles every category agent follows: [product/principles.md](product/principles.md). What makes a good Film plan, and how we judge one: [product/film-agent.md](product/film-agent.md). The same for Music: [product/music-agent.md](product/music-agent.md).
+Principles every category agent follows: [product/principles.md](product/principles.md). What makes a good Film plan, and how we judge one: [product/film-agent.md](product/film-agent.md). The same for Music: [product/music-agent.md](product/music-agent.md), and for Games: [product/games-agent.md](product/games-agent.md).
 
 ## Pick by task
 
@@ -26,6 +26,7 @@ Principles every category agent follows: [product/principles.md](product/princip
 | Commits, branches, PRs, how we ship features | [git.md](git.md) |
 | How the Film agent works end to end, and what it still lacks | [end-to-end-flow/film-agent.md](end-to-end-flow/film-agent.md) |
 | The same for Music, and how its code differs from Film's | [end-to-end-flow/music-agent.md](end-to-end-flow/music-agent.md), [backend/music-overview.md](backend/music-overview.md) |
+| The same for Games: launch kinds, the fan base bridge, and how its code differs | [end-to-end-flow/games-agent.md](end-to-end-flow/games-agent.md), [backend/games-overview.md](backend/games-overview.md) |
 
 ## Maintaining these docs
 

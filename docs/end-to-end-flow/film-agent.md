@@ -2,13 +2,13 @@
 
 A plain-language map of what the Film agent does from the first message to the saved output, what it can produce, and where it falls short of the docs. Product behaviour is in [product/spec.md](../product/spec.md); the step-by-step build map is in [backend/film-overview.md](../backend/film-overview.md). Where this file and those disagree, they win.
 
-Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film and Music have real agents ([music-agent.md](music-agent.md)). Books, Podcasts and Games are placeholders.
+Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Music and Games have real agents ([music-agent.md](music-agent.md), [games-agent.md](games-agent.md)). Books and Podcasts are placeholders.
 
 ## The path of a message
 
 1. **Router.** The first message goes to the router, which reads the title, the category (film) and the mode (build, audit or fix). A value counts only when the model's quote is found in the person's own words. If something is unclear it asks one card; an off-topic message gets a fixed refusal. A mode chosen on the start page with Check my plan or Fix my plan is kept even when the plan's own words say "launch" and "release".
 2. **Gate.** Every later message in a project is checked first: on topic, off topic (fixed refusal) or unclear (a card).
-3. **Film agent.** With no plan in the chat, it does the job the project started with: build, audit or fix. With a plan or report already in the chat, the message is a follow-up and code picks the job.
+3. **Film agent.** With no plan in the chat, it does the job the project started with: build, audit or fix, unless the message plainly asks for an audit or a fix ("audit this plan", "fix my plan"), in which case that job runs, so a new chat in a build project can audit an attached plan. With a plan or report already in the chat, the message is a follow-up and code picks the job.
 4. **Fixed pipeline.** Each job runs fixed steps in code, and each step shows in the chat as a trace line. The steps are: read the input, find the comparable titles in Qloo, choose the queries, ask Qloo, optionally look up the market on the web, then test or write, then check every line. Findings stream into the chat as Qloo answers.
 5. **Save and show.** The run saves its outputs and receipts in one transaction. The web shows the message, an output card, and tabs with a receipt drawer behind every line.
 
@@ -58,9 +58,9 @@ Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film and
 - Contract tests against recorded responses are "not started" in [testing.md](../testing.md).
 - The cut-offs for partner and artist verdicts and for results gaps (spec §5.3) are starting values and need a live run.
 
-### Only Film and Music exist
+### Only Film, Music and Games exist
 
-- Books, Podcasts and Games say they are not connected. The Books to Film consult exists only in the generic tool loop, which no other agent uses yet.
+- Books and Podcasts say they are not connected. The Books to Film consult exists only in the generic tool loop, which no other agent uses yet.
 
 ### Gaps in audit and fix
 
