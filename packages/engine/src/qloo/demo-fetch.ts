@@ -640,6 +640,23 @@ const podcastFanBase: DemoEntity[] = [
       ['DEMO-POD-0231', 'Switched On Pop', 0.3],
       ['DEMO-POD-0232', 'Radiolab', 0.5],
       ['DEMO-POD-0233', 'Stuff You Should Know', 0.56],
+      ['DEMO-POD-0234', 'My Favorite Murder with Karen Kilgariff and Georgia Hardstark', 0.6],
+      ['DEMO-POD-0235', 'Casefile True Crime', 0.45],
+      ['DEMO-POD-0236', 'Armchair Expert with Dax Shepard', 0.6],
+      ['DEMO-POD-0237', 'Up First from NPR', 0.6],
+      ['DEMO-POD-0238', 'How I Built This with Guy Raz', 0.55],
+      ['DEMO-POD-0239', 'The Diary Of A CEO with Steven Bartlett', 0.62],
+      ['DEMO-POD-0240', 'Men In Blazers', 0.4],
+      ['DEMO-POD-0241', 'Pod Save the World', 0.4],
+      ['DEMO-POD-0242', 'Fantasy Footballers - Fantasy Football Podcast', 0.4],
+      ['DEMO-POD-0243', 'All-In with Chamath, Jason, Sacks & Friedberg', 0.58],
+      [
+        'DEMO-POD-0244',
+        'Broken Record with Rick Rubin, Malcolm Gladwell, Bruce Headlam and Justin Richmond',
+        0.35,
+      ],
+      ['DEMO-POD-0245', "Dan Carlin's Hardcore History", 0.55],
+      ['DEMO-POD-0246', "Conan O'Brien Needs A Friend", 0.6],
     ] as const
   ).map(
     ([id, name, popularity]): DemoEntity => ({
@@ -823,26 +840,32 @@ const demoTopics = [
   'Politics',
 ];
 
-// Each topic lands on your side, on the rivals' side or on both, by a hash of the two groups, the
-// way `/v2/analysis/compare` splits tags. Counts are strings, as live (qloo.md).
+// Each topic lands on your side, on the rivals' side or on both, by a hash of the two groups. Like
+// `/v2/analysis/compare` live (qloo.md), each side lists every tag its group carries with a count of
+// the shows that carry it (a string), so a shared tag is on both sides and in `tags`.
 function compared(params: URLSearchParams): Response {
   const a = params.get('a.signal.interests.entities') ?? '';
   const b = params.get('b.signal.interests.entities') ?? '';
+  const size = (ids: string) => ids.split(',').filter(Boolean).length;
   const tag = (name: string, query: object) => ({
     tag_id: `urn:tag:keyword:qloo:${name.toLowerCase().replace(/[^a-z]+/g, '_')}`,
     name,
     type: 'urn:tag',
     query,
   });
+  const countFor = (name: string, ids: string) =>
+    String(1 + Math.floor(hashed(name, ids) * size(ids)));
   const own: ReturnType<typeof tag>[] = [];
   const shared: ReturnType<typeof tag>[] = [];
   const rival: ReturnType<typeof tag>[] = [];
   for (const name of demoTopics) {
     const side = hashed(`${a}|${b}`, name);
-    const count = String(1 + Math.floor(hashed(name, a) * 20));
-    if (side < 0.4) own.push(tag(name, { count }));
-    else if (side < 0.7) shared.push(tag(name, { score: Math.round(side * 100) / 100 }));
-    else rival.push(tag(name, { count: String(1 + Math.floor(hashed(name, b) * 20)) }));
+    if (side < 0.4) own.push(tag(name, { count: countFor(name, a) }));
+    else if (side < 0.7) {
+      shared.push(tag(name, { score: Math.round(side * 100) / 100 }));
+      own.push(tag(name, { count: countFor(name, a) }));
+      rival.push(tag(name, { count: countFor(name, b) }));
+    } else rival.push(tag(name, { count: countFor(name, b) }));
   }
   return json({ success: true, results: { tags: shared, a: own, b: rival } });
 }

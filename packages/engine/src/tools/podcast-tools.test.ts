@@ -8,53 +8,73 @@ function context(): ToolContext {
   return { qloo: testClient(), source: 'demo', entities: new Map<string, SeenEntity>() };
 }
 
-const tag = (name: string, count?: number, score?: number) => ({
-  tag_id: `urn:tag:keyword:qloo:${name}`,
+const tag = (name: string, count?: number, namespace = 'keyword') => ({
+  tag_id: `urn:tag:${namespace}:qloo:${name.toLowerCase().replace(/ /g, '_')}`,
   name,
-  query: {
-    ...(count === undefined ? {} : { count: String(count) }),
-    ...(score === undefined ? {} : { score }),
-  },
+  query: count === undefined ? { score: 0.73 } : { count: String(count) },
 });
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('topicOwnership', () => {
-  it('calls a topic yours when only your side carries it, weighed against a typical rival topic', () => {
-    // The rival topics average 3, so a topic your side counts 20 times weighs 6.67 of them.
+  it('calls a topic yours when only your shows carry it, and the rivals when only theirs do', () => {
+    // Your 2 shows both carry Storytelling; the 4 rival shows carry Politics in 2 of 4. A typical rival
+    // topic is carried by half the rival shows, so Storytelling (every one of yours) weighs 2.
     const split = topicOwnership(
-      [tag('storytelling', 20), tag('money', 9)],
-      [tag('humour', undefined, 0.5)],
-      [tag('politics', 4), tag('faith', 3), tag('tech', 2)],
+      [tag('Storytelling', 2), tag('Money', 1), tag('True Crime', 2)],
+      [],
+      [tag('Politics', 2), tag('Faith', 2), tag('True Crime', 2)],
+      { own: 2, rival: 4 },
     );
-    expect(split.yours).toEqual([
-      { tagId: 'urn:tag:keyword:qloo:storytelling', name: 'storytelling', weight: 6.67 },
-      { tagId: 'urn:tag:keyword:qloo:money', name: 'money', weight: 3 },
+    expect(split.yours.map((t) => [t.name, t.weight])).toEqual([
+      ['Storytelling', 2],
+      ['Money', 1],
     ]);
-    expect(split.shared.map((t) => t.name)).toEqual(['humour']);
-    expect(split.rivals.map((t) => t.name)).toEqual(['politics', 'faith', 'tech']);
+    expect(split.shared.map((t) => t.name)).toEqual(['True Crime']);
+    expect(split.rivals.map((t) => t.name)).toEqual(['Politics', 'Faith']);
   });
 
-  it('never calls a tag both sides carry yours', () => {
+  it('tells topics apart by name, since Qloo lists one topic under several namespaces', () => {
     const split = topicOwnership(
-      [tag('humour', 10)],
-      [tag('humour', undefined, 0.4)],
-      [tag('faith', 1)],
+      [tag('True Crime', 2, 'genre'), tag('True Crime', 2, 'keyword'), tag('Justice', 2, 'theme')],
+      [],
+      [tag('True Crime', 4, 'genre')],
+      { own: 2, rival: 4 },
     );
+    expect(split.yours.map((t) => t.name)).toEqual(['Justice']);
+    expect(split.shared.map((t) => t.name)).toEqual(['True Crime']);
+  });
+
+  it('counts only subject tags, not how a show sounds or who it is for', () => {
+    const split = topicOwnership(
+      [tag('Justice', 2, 'theme'), tag('Immersive', 2, 'style'), tag('Charismatic', 2, 'host')],
+      [],
+      [tag('Faith', 1, 'keyword'), tag('Crime Enthusiast', 1, 'audience')],
+      { own: 2, rival: 1 },
+    );
+    expect(split.yours.map((t) => t.name)).toEqual(['Justice']);
+    expect(split.rivals.map((t) => t.name)).toEqual(['Faith']);
+  });
+
+  it('counts a tag in the shared list as shared, even if a side leaves it out', () => {
+    const split = topicOwnership([tag('Humour', 2)], [tag('Humour')], [tag('Faith', 1)], {
+      own: 2,
+      rival: 1,
+    });
     expect(split.yours).toEqual([]);
-    expect(split.shared.map((t) => t.name)).toEqual(['humour']);
+    expect(split.shared.map((t) => t.name)).toEqual(['Humour']);
   });
 
   it('weighs against its own side when the rivals have no counts', () => {
-    const split = topicOwnership([tag('a', 10), tag('b', 20)], [], [tag('c')]);
+    const split = topicOwnership([tag('A', 1), tag('B', 2)], [], [tag('C')], { own: 2, rival: 1 });
     expect(split.yours.map((t) => [t.name, t.weight])).toEqual([
-      ['b', 1.33],
-      ['a', 0.67],
+      ['B', 1.33],
+      ['A', 0.67],
     ]);
   });
 
   it('gives weight 0 when no side has counts', () => {
-    expect(topicOwnership([tag('a')], [], []).yours[0]?.weight).toBe(0);
+    expect(topicOwnership([tag('A')], [], [], { own: 1, rival: 1 }).yours[0]?.weight).toBe(0);
   });
 });
 
@@ -64,9 +84,9 @@ describe('topicMap', () => {
       jsonResponse({
         success: true,
         results: {
-          tags: [tag('humour', undefined, 0.5)],
-          a: [tag('storytelling', 9)],
-          b: [tag('faith', 4), tag('tech', 2)],
+          tags: [tag('Humour')],
+          a: [tag('Storytelling', 2), tag('Humour', 2)],
+          b: [tag('Faith', 1), tag('Humour', 1)],
         },
       }),
     );
@@ -79,7 +99,9 @@ describe('topicMap', () => {
     expect(params.get('a.signal.interests.entities')).toBe('P1,P2');
     expect(params.get('b.signal.interests.entities')).toBe('R1');
     const out = topicMapOutputSchema.parse(data);
-    expect(out.yours.map((t) => t.name)).toEqual(['storytelling']);
+    expect(out.yours.map((t) => t.name)).toEqual(['Storytelling']);
+    expect(out.shared.map((t) => t.name)).toEqual(['Humour']);
+    expect(out.rivals.map((t) => t.name)).toEqual(['Faith']);
     expect(receipts).toHaveLength(1);
   });
 });

@@ -66,9 +66,11 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 
 ## Known limits
 
-- **Podcast signals are not verified yet.** Whether a podcast works as a signal for shows, brands, artists, series and markets, and what the comparison call returns for two groups of shows, is checked by `pnpm --filter @oraqul/engine qloo:podcasts-probes`. Until [qloo.md](../backend/qloo.md) says so, Podcasts findings from those queries carry `TODO(verify)` in the spec and the plan is not claimed to beat a chatbot on them.
-- **The topic map rests on one call.** If Qloo's response for two groups of shows does not carry each side's own tags, there is no map, and the plan says no topic map was made.
-- **Guests and hosts are launch practice.** Qloo may not hold them. Until the probe says it does, the Guests section is playbook, and the Assumptions tab says guests were not measured.
+- **Checked on one subject only.** The queries were verified live on one true crime brief (2026-10-20, [qloo.md](../backend/qloo.md)). Other subjects and markets are `TODO(verify)`, and the plan is not claimed to beat a chatbot on them. Re-run `pnpm --filter @oraqul/engine qloo:podcasts-probes` after any change to the queries.
+- **The topic map rests on one call.** Qloo lists the tags each group of shows carries, and only subject tags count. Where a team's own topic is not among them ("storytelling" was not), it is cannot test, never weak. With very few rival shows the weights are coarse.
+- **Guests, artists and series are launch practice.** Qloo returned people, artists and series for a podcast audience, but with no subject context they drifted (reality TV personalities and comedies for a true crime audience). Until a list with context fits, the Guests section is playbook, the crossover query is off, and Gaps says so.
+- **Some shows must be named in full.** A show matches by its exact title, so "Casefile" is found as "Casefile True Crime" (a longer title that starts with the name is accepted when there is no exact one), and a show Qloo lacks (such as "The Daily") is not found.
+- **African markets are thin.** For a podcast signal Lagos had 3 heatmap cells and Johannesburg 23, under the 25 needed to rank, so those markets say could not rank.
 - **A new show is planned from its comparable shows.** If those are off, the audience is off. The plan says what it rests on.
 - **Editorial and platform rules change.** They come from web research when search is configured, and are otherwise left out of the plan.
 - **Markets are cities.** A region such as West Africa is ranked through the cities in Qloo's table that stand for it. A region the table does not cover is not ranked, and the plan says so.

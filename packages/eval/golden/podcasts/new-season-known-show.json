@@ -20,7 +20,7 @@
         "source": "you"
       },
       {
-        "name": "My Favorite Murder",
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
         "source": "added"
       }
     ],
@@ -30,21 +30,19 @@
       "f-a-place-london": [],
       "f-a-place-new-york": [],
       "f-markets": ["New York", "London"],
-      "f-topics": ["Politics", "Interviews", "Diaspora life"],
-      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
-      "f-brands-beverage-new-york": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-new-york": ["Glide Mobile", "Orbit Data"],
-      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
-      "f-crossover-series": ["Harbour Lights", "The Understudy", "Quiet Hours"]
+      "f-topics": ["Diaspora life", "Politics", "Interviews"],
+      "f-crosspromo": ["Midnight Ledger", "The Long Con", "Case Closed Weekly"],
+      "f-brands-beverage-new-york": ["Lumen Coffee", "Fizz Cola"],
+      "f-brands-telecom-new-york": ["Orbit Data", "Glide Mobile"]
     },
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/2",
-      "audience": "4/0",
+      "audience": "2/0",
       "markets": "2/0",
       "crosspromo": "1/1",
       "partnerships": "2/0",
-      "publicity": "2/1",
+      "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
       "cadence": "0/1",
@@ -56,16 +54,20 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 36,
-      "backed": 50,
+      "lines": 32,
+      "backed": 44,
       "rankKept": 100,
-      "findingsUsed": 10,
+      "findingsUsed": 8,
       "cities": {
         "New York": 6,
         "London": 3
       }
     },
     "dropped": 0,
-    "cannot": ["Downloads, chart positions and ad revenue", "The release window (2099-09-01)"]
+    "cannot": [
+      "Downloads, chart positions and ad revenue",
+      "The release window (2099-09-01)",
+      "Artists and series your audience follows"
+    ]
   }
 }

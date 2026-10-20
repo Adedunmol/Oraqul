@@ -21,11 +21,11 @@
         "source": "you"
       },
       {
-        "name": "The Rest Is Football",
+        "name": "Pardon My Take",
         "source": "added"
       },
       {
-        "name": "Pardon My Take",
+        "name": "Men In Blazers",
         "source": "added"
       }
     ],
@@ -36,22 +36,20 @@
       "f-a-place-lagos": [],
       "f-a-place-manchester": [],
       "f-markets": ["Manchester", "Lagos"],
-      "f-topics": ["True stories", "Money", "Humour"],
+      "f-topics": ["Diaspora life", "Faith", "Technology"],
       "f-crosspromo": ["Case Closed Weekly", "The Long Con", "Midnight Ledger"],
       "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-lagos": ["Orbit Data", "Glide Mobile"],
-      "f-crossover-music": ["The Night Shift", "Kemi Ode", "Zuri Vale"],
-      "f-crossover-series": ["Harbour Lights", "The Understudy", "Quiet Hours"]
+      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"]
     },
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/2",
-      "audience": "4/0",
+      "audience": "2/0",
       "markets": "2/0",
       "crosspromo": "1/1",
       "guests": "0/1",
       "partnerships": "2/0",
-      "publicity": "2/1",
+      "publicity": "0/1",
       "video": "0/1",
       "live": "1/0",
       "community": "0/1",
@@ -64,10 +62,10 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 39,
-      "backed": 46,
+      "lines": 35,
+      "backed": 40,
       "rankKept": 100,
-      "findingsUsed": 10,
+      "findingsUsed": 8,
       "cities": {
         "Manchester": 4,
         "Lagos": 5
@@ -78,7 +76,8 @@
       "Dugout Talk",
       "Downloads, chart positions and ad revenue",
       "The release window (2099-05-01)",
-      "Guests"
+      "Guests",
+      "Artists and series your audience follows"
     ]
   }
 }

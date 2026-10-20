@@ -36,6 +36,7 @@ export type { GroundDeps, Grounded } from '../launch/findings.js';
 
 const {
   CROSS_PROMO_SHOWS,
+  CROSSOVER_GROUNDED,
   GUESTS_GROUNDED,
   MAX_CITIES_PER_QUERY,
   TAG_SPACES,
@@ -79,9 +80,8 @@ const labels = (): BriefLabels => ({
 /**
  * Stage 1 (spec §4.4). Each finding is streamed to the chat as it lands. Numbers and verdicts are
  * computed here or in the engine, never by the model.
- * TODO(verify): a podcast as the signal for every query, the heatmap and the comparison call, with
- * `qloo-podcasts-probes.ts`. Until docs/backend/qloo.md says so, none of these is verified for
- * Podcasts.
+ * Verified live on one true crime brief (2026-10-20, docs/backend/qloo.md). TODO(verify): other
+ * subjects and markets, with `qloo-podcasts-probes.ts`.
  */
 export function ground(deps: GroundDeps, input: GroundInput): Promise<Grounded> {
   return groundLaunch(deps, input, {
@@ -199,7 +199,14 @@ async function runQueries(kit: GroundKit<PodcastsRead, PodcastsQueryPlan>): Prom
     }
   }
 
-  if (want('crossover')) {
+  if (want('crossover') && !CROSSOVER_GROUNDED) {
+    gaps.push({
+      item: 'Artists and series your audience follows',
+      why: 'Qloo returns these lists with no subject context, so they drift to what is popular overall and were not asked.',
+    });
+  }
+
+  if (want('crossover') && CROSSOVER_GROUNDED) {
     const city = plan.crossoverCity;
     for (const [id, type, noun] of [
       ['f-crossover-music', 'urn:entity:artist', 'artists'],
@@ -264,10 +271,14 @@ async function resolveShows(
         tools.searchEntity.run(kit.deps.tools, { name, types: ['urn:entity:podcast'] }),
       );
       if (!run) return null;
-      const top = searchEntityOutputSchema
-        .parse(run.data)
-        .candidates.filter((c) => normalizeTitle(c.name) === normalizeTitle(name));
-      const only = top.length === 1 ? top[0] : undefined;
+      const candidates = searchEntityOutputSchema.parse(run.data).candidates;
+      const top = candidates.filter((c) => normalizeTitle(c.name) === normalizeTitle(name));
+      // A show is usually written without its full title ("Casefile" for "Casefile True Crime"), as
+      // a brand is, so with no exact match the most popular title that starts with it stands in.
+      const fuller = candidates
+        .filter((c) => normalizeTitle(c.name).startsWith(`${normalizeTitle(name)} `))
+        .sort((x, y) => (y.popularity ?? 0) - (x.popularity ?? 0))[0];
+      const only = top.length === 1 ? top[0] : top.length === 0 ? fuller : undefined;
       if (!only) {
         kit.gaps.push({
           item: `${what} ${name}`,
@@ -457,7 +468,7 @@ async function topicMap(
       weight: t.weight,
       evidence:
         t.ownership === 'distinct'
-          ? `${t.weight}× a typical rival topic in your audience`
+          ? `Your shows carry it and ${basis} do not`
           : `Both your listeners and ${basis} lean to it`,
     };
   });

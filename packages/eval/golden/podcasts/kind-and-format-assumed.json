@@ -3,14 +3,14 @@
   "brief": "A Nigerian business podcast, made for Nigerians.",
   "replies": [],
   "expect": {
-    "headline": "Lead with Abuja, then Lagos: that is where your show's listeners are strongest.",
+    "headline": "Lead with Lagos, then Abuja: that is where your show's listeners are strongest.",
     "assumptions": {
       "a-comps": "weak"
     },
-    "cities": ["Abuja", "Lagos"],
+    "cities": ["Lagos", "Abuja"],
     "comps": [
       {
-        "name": "How I Built This",
+        "name": "How I Built This with Guy Raz",
         "source": "added"
       },
       {
@@ -18,7 +18,7 @@
         "source": "added"
       },
       {
-        "name": "The Diary Of A CEO",
+        "name": "The Diary Of A CEO with Steven Bartlett",
         "source": "added"
       },
       {
@@ -29,25 +29,23 @@
     "findings": {
       "f-a-comps": [],
       "f-audience": [],
-      "f-markets": ["Abuja", "Lagos"],
-      "f-topics": ["Storytelling", "True stories", "Diaspora life"],
-      "f-crosspromo": ["Case Closed Weekly", "Dead Air", "Midnight Ledger"],
+      "f-markets": ["Lagos", "Abuja"],
+      "f-topics": ["Politics", "Interviews", "Humour"],
+      "f-crosspromo": ["Dead Air", "Second Draft", "Case Closed Weekly"],
       "f-brands-beverage-abuja": ["Fizz Cola", "Lumen Coffee"],
       "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
       "f-brands-telecom-abuja": ["Orbit Data", "Glide Mobile"],
-      "f-brands-telecom-lagos": ["Orbit Data", "Glide Mobile"],
-      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
-      "f-crossover-series": ["The Understudy", "Quiet Hours", "Harbour Lights"]
+      "f-brands-telecom-lagos": ["Orbit Data", "Glide Mobile"]
     },
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/3",
-      "audience": "4/0",
+      "audience": "2/0",
       "markets": "1/0",
       "crosspromo": "1/1",
       "guests": "0/1",
       "partnerships": "4/0",
-      "publicity": "2/1",
+      "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
       "cadence": "0/1",
@@ -59,16 +57,20 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 37,
-      "backed": 46,
+      "lines": 33,
+      "backed": 39,
       "rankKept": 100,
-      "findingsUsed": 10,
+      "findingsUsed": 8,
       "cities": {
-        "Abuja": 5,
-        "Lagos": 4
+        "Lagos": 5,
+        "Abuja": 4
       }
     },
     "dropped": 0,
-    "cannot": ["Downloads, chart positions and ad revenue", "Guests"]
+    "cannot": [
+      "Downloads, chart positions and ad revenue",
+      "Guests",
+      "Artists and series your audience follows"
+    ]
   }
 }

@@ -3,13 +3,13 @@
   "brief": "Launch plan for the podcast \"Cold Case Files\", a true crime interview show, launching on 2099-03-01 in London and Lagos. Comparable shows: \"Crime Junkie\" and \"Serial\".",
   "replies": [],
   "expect": {
-    "headline": "Lead with Lagos, then London: that is where your show's listeners are strongest.",
+    "headline": "Lead with London, then Lagos: that is where your show's listeners are strongest.",
     "assumptions": {
-      "a-place-london": "breaks",
-      "a-place-lagos": "weak",
+      "a-place-london": "weak",
+      "a-place-lagos": "breaks",
       "a-comps": "weak"
     },
-    "cities": ["Lagos", "London"],
+    "cities": ["London", "Lagos"],
     "comps": [
       {
         "name": "Crime Junkie",
@@ -20,11 +20,11 @@
         "source": "you"
       },
       {
-        "name": "My Favorite Murder",
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
         "source": "added"
       },
       {
-        "name": "Casefile",
+        "name": "Casefile True Crime",
         "source": "added"
       }
     ],
@@ -33,23 +33,21 @@
       "f-audience": [],
       "f-a-place-lagos": [],
       "f-a-place-london": [],
-      "f-markets": ["Lagos", "London"],
-      "f-topics": ["Interviews", "Relationships", "Storytelling"],
-      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
+      "f-markets": ["London", "Lagos"],
+      "f-topics": ["Diaspora life", "Technology", "Money"],
+      "f-crosspromo": ["The Long Con", "Case Closed Weekly", "Midnight Ledger"],
       "f-brands-beverage-london": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-london": ["Orbit Data", "Glide Mobile"],
-      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
-      "f-crossover-series": ["Harbour Lights", "The Understudy", "Quiet Hours"]
+      "f-brands-telecom-london": ["Glide Mobile", "Orbit Data"]
     },
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/2",
-      "audience": "4/0",
+      "audience": "2/0",
       "markets": "2/0",
       "crosspromo": "1/1",
       "guests": "0/1",
       "partnerships": "2/0",
-      "publicity": "2/1",
+      "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
       "cadence": "0/1",
@@ -61,13 +59,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 37,
-      "backed": 49,
+      "lines": 33,
+      "backed": 42,
       "rankKept": 100,
-      "findingsUsed": 10,
+      "findingsUsed": 8,
       "cities": {
-        "Lagos": 4,
-        "London": 5
+        "London": 6,
+        "Lagos": 3
       }
     },
     "dropped": 0,
@@ -75,7 +73,8 @@
       "Cold Case Files",
       "Downloads, chart positions and ad revenue",
       "The release window (2099-03-01)",
-      "Guests"
+      "Guests",
+      "Artists and series your audience follows"
     ]
   }
 }

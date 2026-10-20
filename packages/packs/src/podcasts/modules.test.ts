@@ -186,8 +186,8 @@ describe('catalog', () => {
     expect(fallbackComps('true crime')).toEqual([
       'Crime Junkie',
       'Serial',
-      'My Favorite Murder',
-      'Casefile',
+      'My Favorite Murder with Karen Kilgariff and Georgia Hardstark',
+      'Casefile True Crime',
     ]);
     expect(fallbackComps('true crime', 2)).toHaveLength(2);
     for (const rule of FALLBACK_COMPS) expect(new Set(rule.names).size).toBe(rule.names.length);

@@ -6,7 +6,7 @@
     "headline": "Lead with New York, then Toronto: that is where your show's listeners are strongest.",
     "assumptions": {
       "a-place-toronto": "breaks",
-      "a-place-new-york": "holds",
+      "a-place-new-york": "weak",
       "a-comps": "weak"
     },
     "cities": ["New York", "Toronto"],
@@ -24,7 +24,7 @@
         "source": "added"
       },
       {
-        "name": "My Favorite Murder",
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
         "source": "added"
       }
     ],
@@ -34,38 +34,36 @@
       "f-a-place-new-york": [],
       "f-a-place-toronto": [],
       "f-markets": ["New York", "Toronto"],
-      "f-topics": ["Politics", "True stories", "Interviews"],
-      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
-      "f-brands-beverage-toronto": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-toronto": ["Glide Mobile", "Orbit Data"],
-      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
-      "f-crossover-series": ["Harbour Lights", "The Understudy", "Quiet Hours"]
+      "f-topics": ["Faith", "Humour", "Diaspora life"],
+      "f-crosspromo": ["Midnight Ledger", "The Long Con", "Case Closed Weekly"],
+      "f-brands-beverage-toronto": ["Lumen Coffee", "Fizz Cola"],
+      "f-brands-telecom-toronto": ["Orbit Data", "Glide Mobile"]
     },
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/2",
-      "audience": "4/0",
+      "audience": "2/0",
       "markets": "2/0",
       "crosspromo": "1/1",
       "partnerships": "2/0",
-      "publicity": "2/1",
+      "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
       "cadence": "0/1",
       "timeline": "0/7",
       "budget": "0/7",
       "measure": "0/4",
-      "risks": "1/1",
+      "risks": "2/1",
       "gaps": "0/6"
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 35,
-      "backed": 49,
+      "lines": 32,
+      "backed": 44,
       "rankKept": 100,
-      "findingsUsed": 10,
+      "findingsUsed": 8,
       "cities": {
-        "New York": 3,
+        "New York": 4,
         "Toronto": 5
       }
     },
@@ -73,7 +71,8 @@
     "cannot": [
       "The Last Ferry",
       "Downloads, chart positions and ad revenue",
-      "The release window (2099-04-01)"
+      "The release window (2099-04-01)",
+      "Artists and series your audience follows"
     ]
   }
 }

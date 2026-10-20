@@ -31,8 +31,8 @@ The same as Film's ([film-agent.md](film-agent.md#rules-held-in-code)): verdicts
 
 ## What it does not yet do
 
-- **Live Qloo.** Podcast signals for each query, markets, and the shape of the comparison call are `TODO(verify)` in [qloo.md](../backend/qloo.md) and the spec. Run `pnpm --filter @oraqul/engine qloo:podcasts-probes` with a key, then fix the docs and the code to match. The way a topic's owner is read from the comparison is tuned on demo data.
-- **Guests and hosts.** The section is launch practice until Qloo is shown to return people for a podcast signal.
+- **Live Qloo, partly.** The queries were run live on one true crime brief (2026-10-20): audience, markets, topics, cross promotion, brands and the topic map all returned data (21 Qloo calls for a plan). Other subjects and markets are `TODO(verify)` in [qloo.md](../backend/qloo.md), and Lagos and Johannesburg are too thin to rank. Run `pnpm --filter @oraqul/engine qloo:podcasts-probes` after any change to the queries.
+- **Guests, and the artists and series a show's audience follows.** Qloo returns lists, but with no subject context they drift, so Guests is launch practice and the crossover query is off.
 - **Recorded live golden runs.** Podcasts has demo goldens only.
 - **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): memory, next-step suggestions, the results cards, and the missing engine tools.
 - **The screens** are the shared ones (Plan tab, receipts drawer, exports) plus the Topic map, Cross promotion and Markets tabs. They have not been compared with the prototype.

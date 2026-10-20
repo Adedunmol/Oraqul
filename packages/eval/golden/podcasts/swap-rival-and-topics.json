@@ -9,7 +9,7 @@
       "a-place-lagos": "breaks",
       "a-place-accra": "weak",
       "a-comps": "weak",
-      "a-topic-money": "weak",
+      "a-topic-money": "holds",
       "a-topic-technology": "breaks"
     },
     "cities": ["Accra", "Lagos"],
@@ -23,11 +23,11 @@
         "source": "you"
       },
       {
-        "name": "Planet Money",
+        "name": "How I Built This with Guy Raz",
         "source": "added"
       },
       {
-        "name": "The Diary Of A CEO",
+        "name": "Planet Money",
         "source": "added"
       }
     ],
@@ -40,38 +40,36 @@
       "f-markets": ["Accra", "Lagos"],
       "f-a-topic-money": [],
       "f-a-topic-technology": [],
-      "f-topics": ["Interviews", "Humour", "Faith"],
-      "f-crosspromo": ["Midnight Ledger", "Case Closed Weekly", "The Long Con"],
+      "f-topics": ["Humour", "Storytelling", "Interviews"],
+      "f-crosspromo": ["Armchair Expert", "Midnight Ledger", "Case Closed Weekly"],
       "f-promo-armchair-expert": ["Armchair Expert"],
       "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"],
-      "f-crossover-music": ["Zuri Vale", "The Night Shift", "Kemi Ode"],
-      "f-crossover-series": ["The Understudy", "Quiet Hours", "Harbour Lights"]
+      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"]
     },
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/2",
-      "audience": "4/0",
+      "audience": "2/0",
       "markets": "2/0",
       "crosspromo": "2/1",
       "guests": "0/1",
       "partnerships": "2/0",
-      "publicity": "2/1",
+      "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
       "cadence": "0/1",
       "timeline": "0/7",
       "budget": "0/7",
       "measure": "0/4",
-      "risks": "4/1",
+      "risks": "3/1",
       "gaps": "0/4"
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 40,
-      "backed": 53,
-      "rankKept": 89,
-      "findingsUsed": 13,
+      "lines": 35,
+      "backed": 46,
+      "rankKept": 100,
+      "findingsUsed": 10,
       "cities": {
         "Accra": 4,
         "Lagos": 5
@@ -82,7 +80,8 @@
       "Fund Notes",
       "Downloads, chart positions and ad revenue",
       "The release window (2099-08-01)",
-      "Guests"
+      "Guests",
+      "Artists and series your audience follows"
     ]
   }
 }

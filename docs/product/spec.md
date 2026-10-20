@@ -120,7 +120,7 @@ Every tool returns `{ data, receipts }`, one receipt per Qloo call it made, and 
 | `resolveTags(phrases)` | A phrase and the urn prefix it must start with to a Qloo tag, one lookup each. Brand categories need the parent type `urn:entity:brand`. No match is null, never a guess. |
 | `themeTags(entities, kinds)` | The theme, archetype, audience or plot tags that best describe the anchors, one call per kind. |
 | `gameProfiles(entities)` | What Qloo lists for each game: platforms, genres, store and gameplay tags, age rating, developer, publisher and franchise, from one lookup. Nothing is scored. Field names `TODO(verify)`. |
-| `topicMap(entities, rivals, take?)` | The topics a show's audience carries that rival shows' audiences do not, for the podcast topic map: one `/v2/analysis/compare` call with the anchors against the rivals. Yours (only your side lists it, weighed against a typical rival topic), shared, and the rivals' (§4.4). The shape of the response for podcast signals is `TODO(verify)`. |
+| `topicMap(entities, rivals, take?)` | The topics a show's audience carries that rival shows' audiences do not, for the podcast topic map: one `/v2/analysis/compare` call with the anchors against the rivals. Each side lists every tag its group carries with a count of the group's shows that carry it; yours are the subject tags only your side lists, shared are on both sides, the rivals' only theirs (§4.4). Verified live in [qloo.md](../backend/qloo.md). |
 | `momentum(entity)` | Trend over time, where Qloo supplies it. Not built. |
 | `explain(receiptId)` | Reads back a receipt in plain words. Not built. |
 | `applyScenario(brief, change)` | Marks dependent lines, reruns only those, returns the diff. Not built. |
@@ -206,11 +206,11 @@ Stage 1 of every Podcasts reply, in the same two stages as Film (§4.1): the mod
 | `crosspromo` | crosspromo | `findTaste` podcast (4, the anchors excluded), then one `compareAudiences` of type podcast over those and any show the team named as a swap, without leave one out, 12 at most. Overlap = affinity × 100. A named show is found by exact name with `searchEntity`; several exact matches are not guessed. The rows go to `brief.fan` with medium podcast | a podcast genre tag, one city, the team's age band |
 | `brands` | partnerships | As Film §4.1: the model proposes up to 4 brands per city that could realistically sponsor a new show, code resolves them, `findTaste` brand ranks only those. Falls back to one call per brand category, once when no city is named | brand candidates per city, or the categories beverage and telecom |
 | `guests` | guests | `findTaste` person, only while `GUESTS_GROUNDED` is true. Otherwise Gaps says guests were not measured | the team's age band |
-| `crossover` | publicity | `findTaste` artist and `findTaste` tv_show, one city: episode angles, not partners | one city, the team's age band |
+| `crossover` | publicity | `findTaste` artist and `findTaste` tv_show, one city: episode angles, not partners. Off while `CROSSOVER_GROUNDED` is false: the live lists had no subject context and drifted (qloo.md), so Gaps says they were not asked | one city, the team's age band |
 
 Not in the catalog: chart positions, downloads and ratings (not in Qloo), and live-show venues (no place category for them has been verified). Live shows are placed in the markets ranking. A rival's overlap is the rival date check, with `compareAudiences` of type podcast. The planner is the same as Music's: with no key the pack's defaults run, and code keeps only the team's cities, table cities for Worth a look, and short phrases.
 
-**Topic map.** One comparison call, never two (qloo.md: scores from separate calls are not comparable). A topic Qloo lists only on your side is yours, one on both sides is shared, and one only on the rivals' side is theirs. The weight of a yours topic is its count against the mean count of a rival topic, for ordering and for the size of the tag on screen; it never decides who owns a topic. The shape of the response (`results.a`, `results.b` with `query.count`, shared tags with `query.score`) is `TODO(verify)` for podcast signals: run `qloo:podcasts-probes`.
+**Topic map.** One comparison call, never two (qloo.md: scores from separate calls are not comparable). Qloo lists, for each group, every tag its shows carry with the number of its shows that carry it. Only subject tags count (`theme`, `keyword`, `subgenre`, `genre`; not a show's style, host, audience or content type), and topics are told apart by name, since one topic appears under several namespaces. A topic only your side lists is yours, one on both sides is shared, and one only the rivals' side lists is theirs. The weight of a yours topic is the share of your shows that carry it against the mean share of a rival topic among the rival shows, for ordering and for the size of the tag on screen; it never decides who owns a topic. Verified live on a true crime brief (2026-10-20); other subjects are `TODO(verify)`.
 
 ## 5. Scoring layer
 
@@ -341,7 +341,7 @@ The age, gender, place and anchors tests are exactly §5.2, run on the show, its
 * **The team's decisions are constraints.** A topic that is shared or the rivals' keeps its place in the plan; its fix names the topics that are yours beside it, and the writer is told to take an angle on it that the rival shows do not. A topic is matched by its words (whole phrase, either way round), not by a guess.
 * **Rivals.** The shows the team named. With none, the shows `findTaste` lists in the genre, which are the shows the audience hears: the plan says the comparison was against shows in the same genre.
 * **No weight decides.** The weight in the topic map orders and sizes topics. Ownership is where Qloo listed the topic.
-* **Starting values.** The rule is a starting value. `TODO(verify)` on a live run (`qloo:podcasts-probes`) before a plan leads with it. Change it here first.
+* **Starting values.** The rule is checked on one live true crime brief (2026-10-20). `TODO(verify)` on other subjects before a plan leads with it. Change it here first.
 
 ### 5.9 Podcasts audit tests (audit and fix)
 

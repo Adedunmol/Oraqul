@@ -48,7 +48,7 @@ Sections for a plan are the module keys of spec §6.1. Podcasts adds `crosspromo
 
 **Cross promotion** (`crossPromotion`). `findTaste` lists shows, then one `compareAudiences` of type podcast scores them together with any swap the team named, so a named show is a ranked row (`f-promo-<slug>`). The rows go to `brief.fan` with medium podcast and the note "Your pick"; `before` and `after` are equal, since a swap is a ranked row, not a moved bar. A swap is found by exact name with `searchEntity`; several exact matches are not guessed.
 
-**Guests.** `GUESTS_GROUNDED` in `packages/packs/src/podcasts/catalog.ts` is false until the probe says Qloo returns people for a podcast signal and [qloo.md](qloo.md) records it. While false, the Guests section is playbook, and the gap says guests were not measured.
+**Guests and crossover.** `GUESTS_GROUNDED` and `CROSSOVER_GROUNDED` in `packages/packs/src/podcasts/catalog.ts` are false: the live probe (2026-10-20) returned people, artists and series for a podcast audience, but with no subject context they drifted (reality TV personalities and comedies for a true crime audience). While false, the Guests section is playbook and the crossover query is not run; the gaps say so.
 
 **Audit.** The shared tests (age, gender, place, comps, partner, window) plus each named topic (from the findings' assumptions) and each named swap (its rank among the shows scored in one call, by thirds). Guests are not tested. The results the person adds are by market, compared as in Film. A weak or broken topic or swap keeps the team's choice and offers what to add beside it.
 

@@ -2,9 +2,8 @@ import type { LaunchModuleKey, LaunchSectionKey } from '@oraqul/schema';
 
 // The Podcasts query catalog (spec §4.4). The model picks from these and fills in their context;
 // code runs them, within the call budget, and turns each result into a finding.
-// TODO(verify): podcast signals on the live host for every query below, with
-// `qloo-podcasts-probes.ts`. Until docs/backend/qloo.md says so, none of these is verified for
-// Podcasts.
+// Verified live on one true crime brief (2026-10-20, docs/backend/qloo.md), with
+// `qloo-podcasts-probes.ts`. TODO(verify): other subjects and markets.
 
 export const podcastsQueryKeys = [
   'audience',
@@ -74,8 +73,8 @@ export const PODCASTS_QUERIES: Record<PodcastsQueryKey, PodcastsQuerySpec> = {
 
 /** Tag namespaces each query's phrases must resolve into, and the parent type for brands. */
 export const TAG_SPACES = {
-  // TODO(verify): that a podcast genre phrase resolves into `urn:tag:genre:media`, which the film
-  // and games probes found for true crime and video games.
+  // A podcast genre phrase resolves into `urn:tag:genre:media` (true crime, comedy and business were
+  // checked live, 2026-10-20).
   podcastGenre: { prefix: 'urn:tag:genre:media', parent: null },
   brands: { prefix: 'urn:tag:genre:brand', parent: 'urn:entity:brand' },
   artists: { prefix: 'urn:tag:genre:music', parent: null },
@@ -111,33 +110,59 @@ export const PODCASTS_BRAND_CATEGORIES = ['beverage', 'telecom'];
  * Well known shows to describe an audience with when the brief names none and the model proposes
  * none, so a short description is enough to plan from. The first rule whose words match the brief
  * wins; the last rule is the default. Qloo finds each by name, or stands in the nearest show it
- * has, and the plan labels them as added by Oraqul. TODO(verify): that each name resolves to one
- * exact match on the live host.
+ * has, and the plan labels them as added by Oraqul. Each name is the exact name Qloo lists (checked on
+ * the live host 2026-10-20), since a name with no exact match is replaced by the nearest title Qloo
+ * has, which can be a different show. Recheck the names now and then.
  */
 export const FALLBACK_COMPS: { match: RegExp; names: readonly string[] }[] = [
   {
     match: /true[- ]crime|\bcrime\b|murder|investigat\w*|detective|cold case/i,
-    names: ['Crime Junkie', 'Serial', 'My Favorite Murder', 'Casefile'],
+    names: [
+      'Crime Junkie',
+      'Serial',
+      'My Favorite Murder with Karen Kilgariff and Georgia Hardstark',
+      'Casefile True Crime',
+    ],
   },
   {
     match: /comed(y|ian)|funny|humou?r|banter|sketch/i,
-    names: ['SmartLess', 'Conan O’Brien Needs a Friend', 'Call Her Daddy', 'Armchair Expert'],
+    names: [
+      'SmartLess',
+      "Conan O'Brien Needs A Friend",
+      'Call Her Daddy',
+      'Armchair Expert with Dax Shepard',
+    ],
   },
   {
     match: /\bnews\b|politic\w*|current affairs|daily briefing|explainer/i,
-    names: ['The Daily', 'Pod Save America', 'Up First', 'Today, Explained'],
+    names: ['Pod Save America', 'Up First from NPR', 'Today, Explained', 'Pod Save the World'],
   },
   {
     match: /business|entrepreneur|startup|finance|money|invest\w*|career/i,
-    names: ['How I Built This', 'Planet Money', 'The Diary Of A CEO', 'Freakonomics Radio'],
+    names: [
+      'How I Built This with Guy Raz',
+      'Planet Money',
+      'The Diary Of A CEO with Steven Bartlett',
+      'Freakonomics Radio',
+    ],
   },
   {
     match: /football|soccer|sport|basketball|nba|athlet\w*/i,
-    names: ['The Rest Is Football', 'Pardon My Take', 'The Bill Simmons Podcast', 'Men in Blazers'],
+    names: [
+      'Pardon My Take',
+      'The Bill Simmons Podcast',
+      'Men In Blazers',
+      'Fantasy Footballers - Fantasy Football Podcast',
+    ],
   },
   {
     match: /tech|\bai\b|software|gadgets?|crypto/i,
-    names: ['Hard Fork', 'Lex Fridman Podcast', 'Acquired', 'All-In'],
+    names: [
+      'Hard Fork',
+      'Lex Fridman Podcast',
+      'Acquired',
+      'All-In with Chamath, Jason, Sacks & Friedberg',
+    ],
   },
   {
     match: /health|wellness|fitness|mental|therapy|self[- ]help|mindset/i,
@@ -150,15 +175,25 @@ export const FALLBACK_COMPS: { match: RegExp; names: readonly string[] }[] = [
   },
   {
     match: /music|album|songwriting|hip[- ]hop|afrobeats/i,
-    names: ['Song Exploder', 'Switched On Pop', 'Dissect', 'Broken Record'],
+    names: [
+      'Song Exploder',
+      'Switched on Pop',
+      'Dissect',
+      'Broken Record with Rick Rubin, Malcolm Gladwell, Bruce Headlam and Justin Richmond',
+    ],
   },
   {
     match: /histor\w*|documentar\w*|science|education\w*|learn\w*/i,
-    names: ['Radiolab', 'Hardcore History', 'Stuff You Should Know', 'Revisionist History'],
+    names: [
+      'Radiolab',
+      "Dan Carlin's Hardcore History",
+      'Stuff You Should Know',
+      'Revisionist History',
+    ],
   },
   {
     match: /./,
-    names: ['The Joe Rogan Experience', 'Crime Junkie', 'SmartLess', 'The Daily'],
+    names: ['The Joe Rogan Experience', 'Crime Junkie', 'SmartLess', 'Call Her Daddy'],
   },
 ];
 
@@ -178,9 +213,19 @@ export const TOPIC_RIVALS = 4;
 export const TOPICS_SHOWN = 8;
 
 /**
- * Whether Qloo's `person` type returns hosts and guests for a podcast signal. False until probe 7
- * of `qloo-podcasts-probes.ts` says so and docs/backend/qloo.md records it. While false, the
- * Guests section is playbook and says Qloo has no guest data.
+ * Whether the artists and series a podcast audience follows are good enough for episode angles. The
+ * live probe (2026-10-20) returned open lists with no genre context: for a true crime audience the
+ * series were comedies (Drunk History, Portlandia), the drift qloo.md warns about. False until a
+ * list with context (a tag, a city, an age band) is shown to fit. While false, the crossover query is
+ * not run and the Gaps section says why.
+ */
+export const CROSSOVER_GROUNDED = false;
+
+/**
+ * Whether the people Qloo returns for a podcast signal are hosts and guests that fit the show. The
+ * live probe (2026-10-20) returned people, but for a true crime audience they were reality TV and
+ * internet personalities, not a fit, so this stays false until a list with context fits. While
+ * false, the Guests section is playbook and says Qloo has no verified guest data.
  */
 export const GUESTS_GROUNDED = false;
 
