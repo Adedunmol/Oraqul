@@ -23,6 +23,13 @@ export const SECTION_TITLES = {
   tour: 'Tour route',
   support: 'Support acts',
   sync: 'Sync and placement',
+  collabs: 'Fan base collabs',
+  creators: 'Creators and streamers',
+  store: 'Store page and tags',
+  events: 'Festivals and showcases',
+  softlaunch: 'Soft launch',
+  liveops: 'Seasons and retention',
+  earlyaccess: 'Early access roadmap',
 } as const satisfies Record<LaunchSectionKey, string>;
 
 /**
