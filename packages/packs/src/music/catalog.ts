@@ -2,8 +2,8 @@ import type { LaunchModuleKey, LaunchSectionKey } from '@oraqul/schema';
 
 // The Music query catalog (spec §4.2). The model picks from these and fills in their context; code
 // runs them, within the call budget, and turns each result into a finding.
-// TODO(verify): artist signals on the live host for support, shows and films, with
-// `qloo-music-probes.ts`. Until docs/backend/qloo.md says so, none of these is verified for Music.
+// Artist signals are checked live for one Afrobeats brief (docs/backend/qloo.md); other genres and
+// markets are TODO(verify).
 
 export const musicQueryKeys = [
   'audience',

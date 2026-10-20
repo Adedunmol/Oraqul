@@ -30,7 +30,7 @@ The same as Film's ([film-agent.md](film-agent.md#rules-held-in-code)): verdicts
 
 ## What it does not yet do
 
-- **Live Qloo.** The artist-as-signal queries (support acts, series, films, brands, podcasts, universities), the genre fallback for a debut, and the starting values for the tour order verdict are `TODO(verify)` in [qloo.md](../backend/qloo.md) and the spec. Run `pnpm --filter @oraqul/engine qloo:music-probes` with a key, then fix the docs and the code to match.
+- **Live Qloo, partly.** The artist-as-signal queries were checked live on one Afrobeats brief (2026-10-20, [qloo.md](../backend/qloo.md)); other genres and markets are not. The starting values for the tour order verdict (95% and 85%) are too forgiving on live lifts and are still `TODO(verify)` in the spec.
 - **Recorded live golden runs.** Music has demo goldens only.
 - **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): memory, next-step suggestions, the results cards, and the missing engine tools.
 - **The screens** are the shared ones (Plan tab, receipts drawer, exports). The Music sections render with the same components as Film's, and they have not been compared with the prototype.
