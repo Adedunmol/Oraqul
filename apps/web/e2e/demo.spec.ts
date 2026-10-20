@@ -3,9 +3,13 @@ import { expect, test } from '@playwright/test';
 // The demo screens behind sign in are walked by hand for now (see the PR). These cover what a
 // signed out visitor can reach.
 
-test('a share link that matches no output says so plainly', async ({ page }) => {
+// No API runs under test, so a shared link shows its error state. A link that matches no output
+// answers 404 and shows "This link does not work." (apps/api/test/film.e2e-spec.ts).
+test('a share link says so plainly when the shared brief cannot load', async ({ page }) => {
   await page.goto('/s/not-a-real-token');
-  await expect(page.getByRole('heading', { name: 'This link does not work.' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'We could not load this shared brief.' }),
+  ).toBeVisible();
   const text = await page.locator('body').innerText();
   expect(text).not.toContain('undefined');
   expect(text).not.toContain('NaN');

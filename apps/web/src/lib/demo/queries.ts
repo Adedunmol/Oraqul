@@ -7,7 +7,6 @@ import {
   type ThreadItem,
 } from '@oraqul/schema';
 import { compareBriefs } from './build-output';
-import { uuidFrom } from './ids';
 import { PACKS } from './packs';
 import { type DemoState, douts } from './store';
 
@@ -82,6 +81,8 @@ export interface OutputDetail {
   thread: Thread;
   /** The output it was built on: the parent plan, or the plan a date check or brief came from. */
   builtOn: Output | null;
+  /** Demo outputs have no share link. */
+  share: null;
 }
 
 /** `GET /outputs/:id` */
@@ -96,6 +97,7 @@ export function getOutputDetail(s: DemoState, id: string): OutputDetail | undefi
     project,
     thread,
     builtOn: s.outputs.find((o) => o.id === builtOnId) ?? null,
+    share: null,
   };
 }
 
@@ -105,19 +107,4 @@ export function comparePlans(a: string, b: string): CompareResponse {
   const to = douts.get(b);
   if (!from || !to) throw new Error('Both outputs must exist to compare them');
   return { a, b, changes: compareBriefs(from.brief, to.brief) };
-}
-
-export function shareTokenFor(outputId: string): string {
-  return uuidFrom(`share:${outputId}`).replace(/-/g, '').slice(0, 24);
-}
-
-export function shareState(s: DemoState, outputId: string): { token: string; enabled: boolean } {
-  return s.shares[outputId] ?? { token: shareTokenFor(outputId), enabled: true };
-}
-
-/** `GET /s/:token`. Undefined when no output has that token or its link is off. */
-export function getShared(s: DemoState, token: string): OutputDetail | undefined {
-  const output = s.outputs.find((o) => shareState(s, o.id).token === token);
-  if (!output || !shareState(s, output.id).enabled) return undefined;
-  return getOutputDetail(s, output.id);
 }

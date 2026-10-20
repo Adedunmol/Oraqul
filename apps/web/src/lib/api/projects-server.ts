@@ -15,7 +15,7 @@ import {
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import type { CategoryScope } from '../routes';
-import { ApiError } from './http';
+import { ApiError, apiUrl, parseResponse } from './http';
 import { serverGet, serverGetIfSignedIn } from './server';
 
 // A project or thread the person cannot open answers 403, the same as one that does not exist
@@ -47,6 +47,17 @@ export function getThreadDetail(threadId: string, returnTo: string): Promise<Thr
 
 export function getOutputDetail(outputId: string, returnTo: string): Promise<OutputDetail> {
   return orNotFound(serverGet(`/outputs/${outputId}`, outputDetailSchema, { returnTo }));
+}
+
+/**
+ * A shared output for someone with the link. No session: the cookie is not sent, and a link that
+ * is wrong or turned off is null.
+ */
+export async function getSharedOutput(token: string): Promise<OutputDetail | null> {
+  const path = `/s/${encodeURIComponent(token)}`;
+  const response = await fetch(apiUrl(path), { cache: 'no-store' });
+  if (response.status === 404) return null;
+  return parseResponse(response, path, outputDetailSchema);
 }
 
 export function getOverview(teamId: string, returnTo: string): Promise<Overview> {

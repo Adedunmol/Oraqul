@@ -4,10 +4,12 @@ import { AuthModule } from '../auth/auth.module.js';
 import { PinsController } from './pins.controller.js';
 import { ProjectsController } from './projects.controller.js';
 import { ProjectsService } from './projects.service.js';
+import { SharesController } from './shares.controller.js';
+import { SharesService } from './shares.service.js';
 
 @Module({
   imports: [AuthModule, AgentModule],
-  controllers: [ProjectsController, PinsController],
-  providers: [ProjectsService],
+  controllers: [ProjectsController, PinsController, SharesController],
+  providers: [ProjectsService, SharesService],
 })
 export class ProjectsModule {}

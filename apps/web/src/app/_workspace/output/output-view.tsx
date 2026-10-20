@@ -103,8 +103,8 @@ export function OutputView({
   initialTab: OutputTabKey | undefined;
   canEdit: boolean;
   teamName: string | null;
-  /** The output's share link, when it has one. Without it there is no Share button. */
-  share?: { token: string; enabled: boolean };
+  /** The output's share link, once it has been turned on. Without the prop there is no Share button. */
+  share?: { token: string | null; enabled: boolean };
   /** The chat beside the output on desktop, and whether it has something new. */
   dock?: { chat: ReactNode; unread: boolean };
   /** A shared link or a public example: read only, with no trail back into the app. */

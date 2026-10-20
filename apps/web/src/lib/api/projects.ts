@@ -9,6 +9,8 @@ import {
   type PinnedProjects,
   type PostMessage,
   pinnedProjectsSchema,
+  type ShareState,
+  shareStateSchema,
 } from '@oraqul/schema';
 import { clientFile, clientGet, clientRequest } from './client';
 
@@ -31,6 +33,15 @@ export async function createThread(projectId: string): Promise<string> {
     createThreadResultSchema,
   );
   return threadId;
+}
+
+/** Turns an output's read only link on or off. The address stays the same once it exists. */
+export function setShare(outputId: string, enabled: boolean): Promise<ShareState> {
+  return clientRequest(
+    `/outputs/${outputId}/share`,
+    { method: 'PUT', body: { enabled } },
+    shareStateSchema,
+  );
 }
 
 export function deleteProject(projectId: string): Promise<void> {

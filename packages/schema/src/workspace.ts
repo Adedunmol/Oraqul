@@ -42,6 +42,13 @@ export const threadDetailSchema = z.object({
 });
 export type ThreadDetail = z.infer<typeof threadDetailSchema>;
 
+/** An output's read only link (spec §7). Absent until someone turns it on. */
+export const shareStateSchema = z.object({ token: z.string().min(1), enabled: z.boolean() });
+export type ShareState = z.infer<typeof shareStateSchema>;
+
+/** Body of `PUT /outputs/:outputId/share`. */
+export const setShareSchema = z.object({ enabled: z.boolean() });
+
 /** `GET /outputs/:outputId` */
 export const outputDetailSchema = z.object({
   output: outputSchema,
@@ -49,6 +56,8 @@ export const outputDetailSchema = z.object({
   thread: threadSchema,
   /** The output it was built on: the parent plan, or the plan a date check or brief came from. */
   builtOn: outputSchema.nullable(),
+  /** The read only link, once it has been turned on at least once. Always null on a shared view. */
+  share: shareStateSchema.nullable(),
 });
 export type OutputDetail = z.infer<typeof outputDetailSchema>;
 

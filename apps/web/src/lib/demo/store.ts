@@ -14,7 +14,6 @@ export interface DemoState {
   items: Record<string, ThreadItem[]>;
   busy: Record<string, boolean>;
   unread: Record<string, boolean>;
-  shares: Record<string, { token: string; enabled: boolean }>;
 }
 
 let state: DemoState = {
@@ -24,7 +23,6 @@ let state: DemoState = {
   items: {},
   busy: {},
   unread: {},
-  shares: {},
 };
 
 const listeners = new Set<() => void>();
@@ -112,10 +110,6 @@ export function setBusy(threadId: string, busy: boolean): void {
 export function markRead(threadId: string): void {
   if (!state.unread[threadId]) return;
   commit({ ...state, unread: { ...state.unread, [threadId]: false } });
-}
-
-export function setShare(outputId: string, token: string, enabled: boolean): void {
-  commit({ ...state, shares: { ...state.shares, [outputId]: { token, enabled } } });
 }
 
 /** Saves an output, moves the thread's base forward for plans, and touches the project. */

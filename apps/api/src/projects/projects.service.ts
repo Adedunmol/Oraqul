@@ -28,6 +28,7 @@ import {
   pins,
   projects,
   runs,
+  shareLinks,
   threadReads,
   threads,
   users,
@@ -145,11 +146,17 @@ export class ProjectsService {
     const all = await this.outputs.forProject(owner.projectId);
     const output = all.find((o) => o.id === outputId);
     if (!row || !project || !output) throw new NotFoundException('No such output');
+    const [link] = await this.db
+      .select({ token: shareLinks.token, enabled: shareLinks.enabled })
+      .from(shareLinks)
+      .where(eq(shareLinks.outputId, outputId))
+      .limit(1);
     return {
       output,
       project,
       thread: toThread(row.thread, row.by),
       builtOn: all.find((o) => o.id === output.parentId) ?? null,
+      share: link ?? null,
     };
   }
 
