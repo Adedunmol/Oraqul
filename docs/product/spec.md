@@ -49,12 +49,12 @@ One per category. Each is a configuration of the same runtime:
 |---|---|
 | System prompt | Role, tone, refusal rules, how to read the category's inputs |
 | Assumption checklist | Stated and unstated assumptions to look for in that category |
-| Plan sections | Section keys and titles, move templates, headline template |
+| Plan modules | Which modules a plan can carry and the rules that pick them (`pickModules`), section titles, the budget convention |
+| Query catalog | The Qloo queries it runs and their context (§4.1, §4.2) |
 | Tool allowlist | Which engine tools it may call |
-| Scenarios | Presets with a matcher and an apply function |
-| Results format | Group labels, planned shares, hold metric, confirm card fields |
-| Output schema | Brief shape and signature tab data |
 | Coverage | Tests, where the read is less certain, and not supported lists shown on the category page |
+
+A what-if is not a preset: the launch runtime changes places, comps, age or gender on the plan's saved inputs and reruns it. Results are read by the launch runtime (`results-read.ts`), and the launch plan and audit report shapes are in `packages/schema` (§6.1, §6.3).
 
 The runtime is shared by all five and has two paths:
 
@@ -63,9 +63,9 @@ The runtime is shared by all five and has two paths:
 
 Both paths share the tools, receipts, scoring and grounding check.
 
-### 3.3 Red team step
+### 3.3 Stress test
 
-A separate model call. It receives the finished brief and the receipts, not the reasoning that produced them. It tries to break the top recommendation from the opposite seed (a different comp or segment to start from). If it finds a stronger option the brief is updated and the trace says so.
+No second model reviews a brief: it would see only findings already computed, so it could not check them against Qloo. The stress test is in code. A ranked line is rerun with each anchor left out, its verdict and confidence follow from whether the answer holds (§5.1), and a brief that rests on one comp says so.
 
 ### 3.4 Cross category rule
 
@@ -73,7 +73,7 @@ Agents do not call each other. One exception: Books may call `askAgent("film", q
 
 ### 3.5 Loop limits
 
-Max steps per run, max Qloo calls per run (call budget, `QLOO_CALL_BUDGET`), and a stop rule. The budget is per run, not per thread or team: a run is one `runs` row, so a run that resumes after a question starts a new budget, and a consult spends its caller's. The stop rule: stop when no candidate beats the current plan by a set margin, or say what input would change the verdict. Follow up requests rerun only the lines whose inputs changed.
+Max steps per run, max Qloo calls per run (call budget, `QLOO_CALL_BUDGET`), and a stop rule. The budget is per run, not per thread or team: a run is one `runs` row, so a run that resumes after a question starts a new budget, and a consult spends its caller's. The stop rule: stop when no candidate beats the current plan by a set margin, or say what input would change the verdict. Follow up requests are meant to rerun only the lines whose inputs changed. Today a what-if reruns every query.
 
 ### 3.6 Plan, report and answer
 
@@ -119,13 +119,13 @@ Every tool returns `{ data, receipts }`, one receipt per Qloo call it made, and 
 | `findTaste(entities, type, tags?, city?, ages?, audiences?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, brand, place), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. |
 | `resolveTags(phrases)` | A phrase and the urn prefix it must start with to a Qloo tag, one lookup each. Brand categories need the parent type `urn:entity:brand`. No match is null, never a guess. |
 | `themeTags(entities, kinds)` | The theme, archetype, audience or plot tags that best describe the anchors, one call per kind. |
-| `tagWeights(entities)` | Tag weights in an audience, for the podcast topic map. |
-| `momentum(entity)` | Trend over time, where Qloo supplies it. |
-| `explain(receiptId)` | Reads back a receipt in plain words. |
-| `applyScenario(brief, change)` | Marks dependent lines, reruns only those, returns the diff. |
-| `compareResults(brief, results)` | Planned against actual shares, the largest negative and positive gaps. |
+| `tagWeights(entities)` | Tag weights in an audience, for the podcast topic map. Not built. |
+| `momentum(entity)` | Trend over time, where Qloo supplies it. Not built. |
+| `explain(receiptId)` | Reads back a receipt in plain words. Not built. |
+| `applyScenario(brief, change)` | Marks dependent lines, reruns only those, returns the diff. Not built. |
+| `compareResults(brief, results)` | Planned against actual shares, the largest negative and positive gaps. Not built. |
 | `toMarkdown(output)`, `toDocx(output)` | The plan as Markdown or Word, in `apps/api/src/outputs/export.ts`: grounded lines footnoted to findings, playbook lines labelled, an evidence appendix, no raw Qloo data. PDF is built by the API too. |
-| `draftMessage(partner, evidence)` | Draft only. No send. |
+| `draftMessage(partner, evidence)` | Draft only. No send. Not built. |
 
 Tools live in `packages/engine/src/tools` and are the one toolbox for the agents and the MCP server. External tools (web search, page reader) may supplement but never replace Qloo evidence, and are labelled as such on the line.
 
@@ -366,11 +366,11 @@ GET    /projects/:projectId/memory   POST   /projects/:projectId/memory   (plann
 POST   /threads/:threadId/messages    typed text or a card answer; 202, the reply comes on the stream; 409 while a run is going
 POST   /threads/:threadId/read    marks what is stored so far as read
 GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
-GET    /outputs/:id           GET /outputs/:id/evidence
+GET    /outputs/:id
 GET    /outputs/:id/export/:format    md, docx or pdf, built from the stored plan (§6.1)
 GET    /projects/:id/compare?a=&b=
-POST   /outputs/:id/share     PATCH /shares/:token (on or off)
-GET    /s/:token              read only view
+PUT    /outputs/:id/share     body `{ enabled }`; turns the read only link on or off, makes the token the first time. Owners and editors
+GET    /s/:token              read only view, no session. 404 for a wrong or turned off token. Receipts keep their endpoint, rule and confidence and lose what was sent to Qloo and what came back; the creator, chat and other outputs are left out
 POST   /uploads               a PDF or Word (.docx) file as multipart `file`; answers `{name, text}`. Text only, nothing stored, 20 MB at most, text cut at 200,000 characters. A scanned PDF with no text layer is refused with a plain reason
 ```
 

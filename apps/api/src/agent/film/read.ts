@@ -187,9 +187,29 @@ export class ModelFilmReader implements FilmReader {
   }
 }
 
+// A brand is a partner only when the text says so next to a capitalised name: "with Nike as a
+// partner", "partnered with Nike", "sponsored by Nike".
+const NAME = String.raw`([A-Z][\w&'’.-]*(?:\s+[A-Z][\w&'’.-]*){0,2})`;
+const PARTNER_PHRASES = [
+  new RegExp(String.raw`\b[Pp]artner(?:ed|ing|s)?\s+(?:with|up with)\s+${NAME}`, 'g'),
+  new RegExp(String.raw`\b[Ss]ponsor(?:ed|ing)?\s+by\s+${NAME}`, 'g'),
+  new RegExp(
+    String.raw`\b${NAME}\s+as\s+(?:a|an|our|the)\s+(?:brand\s+)?(?:partner|sponsor)\b`,
+    'g',
+  ),
+];
+
+function partnersIn(text: string): string[] {
+  const names = PARTNER_PHRASES.flatMap((re) =>
+    [...text.matchAll(re)].flatMap(([, n]) => (n ? [n.replace(/[.'’-]+$/, '')] : [])),
+  );
+  return [...new Set(names)].slice(0, 6);
+}
+
 /**
  * Reads only what is plainly written, for runs with no model key: quoted titles as comps, cities
- * in the city table, age ranges written as numbers, and an audience said to be women or men.
+ * in the city table, age ranges written as numbers, an audience said to be women or men, and a
+ * brand named next to the word partner or sponsor.
  */
 export class ScriptedFilmReader implements FilmReader {
   async read({ title, text }: FilmReaderInput) {
@@ -229,7 +249,7 @@ export class ScriptedFilmReader implements FilmReader {
       soundtrack: [],
       route: route ? { value: routeOf(route), quote: route } : null,
       budget: budget ? { value: budget, quote: budget } : null,
-      partners: [],
+      partners: partnersIn(text).map((name) => ({ value: name, quote: name })),
       scope: 'full',
       ask: null,
       comps: quotes

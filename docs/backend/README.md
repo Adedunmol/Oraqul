@@ -40,7 +40,7 @@ Sign in methods: email and password, Google OAuth, and a one-time code sent by e
 - **Email.** `@getbrevo/brevo` sends through Brevo when `BREVO_API_KEY` is set. When it is empty, codes are printed to the API console. `EMAIL_FROM` must be a sender verified in Brevo. Brevo accepts a message from an unverified sender and then drops it, so the API refuses to start when `BREVO_API_KEY` is set without a valid `EMAIL_FROM`.
 - **Env.** `API_ORIGIN`, `COOKIE_DOMAIN` (empty locally), `TRUST_PROXY_HOPS` (0 locally), `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `BREVO_API_KEY`, `EMAIL_FROM`.
 
-The agent routes need a signed in session (`SessionGuard`) but not yet a team role, because projects do not belong to teams yet.
+The project, thread and output routes need a signed in session (`SessionGuard`) and a team role (`RolesGuard`, spec §7): owners and editors write, viewers read.
 
 ## Teams
 

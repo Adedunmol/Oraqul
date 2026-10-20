@@ -7,6 +7,7 @@ import {
   type MessageEvent,
   Param,
   Post,
+  Put,
   Query,
   Res,
   Sse,
@@ -25,6 +26,8 @@ import {
   type Project,
   type ProjectDetail,
   postMessageSchema,
+  type ShareState,
+  setShareSchema,
   type ThreadDetail,
 } from '@oraqul/schema';
 import type { Response } from 'express';
@@ -38,6 +41,7 @@ import { SessionGuard, type SessionUser } from '../auth/session.guard.js';
 import { exportFormats, fileName, toDocx, toMarkdown, toPdf } from '../outputs/export.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
 import { ProjectsService } from './projects.service.js';
+import { SharesService } from './shares.service.js';
 
 const scopeSchema = z
   .union([categorySchema, z.literal('all')])
@@ -52,6 +56,7 @@ export class ProjectsController {
   constructor(
     private readonly projects: ProjectsService,
     private readonly runs: RunService,
+    private readonly shares: SharesService,
   ) {}
 
   @Get('teams/:teamId/projects')
@@ -117,6 +122,16 @@ export class ProjectsController {
   @Roles('owner', 'editor', 'viewer')
   output(@Param('outputId') outputId: string): Promise<OutputDetail> {
     return this.projects.outputDetail(outputId);
+  }
+
+  /** Turns the read only link on or off (PRD O4). Turning it on again keeps the same address. */
+  @Put('outputs/:outputId/share')
+  @Roles('owner', 'editor')
+  setShare(
+    @Param('outputId') outputId: string,
+    @Body(new ZodPipe(setShareSchema)) body: z.output<typeof setShareSchema>,
+  ): Promise<ShareState> {
+    return this.shares.set(outputId, body.enabled);
   }
 
   /** The plan as a file to send or paste (PRD O3). */

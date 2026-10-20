@@ -89,13 +89,13 @@ Code sets the steps and their order. Each step is a `trace.step` in the chat.
 | Every field of the brief | Model, checked | `film/read.ts` | Quote must be in your words |
 | Full plan or narrow ask, and which module | Model, then code | `film/read.ts` | Plan words always mean full |
 | Comps to add | Model | `film/read.ts` | Only below 3 of yours; checked in Qloo; kept apart |
-| Which same-name title a comp is | Code | `pipeline.ts` `settle` | Country, then popularity |
+| Which same-name title a comp is | Code | `launch/pipeline.ts` `settle` | Country, then popularity |
 | Which modules | Code | pack `pickModules` | Spec §6.1 |
 | Which queries, and their context | Code, shaped by the model | `planner.ts` | Catalog, team cities, resolved tags |
 | Every number, verdict, confidence | Code | `packages/engine`, `launch/brief.ts`, `launch/findings.ts` | Spec §5 |
 | Each finding's sentence | Code | `launch/findings.ts`, `film/findings.ts` | Templates over what Qloo returned |
 | The plan's wording | Model (templates with no key) | `film/writer.ts` | Checked line by line |
-| To sharpen, Budget split | Code | `pipeline.ts` | Convention table in the pack |
+| To sharpen, Budget split | Code | `launch/pipeline.ts`, `film/config.ts` | Convention table in the pack |
 | Every team city and comp answered, home-market premiere | Code | `launch/decisions.ts` | Backstop for what the writer missed |
 | Follow-up job | Code, from the model's reading | `launch/follow-up.ts` | Rivals with dates → date; "partner" → brief; a change → what-if; else answer |
 | Refusals | Code | `REFUSALS` in `packages/packs` | Regex, fixed words, before any call |
@@ -117,7 +117,7 @@ The model **never**: sets a number, verdict or confidence; names an entity that 
 | Comps verdict | city order with each comp left out | holds if unchanged, weak if it rests on one | `verdicts.ts` |
 | Lift (partner brief only) | candidate affinity ÷ baseline mean affinity, same call | ≥1.5 strong, 1.2–1.5 usable | `engine/scoring.ts` |
 | Rival overlap | rival affinity × 100 | >60 risky, 35–60 moderate, <35 low | `scoring.ts` |
-| Budget split | the pack's convention shares, times the budget when one is given | — | `pipeline.ts`, pack `BUDGET_CONVENTION` |
+| Budget split | the pack's convention shares, times the budget when one is given | — | `film/config.ts`, pack `BUDGET_CONVENTION` |
 
 **Confidence** (spec §5.1) is set per call and carried by each finding. A plan's confidence is the lowest of the findings behind its bottom line.
 
@@ -141,8 +141,8 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 |---|---|---|---|
 | Answer | default | The plan's findings, the writer in answer mode, the same line check. If the answer would change a decision it offers a what-if. Plans saved before findings use the older tool loop | Message only |
 | What-if | any change to places, comps, ages or gender | The build from the plan's `inputs` with the change; every query reruns | `scenario` output; "What changed" compares plan lines by id; becomes the chat's plan |
-| Audit | "audit", "check my plan", "why did it fail" | The audit of the plan the chat has: a saved audit is rerun with the new message (results, say); an Oraqul plan is read back as text | `audit` output |
-| Fix | "fix this plan", "write a better plan" (also the Fix this plan button on a report) | The fix; on a saved report only the plan is new | `fix` output (and an `audit` when there was none) |
+| Audit | The plan is the whole ask: "audit my plan", "check my plan", "why did it fail". "Check how the plan plays in Lagos" is an answer | The audit of the plan the chat has: a saved audit is rerun with the new message (results, say); an Oraqul plan is read back as text | `audit` output |
+| Fix | The plan is the whole ask: "fix this plan", "write a better plan" (also the Fix this plan button on a report). "Fix the budget in this plan" is an answer | The fix; on a saved report only the plan is new | `fix` output (and an `audit` when there was none) |
 | Rival date check | rival titles with YYYY-MM-DD dates | `compareAudiences`: rivals scored against the comps | `date` output |
 | Partner brief | "partner" + a name, or the first brand the plan names | An artist the plan's music findings ranked is backed by that finding; a brand or podcast is scored with `lift` against the baseline. The model drafts the pitch from findings, checked; the template is the fallback | `partner` output |
 

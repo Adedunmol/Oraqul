@@ -16,7 +16,7 @@ Qloo supplies the taste data. What we compute on top is in [spec §5](../product
 | `/v2/trending` | verified, with caveats on the date window |
 | Context that shapes a Film query | verified on one brief: genre tag on artists, `filter.release_country` (full country name), `signal.location.query`, `signal.demographics.age` and `.audiences`, place categories per city, brand categories (`urn:tag:genre:brand:*`), theme, archetype and audience tags on comps, tags shared with genre peers from compare |
 | Ranking a candidate list we choose (`filter.results.entities`) | verified for films, books and brands |
-| Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo |
+| Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo. Qloo's public Terms of Use say nothing about showing API output; they bar selling, redistributing or sublicensing the Services, which include data obtained from the APIs, and a signed agreement overrides them. Share links therefore carry the plan and finding summaries only, never a receipt's `input` or `returned` |
 
 Anything below marked `TODO(verify)` is untested. Re-run the probes (see [Verifying](#verifying)) before relying on it for a new category.
 
@@ -90,8 +90,8 @@ Tools live in `packages/engine/src/tools`. Their confidence follows [spec §5.1]
 | `rankPlaces` (areas) | no call: `readAreas` reads neighbourhoods from the cells already returned (nearest 8 within 0.1 degrees, at least 3, relative to the city mean). A lead, not a measurement of the neighbourhood |
 | `compareAudiences` | one `insights.entities` call with `filter.results.entities` set to the rivals |
 | `partnerFit` | `insights.entities` with no context. Not used by Film builds: open lists drift |
-| `tagWeights` | `insights.tags` |
-| `momentum` | `analysis.trending` |
+| `tagWeights` | `insights.tags` (not built) |
+| `momentum` | `analysis.trending` (not built) |
 
 ## Categories
 
@@ -195,7 +195,7 @@ Checked once in `responses.ts`.
 - The mean cell affinity depends on how the city box is drawn. A fixed box and a minimum cell count are a start, not a validated rule.
 - Cells are coarse (about 3 to 7 km), so neighbourhood readings from them are leads.
 
-**Size.** One movie result is about 335 tags; ten movie results were about 780 KB; a Lagos heatmap about 250 KB; a Nigeria locality heatmap 6.8 MB. A receipt holds the excerpt a finding used, which is why `toReceipt` requires `returned`. Raw Qloo data must not reach public share links ([PRD](../product/prd.md)).
+**Size.** One movie result is about 335 tags; ten movie results were about 780 KB; a Lagos heatmap about 250 KB; a Nigeria locality heatmap 6.8 MB. A receipt holds the excerpt a finding used, which is why `toReceipt` requires `returned`. A share link carries receipts without their `input` and `returned`, so raw Qloo data does not reach it ([PRD](../product/prd.md)).
 
 **Coverage.** Nigerian films, series and artists were present when checked, some with low popularity (a weaker signal, feeding confidence). Coverage for podcasts, games, books, music and other regions is not measured.
 

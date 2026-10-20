@@ -168,6 +168,41 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .get(`/outputs/${outputItem.outputId}/export/md`)
       .set(stranger)
       .expect(403);
+
+    // Share link (PRD O4): editors turn it on, anyone with the token reads a redacted output.
+    const link = `/outputs/${outputItem.outputId}/share`;
+    expect(detail.share).toBeNull();
+    await request(http()).put(link).set(viewer).send({ enabled: true }).expect(403);
+    await request(http()).put(link).set(stranger).send({ enabled: true }).expect(403);
+    await request(http()).put(link).set(as).send({ enabled: 'yes' }).expect(400);
+    const on = await request(http()).put(link).set(as).send({ enabled: true }).expect(200);
+    const { token } = on.body as { token: string };
+    expect(token.length).toBeGreaterThanOrEqual(40);
+    const shared = await request(http()).get(`/s/${token}`).expect(200);
+    expect(shared.headers['cache-control']).toBe('no-store');
+    const seen = outputDetailSchema.parse(shared.body);
+    expect(seen.output.id).toBe(outputItem.outputId);
+    expect(seen.share).toBeNull();
+    expect(seen.builtOn).toBeNull();
+    expect(seen.output.createdBy).toBe('');
+    expect(seen.output.receipts.length).toBe(output.receipts.length);
+    for (const r of seen.output.receipts) {
+      expect(r.input).toEqual({});
+      expect(r.returned).toBeNull();
+    }
+    expect(seen.output.plan?.dropped).toEqual([]);
+    expect(JSON.stringify(shared.body)).not.toContain('Ada');
+    const mine = outputDetailSchema.parse(
+      (await request(http()).get(`/outputs/${outputItem.outputId}`).set(as).expect(200)).body,
+    );
+    expect(mine.share).toEqual({ token, enabled: true });
+
+    await request(http()).put(link).set(as).send({ enabled: false }).expect(200);
+    await request(http()).get(`/s/${token}`).expect(404);
+    const again = await request(http()).put(link).set(as).send({ enabled: true }).expect(200);
+    expect(again.body).toEqual({ token, enabled: true });
+    await request(http()).get(`/s/${token}`).expect(200);
+    await request(http()).get('/s/not-a-real-token').expect(404);
   });
 
   it('answers, reruns a what-if, checks rival dates and drafts a partner brief', async () => {

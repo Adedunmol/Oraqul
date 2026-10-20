@@ -13,23 +13,22 @@ Plans must not run on the tool loop. A model choosing which tests a plan runs gi
 
 ## A category pack
 
-Defined by `CategoryPack` in `packages/packs/src/types.ts`. Fill these per category (film, music, books, podcasts, games):
+Defined by `CategoryPack` in `packages/packs/src/types.ts`. Every category fills:
 
-- System prompt
-- Assumption checklist
-- Assumption tests: for each kind of assumption, the tool calls that test it and the rule that turns their results into a verdict (used by the plan pipeline)
-- Plan sections
-- Tool allowlist
-- Coverage lists (tests, thin, not supported)
-- Scenarios (matcher and apply function)
-- Results format
-- Output schema
+- Title, blurb and `covers` (what the router offers and matches)
+- System prompt and assumption checklist
+- Tool allowlist and `consults` (other categories this agent may ask; only Books asks Film)
+- `qloo`: the Qloo entity types it tests
+- `coverage`: tests, thin and not supported lists
+- `baselines`: mass-market names a candidate is scored against in the same call
+
+Film and Music keep their depth next to the pack, not in the type: `packages/packs/src/<category>/catalog.ts` (the query catalog), `modules.ts` (module rules, budget convention, taste words) and `plan.ts`, exported as `filmPlan` and `musicPlan`. What both share is in `packages/packs/src/launch.ts` (section titles, `TASTE_CLAIM`, brand categories, music scenes). Scenarios, results format and the output schema from [spec §3.2](../product/spec.md) live in the launch runtime (`apps/api/src/agent/launch`) and `packages/schema`, not in the pack.
 
 **Shared base prompt.** The rules every agent follows live once in `BASE_PROMPT` (`packages/packs/src/base-prompt.ts`): cite a receipt for every claim, never set a number, a score, a verdict or a confidence level, say when a tool could not test something, treat memory as context and never evidence, and refuse forecasts, pricing advice and sending (drafts only). A pack's `systemPrompt` adds only what is its own (how to read its inputs, its tone), and `agentSystemPrompt(pack)` joins the two. The model planner's own rules are only about choosing a step.
 
-**Pack contract test.** `packs.test.ts` checks all five packs: the text fields, assumption checklist, tool allowlist and title types are filled, every `toolAllowlist` entry is a tool in `packages/engine` and none repeats, a pack's prompt leaves the shared rules to the base prompt, and `consults` only lists categories the spec allows (spec §3.4). A half filled pack fails the build. Plan sections, assumption tests and coverage join the check with Film's deep pass, since no pack fills them yet.
+**Pack contract test.** `packs.test.ts` checks all five packs: the text fields, assumption checklist, tool allowlist and `qloo` titles are filled, every `toolAllowlist` entry is a tool in `packages/engine` and none repeats, a pack's prompt leaves the shared rules to the base prompt, and `consults` only lists categories the spec allows (spec §3.4). `modules.test.ts` in the Film and Music folders pins module choice.
 
-The type holds the system prompt, assumption checklist, plan sections, tool allowlist, `consults` (other categories this agent may ask, only Books asks Film) and coverage lists. Add the rest as the runtime needs them. Every pack is filled with basics only; each category gets its deep pass later. `demoProjects` in `packages/packs/src/demo.ts` is one stand-in project per category that the runtime and evals use until projects live in Postgres. It is not served to anyone: there is no demo access without an account.
+Film and Music have their deep pass (catalog, modules, launch config). Books, Podcasts and Games are filled with basics only. `demoProjects` in `packages/packs/src/demo.ts` is one stand-in project per category that the runtime and evals use until projects live in Postgres. It is not served to anyone: there is no demo access without an account.
 
 ## Tools
 
@@ -41,8 +40,8 @@ Every tool returns `{ data, receipts }` (`ToolResult` in `packages/engine`): one
 - Every entity the model names must appear in data Qloo returned in that run. A validator rejects the output otherwise and the step reruns.
 - If Qloo errors after one retry, the line is "could not test". Never fill from the model.
 - Agents do not call each other. Only exception: Books may ask Film one bounded question.
-- Limits per run: max steps, max Qloo calls (`QLOO_CALL_BUDGET`), and a stop rule. Follow ups rerun only lines whose inputs changed.
-- The red team step sees the finished brief and receipts, not the reasoning.
+- Limits per run: max steps and max Qloo calls (`QLOO_CALL_BUDGET`). The stop rule and rerunning only the lines whose inputs changed are not built: a what-if reruns every query.
+- No model reviews a finished brief. The stress test is the leave one out rerun in `engine` (spec §3.3).
 - The agent refuses forecasts, pricing advice and sending anything. Drafts only.
 
 ## How a run works
@@ -64,7 +63,8 @@ Code is in `apps/api/src/agent`:
 | `router/` | Spec §3.1. Reads the title, category and mode from the conversation (`ModelReader`, or `ScriptedReader` with no key or when the model fails). `decide.ts` keeps only values whose quote is in the person's words, refuses off-topic messages with fixed copy, and asks one card at a time: category and mode first, then the title. `router.ts` is one turn: a pick on the card settles what the option names with no model call; typed text is added to the conversation and everything is read again. Its state is plain JSON in `runs.state` |
 | `gate/` | The front door for an active project. Every message goes through `gateSegment` in `run.service.ts` before a category agent sees it. A model (`ModelGate`, role `router`) returns `on_topic`, `off_topic` or `unclear`, and code decides: `off_topic` gets the fixed `OFF_TOPIC_REPLY` and no agent run; `unclear` asks a `single` card of two or three close readings (a follow up we mistook for something new, or a nearby idea the agent can use), whose pick goes straight to the agent; `on_topic` passes. With no model key, or when the call fails, `ScriptedGate` passes everything, since it cannot tell the cases apart. The gate is one run row (`agent: gate`) per message, and an open card is kept in its `state` |
 | `category-agents.ts` | `CategoryAgent`: `run(handoff, emit, resume?)` returns an `AgentRun` (stop reason, the state to resume from, receipts, the output if it made one, tokens, Qloo calls), and `replyLabel` checks a reply against the open card before a run starts. Film and Music are real agents, both a `LaunchAgent` in `launch/agent.ts` configured by a `LaunchConfig` (`film/config.ts`, `music/config.ts`); the other three are placeholders: one trace step and a message saying the agent is not connected yet |
-| `film/` | The Film agent ([film-overview.md](film-overview.md)). `read.ts` reads the brief, `planner.ts` shapes the queries, `findings.ts` runs them and builds the findings, `writer.ts` writes the plan, `check.ts` checks every line, `pipeline.ts` runs the steps, `brief.ts` builds the audience and verdicts, `agent.ts` wires them to `CategoryAgent` |
+| `launch/` | The runtime Film and Music share: `agent.ts` (`LaunchAgent`, job dispatch), `pipeline.ts` (build and the `askQloo` / `writePlan` stages), `audit.ts`, `fix.ts`, `follow-up.ts` and `follow-ups.ts`, `findings.ts` and `brief.ts` (findings, audience, verdicts), `writer.ts`, `check.ts`, `decisions.ts`, `research.ts`, `results.ts`. See [film-overview.md](film-overview.md) |
+| `film/` | What is Film's own: `config.ts` (`filmLaunch`), `read.ts` (brief reader), `planner.ts` (query shaping), `findings.ts` (Film's queries), `writer.ts` (prompts and templates), `check.ts` and `decisions.ts` (Film's rules), `audit-verdicts.ts`, `agent.ts` (`FilmAgent`). The other files here (`pipeline.ts`, `audit.ts`, `fix.ts`, `follow-up.ts`, `brief.ts` and similar) are thin wrappers that keep Film's signatures over `launch/` |
 | `output-store.ts` | Saves a run's receipts, and its outputs when it made a plan or a report, in one transaction (a fix saves two, each the child of the one before, and each with the calls it rests on), and points the chat's `base_output_id` at the last |
 | `run.service.ts` | Creates the draft project, posts messages (409 while a run is going), runs the router and then the category agent in the background, stores every event and streams it. On start up, runs left `running` by a stopped process are marked `error` |
 | `thread-store.ts` | The transcript in `messages`: one row per stored event, `seq` in order. Turns rows into chat items for `GET /threads/:id` and back into events for a stream that joins late |
@@ -101,7 +101,7 @@ No model writes a number, verdict or confidence. Each step is a `trace.step`. A 
 
 ## Agent factory
 
-`agent.module.ts` builds the agents: Film gets `FilmAgent` and Music gets `MusicAgent`, each with its own model reader (scripted when `LLM_API_KEY` is empty or the model fails) and a new `ToolContext` per run (`QLOO_MODE` picks demo or live Qloo, `QLOO_CALL_BUDGET` the budget). The rest stay placeholders. The general form below replaces this as each category gets its pipeline. One function, `createCategoryAgent(pack)`, does it for all five: it picks the planner (model planner when `LLM_API_KEY` is set, else scripted), creates the run's `QlooClient` with its call budget, builds the run state, and runs the plan pipeline for a plan job and `advance()` from `runtime.ts` for an answer. A new category then adds a pack and nothing else. It is built in the Film PR (item 3), with the pipeline it runs: before that a factory would have nothing to run, since plans may not fall back to the tool loop and the tool loop needs the `ProjectInput` the read step builds.
+`agent.module.ts` builds the agents: Film gets `FilmAgent` and Music gets `MusicAgent`, each with its own model reader (scripted when `LLM_API_KEY` is empty or the model fails) and a new `ToolContext` per run (`QLOO_MODE` picks demo or live Qloo, `QLOO_CALL_BUDGET` the budget). For an answer about a plan saved before findings, the agent gets a `ModelPlanner` with a key, or a `PlanSummaryPlanner` without. The other three categories are placeholders. There is no `createCategoryAgent(pack)` yet: a new category is a pack plus a launch config and its own agent wiring in `agent.module.ts`.
 
 ## Handoff
 
@@ -117,43 +117,31 @@ No model writes a number, verdict or confidence. Each step is a `trace.step`. A 
 
 A file's text is kept whole on the project (an upload allows 200 000 characters), and each reader cuts it to what its model should see: the router and a build read the first 8 000 characters of each file (`ATTACHMENT_CHARS`, `cutFiles`), so a long brief does not fill a model's context, and an audit or a fix reads up to 40 000 (`PLAN_CHARS`), since the plan is the thing being tested. The gate gets only the category, mode and title, never the files. The structured `ProjectInput` (lead, comps, places) that `newRunState` and `AgentContext.project` take is not in the handoff: the plan pipeline's read step builds it from `inputs` and `message`.
 
-## Replies: a plan and not a plan (partly built)
+## Replies: a plan, a report and an answer
 
-An agent's finish step has two kinds of reply. The product behaviour is in [spec §3.6](../product/spec.md). For Film, the kind comes from the job (see [Follow ups](#follow-ups)): a build, what-if, date check or partner brief is a plan, a question is an answer. The rest below is still to build for the general case:
+The product behaviour is in [spec §3.6](../product/spec.md). The kind comes from the job (see [Follow ups](#follow-ups)), not from a flag on the reply: `AgentReply` in `packages/schema` is only `message` and `claims`.
 
-- **A way to say which kind it is.** `AgentReply` in `packages/schema` gets a `kind`: `plan` or `answer`. The model's word for it is not trusted alone: the runtime checks that a `plan` carries the brief and receipts a plan needs, and rejects it otherwise.
 - **A plan** (build, scenario, and the plan a fix writes) or **a report** (audit) writes an `outputs` row with its receipts and streams `output.created`. A fix writes two in one run, the report and then the plan whose parent it is, so a run returns its last output as `output` and the ones before it as `earlier`.
-- **An answer** is a `message` event with claims, no `outputs` row. On a launch plan it is written from the plan's findings and passes the same line check as the plan (spec §6.2); each claim cites the calls behind its findings. Plans saved before findings still use the tool loop and the grounding check.
-- **When the agent cannot tell, it asks.** A `single` card, worded by the agent: "Do you want a plan for this, or just an answer?" The answer picks the kind and the run continues. The base prompt says to ask rather than draft a full plan nobody asked for.
-
-## Follow ups
-
-Built for Film and Music, on the shared runtime (`launch/agent.ts`, `launch/follow-up.ts`, `launch/follow-ups.ts`). Once a chat has a plan (`threads.base_output_id`), a message is a follow up on it. The gate still judges whether it is on topic; the Film agent then reads the job, because only the category knows its jobs:
-
-- **Refusals first.** A forecast, pricing advice or a request to send anything gets fixed words from `REFUSALS` in `packages/packs`, before any model or Qloo call (spec §10).
-- **Reading.** The follow-up reader (model with quotes checked, or scripted) pulls out places and comps to add or drop, an age group or gender, rival titles with dates, and a partner's name. Code picks the job from those: rivals with dates make a date check, the word partner with a partner job makes a brief, any change makes a what-if, and only otherwise is the model's own job used.
-- **Answer.** The tool loop (`runtime.ts`) with the plan and the recent chat as context labelled "context, not evidence". The plan's receipts can be cited by id (`RunState.prior`), new calls make new receipts, and the grounding check covers both. It never stops on a card. With no model key, a scripted planner says what the plan shows, cited, and suggests a what-if.
-- **What-if (scenario).** The build pipeline starts from the plan's saved inputs (`outputs.inputs`) with the change applied, finds any new comp (asking which one if a name matches several), reruns the tests and saves a `scenario` output built on the plan, with "What changed" against it. It reruns every test, not only the changed lines: the plan's raw tool results are not saved, only its brief. `TODO`: rerun only what changed (spec §3.5).
-- **Rival date check.** The rivals are found by exact name and scored against the comps with `compareAudiences`; the safest week is the one whose riskiest rival shares the least. Saved as a `date` output on the plan. Without dates it asks for them in the chat.
-- **Partner brief.** The named partner (or the plan's top brand) is found as a brand or podcast, scored against the baseline with `lift`, and a draft is written by code from the computed fit. Saved as a `partner` output. Oraqul never sends it.
+- **An answer** is a `message` event with claims, no `outputs` row. On a launch plan it is written from the plan's findings and passes the same line check as the plan (spec §6.2); each claim cites the calls behind its findings. Plans saved before findings use the tool loop and the grounding check.
+- **Not built:** a `kind` on the reply, and the "Do you want a plan for this, or just an answer?" card. A message in a chat with a plan is read as a follow up, and one without a plan starts the project's job.
 
 A date check or partner brief does not become the chat's current plan; a scenario does. Not built: corrections that change the category or mode ("check my plan instead", "start fresh").
 
-## Memory (chat and project layers in use)
+## Memory (partly built)
 
 Product behaviour is [spec §3.7](../product/spec.md): three layers (chat, project, team), memory is context and never evidence, the person confirms what is saved and can see, edit and delete it. Built for Film: a run starts from the project's brief and files (`projects.inputs`), the chat's current plan and its receipts, and the chat's last 8 lines, and emits `memory.used` with those items, which the chat shows as one "Using" line. Not built: `memory_items`, team memory, `remember` cards, long-chat summaries and the continue-or-fresh choice for a new chat.
 
-**Assembling it.** `buildMemory({ team, project, thread })` returns one bounded block per run, in this order: team items, project inputs and items, the current plan (or `from_output_id`) with its receipts by id, the thread's summary and recent messages. The block is labelled "context, not evidence" in the shared base prompt, and a hard character cap per layer drops the oldest items first. A `fresh` thread leaves out the project items and the plan; `team_memory` false leaves out the team items.
+**Planned: assembling it.** `buildMemory({ team, project, thread })` returns one bounded block per run, in this order: team items, project inputs and items, the current plan (or `from_output_id`) with its receipts by id, the thread's summary and recent messages. The block is labelled "context, not evidence" in the shared base prompt, and a hard character cap per layer drops the oldest items first. A `fresh` thread leaves out the project items and the plan; `team_memory` false leaves out the team items.
 
-**Citing.** A claim may cite only receipts from this run or from an earlier plan's receipts by id. A memory item has no receipt, so the grounding check (`grounding.ts`) rejects a claim that cites one, and the runtime rejects a `finish` that sets a number from memory.
+**Citing (built for plan receipts).** A claim may cite only receipts from this run or from an earlier plan's receipts by id. A memory item has no receipt, so the grounding check (`grounding.ts`) rejects a claim that cites one. The output validator does not yet check numbers in the text (see Finish step).
 
-**Saving.** The planner may return a `remember` step with the fact and a suggested scope. The runtime turns it into a `single` card (this project, the whole team, not now) and stops `waiting`, as an ask step does. Only a yes writes a `memory_items` row. The agent never writes memory on its own.
+**Planned: saving.** The planner may return a `remember` step with the fact and a suggested scope. The runtime turns it into a `single` card (this project, the whole team, not now) and stops `waiting`, as an ask step does. Only a yes writes a `memory_items` row. The agent never writes memory on its own.
 
-**Seeing it.** The run emits `memory.used` with the item ids, stored on the run row, and the chat shows them as a "Using" line. Editing or deleting an item changes the next run, not past ones.
+**Seeing it (built for the plan, brief and chat).** The run emits `memory.used` with the items it started from (a source and a label each), and the chat shows them as a "Using" line. Editing or deleting an item changes the next run, not past ones.
 
-**Long chats.** When a thread passes a size limit its older messages are summarised into `threads.summary` by a model call that sees only those messages, and the summary replaces them in the block. The summary is context like any memory item.
+**Planned: long chats.** When a thread passes a size limit its older messages are summarised into `threads.summary` by a model call that sees only those messages, and the summary replaces them in the block. The summary is context like any memory item.
 
-**Other.** The gate also gets the project's title and the team's market, so "what about Lagos?" reads as on topic. A run still starts with an empty tool history: receipts from an earlier run are cited by id, not re run, unless an input changed.
+**Other (built).** The gate also gets the project's title and the team's market, so "what about Lagos?" reads as on topic. A run still starts with an empty tool history: receipts from an earlier run are cited by id, not re run, unless an input changed.
 
 ## Demo mode
 
