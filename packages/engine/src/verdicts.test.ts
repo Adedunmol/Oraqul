@@ -3,6 +3,7 @@ import {
   ageVerdict,
   audienceIndex,
   averageBands,
+  compAgeVerdict,
   compsVerdict,
   genderVerdict,
   placeVerdict,
@@ -146,5 +147,23 @@ describe('topicVerdict', () => {
 
   it('does not test a topic Qloo did not return', () => {
     expect(topicVerdict(null).verdict).toBe('cant');
+  });
+});
+
+describe('compAgeVerdict', () => {
+  it('holds for a book from the last five years, is weak to ten and breaks beyond', () => {
+    expect(compAgeVerdict(2023, 2026).verdict).toBe('holds');
+    expect(compAgeVerdict(2021, 2026).verdict).toBe('holds');
+    expect(compAgeVerdict(2018, 2026).verdict).toBe('weak');
+    expect(compAgeVerdict(2016, 2026).verdict).toBe('weak');
+    expect(compAgeVerdict(2006, 2026).verdict).toBe('breaks');
+  });
+
+  it('does not test a book with no publication year', () => {
+    expect(compAgeVerdict(null, 2026).verdict).toBe('cant');
+  });
+
+  it('never counts a book published after the launch year as old', () => {
+    expect(compAgeVerdict(2027, 2026).verdict).toBe('holds');
   });
 });

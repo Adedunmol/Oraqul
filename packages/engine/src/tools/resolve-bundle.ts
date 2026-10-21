@@ -17,12 +17,19 @@ const candidateSchema = z.object({
 
 const releaseSchema = z.looseObject({
   release_year: z.number().optional(),
+  publication_year: z.number().optional(),
   release_country: z.union([z.string(), z.array(z.string())]).optional(),
 });
 
-/** A title with case, accents, spacing and the style of quotes and apostrophes removed. */
+// Qloo lists a book with its series ("Fourth Wing (The Empyrean, #1)") and escapes ampersands as
+// HTML, neither of which a person types, so neither takes part in a match.
+const SERIES = /\s*\([^()]*#\d+(?:\.\d+)?\)\s*$/;
+
+/** A title with case, accents, spacing, the style of quotes and a trailing series mark removed. */
 export function normalizeTitle(s: string): string {
   return s
+    .replace(/&amp;/g, '&')
+    .replace(SERIES, '')
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[\u2018\u2019\u02bc`]/g, "'")
@@ -39,7 +46,9 @@ export function sameTitle(a: string, b: string): boolean {
 
 function detailOf(entity: { disambiguation?: string; properties?: unknown }): string | null {
   const release = releaseSchema.safeParse(entity.properties ?? {});
-  const year = release.success ? release.data.release_year : undefined;
+  const year = release.success
+    ? (release.data.release_year ?? release.data.publication_year)
+    : undefined;
   const country = release.success ? release.data.release_country : undefined;
   const parts = [
     year === undefined ? entity.disambiguation : String(year),

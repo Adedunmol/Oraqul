@@ -213,3 +213,31 @@ export function topicVerdict(placement: TopicPlacement | null): VerdictResult {
     why: 'This topic belongs to the rival shows’ listeners, not to yours.',
   };
 }
+
+// Spec §5.10: how far apart a comp and the launch are, in publication years. Chosen conventions, not
+// measured: a comp older than this still stays in the plan.
+const COMP_RECENT = 5;
+const COMP_DATED = 10;
+
+/**
+ * Spec §5.10: a comparable book the team named, against the year the launch is for. A book from the
+ * last five years is current to pitch against, one from six to ten years ago is weak, and an older
+ * one is a classic: it stays as a reference, with recent books beside it.
+ */
+export function compAgeVerdict(published: number | null, launchYear: number): VerdictResult {
+  if (published === null) {
+    return { verdict: 'cant', why: 'Qloo does not list a publication year for this book.' };
+  }
+  const years = Math.max(0, launchYear - published);
+  const shown = `published ${published}, ${years} ${years === 1 ? 'year' : 'years'} before the launch`;
+  if (years <= COMP_RECENT) {
+    return { verdict: 'holds', why: `A recent book to pitch against (${shown}).` };
+  }
+  if (years <= COMP_DATED) {
+    return { verdict: 'weak', why: `A book from a few years back (${shown}).` };
+  }
+  return {
+    verdict: 'breaks',
+    why: `An older book, which reads as a classic, not a current comp (${shown}).`,
+  };
+}
