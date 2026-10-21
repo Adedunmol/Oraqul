@@ -1,0 +1,95 @@
+{
+  "title": "Salt and Ink",
+  "brief": "Launch plan for the book \"Salt and Ink\", a self-published contemporary romance on Kindle for women aged 25 to 34, launching in June 2027 in New York and Toronto, with a marketing budget of $5,000. Comparable books: \"Beach Read\" and \"Book Lovers\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with New York, then Toronto: that is where your book's readers are strongest.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-gender": "holds",
+      "a-place-new-york": "weak",
+      "a-place-toronto": "breaks",
+      "a-comps": "weak",
+      "a-comp-age-beach-read": "weak",
+      "a-comp-age-book-lovers": "holds"
+    },
+    "cities": ["New York", "Toronto"],
+    "comps": [
+      {
+        "name": "Beach Read",
+        "source": "you"
+      },
+      {
+        "name": "Book Lovers",
+        "source": "you"
+      },
+      {
+        "name": "It Ends with Us (It Ends with Us, #1)",
+        "source": "added"
+      },
+      {
+        "name": "The Seven Husbands of Evelyn Hugo",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-a-gender": [],
+      "f-audience": [],
+      "f-a-place-new-york": [],
+      "f-a-place-toronto": [],
+      "f-markets": ["New York", "Toronto"],
+      "f-themes-archetype": ["The Fixer", "The Outsider", "The Matriarch"],
+      "f-themes-theme": ["Family", "Community", "Ambition"],
+      "f-a-comp-age-beach-read": [],
+      "f-a-comp-age-book-lovers": [],
+      "f-shelf": ["The Love Hypothesis"],
+      "f-bridge-film": ["It Ends with Us", "Pride & Prejudice", "Crazy Rich Asians"],
+      "f-bridge-series": ["Bridgerton", "Virgin River", "Outlander"],
+      "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
+      "f-brands-beverage-new-york": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-beverage-toronto": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-telecom-new-york": ["Spine Mobile"],
+      "f-brands-telecom-toronto": ["Spine Mobile"],
+      "f-shops-new-york": ["Books Are Magic"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "2/1",
+      "audience": "4/0",
+      "markets": "2/0",
+      "comps": "2/1",
+      "adaptation": "3/1",
+      "publicity": "1/1",
+      "events": "1/0",
+      "creators": "0/1",
+      "partnerships": "4/0",
+      "community": "0/1",
+      "timeline": "0/11",
+      "budget": "0/8",
+      "measure": "0/4",
+      "risks": "3/1",
+      "gaps": "0/5"
+    },
+    "moves": ["f-markets", "f-audience", "f-shelf"],
+    "grounding": {
+      "lines": 47,
+      "backed": 53,
+      "rankKept": 100,
+      "findingsUsed": 15,
+      "cities": {
+        "New York": 6,
+        "Toronto": 5
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Salt and Ink",
+      "Sales, pre-orders and chart positions",
+      "The release window (June 2027)",
+      "Creators and authors your readers follow",
+      "Bookshops in Toronto"
+    ]
+  }
+}

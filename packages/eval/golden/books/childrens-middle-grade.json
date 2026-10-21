@@ -1,0 +1,87 @@
+{
+  "title": "Kofi and the River",
+  "brief": "Launch plan for the book \"Kofi and the River\", a middle grade adventure published by a children's imprint, launching in September 2027 in London and Lagos. Comparable books: \"Wonder\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with London, then Lagos: that is where your book's readers are strongest.",
+    "assumptions": {
+      "a-place-london": "weak",
+      "a-place-lagos": "breaks",
+      "a-comps": "weak",
+      "a-comp-age-wonder": "breaks"
+    },
+    "cities": ["London", "Lagos"],
+    "comps": [
+      {
+        "name": "Wonder",
+        "source": "you"
+      },
+      {
+        "name": "Harry Potter and the Sorcerer's Stone",
+        "source": "added"
+      },
+      {
+        "name": "The Lightning Thief (Percy Jackson and the Olympians, #1)",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["London", "Lagos"],
+      "f-themes-archetype": ["The Outsider", "The Rival", "The Fixer"],
+      "f-themes-theme": ["Ambition", "Loyalty", "Family"],
+      "f-a-comp-age-wonder": [],
+      "f-shelf": ["The River Kept Count"],
+      "f-bridge-film": ["Wonder", "The Hunger Games"],
+      "f-bridge-series": ["Shadow and Bone", "Heartstopper", "Percy Jackson and the Olympians"],
+      "f-podcasts": ["Between the Covers", "Shelf Life", "The Book Club Hour"],
+      "f-brands-beverage-lagos": ["Lantern Tea", "Page Turner Coffee"],
+      "f-brands-beverage-london": ["Lantern Tea", "Page Turner Coffee"],
+      "f-brands-telecom-lagos": ["Spine Mobile"],
+      "f-brands-telecom-london": ["Spine Mobile"],
+      "f-shops-lagos": ["Terra Kulture", "The Jazzhole"],
+      "f-shops-london": ["Housmans Bookshop", "Skoob Books"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "2/1",
+      "audience": "4/0",
+      "markets": "2/0",
+      "comps": "2/1",
+      "adaptation": "3/1",
+      "retail": "2/1",
+      "publicity": "1/1",
+      "events": "2/0",
+      "creators": "0/1",
+      "partnerships": "4/0",
+      "community": "0/1",
+      "schools": "0/1",
+      "timeline": "0/12",
+      "budget": "0/8",
+      "measure": "0/4",
+      "risks": "3/1",
+      "gaps": "0/6"
+    },
+    "moves": ["f-markets", "f-audience", "f-shelf"],
+    "grounding": {
+      "lines": 53,
+      "backed": 53,
+      "rankKept": 100,
+      "findingsUsed": 16,
+      "cities": {
+        "London": 7,
+        "Lagos": 7
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Kofi and the River",
+      "Sales, pre-orders and chart positions",
+      "The release window (September 2027)",
+      "Creators and authors your readers follow"
+    ]
+  }
+}

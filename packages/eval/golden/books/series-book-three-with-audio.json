@@ -1,0 +1,96 @@
+{
+  "title": "Ash Throne",
+  "brief": "Launch plan for the book \"Ash Throne\", book three of a romantasy trilogy with a hardcover and an audiobook, published by a major press, launching in October 2027 in New York and London. Comparable books: \"A Court of Thorns and Roses\" and \"Fourth Wing\". Compare it with \"The Witcher\" and \"The Hunger Games\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with London, then New York: that is where your book's readers are strongest.",
+    "assumptions": {
+      "a-place-new-york": "breaks",
+      "a-place-london": "breaks",
+      "a-comps": "weak",
+      "a-comp-age-a-court-of-thorns-and-roses": "breaks",
+      "a-comp-age-fourth-wing": "holds"
+    },
+    "cities": ["London", "New York"],
+    "comps": [
+      {
+        "name": "A Court of Thorns and Roses",
+        "source": "you"
+      },
+      {
+        "name": "Fourth Wing",
+        "source": "you"
+      },
+      {
+        "name": "The Name of the Wind (The Kingkiller Chronicle, #1)",
+        "source": "added"
+      },
+      {
+        "name": "Harry Potter and the Sorcerer's Stone",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-london": [],
+      "f-a-place-new-york": [],
+      "f-markets": ["London", "New York"],
+      "f-themes-archetype": ["The Outsider", "The Rival", "The Matriarch"],
+      "f-themes-theme": ["Power", "Loyalty", "Ambition"],
+      "f-a-comp-age-a-court-of-thorns-and-roses": [],
+      "f-a-comp-age-fourth-wing": [],
+      "f-shelf": ["The Orchard Heir", "Throne of Embers"],
+      "f-bridge-film": ["The Hunger Games", "The Martian"],
+      "f-bridge-series": ["The Witcher", "Shadow and Bone", "The Wheel of Time"],
+      "f-screen-the-hunger-games": ["The Hunger Games"],
+      "f-screen-the-witcher": ["The Witcher"],
+      "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
+      "f-brands-beverage-london": ["Lantern Tea", "Page Turner Coffee"],
+      "f-brands-beverage-new-york": ["Lantern Tea", "Page Turner Coffee"],
+      "f-brands-telecom-london": ["Spine Mobile"],
+      "f-brands-telecom-new-york": ["Spine Mobile"],
+      "f-shops-london": ["Housmans Bookshop", "Skoob Books"],
+      "f-shops-new-york": ["Books Are Magic"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "4/0",
+      "markets": "2/0",
+      "comps": "2/1",
+      "cadence": "0/1",
+      "retail": "2/1",
+      "creators": "0/1",
+      "community": "0/1",
+      "publicity": "1/1",
+      "events": "2/0",
+      "adaptation": "5/1",
+      "audio": "0/1",
+      "partnerships": "4/0",
+      "timeline": "0/12",
+      "budget": "0/8",
+      "measure": "0/4",
+      "risks": "3/1",
+      "gaps": "0/4"
+    },
+    "moves": ["f-markets", "f-audience", "f-shelf"],
+    "grounding": {
+      "lines": 56,
+      "backed": 52,
+      "rankKept": 100,
+      "findingsUsed": 18,
+      "cities": {
+        "London": 7,
+        "New York": 7
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Ash Throne",
+      "Sales, pre-orders and chart positions",
+      "The release window (October 2027)",
+      "Creators and authors your readers follow"
+    ]
+  }
+}

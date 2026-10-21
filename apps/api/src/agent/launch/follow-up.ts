@@ -176,8 +176,11 @@ const DROP = /\b(drop|without|remove|skip|not|instead of|no)\s+$/i;
 
 /** Scripted reader for runs with no model key: reads only what is plainly written. */
 export class ScriptedFollowUpReader implements FollowUpReader {
-  /** `collabs` is on for a category that plans them: a quoted title near "collab" is one. */
-  constructor(private readonly options: { collabs?: boolean } = {}) {}
+  /**
+   * `collabs` is on for a category that plans them: a quoted title near "collab" is one. A
+   * category may say what else names one with `collabWords` (Books: a screen comparison).
+   */
+  constructor(private readonly options: { collabs?: boolean; collabWords?: RegExp } = {}) {}
 
   async read({ text }: FollowUpInput) {
     const before = (index: number) => text.slice(Math.max(0, index - 16), index);
@@ -210,7 +213,8 @@ export class ScriptedFollowUpReader implements FollowUpReader {
       const [phrase, from, to] = m;
       return bandsBetween(Number(from), Number(to)).map((value) => ({ value, quote: phrase }));
     });
-    const collabAsk = this.options.collabs && COLLAB.test(text);
+    const collabAsk =
+      this.options.collabs && (COLLAB.test(text) || this.options.collabWords?.test(text));
     const collabs = collabAsk && !rivals.length ? titles : [];
     const comps = rivals.length || collabAsk ? [] : titles;
     const reading: FollowUpReading = {
