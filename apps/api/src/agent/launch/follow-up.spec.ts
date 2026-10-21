@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { decideFollowUp, type FollowUpReading } from './follow-up.js';
+import { askedJob, decideFollowUp, type FollowUpReading } from './follow-up.js';
 
 const reading: FollowUpReading = {
   job: 'answer',
@@ -44,5 +44,13 @@ describe('decideFollowUp: fix and audit are asked for the whole plan', () => {
   it('reads a change phrased with "test the plan" as a what-if', () => {
     const ages = [{ value: '55_and_older' as const, quote: 'older women' }];
     expect(job('test the plan with older women', { ages })).toBe('scenario');
+  });
+});
+
+describe('askedJob', () => {
+  it('reads an audit or a fix from plain words, and nothing from a build', () => {
+    expect(askedJob('audit my launch plan')).toBe('audit');
+    expect(askedJob('Fix this plan')).toBe('fix');
+    expect(askedJob('A roguelike on Steam for 18 to 34')).toBeNull();
   });
 });
