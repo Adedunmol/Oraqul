@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { matchTags, platformShares, sharedTags, tagsOfGame, topPlatforms } from './profile.js';
+import {
+  matchTags,
+  platformShares,
+  platformsOfGame,
+  sharedTags,
+  tagsOfGame,
+  topPlatforms,
+} from './profile.js';
 
 const game = (platforms: string[], steamTags: string[] = [], genres: string[] = []) => ({
   platforms,
@@ -22,6 +29,23 @@ describe('platformShares', () => {
       { platform: 'Switch', listing: 1, withData: 3 },
       { platform: 'Xbox', listing: 0, withData: 3 },
     ]);
+  });
+});
+
+describe('platformsOfGame', () => {
+  it('reads the platform names Qloo returns for games', () => {
+    expect(
+      platformsOfGame({
+        platforms: [
+          'PC (Windows, macOS, Linux)',
+          'iOS (iPhone/iPad)',
+          'Xbox Series X/S',
+          'PlayStation 5',
+          'Nintendo Switch 2',
+          'Wii U',
+        ],
+      }),
+    ).toEqual(expect.arrayContaining(['pc', 'ios', 'xbox', 'playstation', 'switch']));
   });
 });
 

@@ -3,6 +3,7 @@ import {
   findTasteOutputSchema,
   gameProfilesOutputSchema,
   normalizeTitle,
+  overlapFromAffinity,
   platformVerdict,
   resolveTagsOutputSchema,
   searchEntityOutputSchema,
@@ -118,7 +119,10 @@ async function runQueries(kit: GroundKit<GamesRead, GamesQueryPlan>): Promise<vo
 
   if (want('tags')) {
     const run = await kit.safely('Themes of your comparable games', () =>
-      tools.themeTags.run(deps.tools, { entityIds: kit.ids, kinds: ['theme', 'audience'] }),
+      tools.themeTags.run(deps.tools, {
+        entityIds: kit.ids,
+        kinds: ['theme', 'audience'],
+      }),
     );
     if (run) {
       const out = themeTagsOutputSchema.parse(run.data);
@@ -221,7 +225,12 @@ async function runQueries(kit: GroundKit<GamesRead, GamesQueryPlan>): Promise<vo
           'podcasts',
           'Podcasts',
           'f-podcasts',
-          { type: 'urn:entity:podcast', tags: [genre.id], city, ages: read.ages },
+          {
+            type: 'urn:entity:podcast',
+            tags: [genre.id],
+            city,
+            ages: read.ages,
+          },
           (names) =>
             `The ${genre.name.toLowerCase()} podcasts that rank highest with ${crowd}${agesText}${city ? ` in ${city}` : ''} are ${names}.`,
           { city, tags: [genre.name], ages: read.ages },
@@ -310,7 +319,10 @@ async function profile(kit: GroundKit<GamesRead, GamesQueryPlan>): Promise<void>
           ...top.map((p) => entity(PLATFORM_LABEL[p], null, 'platform')),
           ...shared.slice(0, 8).map((t) => entity(t, null, 'tag')),
         ],
-        numbers: { 'comparable games': out.games.length, 'with tags': withTags },
+        numbers: {
+          'comparable games': out.games.length,
+          'with tags': withTags,
+        },
         verdict: null,
         confidence: out.confidence,
         why: out.why,
@@ -343,7 +355,12 @@ async function profile(kit: GroundKit<GamesRead, GamesQueryPlan>): Promise<void>
     });
     brief.reasons.set(id, cant ? 'lower: this line could not be tested' : out.why);
     if (result.verdict === 'weak' || result.verdict === 'breaks') {
-      brief.brief.risks.push({ id: `risk-${id}`, text, signal: result.why, action: fix });
+      brief.brief.risks.push({
+        id: `risk-${id}`,
+        text,
+        signal: result.why,
+        action: fix,
+      });
     }
     kit.add(
       {
@@ -462,27 +479,63 @@ async function fanBases(
       ...new Set([...discovered.map((c) => c.entityId), ...mine.map((c) => c.entityId)]),
     ];
     if (ids.length === 0) {
-      gaps.push({ item: capitalise(noun), why: 'Qloo returned nothing for this audience.' });
+      gaps.push({
+        item: capitalise(noun),
+        why: 'Qloo returned nothing for this audience.',
+      });
       continue;
     }
 
-    // One scoring call per medium, so the collab and what the audience follows are comparable.
-    const scored = await kit.safely(capitalise(noun), () =>
-      tools.compareAudiences.run(deps.tools, {
-        entityIds: kit.ids,
-        type: spec.type,
-        rivals: ids.slice(0, 12),
-        leaveOneOut: false,
-      }),
-    );
-    if (!scored) continue;
-    const out = compareAudiencesOutputSchema.parse(scored.data);
-    const [call] = scored.receipts;
-    const ranked = out.rivals
-      .filter((r) => r.overlap !== null)
-      .sort((a, b) => (b.overlap ?? 0) - (a.overlap ?? 0));
+    // Qloo gives the same affinity open as scored (probed live), so discovery alone ranks what the
+    // audience follows. A scoring call is only for a collab, which discovery would not list; it
+    // runs once per medium so the collab and the rest are comparable.
+    let ranked: { entityId: string; name: string; overlap: number | null }[];
+    let out: { confidence: 'high' | 'medium' | 'lower'; why: string };
+    let call: Awaited<ReturnType<typeof tools.findTaste.run>>['receipts'][number] | undefined;
+    if (mine.length === 0) {
+      ranked = discovered
+        .filter((c) => c.affinity !== null)
+        .map((c) => ({
+          entityId: c.entityId,
+          name: c.name,
+          overlap: overlapFromAffinity(c.affinity ?? 0),
+        }))
+        .sort((a, b) => (b.overlap ?? 0) - (a.overlap ?? 0));
+      out = {
+        confidence: findTasteOutputSchema.parse(found.data).confidence,
+        why: findTasteOutputSchema.parse(found.data).why,
+      };
+      call = found.receipts[0];
+    } else {
+      const scored = await kit.safely(capitalise(noun), () =>
+        tools.compareAudiences.run(deps.tools, {
+          entityIds: kit.ids,
+          type: spec.type,
+          rivals: ids.slice(0, 12),
+          leaveOneOut: false,
+        }),
+      );
+      if (!scored) continue;
+      const parsed = compareAudiencesOutputSchema.parse(scored.data);
+      ranked = parsed.rivals
+        .filter((r) => r.overlap !== null)
+        .sort((a, b) => (b.overlap ?? 0) - (a.overlap ?? 0));
+      // No leave one out here (it would cost a rerun per anchor per medium), so a high result is
+      // not shown as checked.
+      out =
+        parsed.confidence === 'high'
+          ? {
+              confidence: 'medium',
+              why: 'medium: the result was not checked with each anchor left out',
+            }
+          : { confidence: parsed.confidence, why: parsed.why };
+      call = scored.receipts[0];
+    }
     if (!call || ranked.length === 0) {
-      gaps.push({ item: capitalise(noun), why: 'Qloo did not score these for this audience.' });
+      gaps.push({
+        item: capitalise(noun),
+        why: 'Qloo did not score these for this audience.',
+      });
       continue;
     }
 
