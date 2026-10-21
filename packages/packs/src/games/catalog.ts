@@ -122,9 +122,8 @@ export const FAN_MEDIA: readonly FanMediumSpec[] = [
 
 /** Tag namespaces each query's phrases must resolve into, and the parent type for brands. */
 export const TAG_SPACES = {
-  // TODO(verify): the namespace of a game genre. The recorded fixture shows `urn:tag:genre:qloo`
-  // on a game; probe 8 of `qloo-games-probes.ts` settles whether a phrase resolves into it.
-  gameGenre: { prefix: 'urn:tag:genre:qloo', parent: 'urn:entity:videogame' },
+  // Verified live: a game genre phrase ("roguelike") resolves to `urn:tag:genre:media:<genre>`.
+  gameGenre: { prefix: 'urn:tag:genre:media', parent: 'urn:entity:videogame' },
   anime: { prefix: 'urn:tag:genre:media', parent: null },
   podcasts: { prefix: 'urn:tag:genre:media', parent: null },
   brands: { prefix: 'urn:tag:genre:brand', parent: 'urn:entity:brand' },

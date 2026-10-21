@@ -128,8 +128,8 @@ export function compsVerdict(
 }
 
 // Spec §5.6: how many of a game's comps list a platform, from what Qloo holds on each comp. A
-// share needs at least this many comps with platform data behind it. Starting values,
-// TODO(verify) on a live run before a plan leads with them.
+// share needs at least this many comps with platform data behind it. Chosen conventions, not
+// measured (spec §5.6): a miss never replaces the team's choice.
 const MIN_COMPS_WITH_DATA = 2;
 const PLATFORM_HOLDS = 2 / 3;
 const PLATFORM_WEAK = 1 / 3;
