@@ -101,10 +101,12 @@ const PODCAST_TABS: Partial<Record<OutputTabKey, { label: string; note: string }
   },
 };
 
-const LIMITS = {
+const LIMITS: Partial<Record<Category, string>> = {
   film: 'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Box office, viewing numbers and reviews are not in Qloo. Every number comes from the comps you confirmed.',
+  music:
+    'Qloo shows current taste, not history. Streams, chart positions and ticket sales are not in Qloo. Every number comes from the sound-alike artists you confirmed.',
   games:
-    'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Wishlists, sales, player counts and reviews are not in Qloo. Every number comes from the comparable games you confirmed.',
+    'Qloo shows current taste, not history. Wishlists, sales, player counts and reviews are not in Qloo. Every number comes from the comparable games you confirmed.',
   podcasts:
     'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Downloads, chart positions, ratings and ad rates are not in Qloo. Every number comes from the comparable shows you confirmed.',
 };
@@ -263,8 +265,7 @@ export function presentOutput({
       ...evidence(brief, pack.planSections, receipts, moves, focusIds),
     ],
     receipts: receipts.map(toReceipt),
-    limits:
-      category === 'games' ? LIMITS.games : category === 'podcasts' ? LIMITS.podcasts : LIMITS.film,
+    limits: LIMITS[category] ?? LIMITS.film ?? '',
   };
 }
 
@@ -298,7 +299,11 @@ function stats(assumptions: number, c: VerdictCounts): OutputStat[] {
   return [
     { label: 'Assumptions', value: String(assumptions) },
     { label: 'Hold', value: String(c.holds), verdict: 'holds' },
-    { label: 'Weak or break', value: String(c.weak + c.breaks), verdict: 'breaks' },
+    {
+      label: 'Weak or break',
+      value: String(c.weak + c.breaks),
+      verdict: 'breaks',
+    },
     { label: 'Could not test', value: String(c.cant), verdict: 'cant' },
   ];
 }
@@ -356,7 +361,12 @@ function lines(brief: Brief, sections: Sections): Line[] {
       returned: a.evidence,
     })),
     ...sections.flatMap((s) =>
-      brief[s.key].map((l) => ({ id: l.id, label: l.name, group: s.title, returned: l.evidence })),
+      brief[s.key].map((l) => ({
+        id: l.id,
+        label: l.name,
+        group: s.title,
+        returned: l.evidence,
+      })),
     ),
     ...brief.places.map((p) => ({
       id: p.id,
