@@ -82,7 +82,7 @@ The output is always a direction: holds, weak, breaks, or could not test.
 
 * There is one category agent per category: Film and series, Music, Books, Podcasts and Games. A thin router reads the title, category and job from the first message and hands the project to that agent. The router speaks only to ask what it could not read, or to decline an off-topic request.
 * The five agents share one toolbox: the Qloo client, the verdict engine, and the receipt writer. They differ in instructions, assumption checklist, scenarios and output schema.
-* Category agents do not call each other freely. The one bounded exception is a book with a screen adaptation, where the Books agent can ask the Film agent one question and cite the answer as a receipt.
+* Category agents do not call each other freely. The one bounded exception is a book with a screen adaptation, where the Books agent can ask the Film agent one question and cite the answer as a receipt. The Books launch plan does not need it: its screen angle is the series, films and podcasts Qloo scores for the book's readers, each with a receipt of its own.
 * The language model chooses its tools. Every Qloo call and every scoring function is a tool.
 * It tries to find a better plan, not only score the one it was given.
 * When an entity is ambiguous, it asks with a question card, for example whether the user means the artist or the documentary.
