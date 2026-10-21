@@ -279,11 +279,11 @@ export function ShelfTab() {
     <>
       <TabTitle
         title="Comp shelf"
-        note="How much each comparable title's readers overlap with your readers. The closest comps are the ones to pitch against."
+        note="The recent books your readers pick up, ranked by how close their readers are to yours. The closest are the comps to pitch against."
       />
       <ChartCard
         title="Reader overlap with each comp"
-        note="Share of readers who also read your book, from the taste data."
+        note="Out of 100, from one list of books. Compare rows only with each other."
         table={{
           head: ['Comp', 'Overlap', 'Evidence'],
           rows: shelf.map((s) => [s.name, s.overlap, s.evidence]),
@@ -300,7 +300,7 @@ export function ShelfTab() {
               </div>
               <FitBar value={s.overlap} />
               <span className="font-mono text-xs text-muted">
-                {s.overlap} percent <ChangeMark lineId={s.id} />
+                {s.overlap} of 100 <ChangeMark lineId={s.id} />
               </span>
               <Evidence lineId={s.id} confidence={false} />
             </div>
@@ -320,10 +320,7 @@ export function ShelfTab() {
               </>
             }
           >
-            <p>
-              {s.evidence}
-              {s.overlap < 50 ? '. Not recommended as a pitch comp.' : ''}
-            </p>
+            <p>{s.evidence}</p>
           </Line>
         ))}
       </Stack>
@@ -332,20 +329,26 @@ export function ShelfTab() {
 }
 
 const mediumTone: Record<string, Tone> = { Series: 'series', Film: 'series2', Podcast: 'good' };
+const mediumOrder = ['Series', 'Film', 'Podcast'];
 
 export function BridgeTab() {
   const { output } = useOutputView();
-  const bridge = (output.brief.bridge ?? []).slice().sort((a, b) => b.fit - a.fit);
-  const media = ['Series', 'Film', 'Podcast'].filter((m) => bridge.some((x) => x.medium === m));
+  // Overlap is scored within one kind of media, so rows are grouped by medium and ranked only
+  // inside their group, never across.
+  const bridge = (output.brief.bridge ?? []).slice().sort((a, b) => {
+    const kind = mediumOrder.indexOf(a.medium ?? '') - mediumOrder.indexOf(b.medium ?? '');
+    return kind || b.fit - a.fit;
+  });
+  const media = mediumOrder.filter((m) => bridge.some((x) => x.medium === m));
   return (
     <>
       <TabTitle
         title="Adaptation bridge"
-        note="Readers of the book also watch and listen to these titles. They give the pitch angles for screen and audio."
+        note="The series, films and podcasts your readers also follow. They give the pitch angles for screen and audio. Compare rows within one kind of media, never across."
       />
       <ChartCard
         title="Reader overlap by screen and audio title"
-        note="Grouped by medium. Higher means more of your readers also use the title."
+        note="Grouped by medium. Out of 100: higher means more of your readers also use the title."
         table={{
           head: ['Title', 'Medium', 'Overlap'],
           rows: bridge.map((x) => [x.name, x.medium ?? '', x.fit]),
@@ -353,11 +356,11 @@ export function BridgeTab() {
       >
         <HBars
           items={bridge.map((x) => ({
-            label: `${x.name} (${x.medium ?? ''})`,
+            label: `${x.medium ? `${x.medium} · ` : ''}${x.name}${x.note ? ` (${x.note.toLowerCase()})` : ''}`,
             value: String(x.fit),
             width: x.fit,
             tone: mediumTone[x.medium ?? ''] ?? 'series',
-            tip: `${x.name}: ${x.fit}`,
+            tip: `${x.name}: ${x.fit} of 100`,
           }))}
         />
         <Legend items={media.map((m) => ({ tone: mediumTone[m] ?? 'series', label: m }))} />
