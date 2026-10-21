@@ -50,6 +50,8 @@ The platforms shape the calendar inside a kind. Festivals and showcases need a P
 - **The team's assumptions are tested.** The age band, each named region and city, the platforms and the store tags are checked against Qloo's data on the comparable games. A platform none of them is on, or a set of tags none of them carry, is told so.
 - **Where a chatbot beats us.** Qloo has no wishlists, sales, reviews, festival dates, store rules or creator data, so the calendar, the festival, certification and soft launch advice, and the creators section come from launch knowledge, labelled as such. We win on who the audience is and what else it follows in each kind of media.
 
+The plan text never uses the word "overlap" (the writer is told never to use it); the Fan base bridge tab does, because there it is the measure on the bar.
+
 ## How we judge a plan
 
 Run the same brief through Oraqul and plain models, then score 1 to 5 on:
@@ -66,11 +68,12 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 
 ## Known limits
 
-- **Game signals are not verified yet.** Whether a game works as a signal for each kind of media, for regions, for tags and for creators is checked by `pnpm --filter @oraqul/engine qloo:games-probes`. Until [qloo.md](../backend/qloo.md) says so, Games findings from those queries carry `TODO(verify)` in the spec and the plan is not claimed to beat a chatbot on them.
+- **Game signals are mostly verified.** A game works as a signal for music, series, films, brands, podcasts, games, people and regions (`qloo:games-probes`, recorded in [qloo.md](../backend/qloo.md)). Anime, the franchise property and the genre-only fallback are not yet, and the plan is not claimed to beat a chatbot on them.
 - **Creators and streamers are launch practice.** Qloo may not hold them. Until the probe says it does, the Creators section is playbook, and the Assumptions tab says creators were not measured.
 - **A debut is planned from its comparable games.** If those are off, the audience is off. The plan says what it rests on.
 - **Platform and store rules are launch knowledge.** The Steam and console rules in the calendar come from the platforms' own documentation and can change. Check them before a date is announced.
 - **Festival, sale and showcase dates change every year.** They come from web research when search is configured, and are otherwise left out of the plan.
 - **Regions are cities.** A region such as Europe is ranked through the cities in Qloo's table that stand for it. A region the table does not cover is not ranked, and the plan says so.
+- **The bridge shows what the audience already follows.** Its candidates are the audience's own top picks in each kind of media, so a high overlap says "close to the players", not "will say yes". Anime is often empty: Qloo returned no anime for a game audience in the probe, and Gaps says so.
 - **Overlap is not a share of players.** It is how close another audience is to the players, scored by Qloo, on a scale of 0 to 100.
 - **Ambiguous names** are settled in code and the plan says which was chosen. Game and franchise names collide often. A wrong match is possible.
