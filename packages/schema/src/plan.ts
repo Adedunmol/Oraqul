@@ -39,6 +39,12 @@ export const launchModuleKeys = [
   'guests',
   'live',
   'video',
+  // Books only. Which of these a plan gets depends on the launch kind, the route and the readership.
+  'comps',
+  'adaptation',
+  'retail',
+  'audio',
+  'schools',
 ] as const;
 export const launchSectionKeys = [...launchCoreKeys, ...launchModuleKeys] as const;
 export const launchSectionKeySchema = z.enum(launchSectionKeys);

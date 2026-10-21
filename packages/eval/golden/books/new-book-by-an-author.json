@@ -1,0 +1,89 @@
+{
+  "title": "The Salt Ledger",
+  "brief": "Launch plan for the book \"The Salt Ledger\", the latest novel by Ada Obi, a literary novel from a major press launching on 2099-05-01 in London and Lagos. Earlier books: from the author of \"The Harbour Wives\". Comparable books: \"Americanah\" and \"Normal People\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with Lagos, then London: that is where your book's readers are strongest.",
+    "assumptions": {
+      "a-place-london": "breaks",
+      "a-place-lagos": "breaks",
+      "a-comps": "weak",
+      "a-comp-age-americanah": "breaks",
+      "a-comp-age-normal-people": "breaks"
+    },
+    "cities": ["Lagos", "London"],
+    "comps": [
+      {
+        "name": "Americanah",
+        "source": "you"
+      },
+      {
+        "name": "Normal People",
+        "source": "you"
+      },
+      {
+        "name": "The Harbour Wives",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["Lagos", "London"],
+      "f-themes-archetype": ["The Outsider", "The Fixer", "The Rival"],
+      "f-themes-theme": ["Power", "Community", "Loyalty"],
+      "f-a-comp-age-americanah": [],
+      "f-a-comp-age-normal-people": [],
+      "f-shelf": ["A House of Many Rooms", "Salt Season", "Dust and Ink"],
+      "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
+      "f-bridge-series": ["Conversations with Friends", "Big Little Lies", "You"],
+      "f-podcasts": ["The Book Club Hour", "Shelf Life", "Between the Covers"],
+      "f-brands-beverage-lagos": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-beverage-london": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-telecom-lagos": ["Spine Mobile"],
+      "f-brands-telecom-london": ["Spine Mobile"],
+      "f-shops-lagos": ["The Jazzhole", "Terra Kulture"],
+      "f-shops-london": ["Housmans Bookshop", "Skoob Books"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "4/0",
+      "markets": "2/0",
+      "comps": "2/1",
+      "retail": "2/1",
+      "publicity": "1/1",
+      "events": "2/0",
+      "adaptation": "3/1",
+      "creators": "0/1",
+      "community": "0/1",
+      "partnerships": "4/0",
+      "cadence": "0/1",
+      "timeline": "0/12",
+      "budget": "0/8",
+      "measure": "0/4",
+      "risks": "3/1",
+      "gaps": "0/5"
+    },
+    "moves": ["f-markets", "f-audience", "f-shelf"],
+    "grounding": {
+      "lines": 53,
+      "backed": 51,
+      "rankKept": 100,
+      "findingsUsed": 17,
+      "cities": {
+        "Lagos": 7,
+        "London": 7
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "The Salt Ledger",
+      "Sales, pre-orders and chart positions",
+      "The release window (2099-05-01)",
+      "Creators and authors your readers follow"
+    ]
+  }
+}

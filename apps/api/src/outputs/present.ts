@@ -101,12 +101,36 @@ const PODCAST_TABS: Partial<Record<OutputTabKey, { label: string; note: string }
   },
 };
 
+// Books name the same tabs in their own words: the comp shelf and the adaptation bridge, and markets
+// instead of regions.
+const BOOK_TABS: Partial<Record<OutputTabKey, { label: string; note: string }>> = {
+  shelf: {
+    label: 'Comp shelf',
+    note: 'The recent books your readers pick up, ranked by how close their readers are to yours. These are the comps to pitch against.',
+  },
+  bridge: {
+    label: 'Adaptation bridge',
+    note: 'The series, films and podcasts your readers also follow, ranked within each kind of media. They give the pitch angles for screen and audio.',
+  },
+  regions: {
+    label: 'Markets',
+    note: 'Which markets fit the book, ranked by how strongly each does.',
+  },
+};
+
+// The tabs a category names in its own words, over the shared ones.
+const CATEGORY_TABS: Partial<
+  Record<Category, Partial<Record<OutputTabKey, { label: string; note: string }>>>
+> = { podcasts: PODCAST_TABS, books: BOOK_TABS };
+
 const LIMITS: Partial<Record<Category, string>> = {
   film: 'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Box office, viewing numbers and reviews are not in Qloo. Every number comes from the comps you confirmed.',
   music:
     'Qloo shows current taste, not history. Streams, chart positions and ticket sales are not in Qloo. Every number comes from the sound-alike artists you confirmed.',
   games:
     'Qloo shows current taste, not history. Wishlists, sales, player counts and reviews are not in Qloo. Every number comes from the comparable games you confirmed.',
+  books:
+    'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history, and holds age and gender for only about half of books. Sales, pre-orders, chart positions and ratings are not in Qloo. Every number comes from the comparable books you confirmed.',
   podcasts:
     'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Downloads, chart positions, ratings and ad rates are not in Qloo. Every number comes from the comparable shows you confirmed.',
 };
@@ -171,6 +195,7 @@ export function presentOutput({
   // Games: the fan base bridge and the regions sit next to the plan, only when there is something
   // to show (the bridge needs a fan base, the regions need two to compare).
   // Podcasts: the topic map and the swap list, with the markets, on the same terms.
+  // Books: the comp shelf and the adaptation bridge, with the markets.
   const gameTabs: OutputTabKey[] =
     category === 'games' || category === 'podcasts'
       ? [
@@ -178,7 +203,13 @@ export function presentOutput({
           ...(brief.fan?.length ? (['fanbase'] as const) : []),
           ...(brief.places.length >= 2 ? (['regions'] as const) : []),
         ]
-      : [];
+      : category === 'books'
+        ? [
+            ...(brief.shelf?.length ? (['shelf'] as const) : []),
+            ...(brief.bridge?.length ? (['bridge'] as const) : []),
+            ...(brief.places.length >= 2 ? (['regions'] as const) : []),
+          ]
+        : [];
   // A launch plan opens on the plan itself (PRD O1); the evidence sits behind it.
   const tabKeys: OutputTabKey[] = audit
     ? [
@@ -241,14 +272,11 @@ export function presentOutput({
     tabs: tabKeys.map(
       (key): OutputTab => ({
         key,
-        label:
-          (category === 'podcasts' ? PODCAST_TABS[key]?.label : undefined) ?? TAB_LABEL[key] ?? key,
+        label: CATEGORY_TABS[category]?.[key]?.label ?? TAB_LABEL[key] ?? key,
         note:
           plan && key === 'plan'
             ? ''
-            : ((category === 'podcasts' ? PODCAST_TABS[key]?.note : undefined) ??
-              TAB_NOTE[key] ??
-              ''),
+            : (CATEGORY_TABS[category]?.[key]?.note ?? TAB_NOTE[key] ?? ''),
       }),
     ),
     sections: pack.planSections,

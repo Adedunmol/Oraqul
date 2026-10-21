@@ -10,7 +10,7 @@ Product docs say **what** and **why**. The rest say **how we build it**. Each fa
 4. [architecture.md](architecture.md) – how the repo and the running system fit together
 
 
-Principles every category agent follows: [product/principles.md](product/principles.md). What makes a good Film plan, and how we judge one: [product/film-agent.md](product/film-agent.md). The same for Music: [product/music-agent.md](product/music-agent.md), for Games: [product/games-agent.md](product/games-agent.md), and for Podcasts: [product/podcasts-agent.md](product/podcasts-agent.md).
+Principles every category agent follows: [product/principles.md](product/principles.md). What makes a good Film plan, and how we judge one: [product/film-agent.md](product/film-agent.md). The same for Music: [product/music-agent.md](product/music-agent.md), for Games: [product/games-agent.md](product/games-agent.md), for Podcasts: [product/podcasts-agent.md](product/podcasts-agent.md), and for Books: [product/books-agent.md](product/books-agent.md).
 
 ## Pick by task
 
@@ -28,6 +28,7 @@ Principles every category agent follows: [product/principles.md](product/princip
 | The same for Music, and how its code differs from Film's | [end-to-end-flow/music-agent.md](end-to-end-flow/music-agent.md), [backend/music-overview.md](backend/music-overview.md) |
 | The same for Games: launch kinds, the fan base bridge, and how its code differs | [end-to-end-flow/games-agent.md](end-to-end-flow/games-agent.md), [backend/games-overview.md](backend/games-overview.md) |
 | The same for Podcasts: launch kind and format, the topic map, and how its code differs | [end-to-end-flow/podcasts-agent.md](end-to-end-flow/podcasts-agent.md), [backend/podcasts-overview.md](backend/podcasts-overview.md) |
+| The same for Books: launch kind, route and readership, the comp shelf, the adaptation bridge, and how its code differs | [end-to-end-flow/books-agent.md](end-to-end-flow/books-agent.md), [backend/books-overview.md](backend/books-overview.md) |
 
 ## Maintaining these docs
 

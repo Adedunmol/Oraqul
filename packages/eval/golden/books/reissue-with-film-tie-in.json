@@ -1,0 +1,88 @@
+{
+  "title": "The River Between",
+  "brief": "Launch plan for the paperback reissue of the book \"The River Between\", a novel with a film tie-in edition, relaunching in March 2027 in London and Johannesburg. Comparable books: \"Where the Crawdads Sing\" and \"Normal People\". Compare it with \"Where the Crawdads Sing\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with London, then Johannesburg: that is where your book's readers are strongest.",
+    "assumptions": {
+      "a-place-london": "breaks",
+      "a-place-johannesburg": "breaks",
+      "a-comps": "weak",
+      "a-comp-age-normal-people": "weak"
+    },
+    "cities": ["London", "Johannesburg"],
+    "comps": [
+      {
+        "name": "Normal People",
+        "source": "you"
+      },
+      {
+        "name": "Americanah",
+        "source": "added"
+      },
+      {
+        "name": "Educated",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-johannesburg": [],
+      "f-a-place-london": [],
+      "f-markets": ["London", "Johannesburg"],
+      "f-themes-archetype": ["The Fixer", "The Outsider", "The Matriarch"],
+      "f-themes-theme": ["Power", "Survival", "Loyalty"],
+      "f-a-comp-age-normal-people": [],
+      "f-shelf": ["Iron Flame (The Empyrean, #2)", "The River Kept Count", "The Orchard Heir"],
+      "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
+      "f-bridge-series": ["Big Little Lies", "Conversations with Friends", "You"],
+      "f-screen-where-the-crawdads-sing": ["Where the Crawdads Sing"],
+      "f-podcasts": ["The Book Club Hour", "Shelf Life", "Between the Covers"],
+      "f-brands-beverage-johannesburg": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-beverage-london": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-telecom-johannesburg": ["Spine Mobile"],
+      "f-brands-telecom-london": ["Spine Mobile"],
+      "f-shops-london": ["Skoob Books", "Housmans Bookshop"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/2",
+      "audience": "4/0",
+      "markets": "2/0",
+      "comps": "2/1",
+      "adaptation": "4/1",
+      "retail": "1/1",
+      "creators": "0/1",
+      "publicity": "1/1",
+      "cadence": "0/1",
+      "community": "0/1",
+      "events": "1/0",
+      "partnerships": "4/0",
+      "timeline": "0/10",
+      "budget": "0/8",
+      "measure": "0/4",
+      "risks": "3/1",
+      "gaps": "0/6"
+    },
+    "moves": ["f-markets", "f-audience", "f-shelf"],
+    "grounding": {
+      "lines": 50,
+      "backed": 52,
+      "rankKept": 100,
+      "findingsUsed": 16,
+      "cities": {
+        "London": 7,
+        "Johannesburg": 5
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "The River Between",
+      "Sales, pre-orders and chart positions",
+      "The release window (March 2027)",
+      "Creators and authors your readers follow",
+      "Bookshops in Johannesburg"
+    ]
+  }
+}

@@ -94,7 +94,7 @@ export const untestedSchema = z.object({ id: lineIdSchema, item: z.string(), rea
 export const compTitleSchema = z.object({
   id: lineIdSchema,
   name: z.string(),
-  /** Share of the comp's readers who also read this book, 0 to 100. */
+  /** Affinity Qloo gives this book for the comps' readers × 100. Compared only within one call. */
   overlap: indexSchema,
   evidence: z.string(),
 });

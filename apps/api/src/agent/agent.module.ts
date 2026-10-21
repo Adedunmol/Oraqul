@@ -5,7 +5,30 @@ import type { Output } from '@oraqul/schema';
 import type { Env } from '../config/env.js';
 import { LLM, type Llm } from '../llm/llm.js';
 import { OutputsService } from '../outputs/outputs.service.js';
+import { BooksAgent } from './books/agent.js';
+import { ModelFollowUpReader as ModelBooksFollowUpReader } from './books/follow-up.js';
+import {
+  FallbackQueryPlanner as FallbackBooksQueryPlanner,
+  ModelQueryPlanner as ModelBooksQueryPlanner,
+  ScriptedQueryPlanner as ScriptedBooksQueryPlanner,
+} from './books/planner.js';
+import { FallbackBooksReader, ModelBooksReader, ScriptedBooksReader } from './books/read.js';
+import {
+  FallbackReportWriter as FallbackBooksReportWriter,
+  ModelReportWriter as ModelBooksReportWriter,
+  TemplateReportWriter as TemplateBooksReportWriter,
+} from './books/report-writer.js';
+import {
+  FallbackResearcher as FallbackBooksResearcher,
+  ModelResearcher as ModelBooksResearcher,
+} from './books/research.js';
+import {
+  FallbackPlanWriter as FallbackBooksPlanWriter,
+  ModelPlanWriter as ModelBooksPlanWriter,
+  TemplatePlanWriter as TemplateBooksPlanWriter,
+} from './books/writer.js';
 import { CATEGORY_AGENTS, placeholderAgents } from './category-agents.js';
+
 import { FilmAgent } from './film/agent.js';
 import {
   FallbackFollowUpReader,
@@ -416,7 +439,74 @@ const lookups = new LookupCache();
           planner: planFor,
           maxSteps,
         });
-        return { ...placeholderAgents(), film, music, games, podcasts };
+
+        // Books shares the tools, the results reader and the search; its readers, planner and
+        // writers carry the books prompts. Its scripted follow-up reader also reads a screen title.
+        const scriptedBooks = new ScriptedBooksReader();
+        const scriptedBooksFollowUps = new ScriptedFollowUpReader({
+          collabs: true,
+          collabWords: /\b(screen (?:comparison|title)|adapt\w*|compare (?:it )?(?:with|to))\b/i,
+        });
+        const booksFollowUps = llm
+          ? new FallbackFollowUpReader(
+              new ModelBooksFollowUpReader(llm.model('agent'), llm.timeoutMs),
+              scriptedBooksFollowUps,
+              (err) => logger.warn(`Model follow-up reader failed, using the scripted one: ${err}`),
+            )
+          : scriptedBooksFollowUps;
+        const books = new BooksAgent({
+          reader: llm
+            ? new FallbackBooksReader(
+                new ModelBooksReader(llm.model('agent'), llm.timeoutMs),
+                scriptedBooks,
+                (err) =>
+                  logger.warn(`Model reader failed, reading with the scripted reader: ${err}`),
+              )
+            : scriptedBooks,
+          queries: llm
+            ? new FallbackBooksQueryPlanner(
+                new ModelBooksQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                new ScriptedBooksQueryPlanner(),
+                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+              )
+            : new ScriptedBooksQueryPlanner(),
+          writer: llm
+            ? new FallbackBooksPlanWriter(
+                new ModelBooksPlanWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateBooksPlanWriter(),
+                (err) => logger.warn(`Model writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateBooksPlanWriter(),
+          results,
+          report: llm
+            ? new FallbackBooksReportWriter(
+                new ModelBooksReportWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateBooksReportWriter(),
+                (err) => logger.warn(`Model report writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateBooksReportWriter(),
+          research:
+            llm && search
+              ? new FallbackBooksResearcher(
+                  new ModelBooksResearcher(search, llm.model('agent'), llm.writerTimeoutMs),
+                  (err) => logger.warn(`Web research failed, writing without it: ${err}`),
+                )
+              : new NoResearch(),
+          followUps: booksFollowUps,
+          tools,
+          plan: (id) => outputs.plan(id),
+          planner: planFor,
+          maxSteps,
+        });
+        return { ...placeholderAgents(), film, music, books, games, podcasts };
       },
     },
     OutputStore,

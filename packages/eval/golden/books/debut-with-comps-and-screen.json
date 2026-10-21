@@ -1,0 +1,96 @@
+{
+  "title": "The Lagos Ledger",
+  "brief": "Launch plan for the book \"The Lagos Ledger\", a debut literary novel by Ada Obi, published by an independent press with a hardcover, an ebook and an audiobook, for readers aged 25 to 44, launching in Lagos and London in September 2027. Comparable books: \"Americanah\" and \"Purple Hibiscus\". Compare it with \"Normal People\". Bookshop \"Terra Kulture\".",
+  "replies": [],
+  "expect": {
+    "headline": "Lead with London, then Lagos: that is where your book's readers are strongest.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "breaks",
+      "a-place-london": "holds",
+      "a-comps": "weak",
+      "a-comp-age-americanah": "breaks",
+      "a-comp-age-purple-hibiscus": "breaks"
+    },
+    "cities": ["London", "Lagos"],
+    "comps": [
+      {
+        "name": "Americanah",
+        "source": "you"
+      },
+      {
+        "name": "Purple Hibiscus",
+        "source": "you"
+      },
+      {
+        "name": "Where the Crawdads Sing",
+        "source": "added"
+      },
+      {
+        "name": "Educated",
+        "source": "added"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["London", "Lagos"],
+      "f-themes-archetype": ["The Rival", "The Outsider", "The Fixer"],
+      "f-themes-theme": ["Ambition", "Loyalty", "Family"],
+      "f-a-comp-age-americanah": [],
+      "f-a-comp-age-purple-hibiscus": [],
+      "f-shelf": ["Dust and Ink", "Salt Season", "A House of Many Rooms"],
+      "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
+      "f-bridge-series": ["Big Little Lies", "Normal People", "Conversations with Friends"],
+      "f-screen-normal-people": ["Normal People"],
+      "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
+      "f-brands-beverage-lagos": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-beverage-london": ["Page Turner Coffee", "Lantern Tea"],
+      "f-brands-telecom-lagos": ["Spine Mobile"],
+      "f-brands-telecom-london": ["Spine Mobile"],
+      "f-shops-lagos": ["Terra Kulture", "The Jazzhole"],
+      "f-shops-london": ["Housmans Bookshop", "Skoob Books"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "2/1",
+      "audience": "4/0",
+      "markets": "2/0",
+      "comps": "2/1",
+      "adaptation": "4/1",
+      "retail": "2/1",
+      "publicity": "1/1",
+      "events": "3/0",
+      "creators": "0/1",
+      "partnerships": "4/0",
+      "community": "0/1",
+      "audio": "0/1",
+      "timeline": "0/12",
+      "budget": "0/8",
+      "measure": "0/4",
+      "risks": "2/1",
+      "gaps": "0/3"
+    },
+    "moves": ["f-markets", "f-audience", "f-shelf"],
+    "grounding": {
+      "lines": 54,
+      "backed": 54,
+      "rankKept": 100,
+      "findingsUsed": 18,
+      "cities": {
+        "London": 6,
+        "Lagos": 7
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "The Lagos Ledger",
+      "Sales, pre-orders and chart positions",
+      "The release window (September 2027)",
+      "Creators and authors your readers follow"
+    ]
+  }
+}

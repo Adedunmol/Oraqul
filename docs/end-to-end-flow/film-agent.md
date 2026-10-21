@@ -2,7 +2,7 @@
 
 A plain-language map of what the Film agent does from the first message to the saved output, what it can produce, and where it falls short of the docs. Product behaviour is in [product/spec.md](../product/spec.md); the step-by-step build map is in [backend/film-overview.md](../backend/film-overview.md). Where this file and those disagree, they win.
 
-Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Music, Games and Podcasts have real agents ([music-agent.md](music-agent.md), [games-agent.md](games-agent.md), [podcasts-agent.md](podcasts-agent.md)). Books is a placeholder.
+Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Music, Games, Podcasts and Books have real agents ([music-agent.md](music-agent.md), [games-agent.md](games-agent.md), [podcasts-agent.md](podcasts-agent.md), [books-agent.md](books-agent.md)).
 
 ## The path of a message
 
@@ -60,7 +60,7 @@ Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Mu
 
 ### Only Film, Music, Games and Podcasts exist
 
-- Books says it is not connected. The Books to Film consult exists only in the generic tool loop, which no other agent uses yet.
+- The Books to Film consult exists only in the generic tool loop, which no launch agent uses. Books answers its screen angle from its own adaptation bridge.
 
 ### Gaps in audit and fix
 

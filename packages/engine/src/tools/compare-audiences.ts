@@ -22,6 +22,7 @@ export const compareTypes = [
   'urn:entity:videogame',
   'urn:entity:brand',
   'urn:entity:podcast',
+  'urn:entity:book',
 ] as const;
 export type CompareType = (typeof compareTypes)[number];
 

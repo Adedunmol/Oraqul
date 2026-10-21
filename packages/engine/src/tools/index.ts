@@ -1,5 +1,6 @@
 import type { ToolName } from '@oraqul/schema';
 import { audienceBySegment, audienceOutputSchema } from './audience-by-segment';
+import { bookProfiles, bookProfilesOutputSchema } from './book-profiles';
 import { compareAudiences, compareAudiencesOutputSchema } from './compare-audiences';
 import { findTaste, findTasteOutputSchema } from './find-taste';
 import { gameProfiles, gameProfilesOutputSchema } from './game-profiles';
@@ -13,6 +14,7 @@ import { themeTags, themeTagsOutputSchema } from './theme-tags';
 import type { Tool } from './tool';
 import { topicMap, topicMapOutputSchema, topicOwnership } from './topic-map';
 
+export { seriesOf } from './book-profiles';
 export { type CompareType, compareTypeOf, compareTypes } from './compare-audiences';
 export { type TasteType, tasteTypes } from './find-taste';
 export { gameTagKinds } from './game-profiles';
@@ -33,11 +35,13 @@ export const tools: Record<ToolName, Tool> = {
   resolveTags,
   themeTags,
   gameProfiles,
+  bookProfiles,
   topicMap,
 };
 
 export {
   audienceOutputSchema,
+  bookProfilesOutputSchema,
   compareAudiencesOutputSchema,
   findTasteOutputSchema,
   gameProfilesOutputSchema,

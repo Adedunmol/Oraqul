@@ -205,7 +205,7 @@ describe('Film golden runs on demo data', { timeout: 20_000 }, () => {
 
 // The same inputs over live Qloo, recorded once with `RECORD_LIVE=1` and a key, then replayed
 // offline. Recordings stay local until Qloo confirms they may be committed.
-describe('Film golden runs on recorded live responses', () => {
+describe('Film golden runs on recorded live responses', { timeout: 20_000 }, () => {
   const key = process.env.QLOO_API_KEY;
   const base = process.env.QLOO_BASE_URL;
   const recordable = process.env.RECORD_LIVE === '1' && key && base;

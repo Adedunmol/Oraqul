@@ -18,6 +18,7 @@ export const tasteTypes = [
   'urn:entity:place',
   'urn:entity:videogame',
   'urn:entity:person',
+  'urn:entity:book',
 ] as const;
 const tasteTypeSchema = z.enum(tasteTypes);
 export type TasteType = (typeof tasteTypes)[number];
@@ -26,6 +27,7 @@ const MAX_TAKE = 10;
 
 const detailSchema = z.looseObject({
   release_year: z.number().optional(),
+  publication_year: z.number().optional(),
   address: z.string().optional(),
 });
 
@@ -60,7 +62,7 @@ export const findTaste = defineTool({
     audiences: z.array(z.string()).default([]),
     /** Films and series only. The full country name: a two-letter code returns nothing. */
     country: z.string().nullable().default(null),
-    /** Films and series only. */
+    /** Films, series and books: the first release or publication year. */
     yearFrom: z.number().int().nullable().default(null),
     take: z.number().int().min(1).max(MAX_TAKE).default(6),
     exclude: z.array(z.string()).default([]),
@@ -81,7 +83,9 @@ export const findTaste = defineTool({
         const props = detailSchema.safeParse(e.properties ?? {});
         const detail = props.success
           ? (props.data.address ??
-            (props.data.release_year ? String(props.data.release_year) : null))
+            ((props.data.release_year ?? props.data.publication_year)
+              ? String(props.data.release_year ?? props.data.publication_year)
+              : null))
           : null;
         return {
           entityId: e.entity_id,
@@ -146,6 +150,13 @@ function request(input: Shape, left: string[]): EntityInsightsRequest {
     ...(input.yearFrom ? { 'filter.release_year.min': input.yearFrom } : {}),
   };
   switch (input.type) {
+    case 'urn:entity:book':
+      return {
+        ...base,
+        ...near,
+        ...(input.yearFrom ? { 'filter.publication_year.min': input.yearFrom } : {}),
+        'filter.type': input.type,
+      };
     case 'urn:entity:place':
       return {
         ...base,

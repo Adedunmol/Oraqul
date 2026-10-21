@@ -22,12 +22,15 @@ interface DemoEntity {
   gameOnly?: boolean;
   /** Only shown to a signal that holds a podcast, so film, music and games demos keep their answers. */
   podcastOnly?: boolean;
+  /** Only shown to a signal that holds one of these books, so the other demos keep their answers. */
+  bookOnly?: boolean;
   /** Found by name and scored, but never listed by an open discovery call. */
   searchOnly?: boolean;
 }
 
 const GAME = 'urn:entity:videogame';
 const PODCAST = 'urn:entity:podcast';
+const BOOK = 'urn:entity:book';
 
 const bands = ['24_and_younger', '25_to_29', '30_to_34', '35_to_44', '45_to_54', '55_and_older'];
 
@@ -672,7 +675,292 @@ const podcastFanBase: DemoEntity[] = [
   ),
 ];
 
-export const demoEntities: DemoEntity[] = [...baseEntities, ...gameFanBase, ...podcastFanBase];
+const readers = ages([-0.1, 0.1, 0.25, 0.2, 0, -0.2]);
+
+// What the audience reads next is recent, whatever year it is, so a golden run does not age.
+const thisYear = new Date().getFullYear();
+
+function demoBook(
+  id: string,
+  name: string,
+  popularity: number,
+  year: number,
+  tags: string[],
+  searchOnly = false,
+): DemoEntity {
+  return {
+    id,
+    name,
+    type: BOOK,
+    popularity,
+    age: readers,
+    gender: { male: -0.15, female: 0.15 },
+    tags,
+    properties: { publication_year: year },
+    bookOnly: true,
+    ...(searchOnly ? { searchOnly: true } : {}),
+  };
+}
+
+const literary = ['literary_fiction', 'fiction'];
+
+// The audience of a book signal: books like it, shows and films it follows, shops and brands it uses.
+// Only a book signal sees them, and base books are never listed, so the other demos are unchanged.
+const bookFanBase: DemoEntity[] = [
+  // Comparable books a brief can name, and the books Oraqul falls back to. Found by name, never listed.
+  ...(
+    [
+      ['DEMO-BOOK-0201', 'Americanah', 0.99, 2013, literary],
+      ['DEMO-BOOK-0202', 'Half of a Yellow Sun', 0.99, 2006, [...literary, 'historical_fiction']],
+      ['DEMO-BOOK-0203', 'Purple Hibiscus', 0.98, 2003, literary],
+      ['DEMO-BOOK-0204', 'Things Fall Apart (The African Trilogy, #1)', 0.99, 1958, literary],
+      ['DEMO-BOOK-0205', 'Normal People', 0.97, 2018, literary],
+      ['DEMO-BOOK-0206', 'Where the Crawdads Sing', 0.98, 2018, ['fiction', 'mystery_thriller']],
+      ['DEMO-BOOK-0207', 'Beach Read', 0.8, 2020, ['romance', 'contemporary_romance']],
+      ['DEMO-BOOK-0208', 'It Ends with Us (It Ends with Us, #1)', 0.97, 2016, ['romance']],
+      ['DEMO-BOOK-0209', 'The Seven Husbands of Evelyn Hugo', 0.97, 2017, ['romance', 'fiction']],
+      [
+        'DEMO-BOOK-0210',
+        'Fourth Wing (The Empyrean, #1)',
+        0.96,
+        2023,
+        ['fantasy', 'fantasy_romance'],
+      ],
+      [
+        'DEMO-BOOK-0211',
+        'A Court of Thorns and Roses (A Court of Thorns and Roses, #1)',
+        0.97,
+        2015,
+        ['fantasy', 'fantasy_romance'],
+      ],
+      [
+        'DEMO-BOOK-0212',
+        'The Name of the Wind (The Kingkiller Chronicle, #1)',
+        0.96,
+        2007,
+        ['fantasy'],
+      ],
+      ['DEMO-BOOK-0213', 'Gone Girl', 0.98, 2012, ['thriller', 'mystery_thriller']],
+      ['DEMO-BOOK-0214', 'The Silent Patient', 0.96, 2019, ['thriller', 'mystery_thriller']],
+      ['DEMO-BOOK-0215', 'The Girl on the Train', 0.95, 2015, ['thriller', 'mystery_thriller']],
+      [
+        'DEMO-BOOK-0216',
+        'Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones',
+        0.99,
+        2018,
+        ['non_fiction', 'self_help'],
+      ],
+      ['DEMO-BOOK-0217', 'Educated', 0.98, 2018, ['non_fiction', 'memoir']],
+      ['DEMO-BOOK-0218', 'Becoming', 0.98, 2018, ['non_fiction', 'memoir']],
+      ['DEMO-BOOK-0219', 'Sapiens: A Brief History of Humankind', 0.99, 2011, ['non_fiction']],
+      [
+        'DEMO-BOOK-0220',
+        'Born a Crime: Stories From a South African Childhood',
+        0.97,
+        2016,
+        ['non_fiction', 'memoir'],
+      ],
+      ['DEMO-BOOK-0221', 'Rich Dad, Poor Dad', 0.97, 1997, ['non_fiction', 'business']],
+      [
+        'DEMO-BOOK-0222',
+        'The Hunger Games (The Hunger Games, #1)',
+        0.99,
+        2008,
+        ['young_adult', 'science_fiction'],
+      ],
+      ['DEMO-BOOK-0223', 'Divergent (Divergent, #1)', 0.96, 2011, ['young_adult']],
+      [
+        'DEMO-BOOK-0224',
+        "Harry Potter and the Sorcerer's Stone",
+        0.99,
+        1997,
+        ['childrens', 'children', 'fantasy'],
+      ],
+      ['DEMO-BOOK-0225', 'Wonder', 0.97, 2012, ['childrens', 'children']],
+      [
+        'DEMO-BOOK-0226',
+        'The Lightning Thief (Percy Jackson and the Olympians, #1)',
+        0.97,
+        2005,
+        ['childrens', 'children', 'fantasy'],
+      ],
+      ['DEMO-BOOK-0227', 'Dune (Dune, #1)', 0.99, 1965, ['science_fiction']],
+      ['DEMO-BOOK-0228', 'Project Hail Mary', 0.97, 2021, ['science_fiction']],
+      ['DEMO-BOOK-0229', 'The Martian', 0.97, 2011, ['science_fiction']],
+      ['DEMO-BOOK-0230', 'Pachinko', 0.96, 2017, ['historical_fiction', 'fiction']],
+      ['DEMO-BOOK-0231', 'Pride and Prejudice', 0.99, 1813, ['romance', 'fiction']],
+      ['DEMO-BOOK-0232', 'The Shining (The Shining, #1)', 0.97, 1977, ['horror']],
+    ] as const
+  ).map(([id, name, popularity, year, tags]) =>
+    demoBook(id, name, popularity, year, [...tags], true),
+  ),
+  // What the audience reads next, by genre. The same-series entries show the series filter.
+  ...(
+    [
+      ['DEMO-BOOK-0301', 'The Thing Around Your Neck', 0.86, 2009, literary],
+      ['DEMO-BOOK-0302', 'Stay with Me', 0.8, 2017, literary],
+      ['DEMO-BOOK-0303', 'An Orchestra of Minorities', 0.7, 2019, literary],
+      ['DEMO-BOOK-0304', 'Ghana Must Go', 0.55, 2013, literary],
+      ['DEMO-BOOK-0305', 'Freshwater', 0.62, 2018, literary],
+      ['DEMO-BOOK-0306', 'Nervous Conditions', 0.64, 1988, literary],
+      ['DEMO-BOOK-0317', 'The Harbour Wives', 0.52, thisYear - 4, literary],
+      ['DEMO-BOOK-0318', 'Salt Season', 0.47, thisYear - 3, literary],
+      ['DEMO-BOOK-0319', 'A House of Many Rooms', 0.41, thisYear - 4, literary],
+      ['DEMO-BOOK-0320', 'Dust and Ink', 0.33, thisYear - 1, literary],
+      ['DEMO-BOOK-0321', 'Throne of Embers', 0.7, thisYear - 2, ['fantasy', 'fantasy_romance']],
+      ['DEMO-BOOK-0322', 'The Orchard Heir', 0.6, thisYear - 3, ['fantasy', 'fantasy_romance']],
+      ['DEMO-BOOK-0323', 'Little Bird Wars', 0.55, thisYear - 2, ['young_adult']],
+      ['DEMO-BOOK-0324', 'The River Kept Count', 0.5, thisYear - 3, ['childrens', 'children']],
+      [
+        'DEMO-BOOK-0307',
+        'Iron Flame (The Empyrean, #2)',
+        0.95,
+        2023,
+        ['fantasy', 'fantasy_romance'],
+      ],
+      [
+        'DEMO-BOOK-0308',
+        'A Court of Mist and Fury (A Court of Thorns and Roses, #2)',
+        0.95,
+        2016,
+        ['fantasy', 'fantasy_romance'],
+      ],
+      ['DEMO-BOOK-0309', 'From Blood and Ash', 0.82, 2020, ['fantasy', 'fantasy_romance']],
+      ['DEMO-BOOK-0310', 'Book Lovers', 0.9, thisYear - 3, ['romance', 'contemporary_romance']],
+      [
+        'DEMO-BOOK-0311',
+        'The Love Hypothesis',
+        0.88,
+        thisYear - 4,
+        ['romance', 'contemporary_romance'],
+      ],
+      ['DEMO-BOOK-0312', 'The Maid', 0.86, thisYear - 3, ['thriller', 'mystery_thriller']],
+      ['DEMO-BOOK-0313', 'Verity', 0.9, thisYear - 2, ['thriller', 'mystery_thriller']],
+      [
+        'DEMO-BOOK-0314',
+        'The Subtle Art of Not Giving a F*ck',
+        0.96,
+        2016,
+        ['non_fiction', 'self_help'],
+      ],
+      ['DEMO-BOOK-0315', 'The Power of Habit', 0.9, 2012, ['non_fiction', 'self_help']],
+      [
+        'DEMO-BOOK-0316',
+        'Percy Jackson: The Sea of Monsters',
+        0.9,
+        2006,
+        ['childrens', 'children', 'fantasy'],
+      ],
+    ] as const
+  ).map(([id, name, popularity, year, tags]) => demoBook(id, name, popularity, year, [...tags])),
+  ...(
+    [
+      ['DEMO-POD-0301', 'Between the Covers', 0.3],
+      ['DEMO-POD-0302', 'The Book Club Hour', 0.24],
+      ['DEMO-POD-0303', 'Shelf Life', 0.18],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: PODCAST,
+      popularity,
+      age: readers,
+      gender: { male: -0.1, female: 0.1 },
+      tags: ['books'],
+      bookOnly: true,
+    }),
+  ),
+  // Screen titles a brief or the model can name. Found by name and scored, never listed.
+  ...(
+    [
+      ['DEMO-TV-0301', 'Bridgerton', 0.9],
+      ['DEMO-TV-0302', 'Normal People', 0.7],
+      ['DEMO-TV-0303', 'Conversations with Friends', 0.4],
+      ['DEMO-TV-0304', 'Little Fires Everywhere', 0.6],
+      ['DEMO-TV-0305', 'The Witcher', 0.9],
+      ['DEMO-TV-0306', 'Shadow and Bone', 0.6],
+      ['DEMO-TV-0307', 'Big Little Lies', 0.8],
+      ['DEMO-TV-0308', 'You', 0.85],
+      ['DEMO-TV-0309', 'Bob Hearts Abishola', 0.4],
+      ['DEMO-TV-0310', 'The Handmaid’s Tale', 0.9],
+      ['DEMO-TV-0311', 'Outlander', 0.8],
+      ['DEMO-TV-0312', 'House of the Dragon', 0.9],
+      ['DEMO-TV-0313', 'Virgin River', 0.6],
+      ['DEMO-TV-0314', 'Emily in Paris', 0.7],
+      ['DEMO-TV-0315', 'The Wheel of Time', 0.6],
+      ['DEMO-TV-0316', 'Sharp Objects', 0.5],
+      ['DEMO-TV-0317', 'The Last of Us', 0.9],
+      ['DEMO-TV-0318', 'Heartstopper', 0.6],
+      ['DEMO-TV-0319', 'Percy Jackson and the Olympians', 0.6],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:tv_show',
+      popularity,
+      age: readers,
+      gender: { male: -0.1, female: 0.1 },
+      bookOnly: true,
+      searchOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-FILM-0301', 'Where the Crawdads Sing', 0.6],
+      ['DEMO-FILM-0302', 'Crazy Rich Asians', 0.8],
+      ['DEMO-FILM-0303', 'Wonder', 0.7],
+      ['DEMO-FILM-0304', 'The Martian', 0.8],
+      ['DEMO-FILM-0305', 'It Ends with Us', 0.7],
+      ['DEMO-FILM-0306', 'Pride & Prejudice', 0.85],
+      ['DEMO-FILM-0307', 'The Hunger Games', 0.9],
+      ['DEMO-FILM-0308', 'Gone Girl', 0.9],
+    ] as const
+  ).map(
+    ([id, name, popularity]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:movie',
+      popularity,
+      age: readers,
+      gender: { male: -0.1, female: 0.1 },
+      bookOnly: true,
+      searchOnly: true,
+    }),
+  ),
+  ...(
+    [
+      ['DEMO-BRAND-0301', 'Page Turner Coffee', 0.4, 'beverage'],
+      ['DEMO-BRAND-0302', 'Lantern Tea', 0.3, 'beverage'],
+      ['DEMO-BRAND-0303', 'Spine Mobile', 0.35, 'telecom'],
+    ] as const
+  ).map(
+    ([id, name, popularity, tag]): DemoEntity => ({
+      id,
+      name,
+      type: 'urn:entity:brand',
+      popularity,
+      age: readers,
+      gender: { male: 0, female: 0 },
+      tags: [tag],
+      bookOnly: true,
+    }),
+  ),
+  demoPlace('DEMO-PLACE-0301', 'Terra Kulture', 'Lagos', 'book_store'),
+  demoPlace('DEMO-PLACE-0302', 'The Jazzhole', 'Lagos', 'book_store'),
+  demoPlace('DEMO-PLACE-0303', 'Skoob Books', 'London', 'book_store'),
+  demoPlace('DEMO-PLACE-0304', 'Housmans Bookshop', 'London', 'book_store'),
+  demoPlace('DEMO-PLACE-0305', 'Books Are Magic', 'New York', 'book_store'),
+  demoPlace('DEMO-PLACE-0306', 'Lagos Public Library', 'Lagos', 'library'),
+];
+
+export const demoEntities: DemoEntity[] = [
+  ...baseEntities,
+  ...gameFanBase,
+  ...podcastFanBase,
+  ...bookFanBase,
+];
 
 const demoTagNames: Record<string, string[]> = {
   theme: ['Ambition', 'Family', 'Power', 'Loyalty', 'Survival', 'Community'],
@@ -800,11 +1088,19 @@ function discovered(params: URLSearchParams): Response {
   const heldTypes = signal.map((id) => demoEntities.find((e) => e.id === id)?.type);
   const aboutGames = heldTypes.includes(GAME);
   const aboutPodcasts = !aboutGames && heldTypes.includes(PODCAST);
+  const aboutBooks =
+    !aboutGames &&
+    !aboutPodcasts &&
+    signal.some((id) => demoEntities.find((e) => e.id === id)?.bookOnly);
+  const yearFrom = Number(params.get('filter.publication_year.min') ?? 0);
   const results = demoEntities
     .filter((e) => e.type === params.get('filter.type'))
     .filter((e) => !e.searchOnly)
     .filter((e) => !e.gameOnly || aboutGames)
     .filter((e) => !e.podcastOnly || aboutPodcasts)
+    .filter((e) => !e.bookOnly || aboutBooks)
+    .filter((e) => !aboutBooks || e.bookOnly || e.type === 'urn:entity:place')
+    .filter((e) => !yearFrom || Number(e.properties?.publication_year ?? 0) >= yearFrom)
     .filter((e) => !aboutPodcasts || e.podcastOnly || e.type === 'urn:entity:place')
     .filter((e) => !aboutGames || e.gameOnly || e.type === GAME || e.type === 'urn:entity:place')
     .filter((e) => !signal.includes(e.id) && !excluded.includes(e.id))
