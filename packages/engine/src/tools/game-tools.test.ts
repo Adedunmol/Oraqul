@@ -65,7 +65,7 @@ describe('findTaste', () => {
     const { data } = await tools.findTaste.run(context(), {
       entityIds: ['G1'],
       type: 'urn:entity:videogame',
-      tags: ['urn:tag:genre:qloo:roguelike'],
+      tags: ['urn:tag:genre:media:roguelike'],
     });
     expect(sentParams(fetch).get('filter.type')).toBe('urn:entity:videogame');
     expect(findTasteOutputSchema.parse(data).candidates.map((c) => c.name)).toEqual([

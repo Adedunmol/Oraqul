@@ -54,7 +54,7 @@ export const compareAudiences = defineTool({
   input: z.object({
     entityIds: z.array(z.string()).min(1),
     /** What the rivals are. Must match their entity type, or Qloo scores none of them. */
-    type: z.enum(compareTypes),
+    type: z.enum(compareTypes).default('urn:entity:movie'),
     rivals: z.array(z.string()).min(1).max(12),
     /** Off when the caller scores many groups and cannot spend a rerun per anchor on each. */
     leaveOneOut: z.boolean().default(true),
