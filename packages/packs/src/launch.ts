@@ -34,6 +34,11 @@ export const SECTION_TITLES = {
   guests: 'Guests',
   live: 'Live shows',
   video: 'Video and clips',
+  comps: 'Comp titles',
+  adaptation: 'Screen and audio angles',
+  retail: 'Retail and pre-orders',
+  audio: 'Audiobook',
+  schools: 'Schools and libraries',
 } as const satisfies Record<LaunchSectionKey, string>;
 
 /**
@@ -73,6 +78,7 @@ export const BRAND_CATEGORIES = ['telecom', 'beverage'];
  */
 export const BASELINE_BRANDS = ['Coca-Cola', 'Nike', "McDonald's"];
 export const BASELINE_PODCASTS = ['The Joe Rogan Experience', 'Crime Junkie', 'Serial'];
+export const BASELINE_BOOKS = ['Where the Crawdads Sing', 'Atomic Habits', 'Gone Girl'];
 
 /** Most calls one query may make, so one module cannot spend the run's budget. */
 export const MAX_CITIES_PER_QUERY = 5;

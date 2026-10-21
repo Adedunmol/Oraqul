@@ -10,6 +10,7 @@ export { agentSystemPrompt, BASE_PROMPT, REFUSALS, refusalFor } from './base-pro
 export type { CategoryPack } from './types';
 
 export const packs: Record<Category, CategoryPack> = { film, music, books, podcasts, games };
+export * as booksPlan from './books/plan';
 export { demoProjects } from './demo';
 export * as filmPlan from './film/plan';
 export * as gamesPlan from './games/plan';
