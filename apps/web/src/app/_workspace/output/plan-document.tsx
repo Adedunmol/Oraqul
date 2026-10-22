@@ -69,6 +69,8 @@ export function PlanDocument({
           </ol>
         </section>
       ) : null}
+      <Review plan={plan} />
+      <Assumed plan={plan} />
       {rest.map((section) => (
         <section key={section.key} className="flex flex-col gap-3">
           <h2 className="font-display text-[20px] font-semibold tracking-[-0.02em]">
@@ -85,6 +87,73 @@ export function PlanDocument({
         </section>
       ))}
     </div>
+  );
+}
+
+/**
+ * What the red team made of the saved draft. A plan that passed gets a quiet line; one that did
+ * not lists what is still open and what the person could give to settle it.
+ */
+function Review({ plan }: { plan: LaunchPlan }) {
+  const review = plan.review;
+  if (!review || review.status === 'unchecked') return null;
+  const passed = review.status === 'passed';
+  const open = review.rounds.at(-1)?.issues.filter((i) => i.blocking) ?? [];
+  const drafts = review.rounds.length;
+  return (
+    <section aria-labelledby="review" className="flex flex-col gap-2">
+      <h2 id="review" className="sr-only">
+        Review
+      </h2>
+      <p
+        className={`inline-flex w-fit items-center gap-1.5 rounded-md px-[9px] py-0.5 text-xs font-semibold ${passed ? 'bg-holds-bg text-holds' : 'bg-weak-bg text-weak'}`}
+      >
+        <span aria-hidden="true">{passed ? '✓' : '◐'}</span>
+        {passed
+          ? `Reviewed, passed${drafts > 1 ? ` after ${drafts} drafts` : ''}`
+          : `Reviewed, ${open.length} open ${open.length === 1 ? 'point' : 'points'}`}
+      </p>
+      {!passed && open.length > 0 ? (
+        <ul className="flex flex-col gap-1 text-[14px] leading-[1.6] text-muted">
+          {open.map((issue) => (
+            <li key={`${issue.check}-${issue.text}`}>{issue.text}</li>
+          ))}
+        </ul>
+      ) : null}
+      {review.next.length > 0 ? (
+        <div className="flex flex-col gap-1">
+          <h3 className="text-[14px] font-semibold">To make this stronger</h3>
+          <ul className="flex flex-col gap-1 text-[14px] leading-[1.6] text-muted">
+            {review.next.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/** What the plan filled in because the brief did not say it, so a wrong guess is easy to spot. */
+function Assumed({ plan }: { plan: LaunchPlan }) {
+  const assumed = plan.understanding?.assumed ?? [];
+  if (assumed.length === 0) return null;
+  return (
+    <section aria-labelledby="assumed" className="flex flex-col gap-2">
+      <h2
+        id="assumed"
+        className="font-display text-[13px] font-semibold tracking-[0.04em] text-muted uppercase"
+      >
+        Assumed
+      </h2>
+      <ul className="flex flex-col gap-1 text-[14px] leading-[1.6] text-muted">
+        {assumed.map((a) => (
+          <li key={`${a.what}-${a.value}`}>
+            <span className="text-ink">{a.value}</span>, because {a.why}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

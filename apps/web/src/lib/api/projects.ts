@@ -6,6 +6,8 @@ import {
   createProjectResultSchema,
   createThreadResultSchema,
   emptyResponseSchema,
+  type MemoryItem,
+  memoryItemSchema,
   type PinnedProjects,
   type PostMessage,
   pinnedProjectsSchema,
@@ -26,13 +28,31 @@ export function createProject(
   );
 }
 
-export async function createThread(projectId: string): Promise<string> {
+/** A chat on the project's memory and current plan, or `fresh`: standalone, knowing only the name. */
+export async function createThread(projectId: string, fresh: boolean): Promise<string> {
   const { threadId } = await clientRequest(
     `/projects/${projectId}/threads`,
-    { method: 'POST' },
+    { method: 'POST', body: { fresh } },
     createThreadResultSchema,
   );
   return threadId;
+}
+
+/** Rewrites one of the project's notes. A plan pointer is kept by the agent and cannot be edited. */
+export function editMemory(projectId: string, itemId: string, text: string): Promise<MemoryItem> {
+  return clientRequest(
+    `/projects/${projectId}/memory/${itemId}`,
+    { method: 'PUT', body: { text } },
+    memoryItemSchema,
+  );
+}
+
+export function forgetMemory(projectId: string, itemId: string): Promise<void> {
+  return clientRequest(
+    `/projects/${projectId}/memory/${itemId}`,
+    { method: 'DELETE' },
+    emptyResponseSchema,
+  );
 }
 
 /** Turns an output's read only link on or off. The address stays the same once it exists. */

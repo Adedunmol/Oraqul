@@ -42,6 +42,10 @@ import { QuestionCard } from './question-card';
 const seen = new Map<string, number>();
 
 /** The demo thread's chat, for the output page's dock while outputs are still demo data. */
+// User messages after which a chat says older ones are summarised. The server folds the older
+// part down once more than 40 lines have not been summarised, so this is a little under that.
+const LONG_CHAT = 15;
+
 export function ChatPanel({
   detail,
   canEdit,
@@ -210,6 +214,12 @@ export function ChatView({
           </div>
         ) : null}
         {notice}
+        {items.filter((i) => i.role === 'user').length >= LONG_CHAT ? (
+          <p className="text-xs text-muted">
+            This chat is getting long, so older messages are summarised and replies may miss detail.
+            For a clean slate, start a new chat.
+          </p>
+        ) : null}
         {canEdit ? null : (
           <p className="text-xs text-muted">
             Viewers can read outputs and open evidence. Editors and owners can chat.
@@ -307,7 +317,8 @@ function Item({
     case 'context':
       return (
         <p className={`text-[13px] text-muted ${isNew ? 'item-new' : ''}`}>
-          Using: {item.items.map((i) => i.label).join(' · ')}
+          {item.items.every((i) => i.source === 'saved') ? 'Remembered' : 'Using'}:{' '}
+          {item.items.map((i) => i.label).join(' · ')}
         </p>
       );
   }
