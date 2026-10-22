@@ -169,7 +169,7 @@ export interface KindProfile {
   measures: readonly string[];
   /**
    * Shares for a Budget split, labelled a starting split in the plan. Amounts are computed by
-   * code. TODO(verify): with a publisher.
+   * code. Chosen conventions, not measured.
    */
   budget: readonly { line: string; share: number }[];
   /** Used when the brief names none. */
@@ -499,7 +499,8 @@ export function beatsFor(kind: LaunchKind, named: readonly Platform[]): Beat[] {
  * Rules of the stores and platforms that shape a calendar. Launch knowledge, never Qloo data, so a
  * line that states one is playbook. Dates of festivals, sales and showcases are not here: they
  * change every year and come from research.
- * TODO(verify): each rule against Steamworks and the platform portals before a plan leads with it.
+ * Checked against Steamworks: the Coming Soon, release date lock and discount rules. The Next Fest
+ * deadline varies by edition. The console rules are not checked against the platform portals.
  */
 export const PLATFORM_RULES: {
   key: string;
@@ -511,25 +512,25 @@ export const PLATFORM_RULES: {
     key: 'steam-coming-soon',
     platforms: ['pc'],
     text: 'The Steam Coming Soon page must be live at least two weeks before release. Allow about four weeks in practice, since the page needs a review first.',
-    source: 'https://www.steampageanalyzer.com/blog/steam-launch-strategy',
+    source: 'https://partner.steamgames.com/doc/store/coming_soon',
   },
   {
     key: 'steam-date-lock',
     platforms: ['pc'],
     text: 'Steam locks the release date 14 days out. A change inside that window means contacting Valve.',
-    source: 'https://www.steampageanalyzer.com/blog/steam-launch-strategy',
+    source: 'https://partner.steamgames.com/doc/store/release_dates',
   },
   {
     key: 'steam-festival',
     platforms: ['pc'],
-    text: 'A title can join a Steam Next Fest once, and registration closes about seven weeks before the festival. Pre-festival wishlists decide how much it adds.',
+    text: 'Registration for a Steam Next Fest closes about six to seven weeks before the festival, and the exact date is on the Steamworks page for each edition. Pre-festival wishlists decide how much it adds.',
     source: 'https://www.steampageanalyzer.com/blog/steam-launch-strategy',
   },
   {
     key: 'steam-sales',
     platforms: ['pc'],
-    text: 'Avoid releasing at or just before a seasonal sale starts, and wait out the 30-day cooldown after a launch discount.',
-    source: 'https://www.steampageanalyzer.com/blog/steam-launch-strategy',
+    text: 'A game cannot join a Steam seasonal sale in its first 30 days after release, so a release in the month before a sale you want to join misses it. Other discounts need 30 days between them.',
+    source: 'https://partner.steamgames.com/doc/marketing/discounts',
   },
   {
     key: 'console-cert',

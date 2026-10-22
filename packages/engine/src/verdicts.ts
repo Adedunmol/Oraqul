@@ -67,7 +67,10 @@ export function placeVerdict(place: {
   cells: number;
 }): VerdictResult {
   if (place.status === 'unknown_place') {
-    return { verdict: 'cant', why: 'This city is not in the city table, so it was not tested.' };
+    return {
+      verdict: 'cant',
+      why: 'Qloo has no place record for this city, so it was not tested.',
+    };
   }
   if (place.status === 'not_ranked' || place.lift === null) {
     return {
@@ -83,10 +86,11 @@ export function placeVerdict(place: {
   return { verdict: 'breaks', why: `The audience is thinner here than elsewhere (${shown}).` };
 }
 
-// Spec §5.4. How close the team's tour order scores to the best order. Starting values,
-// TODO(verify) on a live run before a plan leads with them.
-const ROUTE_HOLDS = 0.95;
-const ROUTE_WEAK = 0.85;
+// Spec §5.4. How close the team's tour order scores to the best order. On live Afrobeats lifts
+// (Lagos, London, Accra, Atlanta) the 24 possible orders score 0.88 to 1.00 of the best, so the
+// edges split them roughly in thirds; at 0.85 the worst order could never break.
+const ROUTE_HOLDS = 0.97;
+const ROUTE_WEAK = 0.93;
 
 /** Spec §5.4: the team's route score as a share of the best order's. */
 export function routeVerdict(actual: number, best: number): VerdictResult {

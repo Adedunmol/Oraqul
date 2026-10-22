@@ -85,8 +85,10 @@ const TAB_NOTE: Record<OutputTabKey, string> = {
   date: 'How each date overlaps with rival releases. Lower overlap is better.',
   partners: 'Drafts for partners. Nothing is sent from here.',
   territories: 'Where to open first, ranked by how strongly each territory fits.',
-  route: 'The tour stops in order, with how well each city fits.',
-  supportacts: 'How each support act fits in each city on the route.',
+  route: 'The tour stops in your order, scored against the strongest order.',
+  supportacts: 'The acts Qloo ranks highest with your audience in each tour city.',
+  contrast:
+    'What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it.',
   shelf: 'The comparable titles whose readers are closest to yours.',
   bridge: 'Screen and audio titles your readers also love.',
   topics: 'Topics your listeners like that rival shows do not own.',
@@ -218,7 +220,7 @@ function ruleOf(f: FoundLine): string {
     case 'assumptions':
       return f.it.why;
     case 'dates':
-      return `Shared audience between your launch and the rival is ${f.it.overlap}. Above 60 is risky, 35 to 60 is moderate, below 35 is low. You supplied the rival's date.`;
+      return `Shared audience between your launch and the rival is ${f.it.overlap}. Above 85 is risky, 70 to 85 is moderate, below 70 is low. You supplied the rival's date.`;
     case 'places':
       return `Lift is the audience score for ${f.it.name} divided by the score for a neutral audience, taken from one ranking call so the scores can be compared. Above 1.5 is strong. Confidence is lower where Qloo has few entities for the title or its comps.`;
     case 'audience':
@@ -251,8 +253,8 @@ function liftBand(lift: number): Brief['places'][number]['band'] {
 }
 
 function overlapBand(overlap: number): Brief['dates'][number]['band'] {
-  if (overlap >= 60) return 'high';
-  if (overlap >= 35) return 'moderate';
+  if (overlap > 85) return 'high';
+  if (overlap >= 70) return 'moderate';
   return 'low';
 }
 

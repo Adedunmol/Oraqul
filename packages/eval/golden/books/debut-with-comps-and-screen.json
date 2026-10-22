@@ -45,6 +45,8 @@
       "f-shelf": ["Dust and Ink", "Salt Season", "A House of Many Rooms"],
       "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
       "f-bridge-series": ["Big Little Lies", "Normal People", "Conversations with Friends"],
+      "f-film-consult-audience-normal-people": ["Normal People"],
+      "f-film-consult-places-normal-people": ["London", "Lagos"],
       "f-screen-normal-people": ["Normal People"],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
       "f-brands-beverage-lagos": ["Page Turner Coffee", "Lantern Tea"],

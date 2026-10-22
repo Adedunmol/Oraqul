@@ -82,7 +82,8 @@ describe('isNearEdge', () => {
     ['lift', 1.45, true],
     ['fit', 72, true],
     ['fit', 71, false],
-    ['overlap', 38, true],
+    ['overlap', 72, true],
+    ['overlap', 78, false],
   ] as const)('%s %s is near an edge: %s', (kind, value, near) => {
     expect(isNearEdge(kind, value)).toBe(near);
   });

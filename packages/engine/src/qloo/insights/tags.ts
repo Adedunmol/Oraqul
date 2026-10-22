@@ -4,9 +4,8 @@ import { type TagInsightsResponse, tagInsightsResponseSchema } from '../response
 import type { DiversifyBy } from '../urns';
 import type { EntityBaseParams, SignalParams } from './filters';
 
-// Parameters from the taste analysis guide. An entity signal works.
-// `filter.tag.types`, `filter.parents.types` and the location signal are not yet tried live.
-// TODO(verify) which of those Qloo applies.
+// Parameters from the taste analysis guide. An entity signal, `filter.tag.types`,
+// `filter.parents.types` and both location signals all change the tags returned (live probe).
 export type TagInsightsRequest = SignalParams &
   Pick<EntityBaseParams, 'bias.trends' | 'take' | 'page' | 'offset'> & {
     /** A tag namespace such as `urn:tag:keyword:media`, from `lookup.tagTypes`. */

@@ -54,8 +54,8 @@ Qloo does not supply everything Oraqul needs, so Oraqul has its own layer on top
 
 * **Lift over a baseline.** Raw affinity follows popularity, so every city, segment or brand score is shown as lift over a neutral audience in the same place.
 * **Single ranking call.** Scores from separate calls are not comparable, so rival overlap, city ranking and scenario diffs come from one call.
-* **Derived signals.** Momentum, loyalty versus variety, partner fit, segment fit by age and gender split, rival overlap, and premium tolerance, which is a taste proxy and never a claim about willingness to pay.
-* **Held back.** The values signal and the early adopter score stay out of the headline until they can be validated, and are labelled exploratory if shown.
+* **Derived signals.** Partner fit, segment fit by age and gender split, and rival overlap. Each is a published formula over values Qloo returned in the same run.
+* **Not built.** Momentum (the newest trend points showed no velocity for the types that answer), loyalty versus variety, premium tolerance, the values signal and the early adopter score. None is shown until it can be validated.
 
 Qloo is a taste graph, not a catalogue of releases. A launch is usually not in it yet, and a live title can still be a weak signal, so Oraqul does not look for the title. It describes the launch by what surrounds it (comparable titles, talent, themes and tags, partner brands, places) and asks Qloo about that. It can also test taste across domains, for example whether the fans of top selling musicians also read books like this one. Each is scored in one call against titles of other kinds, because Qloo always returns a score and a low one means little alone. A clear gap above the baseline is evidence for. A low score is read as weak only against that baseline.
 
@@ -82,13 +82,13 @@ The output is always a direction: holds, weak, breaks, or could not test.
 
 * There is one category agent per category: Film and series, Music, Books, Podcasts and Games. A thin router reads the title, category and job from the first message and hands the project to that agent. The router speaks only to ask what it could not read, or to decline an off-topic request.
 * The five agents share one toolbox: the Qloo client, the verdict engine, and the receipt writer. They differ in instructions, assumption checklist, scenarios and output schema.
-* Category agents do not call each other freely. The one bounded exception is a book with a screen adaptation, where the Books agent can ask the Film agent one question and cite the answer as a receipt. The Books launch plan does not need it: its screen angle is the series, films and podcasts Qloo scores for the book's readers, each with a receipt of its own.
-* The language model chooses its tools. Every Qloo call and every scoring function is a tool.
+* Category agents do not call each other. The one bounded exception is a book with a screen title the team named: the Books launch asks the Film side who watches that title and where, and cites the answer as findings with receipts, beside the series, films and podcasts Qloo scores for the book's readers.
+* Plans, reports and the briefs on them run a fixed pipeline, so the same input always runs the same tests. The model reads the request, picks queries from the category's catalog, and writes from findings already computed; code asks Qloo and computes every number. Only conversation (follow-up answers and standalone chats) lets the model choose the next tool call. Every Qloo call and every scoring function is a tool either way.
 * It tries to find a better plan, not only score the one it was given.
-* When an entity is ambiguous, it asks with a question card, for example whether the user means the artist or the documentary.
-* It handles dead ends by searching alternatives and saying so.
+* When a title matches several entities, code settles it (the launch's country, then popularity) and the plan says which it used. A card is asked only when the title, category or job cannot be read.
+* It handles dead ends by proposing comps, falling back to the genre, and saying so; a run with nothing to plan from says so and stops.
 * It stops when confident, or says what input would change the verdict.
-* Follow ups rerun only what changed.
+* A what-if reruns the plan with the change. It does not yet rerun only the queries that changed.
 * The engine is also exposed as an MCP server so other agents can call it.
 
 ## Product structure
@@ -99,15 +99,15 @@ Media and entertainment is the one industry Oraqul serves today. Film and series
 * A project belongs to exactly one category, because most people will not need several categories in one project. The agent reads the category from the first message, so people do not pick it first: categories are a filter on the project list, and a category's list has a help button that opens what Oraqul tests there, where it is less certain, what the team must bring, and the tools it has.
 * Chat is the entry point. The person says what they want in a few words and the agent does the rest. The title, the category and the job are never guessed: when one is unclear the agent says what it understood and asks one question card with close options, and the person can type their own answer. It also asks which Qloo title is theirs. Everything else it guesses, says what it guessed in one line, and lets the person correct it by typing. A request that has nothing to do with launches is declined in one line. The questions, suggested next steps and results format change with the category.
 * A project is the workspace: its chat, its other chats beside it, and the current plan on top. A project holds several chats (threads in code). A new one builds on the current plan and says so; the person can type "start fresh" or "use an older plan" instead.
-* Every agent output states its bottom line in the chat and opens its takeaway card, up to three moves with their receipts, in one click, then opens its own details page with only the tabs that fit it. Common tabs are Summary, Audience, Assumptions (with what could not be tested at the end), Plan (with its risks at the end) and Evidence. Each category adds its own: territory ladder for film, tour route and support act grid for music, comp shelf and adaptation bridge for books, topic map for podcasts, fan base bridge and regions for games.
-* After each output the agent suggests up to three next steps built from it, such as a scenario not yet tried or adding results. Every capability is something you can ask for in the chat, not a separate screen.
+* Every agent output states its bottom line in the chat and opens its takeaway card, up to three moves with their receipts, in one click, then opens its own details page with only the tabs that fit it. Common tabs are Summary, Audience, Assumptions (with what could not be tested at the end), Plan (with its risks at the end) and Evidence. Books, Podcasts and Games add their own tabs when there is something to show: comp shelf and adaptation bridge for books, topic map and fan base for podcasts, fan base bridge for games, and regions for all three. Film plans add Territories (one plan per territory), Music plans add Tour route and Support acts, and every plan has With and without Qloo, which sets the team's own order and beliefs beside what the data found.
+* Every capability is something you can ask for in the chat, not a separate screen. After a plan the chat offers up to three next steps from the project's latest plan: a what-if on the lead city, a rival date check, a partner brief and Fix this plan. A report's one step is Fix this plan.
 * Every line has a receipt. Charts have a table view.
 * Versions can be compared. A plan exports as PDF, Word or Markdown, with grounded lines footnoted to their findings, playbook lines labelled and an evidence appendix.
 * A read only share link can be turned off.
 * The overview, the team's home after sign in, opens with a message box: "What are you working on?". Under it, three optional hints (make a plan, check my plan, fix my plan) change the prompt and say what to bring. The project is made from the first message, never from an empty form.
 * Every output tab opens with one plain sentence on what it shows, and output pages show four main tabs with the rest under More.
 * Search on Ctrl K or Cmd K finds categories, projects, outputs and actions.
-* Signed out visitors see sign in and an example answer. Live runs need an account, so the demo shows what the product really does.
+* Signed out visitors see sign in and example answers on invented data, labelled as such. Live runs need an account.
 * On mobile, only the core stays: chat, outputs and their details.
 
 ## How it looks and reads
@@ -116,7 +116,7 @@ Calm and clear, a little cinematic. Neutral surfaces with no tint, a near black 
 
 ## Every market
 
-Oraqul is a global product. A title from any market is a normal entity, and cities from every region are ranked in one list by lift, whether the release is a Korean series, a Mexican album or a Nigerian novel. Coverage differs by place, and it is tested and recorded in `docs/backend/qloo.md` (Nigerian film is the first measured case). Where data for a place is too thin to rank, the product says so plainly and lowers its confidence.
+Oraqul is a global product. A title from any market is a normal entity, and cities from every region are ranked in one list by lift, whether the release is a Korean series, a Mexican album or a Nigerian novel. Any city can be ranked: the ones in our table directly, and every other city through the place record Qloo holds for it. Coverage differs by place, and it is tested and recorded in `docs/backend/qloo.md` (Nigerian film is the first measured case). Where data for a place is too thin to rank, the product says so plainly and lowers its confidence.
 
 ## What makes it different
 

@@ -291,8 +291,9 @@ Tab notes (keep these in the product):
 * Date check: How each date overlaps with rival releases. Lower overlap is better.
 * Partner briefs: Drafts for partners. Nothing is sent from here.
 * Territories: Where to open first, ranked by how strongly each territory fits.
-* Tour route: The tour stops in order, with how well each city fits.
-* Support acts: How each support act fits in each city on the route.
+* Tour route: The tour stops in your order, scored against the strongest order.
+* Support acts: The acts Qloo ranks highest with your audience in each tour city.
+* With and without Qloo: What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it.
 * Comp shelf: The comparable titles whose readers are closest to yours.
 * Adaptation bridge: Screen and audio titles your readers also love.
 * Topic map: Topics your listeners like that rival shows do not own.

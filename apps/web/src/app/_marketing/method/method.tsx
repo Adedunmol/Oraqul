@@ -155,7 +155,7 @@ export function MethodBody() {
         <Block id="overlap" title="Rival overlap">
           <p className={prose}>
             The shared audience between your title and a rival, from one comparison call. Lower is
-            better: below 35 is low, 35 to 60 is moderate, and above 60 is risky.
+            better: below 70 is low, 70 to 85 is moderate, and above 85 is risky.
           </p>
           <div className="rounded-2xl bg-card p-[clamp(18px,3vw,28px)]">
             <Scale
@@ -164,9 +164,9 @@ export function MethodBody() {
               value={28}
               format={(v) => String(Math.round(v))}
               zones={[
-                { to: 35, label: 'Low below 35', fill: 'bg-holds-bg' },
-                { to: 60, label: 'Moderate 35 to 60', fill: 'bg-surface2' },
-                { to: 100, label: 'Risky above 60', fill: 'bg-breaks-bg' },
+                { to: 70, label: 'Low below 70', fill: 'bg-holds-bg' },
+                { to: 85, label: 'Moderate 70 to 85', fill: 'bg-surface2' },
+                { to: 100, label: 'Risky above 85', fill: 'bg-breaks-bg' },
               ]}
             />
           </div>

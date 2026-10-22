@@ -833,8 +833,8 @@ const releaseYear = z.looseObject({ release_year: z.number().optional() });
  * No comp was found by name, so the brief's genre stands in. Qloo lists the films (then series)
  * of that genre tag, from the launch's country, and the best of them become the comps. They are
  * labelled as found from the genre so the plan never presents them as the team's choice.
- * TODO(verify): `signal.interests.tags` with `filter.release_country` on movie and tv_show is not
- * yet checked live in docs/backend/qloo.md.
+ * `signal.interests.tags` with `filter.release_country` is verified live on movie and tv_show
+ * (docs/backend/qloo.md).
  */
 export async function findGenreComps(
   deps: {

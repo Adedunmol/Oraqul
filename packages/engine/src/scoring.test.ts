@@ -44,10 +44,10 @@ describe('fitBand', () => {
 
 describe('overlapBand', () => {
   it.each([
-    [61, 'risky'],
-    [60, 'moderate'],
-    [35, 'moderate'],
-    [34, 'low'],
+    [86, 'risky'],
+    [85, 'moderate'],
+    [70, 'moderate'],
+    [69, 'low'],
   ] as const)('%s is %s', (value, band) => {
     expect(overlapBand(value)).toBe(band);
   });
@@ -111,7 +111,7 @@ describe('fitFromLift', () => {
 
 describe('overlapFromAffinity', () => {
   it('turns affinity into a 0 to 100 overlap', () => {
-    expect(overlapFromAffinity(0.614)).toBe(61);
-    expect(overlapBand(overlapFromAffinity(0.614))).toBe('risky');
+    expect(overlapFromAffinity(0.864)).toBe(86);
+    expect(overlapBand(overlapFromAffinity(0.864))).toBe('risky');
   });
 });

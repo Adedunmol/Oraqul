@@ -3,7 +3,7 @@ import type { LaunchModuleKey, LaunchSectionKey } from '@oraqul/schema';
 // The Podcasts query catalog (spec §4.4). The model picks from these and fills in their context;
 // code runs them, within the call budget, and turns each result into a finding.
 // Verified live on one true crime brief (2026-10-20, docs/backend/qloo.md), with
-// `qloo-podcasts-probes.ts`. TODO(verify): other subjects and markets.
+// `qloo-podcasts-probes.ts`. Other subjects and markets are not probed one by one; thin data shows as a gap.
 
 export const podcastsQueryKeys = [
   'audience',

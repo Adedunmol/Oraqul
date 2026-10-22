@@ -79,8 +79,8 @@ describe('rankPlaces', () => {
       status: 'unknown_place',
       confidence: 'lower',
     });
-    // The main call and one rerun per anchor.
-    expect(receipts).toHaveLength(4);
+    // The main call, one rerun per anchor, and one lookup that found no place named Atlantis.
+    expect(receipts).toHaveLength(5);
     expect(receipts[0]?.callId).toBe(out.receiptId);
   });
 
@@ -97,12 +97,13 @@ describe('rankPlaces', () => {
     expect(out.places.some((p) => p.why.includes('budget'))).toBe(true);
   });
 
-  it('makes no call when no city is in the table', async () => {
+  it('makes only the place lookup when Qloo cannot place any city', async () => {
     const { data, receipts } = await tools.rankPlaces.run(searched(), {
       entityIds: films,
       places: ['Atlantis'],
     });
-    expect(receipts).toEqual([]);
+    expect(receipts).toHaveLength(1);
+    expect(receipts[0]?.endpoint).toBe('/search');
     expect(rankPlacesOutputSchema.parse(data).receiptId).toBeNull();
   });
 });

@@ -3,7 +3,7 @@ import type { LaunchModuleKey, LaunchSectionKey } from '@oraqul/schema';
 // The Music query catalog (spec §4.2). The model picks from these and fills in their context; code
 // runs them, within the call budget, and turns each result into a finding.
 // Artist signals are checked live for one Afrobeats brief (docs/backend/qloo.md); other genres and
-// markets are TODO(verify).
+// markets are not probed one by one; thin data shows as a gap.
 
 export const musicQueryKeys = [
   'audience',

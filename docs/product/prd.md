@@ -101,8 +101,8 @@ Each category supplies its own inputs, query catalog, modules, assumption checkl
 
 | Category | Plan sections | Signature views | A launch that is out brings |
 |---|---|---|---|
-| Film and series | Core plus modules: partnerships (music, brands), creative placement, publicity, community, route, timeline, cadence, budget, measures, risks | Plan tab, territory ladder | Opening results by age and territory |
-| Music | Support acts, partner brands, press and playlists, cities | Tour route with route score, support act grid | Tickets and streams by city and age |
+| Film and series | Core plus modules: partnerships (music, brands), creative placement, publicity, community, route, timeline, cadence, budget, measures, risks | Plan tab, Territories (one plan per territory), With and without Qloo | Opening results by age and territory |
+| Music | Support acts, partner brands, press and playlists, cities | Plan tab, Tour route with route score, Support acts, With and without Qloo | Tickets and streams by city and age |
 | Books | Comp titles, partner brands, press and events, cities | Comp shelf, adaptation bridge | Pre orders by market and age |
 | Podcasts | Cross promotion shows, sponsors, guests, markets | Topic map against rival shows | Downloads by age and market |
 | Games | Fan base collabs, creators, press, regions | Fan base bridge, regions ranking | Wishlists by region and day 7 retention |

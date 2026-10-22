@@ -86,8 +86,8 @@ const labels = (): BriefLabels => ({
 /**
  * Stage 1 (spec §4.3). Each finding is streamed to the chat as it lands. Numbers and verdicts are
  * computed here or in the engine, never by the model.
- * TODO(verify): a game as the signal for every kind of media, the heatmap and the theme tags, with
- * `qloo-games-probes.ts`. Until docs/backend/qloo.md says so, none of these is verified for Games.
+ * A game as the signal for every kind of media, the heatmap and the theme tags are verified live
+ * with `qloo-games-probes.ts` (docs/backend/qloo.md).
  */
 export function ground(deps: GroundDeps, input: GroundInput): Promise<Grounded> {
   return groundLaunch(deps, input, {

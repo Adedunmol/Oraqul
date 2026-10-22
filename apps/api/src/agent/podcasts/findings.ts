@@ -82,8 +82,8 @@ const labels = (): BriefLabels => ({
 /**
  * Stage 1 (spec §4.4). Each finding is streamed to the chat as it lands. Numbers and verdicts are
  * computed here or in the engine, never by the model.
- * Verified live on one true crime brief (2026-10-20, docs/backend/qloo.md). TODO(verify): other
- * subjects and markets, with `qloo-podcasts-probes.ts`.
+ * Verified live on one true crime brief (2026-10-20, docs/backend/qloo.md). Other subjects and
+ * markets are not probed one by one: thin Qloo data shows as a gap or lower confidence.
  */
 export function ground(deps: GroundDeps, input: GroundInput): Promise<Grounded> {
   return groundLaunch(deps, input, {

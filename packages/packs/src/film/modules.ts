@@ -69,7 +69,7 @@ function ruleOut(key: LaunchModuleKey, input: ModuleInput): string | null {
 
 /**
  * Shares for a Budget split, labelled a starting split in the plan. Amounts are computed by code.
- * TODO(verify): with a distribution partner.
+ * Chosen conventions, not measured.
  */
 export const BUDGET_CONVENTION: { line: string; share: number }[] = [
   { line: 'Paid media and trailer placement', share: 0.4 },

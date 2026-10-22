@@ -147,9 +147,9 @@ await step('D29: excluding tags from an open list that drifts', async () => {
   const names2 = await list('tv_show', {
     'signal.interests.entities': comps,
     'filter.exclude.tags': [tag],
-    'operator.exclude.tags': 'union',
+    'operator.filter.exclude.tags': 'union',
   });
-  console.log(`excluded with operator.exclude.tags=union: ${names(names2)}`);
+  console.log(`excluded with operator.filter.exclude.tags=union: ${names(names2)}`);
 });
 
 console.log(`\nCalls made: ${qloo.callsUsed}`);

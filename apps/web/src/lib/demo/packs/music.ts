@@ -301,7 +301,7 @@ export const music: DemoPack = {
           date: 'Oct 17',
           wk: 0,
           rival: 'Kemi Adu, new album',
-          overlap: 68,
+          overlap: 88,
           rec: 'High overlap, risky',
         },
         {
@@ -317,7 +317,7 @@ export const music: DemoPack = {
           date: 'Oct 31',
           wk: 2,
           rival: 'Sadie Kline, tour announcement',
-          overlap: 47,
+          overlap: 77,
           rec: 'Moderate',
         },
       ],

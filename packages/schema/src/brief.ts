@@ -133,6 +133,8 @@ export const routeSummarySchema = z.object({
   bestScore: z.number(),
   bestOrder: z.array(z.string()),
   isBestOrder: z.boolean(),
+  /** The stops in the order the team plays them. Older outputs have none. */
+  order: z.array(z.string()).optional(),
 });
 
 export const fanMediums = ['music', 'series', 'anime', 'film', 'brand', 'podcast', 'game'] as const;

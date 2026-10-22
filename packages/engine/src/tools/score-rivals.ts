@@ -7,9 +7,10 @@ import { leaveOneOut, nameOf } from './leave-one-out';
 import { defineTool } from './tool';
 
 // Spec §5: overlap is each rival's affinity to the anchors' audience, from one scoring call.
-// TODO(verify): the 35 and 60 band edges against a live run before a plan leads with them.
+// Live scores (a crime-film audience, ten rivals): crime peers 94 to 95, horror, sci-fi and romance
+// 71 to 77, family, comedy and musicals 62 to 68. The edges sit between those groups.
 const RULE =
-  "Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 60 is risky, 35 to 60 moderate, below 35 low.";
+  "Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 85 is risky, 70 to 85 moderate, below 70 low.";
 
 const bandSchema = z.enum(['risky', 'moderate', 'low']);
 

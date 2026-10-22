@@ -72,9 +72,9 @@ export const PODCAST_GENRES: { match: RegExp; phrase: string }[] = [
 export const BRAND_CATEGORIES = ['telecom', 'beverage'];
 
 /**
- * Mass-market names a named partner is scored against, as a confidence aid.
- * TODO(verify): that each name resolves to one exact match on the live host. One that does not
- * is left out of the baseline for that run.
+ * Mass-market names a named partner is scored against, as a confidence aid. Each name resolves to
+ * one exact match on the live host (checked); one that stops doing so is left out of the baseline
+ * for that run.
  */
 export const BASELINE_BRANDS = ['Coca-Cola', 'Nike', "McDonald's"];
 export const BASELINE_PODCASTS = ['The Joe Rogan Experience', 'Crime Junkie', 'Serial'];

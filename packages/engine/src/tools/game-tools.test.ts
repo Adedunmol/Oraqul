@@ -24,7 +24,7 @@ describe('scoreRivals', () => {
         success: true,
         results: {
           entities: [
-            { entity_id: 'G2', name: 'Rival Quest', query: { affinity: 0.7 } },
+            { entity_id: 'G2', name: 'Rival Quest', query: { affinity: 0.9 } },
             { entity_id: 'G3', name: 'Far Away', query: { affinity: 0.1 } },
           ],
         },
@@ -40,7 +40,7 @@ describe('scoreRivals', () => {
     expect(sentParams(fetch).get('filter.type')).toBe('urn:entity:videogame');
     const out = scoreRivalsOutputSchema.parse(data);
     expect(out.rivals.map((r) => [r.name, r.overlap, r.band])).toEqual([
-      ['Rival Quest', 70, 'risky'],
+      ['Rival Quest', 90, 'risky'],
       ['Far Away', 10, 'low'],
     ]);
   });

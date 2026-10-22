@@ -590,14 +590,14 @@ export function DateTab() {
           </div>
         </div>
         <div className="mt-2.5 flex flex-wrap gap-3.5 text-[13px]">
-          <span className="rounded-md bg-holds-bg px-2 text-holds">✓ Low overlap, under 35</span>
-          <span className="rounded-md bg-weak-bg px-2 text-weak">◐ Moderate, 35 to 60</span>
-          <span className="rounded-md bg-breaks-bg px-2 text-breaks">✕ High, above 60</span>
+          <span className="rounded-md bg-holds-bg px-2 text-holds">✓ Low overlap, under 70</span>
+          <span className="rounded-md bg-weak-bg px-2 text-weak">◐ Moderate, 70 to 85</span>
+          <span className="rounded-md bg-breaks-bg px-2 text-breaks">✕ High, above 85</span>
         </div>
       </ChartCard>
       <ChartCard
         title="Shared audience with each rival"
-        note="Above 60 is risky, 35 to 60 moderate, below 35 low."
+        note="Above 85 is risky, 70 to 85 moderate, below 70 low."
         table={table}
       >
         <HBars

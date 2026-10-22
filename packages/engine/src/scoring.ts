@@ -25,8 +25,8 @@ export function fitBand(fit: number): FitBand {
 }
 
 export function overlapBand(overlap: number): OverlapBand {
-  if (overlap > 60) return 'risky';
-  if (overlap >= 35) return 'moderate';
+  if (overlap > 85) return 'risky';
+  if (overlap >= 70) return 'moderate';
   return 'low';
 }
 
@@ -63,7 +63,7 @@ export function bestRoute(stops: RouteStop[]): { order: string[]; score: number 
 export const bandEdges = {
   lift: { edges: [1.2, 1.5], within: 0.05 },
   fit: { edges: [50, 75], within: 3 },
-  overlap: { edges: [35, 60], within: 3 },
+  overlap: { edges: [70, 85], within: 3 },
 } as const;
 
 export function isNearEdge(kind: keyof typeof bandEdges, value: number): boolean {

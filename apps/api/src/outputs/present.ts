@@ -61,6 +61,10 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
   evidence: 'Every claim with its receipt. Use this to check any number.',
   changes: 'What moved compared with the plan before.',
   territories: 'Where to open first, ranked by how strongly each territory fits.',
+  contrast:
+    'What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it.',
+  route: 'The tour stops in your order, scored against the strongest order.',
+  supportacts: 'The acts Qloo ranks highest with your audience in each tour city.',
   fanbase: 'Which fan bases to collab with, ranked within each medium.',
   regions: 'Which regions fit the game, ranked by how strongly each does.',
   date: 'How each date overlaps with rival releases. Lower overlap is better.',
@@ -78,6 +82,9 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   evidence: 'Evidence',
   changes: 'What changed',
   territories: 'Territories',
+  contrast: 'With and without Qloo',
+  route: 'Tour route',
+  supportacts: 'Support acts',
   fanbase: 'Fan base bridge',
   regions: 'Regions',
   date: 'Rival date check',
@@ -210,6 +217,21 @@ export function presentOutput({
             ...(brief.places.length >= 2 ? (['regions'] as const) : []),
           ]
         : [];
+  // Film: one plan per territory, regrouped from the plan's own lines. Music: the tour route and the
+  // support acts, from the route score and the support findings. Every plan: what Qloo changed.
+  const planTabs: OutputTabKey[] = plan
+    ? [
+        ...(category === 'film' && brief.places.length >= 2 ? (['territories'] as const) : []),
+        ...(category === 'music'
+          ? [
+              ...(brief.route ? (['route'] as const) : []),
+              ...(plan.findings.some((f) => f.query === 'support')
+                ? (['supportacts'] as const)
+                : []),
+            ]
+          : []),
+      ]
+    : [];
   // A launch plan opens on the plan itself (PRD O1); the evidence sits behind it.
   const tabKeys: OutputTabKey[] = audit
     ? [
@@ -222,10 +244,28 @@ export function presentOutput({
       ]
     : plan
       ? row.kind === 'scenario'
-        ? ['plan', 'changes', ...gameTabs, 'audience', 'assumptions', 'evidence']
+        ? [
+            'plan',
+            'changes',
+            ...gameTabs,
+            ...planTabs,
+            'audience',
+            'assumptions',
+            'contrast',
+            'evidence',
+          ]
         : row.kind === 'fix' && report
-          ? ['plan', 'fixes', ...gameTabs, 'audience', 'assumptions', 'evidence']
-          : ['plan', ...gameTabs, 'audience', 'assumptions', 'evidence']
+          ? [
+              'plan',
+              'fixes',
+              ...gameTabs,
+              ...planTabs,
+              'audience',
+              'assumptions',
+              'contrast',
+              'evidence',
+            ]
+          : ['plan', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'contrast', 'evidence']
       : row.kind === 'date'
         ? ['summary', 'date', 'evidence']
         : row.kind === 'partner'

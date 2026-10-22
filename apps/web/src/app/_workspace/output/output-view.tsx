@@ -14,6 +14,7 @@ import { makeView, OutputContext, useOutputView } from './context';
 import { ExportMenu } from './export-menu';
 import { ExportModal, ShareModal } from './modals';
 import { ReceiptDrawer } from './receipt-drawer';
+import { ContrastTab } from './tabs-contrast';
 import {
   AssumptionsTab,
   AudienceTab,
@@ -73,6 +74,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   territories: TerritoriesTab,
   route: RouteTab,
   supportacts: SupportActsTab,
+  contrast: ContrastTab,
   shelf: ShelfTab,
   bridge: BridgeTab,
   topics: TopicsTab,

@@ -1,6 +1,8 @@
-// City boxes for ranking places in one heatmap call (qloo.md). Qloo has no verified way to turn a
-// city name into a shape, so a place not in this table is "cannot rank", never guessed.
-// TODO(verify): box size. Every city gets the same box around its centre so means compare.
+// City boxes for ranking places in one heatmap call (qloo.md). The table holds the cities we
+// placed by hand; any other city is looked up in Qloo as a locality and registered here for the
+// rest of the process (`place-lookup.ts`). A city Qloo cannot place is "cannot rank", never guessed.
+// Every city gets the same box around its centre so means compare. Large cities return 200 to 1,100
+// ranked cells in it and thin markets too few, which is why a city can be "not ranked".
 
 const HALF_LAT = 0.25;
 const HALF_LON = 0.3;
@@ -50,9 +52,28 @@ export interface CityBox {
   north: number;
 }
 
-/** The box for a city name, or null when the table does not have it. */
+// Cities looked up in Qloo, by lower case name. Public geography, so it is shared across runs.
+const looked = new Map<string, { centre: [number, number]; country: string | null }>();
+const MAX_LOOKED = 500;
+
+/** Keeps a city Qloo placed, so the box and the country are found the same way as a table city's. */
+export function registerPlace(
+  name: string,
+  centre: [number, number],
+  country: string | null,
+): void {
+  const key = name.trim().toLowerCase();
+  if (looked.size >= MAX_LOOKED && !looked.has(key)) {
+    const oldest = looked.keys().next().value;
+    if (oldest !== undefined) looked.delete(oldest);
+  }
+  looked.set(key, { centre, country });
+}
+
+/** The box for a city name, or null when it is neither in the table nor looked up in Qloo. */
 export function cityBox(name: string): CityBox | null {
-  const centre = centres[name.trim().toLowerCase()];
+  const key = name.trim().toLowerCase();
+  const centre = centres[key] ?? looked.get(key)?.centre;
   if (!centre) return null;
   const [lat, lon] = centre;
   return {
@@ -157,9 +178,10 @@ export function citiesInCountry(country: string): string[] {
   return cityNames().filter((c) => cityCountry(c)?.toLowerCase() === wanted);
 }
 
-/** The country a table city is in, or null for a city the table does not have. */
+/** The country a city is in, or null for a city that is neither in the table nor looked up. */
 export function cityCountry(name: string): string | null {
-  return countries[name.trim().toLowerCase()] ?? null;
+  const key = name.trim().toLowerCase();
+  return countries[key] ?? looked.get(key)?.country ?? null;
 }
 
 /**

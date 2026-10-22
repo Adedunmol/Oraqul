@@ -117,7 +117,7 @@ The model **never**: sets a number, verdict or confidence; names an entity that 
 | Gender verdict | that gender's affinity | holds >0.05, weak ±0.05, breaks <−0.05 | `verdicts.ts` |
 | Comps verdict | city order with each comp left out | holds if unchanged, weak if it rests on one | `verdicts.ts` |
 | Lift (partner brief only) | candidate affinity ÷ baseline mean affinity, same call | ≥1.5 strong, 1.2–1.5 usable | `engine/scoring.ts` |
-| Rival overlap | rival affinity × 100 | >60 risky, 35–60 moderate, <35 low | `scoring.ts` |
+| Rival overlap | rival affinity × 100 | >85 risky, 70–85 moderate, <70 low | `scoring.ts` |
 | Budget split | the pack's convention shares, times the budget when one is given | — | `film/config.ts`, pack `BUDGET_CONVENTION` |
 
 **Confidence** (spec §5.1) is set per call and carried by each finding. A plan's confidence is the lowest of the findings behind its bottom line.

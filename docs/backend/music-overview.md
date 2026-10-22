@@ -33,7 +33,7 @@ The two stages are Film's: code runs the queries and turns each result into a fi
 
 **Modules.** `pickModules` in the Music pack (spec §6.1): Tour route needs two or more cities, Support acts are dropped for a single, Budget split is always offered. A narrow ask names one of these.
 
-**Queries.** Support acts (artists per tour city in the sound's scene, the anchors excluded by `findTaste`), brands as in Film, podcasts, series and films for sync, neighbourhoods from the heatmap already pulled, and universities. There is no venue or theme query. An artist is a usable signal for each, checked live on one Afrobeats brief ([qloo.md](qloo.md)); other genres and markets are `TODO(verify)`.
+**Queries.** Support acts (artists per tour city in the sound's scene, the anchors excluded by `findTaste`), brands as in Film, podcasts, series and films for sync, neighbourhoods from the heatmap already pulled, and universities. There is no venue or theme query. An artist is a usable signal for each, checked live on one Afrobeats brief ([qloo.md](qloo.md)); Other genres and markets are not probed one by one: Qloo's coverage differs by genre and place, and thin data shows as "could not test" or lower confidence, never as a guess.
 
 **The tour order** (`routeFinding` in `music/findings.ts`). The cities that could be ranked, in the order the team wrote them, are scored with `routeScore` against `bestRoute` over the same lifts. The ratio becomes a verdict with `routeVerdict` (spec §5.4). It is stored as the assumption `a-route` and the finding `f-a-route`, whose entities are the strongest order. A weak or broken order keeps the team's order and offers the other beside it; it never says to drop a city.
 

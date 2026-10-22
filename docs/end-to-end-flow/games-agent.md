@@ -31,8 +31,8 @@ The same as Film's ([film-agent.md](film-agent.md#rules-held-in-code)): verdicts
 
 ## What it does not yet do
 
-- **Live Qloo.** Game signals for each kind of media, regions, tags and `/entities` metadata are `TODO(verify)` in [qloo.md](../backend/qloo.md) and the spec. Run `pnpm --filter @oraqul/engine qloo:games-probes` with a key, then fix the docs and the code to match. The starting values for the platform and store tag verdicts are tuned on demo data.
+- **Live Qloo, mostly.** Game signals for each kind of media, regions, tags and `/entities` metadata are checked live ([qloo.md](../backend/qloo.md)). Still open there: an anime tag on a game signal, and the genre-only fallback, which returned unrelated games. The starting values for the platform and store tag verdicts are chosen conventions, tuned on demo data.
 - **Creators and streamers.** The section is launch practice until Qloo is shown to return them.
 - **Recorded live golden runs.** Games has demo goldens only.
-- **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): memory, next-step suggestions, the results cards, and the missing engine tools.
+- **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): the results cards, and the missing engine tools.
 - **The screens** are the shared ones (Plan tab, receipts drawer, exports) plus the Fan base bridge and Regions tabs. They have not been compared with the prototype.

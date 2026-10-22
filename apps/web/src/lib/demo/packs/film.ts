@@ -275,7 +275,7 @@ export const film: DemoPack = {
           date: 'Nov 13',
           wk: 1,
           rival: 'Night Ferry (crime)',
-          overlap: 71,
+          overlap: 91,
           rec: 'High overlap, risky',
         },
         {
@@ -283,7 +283,7 @@ export const film: DemoPack = {
           date: 'Nov 20',
           wk: 2,
           rival: 'Cold Season (thriller)',
-          overlap: 44,
+          overlap: 74,
           rec: 'Moderate',
         },
       ],

@@ -25,6 +25,7 @@ export const outputTabKeys = [
   'territories',
   'route',
   'supportacts',
+  'contrast',
   'shelf',
   'bridge',
   'topics',

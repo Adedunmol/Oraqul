@@ -263,7 +263,12 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
     const [audience, ranked] = await Promise.all([
       test(deps, 'audienceBySegment', { entityIds: ids }, audienceOutputSchema),
       places.length
-        ? test(deps, 'rankPlaces', { entityIds: ids, places, areas }, rankPlacesOutputSchema)
+        ? test(
+            deps,
+            'rankPlaces',
+            { entityIds: ids, places, areas, country: plan.country },
+            rankPlacesOutputSchema,
+          )
         : Promise.resolve<Tested<z.infer<typeof rankPlacesOutputSchema>>>({
             data: null,
             why: 'No cities were given, so none could be ranked.',

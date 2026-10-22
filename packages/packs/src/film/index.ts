@@ -32,8 +32,8 @@ export const film: CategoryPack = {
   ],
   consults: [],
   qloo: { titles: ['urn:entity:movie', 'urn:entity:tv_show'], ...sharedQlooCoverage },
-  // TODO(verify): that each name resolves to one exact match on the live host. One that does not
-  // is left out of the baseline for that run.
+  // Each name resolves to one exact match on the live host (checked). One that stops doing so is
+  // left out of the baseline for that run.
   baselines: {
     'urn:entity:movie': [
       'Avengers: Endgame',

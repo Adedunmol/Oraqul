@@ -22,11 +22,7 @@ import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } 
 import { createPortal } from 'react-dom';
 import { Modal } from '@/app/(app)/_components/modal';
 import { answerQuestion, markThreadRead, runNextStep, sendMessage } from '@/lib/demo/actions';
-import {
-  type ThreadDetail as DemoThreadDetail,
-  getNextSteps,
-  type NextStep,
-} from '@/lib/demo/queries';
+import { type ThreadDetail as DemoThreadDetail, getNextSteps } from '@/lib/demo/queries';
 import { useDemo } from '@/lib/demo/use-demo';
 import { outputPath } from '@/lib/routes';
 import { toneClass, verdictTone } from '../charts';
@@ -37,6 +33,7 @@ import { ReceiptDrawer } from '../output/receipt-drawer';
 import { ReportDocument, ReportLines } from '../output/report-document';
 import { copyText } from '../toast';
 import { type Attachment, Composer } from './composer';
+import type { NextStep } from './next-steps';
 import { QuestionCard } from './question-card';
 import { splitQuote, toQuote } from './quote';
 

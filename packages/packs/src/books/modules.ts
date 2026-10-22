@@ -188,7 +188,7 @@ export interface KindProfile {
   measures: readonly string[];
   /**
    * Shares for a Budget split, labelled a starting split in the plan, by route. Amounts are computed
-   * by code. TODO(verify): with a publisher and an indie author.
+   * by code. Chosen conventions, not measured.
    */
   budget: Record<Route, readonly { line: string; share: number }[]>;
   /** Table cities that stand in for markets when the brief names none. Shown as Worth a look. */
