@@ -68,6 +68,7 @@
       "tour": "1/0",
       "support": "3/0",
       "sync": "3/0",
+      "channels": "0/3",
       "timeline": "0/7",
       "budget": "0/7",
       "measure": "0/4",
@@ -76,8 +77,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-support-houston"],
     "grounding": {
-      "lines": 45,
-      "backed": 64,
+      "lines": 48,
+      "backed": 60,
       "rankKept": 100,
       "findingsUsed": 18,
       "cities": {

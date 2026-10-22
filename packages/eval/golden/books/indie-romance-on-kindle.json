@@ -74,6 +74,7 @@
       "creators": "0/1",
       "partnerships": "4/0",
       "community": "0/1",
+      "channels": "0/2",
       "timeline": "0/11",
       "budget": "0/8",
       "measure": "0/8",
@@ -82,8 +83,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 51,
-      "backed": 49,
+      "lines": 53,
+      "backed": 47,
       "rankKept": 100,
       "findingsUsed": 15,
       "cities": {

@@ -62,6 +62,7 @@
       "live": "1/0",
       "community": "0/1",
       "cadence": "0/1",
+      "channels": "0/2",
       "timeline": "0/8",
       "budget": "0/7",
       "measure": "0/8",
@@ -70,8 +71,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 39,
-      "backed": 36,
+      "lines": 41,
+      "backed": 34,
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {

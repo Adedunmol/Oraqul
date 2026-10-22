@@ -54,6 +54,7 @@ import { ensureDecisions } from './decisions.js';
 import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
 import type { Change } from './follow-up.js';
+import { withSharedModules } from './modules.js';
 import type { QueryPlanCore } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import {
@@ -68,6 +69,7 @@ import {
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
 import { measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
+import { channelsSection, territoriesOf, withLines } from './territories.js';
 import { list } from './text.js';
 import { CODE_SECTIONS, type WriteInput } from './writer.js';
 
@@ -350,7 +352,7 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
 ): Promise<Asked<P>> {
   const { title, read, comps } = input;
   ctx.trace('Choosing what to ask Qloo');
-  const { modules } = deps.config.pickModules(read);
+  const { modules } = withSharedModules(deps.config.pickModules(read), read);
   const compsCountry = commonCountry(comps.used);
   const { plan: planned, tokens } = await deps.queries.plan({
     title,
@@ -679,6 +681,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   const text = briefText(handoff, input.chars, kind !== 'fix');
   const order = sectionOrder(modules);
   const signal = signalOf(deps.config.category, [text, extra].join('\n'));
+  // One plan per territory: the home market first, then the diaspora cities (D4).
+  const territories = territoriesOf({
+    category: deps.config.category,
+    cities: read.places,
+    country: queryPlan.country,
+    ranked: asked.grounded.brief.teamOrder.map((p) => p.place),
+  });
   const today = new Date().toISOString().slice(0, 10);
   // A section code writes whole, such as Games' launch beats, is not the writer's to write.
   const byCode = deps.config.codeSections.timeline && modules.includes('timeline');
@@ -700,7 +709,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       request: [text, extra, band ? bandLine(band) : ''].filter(Boolean).join('\n\n'),
       read,
       comps: comps.used,
-      sections: order.filter((key) => !(key === 'measure' || (byCode && key === 'timeline'))),
+      sections: order.filter(
+        (key) => !(key === 'measure' || key === 'channels' || (byCode && key === 'timeline')),
+      ),
       findings: grounded.findings,
       sources,
       today,
@@ -741,6 +752,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       : { sections: [], dropped: [] };
     const codeSections = [
       ...(modules.includes('budget') ? [deps.config.codeSections.budget(read)] : []),
+      ...(modules.includes('channels')
+        ? [channelsSection(deps.config.rules.titles.channels, territories)]
+        : []),
       ...(modules.includes('measure')
         ? [
             measureSection(
@@ -883,7 +897,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     },
     band,
     signal,
-    territories: [],
+    territories: withLines(territories, sections),
     calls: [],
     partners: [],
   };
