@@ -26,5 +26,6 @@ export function redactForShare(detail: OutputDetail): OutputDetail {
     },
     builtOn: null,
     share: null,
+    reaction: null,
   };
 }
