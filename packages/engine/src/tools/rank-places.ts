@@ -1,11 +1,16 @@
+import type { Receipt } from '@oraqul/schema';
 import { z } from 'zod';
 import { type ConfidenceResult, confidenceFor, countKnown, MIN_PLACE_CELLS } from '../confidence';
+import { findPlace } from '../place-lookup';
 import { type CityBox, cityBox, inBox, multiPolygon } from '../places';
 import * as qloo from '../qloo';
 import { toReceipt } from '../receipts';
 import { isNearEdge, lift, liftBand } from '../scoring';
 import { leaveOneOut, nameOf } from './leave-one-out';
 import { defineTool } from './tool';
+
+/** Most cities one run looks up in Qloo, so a long list cannot spend the call budget. */
+const MAX_LOOKUPS = 8;
 
 const RANK_RULE =
   'Each city is the mean affinity of the heatmap cells inside its box, all from one call so they compare. A city with fewer than 25 cells is not ranked.';
@@ -62,10 +67,12 @@ type Scored = Map<string, { affinity: number; cells: number }>;
 export const rankPlaces = defineTool({
   name: 'rankPlaces',
   description:
-    "Ranks cities by where the anchors' audience concentrates, from one heatmap call so the cities compare. Cities from any region in the city table; a city with too few cells is not ranked.",
+    "Ranks cities by where the anchors' audience concentrates, from one heatmap call so the cities compare. Any city: the ones we know directly, and others looked up in Qloo by name. A city Qloo cannot place, or with too few cells, is not ranked.",
   input: z.object({
     entityIds: z.array(z.string()).min(1),
     places: z.array(z.string().min(1)).min(1).max(30),
+    /** The launch's country, to pick the right city when several share a name. */
+    country: z.string().nullable().default(null),
     /**
      * Neighbourhoods to read from the same call. Coordinates come from the planner and are checked
      * against the city's box.
@@ -82,7 +89,28 @@ export const rankPlaces = defineTool({
       .max(24)
       .default([]),
   }),
-  async run(ctx, { entityIds, places, areas }) {
+  async run(ctx, { entityIds, places, areas, country }) {
+    // A city we have no box for is looked up in Qloo once, and then ranked like any other.
+    const lookups: Receipt[] = [];
+    for (const place of places.filter((p) => !cityBox(p)).slice(0, MAX_LOOKUPS)) {
+      // A failed lookup leaves the city unplaced, with its receipt; only a spent budget stops the run.
+      const { place: found, call } = await findPlace(ctx.qloo, place, country).catch((err) => {
+        if (err instanceof qloo.QlooError) return { place: null, call: err.call };
+        throw err;
+      });
+      lookups.push(
+        toReceipt(call, {
+          returned: {
+            place: found
+              ? { name: found.qlooName, centre: found.centre, country: found.country }
+              : null,
+          },
+          rule: `Qloo's place record for "${place}": the middle of its boundary is where its box is centred. None means Qloo has no place with that name, so the city is not ranked.`,
+          confidence: found ? 'high' : 'lower',
+          source: ctx.source,
+        }),
+      );
+    }
     const boxes = places.flatMap((p) => cityBox(p) ?? []);
     if (boxes.length === 0) {
       const data: z.infer<typeof rankPlacesOutputSchema> = {
@@ -91,7 +119,7 @@ export const rankPlaces = defineTool({
         receiptId: null,
         leaveOneOut: null,
       };
-      return { data, receipts: [] };
+      return { data, receipts: lookups };
     }
 
     const ask = (ids: string[]) =>
@@ -169,7 +197,7 @@ export const rankPlaces = defineTool({
       receiptId: receipt.callId,
       leaveOneOut: loo.check ?? null,
     };
-    return { data, receipts: [receipt, ...loo.receipts] };
+    return { data, receipts: [receipt, ...loo.receipts, ...lookups] };
   },
 });
 
@@ -246,7 +274,7 @@ function unknownPlace(place: string) {
     band: null,
     cells: 0,
     confidence: 'lower' as const,
-    why: 'lower: this city is not in the city table, so it was not tested',
+    why: 'lower: Qloo has no place record for this city, so it was not tested',
   };
 }
 

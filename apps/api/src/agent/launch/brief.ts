@@ -269,7 +269,7 @@ export function buildBrief<R extends LaunchRead>(r: BriefResults<R>): LaunchBrie
       : {
           verdict: 'cant' as const,
           why: r.places.data
-            ? 'This city is not in the city table, so it was not tested.'
+            ? 'Qloo has no place record for this city, so it was not tested.'
             : whyNot(r.places),
         };
     add(
