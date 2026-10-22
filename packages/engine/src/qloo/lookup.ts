@@ -2,10 +2,6 @@ import type { QlooEntityType } from '@oraqul/schema';
 import type { QlooClient, QlooResult } from './client';
 import type { QlooParams } from './params';
 import {
-  type AudiencesResponse,
-  type AudienceTypesResponse,
-  audiencesResponseSchema,
-  audienceTypesResponseSchema,
   type EntityListResponse,
   entityListResponseSchema,
   type TagLookupResponse,
@@ -96,29 +92,4 @@ export function tagTypes(
   params: Page & { 'filter.parents.types'?: (AudienceParentType | QlooEntityType)[] } = {},
 ): Promise<QlooResult<TagTypesResponse>> {
   return client.get('/v2/tags/types', params, tagTypesResponseSchema);
-}
-
-export type AudienceSearchParams = Page & {
-  'filter.query'?: string;
-  'filter.parents.types'?: AudienceParentType[];
-  'filter.audience.types'?: string[];
-  'filter.results.audiences'?: string[];
-  'filter.popularity.min'?: number;
-  'filter.popularity.max'?: number;
-};
-
-/** `/v2/audiences`: audience urns for `signal.demographics.audiences`. Never hardcode them. */
-export function audiences(
-  client: QlooClient,
-  params: AudienceSearchParams,
-): Promise<QlooResult<AudiencesResponse>> {
-  return client.get('/v2/audiences', params, audiencesResponseSchema);
-}
-
-/** `/v2/audiences/types`: the audience namespaces, for `filter.audience.types`. */
-export function audienceTypes(
-  client: QlooClient,
-  params: Page & { 'filter.parents.types'?: AudienceParentType[] } = {},
-): Promise<QlooResult<AudienceTypesResponse>> {
-  return client.get('/v2/audiences/types', params, audienceTypesResponseSchema);
 }

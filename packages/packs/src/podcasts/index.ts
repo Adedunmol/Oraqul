@@ -28,7 +28,7 @@ export const podcasts: CategoryPack = {
     'rankPlaces',
     'lift',
     'partnerFit',
-    'compareAudiences',
+    'scoreRivals',
     'findTaste',
     'themeTags',
     'topicMap',

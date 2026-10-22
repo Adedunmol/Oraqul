@@ -8,11 +8,9 @@ import {
   topPlatforms,
 } from './profile.js';
 
-const game = (platforms: string[], steamTags: string[] = [], genres: string[] = []) => ({
+const game = (platforms: string[], category: string[] = [], genre: string[] = []) => ({
   platforms,
-  steamTags,
-  genres,
-  tags: {},
+  tags: { genre, category },
 });
 
 const comps = [

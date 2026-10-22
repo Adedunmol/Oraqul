@@ -1,8 +1,8 @@
 import {
-  compareAudiencesOutputSchema,
   findTasteOutputSchema,
   normalizeTitle,
   resolveTagsOutputSchema,
+  scoreRivalsOutputSchema,
   searchEntityOutputSchema,
   type TopicPlacement,
   tools,
@@ -330,7 +330,7 @@ async function crossPromotion(
   }
 
   const scored = await kit.safely('Cross promotion shows', () =>
-    tools.compareAudiences.run(deps.tools, {
+    tools.scoreRivals.run(deps.tools, {
       entityIds: kit.ids,
       type: 'urn:entity:podcast',
       rivals: ids.slice(0, 12),
@@ -338,7 +338,7 @@ async function crossPromotion(
     }),
   );
   if (!scored) return;
-  const out = compareAudiencesOutputSchema.parse(scored.data);
+  const out = scoreRivalsOutputSchema.parse(scored.data);
   const [call] = scored.receipts;
   const ranked = out.rivals
     .filter((r) => r.overlap !== null)

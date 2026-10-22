@@ -60,26 +60,11 @@ describe('lookup', () => {
     expect(data.results.tags[0]?.id).toBe('urn:tag:genre:media:drama');
   });
 
-  it('audiences and the type lookups hit their own paths', async () => {
+  it('the tag types lookup hits its own path', async () => {
     const fetch = stubFetch(
-      jsonResponse({
-        success: true,
-        results: { audiences: [{ name: 'Parents', entity_id: 'A1', id: 'A1-id' }] },
-      }),
-      jsonResponse({
-        success: true,
-        results: { audience_types: [{ type: 'urn:audience:life_stage' }] },
-      }),
       jsonResponse({ success: true, results: { tag_types: [{ type: 'urn:tag:genre:media' }] } }),
     );
-    const client = testClient();
-    await lookup.audiences(client, { 'filter.parents.types': ['urn:audience:life_stage'] });
-    await lookup.audienceTypes(client);
-    await lookup.tagTypes(client);
-    expect(fetch.mock.calls.map(([url]) => new URL(String(url)).pathname)).toEqual([
-      '/v2/audiences',
-      '/v2/audiences/types',
-      '/v2/tags/types',
-    ]);
+    await lookup.tagTypes(testClient());
+    expect(new URL(String(fetch.mock.calls[0]?.[0])).pathname).toBe('/v2/tags/types');
   });
 });

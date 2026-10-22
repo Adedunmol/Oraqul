@@ -8,13 +8,14 @@ Qloo supplies the taste data. What we compute on top is in [spec §5](../product
 |---|---|
 | Host `hackathon.api.qloo.com`, `X-Api-Key` auth | verified |
 | `/search`, `/entities` (by Qloo id and by IMDb id) | verified |
-| `/v2/tags`, `/v2/tags/types`, `/v2/audiences`, `/v2/audiences/types` | verified |
+| `/v2/tags`, `/v2/tags/types` | verified on our key. Qloo's reference pages for Search Tags and Tag Types return 404, so the parameters are checked only by our probes (`TODO(verify)` against the docs when the pages return) |
+| `/v2/audiences`, `/v2/audiences/types` | worked on the hackathon host, but Qloo marks `/v2/audiences` deprecated and names no replacement. Not used: the client has no call for them |
 | `/v2/insights` for movie, tv_show, artist, book, podcast, videogame, brand, place | verified. Place needs `filter.tags` set to a place category and `filter.location.query` set to a city |
 | `/v2/insights` for person, destination, locality | documented, not exercised. A person as the only signal is rejected |
 | `/v2/insights` with `urn:tag`, `urn:demographics`, `urn:heatmap` (geohash) | verified. Locality heatmaps are unstable and not used |
 | `/v2/analysis/compare` | verified, shape differs from the OpenAPI definition |
 | `/v2/trending` | verified, with caveats on the date window |
-| Context that shapes a Film query | verified on one brief: genre tag on artists, `filter.release_country` (full country name), `signal.location.query`, `signal.demographics.age` and `.audiences`, place categories per city, brand categories (`urn:tag:genre:brand:*`), theme, archetype and audience tags on comps, tags shared with genre peers from compare |
+| Context that shapes a Film query | verified on one brief: genre tag on artists, `filter.release_country` (full country name), `signal.location.query`, `signal.demographics.age`, place categories per city, brand categories (`urn:tag:genre:brand:*`), theme, archetype and audience tags on comps, tags shared with genre peers from compare |
 | Ranking a candidate list we choose (`filter.results.entities`) | verified for films, books and brands |
 | Whether a recorded response may be committed or shown on a public share link | unknown. Ask Qloo. Qloo's public Terms of Use say nothing about showing API output; they bar selling, redistributing or sublicensing the Services, which include data obtained from the APIs, and a signed agreement overrides them. Share links therefore carry the plan and finding summaries only, never a receipt's `input` or `returned` |
 
@@ -45,7 +46,7 @@ Detail on why, and what a good plan is, is in [principles](../product/principles
 | `take` | 1 to 50, default 20. Page with `page` (1 to 100) or `offset`. Not a limit everywhere (heatmaps, compare): slice in code |
 | Radius | `filter.location.radius` and `signal.location.radius` in metres, up to 800 000. `/search` `filter.radius` is in miles, up to 100 |
 | Rate | about 5 requests a second and about 10,000 a month on hackathon keys (unofficial). Parallel calls got 429, so the client keeps 2 in flight |
-| Avoid | `/recommendations` and `/recs` (legacy), `urn:entity:audience` (deprecated), and the legacy search-only types actor, album, author, director. Use `person` |
+| Avoid | `/recommendations` and `/recs` (legacy), `urn:entity:audience` and `/v2/audiences` (deprecated), and the legacy search-only types actor, album, author, director. Use `person` |
 
 ## The client (`packages/engine/src/qloo`)
 
@@ -63,7 +64,7 @@ Functions take the client first and are grouped by what you ask Qloo:
 
 | Group | Import | Functions |
 |---|---|---|
-| Lookup | `lookup` | `search`, `entities`, `entitiesByExternalId`, `tags`, `tagTypes`, `audiences`, `audienceTypes` |
+| Lookup | `lookup` | `search`, `entities`, `entitiesByExternalId`, `tags`, `tagTypes` |
 | Insights | `insights` | `entities`, `tags`, `demographics`, `heatmap`, `heatmapByLocality` |
 | Analysis | `analysis` | `compare`, `trending` |
 
@@ -79,7 +80,7 @@ Tools live in `packages/engine/src/tools`. Their confidence follows [spec §5.1]
 
 | Tool | Qloo call |
 |---|---|
-| `searchEntity` | `lookup.search`, or `lookup.entitiesByExternalId` for an IMDb, Spotify or ISBN id |
+| `searchEntity` | `lookup.search` by name. It does not take an external id; `lookup.entitiesByExternalId` exists in the client but no tool calls it yet |
 | `resolveBundle` | `lookup.search` per name, exact match first (ignoring case and accents). The Film pipeline takes the closest result when there is none |
 | `resolveTags` | `lookup.tags` per phrase, keeping the first tag under the wanted urn prefix (brand categories need `filter.parents.types=urn:entity:brand`) |
 | `findTaste` | `insights.entities` for one type with the comps as the signal and context: `filter.tags`, `signal.location.query` (or `filter.location.query` for places), `signal.demographics.age`, `filter.release_country`, `filter.release_year.min`, and `only` (sent as `filter.results.entities`) to rank a candidate list |
@@ -88,9 +89,9 @@ Tools live in `packages/engine/src/tools`. Their confidence follows [spec §5.1]
 | `lift` | one `insights.entities` call with `filter.results.entities` set to the candidates, so all scores share one ranking |
 | `rankPlaces` | `insights.heatmap` with all city boxes as one `MULTIPOLYGON`, one call; cells are assigned to cities in code |
 | `rankPlaces` (areas) | no call: `readAreas` reads neighbourhoods from the cells already returned (nearest 8 within 0.1 degrees, at least 3, relative to the city mean). A lead, not a measurement of the neighbourhood |
-| `compareAudiences` | one `insights.entities` call with `filter.results.entities` set to the rivals, and `filter.type` set to the rivals' type (movie, series, artist, video game, brand or podcast): a rival of another type is not scored |
+| `scoreRivals` | a scoring call, not `/v2/analysis/compare`: one `insights.entities` call with `filter.results.entities` set to the rivals, and `filter.type` set to the rivals' type (movie, series, artist, video game, brand or podcast): a rival of another type is not scored |
 | `bookProfiles` | `lookup.entities` for the anchors. The publication year, pages, series and typed tags (genre, book format such as Audiobook, age range) a book carries. Verified: `/entities` returns `publication_year` and `page_count` in `properties`, and the tags carry a type. Nothing is scored |
-| `gameProfiles` | `lookup.entities` for the anchors. The platforms, genres, store tags, age rating and franchise a game carries. Field names come from one recorded `insights` response and are `TODO(verify)` on `/entities` |
+| `gameProfiles` | `lookup.entities` for the anchors. The platforms, age rating, developer, publisher and typed tags a game carries. Verified live on 8 games: `/entities` returns `platforms`, `content_rating`, `developer`, `publisher`, `release_date` and the tag kinds genre, category, gameplay_type, player_mode, skill_level, art_style and emotional_tone. The store tags (Souls-like, Roguelite, Indie, Open World) are under `category`. It returns no `genre`, `steam_tags` or `universe` property, so the franchise comes only from what the team says |
 | `partnerFit` | `insights.entities` with no context. Not used by Film builds: open lists drift |
 | `topicMap` | one `analysis.compare` call with the anchors as `a` and the rival shows as `b`. Verified live (2026-10-20): `results.a` and `results.b` list every tag each group carries with `query.count`, the number of that group's shows that carry it (a string); `results.tags` are the tags both share, with a near constant `query.score`. A topic is yours when only `a` lists it. Tags repeat under several namespaces, and only `theme`, `keyword`, `subgenre` and `genre` tags are subjects (`style`, `host`, `audience`, `content` and `archetype` are not), so topics are told apart by name within those |
 | `momentum` | `analysis.trending` (not built) |
@@ -101,7 +102,7 @@ Each pack declares the Qloo types it uses in `qloo` (`packages/packs`). Every ca
 
 | Category | Titles | Talent | Partners | Places |
 |---|---|---|---|---|
-| Film and series | `movie`, `tv_show` | `person` | `brand` | `locality`, `place`, `destination` |
+| Film and series | `movie`, `tv_show` | `person` | `brand` | `place` |
 | Music | `artist` | `person` | `brand` | same |
 | Books | `book` | `person` | `brand` | same |
 | Podcasts | `podcast` | `person` | `brand` | same |
@@ -115,13 +116,13 @@ The anchors that stand in for an item not yet in Qloo differ by category. Film's
 | Books | the book when Qloo knows it by name, its earlier books, comparable books, a genre tag when it knows none. The author is not an anchor: a person is rejected as a signal. Verified live (a literary fiction brief and a romantasy brief, then whole plans for self help and middle grade): a book works as a signal for age rows, the heatmap, books with a genre tag, a city and a first publication year, podcasts with the books tag, brands with a category and a city, bookshops with the book store category in a city, and theme and archetype tags. A debut is `not_found`. Open lists of series and films drift (see Behaviour to know). `TODO(verify)`: other genres and markets |
 | Music | the artist when Qloo knows it by name, sound-alike artists, a genre tag when it knows neither Verified live (2026-10-20, 40 calls, an established Afrobeats artist with three sound-alikes touring Lagos, London, Accra and Atlanta, see Behaviour to know): an artist works as a signal for age rows, the heatmap, artists with a genre tag and a city, series, films, brands, podcasts, campuses and theme tags. A genre tag as the only signal works for artists but gives one demographics row (`TODO(verify)`: other genres and markets) |
 | Podcasts | the show when Qloo knows it by name, its earlier shows, comparable shows, a genre tag when it knows none. Verified live (2026-10-20, 23 calls, a true crime brief): a known show works as a signal for age and gender rows, the heatmap, shows with a genre tag and a city, brands, artists, series and people (`TODO(verify)`: other genres, other markets, and the quality of the open lists, see Behaviour to know). A host is not an anchor: a person is rejected as a signal |
-| Games | the game when Qloo knows it by name, its franchise (earlier games), comparable games, a genre tag when it knows none. Verified live (`qloo:games-probes`): a game works as the only signal for artists, series, films, brands, podcasts, other games and people; a debut is `not_found`; `/entities` returns platforms, content rating and typed tags; the heatmap returns cells for a game signal; a game genre resolves in `urn:tag:genre:media`. `TODO(verify)`: anime (a series list with the anime tag came back empty), the franchise property (empty on the four games probed), and the genre-only fallback, which returned unrelated games |
+| Games | the game when Qloo knows it by name, its franchise (earlier games), comparable games, a genre tag when it knows none. Verified live (`qloo:games-probes`): a game works as the only signal for artists, series, films, brands, podcasts, other games and people; a debut is `not_found`; `/entities` returns platforms, content rating and typed tags; the heatmap returns cells for a game signal; a game genre resolves in `urn:tag:genre:media`. `TODO(verify)`: anime (a series list with the anime tag came back empty), and the genre-only fallback, which returned unrelated games |
 
 ## Parameters by `filter.type`
 
 From the Entity Type Parameter Guide, with differences noted under [Behaviour to know](#behaviour-to-know). Types are in `insights/filters.ts`.
 
-**Shared by every entity type:** `filter.type` (required), `take`, `offset`, `bias.trends`, `filter.popularity.min|max` (0 to 1), `filter.tags` and `operator.filter.tags`, `filter.exclude.tags` and `operator.exclude.tags`, `filter.exclude.entities`, `filter.results.entities` and `.query`, `filter.external.exists` and its operator, `filter.parents.types`, `signal.interests.entities`, `signal.interests.tags`, `signal.demographics.age`, `.gender`, `.audiences` and `.audiences.weight`.
+**Shared by every entity type:** `filter.type` (required), `take`, `offset`, `bias.trends`, `filter.popularity.min|max` (0 to 1), `filter.tags` and `operator.filter.tags`, `filter.exclude.tags` and `operator.exclude.tags`, `filter.exclude.entities`, `filter.results.entities` and `.query`, `filter.external.exists` and its operator, `filter.parents.types`, `signal.interests.entities`, `signal.interests.tags`, `signal.demographics.age` and `.gender`.
 
 | Type | Adds |
 |---|---|
@@ -137,7 +138,7 @@ From the Entity Type Parameter Guide, with differences noted under [Behaviour to
 | `urn:demographics` | `signal.interests.entities` or `signal.interests.tags` (one is enough) |
 | `urn:heatmap` | `filter.location` or `filter.location.query` **and** a signal; `output.heatmap.boundary` (`urn:geohash` or `urn:entity:locality`), `heatmap.dimensions` (`quality`, `popularity`, `hotel_class`, `price_level`), `filter.dimensions.*` |
 
-**Signals.** `signal.demographics.age` takes `24_and_younger`, `25_to_29`, `30_to_34`, `35_to_44`, `45_to_54`, `55_and_older`, and the coarse `35_and_younger` and `36_to_55`. Weights are a number or `very_low`, `low`, `mid`, `medium`, `high`, `very_high`. Audience urns come from `lookup.audiences`, tag urns from `lookup.tags`; never hardcode them.
+**Signals.** `signal.demographics.age` takes `24_and_younger`, `25_to_29`, `30_to_34`, `35_to_44`, `45_to_54`, `55_and_older`, and the coarse `35_and_younger` and `36_to_55`. Weights are a number or `very_low`, `low`, `mid`, `medium`, `high`, `very_high`. Tag urns come from `lookup.tags`; never hardcode them.
 
 **Not supported by the client:** parameters that need a `POST` body (`signal.interests.entities.query` and `filter.exclude.entities.query`, and tags with per-tag weights). Resolve names with `lookup.search` first.
 
@@ -167,12 +168,11 @@ Checked once in `responses.ts`.
 
 **Parameters**
 - `signal.location.query` changes the ranking for every title type, though the Entity Type Parameter Guide omits it.
-- `signal.demographics.audiences` takes the audience `id`, not `entity_id`.
 - `filter.release_country` takes the full country name (`Nigeria`); `NG` returns nothing.
 - Lookup tags use `id`; `urn:tag` insights and compare use `tag_id`; tags inside entities vary.
 - `filter.release_year.min` and `filter.content_rating` really filter.
 - Qloo ignores unknown parameters rather than rejecting them.
-- `insights.tags` with no type returns mostly style adjectives. `filter.tag.types=urn:tag:theme:qloo` gives themes, and `archetype:qloo` and `audience:qloo` work the same way. `theme:media` returns nothing.
+- `insights.tags` with no type returns mostly style adjectives. `filter.tag.types=urn:tag:theme:qloo` gives themes, and `archetype:qloo` and `audience:qloo` work the same way. `plot:qloo` returns style adjectives too (Competitive, Bold, Timely), so it is not used. `theme:media` returns nothing.
 - Brand categories need `filter.parents.types=urn:entity:brand` on the tag lookup, otherwise you get place categories. The fashion category still gives luxury names.
 - Place categories work per city (`urn:tag:category:place:movie_theater`, churches, universities). Lists carry some poor fits (a hotel among cinemas, a theology school).
 - A genre tag on podcasts gives genre shows; with only a city they are US-heavy.
@@ -225,12 +225,12 @@ Checked once in `responses.ts`.
 
 ## Not yet verified (`TODO(verify)`)
 
-- The exclude-tags operator name (`operator.exclude.tags`), the Resy filter names, hotel price range names, `filter.parents.types` values, heatmap `bias.trends` and audience weight.
+- The exclude-tags operator name (`operator.exclude.tags`), the Resy filter names, hotel price range names, `filter.parents.types` values, and heatmap `bias.trends`.
 - `person`, `place`, `destination` and `locality` insights beyond the cases above, and the weights for age, gender and location.
 - Whether location changes the demographics (no location parameter is documented for that call).
 - Whether tag-signal calls are slow on non-book types, and what Qloo returns for a true 404.
 - Cross-domain tests beyond the cases above: other kinds of book, podcasts and games as targets, low-popularity candidates, and how large a gap between kind and baseline counts as a real signal.
-- Games: an anime tag on a game signal (the list came back empty); the franchise property; what a genre tag as the only signal returns (unrelated games in the probe); theme and audience tags for games, which read as generic ("Health Optimization") where gameplay type, tone and platform read well. `person` returned mostly streamers and video creators with some executives and designers, so `CREATORS_GROUNDED` stays false until someone decides that mix is good enough to name.
+- Games: an anime tag on a game signal (the list came back empty); what a genre tag as the only signal returns (unrelated games in the probe); theme and audience tags for games, which read as generic ("Health Optimization") where gameplay type, tone and platform read well. `person` returned mostly streamers and video creators with some executives and designers, so `CREATORS_GROUNDED` stays false until someone decides that mix is good enough to name.
 - Games, settled: `filter.results.entities` scores every medium probed, and an open discovery call and a scored call give the same affinity for one id, so scoring is needed only for a candidate discovery would not list, such as a collab.
 - Books: other genres and markets, a book genre tag as the only signal for a book Qloo does not know (one demographics row in the probe), the franchise or series property, `filter.publication_year.max`, and how many books carry age and gender rows (about half in the first measurement). `person` is not used for authors until a list that fits every genre is shown.
 - Whether explainability (`feature.explainability`) can replace our leave-one-out reruns.

@@ -62,15 +62,6 @@ export const entitySchema = z.looseObject({
 });
 export type QlooEntity = z.infer<typeof entitySchema>;
 
-export const audienceSchema = z.looseObject({
-  // The two differ. `signal.demographics.audiences` takes `id`; `entity_id` had no effect.
-  entity_id: z.string(),
-  id: z.string(),
-  name: z.string(),
-  type: z.string().optional(),
-});
-export type QlooAudience = z.infer<typeof audienceSchema>;
-
 /** One row per signal. Values are affinities and can be negative. */
 export const demographicsRowSchema = z.looseObject({
   entity_id: z.string(),
@@ -149,19 +140,9 @@ export const heatmapResponseSchema = z.looseObject({
   results: z.looseObject({ heatmap: z.array(heatmapPointSchema) }),
 });
 
-export const audiencesResponseSchema = z.looseObject({
-  ...envelope,
-  results: z.looseObject({ audiences: z.array(audienceSchema) }),
-});
-
 export const tagTypesResponseSchema = z.looseObject({
   ...envelope,
   results: z.looseObject({ tag_types: z.array(typeRowSchema) }),
-});
-
-export const audienceTypesResponseSchema = z.looseObject({
-  ...envelope,
-  results: z.looseObject({ audience_types: z.array(typeRowSchema) }),
 });
 
 /**
@@ -188,8 +169,6 @@ export type TagLookupResponse = z.infer<typeof tagLookupResponseSchema>;
 export type TagInsightsResponse = z.infer<typeof tagInsightsResponseSchema>;
 export type DemographicsResponse = z.infer<typeof demographicsResponseSchema>;
 export type HeatmapResponse = z.infer<typeof heatmapResponseSchema>;
-export type AudiencesResponse = z.infer<typeof audiencesResponseSchema>;
 export type TagTypesResponse = z.infer<typeof tagTypesResponseSchema>;
-export type AudienceTypesResponse = z.infer<typeof audienceTypesResponseSchema>;
 export type CompareResponse = z.infer<typeof compareResponseSchema>;
 export type TrendingResponse = z.infer<typeof trendingResponseSchema>;

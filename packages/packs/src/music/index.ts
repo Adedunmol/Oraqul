@@ -28,7 +28,7 @@ export const music: CategoryPack = {
     'rankPlaces',
     'lift',
     'partnerFit',
-    'compareAudiences',
+    'scoreRivals',
   ],
   consults: [],
   qloo: { titles: ['urn:entity:artist'], ...sharedQlooCoverage },

@@ -1,10 +1,10 @@
 import {
   bookProfilesOutputSchema,
   compAgeVerdict,
-  compareAudiencesOutputSchema,
   findTasteOutputSchema,
   resolveBundleOutputSchema,
   resolveTagsOutputSchema,
+  scoreRivalsOutputSchema,
   seriesOf,
   themeTagsOutputSchema,
   tools,
@@ -479,7 +479,7 @@ async function bridge(kit: Kit, podcasts: () => Promise<Heard | null>): Promise<
       continue;
     }
     const scored = await kit.safely(`Screen ${noun}`, () =>
-      tools.compareAudiences.run(kit.deps.tools, {
+      tools.scoreRivals.run(kit.deps.tools, {
         entityIds: kit.ids,
         type,
         rivals: all.map((t) => t.entityId),
@@ -487,7 +487,7 @@ async function bridge(kit: Kit, podcasts: () => Promise<Heard | null>): Promise<
       }),
     );
     if (!scored) continue;
-    const out = compareAudiencesOutputSchema.parse(scored.data);
+    const out = scoreRivalsOutputSchema.parse(scored.data);
     const [call] = scored.receipts;
     const ranked = out.rivals
       .filter((r) => r.overlap !== null)

@@ -58,8 +58,6 @@ export const findTaste = defineTool({
     /** For places this is where the results are; for everything else it biases the ranking. */
     city: z.string().nullable().default(null),
     ages: z.array(z.enum(signalAgeBands)).default([]),
-    /** Audience ids from `lookup.audiences`. */
-    audiences: z.array(z.string()).default([]),
     /** Films and series only. The full country name: a two-letter code returns nothing. */
     country: z.string().nullable().default(null),
     /** Films, series and books: the first release or publication year. */
@@ -126,7 +124,6 @@ interface Shape {
   tags: string[];
   city: string | null;
   ages: SignalAgeBand[];
-  audiences: string[];
   country: string | null;
   yearFrom: number | null;
   take: number;
@@ -142,7 +139,6 @@ function request(input: Shape, left: string[]): EntityInsightsRequest {
     ...(input.only.length ? { 'filter.results.entities': input.only } : {}),
     ...(input.tags.length ? { 'filter.tags': input.tags } : {}),
     ...(input.ages.length ? { 'signal.demographics.age': input.ages } : {}),
-    ...(input.audiences.length ? { 'signal.demographics.audiences': input.audiences } : {}),
   };
   const near = input.city ? { 'signal.location.query': input.city } : {};
   const film = {

@@ -99,9 +99,9 @@ describe('bookProfiles', () => {
   });
 });
 
-describe('compareAudiences on books', () => {
+describe('scoreRivals on books', () => {
   it('scores books as rivals in one call', async () => {
-    const result = await tools.compareAudiences.run(demoContext(), {
+    const result = await tools.scoreRivals.run(demoContext(), {
       entityIds: ['DEMO-BOOK-0201'],
       type: 'urn:entity:book',
       rivals: ['DEMO-BOOK-0301', 'DEMO-BOOK-0302', 'DEMO-BOOK-0303'],

@@ -228,7 +228,7 @@ await step('Podcasts', async () => {
 await step('Theme tags on the comps', async () => {
   const { data } = await insights.tags(qloo, { ...signal, take: 12 });
   console.log(data.results.tags.map((t) => `${t.name} [${t.subtype ?? t.type ?? ''}]`).join(' | '));
-  for (const type of ['theme', 'archetype', 'audience', 'plot']) {
+  for (const type of ['theme', 'archetype', 'audience']) {
     const typed = await insights.tags(qloo, {
       ...signal,
       'filter.tag.types': [`urn:tag:${type}:qloo`],
@@ -247,19 +247,6 @@ await step('Distinct tags (compare against genre peers)', async () => {
   if (peers.length === 0) return console.log('no peers resolved');
   const out = await analysis.compare(qloo, { a: ids, b: peers, take: 10 });
   console.log(JSON.stringify(out.data).slice(0, 1200));
-});
-
-await step('Community audiences as a signal', async () => {
-  const { data } = await lookup.audiences(qloo, { 'filter.query': 'black', take: 5 });
-  console.log(data.results.audiences.map((a) => `${a.id} (${a.name})`).join(' | '));
-  const first = data.results.audiences[0];
-  if (!first) return;
-  await list(`tv shows + Houston + audience ${first.name}`, {
-    'filter.type': 'urn:entity:tv_show',
-    ...signal,
-    'signal.location.query': 'Houston',
-    'signal.demographics.audiences': [first.id],
-  });
 });
 
 await step('A cast member as a signal', async () => {

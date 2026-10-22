@@ -8,7 +8,7 @@ export const toolNames = [
   'rankPlaces',
   'lift',
   'partnerFit',
-  'compareAudiences',
+  'scoreRivals',
   'findTaste',
   'resolveTags',
   'themeTags',

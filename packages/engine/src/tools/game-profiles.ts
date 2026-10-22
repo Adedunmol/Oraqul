@@ -4,22 +4,20 @@ import * as qloo from '../qloo';
 import { toReceipt } from '../receipts';
 import { defineTool } from './tool';
 
-// TODO(verify): the property and tag names below come from one recorded `insights` fixture
-// (Elden Ring as the signal). Run `qloo:games-probes` before a plan leans on `/entities`.
+// Checked live on 8 games. `/entities` returns no `genre`, `steam_tags` or `universe`: the genre and
+// the store tags (Souls-like, Roguelite, Indie, Open World) arrive as typed tags.
 const propertiesSchema = z.looseObject({
   platforms: z.array(z.string()).optional(),
-  genre: z.array(z.string()).optional(),
-  steam_tags: z.array(z.string()).optional(),
   content_rating: z.string().optional(),
   developer: z.string().optional(),
   publisher: z.string().optional(),
-  universe: z.string().optional(),
   release_date: z.string().optional(),
 });
 
 /** The tag kinds a launch can use. Names are the middle of `urn:tag:<kind>:qloo`. */
 export const gameTagKinds = [
   'genre',
+  'category',
   'gameplay_type',
   'player_mode',
   'skill_level',
@@ -34,13 +32,9 @@ export const gameProfilesOutputSchema = z.object({
       entityId: z.string(),
       name: z.string(),
       platforms: z.array(z.string()),
-      genres: z.array(z.string()),
-      steamTags: z.array(z.string()),
       contentRating: z.string().nullable(),
       developer: z.string().nullable(),
       publisher: z.string().nullable(),
-      /** The franchise, as Qloo names it. */
-      franchise: z.string().nullable(),
       releaseDate: z.string().nullable(),
       tags: z.partialRecord(tagKindSchema, z.array(z.string())),
     }),
@@ -59,7 +53,7 @@ function kindOf(type: string | undefined): z.infer<typeof tagKindSchema> | null 
 export const gameProfiles = defineTool({
   name: 'gameProfiles',
   description:
-    "What Qloo holds about each game: platforms, genre, gameplay and tone tags, age rating, developer, publisher and franchise. One lookup, no scoring. Use it to check a launch's platforms and store tags against its comparable games.",
+    "What Qloo holds about each game: platforms, genre, store, gameplay and tone tags, age rating, developer and publisher. One lookup, no scoring. Use it to check a launch's platforms and store tags against its comparable games.",
   input: z.object({
     entityIds: z.array(z.string()).min(1).max(20),
   }),
@@ -80,19 +74,14 @@ export const gameProfiles = defineTool({
         entityId: e.entity_id,
         name: e.name,
         platforms: p.platforms ?? [],
-        genres: p.genre ?? [],
-        steamTags: p.steam_tags ?? [],
         contentRating: p.content_rating ?? null,
         developer: p.developer ?? null,
         publisher: p.publisher ?? null,
-        franchise: p.universe ?? null,
         releaseDate: p.release_date ?? null,
         tags,
       };
     });
-    const withData = games.filter(
-      (g) => g.platforms.length > 0 || g.steamTags.length > 0 || Object.keys(g.tags).length > 0,
-    );
+    const withData = games.filter((g) => g.platforms.length > 0 || Object.keys(g.tags).length > 0);
     for (const e of response.results) {
       ctx.entities.set(e.entity_id, { name: e.name, popularity: e.popularity ?? null });
     }

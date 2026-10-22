@@ -228,7 +228,7 @@ await probe('what does Qloo return when nothing matches?', async () => {
   return `search: ${data.results.length} result(s) (not an error)`;
 });
 
-// 6. Tags, audiences and taste analysis.
+// 6. Tags and taste analysis.
 let tagId: string | undefined;
 await probe('tags lookup: which id field?', async () => {
   const { data, call } = await lookup.tags(qloo, { 'filter.query': 'drama', take: 5 });
@@ -260,43 +260,6 @@ await probe(
 await probe('tag types', async () => {
   const { call } = await lookup.tagTypes(qloo, { take: 5 });
   await save('tags', 'types', call);
-  return `status ${call.status}`;
-});
-await probe('audiences (needs a filter?)', async () => {
-  const { data, call } = await lookup.audiences(qloo, {
-    'filter.parents.types': ['urn:audience:life_stage'],
-    take: 5,
-  });
-  await save('audiences', 'search', call);
-  return `${data.results.audiences.length} audience(s)`;
-});
-await probe('audience signal: does entity_id or id change movie results?', async () => {
-  const before = base.get('movie');
-  if (!movieId || !before) return 'skipped';
-  const { data } = await lookup.audiences(qloo, {
-    'filter.parents.types': ['urn:audience:life_stage'],
-    take: 1,
-  });
-  const audience = data.results.audiences[0];
-  if (!audience) return 'skipped (no audience)';
-  const outcome = async (audienceId: string) => {
-    try {
-      const r = await insights.entities(qloo, {
-        'filter.type': 'urn:entity:movie',
-        'signal.interests.entities': [movieId],
-        'signal.demographics.audiences': [audienceId],
-        take: 10,
-      });
-      return same(before, ids(r.data.results.entities)) ? 'no effect' : 'changes results';
-    } catch (err) {
-      return err instanceof QlooError ? `rejected (status ${err.call.status})` : 'error';
-    }
-  };
-  return `entity_id: ${await outcome(audience.entity_id)}; id: ${await outcome(audience.id)}`;
-});
-await probe('audience types', async () => {
-  const { call } = await lookup.audienceTypes(qloo, { take: 5 });
-  await save('audiences', 'types', call);
   return `status ${call.status}`;
 });
 await probe('tag insights from a movie (urn:tag)', async () => {

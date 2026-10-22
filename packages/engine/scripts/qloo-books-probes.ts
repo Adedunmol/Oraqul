@@ -14,7 +14,6 @@
  */
 import {
   audienceOutputSchema,
-  compareAudiencesOutputSchema,
   insights,
   lookup,
   QlooClient,
@@ -22,6 +21,7 @@ import {
   rankPlacesOutputSchema,
   resolveBundleOutputSchema,
   type SeenEntity,
+  scoreRivalsOutputSchema,
   type ToolContext,
   tools,
 } from '../src';
@@ -276,14 +276,14 @@ await step('Screen comparisons: scoring named series and films in one call each'
   );
   console.log(`series found: ${found.anchors.map((a) => `${a.name} ${a.status}`).join(' | ')}`);
   if (ids.length === 0) return;
-  const { data } = await tools.compareAudiences.run(ctx, {
+  const { data } = await tools.scoreRivals.run(ctx, {
     entityIds: anchors,
     type: 'urn:entity:tv_show',
     rivals: ids,
     leaveOneOut: false,
   });
   console.log(
-    compareAudiencesOutputSchema
+    scoreRivalsOutputSchema
       .parse(data)
       .rivals.map((r) => `${r.name} ${r.overlap ?? 'n/a'}`)
       .join(' | '),

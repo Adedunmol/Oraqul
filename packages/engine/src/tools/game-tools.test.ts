@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { jsonResponse, stubFetch, testClient } from '../qloo/fake-fetch';
-import { compareAudiencesOutputSchema, compareTypeOf } from './compare-audiences';
 import { findTasteOutputSchema } from './find-taste';
 import { gameProfilesOutputSchema } from './game-profiles';
 import { tools } from './index';
+import { rivalTypeOf, scoreRivalsOutputSchema } from './score-rivals';
 import type { SeenEntity, ToolContext } from './tool';
 
 function context(): ToolContext {
@@ -17,7 +17,7 @@ function sentParams(fetch: ReturnType<typeof stubFetch>, call = 0): URLSearchPar
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('compareAudiences', () => {
+describe('scoreRivals', () => {
   it('scores the rivals as the type it was given, in one call when asked not to rerun', async () => {
     const fetch = stubFetch(
       jsonResponse({
@@ -30,7 +30,7 @@ describe('compareAudiences', () => {
         },
       }),
     );
-    const { data } = await tools.compareAudiences.run(context(), {
+    const { data } = await tools.scoreRivals.run(context(), {
       entityIds: ['G1', 'A1', 'A2'],
       type: 'urn:entity:videogame',
       rivals: ['G2', 'G3'],
@@ -38,7 +38,7 @@ describe('compareAudiences', () => {
     });
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(sentParams(fetch).get('filter.type')).toBe('urn:entity:videogame');
-    const out = compareAudiencesOutputSchema.parse(data);
+    const out = scoreRivalsOutputSchema.parse(data);
     expect(out.rivals.map((r) => [r.name, r.overlap, r.band])).toEqual([
       ['Rival Quest', 70, 'risky'],
       ['Far Away', 10, 'low'],
@@ -46,9 +46,9 @@ describe('compareAudiences', () => {
   });
 
   it('picks the first rival type Qloo can score', () => {
-    expect(compareTypeOf(['urn:entity:artist'])).toBe('urn:entity:artist');
-    expect(compareTypeOf(['urn:entity:place', 'urn:entity:movie'])).toBe('urn:entity:movie');
-    expect(compareTypeOf(['urn:entity:place'])).toBeUndefined();
+    expect(rivalTypeOf(['urn:entity:artist'])).toBe('urn:entity:artist');
+    expect(rivalTypeOf(['urn:entity:place', 'urn:entity:movie'])).toBe('urn:entity:movie');
+    expect(rivalTypeOf(['urn:entity:place'])).toBeUndefined();
   });
 });
 
@@ -86,17 +86,15 @@ describe('gameProfiles', () => {
             popularity: 0.36,
             properties: {
               platforms: ['PC (Windows)', 'Nintendo Switch'],
-              genre: ['Role-Playing'],
-              steam_tags: ['Roguelike'],
               content_rating: 'T',
               developer: 'Cinder Works',
-              universe: 'Ember',
             },
             tags: [
               { type: 'urn:tag:gameplay_type:qloo', name: 'Single-player' },
               { type: 'urn:tag:gameplay_type:qloo', name: 'Single-player' },
               { type: 'urn:tag:emotional_tone:qloo', name: 'tense' },
-              { type: 'urn:tag:category:qloo', name: 'ignored' },
+              { type: 'urn:tag:category:qloo', name: 'Roguelite' },
+              { type: 'urn:tag:other:qloo', name: 'ignored' },
             ],
           },
           { entity_id: 'G2', name: 'Bare Game', popularity: null },
@@ -109,8 +107,11 @@ describe('gameProfiles', () => {
     expect(out.games[0]).toMatchObject({
       platforms: ['PC (Windows)', 'Nintendo Switch'],
       contentRating: 'T',
-      franchise: 'Ember',
-      tags: { gameplay_type: ['Single-player'], emotional_tone: ['tense'] },
+      tags: {
+        gameplay_type: ['Single-player'],
+        emotional_tone: ['tense'],
+        category: ['Roguelite'],
+      },
     });
     expect(out.games[1]?.platforms).toEqual([]);
     expect(receipts).toHaveLength(1);
