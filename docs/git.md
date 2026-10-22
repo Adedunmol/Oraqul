@@ -33,6 +33,7 @@ docs(agent): describe the follow-up jobs
 
 - Title follows the commit format. One feature per PR.
 - Description: what changed, why, how to see it working, and what you compared against the prototype.
+- GitHub Actions runs `pnpm check` on every pull request and every push to `main` (`.github/workflows/check.yml`), so the hooks are not the only gate.
 - Before every commit `pnpm test` passes, and before every push `pnpm check` passes. Git hooks in `.githooks` enforce both ([testing.md](testing.md#rules)).
 - Before review: `pnpm lint`, `pnpm typecheck` and `pnpm test` pass. UI changes checked in light and dark and at 400px wide. Comments you added say why, not what ([typescript.md](typescript.md#comments)).
 - Product behaviour changes update `docs/product` in the same PR.

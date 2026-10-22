@@ -125,15 +125,6 @@ describe('insights.heatmap', () => {
     expect(data.results.heatmap[0]?.location.geohash).toBe('s14');
   });
 
-  it('can ask for named localities instead', async () => {
-    const fetch = stubFetch(jsonResponse(entityInsightsBody));
-    await insights.heatmapByLocality(testClient(), {
-      'filter.location.query': 'Nigeria',
-      'signal.interests.tags': ['urn:tag:genre:media:drama'],
-    });
-    expect(sentUrl(fetch).searchParams.get('output.heatmap.boundary')).toBe('urn:entity:locality');
-  });
-
   it('needs a signal, and a place at compile time', () => {
     expect(() => insights.heatmap(testClient(), { 'filter.location.query': 'Lagos' })).toThrow(
       'needs signal',

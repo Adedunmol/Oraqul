@@ -2,7 +2,13 @@ import { z } from 'zod';
 import { confidenceFor, countKnown } from '../confidence';
 import * as qloo from '../qloo';
 import type { EntityInsightsRequest } from '../qloo/insights';
-import { type SignalAgeBand, signalAgeBands } from '../qloo/urns';
+import {
+  type ContentRating,
+  type Gender,
+  genders,
+  type SignalAgeBand,
+  signalAgeBands,
+} from '../qloo/urns';
 import { toReceipt } from '../receipts';
 import { defineTool } from './tool';
 
@@ -24,6 +30,15 @@ const tasteTypeSchema = z.enum(tasteTypes);
 export type TasteType = (typeof tasteTypes)[number];
 
 const MAX_TAKE = 10;
+
+/**
+ * The film and series ratings that fit a family or an adult-only release. Qloo's filter takes any
+ * of a list (checked live: PG alone, R alone and PG-13 with PG each gave their own list).
+ */
+export const ratingGroups = {
+  family: ['G', 'PG', 'TV-G', 'TV-PG', 'TV-Y', 'TV-Y7'],
+  adult: ['R', 'NC-17', 'TV-MA'],
+} as const satisfies Record<string, readonly ContentRating[]>;
 
 const detailSchema = z.looseObject({
   release_year: z.number().optional(),
@@ -62,6 +77,18 @@ export const findTaste = defineTool({
     country: z.string().nullable().default(null),
     /** Films, series and books: the first release or publication year. */
     yearFrom: z.number().int().nullable().default(null),
+    /** Sent as `signal.demographics.gender`. Only when the brief says the audience is mostly one. */
+    gender: z.enum(genders).nullable().default(null),
+    /** Films and series only: keep the list to family or to adult-only releases. */
+    rating: z.enum(['family', 'adult']).nullable().default(null),
+    /**
+     * Keeps the list to mid-size names. A cap alone returns records with no popularity, so give a
+     * floor too, and pair it with a tag: untagged it drifts.
+     */
+    popularity: z
+      .object({ min: z.number().min(0).max(1), max: z.number().min(0).max(1) })
+      .nullable()
+      .default(null),
     take: z.number().int().min(1).max(MAX_TAKE).default(6),
     exclude: z.array(z.string()).default([]),
     /**
@@ -126,6 +153,9 @@ interface Shape {
   ages: SignalAgeBand[];
   country: string | null;
   yearFrom: number | null;
+  gender: Gender | null;
+  rating: 'family' | 'adult' | null;
+  popularity: { min: number; max: number } | null;
   take: number;
   only: string[];
 }
@@ -139,11 +169,19 @@ function request(input: Shape, left: string[]): EntityInsightsRequest {
     ...(input.only.length ? { 'filter.results.entities': input.only } : {}),
     ...(input.tags.length ? { 'filter.tags': input.tags } : {}),
     ...(input.ages.length ? { 'signal.demographics.age': input.ages } : {}),
+    ...(input.gender ? { 'signal.demographics.gender': input.gender } : {}),
+    ...(input.popularity
+      ? {
+          'filter.popularity.min': input.popularity.min,
+          'filter.popularity.max': input.popularity.max,
+        }
+      : {}),
   };
   const near = input.city ? { 'signal.location.query': input.city } : {};
   const film = {
     ...(input.country ? { 'filter.release_country': [input.country] } : {}),
     ...(input.yearFrom ? { 'filter.release_year.min': input.yearFrom } : {}),
+    ...(input.rating ? { 'filter.content_rating': [...ratingGroups[input.rating]] } : {}),
   };
   switch (input.type) {
     case 'urn:entity:book':

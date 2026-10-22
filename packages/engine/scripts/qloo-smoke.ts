@@ -300,16 +300,6 @@ await probe('heatmap: Lagos, geohash cells', async () => {
   await save('insights', 'heatmap', call);
   return `${data.results.heatmap.length} cell(s)`;
 });
-await probe('heatmap: Nigeria, named localities (slow)', async () => {
-  if (!movieId) return 'skipped';
-  const { data, call } = await insights.heatmapByLocality(qloo, {
-    'filter.location.query': 'Nigeria',
-    'signal.interests.entities': [movieId],
-    take: 10,
-  });
-  await save('insights', 'heatmap-localities', call);
-  return `${data.results.entities.length} locality(ies)`;
-});
 await probe('compare two movies: result shape', async () => {
   const [a, b] = movieHits;
   if (!a || !b) return 'skipped (fewer than 2 movie hits)';

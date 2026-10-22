@@ -5,6 +5,5 @@ export {
   type GeohashHeatmapRequest,
   type HeatmapRequest,
   heatmap,
-  heatmapByLocality,
 } from './heatmap';
 export { type TagInsightsRequest, tags } from './tags';

@@ -39,6 +39,40 @@ export function normalizeTitle(s: string): string {
     .toLowerCase();
 }
 
+const IMDB_ID = /\btt\d{7,10}\b/;
+const SPOTIFY_ID =
+  /(?:open\.spotify\.com\/(?:artist|show)\/|spotify:(?:artist|show):)([0-9A-Za-z]{22})/;
+const YEAR_SUFFIX = /\s*\((\d{4})\)\s*$/;
+
+/**
+ * What a person wrote for one anchor: the title, and anything that tells it apart from a title
+ * with the same name. An IMDb id or a Spotify artist or show link is exact, a year in brackets
+ * ("Lionheart (2018)") picks among same-name titles. Both are verified in qloo.md; ISBNs are not.
+ */
+export function parseAnchor(raw: string): {
+  title: string;
+  year: number | null;
+  external: { source: 'imdb' | 'spotify'; id: string } | null;
+} {
+  const imdb = raw.match(IMDB_ID)?.[0];
+  const spotify = raw.match(SPOTIFY_ID)?.[1];
+  const external = imdb
+    ? { source: 'imdb' as const, id: imdb }
+    : spotify
+      ? { source: 'spotify' as const, id: spotify }
+      : null;
+  const bare = raw
+    .replace(/https?:\/\/\S+/g, ' ')
+    .replace(/spotify:\S+/g, ' ')
+    .replace(IMDB_ID, ' ')
+    .replace(/\(\s*\)/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const year = bare.match(YEAR_SUFFIX)?.[1];
+  const title = bare.replace(YEAR_SUFFIX, '').trim();
+  return { title: title || raw.trim(), year: year ? Number(year) : null, external };
+}
+
 /** Same name, ignoring case, accents, spacing and the style of quotes and apostrophes. */
 export function sameTitle(a: string, b: string): boolean {
   return normalizeTitle(a) === normalizeTitle(b);
@@ -98,11 +132,17 @@ export const resolveBundle = defineTool({
 
     async function resolveOne(name: string): Promise<{ anchor: Anchor; receipt: Receipt | null }> {
       try {
-        const { data: response, call } = await qloo.lookup.search(ctx.qloo, {
-          query: name,
-          types,
-          take: MAX_CANDIDATES,
-        });
+        const parsed = parseAnchor(name);
+        const wanted = parsed.title;
+        const { data: response, call } = parsed.external
+          ? await qloo.lookup.entitiesByExternalId(ctx.qloo, parsed.external.source, [
+              parsed.external.id,
+            ])
+          : await qloo.lookup.search(ctx.qloo, {
+              query: wanted,
+              types,
+              take: MAX_CANDIDATES,
+            });
         const candidates = response.results.map((e) => ({
           entityId: e.entity_id,
           name: e.name,
@@ -110,7 +150,21 @@ export const resolveBundle = defineTool({
           detail: detailOf(e),
         }));
         for (const c of candidates) ctx.entities.set(c.entityId, c);
-        const exact = candidates.filter((c) => sameTitle(c.name, name));
+        // An id names one entity, so it needs no name match, only the right kind of entity.
+        const byId = parsed.external
+          ? response.results.filter((e) => (e.types ?? []).some((t) => types.some((u) => u === t)))
+          : [];
+        const sameName = candidates.filter((c) => sameTitle(c.name, wanted));
+        // A year in brackets settles same-name titles when exactly one was released that year.
+        const inYear =
+          parsed.year !== null && sameName.length > 1
+            ? sameName.filter((c) => c.detail?.startsWith(String(parsed.year)))
+            : [];
+        const exact = parsed.external
+          ? candidates.filter((c) => byId.some((e) => e.entity_id === c.entityId))
+          : inYear.length === 1
+            ? inYear
+            : sameName;
         const match = exact.length === 1 ? exact[0] : undefined;
         const status = match ? 'found' : exact.length > 1 ? 'ambiguous' : 'not_found';
         const why = {

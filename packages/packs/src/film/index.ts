@@ -27,6 +27,8 @@ export const film: CategoryPack = {
     'lift',
     'partnerFit',
     'scoreRivals',
+    'filmProfiles',
+    'topicMap',
   ],
   consults: [],
   qloo: { titles: ['urn:entity:movie', 'urn:entity:tv_show'], ...sharedQlooCoverage },
