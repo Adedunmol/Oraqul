@@ -318,6 +318,14 @@ export function routeFinding(
     });
   }
 
+  brief.brief.route = {
+    score: round2(actual),
+    bestScore: round2(best.score),
+    bestOrder: best.order,
+    isBestOrder: same,
+    order: plain.map((s) => s.place),
+  };
+
   const byPlace = new Map(stops.map((s) => [s.place, s.row]));
   kit.add(
     {

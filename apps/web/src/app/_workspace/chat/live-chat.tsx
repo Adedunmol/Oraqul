@@ -17,6 +17,7 @@ import { markThreadRead, postMessage } from '@/lib/api/projects';
 import { toast } from '../toast';
 import { ChatView } from './chat-panel';
 import type { Attachment } from './composer';
+import { nextStepsFor } from './next-steps';
 import { useThreadEvents } from './use-thread-events';
 
 type ProjectUpdate = Extract<ThreadEvent, { type: 'project.updated' }>;
@@ -42,6 +43,13 @@ export function LiveChat({
     () => new Map<string, Output>(detail.projectOutputs.map((o) => [o.id, o])),
     [detail.projectOutputs],
   );
+
+  // Steps follow the latest output, until the person says or is asked something else.
+  const steps = useMemo(() => {
+    const at = items.findLastIndex((i) => i.role === 'output');
+    const moved = items.slice(at + 1).some((i) => i.role === 'user' || i.role === 'question');
+    return at === -1 || moved ? [] : nextStepsFor([...outputs.values()]);
+  }, [items, outputs]);
 
   const onEvent = useCallback(
     (event: ThreadEvent) => {
@@ -168,7 +176,10 @@ export function LiveChat({
       outputs={outputs}
       busy={busy}
       canEdit={canEdit}
-      steps={[]}
+      steps={steps}
+      onStep={(step) => {
+        if (step.message) void send(step.message, []);
+      }}
       onAnswer={answer}
       onSend={send}
       onSeen={() => {

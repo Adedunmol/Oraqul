@@ -1,9 +1,12 @@
 'use client';
 
 import type { LiftBand, Place } from '@oraqul/schema';
+import { ReceiptChip } from '@oraqul/ui';
 import { ChartCard, HBars, Legend, PairBars, type Tone, toneClass } from '../charts';
 import { useOutputView } from './context';
 import { ChangeMark, Evidence, FitBar, Line, Mark, Num, Stack, TabTitle } from './line';
+import { footnotesOf, LineText } from './plan-document';
+import { type SupportGridView, supportActsOf, territoriesOf } from './plan-views';
 import { FitRow } from './tabs-core';
 
 const bandTone: Record<LiftBand, Tone> = { strong: 'good', usable: 'warn', weak: 'crit' };
@@ -51,6 +54,7 @@ const placeBars = (places: Place[], label: (p: Place, i: number) => string) =>
 export function TerritoriesTab() {
   const { output } = useOutputView();
   const places = output.brief.places.slice().sort((a, b) => b.lift - a.lift);
+  if (output.plan) return <TerritoryPlans />;
   return (
     <>
       <TabTitle
@@ -86,6 +90,11 @@ export function RouteTab() {
   const { output } = useOutputView();
   const b = output.brief;
   const route = b.route;
+  // The stops in the order the team plays them. A plan ranks places by lift, so its list is not
+  // the route; older outputs have no order and keep the list as it is.
+  const byName = new Map(b.places.map((p) => [p.name.toLowerCase(), p]));
+  const stops = (route?.order ?? []).flatMap((n) => byName.get(n.toLowerCase()) ?? []);
+  const places = stops.length >= 2 ? stops : b.places;
   return (
     <>
       <TabTitle
@@ -98,7 +107,7 @@ export function RouteTab() {
           The colour of each stop is its fit. Grey means thin data.
         </p>
         <div role="img" aria-label="Tour route" className="flex overflow-x-auto py-1.5">
-          {b.places.map((p, i) => (
+          {places.map((p, i) => (
             <div
               key={p.id}
               className="relative flex min-w-[104px] flex-1 flex-col items-center gap-1 text-center text-[13px] before:absolute before:top-[22px] before:left-[-50%] before:h-0.5 before:w-full before:bg-line first:before:hidden"
@@ -137,7 +146,7 @@ export function RouteTab() {
         title="Lift by stop"
         table={{
           head: ['Stop', 'Lift', 'Date', 'Confidence'],
-          rows: b.places.map((p, i) => [
+          rows: places.map((p, i) => [
             `${i + 1}. ${p.name}`,
             `${p.lift.toFixed(1)}x`,
             p.date ?? '',
@@ -145,10 +154,10 @@ export function RouteTab() {
           ]),
         }}
       >
-        <HBars items={placeBars(b.places, (p) => p.name)} />
+        <HBars items={placeBars(places, (p) => p.name)} />
       </ChartCard>
       <Stack>
-        {b.places.map((p) => (
+        {places.map((p) => (
           <PlaceLine key={p.id} place={p} showDate />
         ))}
       </Stack>
@@ -176,7 +185,7 @@ const heatClass = [
 export function SupportActsTab() {
   const { output } = useOutputView();
   const g = output.brief.grid;
-  if (!g) return null;
+  if (!g) return output.plan ? <SupportActsFromFindings /> : null;
   const best = g.rows.find((r) => r.id === g.bestRowId);
   return (
     <>
@@ -573,6 +582,171 @@ export function RegionsTab() {
           <PlaceLine key={p.id} place={p} showDate={false} />
         ))}
       </Stack>
+    </>
+  );
+}
+
+const placeNote = (p: Place) =>
+  p.confidence === 'lower'
+    ? 'Thin data'
+    : { strong: 'Strong', usable: 'Usable', weak: 'Weak' }[p.band];
+
+/**
+ * One plan per territory. Each is the plan's own lines for that city, with the findings Qloo
+ * returned for it behind them, so the order to open in and what to do in each place read together.
+ */
+function TerritoryPlans() {
+  const { output, openReceipt } = useOutputView();
+  const plan = output.plan;
+  if (!plan) return null;
+  const territories = territoriesOf(plan, output.brief.places);
+  const notes = footnotesOf(plan.sections.flatMap((s) => s.lines));
+  return (
+    <>
+      <TabTitle
+        title="Territories"
+        note="One plan per territory, in the order the audience is strongest. Each has the lines of the plan that are about it."
+      />
+      <Stack>
+        {territories.map((t) => (
+          <section
+            key={t.place.id}
+            aria-labelledby={`territory-${t.place.id}`}
+            className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-[18px]"
+          >
+            <header className="flex flex-wrap items-center justify-between gap-2">
+              <h3
+                id={`territory-${t.place.id}`}
+                className="font-display text-[17px] font-semibold tracking-[-0.02em]"
+              >
+                {t.rank}. {t.place.name}
+                {t.rank === 1 ? <Mark>Open here first</Mark> : null}
+                {t.place.date ? <Mark>{t.place.date}</Mark> : null}
+              </h3>
+              <div className="flex flex-wrap items-center gap-2">
+                <Num>{t.place.lift.toFixed(1)}x</Num>
+                <span className="text-[13px] text-muted">{placeNote(t.place)}</span>
+                <Evidence lineId={t.place.id} />
+              </div>
+            </header>
+            {t.parts.length === 0 ? (
+              <p className="text-[13px] text-muted">
+                The plan has no lines about {t.place.name} yet. Ask for a plan for this territory in
+                the chat.
+              </p>
+            ) : (
+              t.parts.map((part) => (
+                <div key={part.section} className="flex flex-col gap-1.5">
+                  <h4 className="text-[12px] font-semibold text-muted">{part.section}</h4>
+                  <ul className="font-read flex flex-col gap-1.5 text-[15px] leading-[1.55]">
+                    {part.lines.map((line) => (
+                      <li key={line.id}>
+                        <LineText
+                          line={line}
+                          notes={notes}
+                          sources={plan.sources}
+                          onSource={(id) => openReceipt(id)}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            )}
+          </section>
+        ))}
+      </Stack>
+    </>
+  );
+}
+
+/** The support acts a plan's findings list, city by city. Values are Qloo's affinity, not a lift. */
+function SupportActsFromFindings() {
+  const { output, openReceipt } = useOutputView();
+  const grid: SupportGridView | null = output.plan ? supportActsOf(output.plan) : null;
+  if (!grid) return null;
+  const best = grid.rows[0];
+  return (
+    <>
+      <TabTitle
+        title="Support acts"
+        note="The acts Qloo ranks highest with your audience in each tour city, with your sound-alikes left out. Darker means a stronger match. A dash means that city's list left the act out."
+      />
+      <ChartCard
+        title="Support act match by city"
+        note={
+          best
+            ? `${best.name} is listed in the most cities, with an average match of ${best.average} out of 100.`
+            : undefined
+        }
+        table={{
+          head: ['Act', ...grid.cities, 'Average'],
+          rows: grid.rows.map((r) => [r.name, ...r.values.map((v) => v ?? '–'), r.average]),
+        }}
+      >
+        <div className="overflow-x-auto">
+          <div
+            className="grid min-w-[420px] items-center gap-1.5 text-[13px]"
+            style={{
+              gridTemplateColumns: `minmax(150px,1.2fr) repeat(${grid.cities.length}, minmax(64px,1fr)) 70px`,
+            }}
+          >
+            <span />
+            {grid.cities.map((c) => (
+              <span key={c} className="text-center text-xs text-muted">
+                {c}
+              </span>
+            ))}
+            <span className="text-center text-xs text-muted">Average</span>
+            {grid.rows.map((r) => (
+              <FindingsRow key={r.name} row={r} cities={grid.cities} />
+            ))}
+          </div>
+        </div>
+      </ChartCard>
+      <Stack>
+        {grid.rows.map((r) => (
+          <Line
+            key={r.name}
+            title={r.name}
+            side={
+              <>
+                <Num>{r.average}</Num>
+                <ReceiptChip
+                  onClick={() => r.findingIds[0] && openReceipt(r.findingIds[0])}
+                  aria-label="Open receipt"
+                />
+              </>
+            }
+          >
+            <p>
+              Match{' '}
+              {r.values
+                .map((v, i) => (v === null ? null : `${grid.cities[i] ?? ''} ${v}`))
+                .filter(Boolean)
+                .join(', ')}
+            </p>
+          </Line>
+        ))}
+      </Stack>
+    </>
+  );
+}
+
+function FindingsRow({ row, cities }: { row: SupportGridView['rows'][number]; cities: string[] }) {
+  return (
+    <>
+      <b>{row.name}</b>
+      {row.values.map((v, i) => (
+        <span
+          key={cities[i] ?? i}
+          data-tip={v === null ? `${row.name}: not in this city's list` : `${row.name}: ${v}`}
+          className={`rounded-md px-1.5 py-2.5 text-center font-mono text-[13px] ${v === null ? 'text-muted' : heatClass[row.levels[i] ?? 0]}`}
+        >
+          {v ?? '–'}
+        </span>
+      ))}
+      <span className="text-center font-mono font-semibold">{row.average}</span>
     </>
   );
 }
