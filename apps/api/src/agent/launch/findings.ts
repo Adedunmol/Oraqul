@@ -39,6 +39,46 @@ export { agesPhrase, capitalise, list, plural } from './text.js';
 export const KEEP = 6;
 export const NAMED = 3;
 
+/** What shapes one taste query, as `GroundKit.taste` takes it. */
+export interface TasteShape {
+  type: TasteType;
+  tags?: string[];
+  city?: string | null;
+  country?: string | null;
+  yearFrom?: number | null;
+  ages?: string[];
+  /** Rank only these, so the answer is among candidates that could really say yes. */
+  only?: string[];
+}
+
+const MAX_WIDENINGS = 2;
+
+/**
+ * Wider versions of a query Qloo answered with nothing, narrowest filter dropped first: the
+ * release years, then the age band, then the city (a place list needs its city, and a list the
+ * team chose to rank stays as it is). A version must keep one shaping parameter, because an
+ * open list drifts to what is popular overall (qloo.md).
+ */
+export function wideningsOf(shape: TasteShape): { shape: TasteShape; dropped: string[] }[] {
+  if (shape.only?.length) return [];
+  const shaped = (s: TasteShape) =>
+    !!(s.tags?.length || s.country || s.city || s.ages?.length || s.yearFrom != null);
+  const steps: { shape: TasteShape; dropped: string[] }[] = [];
+  let current = shape;
+  const dropped: string[] = [];
+  const drop = (what: string, next: TasteShape) => {
+    if (!shaped(next)) return;
+    current = next;
+    dropped.push(what);
+    steps.push({ shape: current, dropped: [...dropped] });
+  };
+  if (current.yearFrom != null) drop('the release years', { ...current, yearFrom: null });
+  if (current.ages?.length) drop('the age band', { ...current, ages: [] });
+  if (current.city && current.type !== 'urn:entity:place')
+    drop('the city', { ...current, city: null });
+  return steps.slice(0, MAX_WIDENINGS);
+}
+
 export interface GroundDeps {
   tools: ToolContext;
   emit(event: ThreadEvent): void;
@@ -51,6 +91,11 @@ export interface GroundInput<R extends LaunchRead, P extends QueryPlanCore> {
   dropped: { name: string; why: string }[];
   plan: P;
   year: number;
+  /**
+   * A second round: run only the queries in `plan.queries`, on the brief a first round built.
+   * The audience and the cities are not asked again, and no core finding is made twice.
+   */
+  more?: { brief: LaunchBrief };
 }
 
 export interface Grounded {
@@ -118,16 +163,7 @@ export interface GroundKit<R extends LaunchRead, P extends QueryPlanCore> {
     key: string,
     label: string,
     id: string,
-    shape: {
-      type: TasteType;
-      tags?: string[];
-      city?: string | null;
-      country?: string | null;
-      yearFrom?: number | null;
-      ages?: string[];
-      /** Rank only these, so the answer is among candidates that could really say yes. */
-      only?: string[];
-    },
+    shape: TasteShape,
     sentence: (names: string) => string,
     context: Partial<FindingContext>,
   ): Promise<void>;
@@ -185,49 +221,70 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
 
   // Core: the comps' audience and the team's cities, in parallel. The neighbourhoods are read
   // from the same heatmap, so they cost no call of their own.
-  const places = [...plan.cities, ...plan.worthALook].slice(0, 30);
-  const areas = want('areas') ? plan.areas : [];
-  const [audience, ranked] = await Promise.all([
-    test(deps, 'audienceBySegment', { entityIds: ids }, audienceOutputSchema),
-    places.length
-      ? test(deps, 'rankPlaces', { entityIds: ids, places, areas }, rankPlacesOutputSchema)
-      : Promise.resolve<Tested<z.infer<typeof rankPlacesOutputSchema>>>({
-          data: null,
-          why: 'No cities were given, so none could be ranked.',
-        }),
-  ]);
-  const brief = buildBrief({
-    read,
-    labels: spec.labels(read),
-    anchors: input.anchors,
-    dropped: input.dropped,
-    audience,
-    places: ranked,
-    worthALook: plan.worthALook,
-    standInPlaces: read.places.length ? undefined : spec.standInPlaces?.(read, plan),
-  });
-  coreFindings(brief, read, add, gaps, audience, ranked, spec.voice);
-  areaFindings(ranked, add, spec.voice);
+  let brief: LaunchBrief;
+  if (input.more) {
+    brief = input.more.brief;
+  } else {
+    const places = [...plan.cities, ...plan.worthALook].slice(0, 30);
+    const areas = want('areas') ? plan.areas : [];
+    const [audience, ranked] = await Promise.all([
+      test(deps, 'audienceBySegment', { entityIds: ids }, audienceOutputSchema),
+      places.length
+        ? test(deps, 'rankPlaces', { entityIds: ids, places, areas }, rankPlacesOutputSchema)
+        : Promise.resolve<Tested<z.infer<typeof rankPlacesOutputSchema>>>({
+            data: null,
+            why: 'No cities were given, so none could be ranked.',
+          }),
+    ]);
+    brief = buildBrief({
+      read,
+      labels: spec.labels(read),
+      anchors: input.anchors,
+      dropped: input.dropped,
+      audience,
+      places: ranked,
+      worthALook: plan.worthALook,
+      standInPlaces: read.places.length ? undefined : spec.standInPlaces?.(read, plan),
+    });
+    coreFindings(brief, read, add, gaps, audience, ranked, spec.voice);
+    areaFindings(ranked, add, spec.voice);
+  }
 
   const safely = <T extends { receipts: Receipt[] }>(label: string, run: () => Promise<T>) =>
     guarded(deps, gaps, label, run);
 
   const taste: GroundKit<R, P>['taste'] = async (key, label, id, shape, sentence, context) => {
-    const run = await safely(label, () =>
-      tools.findTaste.run(deps.tools, {
-        entityIds: ids,
-        take: Math.min(Math.max(KEEP, shape.only?.length ?? 0), 10),
-        ...shape,
-        exclude: [],
-      }),
-    );
-    if (!run) return;
-    const parsed = findTasteOutputSchema.parse(run.data);
-    const out =
-      shape.type === 'urn:entity:place'
-        ? { ...parsed, candidates: parsed.candidates.filter(isVenue) }
-        : parsed;
-    const [call] = run.receipts;
+    const ask = async (asked: TasteShape) => {
+      const run = await safely(label, () =>
+        tools.findTaste.run(deps.tools, {
+          entityIds: ids,
+          take: Math.min(Math.max(KEEP, asked.only?.length ?? 0), 10),
+          ...asked,
+          exclude: [],
+        }),
+      );
+      if (!run) return null;
+      const parsed = findTasteOutputSchema.parse(run.data);
+      const out =
+        asked.type === 'urn:entity:place'
+          ? { ...parsed, candidates: parsed.candidates.filter(isVenue) }
+          : parsed;
+      return { out, call: run.receipts[0] };
+    };
+
+    let answer = await ask(shape);
+    if (!answer) return;
+    let dropped: string[] = [];
+    // Nothing came back: ask again with the narrowest filter off, so the plan has something
+    // to rest on. The finding says it is the wider read.
+    for (const step of wideningsOf(shape)) {
+      if (answer.call && answer.out.candidates.length > 0) break;
+      const wider = await ask(step.shape);
+      if (!wider) return;
+      answer = wider;
+      dropped = step.dropped;
+    }
+    const { out, call } = answer;
     if (!call || out.candidates.length === 0) {
       gaps.push({
         item: label,
@@ -235,16 +292,28 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
       });
       return;
     }
+    const names = list(out.candidates.slice(0, NAMED).map((c) => c.name));
+    const widened = dropped.length > 0;
     add(
       {
         id,
         query: key,
-        text: sentence(list(out.candidates.slice(0, NAMED).map((c) => c.name))),
+        text: widened
+          ? `${label}: nothing came back with ${list(dropped)} applied, so this is the wider read of what that audience likes: ${names}.`
+          : sentence(names),
         entities: out.candidates.map((c) => entity(c.name, c.affinity, c.detail, c.entityId)),
         verdict: null,
-        confidence: out.confidence,
-        why: out.why,
-        context,
+        // A wider read is a lead, never above medium.
+        confidence: widened && rank[out.confidence] > rank.medium ? 'medium' : out.confidence,
+        why: widened
+          ? `${out.why} Widened: Qloo had nothing with ${list(dropped)} applied.`
+          : out.why,
+        context: {
+          ...context,
+          ...(dropped.includes('the city') ? { city: null } : {}),
+          ...(dropped.includes('the age band') ? { ages: [] } : {}),
+          ...(dropped.includes('the release years') ? { yearFrom: null } : {}),
+        },
       },
       call,
     );
@@ -264,6 +333,9 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
     taste,
     safely,
   };
+  // Gaps from the queries land in whatever order the calls finish, so they are put in a fixed order
+  // after the core ones. The same brief then gives the same list.
+  const coreGaps = gaps.length;
   try {
     await spec.runQueries(kit);
     await Promise.all(kit.jobs);
@@ -275,6 +347,12 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
       why: 'The Qloo call budget for this run ran out before every query ran.',
     });
   }
+
+  gaps.splice(
+    coreGaps,
+    gaps.length,
+    ...gaps.slice(coreGaps).sort((a, b) => a.item.localeCompare(b.item)),
+  );
 
   const at = (query: string) => {
     const i = spec.queryOrder.indexOf(query);
@@ -539,7 +617,7 @@ function keepFailure(deps: GroundDeps, err: QlooError) {
 // (a square or abbey at popularity 1.0, a hotel or mall among cinemas). Neither is somewhere to
 // screen a film or meet a community, so code leaves them out before the writer sees the list.
 const LANDMARK_POPULARITY = 0.999;
-const NOT_A_VENUE = /\b(hotel|mall|shopping|flea|market|resort|spa|square)\b/i;
+const NOT_A_VENUE = /\b(hotel|mall|shopping|flea|market|resort|spa|square|police|union)\b/i;
 
 function isVenue(c: { name: string; popularity: number | null }): boolean {
   return (c.popularity ?? 0) < LANDMARK_POPULARITY && !NOT_A_VENUE.test(c.name);

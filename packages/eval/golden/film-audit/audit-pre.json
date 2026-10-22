@@ -32,7 +32,12 @@
       "f-brands-telecom-lagos": ["Lagoon Mobile"],
       "f-podcasts": ["Crime Junkie", "Serial"],
       "f-community-church-london": ["Pentecost House"],
-      "f-community-university-lagos": ["Lagoon City University"]
+      "f-community-university-lagos": ["Lagoon City University"],
+      "f-games-lagos": ["Ember Keep", "Crown of Ash", "Hollow Hills"],
+      "f-venues-bar-lagos": ["Harbor Lounge"],
+      "f-venues-bar-london": ["Soho Social"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"],
+      "f-venues-night-club-london": ["Camden After Hours"]
     },
     "results": [],
     "brokeItem": null,

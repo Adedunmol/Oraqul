@@ -78,6 +78,12 @@ const AUDIT_ASK = new RegExp(
   'i',
 );
 
+// "What if we open in Accra?" asks to see the plan with the change, so it reruns it.
+const WHAT_IF = /\b(?:what if|what happens if|what would happen if|how about|suppose|imagine)\b/i;
+
+const QUESTION =
+  /\?\s*$|^(?:what|which|who|where|when|how|why|should|would|could|can|is|are|do|does|will)\b/i;
+
 /**
  * Whether a message plainly asks for an audit or a fix, in words code can read. It is what lets a
  * new chat in a project that started as a build run an audit when the person asks for one.
@@ -126,7 +132,11 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
   if (/\bpartner|\boutreach\b|\bsponsor/i.test(text) && reading.job === 'partner') {
     return { job: 'partner', partner };
   }
-  if (changed) return { job: 'scenario', change };
+  // A question about a change ("should we add Accra?") is answered, and the answer offers the
+  // what-if. Only a plain instruction or a "what if" reruns the plan, whatever the model read.
+  if (changed && (!QUESTION.test(text.trim()) || WHAT_IF.test(text))) {
+    return { job: 'scenario', change };
+  }
   if (reading.job === 'date') return { job: 'date', rivals: [] };
   if (reading.job === 'partner') return { job: 'partner', partner };
   return { job: 'answer' };

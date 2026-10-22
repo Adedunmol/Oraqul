@@ -110,6 +110,74 @@ export const droppedLineSchema = z.object({
 });
 export type DroppedLine = z.infer<typeof droppedLineSchema>;
 
+/** What the analyst read from a request before any query ran (spec §3.2). */
+export const understandingSchema = z.object({
+  /** What the person wants back, in a sentence. */
+  asked: z.string(),
+  goals: z.array(z.string()),
+  constraints: z.array(z.string()),
+  /**
+   * Values the analyst filled in because the person did not say them. They steer the queries and
+   * show on the plan as assumptions; they are never evidence.
+   */
+  assumed: z.array(z.object({ what: z.string(), value: z.string(), why: z.string() })),
+  /** What a good answer must do. The research, the writer and the review all work from these. */
+  criteria: z.array(
+    z.object({
+      id: z.string(),
+      text: z.string(),
+      /** True when answering it needs Qloo audience data. Only those are checked for coverage. */
+      evidence: z.boolean().default(true),
+      /** How well the research covers it, set by code once the findings are in. */
+      status: z.enum(['covered', 'thin', 'missing', 'unchecked']).default('unchecked'),
+      /** The findings that bear on it, strongest first. */
+      findingIds: z.array(z.string()).default([]),
+    }),
+  ),
+  by: z.enum(['model', 'scripted']),
+});
+export type Understanding = z.infer<typeof understandingSchema>;
+
+export const reviewIssueTypes = [
+  'missing',
+  'off-brief',
+  'contradicts-context',
+  'weak-evidence',
+  'unhelpful',
+  'vague',
+] as const;
+
+/** One thing the red team found wrong with a draft, against a check or the request as a whole. */
+export const reviewIssueSchema = z.object({
+  /** A check id, or `general`. */
+  check: z.string(),
+  type: z.enum(reviewIssueTypes),
+  text: z.string(),
+  /** What the next draft should do about it. */
+  fix: z.string(),
+  /** A blocking issue fails the draft. Code decides, from this list alone. */
+  blocking: z.boolean(),
+});
+export type ReviewIssue = z.infer<typeof reviewIssueSchema>;
+
+/**
+ * What the red team made of a plan before it was saved: each round's issues and what was done
+ * about them. `unchecked` when no model was available to review.
+ */
+export const planReviewSchema = z.object({
+  status: z.enum(['passed', 'flagged', 'unchecked']),
+  rounds: z.array(
+    z.object({
+      round: z.number().int(),
+      issues: z.array(reviewIssueSchema),
+      action: z.enum(['approved', 'rewrote', 'researched', 'stopped']),
+    }),
+  ),
+  /** What the person could give or try to make the plan stronger. */
+  next: z.array(z.string()),
+});
+export type PlanReview = z.infer<typeof planReviewSchema>;
+
 export const launchPlanSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question. */
   scope: z.enum(['full', 'narrow']),
@@ -121,5 +189,9 @@ export const launchPlanSchema = z.object({
   dropped: z.array(droppedLineSchema),
   /** `model` when a model wrote the lines, `template` when code did (no key, or a failed call). */
   writer: z.enum(['model', 'template']),
+  /** How the request was read. Plans saved before the analyst have none. */
+  understanding: understandingSchema.nullable().default(null),
+  /** The red team's verdict on the saved draft. Plans saved before it have none. */
+  review: planReviewSchema.nullable().default(null),
 });
 export type LaunchPlan = z.infer<typeof launchPlanSchema>;

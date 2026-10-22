@@ -8,6 +8,7 @@ import type {
   QlooEntityType,
   ThreadEvent,
 } from '@oraqul/schema';
+import type { Analyst } from './analyse.js';
 import type { DraftItem } from './audit-verdicts.js';
 import type { CheckRules } from './check.js';
 import type { DecisionWords } from './decisions.js';
@@ -16,6 +17,8 @@ import type { Change } from './follow-up.js';
 import type { QueryPlanCore, QueryPlanner } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import type { Researcher } from './research.js';
+import type { CatalogEntry, ResearchPlanner } from './research-loop.js';
+import type { Reviewer } from './review.js';
 import type { PlanWriter, WriteInput, WrittenLine } from './writer.js';
 
 /** The kinds of work a comp can be: what a launch is described by. */
@@ -48,6 +51,8 @@ export interface LaunchConfig<
   rivalTypes: readonly QlooEntityType[];
   /** Where tags of a genre live in Qloo, for the genre fallback when no comp is found by name. */
   genreTagPrefix: string;
+  /** Every query the category can run, so a second round can add one the first did not. */
+  catalog: readonly CatalogEntry[];
   /** Finding queries that rank artists, which a partner brief and an audit can place. */
   artistQueries: readonly string[];
 
@@ -125,6 +130,12 @@ export interface LaunchDeps<
   config: LaunchConfig<R, P>;
   /** Reads the brief and keeps only what the person said. */
   read(input: { title: string; text: string }): Promise<{ read: R; tokens: number }>;
+  /** Works out what the request needs and fills what it left out, as labelled assumptions. Scripted when omitted. */
+  analyst?: Analyst;
+  /** Judges what the first round of queries covers and picks a second. Scripted when omitted. */
+  researchPlanner?: ResearchPlanner;
+  /** Red team: compares a draft with the request and sends it back. Scripted when omitted. */
+  reviewer?: Reviewer;
   /** Looks up release timing and market facts on the web, when search is configured. */
   research: Researcher<R>;
   queries: QueryPlanner<R, P>;

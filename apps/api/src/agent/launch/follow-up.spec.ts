@@ -41,6 +41,15 @@ describe('decideFollowUp: fix and audit are asked for the whole plan', () => {
     'what does the audit say about Lagos',
   ])('%s is not a fix or an audit', (text) => expect(['fix', 'audit']).not.toContain(job(text)));
 
+  it('answers a question about a change and reruns only an instruction or a what-if', () => {
+    const addPlaces = [{ value: 'Accra', quote: 'Accra' }];
+    expect(job('Should we add Accra?', { addPlaces })).toBe('answer');
+    expect(job('Add Accra to the plan', { addPlaces })).toBe('scenario');
+    expect(job('What if we open in Accra?', { addPlaces })).toBe('scenario');
+    // Whatever the model read, a question about a change is answered.
+    expect(job('Should we add Accra?', { addPlaces, job: 'scenario' })).toBe('answer');
+  });
+
   it('reads a change phrased with "test the plan" as a what-if', () => {
     const ages = [{ value: '55_and_older' as const, quote: 'older women' }];
     expect(job('test the plan with older women', { ages })).toBe('scenario');

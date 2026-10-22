@@ -54,6 +54,13 @@ export interface Handoff {
   recent: TranscriptLine[];
   /** The plan this chat works on now (`threads.base_output_id`). Null before the first plan. */
   planId: string | null;
+  /**
+   * A standalone chat inside the project: it knows only the category and the project's name, with
+   * no brief, plan or memory, so wild questions stay out of the project's own notes.
+   */
+  fresh?: boolean;
+  /** What the project remembers, for a chat that uses it. Context, never evidence. */
+  memory?: string[];
 }
 
 /** A plan output ready to save. Every number in it was computed by code. */

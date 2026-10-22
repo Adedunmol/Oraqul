@@ -304,6 +304,12 @@ const baseEntities: DemoEntity[] = [
   demoPlace('DEMO-PLACE-0007', 'Pentecost House', 'London', 'church'),
   demoPlace('DEMO-PLACE-0008', 'Gulf Coast University', 'Houston', 'university'),
   demoPlace('DEMO-PLACE-0009', 'Lagoon City University', 'Lagos', 'university'),
+  demoPlace('DEMO-PLACE-0010', 'Harbor Lounge', 'Lagos', 'bar'),
+  demoPlace('DEMO-PLACE-0011', 'Eko Nights Club', 'Lagos', 'night_club'),
+  demoPlace('DEMO-PLACE-0012', 'Soho Social', 'London', 'bar'),
+  demoPlace('DEMO-PLACE-0013', 'Camden After Hours', 'London', 'night_club'),
+  demoPlace('DEMO-PLACE-0014', 'Harbor Hall', 'Lagos', 'concert_hall'),
+  demoPlace('DEMO-PLACE-0015', 'Southbank Hall', 'London', 'concert_hall'),
 ];
 
 const gaming = ['video_games'];

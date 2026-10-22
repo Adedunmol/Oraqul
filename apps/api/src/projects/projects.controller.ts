@@ -18,9 +18,12 @@ import {
   type Category,
   type CompareResponse,
   type CreateProjectResult,
+  type CreateThreadInput,
   type CreateThreadResult,
   categorySchema,
   createProjectInputSchema,
+  createThreadInputSchema,
+  type MemoryItem,
   type OutputDetail,
   type Overview,
   type Project,
@@ -29,6 +32,8 @@ import {
   type ShareState,
   setShareSchema,
   type ThreadDetail,
+  type UpdateMemoryInput,
+  updateMemoryInputSchema,
 } from '@oraqul/schema';
 import type { Response } from 'express';
 import { map, type Observable } from 'rxjs';
@@ -114,8 +119,35 @@ export class ProjectsController {
   createThread(
     @CurrentUser() user: SessionUser,
     @Param('projectId') projectId: string,
+    @Body(new ZodPipe(createThreadInputSchema.prefault({}))) body: Required<CreateThreadInput>,
   ): Promise<CreateThreadResult> {
-    return this.projects.createThread(projectId, user.id);
+    return this.projects.createThread(projectId, user.id, body.fresh);
+  }
+
+  @Get('projects/:projectId/memory')
+  @Roles('owner', 'editor', 'viewer')
+  memory(@Param('projectId') projectId: string): Promise<MemoryItem[]> {
+    return this.projects.memory(projectId);
+  }
+
+  @Put('projects/:projectId/memory/:itemId')
+  @Roles('owner', 'editor')
+  editMemory(
+    @Param('projectId') projectId: string,
+    @Param('itemId', new ZodPipe(z.uuid())) itemId: string,
+    @Body(new ZodPipe(updateMemoryInputSchema)) body: UpdateMemoryInput,
+  ): Promise<MemoryItem> {
+    return this.projects.editMemory(projectId, itemId, body.text);
+  }
+
+  @Delete('projects/:projectId/memory/:itemId')
+  @Roles('owner', 'editor')
+  @HttpCode(204)
+  forgetMemory(
+    @Param('projectId') projectId: string,
+    @Param('itemId', new ZodPipe(z.uuid())) itemId: string,
+  ): Promise<void> {
+    return this.projects.forgetMemory(projectId, itemId);
   }
 
   @Get('outputs/:outputId')

@@ -18,14 +18,18 @@ import {
   type LaunchLine,
   type LaunchModuleKey,
   type LaunchPlan,
+  type LaunchSection,
   type LaunchSectionKey,
   type Move,
   type OverallConfidence,
+  type PlanReview,
   type PlanSource,
   type Question,
   type Receipt,
   type StopReason,
   type ThreadEvent,
+  type Understanding,
+  understandingSchema,
 } from '@oraqul/schema';
 import { z } from 'zod';
 import {
@@ -36,14 +40,24 @@ import {
   type Reply,
 } from '../category-agents.js';
 import { ungroundedClaims } from '../grounding.js';
+import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
 import { capital } from './brief.js';
 import { type CheckContext, checkSections } from './check.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
 import { ensureDecisions } from './decisions.js';
+import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
 import type { Change } from './follow-up.js';
 import type { QueryPlanCore } from './planner.js';
 import type { LaunchRead } from './read-core.js';
+import {
+  applyAssessment,
+  applyRound2,
+  MAX_EXTRA,
+  MIN_CALLS_LEFT,
+  ScriptedResearchPlanner,
+} from './research-loop.js';
+import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
 import type { BuildState, LaunchState } from './state.js';
 import { list } from './text.js';
 import { CODE_SECTIONS, type WriteInput } from './writer.js';
@@ -77,6 +91,8 @@ export const launchInputsSchema = <S extends z.ZodType>(read: S) =>
     dropped: z.array(z.object({ name: z.string(), why: z.string() })),
     /** Plans saved before comps were kept apart by source have none. */
     used: z.array(compUsedSchema).default([]),
+    /** How the request was read. Plans saved before the analyst have none. */
+    understanding: understandingSchema.nullable().default(null),
   });
 export interface LaunchInputs<R extends LaunchRead = LaunchRead> {
   read: R;
@@ -84,6 +100,7 @@ export interface LaunchInputs<R extends LaunchRead = LaunchRead> {
   resolved: Anchor[];
   dropped: { name: string; why: string }[];
   used: CompUsed[];
+  understanding?: Understanding | null;
 }
 
 export interface PlanRun {
@@ -134,8 +151,16 @@ export function runCtx(
   const ctx: RunCtx = {
     receipts,
     tokens: 0,
-    trace: (text) =>
-      deps.emit({ type: 'trace.step', agent: deps.config.category, step: ++step, of: total, text }),
+    trace: (text) => {
+      step += 1;
+      deps.emit({
+        type: 'trace.step',
+        agent: deps.config.category,
+        step,
+        of: Math.max(total, step),
+        text,
+      });
+    },
     keep: (made) => {
       for (const receipt of made) {
         receipts.push(receipt);
@@ -155,13 +180,64 @@ export function runCtx(
 }
 
 /** The steps of a build, not counting the web step that exists only when search is configured. */
-export const BUILD_STEPS = 6;
+export const BUILD_STEPS = 9;
 
 export interface Asked<P extends QueryPlanCore = QueryPlanCore> {
   modules: LaunchModuleKey[];
   queryPlan: P;
   grounded: Grounded;
+  /** Every query any round has run, so a later round only offers the rest. */
+  ran: string[];
   sources: PlanSource[];
+  /** The request's checks with what the research found for each, when the run read one. */
+  understanding: Understanding | null;
+}
+
+/**
+ * A later round of research: the catalog queries asked for, run on the brief the first round
+ * built and merged into its findings. Each check an extra query was for is marked from what that
+ * query found.
+ */
+async function runExtra<R extends LaunchRead, P extends QueryPlanCore>(
+  deps: LaunchDeps<R, P>,
+  ctx: RunCtx,
+  input: {
+    title: string;
+    read: R;
+    comps: Anchors;
+    queryPlan: P;
+    grounded: Grounded;
+    understanding: Understanding;
+    extra: { query: string; check: string; why: string }[];
+  },
+): Promise<{ grounded: Grounded; understanding: Understanding }> {
+  const { grounded, extra } = input;
+  const labels = extra.map(
+    (e) => deps.config.catalog.find((q) => q.key === e.query)?.label ?? e.query,
+  );
+  ctx.trace(`Looking wider: ${list(labels)}`);
+  const more = await deps.config.ground(
+    { tools: deps.tools, emit: deps.emit, keep: ctx.keep },
+    {
+      read: input.read,
+      anchors: input.comps.resolved,
+      dropped: input.comps.dropped,
+      plan: { ...input.queryPlan, queries: extra.map((e) => e.query) },
+      year: new Date().getFullYear(),
+      more: { brief: grounded.brief },
+    },
+  );
+  const merged: Grounded = {
+    ...grounded,
+    findings: [...grounded.findings, ...more.findings],
+    receipts: [...grounded.receipts, ...more.receipts],
+    gaps: [...grounded.gaps, ...more.gaps],
+    budgetOut: grounded.budgetOut || more.budgetOut,
+  };
+  return {
+    grounded: merged,
+    understanding: applyRound2(input.understanding, more.findings, extra, merged.findings),
+  };
 }
 
 /**
@@ -177,6 +253,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     comps: Anchors;
     /** The audit adds the partners a plan names to the candidates Qloo ranks. */
     adjust?: (plan: P) => P;
+    /** How the request was read. With it, a second round covers what the first left thin. */
+    understanding?: Understanding | null;
   },
 ): Promise<Asked<P>> {
   const { title, read, comps } = input;
@@ -193,16 +271,54 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
   const queryPlan = input.adjust ? input.adjust(planned) : planned;
 
   ctx.trace('Asking Qloo about your audience');
-  const grounded = await deps.config.ground(
-    { tools: deps.tools, emit: deps.emit, keep: ctx.keep },
-    {
-      read,
-      anchors: comps.resolved,
-      dropped: comps.dropped,
-      plan: queryPlan,
-      year: new Date().getFullYear(),
-    },
-  );
+  const groundDeps = { tools: deps.tools, emit: deps.emit, keep: ctx.keep };
+  const groundInput = {
+    read,
+    anchors: comps.resolved,
+    dropped: comps.dropped,
+    plan: queryPlan,
+    year: new Date().getFullYear(),
+  };
+  let grounded = await deps.config.ground(groundDeps, groundInput);
+
+  let understanding = input.understanding ?? null;
+  const extraKeys: string[] = [];
+  if (understanding) {
+    ctx.trace('Checking what the research covers');
+    const ran = new Set(queryPlan.queries);
+    const unrun = deps.config.catalog.filter((q) => !ran.has(q.key) && q.key !== 'areas');
+    const callsLeft = deps.tools.qloo.callsLeft;
+    const judged = await (deps.researchPlanner ?? new ScriptedResearchPlanner()).assess({
+      category: deps.config.category,
+      title,
+      understanding,
+      findings: grounded.findings,
+      gaps: grounded.gaps,
+      unrun,
+      callsLeft,
+    });
+    ctx.tokens += judged.tokens;
+    const applied = applyAssessment(
+      understanding,
+      grounded.findings,
+      judged.assessment,
+      unrun,
+      callsLeft,
+    );
+    understanding = applied.understanding;
+    if (applied.extra.length) {
+      extraKeys.push(...applied.extra.map((e) => e.query));
+      ({ grounded, understanding } = await runExtra(deps, ctx, {
+        title,
+        read,
+        comps,
+        queryPlan,
+        grounded,
+        understanding,
+        extra: applied.extra,
+      }));
+    }
+  }
 
   let sources: PlanSource[] = [];
   if (deps.research.enabled) {
@@ -216,7 +332,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     sources = found.sources;
     ctx.tokens += found.tokens;
   }
-  return { modules, queryPlan, grounded, sources };
+  const ran = [...new Set([...queryPlan.queries, ...extraKeys])];
+  return { modules, queryPlan, grounded, ran, sources, understanding };
 }
 
 /** The build (spec §4.1, §6.1): findings first, then the plan, every line checked. */
@@ -237,6 +354,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let known: Anchor[] = [];
   let knownUsed: CompUsed[] = [];
   let knownDropped: { name: string; why: string }[] = [];
+  let understanding: Understanding | null = null;
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -244,6 +362,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     ({ read, title } = changed);
     kind = 'scenario';
     known = changed.resolved;
+    understanding = from.inputs.understanding ?? applyAnalysis(read, null).understanding;
     knownUsed = changed.used;
     knownDropped = changed.dropped;
     for (const a of known) deps.tools.entities.set(a.entityId, a);
@@ -251,16 +370,6 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     if (resume) {
       extra = `${resume.state.extra}\n\n${replyText(resume.state, resume.reply)}`.trim();
       kind = resume.state.kind;
-    } else {
-      deps.emit({
-        type: 'memory.used',
-        items: [
-          { source: 'project', label: 'your brief' },
-          ...handoff.inputs.files
-            .filter((f) => f.text)
-            .map((f) => ({ source: 'project' as const, label: f.name })),
-        ],
-      });
     }
     ctx.trace('Reading your brief');
     const input = {
@@ -270,6 +379,16 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     const reading = await deps.read(input);
     ctx.tokens += reading.tokens;
     read = reading.read;
+
+    ctx.trace('Working out what you need');
+    const analysed = await (deps.analyst ?? new ScriptedAnalyst()).analyse({
+      category: deps.config.category,
+      title: handoff.title,
+      text: input.text,
+      read,
+    });
+    ctx.tokens += analysed.tokens;
+    ({ read, understanding } = applyAnalysis(read, analysed.analysis));
 
     // The only question a build ever asks: there is nothing to plan from without these (PRD C1).
     const missing = deps.config.minimum.missing(read);
@@ -309,7 +428,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   }
   for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);
 
-  const asked = await askQloo(deps, ctx, { title, read, comps });
+  const asked = await askQloo(deps, ctx, { title, read, comps, understanding });
   return writePlan(deps, ctx, {
     handoff,
     title,
@@ -322,7 +441,12 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   });
 }
 
-/** Stage 2 and the check (spec §4.1, §6.2): write the plan from the findings, then check every line. */
+/**
+ * Stage 2 and the check (spec §4.1, §6.2): write the plan from the findings, check every line, then
+ * let the red team compare the draft with the request. A draft with a blocking issue is written
+ * again, with the issues, after more research when the issue asks for it. Nothing is saved until
+ * the loop ends: a draft that passed, or the last one with its open issues flagged.
+ */
 export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   deps: LaunchDeps<R, P>,
   ctx: RunCtx,
@@ -344,75 +468,168 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   },
 ): Promise<PlanRun> {
   const { handoff, title, read, comps, asked, extra, kind } = input;
-  const { modules, queryPlan, grounded, sources } = asked;
+  const { modules, queryPlan, sources } = asked;
   const text = briefText(handoff, input.chars, kind !== 'fix');
-
-  ctx.trace('Writing the plan');
   const order = sectionOrder(modules);
   const today = new Date().toISOString().slice(0, 10);
   // A section code writes whole, such as Games' launch beats, is not the writer's to write.
   const byCode = deps.config.codeSections.timeline && modules.includes('timeline');
-  const writeInput: WriteInput<R> = {
-    title,
-    request: [text, extra].filter(Boolean).join('\n\n'),
-    read,
-    comps: comps.used,
-    sections: byCode ? order.filter((key) => key !== 'timeline') : order,
-    findings: grounded.findings,
-    sources,
-    today,
-  };
-  const written = await deps.writer.write(writeInput);
-  ctx.tokens += written.tokens;
-
-  ctx.trace('Checking every line');
-  const checkCtx: CheckContext = {
-    findings: grounded.findings,
-    sources,
-    briefNames: [title, ...comps.used.map((c) => c.name), ...deps.config.briefNames.build(read)],
-    briefText: [text, extra].join('\n'),
-    teamCities: read.places,
-    teamAges: read.ages,
-    allowed: order,
-    rules: deps.config.rules,
-  };
-  const writerSections = written.sections.filter(
-    (s) => !CODE_SECTIONS.includes(s.key) && !(byCode && s.key === 'timeline'),
-  );
-  const checked = checkSections(writerSections, checkCtx);
-  // A core section the writer left out, or whose every line failed, comes from the templates.
   const core: LaunchSectionKey[] = ['bottom-line', 'positioning', 'audience', 'markets'];
-  const empty = core.filter((key) => !checked.sections.some((s) => s.key === key));
-  const filled = empty.length
-    ? checkSections(
-        empty.map((key) => ({ key, lines: deps.config.templateSection(key, writeInput) })),
-        checkCtx,
-      )
-    : { sections: [], dropped: [] };
-  const codeSections = [
-    ...(modules.includes('budget') ? [deps.config.codeSections.budget(read)] : []),
-    ...(byCode && deps.config.codeSections.timeline
-      ? [deps.config.codeSections.timeline(read, today)]
-      : []),
-    deps.config.codeSections.gaps(read, comps),
-  ];
-  const sections = ensureDecisions(
-    order.flatMap((key) => {
-      const s =
-        checked.sections.find((x) => x.key === key) ??
-        filled.sections.find((x) => x.key === key) ??
-        codeSections.find((x) => x.key === key);
-      return s ? [s] : [];
-    }),
-    {
-      cities: read.places,
-      ranked: grounded.brief.teamOrder.map((p) => p.place),
+  // What the writer cannot change, so the red team does not send a draft back for it.
+  const codeSections: string[] = [...CODE_SECTIONS, ...(byCode ? ['timeline'] : [])];
+
+  let grounded = asked.grounded;
+  let understanding = asked.understanding;
+  let ran = asked.ran;
+
+  const draft = async (feedback: string[]) => {
+    const writeInput: WriteInput<R> = {
+      title,
+      request: [text, extra].filter(Boolean).join('\n\n'),
+      read,
+      comps: comps.used,
+      sections: byCode ? order.filter((key) => key !== 'timeline') : order,
       findings: grounded.findings,
-      home: homeMarket(read.places, queryPlan.country),
-      comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
-    },
-    deps.config.decisions,
-  );
+      sources,
+      today,
+      understanding,
+      evidence: understanding
+        ? evidenceBlock(understanding.criteria, grounded.findings)
+        : undefined,
+      feedback,
+    };
+    const written = await deps.writer.write(writeInput);
+    ctx.tokens += written.tokens;
+
+    ctx.trace('Checking every line');
+    const checkCtx: CheckContext = {
+      findings: grounded.findings,
+      sources,
+      briefNames: [title, ...comps.used.map((c) => c.name), ...deps.config.briefNames.build(read)],
+      briefText: [text, extra].join('\n'),
+      teamCities: read.places,
+      teamAges: read.ages,
+      allowed: order,
+      rules: deps.config.rules,
+    };
+    const writerSections = written.sections.filter(
+      (s) => !CODE_SECTIONS.includes(s.key) && !(byCode && s.key === 'timeline'),
+    );
+    const checked = checkSections(writerSections, checkCtx);
+    // A core section the writer left out, or whose every line failed, comes from the templates.
+    const empty = core.filter((key) => !checked.sections.some((s) => s.key === key));
+    const filled = empty.length
+      ? checkSections(
+          empty.map((key) => ({ key, lines: deps.config.templateSection(key, writeInput) })),
+          checkCtx,
+        )
+      : { sections: [], dropped: [] };
+    const codeSections = [
+      ...(modules.includes('budget') ? [deps.config.codeSections.budget(read)] : []),
+      ...(byCode && deps.config.codeSections.timeline
+        ? [deps.config.codeSections.timeline(read, today)]
+        : []),
+      deps.config.codeSections.gaps(read, comps),
+    ];
+    const sections = ensureDecisions(
+      order.flatMap((key) => {
+        const s =
+          checked.sections.find((x) => x.key === key) ??
+          filled.sections.find((x) => x.key === key) ??
+          codeSections.find((x) => x.key === key);
+        return s ? [s] : [];
+      }),
+      {
+        cities: read.places,
+        ranked: grounded.brief.teamOrder.map((p) => p.place),
+        findings: grounded.findings,
+        home: homeMarket(read.places, queryPlan.country),
+        comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+      },
+      deps.config.decisions,
+    );
+    return {
+      sections,
+      dropped: [...checked.dropped, ...filled.dropped],
+      by: written.by,
+    };
+  };
+
+  const reviewer = deps.reviewer ?? new ScriptedReviewer();
+  const rounds: PlanReview['rounds'] = [];
+  let status: PlanReview['status'] = 'unchecked';
+  let next: string[] = [];
+  let feedback: string[] = [];
+  let lastBlocking = new Set<string>();
+  let current = await (async () => {
+    ctx.trace('Writing the plan');
+    return draft(feedback);
+  })();
+
+  // A fix is written from an audit that already tested the plan, so only a build is reviewed.
+  for (let round = 1; understanding && round <= MAX_ROUNDS; round++) {
+    ctx.trace('Checking the plan against your request');
+    const unrun = deps.config.catalog.filter((q) => !ran.includes(q.key) && q.key !== 'areas');
+    const out = await reviewer.review({
+      category: deps.config.category,
+      title,
+      request: [text, extra].filter(Boolean).join('\n\n'),
+      context: [
+        ...(handoff.memory?.length
+          ? ['Project notes:', ...handoff.memory.map((m) => `- ${m}`), '']
+          : []),
+        ...handoff.recent
+          .slice(0, -1)
+          .map((l) => `${l.from === 'person' ? 'Person' : 'Oraqul'}: ${l.text}`),
+      ].join('\n'),
+      understanding,
+      draft: draftText(current.sections),
+      findings: grounded.findings,
+      gaps: grounded.gaps,
+      unrun,
+      codeSections,
+      round,
+    });
+    ctx.tokens += out.tokens;
+    if (!out.review) break;
+    const verdict = judge(out.review, understanding, unrun, codeSections);
+    next = verdict.next;
+    if (verdict.passed) {
+      rounds.push({ round, issues: verdict.issues, action: 'approved' });
+      status = 'passed';
+      break;
+    }
+    // The same blocking issue after a rewrite means writing again will not fix it.
+    const keys = verdict.issues.filter((i) => i.blocking).map((i) => `${i.check}:${i.type}`);
+    const repeated = keys.length > 0 && keys.every((k) => lastBlocking.has(k));
+    lastBlocking = new Set(keys);
+    if (round === MAX_ROUNDS || repeated) {
+      rounds.push({ round, issues: verdict.issues, action: 'stopped' });
+      status = 'flagged';
+      break;
+    }
+    let action: 'rewrote' | 'researched' = 'rewrote';
+    const wider = verdict.research.slice(0, MAX_EXTRA);
+    if (wider.length && deps.tools.qloo.callsLeft >= MIN_CALLS_LEFT) {
+      ({ grounded, understanding } = await runExtra(deps, ctx, {
+        title,
+        read,
+        comps,
+        queryPlan,
+        grounded,
+        understanding,
+        extra: wider,
+      }));
+      ran = [...ran, ...wider.map((w) => w.query)];
+      action = 'researched';
+    }
+    rounds.push({ round, issues: verdict.issues, action });
+    feedback = feedbackLines(current.dropped, verdict.issues);
+    ctx.trace(`Rewriting the plan, draft ${round + 1}`);
+    current = await draft(feedback);
+  }
+
+  const { sections } = current;
   const plan: LaunchPlan = {
     scope: read.scope,
     sections,
@@ -422,8 +639,10 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     sources: sources.filter((src) =>
       sections.some((sec) => sec.lines.some((l) => l.sourceIds.includes(src.id))),
     ),
-    dropped: [...checked.dropped, ...filled.dropped],
-    writer: written.by,
+    dropped: current.dropped,
+    writer: current.by,
+    understanding,
+    review: understanding ? reviewOf(status, rounds, next) : null,
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];
@@ -432,7 +651,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     bottom[0]?.text ?? 'Qloo could not test enough of this plan to lead with anything yet.';
   const confidence = overall(bottom, grounded.findings);
 
-  const reply = writeReply(input.intro, bottom, grounded.findings, deps.tools.source);
+  const reply = writeReply(input.intro, bottom, grounded.findings, deps.tools.source, plan.review);
   if (ungroundedClaims(reply, ctx.receipts).length) {
     deps.emit({
       type: 'error',
@@ -475,10 +694,18 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         resolved: comps.resolved,
         dropped: comps.dropped,
         used: comps.used,
+        understanding,
       } satisfies LaunchInputs<R>,
     },
     input.earlier,
   );
+}
+
+/** The draft as plain text for the red team: a heading per section, a line each. */
+function draftText(sections: LaunchSection[]): string {
+  return sections
+    .map((s) => `## ${s.title}\n${s.lines.map((l) => `- ${l.text}`).join('\n')}`)
+    .join('\n\n');
 }
 
 /** No comp was found in Qloo, so there is nothing to describe the audience with. */
@@ -870,13 +1097,21 @@ function writeReply(
   bottom: LaunchLine[],
   findings: Finding[],
   source: Receipt['source'],
+  review: PlanReview | null,
 ): { message: string; claims: Claim[] } {
   const claims: Claim[] = bottom.flatMap((l) => {
     const ids = l.findingIds.flatMap((id) => findings.find((f) => f.id === id)?.callIds ?? []);
     return ids.length ? [{ text: l.text, receiptIds: [...new Set(ids)] }] : [];
   });
   // The plan follows in full below this line, so the message only introduces it.
-  const message = [intro, source === 'demo' ? 'This run used demo data, not live Qloo.' : '']
+  const message = [
+    intro,
+    review?.status === 'flagged'
+      ? 'Some points are still open, and they are listed on the plan.'
+      : '',
+    review?.next.length ? `To make it stronger: ${list(review.next)}.` : '',
+    source === 'demo' ? 'This run used demo data, not live Qloo.' : '',
+  ]
     .filter(Boolean)
     .join(' ');
   return { message, claims };

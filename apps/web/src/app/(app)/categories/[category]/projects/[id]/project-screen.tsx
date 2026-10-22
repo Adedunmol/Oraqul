@@ -11,7 +11,7 @@ import {
   type ThreadEvent,
   type ThreadSummary,
 } from '@oraqul/schema';
-import { Button, buttonClassName, ChipButton, Icon } from '@oraqul/ui';
+import { Button, buttonClassName, ChipButton, Icon, Input } from '@oraqul/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
@@ -22,7 +22,13 @@ import { LiveChat } from '@/app/_workspace/chat/live-chat';
 import { Crumbs } from '@/app/_workspace/crumbs';
 import { formatDay, plural } from '@/app/_workspace/format';
 import { toast } from '@/app/_workspace/toast';
-import { comparePlans, createThread, deleteProject } from '@/lib/api/projects';
+import {
+  comparePlans,
+  createThread,
+  deleteProject,
+  editMemory,
+  forgetMemory,
+} from '@/lib/api/projects';
 import type { Viewer } from '@/lib/api/viewer';
 import { getCategory } from '@/lib/demo/catalog';
 import { projectsPath } from '@/lib/routes';
@@ -52,6 +58,7 @@ export function ProjectWorkspace({
   const router = useRouter();
   const [update, setUpdate] = useState<ProjectUpdate | null>(null);
   const [details, setDetails] = useState(false);
+  const [choosing, setChoosing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const canEdit = detail.myRole !== 'viewer';
   const onProjectUpdated = useCallback((event: ProjectUpdate) => setUpdate(event), []);
@@ -67,9 +74,9 @@ export function ProjectWorkspace({
   const chatName = (id: string, stored: string) =>
     update && id === selectedId ? update.threadName : stored;
 
-  async function newChat() {
+  async function newChat(fresh: boolean) {
     try {
-      router.push(`/threads/${await createThread(project.id)}`);
+      router.push(`/threads/${await createThread(project.id, fresh)}`);
     } catch {
       toast('Could not start a new chat. Try again.');
     }
@@ -123,7 +130,12 @@ export function ProjectWorkspace({
               Project details
             </Button>
             {canEdit ? (
-              <Button variant="primary" icon="plus" onClick={newChat} disabled={reading}>
+              <Button
+                variant="primary"
+                icon="plus"
+                onClick={() => setChoosing(true)}
+                disabled={reading}
+              >
                 New chat
               </Button>
             ) : null}
@@ -186,6 +198,31 @@ export function ProjectWorkspace({
         )}
       </div>
 
+      <Modal open={choosing} onClose={() => setChoosing(false)} title="New chat">
+        <div className="flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => newChat(false)}
+            className="flex flex-col gap-1 rounded-xl bg-card px-4 py-3 text-left hover:bg-card-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            <span className="text-sm font-semibold">Use this project’s memory</span>
+            <span className="text-[13px] text-muted">
+              Starts from the current plan and what the project remembers.
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => newChat(true)}
+            className="flex flex-col gap-1 rounded-xl bg-card px-4 py-3 text-left hover:bg-card-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            <span className="text-sm font-semibold">Standalone chat</span>
+            <span className="text-[13px] text-muted">
+              Stays in this project but sees none of its plans or memory, so you can think out loud.
+            </span>
+          </button>
+        </div>
+      </Modal>
+
       {info && name ? (
         <>
           <Modal open={details} onClose={() => setDetails(false)} title="Project details" wide>
@@ -233,7 +270,7 @@ export function builtOnText(
 ): string {
   const from = thread.fromOutputId ? labels.get(thread.fromOutputId) : undefined;
   if (from) return `Built on ${from}`;
-  return thread.fresh ? 'Started fresh, no earlier plan used' : 'Started from the project inputs';
+  return thread.fresh ? 'Standalone, no project memory' : 'Started from the project inputs';
 }
 
 function CurrentPlan({ output }: { output: Output }) {
@@ -311,6 +348,113 @@ function ChatList({
   );
 }
 
+/**
+ * What the project remembers, so a new chat that uses it starts where the work is. It updates
+ * itself as plans and decisions change, and every note can be rewritten or forgotten here. Plans
+ * are kept by the agent: they can be forgotten but not rewritten.
+ */
+function Memory({
+  projectId,
+  items,
+  canEdit,
+}: {
+  projectId: string;
+  items: ProjectDetail['memory'];
+  canEdit: boolean;
+}) {
+  const router = useRouter();
+  const [editing, setEditing] = useState<string | null>(null);
+  const [draft, setDraft] = useState('');
+
+  async function run(work: () => Promise<unknown>, failed: string) {
+    try {
+      await work();
+      setEditing(null);
+      router.refresh();
+    } catch {
+      toast(failed);
+    }
+  }
+
+  return (
+    <section className="rounded-2xl bg-card px-5 py-[18px]">
+      <h3 className="font-display text-[15px] font-semibold">What this project remembers</h3>
+      <p className="mb-3 text-[13px] text-muted">
+        Key points and plans, kept up to date as the work changes. A chat that uses project memory
+        starts from these; a standalone chat does not.
+      </p>
+      {items.length === 0 ? (
+        <p className="text-[13px] text-muted">Nothing yet. It fills in as you work.</p>
+      ) : (
+        <ul className="flex flex-col gap-2.5">
+          {items.map((item) => (
+            <li key={item.id} className="flex flex-col gap-1.5">
+              {editing === item.id ? (
+                <div className="flex flex-col gap-2">
+                  <Input
+                    id={`memory-${item.id}`}
+                    label="Note"
+                    value={draft}
+                    maxLength={280}
+                    onChange={(event) => setDraft(event.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      size="small"
+                      variant="primary"
+                      disabled={!draft.trim()}
+                      onClick={() =>
+                        run(() => editMemory(projectId, item.id, draft), 'Could not save the note.')
+                      }
+                    >
+                      Save
+                    </Button>
+                    <Button size="small" variant="ghost" onClick={() => setEditing(null)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-[13.5px] leading-[1.5]">
+                    {item.kind === 'plan' ? <span className="text-muted">Plan · </span> : null}
+                    {item.text}
+                  </p>
+                  {canEdit ? (
+                    <div className="flex shrink-0 gap-1.5">
+                      {item.kind === 'plan' ? null : (
+                        <Button
+                          size="small"
+                          variant="ghost"
+                          onClick={() => {
+                            setDraft(item.text);
+                            setEditing(item.id);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      )}
+                      <Button
+                        size="small"
+                        variant="ghost"
+                        onClick={() =>
+                          run(() => forgetMemory(projectId, item.id), 'Could not forget the note.')
+                        }
+                      >
+                        Forget
+                      </Button>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
 function Details({
   detail,
   category,
@@ -322,7 +466,7 @@ function Details({
   canDelete: boolean;
   onDelete: () => void;
 }) {
-  const { project, outputs, threads } = detail;
+  const { project, outputs, threads, memory } = detail;
   const info = getCategory(category);
   const plans = outputs.filter(isPlan);
   const value = (v: string) => v || 'Not given';
@@ -370,6 +514,7 @@ function Details({
           <StackedColumns columns={plans.map((o) => ({ label: o.shortLabel, counts: o.counts }))} />
         </ChartCard>
       ) : null}
+      <Memory projectId={project.id} items={memory} canEdit={detail.myRole !== 'viewer'} />
       <Lineage plans={plans} />
       <section className="flex flex-col gap-3">
         <h3 className="font-display text-[15px] font-semibold">All outputs</h3>

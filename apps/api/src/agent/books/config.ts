@@ -302,6 +302,7 @@ function beliefs(read: BooksRead, text: string, grounded: Grounded): DraftItem[]
 
 export const booksLaunch: LaunchConfig<BooksRead, BooksQueryPlan> = {
   category: 'books',
+  catalog: Object.values(booksPlan.BOOKS_QUERIES),
   anchorTypes: ['urn:entity:book'],
   rivalTypes: ['urn:entity:book'],
   genreTagPrefix: booksPlan.TAG_SPACES.bookGenre.prefix,

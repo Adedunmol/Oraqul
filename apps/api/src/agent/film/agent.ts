@@ -1,6 +1,9 @@
 import type { ToolContext } from '@oraqul/engine';
 import type { Output } from '@oraqul/schema';
 import { LaunchAgent } from '../launch/agent.js';
+import type { Analyst } from '../launch/analyse.js';
+import type { ResearchPlanner } from '../launch/research-loop.js';
+import type { Reviewer } from '../launch/review.js';
 import type { Planner } from '../types.js';
 import { filmAuditInputsSchema } from './audit.js';
 import { filmLaunch } from './config.js';
@@ -25,6 +28,14 @@ export interface FilmAgentDeps {
   report: ReportWriter;
   /** Web research for release timing and the market, or none. */
   research: Researcher;
+  /** Reads what the request needs before anything is searched. */
+  analyst?: Analyst;
+  /** Judges what the first round of queries covers and picks a second. */
+  researchPlanner?: ResearchPlanner;
+  /** Compares a draft plan with the request and sends it back. */
+  reviewer?: Reviewer;
+  /** The planner for a standalone chat. */
+  standalone?: Planner;
   followUps: FollowUpReader;
   /** A new tool context per run, so the call budget and the cache are the run's (spec §3.5). */
   tools: () => ToolContext;

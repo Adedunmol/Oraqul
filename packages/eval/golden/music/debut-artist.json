@@ -40,7 +40,11 @@
       "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
       "f-shows-lagos": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
       "f-shows-london": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
-      "f-community-university-lagos": ["Lagoon City University"]
+      "f-community-university-lagos": ["Lagoon City University"],
+      "f-venues-concert-hall-lagos": ["Harbor Hall"],
+      "f-venues-concert-hall-london": ["Southbank Hall"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"],
+      "f-venues-night-club-london": ["Camden After Hours"]
     },
     "sections": {
       "bottom-line": "2/0",
@@ -73,9 +77,9 @@
     "cannot": [
       "Zanzibar Quill Ensemble",
       "Streams, ticket sales and revenue",
+      "Recent films",
       "Support acts in Lagos",
       "Support acts in London",
-      "Recent films",
       "Universities in London"
     ]
   }

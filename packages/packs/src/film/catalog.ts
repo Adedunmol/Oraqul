@@ -16,6 +16,8 @@ export const filmQueryKeys = [
   'podcasts',
   'community',
   'areas',
+  'games',
+  'venues',
 ] as const;
 export type FilmQueryKey = (typeof filmQueryKeys)[number];
 
@@ -96,6 +98,18 @@ export const FILM_QUERIES: Record<FilmQueryKey, FilmQuerySpec> = {
     feeds: ['community'],
     label: 'the churches, campuses and venues where that audience gathers',
   },
+  games: {
+    key: 'games',
+    for: 'partnerships',
+    feeds: ['partnerships', 'publicity'],
+    label: 'the games that audience plays',
+  },
+  venues: {
+    key: 'venues',
+    for: 'community',
+    feeds: ['community', 'partnerships'],
+    label: 'the bars and clubs where that audience goes out',
+  },
 };
 
 /** Tag namespaces each query's phrases must resolve into, and the parent type for brands. */
@@ -106,6 +120,7 @@ export const TAG_SPACES = {
   brands: { prefix: 'urn:tag:genre:brand', parent: 'urn:entity:brand' },
   community: { prefix: 'urn:tag:category:place', parent: null },
   cinemas: { prefix: 'urn:tag:category:place', parent: null },
+  venues: { prefix: 'urn:tag:category:place', parent: null },
 } as const;
 
 // Defaults the scripted planner uses with no model, and the model's starting point. Phrases are
@@ -118,6 +133,9 @@ export {
 } from '../launch';
 
 export const COMMUNITY_PLACES = ['church', 'university'];
+
+/** Where a premiere party or a screening after-party could be held. Checked live: real venues per city. */
+export const VENUE_PLACES = ['bar', 'night club'];
 
 export const CINEMA_TAG = 'movie theater';
 

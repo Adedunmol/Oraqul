@@ -104,6 +104,7 @@ function gapsSection(read: FilmRead, comps: { used: CompUsed[] }): LaunchSection
 
 export const filmLaunch: LaunchConfig<FilmRead, QueryPlan> = {
   category: 'film',
+  catalog: Object.values(filmPlan.FILM_QUERIES),
   anchorTypes: ['urn:entity:movie', 'urn:entity:tv_show'],
   rivalTypes: ['urn:entity:movie'],
   genreTagPrefix: filmPlan.TAG_SPACES.films.prefix,

@@ -14,6 +14,15 @@ export const threadSummarySchema = z.object({
 });
 export type ThreadSummary = z.infer<typeof threadSummarySchema>;
 
+/** One thing a project remembers (spec §3.7). */
+export const memoryItemSchema = z.object({
+  id: z.uuid(),
+  kind: z.enum(['point', 'decision', 'plan']),
+  text: z.string(),
+  updatedAt: z.iso.datetime(),
+});
+export type MemoryItem = z.infer<typeof memoryItemSchema>;
+
 /** `GET /projects/:projectId` */
 export const projectDetailSchema = z.object({
   project: workspaceProjectSchema,
@@ -22,6 +31,8 @@ export const projectDetailSchema = z.object({
   /** In creation order. */
   outputs: z.array(outputSchema),
   currentPlanId: z.uuid().nullable(),
+  /** What the project remembers, plans first (spec §3.7). */
+  memory: z.array(memoryItemSchema),
   myRole: roleSchema,
 });
 export type ProjectDetail = z.infer<typeof projectDetailSchema>;
@@ -71,6 +82,20 @@ export const postMessageSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('answer'), answer: answerSchema }),
 ]);
 export type PostMessage = z.input<typeof postMessageSchema>;
+
+/**
+ * `POST /projects/:projectId/threads` body. A chat with `fresh` leaves out the project's memory and
+ * its plans and knows only the category and the project's name.
+ */
+export const createThreadInputSchema = z.object({ fresh: z.boolean().default(false) });
+export type CreateThreadInput = z.input<typeof createThreadInputSchema>;
+
+/** `GET /projects/:projectId/memory` */
+export const memoryListSchema = z.array(memoryItemSchema);
+
+/** `PATCH /memory/:itemId` */
+export const updateMemoryInputSchema = z.object({ text: z.string().trim().min(1).max(280) });
+export type UpdateMemoryInput = z.infer<typeof updateMemoryInputSchema>;
 
 /** `POST /projects/:projectId/threads`: a new chat, idle until the first message. */
 export const createThreadResultSchema = z.object({ threadId: z.uuid() });

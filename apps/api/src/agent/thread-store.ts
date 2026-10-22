@@ -9,7 +9,7 @@ import {
   type ThreadEvent,
   type ThreadItem,
 } from '@oraqul/schema';
-import { and, desc, eq, gt, isNull, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, inArray, isNull, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { type Database, DB } from '../db/db.module.js';
 import { messages, threads } from '../db/schema.js';
@@ -113,26 +113,67 @@ export class ThreadStore {
       .where(eq(messages.id, open.id));
   }
 
-  /** The last `count` things said in the chat, oldest first, for a model that judges a new message. */
-  async recentLines(threadId: string, count: number): Promise<TranscriptLine[]> {
+  /**
+   * What a model reads of the chat: the summary of the older part, if there is one, as the first
+   * line, then the newest lines after it that fit `count` lines and `maxChars`, oldest first.
+   */
+  async recentLines(
+    threadId: string,
+    count: number,
+    maxChars = Number.POSITIVE_INFINITY,
+  ): Promise<TranscriptLine[]> {
+    const [thread] = await this.db
+      .select({ summary: threads.summary, through: threads.summarizedThrough })
+      .from(threads)
+      .where(eq(threads.id, threadId));
     const rows = await this.db
       .select()
       .from(messages)
-      .where(eq(messages.threadId, threadId))
+      .where(
+        and(
+          eq(messages.threadId, threadId),
+          inArray(messages.role, ['user', 'agent', 'question']),
+          gt(messages.seq, thread?.through ?? 0),
+        ),
+      )
       .orderBy(desc(messages.seq))
       .limit(count);
-    return rows.reverse().flatMap((row): TranscriptLine[] => {
-      switch (row.role) {
-        case 'user':
-          return [{ from: 'person', text: userBody.parse(row.body).text }];
-        case 'agent':
-          return [{ from: 'oraqul', text: agentBody.parse(row.body).text }];
-        case 'question':
-          return [{ from: 'oraqul', text: questionBody.parse(row.body).question.prompt }];
-        default:
-          return [];
-      }
-    });
+    const lines = withinChars(rows.reverse().flatMap(lineOf), maxChars);
+    return thread?.summary
+      ? [{ from: 'oraqul', text: `Earlier in this chat, in short: ${thread.summary}` }, ...lines]
+      : lines;
+  }
+
+  /** The lines the summary does not cover yet, oldest first, each with its `seq`. */
+  async unsummarised(
+    threadId: string,
+  ): Promise<{ summary: string | null; rows: { seq: number; line: TranscriptLine }[] }> {
+    const [thread] = await this.db
+      .select({ summary: threads.summary, through: threads.summarizedThrough })
+      .from(threads)
+      .where(eq(threads.id, threadId));
+    const rows = await this.db
+      .select()
+      .from(messages)
+      .where(
+        and(
+          eq(messages.threadId, threadId),
+          inArray(messages.role, ['user', 'agent', 'question']),
+          gt(messages.seq, thread?.through ?? 0),
+        ),
+      )
+      .orderBy(messages.seq);
+    return {
+      summary: thread?.summary ?? null,
+      rows: rows.flatMap((row) => lineOf(row).map((line) => ({ seq: row.seq, line }))),
+    };
+  }
+
+  async saveSummary(threadId: string, summary: string, through: number): Promise<void> {
+    await this.db
+      .update(threads)
+      .set({ summary, summarizedThrough: through })
+      .where(eq(threads.id, threadId));
   }
 
   async rows(threadId: string, afterSeq = 0): Promise<Row[]> {
@@ -263,5 +304,30 @@ export function toCard(question: z.infer<typeof questionSchema>): QuestionCard {
       return { id, prompt, card: 'multi', options };
     default:
       return { id, prompt, card: 'single', options, hint };
+  }
+}
+
+/** The newest lines that fit in `maxChars`, oldest first. The newest is kept even when it alone is over. */
+export function withinChars(lines: TranscriptLine[], maxChars: number): TranscriptLine[] {
+  let size = 0;
+  let start = lines.length;
+  for (let i = lines.length - 1; i >= 0; i--) {
+    size += lines[i]?.text.length ?? 0;
+    if (size > maxChars && start < lines.length) break;
+    start = i;
+  }
+  return lines.slice(start);
+}
+
+function lineOf(row: Row): TranscriptLine[] {
+  switch (row.role) {
+    case 'user':
+      return [{ from: 'person', text: userBody.parse(row.body).text }];
+    case 'agent':
+      return [{ from: 'oraqul', text: agentBody.parse(row.body).text }];
+    case 'question':
+      return [{ from: 'oraqul', text: questionBody.parse(row.body).question.prompt }];
+    default:
+      return [];
   }
 }

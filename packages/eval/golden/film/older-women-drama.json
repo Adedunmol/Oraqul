@@ -47,7 +47,8 @@
       "f-brands-telecom-nairobi": ["Lagoon Mobile"],
       "f-podcasts": ["The Joe Rogan Experience", "Crime Junkie", "Late Signal"],
       "f-community-church-houston": ["Grace Chapel Houston"],
-      "f-community-university-houston": ["Gulf Coast University"]
+      "f-community-university-houston": ["Gulf Coast University"],
+      "f-games-nairobi": ["Ember Keep", "Void Courier", "Tidewalker"]
     },
     "sections": {
       "bottom-line": "2/0",
@@ -80,13 +81,19 @@
     "dropped": 0,
     "cannot": [
       "Box office and viewing numbers",
-      "Music and soundtrack",
-      "Cinemas in Nairobi",
-      "Recent films",
-      "Churches in Nairobi",
+      "Bars in Atlanta",
+      "Bars in Houston",
+      "Bars in Nairobi",
       "Churches in Atlanta",
-      "Universities in Nairobi",
-      "Universities in Atlanta"
+      "Churches in Nairobi",
+      "Cinemas in Nairobi",
+      "Music and soundtrack",
+      "Night clubs in Atlanta",
+      "Night clubs in Houston",
+      "Night clubs in Nairobi",
+      "Recent films",
+      "Universities in Atlanta",
+      "Universities in Nairobi"
     ]
   }
 }

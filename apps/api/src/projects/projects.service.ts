@@ -2,6 +2,7 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import type {
   Category,
   CompareResponse,
+  MemoryItem,
   NeedsYouItem,
   OutputDetail,
   Overview,
@@ -17,6 +18,7 @@ import type {
 } from '@oraqul/schema';
 import { and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 import { z } from 'zod';
+import { MemoryStore } from '../agent/memory/memory-store.js';
 import { RunService } from '../agent/run.service.js';
 import { ThreadStore, toItems } from '../agent/thread-store.js';
 import { UNNAMED_THREAD } from '../agent/titler.js';
@@ -57,6 +59,7 @@ export class ProjectsService {
     @Inject(ThreadStore) private readonly store: ThreadStore,
     @Inject(RunService) private readonly runs: RunService,
     @Inject(OutputsService) private readonly outputs: OutputsService,
+    @Inject(MemoryStore) private readonly memoryStore: MemoryStore,
   ) {}
 
   /** The team's projects, newest first. Drafts the router is still reading are left out. */
@@ -86,15 +89,20 @@ export class ProjectsService {
       .innerJoin(users, eq(users.id, threads.createdBy))
       .where(eq(threads.projectId, projectId))
       .orderBy(desc(threads.createdAt));
-    const [summaries, all] = await Promise.all([
+    const [summaries, all, memory] = await Promise.all([
       this.summaries(rows, userId),
       this.outputs.forProject(projectId),
+      this.memoryStore.list(projectId),
     ]);
     return {
       project: toWorkspaceProject(project),
       threads: summaries,
       outputs: all,
       currentPlanId: this.outputs.currentPlanId(all),
+      memory: [
+        ...memory.filter((m) => m.kind === 'plan'),
+        ...memory.filter((m) => m.kind !== 'plan'),
+      ],
       myRole: role,
     };
   }
@@ -160,18 +168,52 @@ export class ProjectsService {
     };
   }
 
-  /** New chat (spec §9). A draft has only its first chat until the router has read it. */
-  async createThread(projectId: string, userId: string): Promise<{ threadId: string }> {
+  /**
+   * New chat (spec §9). A draft has only its first chat until the router has read it. A chat that
+   * uses project memory starts on the project's current plan; a `fresh` one starts on nothing and
+   * knows only the category and the project's name.
+   */
+  async createThread(
+    projectId: string,
+    userId: string,
+    fresh: boolean,
+  ): Promise<{ threadId: string }> {
     const project = await this.project(projectId);
     if (project.status === 'intake') {
       throw new ConflictException('Finish setting up this project in its first chat');
     }
+    const planId = fresh
+      ? null
+      : this.outputs.currentPlanId(await this.outputs.forProject(projectId));
     const [thread] = await this.db
       .insert(threads)
-      .values({ projectId, name: UNNAMED_THREAD, createdBy: userId })
+      .values({
+        projectId,
+        name: UNNAMED_THREAD,
+        createdBy: userId,
+        fresh,
+        baseOutputId: planId,
+        fromOutputId: planId,
+      })
       .returning({ id: threads.id });
     if (!thread) throw new Error('Thread insert returned no row');
     return { threadId: thread.id };
+  }
+
+  async memory(projectId: string): Promise<MemoryItem[]> {
+    return this.memoryStore.list(projectId);
+  }
+
+  async editMemory(projectId: string, itemId: string, text: string): Promise<MemoryItem> {
+    const item = await this.memoryStore.edit(projectId, itemId, text);
+    if (!item) throw new NotFoundException('No such note to edit');
+    return item;
+  }
+
+  async forgetMemory(projectId: string, itemId: string): Promise<void> {
+    if (!(await this.memoryStore.remove(projectId, itemId))) {
+      throw new NotFoundException('No such note');
+    }
   }
 
   async delete(projectId: string): Promise<void> {

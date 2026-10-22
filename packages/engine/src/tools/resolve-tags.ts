@@ -32,7 +32,7 @@ export const resolveTags = defineTool({
         }),
       )
       .min(1)
-      .max(8),
+      .max(10),
   }),
   async run(ctx, { phrases }) {
     const tags: z.infer<typeof resolveTagsOutputSchema>['tags'] = [];

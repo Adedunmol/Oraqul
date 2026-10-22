@@ -48,6 +48,10 @@ export const queryPlanSchema = z.object({
   podcastCity: z.string().nullable(),
   communityPlaces: z.array(z.string()),
   communityCities: z.array(z.string()),
+  /** Cities the games query asks about: the home market and one away. */
+  gameCities: z.array(z.string()),
+  venuePlaces: z.array(z.string()),
+  venueCities: z.array(z.string()),
   /**
    * Neighbourhoods inside the team's cities with their centres, to read from the same heatmap
    * (no extra Qloo call). The model names them; Qloo says which the audience is strongest in.
@@ -102,6 +106,11 @@ export function defaultPlan(input: QueryPlanInput): QueryPlan {
     podcastCity: away[0] ?? cities[0] ?? null,
     communityPlaces: filmPlan.COMMUNITY_PLACES,
     communityCities: cities,
+    gameCities: [home[0] ?? cities[0], away[0]]
+      .filter((c): c is string => !!c)
+      .filter((c, i, all) => all.indexOf(c) === i),
+    venuePlaces: filmPlan.VENUE_PLACES,
+    venueCities: cities,
     areas: [],
     brandCandidates: [],
   };

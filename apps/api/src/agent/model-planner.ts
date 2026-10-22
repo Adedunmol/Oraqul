@@ -3,11 +3,15 @@ import { agentSystemPrompt } from '@oraqul/packs';
 import { agentReplySchema, questionSchema } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
-import type { AgentContext, Planner, Step } from './types.js';
+import { type AgentContext, type Planner, STANDALONE_CONTEXT, type Step } from './types.js';
 
 // The shared rules are in the base prompt; these are only about choosing a step.
 const RULES = `Choose exactly one next step.
 - Every claim in a finish step cites receipt ids from the history, and every sentence you write is backed by them.`;
+
+// A standalone chat is a conversation, not a workflow: the pack's habit of finding the launch's
+// lead title first does not apply, because there is no launch in it.
+const FREE_RULES = `This is a free conversation. Answer the person's question directly. Do not look up the project's name or any title the person did not mention. Call a Qloo tool only when it grounds what you say about what an audience likes or where it is, using names the person wrote, and cite those receipts. When the question needs no Qloo data, finish with a plain answer from launch knowledge and no claims. Never mention lookups, databases or tools.`;
 
 /** Model-backed planner. The prompt names the pack's tools only, and the schema allows only them. */
 export class ModelPlanner implements Planner {
@@ -16,7 +20,7 @@ export class ModelPlanner implements Planner {
   async next(context: AgentContext): Promise<Step> {
     const { output } = await generateText({
       model: this.model,
-      system: `${agentSystemPrompt(context.pack)}\n\n${RULES}`,
+      system: `${agentSystemPrompt(context.pack)}\n\n${RULES}${context.context?.startsWith(STANDALONE_CONTEXT) ? `\n\n${FREE_RULES}` : ''}`,
       prompt: JSON.stringify({
         contextNotEvidence: context.context,
         project: context.project,

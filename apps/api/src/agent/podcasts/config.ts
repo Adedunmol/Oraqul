@@ -246,6 +246,7 @@ function beliefs(read: PodcastsRead, text: string, grounded: Grounded): DraftIte
 
 export const podcastsLaunch: LaunchConfig<PodcastsRead, PodcastsQueryPlan> = {
   category: 'podcasts',
+  catalog: Object.values(podcastsPlan.PODCASTS_QUERIES),
   anchorTypes: ['urn:entity:podcast'],
   rivalTypes: ['urn:entity:podcast'],
   genreTagPrefix: podcastsPlan.TAG_SPACES.podcastGenre.prefix,

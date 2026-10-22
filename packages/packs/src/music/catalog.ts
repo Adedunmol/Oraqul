@@ -15,6 +15,7 @@ export const musicQueryKeys = [
   'films',
   'areas',
   'community',
+  'venues',
 ] as const;
 export type MusicQueryKey = (typeof musicQueryKeys)[number];
 
@@ -83,6 +84,12 @@ export const MUSIC_QUERIES: Record<MusicQueryKey, MusicQuerySpec> = {
     feeds: ['community'],
     label: 'the campuses where that audience gathers',
   },
+  venues: {
+    key: 'venues',
+    for: 'tour',
+    feeds: ['tour', 'community'],
+    label: 'the clubs and halls where that audience goes out',
+  },
 };
 
 /** Tag namespaces each query's phrases must resolve into, and the parent type for brands. */
@@ -92,10 +99,17 @@ export const TAG_SPACES = {
   films: { prefix: 'urn:tag:genre:media', parent: null },
   brands: { prefix: 'urn:tag:genre:brand', parent: 'urn:entity:brand' },
   community: { prefix: 'urn:tag:category:place', parent: null },
+  venues: { prefix: 'urn:tag:category:place', parent: null },
 } as const;
 
 /** Universities are where a music audience gathers that Qloo can place. No churches or venues. */
 export const MUSIC_COMMUNITY_PLACES = ['university'];
+
+/**
+ * Where a show or an after-party could be held. Checked live (Afrobeats, Lagos and London): night
+ * clubs and concert halls list real venues; "music venue" is thin in Lagos.
+ */
+export const MUSIC_VENUE_PLACES = ['night club', 'concert hall'];
 
 /** How far back "recent" reaches for series and films, in years before the current one. */
 export const RECENT_FILMS = 3;

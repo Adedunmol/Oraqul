@@ -34,7 +34,10 @@
       "f-brands-beverage-lagos": ["Night Market Cola"],
       "f-brands-telecom-lagos": ["Lagoon Mobile"],
       "f-podcasts": ["The Joe Rogan Experience", "Crime Junkie", "Late Signal"],
-      "f-community-university-lagos": ["Lagoon City University"]
+      "f-community-university-lagos": ["Lagoon City University"],
+      "f-games-lagos": ["Ember Keep", "Crown of Ash", "Hollow Hills"],
+      "f-venues-bar-lagos": ["Harbor Lounge"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"]
     },
     "sections": {
       "bottom-line": "2/0",
@@ -68,11 +71,13 @@
     "cannot": [
       "The comps describe one audience",
       "Box office and viewing numbers",
-      "Music and soundtrack",
-      "Cinemas in Accra",
-      "Recent films",
-      "Churches in Lagos",
+      "Bars in Accra",
       "Churches in Accra",
+      "Churches in Lagos",
+      "Cinemas in Accra",
+      "Music and soundtrack",
+      "Night clubs in Accra",
+      "Recent films",
       "Universities in Accra"
     ]
   }

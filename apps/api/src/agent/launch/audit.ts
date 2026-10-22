@@ -100,17 +100,6 @@ export async function reviewPlan<R extends LaunchRead, P extends QueryPlanCore>(
   const extra = resume
     ? `${resume.state.extra}\n\n${replyText(resume.state, resume.reply)}`.trim()
     : '';
-  if (!resume) {
-    deps.emit({
-      type: 'memory.used',
-      items: [
-        { source: 'project', label: 'your plan' },
-        ...handoff.inputs.files
-          .filter((f) => f.text)
-          .map((f) => ({ source: 'project' as const, label: f.name })),
-      ],
-    });
-  }
   ctx.trace('Reading your plan');
   const text = [planText ?? briefText(handoff, PLAN_CHARS), extra].filter(Boolean).join('\n\n');
   const input = { title: handoff.title, text };

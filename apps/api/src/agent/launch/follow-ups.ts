@@ -29,7 +29,7 @@ import type {
 import type { Handoff, NewOutput } from '../category-agents.js';
 import { ungroundedClaims, ungroundedLines } from '../grounding.js';
 import { advance, newRunState } from '../runtime.js';
-import type { Planner } from '../types.js';
+import { type Planner, STANDALONE_CONTEXT } from '../types.js';
 import { baselineFor } from './baseline.js';
 import { round2, slug } from './brief.js';
 import { checkLine } from './check.js';
@@ -70,7 +70,11 @@ function say(deps: Pick<FollowUpDeps, 'emit'>, body: string, claims: Claim[] = [
 }
 
 /** The plan and the chat as one text block for the model. Context, never evidence. */
-export function planContext(plan: Output, recent: Handoff['recent']): string {
+export function planContext(
+  plan: Output,
+  recent: Handoff['recent'],
+  memory: string[] = [],
+): string {
   const byLine = new Map(plan.receipts.flatMap((r) => (r.lineId ? [[r.lineId, r.callId]] : [])));
   const cite = (id: string) => (byLine.has(id) ? ` [receipt ${byLine.get(id)}]` : '');
   const b = plan.brief;
@@ -89,6 +93,9 @@ export function planContext(plan: Output, recent: Handoff['recent']): string {
       ),
     ),
     ...b.cannot.map((c) => `Could not test ${c.item}: ${c.reason}`),
+    ...(memory.length
+      ? ['Project notes (what the project remembers):', ...memory.map((m) => `- ${m}`)]
+      : []),
     'Chat so far:',
     ...recent.map((l) => `${l.from === 'person' ? 'Person' : 'Oraqul'}: ${l.text}`),
   ];
@@ -118,9 +125,12 @@ export async function runPlanAnswer<R extends LaunchRead>(
   const planText = launch.sections
     .flatMap((s) => s.lines.map((l) => `${s.title}${l.group ? ` (${l.group})` : ''}: ${l.text}`))
     .join('\n');
-  const chat = handoff.recent
-    .map((l) => `${l.from === 'person' ? 'Person' : 'Oraqul'}: ${l.text}`)
-    .join('\n');
+  const chat = [
+    ...(handoff.memory?.length
+      ? ['Project notes (what the project remembers):', ...handoff.memory.map((m) => `- ${m}`), '']
+      : []),
+    ...handoff.recent.map((l) => `${l.from === 'person' ? 'Person' : 'Oraqul'}: ${l.text}`),
+  ].join('\n');
   deps.emit({
     type: 'trace.step',
     agent: deps.config.category,
@@ -201,7 +211,7 @@ export async function runAnswer<R extends LaunchRead>(
   for (const a of inputs?.resolved ?? []) deps.tools.entities.set(a.entityId, a);
   const state = newRunState(project, handoff.mode, deps.maxSteps, {
     prior: plan.receipts,
-    context: planContext(plan, handoff.recent),
+    context: planContext(plan, handoff.recent, handoff.memory),
     question: handoff.message.text,
   });
   let reason: StopReason = 'finished';
@@ -216,6 +226,56 @@ export async function runAnswer<R extends LaunchRead>(
     },
   });
   return { reason, state: null, receipts: state.receipts, output: null, tokens: 0 };
+}
+
+/**
+ * A standalone chat inside a project: the tool loop with no plan, brief or notes, so a person can
+ * think out loud about the work without the project's own memory in the way. It knows the
+ * category and the project's name, and every claim is still checked against Qloo calls.
+ */
+export async function runStandalone<R extends LaunchRead>(
+  handoff: Handoff,
+  deps: FollowUpDeps<R> & { planner: Planner; maxSteps: number },
+): Promise<PlanRun> {
+  const project: ProjectInput = {
+    category: deps.config.category,
+    name: handoff.title,
+    lead: '',
+    places: [],
+    comps: [],
+  };
+  const state = newRunState(project, handoff.mode, deps.maxSteps, {
+    prior: [],
+    context: [
+      `${STANDALONE_CONTEXT} This is a standalone chat inside the project "${handoff.title}". The name is only a label: do not look it up in Qloo unless the person asks you to. It has no brief, plan or notes from the project, so treat anything about the project as unknown until the person says it. Answer the person's question directly and in plain words. Use Qloo only where it makes the answer sounder, for what an audience likes or where it is, and cite those calls. If the question needs no Qloo data, answer from your launch knowledge and say so.`,
+      'Chat so far:',
+      ...handoff.recent.map((l) => `${l.from === 'person' ? 'Person' : 'Oraqul'}: ${l.text}`),
+    ].join('\n'),
+    question: handoff.message.text,
+  });
+  let reason: StopReason = 'finished';
+  await advance(state, {
+    planner: deps.planner,
+    tools: deps.tools,
+    consultMaxSteps: 4,
+    emit: (event) => {
+      if (event.type === 'run.stopped') reason = event.reason;
+      else deps.emit(event);
+    },
+  });
+  return { reason, state: null, receipts: state.receipts, output: null, tokens: 0 };
+}
+
+/** With no model, a standalone chat cannot talk freely, and says so. */
+export class StandalonePlanner implements Planner {
+  async next() {
+    const reply: AgentReply = {
+      message:
+        'This chat is set up to talk freely about the project, which needs the model, and no model is connected here. Start a chat on the project to use its plan.',
+      claims: [],
+    };
+    return { kind: 'finish' as const, reply };
+  }
 }
 
 /** With no model: say what the plan already shows, cited, and how to test something new. */

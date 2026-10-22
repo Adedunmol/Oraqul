@@ -28,7 +28,6 @@ import {
   TemplatePlanWriter as TemplateBooksPlanWriter,
 } from './books/writer.js';
 import { CATEGORY_AGENTS, placeholderAgents } from './category-agents.js';
-
 import { FilmAgent } from './film/agent.js';
 import {
   FallbackFollowUpReader,
@@ -73,6 +72,21 @@ import {
   TemplatePlanWriter as TemplateGamesPlanWriter,
 } from './games/writer.js';
 import { FallbackGate, GATE, ModelGate, ScriptedGate } from './gate/gate.js';
+import { FallbackAnalyst, ModelAnalyst, ScriptedAnalyst } from './launch/analyse.js';
+import { StandalonePlanner } from './launch/follow-ups.js';
+import {
+  FallbackResearchPlanner,
+  ModelResearchPlanner,
+  ScriptedResearchPlanner,
+} from './launch/research-loop.js';
+import { FallbackReviewer, ModelReviewer, ScriptedReviewer } from './launch/review.js';
+import { MemoryStore } from './memory/memory-store.js';
+import {
+  FallbackMemoryWriter,
+  MEMORY_WRITER,
+  ModelMemoryWriter,
+  ScriptedMemoryWriter,
+} from './memory/memory-writer.js';
 import { ModelPlanner } from './model-planner.js';
 import { MusicAgent } from './music/agent.js';
 import { ModelFollowUpReader as ModelMusicFollowUpReader } from './music/follow-up.js';
@@ -127,6 +141,12 @@ import { ModelReader } from './router/model-reader.js';
 import { FallbackReader } from './router/router.js';
 import { ScriptedReader } from './router/scripted-reader.js';
 import { ROUTER_READER, RunService } from './run.service.js';
+import {
+  CHAT_SUMMARIZER,
+  FallbackChatSummarizer,
+  ModelChatSummarizer,
+  ScriptedChatSummarizer,
+} from './summary/chat-summarizer.js';
 import { ThreadStore } from './thread-store.js';
 import { createTitler, THREAD_TITLER } from './titler.js';
 
@@ -235,6 +255,30 @@ const lookups = new LookupCache();
         const planFor = (plan: Output) =>
           llm ? new ModelPlanner(llm.model('agent')) : new PlanSummaryPlanner(plan);
         const maxSteps = config.get('AGENT_MAX_STEPS', { infer: true });
+        // One analyst for every category: it reads the request, not the category's fields.
+        const analyst = llm
+          ? new FallbackAnalyst(
+              new ModelAnalyst(llm.model('agent'), llm.timeoutMs),
+              new ScriptedAnalyst(),
+              (err) => logger.warn(`Model analyst failed, reading without inference: ${err}`),
+            )
+          : new ScriptedAnalyst();
+        const researchPlanner = llm
+          ? new FallbackResearchPlanner(
+              new ModelResearchPlanner(llm.model('agent'), llm.timeoutMs),
+              new ScriptedResearchPlanner(),
+              (err) =>
+                logger.warn(`Model research check failed, skipping the second round: ${err}`),
+            )
+          : new ScriptedResearchPlanner();
+        const standalone = llm ? new ModelPlanner(llm.model('agent')) : new StandalonePlanner();
+        const reviewer = llm
+          ? new FallbackReviewer(
+              new ModelReviewer(llm.model('writer'), llm.writerTimeoutMs),
+              new ScriptedReviewer(),
+              (err) => logger.warn(`Model red team failed, saving without a review: ${err}`),
+            )
+          : new ScriptedReviewer();
         const film = new FilmAgent({
           reader,
           queries,
@@ -247,6 +291,10 @@ const lookups = new LookupCache();
           plan: (id) => outputs.plan(id),
           planner: planFor,
           maxSteps,
+          analyst,
+          researchPlanner,
+          reviewer,
+          standalone,
         });
 
         // Music shares the tools, the results reader and the search; its readers, planner and
@@ -310,6 +358,10 @@ const lookups = new LookupCache();
           plan: (id) => outputs.plan(id),
           planner: planFor,
           maxSteps,
+          analyst,
+          researchPlanner,
+          reviewer,
+          standalone,
         });
 
         // Games shares the tools, the results reader and the search; its readers, planner and
@@ -374,6 +426,10 @@ const lookups = new LookupCache();
           plan: (id) => outputs.plan(id),
           planner: planFor,
           maxSteps,
+          analyst,
+          researchPlanner,
+          reviewer,
+          standalone,
         });
 
         // Podcasts shares the tools, the results reader and the search; its readers, planner and
@@ -438,6 +494,10 @@ const lookups = new LookupCache();
           plan: (id) => outputs.plan(id),
           planner: planFor,
           maxSteps,
+          analyst,
+          researchPlanner,
+          reviewer,
+          standalone,
         });
 
         // Books shares the tools, the results reader and the search; its readers, planner and
@@ -505,14 +565,45 @@ const lookups = new LookupCache();
           plan: (id) => outputs.plan(id),
           planner: planFor,
           maxSteps,
+          analyst,
+          researchPlanner,
+          reviewer,
+          standalone,
         });
         return { ...placeholderAgents(), film, music, books, games, podcasts };
       },
     },
+    {
+      provide: MEMORY_WRITER,
+      inject: [LLM],
+      useFactory: (llm: Llm | null) => {
+        const scripted = new ScriptedMemoryWriter();
+        if (!llm) return scripted;
+        return new FallbackMemoryWriter(
+          new ModelMemoryWriter(llm.model('router'), llm.timeoutMs),
+          scripted,
+          (err) => logger.warn(`Model memory writer failed, keeping only plans: ${err}`),
+        );
+      },
+    },
+    {
+      provide: CHAT_SUMMARIZER,
+      inject: [LLM],
+      useFactory: (llm: Llm | null) => {
+        const scripted = new ScriptedChatSummarizer();
+        if (!llm) return scripted;
+        return new FallbackChatSummarizer(
+          new ModelChatSummarizer(llm.model('router'), llm.timeoutMs),
+          scripted,
+          (err) => logger.warn(`Model summariser failed, keeping the person's words: ${err}`),
+        );
+      },
+    },
+    MemoryStore,
     OutputStore,
     OutputsService,
   ],
-  exports: [RunService, ThreadStore, OutputsService],
+  exports: [RunService, ThreadStore, OutputsService, MemoryStore],
 })
 export class AgentModule {}
 

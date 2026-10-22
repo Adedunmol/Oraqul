@@ -190,6 +190,7 @@ Checked once in `responses.ts`.
   - People for a book signal are authors for a literary fiction audience but voice actors and narrators for a fantasy romance one, so they are not used (`CREATORS_GROUNDED`).
   - Theme, archetype and audience tags come back for a book signal.
 - Compare returns shared tags (`results.tags`, each with `query.score`) and each side's own tags (`results.a`, `results.b`), not an entity list. What sets the comps apart is in each side's own tags.
+- **Catalog candidates, checked live (a Nigerian crime film brief, then an Afrobeats artist; `pnpm --filter @oraqul/engine qloo:catalog-probes`).** Video games with a city and no tag give plausible lists for a crime audience (open-world and action games); a game genre tag returned nothing. Books with a crime or thriller tag, a city and a first year drift to political non fiction and US titles, so they are not asked for a film audience. Bar and night club categories per city list real venues (Lagos and London); restaurants and coffee shops mix in hotels and chains; a gym, record store and bookstore are off topic for a film and thin for Lagos. For an artist signal, night clubs and concert halls work in London and Lagos (Lagos concert halls are few), and the music venue category is thin in Lagos. A bar list can carry a stray non venue (a police union); the venue filter drops police and union names. `TODO(verify)`: other genres and markets.
 - Trending needs `signal.interests.entities` (else 400) and a window of 180 days or more (shorter returned no points).
 
 **Demographics**
