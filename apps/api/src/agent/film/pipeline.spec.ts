@@ -400,3 +400,31 @@ describe('the budget band card', () => {
     }
   });
 });
+
+describe('the rival date check inside a build', () => {
+  const withRivals =
+    'Launch plan for "Night Ferry", a thriller opening in Lagos and London on 2099-03-12. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor". An independent budget.\nRivals: Harbor Lights on 2099-03-12; Third Mainland opens 2099-03-19';
+
+  it('scores the rivals the brief names against the comps and keeps the result on the plan', async () => {
+    const { handoff, deps } = setup(withRivals);
+    const done = await runFilmBuild(handoff, deps());
+    expect(done.reason).toBe('finished');
+    const clash = done.output?.plan?.findings.find((f) => f.id === 'f-clash');
+    expect(clash?.entities.map((e) => e.name).sort()).toEqual(['Harbor Lights', 'Third Mainland']);
+    expect(done.output?.brief.dates.map((d) => d.rival).sort()).toEqual([
+      'Harbor Lights',
+      'Third Mainland',
+    ]);
+    expect(done.output?.brief.chosenDate).not.toBe('');
+    expect(done.receipts.some((r) => r.endpoint.includes('insights'))).toBe(true);
+  });
+
+  it('makes no rival call when the brief names none', async () => {
+    const { handoff, deps } = setup(
+      'Launch plan for "Night Ferry", a thriller opening in Lagos. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor".',
+    );
+    const done = await runFilmBuild(handoff, deps());
+    expect(done.output?.plan?.findings.some((f) => f.id === 'f-clash')).toBe(false);
+    expect(done.output?.brief.dates).toEqual([]);
+  });
+});

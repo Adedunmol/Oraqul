@@ -47,6 +47,7 @@ import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
 import { bandFromAnswer, bandFromBrief, bandQuestion, bandQuestionId } from './band.js';
 import { capital } from './brief.js';
 import { type CheckContext, checkSections } from './check.js';
+import { type Clash, clashFinding, type Rival, rivalsFrom, scoreClash } from './clash.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
 import { type ConsultOffer, runConsult } from './consult.js';
 import { ensureDecisions } from './decisions.js';
@@ -109,6 +110,8 @@ export interface LaunchInputs<R extends LaunchRead = LaunchRead> {
   dropped: { name: string; why: string }[];
   used: CompUsed[];
   understanding?: Understanding | null;
+  /** Rival releases the team named with their opening days, kept so a what-if keeps the check. */
+  rivals?: Rival[];
   /** The budget band the plan was sized for, so a what-if keeps it. */
   band?: PlanBand | null;
 }
@@ -205,6 +208,10 @@ export interface Asked<P extends QueryPlanCore = QueryPlanCore> {
   rounds: ResearchRound[];
   /** Consults any round has asked, so a later round only offers the rest. */
   consulted: string[];
+  /** How the rivals the team named overlap with the comps' audience. Null when none were named. */
+  clash: Clash | null;
+  /** The rivals the team named, kept on the plan inputs. */
+  rivals: Rival[];
 }
 
 /** What one research round did, as saved on the plan. */
@@ -337,6 +344,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     adjust?: (plan: P) => P;
     /** How the request was read. With it, a second round covers what the first left thin. */
     understanding?: Understanding | null;
+    /** Rival releases with the day the team says they open (spec §5). */
+    rivals?: Rival[];
   },
 ): Promise<Asked<P>> {
   const { title, read, comps } = input;
@@ -423,6 +432,31 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     rounds.push({ round, open: open.map((c) => c.text), ...done.round });
   }
 
+  // Rival dates are the team's own. Each rival is scored against the comps in one call, so the
+  // overlaps compare, and the result is a finding a plan line can cite.
+  let clash: Clash | null = null;
+  const rivals = input.rivals ?? [];
+  if (rivals.length > 0 && deps.tools.qloo.callsLeft > MIN_CALLS_LEFT) {
+    ctx.trace('Checking the rival release dates');
+    try {
+      clash = await scoreClash(
+        deps.tools,
+        comps.resolved.map((a) => a.entityId),
+        rivals,
+        deps.config.rivalTypes,
+      );
+      ctx.keep(clash.receipts);
+      const finding = clashFinding(clash);
+      if (finding) {
+        grounded = { ...grounded, findings: [...grounded.findings, finding] };
+        deps.emit({ type: 'finding', finding });
+      }
+    } catch (err) {
+      // The check is optional: a failed or over-budget call leaves the plan without it.
+      if (!(err instanceof QlooError || err instanceof QlooBudgetError)) throw err;
+    }
+  }
+
   let sources: PlanSource[] = [];
   if (deps.research.enabled) {
     ctx.trace('Checking release timing and the market');
@@ -436,7 +470,18 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.tokens += found.tokens;
   }
   const ran = [...new Set([...queryPlan.queries, ...extraKeys])];
-  return { modules, queryPlan, grounded, ran, sources, understanding, rounds, consulted };
+  return {
+    modules,
+    queryPlan,
+    grounded,
+    ran,
+    sources,
+    understanding,
+    rounds,
+    consulted,
+    clash,
+    rivals,
+  };
 }
 
 /** The build (spec §4.1, §6.1): findings first, then the plan, every line checked. */
@@ -459,6 +504,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let knownDropped: { name: string; why: string }[] = [];
   let understanding: Understanding | null = null;
   let band: PlanBand | null = null;
+  let rivals: Rival[] = [];
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -470,6 +516,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     knownUsed = changed.used;
     knownDropped = changed.dropped;
     band = from.inputs.band ?? null;
+    rivals = from.inputs.rivals ?? [];
     for (const a of known) deps.tools.entities.set(a.entityId, a);
   } else {
     if (resume?.state.settle) {
@@ -539,6 +586,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
 
     // The second question a full build may ask: what the budget can carry decides which partners
     // and moves the plan may propose, so it is asked before the research and only once.
+    rivals = rivalsFrom(input.text);
     band = band ?? bandFromBrief(read, input.text);
     if (!band && read.scope === 'full' && !resume?.state.askedBand) {
       const question = bandQuestion(deps.config.category);
@@ -579,7 +627,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   }
   for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);
 
-  const asked = await askQloo(deps, ctx, { title, read, comps, understanding });
+  const asked = await askQloo(deps, ctx, { title, read, comps, understanding, rivals });
   return writePlan(deps, ctx, {
     handoff,
     title,
@@ -857,7 +905,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   deps.emit({ type: 'message', body: reply.message, claims: reply.claims });
 
   // Line receipts replace the call receipts they copy, so each call shows once per line.
-  const lineReceipts = [...grounded.brief.lineReceipts, ...grounded.receipts];
+  const dateReceipts: Receipt[] = asked.clash?.call
+    ? asked.clash.lines.map((l) => ({
+        ...(asked.clash?.call as Receipt),
+        lineId: l.id,
+        rule: `${asked.clash?.call?.rule ?? ''} ${l.rival}: overlap ${Math.round(l.overlap)}. You supplied the date.`,
+      }))
+    : [];
+  const lineReceipts = [...grounded.brief.lineReceipts, ...grounded.receipts, ...dateReceipts];
   const cited = new Set(lineReceipts.map((r) => r.callId));
   ctx.receipts.splice(
     0,
@@ -897,6 +952,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       title,
       brief: {
         ...grounded.brief.brief,
+        ...(asked.clash && asked.clash.lines.length > 0
+          ? { dates: asked.clash.lines, weeks: asked.clash.weeks, chosenDate: asked.clash.chosen }
+          : {}),
         cannot: [
           ...grounded.brief.brief.cannot,
           ...grounded.gaps.map((g, i) => ({ id: `cant-q-${i + 1}`, item: g.item, reason: g.why })),
@@ -914,6 +972,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         dropped: comps.dropped,
         used: comps.used,
         band,
+        rivals: asked.rivals,
         understanding,
       } satisfies LaunchInputs<R>,
     },

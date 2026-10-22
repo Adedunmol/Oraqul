@@ -224,6 +224,8 @@ export function presentOutput({
   const planTabs: OutputTabKey[] = plan
     ? [
         ...(category === 'film' && brief.places.length >= 2 ? (['territories'] as const) : []),
+        // Rivals the team named in the brief were checked inside the build.
+        ...(brief.dates.length > 0 ? (['date'] as const) : []),
         ...(category === 'music'
           ? [
               ...(brief.route ? (['route'] as const) : []),
@@ -310,7 +312,7 @@ export function presentOutput({
     summary,
     changes,
     focusIds,
-    ...(row.kind === 'date' ? { dateSource: 'you' as const } : {}),
+    ...(row.kind === 'date' || brief.dates.length > 0 ? { dateSource: 'you' as const } : {}),
     tabs: tabKeys.map(
       (key): OutputTab => ({
         key,
