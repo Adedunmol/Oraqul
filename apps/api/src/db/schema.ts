@@ -4,6 +4,7 @@ import {
   confidences,
   jobs,
   oauthProviders,
+  reactionKinds,
   receiptSources,
   roles,
   startModes,
@@ -17,6 +18,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  real,
   text,
   timestamp,
   unique,
@@ -312,6 +314,65 @@ export const shareLinks = pgTable('share_links', {
   enabled: boolean('enabled').notNull().default(true),
   createdAt: createdAt(),
 });
+
+/**
+ * How a person rated a plan, for the weekly review of what helps and what is wrong. One per person
+ * per output. `finding_ids` is a snapshot of the findings the plan cited when it was rated, so the
+ * reaction can be traced to the evidence even after the plan is rebuilt. Never sent to Qloo or a model.
+ */
+export const reactions = pgTable(
+  'reactions',
+  {
+    id: id(),
+    outputId: uuid('output_id')
+      .notNull()
+      .references(() => outputs.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    kind: text('kind', { enum: reactionKinds }).notNull(),
+    findingIds: text('finding_ids').array().notNull().default([]),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [unique('reactions_output_user_unique').on(table.outputId, table.userId)],
+);
+
+/**
+ * What a plan predicted next to what happened, one row per place or age band, written when an audit
+ * compares results with the plan. Aggregates only (hard rule 7), kept so the lift and overlap bands
+ * and the Games cut-offs can later be tested against outcomes. Never sent to Qloo or a model.
+ */
+export const outcomes = pgTable(
+  'outcomes',
+  {
+    id: id(),
+    /** The audit report that made the comparison. */
+    outputId: uuid('output_id')
+      .notNull()
+      .references(() => outputs.id, { onDelete: 'cascade' }),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    category: text('category', { enum: categories }),
+    kind: text('kind', { enum: ['place', 'age'] }).notNull(),
+    /** The city or the age band. */
+    label: text('label').notNull(),
+    /** Place in the plan's order, from 1. Null for an age band, or a place the plan did not name. */
+    plannedRank: integer('planned_rank'),
+    actualRank: integer('actual_rank'),
+    /** Share of the results, in percent. */
+    actualShare: real('actual_share').notNull(),
+    /** Qloo's lift for a place, or its taste index for an age band, when the audit measured it. */
+    predicted: real('predicted'),
+    gap: text('gap', { enum: ['under', 'over', 'as-planned'] }),
+    /** What the figures count, in the person's words, and the date they are as of. */
+    measure: text('measure').notNull(),
+    asOf: text('as_of'),
+    createdAt: createdAt(),
+  },
+  (table) => [index('outcomes_output_idx').on(table.outputId)],
+);
 
 export const runStatuses = ['running', 'waiting', 'done', 'error'] as const;
 

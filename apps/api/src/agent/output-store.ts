@@ -1,10 +1,12 @@
 import { Inject, Injectable, Optional } from '@nestjs/common';
-import type { Receipt } from '@oraqul/schema';
+import type { Receipt, ResultsComparison } from '@oraqul/schema';
 import { eq } from 'drizzle-orm';
 import { type Database, DB } from '../db/db.module.js';
-import { outputs, receipts, threads } from '../db/schema.js';
+import { outcomes, outputs, projects, receipts, threads } from '../db/schema.js';
 import type { NewOutput } from './category-agents.js';
 import { VERSIONS, type Versions } from './versions.js';
+
+type Tx = Parameters<Parameters<Database['transaction']>[0]>[0];
 
 /** Saves what a run made: its receipts always, and its outputs when it made a plan (spec §6). */
 @Injectable()
@@ -56,6 +58,9 @@ export class OutputStore {
         if (!row) throw new Error('Output insert returned no row');
         ids.push(row.id);
         parentId = row.id;
+        if (output.report?.results) {
+          await this.recordOutcomes(tx, row.id, projectId, output.report.results);
+        }
         // A date check or partner brief is built on the plan; it does not replace it.
         if (BASES.includes(output.kind)) {
           await tx
@@ -81,6 +86,52 @@ export class OutputStore {
       if (rows.length) await tx.insert(receipts).values(rows);
       return ids;
     });
+  }
+
+  /**
+   * Keeps what the plan predicted next to what happened, one row per place and per age band, so the
+   * bands and cut-offs can later be tested against outcomes (decision D40). Aggregates only.
+   */
+  private async recordOutcomes(
+    tx: Tx,
+    outputId: string,
+    projectId: string,
+    results: ResultsComparison,
+  ): Promise<void> {
+    const [project] = await tx
+      .select({ category: projects.category })
+      .from(projects)
+      .where(eq(projects.id, projectId));
+    const common = {
+      outputId,
+      projectId,
+      category: project?.category ?? null,
+      measure: results.measure,
+      asOf: results.asOf,
+    };
+    const rows: (typeof outcomes.$inferInsert)[] = [
+      ...results.rows.map((r) => ({
+        ...common,
+        kind: 'place' as const,
+        label: r.place,
+        plannedRank: r.plannedRank,
+        actualRank: r.actualRank,
+        actualShare: r.actualShare,
+        predicted: r.lift,
+        gap: r.gap,
+      })),
+      ...(results.ages ?? []).map((a) => ({
+        ...common,
+        kind: 'age' as const,
+        label: a.band,
+        plannedRank: null,
+        actualRank: null,
+        actualShare: a.actualShare,
+        predicted: a.index,
+        gap: null,
+      })),
+    ];
+    if (rows.length) await tx.insert(outcomes).values(rows);
   }
 }
 

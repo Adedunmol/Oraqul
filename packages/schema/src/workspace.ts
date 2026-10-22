@@ -61,6 +61,22 @@ export type ShareState = z.infer<typeof shareStateSchema>;
 export const setShareSchema = z.object({ enabled: z.boolean() });
 
 /** `GET /outputs/:outputId` */
+/**
+ * How a person rates a plan: useful, or wrong. `edited` is kept for the day a line can be edited, so
+ * a reaction recorded then needs no new migration. A person has at most one reaction per plan.
+ */
+export const reactionKinds = ['useful', 'wrong', 'edited'] as const;
+export const reactionKindSchema = z.enum(reactionKinds);
+export type ReactionKind = z.infer<typeof reactionKindSchema>;
+
+/** Body of `PUT /outputs/:outputId/reaction`. `null` takes the reaction back. */
+export const setReactionSchema = z.object({ kind: reactionKindSchema.nullable() });
+export type SetReaction = z.infer<typeof setReactionSchema>;
+
+/** The caller's own reaction to an output, or null for none. */
+export const reactionStateSchema = z.object({ kind: reactionKindSchema.nullable() });
+export type ReactionState = z.infer<typeof reactionStateSchema>;
+
 export const outputDetailSchema = z.object({
   output: outputSchema,
   project: projectSchema,
@@ -69,6 +85,8 @@ export const outputDetailSchema = z.object({
   builtOn: outputSchema.nullable(),
   /** The read only link, once it has been turned on at least once. Always null on a shared view. */
   share: shareStateSchema.nullable(),
+  /** The caller's own reaction to the output. Always null on a shared view. */
+  reaction: reactionKindSchema.nullable(),
 });
 export type OutputDetail = z.infer<typeof outputDetailSchema>;
 

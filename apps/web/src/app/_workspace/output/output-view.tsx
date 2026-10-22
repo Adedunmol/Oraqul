@@ -146,10 +146,11 @@ export function OutputView({
         openExport: () => setModal('export'),
         goToTab,
         builtOn: builtOn ? { id: builtOn.id, label: builtOn.label } : undefined,
+        reaction: detail.reaction,
         canEdit: canEdit && !shared,
         shared,
       }),
-    [output, builtOn, canEdit, shared, goToTab],
+    [output, builtOn, detail.reaction, canEdit, shared, goToTab],
   );
 
   const all = output.tabs;

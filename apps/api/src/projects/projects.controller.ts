@@ -29,7 +29,10 @@ import {
   type Project,
   type ProjectDetail,
   postMessageSchema,
+  type ReactionState,
+  type SetReaction,
   type ShareState,
+  setReactionSchema,
   setShareSchema,
   type ThreadDetail,
   type UpdateMemoryInput,
@@ -46,6 +49,7 @@ import { SessionGuard, type SessionUser } from '../auth/session.guard.js';
 import { exportFormats, fileName, toDocx, toMarkdown, toPdf } from '../outputs/export.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
 import { ProjectsService } from './projects.service.js';
+import { ReactionsService } from './reactions.service.js';
 import { SharesService } from './shares.service.js';
 
 const scopeSchema = z
@@ -62,6 +66,7 @@ export class ProjectsController {
     private readonly projects: ProjectsService,
     private readonly runs: RunService,
     private readonly shares: SharesService,
+    private readonly reactions: ReactionsService,
   ) {}
 
   @Get('teams/:teamId/projects')
@@ -152,8 +157,11 @@ export class ProjectsController {
 
   @Get('outputs/:outputId')
   @Roles('owner', 'editor', 'viewer')
-  output(@Param('outputId') outputId: string): Promise<OutputDetail> {
-    return this.projects.outputDetail(outputId);
+  output(
+    @CurrentUser() user: SessionUser,
+    @Param('outputId') outputId: string,
+  ): Promise<OutputDetail> {
+    return this.projects.outputDetail(outputId, user.id);
   }
 
   /** Turns the read only link on or off (PRD O4). Turning it on again keeps the same address. */
@@ -164,6 +172,17 @@ export class ProjectsController {
     @Body(new ZodPipe(setShareSchema)) body: z.output<typeof setShareSchema>,
   ): Promise<ShareState> {
     return this.shares.set(outputId, body.enabled);
+  }
+
+  /** Rates the plan useful or wrong, or takes the rating back. Any member may: it changes no data of the team's. */
+  @Put('outputs/:outputId/reaction')
+  @Roles('owner', 'editor', 'viewer')
+  setReaction(
+    @CurrentUser() user: SessionUser,
+    @Param('outputId') outputId: string,
+    @Body(new ZodPipe(setReactionSchema)) body: SetReaction,
+  ): Promise<ReactionState> {
+    return this.reactions.set(outputId, user.id, body.kind);
   }
 
   /** The plan as a file to send or paste (PRD O3). */
