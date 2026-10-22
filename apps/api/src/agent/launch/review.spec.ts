@@ -31,7 +31,25 @@ const issue = (over = {}) => ({
   blocking: true,
   query: null,
   section: null,
+  ask: null,
   ...over,
+});
+
+describe('judge ask', () => {
+  it('takes the question from the first blocking issue that has one, else the first that has one', () => {
+    const both = judge(
+      raw([
+        issue({ blocking: false, ask: 'Which date?' }),
+        issue({ check: 'c1', blocking: true, ask: 'Which city first?' }),
+      ]),
+      understanding,
+      unrun,
+    );
+    expect(both.ask).toBe('Which city first?');
+    const soft = judge(raw([issue({ blocking: false, ask: 'Which date?' })]), understanding, unrun);
+    expect(soft.ask).toBe('Which date?');
+    expect(judge(raw([issue()]), understanding, unrun).ask).toBeNull();
+  });
 });
 
 describe('judge', () => {

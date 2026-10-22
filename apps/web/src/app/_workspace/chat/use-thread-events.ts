@@ -13,6 +13,8 @@ const STORED = new Set<ThreadEvent['type']>([
   'message',
   'error',
   'output.created',
+  'finding',
+  'memory.used',
 ]);
 
 /**

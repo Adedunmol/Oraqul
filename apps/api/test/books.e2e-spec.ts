@@ -121,6 +121,7 @@ describe('Books build end to end (real agents, demo Qloo, scripted reader)', () 
       ['regions', 'Markets'],
       ['audience', 'Audience'],
       ['assumptions', 'Assumptions'],
+      ['contrast', 'With and without Qloo'],
       ['evidence', 'Evidence'],
     ]);
     if (!output.plan) throw new Error('Expected a launch plan');
@@ -238,6 +239,7 @@ describe('Books build end to end (real agents, demo Qloo, scripted reader)', () 
       'regions',
       'audience',
       'assumptions',
+      'contrast',
       'evidence',
     ]);
     expect(plan.receipts.every((r) => r.source === 'demo')).toBe(true);

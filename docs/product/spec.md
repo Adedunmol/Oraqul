@@ -69,7 +69,7 @@ No second model reviews a brief: it would see only findings already computed, so
 
 ### 3.4 Cross category rule
 
-Agents do not call each other. One exception, a fixed step and not a model's choice: when a Books brief names a screen title Qloo knows, the Books launch asks the Film side one bounded question about it (`filmConsult`, §4.5). It runs the Film agent's own tests on the title, the audience skew (`audienceBySegment`) and the ranking of the book's cities (`rankPlaces`), and returns two findings with their receipts, which the plan can cite beside the adaptation bridge. The generic tool loop still lists `film` in the Books pack's `consults` for conversation.
+Agents do not call each other. Two bounded exceptions. The first is a fixed step and not a model's choice: when a Books brief names a screen title Qloo knows, the Books launch asks the Film side one bounded question about it (`filmConsult`, §4.5). It runs the Film agent's own tests on the title, the audience skew (`audienceBySegment`) and the ranking of the book's cities (`rankPlaces`), and returns two findings with their receipts, which the plan can cite beside the adaptation bridge. The generic tool loop still lists `film` in the Books pack's `consults` for conversation. The second exception is a model's choice from offers code makes: a category config lists the questions another side could answer from names the team gave (Film's soundtrack artists to Music, Books' other screen titles to Film, Games' collabs, Podcasts' guests as artists), the research check may pick up to two, and `launch/consult.ts` runs the other side's audience and city tests on the named entity. The model cannot add an offer. A consult spends its caller's budget.
 
 ### 3.5 Loop limits
 

@@ -11,6 +11,7 @@ import type {
 import type { Analyst } from './analyse.js';
 import type { DraftItem } from './audit-verdicts.js';
 import type { CheckRules } from './check.js';
+import type { ConsultOffer } from './consult.js';
 import type { DecisionWords } from './decisions.js';
 import type { GroundDeps, Grounded, GroundInput } from './findings.js';
 import type { Change } from './follow-up.js';
@@ -112,6 +113,13 @@ export interface LaunchConfig<
   templateSection(key: LaunchSectionKey, input: WriteInput<R>): WrittenLine[];
   /** A reading with nothing in it, for an answer about a plan saved before readings. */
   emptyRead: R;
+
+  /**
+   * Questions another category's side could answer, from names the team gave. The research check
+   * may pick among them; it cannot add one (spec §3.4). Fixed steps a category already runs are
+   * not offered again.
+   */
+  consults?(read: R): ConsultOffer[];
 
   /** Stage 1: the audience, the cities and the category's own queries. */
   ground(deps: GroundDeps, input: GroundInput<R, P>): Promise<Grounded>;

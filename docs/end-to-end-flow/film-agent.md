@@ -49,7 +49,7 @@ Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Mu
 - **Team memory** (spec §3.7). Project memory and chat summaries are built; nothing is kept across a team's projects.
 - **Missing engine tools:** `crossTaste`, `tagWeights`, `momentum`, `explain`, `applyScenario` and `compareResults`. Rerunning only what changed in a what-if (spec §3.5) is still a `TODO`, so a what-if reruns every query.
 - **Results cards.** The docs describe split, confirm and date cards for entering results. Results come in through a text card, parsed from lines like "Lagos: 4,200", or by the model reader. There is no form or file column mapping.
-- **Dropped-line visibility.** Lines the check drops are stored but not shown anywhere in the product.
+- **Dropped-line visibility.** Built: the Evidence tab opens with "How this plan was made", which lists the research rounds, the red team's rounds and the lines the check removed. A shared link hides the removed lines.
 
 ### Not verified against real Qloo
 

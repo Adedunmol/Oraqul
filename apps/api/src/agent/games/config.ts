@@ -271,6 +271,16 @@ export const gamesLaunch: LaunchConfig<GamesRead, GamesQueryPlan> = {
     artistPitch: 'a collab or a sponsored stream',
     compsVerb: 'plays',
   },
+  // The collabs the team named are scored against the fan bases already; asking the other side
+  // adds who they reach and where, which the overlap score does not say.
+  consults: (read) =>
+    read.collabs.slice(0, 2).map((name) => ({
+      id: `consult-collab-${slug(name)}`,
+      category: 'music',
+      types: ['urn:entity:artist', 'urn:entity:movie', 'urn:entity:tv_show'],
+      name,
+      why: `${name} is a collab the team named, so who it reaches and where shows whether its audience is where the game's is.`,
+    })),
   minimum: {
     id: 'games.minimum',
     example:

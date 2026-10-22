@@ -28,6 +28,8 @@ export const rawReviewSchema = z.object({
         query: z.string().nullable(),
         /** The section the issue is about, as its key, or null when it is about the plan as a whole. */
         section: z.string().nullable(),
+        /** One question only the person can answer to settle the issue, or null. */
+        ask: z.string().nullable(),
       }),
     )
     .max(MAX_ISSUES),
@@ -53,6 +55,8 @@ export interface ReviewInput {
   /** Sections code writes whole, which the writer cannot change. */
   codeSections: string[];
   round: number;
+  /** Blocking issues from earlier drafts, that the writer was sent back with. */
+  earlier: string[];
 }
 
 export interface Reviewer {
@@ -69,7 +73,7 @@ Compare three things: what was asked, the context, and what the draft says. Repo
 - unhelpful: it is true but gives the person nothing to act on.
 - vague: a line a team could not act on.
 
-blocking is true only when the person would clearly be let down: a check is not answered at all, the ask is missed, a constraint or detail they gave is contradicted, or a claim goes against the evidence. Missing detail the person never gave (a release date, a distribution model), wanting more specifics or more spend lines, style, and small gaps are never blocking: put what they could provide in "next" instead. Do not ask the draft to describe what could not be measured; the plan does not talk about that. Mark at most 3 issues blocking, and do not repeat an issue the last draft already fixed. For each issue say what the next draft should do (fix). When more Qloo evidence would fix it, name one query from the unrun list in "query"; when writing fixes it, use null. Set "section" to the key of the section an issue is about, or null.
+blocking is true only when the person would clearly be let down: a check is not answered at all, the ask is missed, a constraint or detail they gave is contradicted, or a claim goes against the evidence. Missing detail the person never gave (a release date, a distribution model), wanting more specifics or more spend lines, style, and small gaps are never blocking: put what they could provide in "next" instead. Do not ask the draft to describe what could not be measured; the plan does not talk about that. Mark at most 3 issues blocking, and do not repeat an issue the last draft already fixed. For each issue say what the next draft should do (fix). When more Qloo evidence would fix it, name one query from the unrun list in "query"; when writing fixes it, use null. Set "section" to the key of the section an issue is about, or null. When an issue, blocking or not, cannot be settled by writing or by more Qloo evidence and only the person can settle it, such as a window, a market, a budget or a choice between two options they did not make, set "ask" to the one question to put to them, in plain words; otherwise null. It is put to them only if the plan still cannot pass after the last draft, so ask for the one answer that would help most. When a blocking issue from an earlier draft is still missing from this one, the writer cannot supply it from the evidence and the request: set "ask" for it, naming the choice you need from the person.
 
 Also list up to ${MAX_NEXT} things in "next" the person could give or try to make the plan stronger, in plain words, even when you pass the draft. Return no issues when the draft does what was asked. You never write a number, a score or a verdict about an audience.`;
 
@@ -115,6 +119,13 @@ export class ModelReviewer implements Reviewer {
         '',
         'Queries not yet run:',
         ...(input.unrun.length ? input.unrun.map((q) => `- ${q.key}: ${q.label}`) : ['- none']),
+        ...(input.earlier.length
+          ? [
+              '',
+              'Blocking issues you raised on earlier drafts, which the writer was told to fix:',
+              ...input.earlier.map((e) => `- ${e}`),
+            ]
+          : []),
         '',
         'The draft:',
         input.draft,
@@ -159,6 +170,8 @@ export interface Verdict {
   /** Queries to run before the next draft: on the unrun list, once each. */
   research: { query: string; check: string; why: string }[];
   next: string[];
+  /** The question only the person can answer: the first blocking issue's, else the first issue's that has one. */
+  ask: string | null;
 }
 
 /** Turns the model's review into a verdict. The model lists issues; code decides pass or fail. */
@@ -180,6 +193,7 @@ export function judge(
     text: i.text,
     fix: i.fix,
     blocking: i.blocking && !byCode(i),
+    ...(i.ask && !byCode(i) ? { ask: i.ask } : {}),
   }));
   const research = raw.issues
     .flatMap((i) =>
@@ -190,6 +204,7 @@ export function judge(
     issues,
     passed: !issues.some((i) => i.blocking),
     research,
+    ask: (issues.find((i) => i.blocking && i.ask) ?? issues.find((i) => i.ask))?.ask ?? null,
     next: [...raw.next, ...raw.issues.filter(byCode).map((i) => i.fix)].slice(0, MAX_NEXT),
   };
 }

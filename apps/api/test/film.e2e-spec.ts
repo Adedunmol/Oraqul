@@ -122,7 +122,14 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
     );
     const { output } = detail;
     expect(output.label).toBe('v1 · Night Ferry');
-    expect(output.tabs.map((t) => t.key)).toEqual(['plan', 'audience', 'assumptions', 'evidence']);
+    expect(output.tabs.map((t) => t.key)).toEqual([
+      'plan',
+      'territories',
+      'audience',
+      'assumptions',
+      'contrast',
+      'evidence',
+    ]);
     if (!output.plan) throw new Error('Expected a launch plan');
     expect(output.plan.comps.find((c) => c.name === 'Midnight Harbor')?.choice).toBeTruthy();
     const cited = new Set(output.receipts.flatMap((r) => (r.lineId ? [r.lineId] : [])));
@@ -494,8 +501,10 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
     expect(plan.tabs.map((t) => t.key)).toEqual([
       'plan',
       'fixes',
+      'territories',
       'audience',
       'assumptions',
+      'contrast',
       'evidence',
     ]);
     expect(fixed.thread.baseOutputId).toBe(plan.id);

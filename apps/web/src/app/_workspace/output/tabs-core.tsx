@@ -18,6 +18,7 @@ import {
 import { copyText } from '../toast';
 import { useOutputView } from './context';
 import { Evidence, FitBar, Line, Mark, Num, Section, Stack, TabTitle } from './line';
+import { ProcessSection } from './process-section';
 import { LaunchPlanTab } from './tabs-plan';
 
 const NEXT_STEP: Record<Verdict, string> = {
@@ -785,6 +786,7 @@ export function EvidenceTab() {
           {rows.length} calls. Only public titles, names and places were sent to Qloo.
         </span>
       </div>
+      {output.plan ? <ProcessSection plan={output.plan} /> : null}
       {drivers.length ? (
         <section className="rounded-2xl bg-card px-5 py-[18px]">
           <h3 className="font-display text-[15px] font-semibold">Behind the recommendations</h3>

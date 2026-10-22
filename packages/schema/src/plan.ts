@@ -157,6 +157,8 @@ export const reviewIssueSchema = z.object({
   fix: z.string(),
   /** A blocking issue fails the draft. Code decides, from this list alone. */
   blocking: z.boolean(),
+  /** A question only the person can answer, when the issue cannot be settled by research or writing. */
+  ask: z.string().optional(),
 });
 export type ReviewIssue = z.infer<typeof reviewIssueSchema>;
 
@@ -178,6 +180,26 @@ export const planReviewSchema = z.object({
 });
 export type PlanReview = z.infer<typeof planReviewSchema>;
 
+/**
+ * How the plan was made: what each research round was missing and ran, and the lines the check
+ * removed from every draft. Saved so the work is never silent.
+ */
+export const planProcessSchema = z.object({
+  research: z.array(
+    z.object({
+      round: z.number().int(),
+      /** The checks still open when the round began, in the person's terms. */
+      open: z.array(z.string()),
+      asked: z.array(z.object({ label: z.string(), why: z.string(), found: z.boolean() })),
+      retried: z.array(z.object({ label: z.string(), says: z.string(), found: z.boolean() })),
+      consulted: z.array(z.object({ category: z.string(), name: z.string(), found: z.boolean() })),
+    }),
+  ),
+  drafts: z.number().int(),
+  dropped: z.array(droppedLineSchema.extend({ draft: z.number().int() })),
+});
+export type PlanProcess = z.infer<typeof planProcessSchema>;
+
 export const launchPlanSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question. */
   scope: z.enum(['full', 'narrow']),
@@ -193,5 +215,7 @@ export const launchPlanSchema = z.object({
   understanding: understandingSchema.nullable().default(null),
   /** The red team's verdict on the saved draft. Plans saved before it have none. */
   review: planReviewSchema.nullable().default(null),
+  /** What the research and the line check did on the way. Plans saved before it have none. */
+  process: planProcessSchema.nullable().default(null),
 });
 export type LaunchPlan = z.infer<typeof launchPlanSchema>;

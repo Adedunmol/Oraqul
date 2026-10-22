@@ -13,7 +13,13 @@ export function redactForShare(detail: OutputDetail): OutputDetail {
       ...output,
       createdBy: '',
       receipts: output.receipts.map((r) => ({ ...r, input: {}, returned: null })),
-      plan: output.plan ? { ...output.plan, dropped: [] } : null,
+      plan: output.plan
+        ? {
+            ...output.plan,
+            dropped: [],
+            process: output.plan.process ? { ...output.plan.process, dropped: [] } : null,
+          }
+        : null,
       report: output.report ? { ...output.report, dropped: [] } : null,
     },
     project: { ...project, qlooMatch: null, extra: {} },

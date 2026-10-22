@@ -13,7 +13,7 @@ Vercel AI SDK (v7), called from the API. The provider and model are configuratio
 | `LLM_MODEL` | The model for every role |
 | `LLM_ROUTER_MODEL` | Optional: a faster model for the router |
 | `LLM_BASE_URL` | Needed for `openai-compatible`; optional otherwise |
-| `LLM_TIMEOUT_MS` | Per call, default 30000 |
+| `LLM_TIMEOUT_MS` | Per call, default 90000. The analyst, the research check and the query planner returned structured output in 30 to 60 seconds on a live run, and a call that times out falls back to the scripted step, which skips the research loop |
 | `LLM_WEB_SEARCH` | `on` (default) or `off`. Plans look up release timing, rival releases, who distributes and shows films like this, and market numbers through the writer's own provider search (OpenAI web search, Google Search grounding). Not available on OpenAI-compatible endpoints. The film's title and story are never sent, only its genre, country, format and cities |
 | `LLM_WRITER_MODEL`, `LLM_WRITER_PROVIDER`, `LLM_WRITER_API_KEY`, `LLM_WRITER_BASE_URL`, `LLM_WRITER_TIMEOUT_MS` (default 180000), `LLM_WRITER_REASONING` (OpenAI only: `minimal`, `low` (default), `medium` or `high`; a plan took 7 minutes and 130K tokens on `gpt-6.1-sol` before it was set) | Optional. The step that writes plans and answers runs on its own model, even from another provider (for example the reader and query planner on Gemini, the writer on OpenAI). Empty values fall back to the settings above. A base url is not shared with a different provider |
 
@@ -38,7 +38,7 @@ Costs are rough and assume about 80% input tokens; check the provider's usage pa
 - The model plans one step at a time through the `Planner` interface (`apps/api/src/agent/types.ts`). `ModelPlanner` builds its output schema from the pack: only the pack's allowed tools, and `ask` and `consult` only where the agent may use them. `ScriptedPlanner` is the deterministic stand-in with the same shape. Film, Music, Games, Podcasts and Books do not use it for plans: they run the fixed launch pipeline, and the planner only serves an answer about a plan saved before findings.
 - The steps around a plan each have a model call with a scripted fallback, so a quota error never stops a run: the analyst (`launch/analyse.ts`, role `agent`; reads what the request needs and fills what it left out), the research check (`launch/research-loop.ts`, role `agent`; judges coverage and names catalog queries), the red team (`launch/review.ts`, role `writer`, since it judges the plan the writer made; lists issues, code decides), and the memory writer (`agent/memory/memory-writer.ts`, role `router`; short structured edits to a project's notes). With no key the analyst infers nothing, the research check makes no claim, the plan is saved as `unchecked`, and only plans are remembered.
 - Prompts live next to what they configure: category prompts in `packages/packs/src/<category>`, the router's in `model-reader.ts`.
-- Calls run at temperature 0 with one retry. The router's token use is saved in `runs.tokens`.
+- Decisions run at temperature 0 with one retry: the router, gate, reader, analyst, query planner, research check, red team and tool planner. The plan writer's draft runs at 0.4 (`WRITER_TEMPERATURE` in `launch/writer.ts`), so the wording varies a little between runs while code still checks every line and sets every number. Models that ignore a temperature, such as OpenAI's reasoning models, are unaffected. The router's token use is saved in `runs.tokens`.
 
 ## Untrusted text
 

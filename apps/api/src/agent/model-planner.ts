@@ -30,6 +30,8 @@ export class ModelPlanner implements Planner {
         history: context.history,
       }),
       output: Output.object({ schema: z.object({ step: stepSchema(context) }) }),
+      // Which tool runs next is a decision, so it is the same for the same history.
+      temperature: 0,
     });
     return output.step;
   }

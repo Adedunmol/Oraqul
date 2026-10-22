@@ -1,6 +1,6 @@
 import { briefSchema, launchPlanSchema } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
-import { contrastOf, supportActsOf, territoriesOf } from './plan-views';
+import { contrastOf, processOf, supportActsOf, territoriesOf } from './plan-views';
 
 const callId = '00000000-0000-4000-8000-000000000001';
 
@@ -177,5 +177,65 @@ describe('contrastOf', () => {
 
   it('is null for an output with no plan', () => {
     expect(contrastOf({ ...output, plan: null })).toBeNull();
+  });
+});
+
+describe('processOf', () => {
+  it('has nothing to show for a plan that kept no record', () => {
+    expect(processOf({ process: null, review: null })).toBeNull();
+  });
+
+  it('tells each research round, red team round and removed line in plain sentences', () => {
+    const view = processOf({
+      process: {
+        research: [
+          {
+            round: 1,
+            open: ['Says which city to open in'],
+            asked: [
+              { label: 'The podcasts that audience hears', why: 'press is thin', found: true },
+            ],
+            retried: [{ label: 'Cinemas in Lagos', says: 'without the genre tag', found: false }],
+            consulted: [{ category: 'music', name: 'Tems', found: true }],
+          },
+        ],
+        drafts: 2,
+        dropped: [
+          { draft: 1, section: 'markets', text: 'Lagos loves it', why: 'no finding backs it' },
+        ],
+      },
+      review: {
+        status: 'passed',
+        next: [],
+        rounds: [
+          {
+            round: 1,
+            action: 'rewrote',
+            issues: [
+              {
+                check: 'c1',
+                type: 'missing',
+                text: 'No city named.',
+                fix: 'Name one.',
+                blocking: true,
+              },
+            ],
+          },
+          { round: 2, action: 'approved', issues: [] },
+        ],
+      },
+    });
+    expect(view?.research[0]?.steps).toEqual([
+      'Still open: Says which city to open in.',
+      'Asked Qloo for The podcasts that audience hears, because press is thin. Qloo had an answer.',
+      'Asked again for Cinemas in Lagos without the genre tag. Qloo had nothing for it.',
+      'Asked the music side about Tems. Qloo had an answer.',
+    ]);
+    expect(view?.review.map((r) => r.steps.at(-1))).toEqual([
+      'The plan was written again with these points.',
+      'The draft passed.',
+    ]);
+    expect(view?.dropped).toHaveLength(1);
+    expect(view?.drafts).toBe(2);
   });
 });

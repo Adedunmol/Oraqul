@@ -13,6 +13,13 @@ import type { ProviderOptions } from '../../llm/llm.js';
 import { understandingBlock } from './analyse.js';
 import type { LaunchRead } from './read-core.js';
 
+/**
+ * The plan's wording may vary a little between runs; its facts may not. Every decision (queries,
+ * retries, consults, the review) stays at 0, and code checks every line the writer produces.
+ * Models that ignore a temperature, such as OpenAI's reasoning models, are unaffected.
+ */
+export const WRITER_TEMPERATURE = 0.4;
+
 /** A line as the writer gives it, before code checks it and gives it an id. */
 export const writtenLineSchema = z.object({
   kind: lineKindSchema,
@@ -156,7 +163,7 @@ export class ModelPlanWriter<R extends LaunchRead = LaunchRead> implements PlanW
       ].join('\n'),
       output: Output.object({ schema: writtenPlanSchema }),
       providerOptions: this.options,
-      temperature: 0,
+      temperature: WRITER_TEMPERATURE,
       maxRetries: 1,
       abortSignal: AbortSignal.timeout(this.timeoutMs),
     });

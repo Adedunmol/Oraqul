@@ -318,6 +318,16 @@ export const booksLaunch: LaunchConfig<BooksRead, BooksQueryPlan> = {
     artistPitch: 'a blurb or an event together',
     compsVerb: 'reads',
   },
+  // The first screen title is the fixed Film consult (`filmConsult`); any others the team named
+  // are offered, so the research check can ask about one when the adaptation angle is thin.
+  consults: (read) =>
+    read.screenTitles.slice(1, 3).map((name) => ({
+      id: `consult-film-${slug(name)}`,
+      category: 'film',
+      types: ['urn:entity:movie', 'urn:entity:tv_show'],
+      name,
+      why: `${name} is a screen comparison the team named, so who watches it and where shows how the adaptation angle reaches readers.`,
+    })),
   minimum: {
     id: 'books.minimum',
     example:

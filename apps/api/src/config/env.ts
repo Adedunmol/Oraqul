@@ -36,7 +36,7 @@ export const envSchema = z
     /** Optional: a cheaper or faster model for the router than for the category agents. */
     LLM_ROUTER_MODEL: z.string().default(''),
     LLM_BASE_URL: z.string().default(''),
-    LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+    LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(90_000),
     // The step that writes plans and answers can run on a stronger model, even from another
     // provider. Each value falls back to the main setting when empty.
     // An empty value, as in .env.example, means the writer uses the main provider.

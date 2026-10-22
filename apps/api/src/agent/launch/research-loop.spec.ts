@@ -1,7 +1,7 @@
 import type { Finding, Understanding } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
 import { evidenceBlock } from './evidence.js';
-import { applyAssessment, applyRound2, MIN_CALLS_LEFT } from './research-loop.js';
+import { applyAssessment, applyRound2, MIN_CALLS_LEFT, openChecks } from './research-loop.js';
 
 const finding = (
   id: string,
@@ -53,6 +53,8 @@ describe('applyAssessment', () => {
           { id: 'c2', status: 'covered', findingIds: ['f-made-up'] },
         ],
         extra: [],
+        retry: [],
+        consult: [],
       },
       unrun,
       50,
@@ -67,7 +69,12 @@ describe('applyAssessment', () => {
     const { understanding: u } = applyAssessment(
       understanding,
       findings,
-      { checks: [{ id: 'c1', status: 'covered', findingIds: ['f-b', 'f-a'] }], extra: [] },
+      {
+        checks: [{ id: 'c1', status: 'covered', findingIds: ['f-b', 'f-a'] }],
+        extra: [],
+        retry: [],
+        consult: [],
+      },
       unrun,
       50,
     );
@@ -82,11 +89,99 @@ describe('applyAssessment', () => {
         { query: 'podcasts', check: 'c2', why: 'b' },
         { query: 'invented', check: 'c2', why: 'c' },
       ],
+      retry: [],
+      consult: [],
     };
     expect(applyAssessment(understanding, findings, assessment, unrun, 50).extra).toHaveLength(1);
     expect(
       applyAssessment(understanding, findings, assessment, unrun, MIN_CALLS_LEFT - 1).extra,
     ).toEqual([]);
+  });
+
+  it('keeps only the retries and consults code offered, in the order code listed them', () => {
+    const misses = [
+      {
+        id: 'f-cinemas',
+        key: 'cinemas',
+        label: 'Cinemas',
+        alternatives: [{ key: 'no-tags', says: 'without the genre tag' }],
+      },
+      {
+        id: 'f-shows',
+        key: 'shows',
+        label: 'Shows',
+        alternatives: [{ key: 'no-country', says: 'without the release country' }],
+      },
+    ];
+    const consults = [
+      {
+        id: 'c-music-a',
+        category: 'music' as const,
+        types: ['urn:entity:artist' as const],
+        name: 'A',
+        why: 'x',
+      },
+    ];
+    const assessment = {
+      checks: [],
+      extra: [],
+      retry: [
+        { miss: 'f-shows', alt: 'no-country', check: 'c1', why: 'b' },
+        { miss: 'f-cinemas', alt: 'no-tags', check: 'c1', why: 'a' },
+        { miss: 'f-cinemas', alt: 'invented', check: 'c1', why: 'c' },
+        { miss: 'f-invented', alt: 'no-tags', check: 'c1', why: 'd' },
+      ],
+      consult: [
+        { offer: 'c-music-a', check: 'c2', why: 'e' },
+        { offer: 'c-made-up', check: 'c2', why: 'f' },
+      ],
+    };
+    const out = applyAssessment(understanding, findings, assessment, unrun, 50, {
+      misses,
+      consults,
+    });
+    expect(out.retry.map((r) => r.miss)).toEqual(['f-cinemas', 'f-shows']);
+    expect(out.consult.map((c) => c.offer)).toEqual(['c-music-a']);
+    const short = applyAssessment(understanding, findings, assessment, unrun, MIN_CALLS_LEFT - 1, {
+      misses,
+      consults,
+    });
+    expect([short.retry, short.consult]).toEqual([[], []]);
+  });
+
+  it('reads a miss or an offer named by its label as the same one, and passes on the id', () => {
+    const misses = [
+      {
+        id: 'f-music-lagos',
+        key: 'music',
+        label: 'Artists in Lagos',
+        alternatives: [{ key: 'no-tags', says: 'without the genre tag' }],
+      },
+    ];
+    const consults = [
+      {
+        id: 'consult-music-tems',
+        category: 'music' as const,
+        types: ['urn:entity:artist' as const],
+        name: 'Tems',
+        why: 'x',
+      },
+    ];
+    const out = applyAssessment(
+      understanding,
+      findings,
+      {
+        checks: [],
+        extra: [],
+        retry: [{ miss: 'Artists in Lagos', alt: 'no-tags', check: 'c1', why: 'a' }],
+        consult: [{ offer: 'Tems', check: 'c1', why: 'b' }],
+      },
+      unrun,
+      50,
+      { misses, consults },
+    );
+    expect(out.retry.map((r) => r.miss)).toEqual(['f-music-lagos']);
+    expect(out.consult.map((c) => c.offer)).toEqual(['consult-music-tems']);
   });
 
   it('makes no claim with no assessment', () => {
@@ -117,5 +212,25 @@ describe('evidenceBlock', () => {
   it('says plainly when nothing measured a check', () => {
     const block = evidenceBlock(understanding.criteria, []);
     expect(block).toContain('Names press angles [unchecked]: nothing measured for this');
+  });
+});
+
+describe('openChecks', () => {
+  it('lists the checks that need evidence and are not covered', () => {
+    const u: Understanding = {
+      ...understanding,
+      criteria: [
+        { id: 'c1', text: 'Says which city', evidence: true, status: 'covered', findingIds: [] },
+        { id: 'c2', text: 'Names press', evidence: true, status: 'thin', findingIds: [] },
+        {
+          id: 'c3',
+          text: 'Follows the brief',
+          evidence: false,
+          status: 'unchecked',
+          findingIds: [],
+        },
+      ],
+    };
+    expect(openChecks(u).map((c) => c.id)).toEqual(['c2']);
   });
 });
