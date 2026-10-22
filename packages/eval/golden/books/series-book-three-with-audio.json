@@ -43,6 +43,8 @@
       "f-shelf": ["The Orchard Heir", "Throne of Embers"],
       "f-bridge-film": ["The Hunger Games", "The Martian"],
       "f-bridge-series": ["The Witcher", "Shadow and Bone", "The Wheel of Time"],
+      "f-film-consult-audience-the-witcher": ["The Witcher"],
+      "f-film-consult-places-the-witcher": ["New York", "London"],
       "f-screen-the-hunger-games": ["The Hunger Games"],
       "f-screen-the-witcher": ["The Witcher"],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],

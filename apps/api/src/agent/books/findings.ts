@@ -1,7 +1,9 @@
 import {
+  audienceOutputSchema,
   bookProfilesOutputSchema,
   compAgeVerdict,
   findTasteOutputSchema,
+  rankPlacesOutputSchema,
   resolveBundleOutputSchema,
   resolveTagsOutputSchema,
   scoreRivalsOutputSchema,
@@ -12,7 +14,7 @@ import {
 import { booksPlan } from '@oraqul/packs';
 import type { Confidence, FitLine, Receipt } from '@oraqul/schema';
 import type { z } from 'zod';
-import { slug } from '../launch/brief.js';
+import { ageLabel, round2, slug } from '../launch/brief.js';
 import {
   agesPhrase,
   BRAND_BAND,
@@ -83,7 +85,8 @@ const labels = () => ({
  * Stage 1 (spec §4.5). Each finding is streamed to the chat as it lands. Numbers and verdicts are
  * computed here or in the engine, never by the model.
  * Verified live on a literary fiction brief and a romantasy brief (docs/backend/qloo.md).
- * TODO(verify): other genres and markets, with `qloo-books-probes.ts`.
+ * Other genres and markets are not probed one by one: thin Qloo data shows as a gap or lower
+ * confidence. `qloo-books-probes.ts` re-checks the queries.
  */
 export function ground(deps: GroundDeps, input: GroundInput): Promise<Grounded> {
   return groundLaunch(deps, input, {
@@ -141,7 +144,7 @@ async function runQueries(kit: Kit, input: GroundInput): Promise<void> {
   };
 
   if (want('shelf')) jobs.push(shelfAndAges(kit, input, tags.genre));
-  if (want('bridge')) jobs.push(bridge(kit, podcasts));
+  if (want('bridge')) jobs.push(bridge(kit, podcasts).then((titles) => filmConsult(kit, titles)));
   if (want('podcasts') && !want('bridge')) jobs.push(podcasts().then(() => undefined));
 
   if (want('themes')) jobs.push(themes(kit));
@@ -443,7 +446,7 @@ async function resolveTitles(
  * choose (the team's own and the planner's), in one scoring call per kind of media. Scores from
  * separate calls are never compared, so rows are only ranked within their own medium.
  */
-async function bridge(kit: Kit, podcasts: () => Promise<Heard | null>): Promise<void> {
+async function bridge(kit: Kit, podcasts: () => Promise<Heard | null>): Promise<ScreenTitle[]> {
   const { read, plan, gaps, brief } = kit;
   const rows: FitLine[] = [];
 
@@ -580,6 +583,85 @@ async function bridge(kit: Kit, podcasts: () => Promise<Heard | null>): Promise<
     }
   }
   if (rows.length) brief.brief.bridge = rows;
+  return [...asSeries, ...asFilm];
+}
+
+type ScreenTitle = { name: string; entityId: string; mine: boolean };
+
+/**
+ * The one bounded question the Books agent puts to the Film side (spec §3.4): for the first screen
+ * title the team named, who watches it and where. It runs the Film agent's own tests on that
+ * title, the audience skew and the city ranking, and cites their receipts, so the screen angle
+ * rests on how the adaptation's audience compares with the readers' and not on the readers alone.
+ */
+async function filmConsult(kit: Kit, titles: ScreenTitle[]): Promise<void> {
+  const title = titles.find((t) => t.mine);
+  if (!title) return;
+  const { brief } = kit;
+  const audience = await kit.safely('Film consult: audience', () =>
+    tools.audienceBySegment.run(kit.deps.tools, { entityIds: [title.entityId] }),
+  );
+  const out = audience ? audienceOutputSchema.parse(audience.data) : null;
+  const [call] = audience?.receipts ?? [];
+  const segment = out?.segments[0];
+  const top = segment?.topAgeBand;
+  if (out && call && segment && top) {
+    const readers = Object.entries(brief.ages).sort(([, a], [, b]) => b - a)[0]?.[0];
+    const women = segment.gender.female;
+    const men = segment.gender.male;
+    const skew =
+      women !== undefined && men !== undefined && women !== men
+        ? `, skewing towards ${women > men ? 'women' : 'men'}`
+        : '';
+    const against = readers
+      ? top === readers
+        ? `, the same age band as your book's readers`
+        : `, where your book's readers peak at ${ageLabel(readers).toLowerCase()}`
+      : '';
+    kit.add(
+      {
+        id: `f-film-consult-audience-${slug(title.name)}`,
+        query: 'bridge',
+        text: `Asked as a screen title, ${title.name} draws its audience from ${ageLabel(top).toLowerCase()}${skew}${against}.`,
+        entities: [entity(title.name, null, 'Film consult', title.entityId)],
+        numbers: { [`affinity ${top}`]: round2(segment.age[top] ?? 0) },
+        verdict: null,
+        confidence: out.confidence,
+        why: out.why,
+      },
+      call,
+    );
+  }
+
+  const cities = brief.teamOrder.map((p) => p.place);
+  if (cities.length === 0) return;
+  const placed = await kit.safely('Film consult: cities', () =>
+    tools.rankPlaces.run(kit.deps.tools, { entityIds: [title.entityId], places: cities }),
+  );
+  const ranked = placed
+    ? rankPlacesOutputSchema
+        .parse(placed.data)
+        .places.filter((p) => p.status === 'ranked' && p.lift !== null)
+        .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
+    : [];
+  const [placeCall] = placed?.receipts ?? [];
+  const first = ranked[0];
+  if (!placeCall || !first) return;
+  kit.add(
+    {
+      id: `f-film-consult-places-${slug(title.name)}`,
+      query: 'bridge',
+      text: `Of your cities, ${title.name}'s audience concentrates most in ${list(
+        ranked.slice(0, 3).map((p) => `${p.place} (${round2(p.lift ?? 0)}x)`),
+      )}.`,
+      entities: ranked.map((p) => entity(p.place, p.affinity, null)),
+      numbers: Object.fromEntries(ranked.map((p) => [`lift ${p.place}`, round2(p.lift ?? 0)])),
+      verdict: null,
+      confidence: first.confidence,
+      why: first.why,
+    },
+    placeCall,
+  );
 }
 
 interface Heard {
