@@ -73,6 +73,7 @@ const shape = {
   type: 'urn:entity:movie' as const,
   yearFrom: 2020,
   rating: null,
+  gender: 'female' as const,
   country: 'Nigeria',
 };
 

@@ -257,6 +257,9 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
             type: 'urn:entity:movie',
             yearFrom: from,
             rating: read.rating,
+            // The recent films finding sends the brief's gender, so this must too: the same request is
+            // what the cache serves, and a different one is another call.
+            gender: read.gender,
             ...(plan.country ? { country: plan.country } : { tags: genre ? [genre.id] : [] }),
           },
           plan.country ? `films from ${what}` : `${what.toLowerCase()} films`,
@@ -422,6 +425,7 @@ export async function topicsAgainstRecentFilms(
     type: 'urn:entity:movie';
     yearFrom: number;
     rating: 'family' | 'adult' | null;
+    gender: 'male' | 'female' | null;
     country?: string;
     tags?: string[];
   },
