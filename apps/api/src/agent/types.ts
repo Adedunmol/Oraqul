@@ -59,6 +59,9 @@ export interface AgentContext {
   context: string | null;
 }
 
+/** Starts the context of a standalone chat, so the planner talks instead of running a workflow. */
+export const STANDALONE_CONTEXT = 'STANDALONE CHAT.';
+
 export interface Planner {
   next(context: AgentContext): Promise<Step>;
 }

@@ -5,10 +5,12 @@ import {
   launchSectionKeys,
   lineKindSchema,
   type PlanSource,
+  type Understanding,
 } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
 import type { ProviderOptions } from '../../llm/llm.js';
+import { understandingBlock } from './analyse.js';
 import type { LaunchRead } from './read-core.js';
 
 /** A line as the writer gives it, before code checks it and gives it an id. */
@@ -54,6 +56,12 @@ export interface WriteInput<R extends LaunchRead = LaunchRead> {
   sources: PlanSource[];
   /** `YYYY-MM-DD`. A plan never advises around a date before it. Optional: older callers omit it. */
   today?: string;
+  /** How the request was read: its assumptions and what a good answer must do. */
+  understanding?: Understanding | null;
+  /** What each of the understanding's checks rests on, strongest findings first. */
+  evidence?: string;
+  /** What the last draft got wrong, to fix in this one. Empty for a first draft. */
+  feedback?: string[];
 }
 
 export interface AnswerInput<R extends LaunchRead = LaunchRead> {
@@ -125,6 +133,9 @@ export class ModelPlanWriter<R extends LaunchRead = LaunchRead> implements PlanW
         '',
         'The brief as read:',
         this.kit.brief(input.title, input.read, input.comps),
+        ...(input.understanding
+          ? ['', 'How the request was understood:', understandingBlock(input.understanding)]
+          : []),
         ...(input.today
           ? ['', `Today is ${input.today}. Never advise around a date before it.`]
           : []),
@@ -133,6 +144,14 @@ export class ModelPlanWriter<R extends LaunchRead = LaunchRead> implements PlanW
         '',
         'Findings:',
         findingsBlock(input.findings),
+        ...(input.evidence ? ['', 'What each check rests on:', input.evidence] : []),
+        ...(input.feedback?.length
+          ? [
+              '',
+              'Your last draft was sent back. Fix these, keep what was right, and still answer the request first:',
+              ...input.feedback.map((f) => `- ${f}`),
+            ]
+          : []),
         ...(input.sources.length ? ['', 'Web facts:', sourcesBlock(input.sources)] : []),
       ].join('\n'),
       output: Output.object({ schema: writtenPlanSchema }),

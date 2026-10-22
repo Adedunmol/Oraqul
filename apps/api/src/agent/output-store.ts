@@ -80,7 +80,7 @@ export class OutputStore {
 }
 
 // Kinds the chat works on next: a plan, or a report a fix can be written from.
-const BASES: NewOutput['kind'][] = ['build', 'scenario', 'audit', 'fix'];
+export const BASES: NewOutput['kind'][] = ['build', 'scenario', 'audit', 'fix'];
 
 function receiptRow(
   r: Receipt,

@@ -11,17 +11,27 @@ import {
   ReplyError,
 } from '../category-agents.js';
 import type { Planner } from '../types.js';
+import type { Analyst } from './analyse.js';
 import { type AuditDeps, type LaunchAuditInputs, runAudit } from './audit.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
 import { runFix } from './fix.js';
 import { askedJob, decideFollowUp, type FollowUpReader } from './follow-up.js';
-import { runAnswer, runDateCheck, runPartnerBrief, runPlanAnswer } from './follow-ups.js';
+import {
+  runAnswer,
+  runDateCheck,
+  runPartnerBrief,
+  runPlanAnswer,
+  runStandalone,
+  StandalonePlanner,
+} from './follow-ups.js';
 import { type LaunchInputs, type PlanRun, runBuild } from './pipeline.js';
 import type { QueryPlanCore, QueryPlanner } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import type { ReportWriter } from './report-writer.js';
 import type { Researcher } from './research.js';
+import type { ResearchPlanner } from './research-loop.js';
 import type { ResultsReader } from './results-read.js';
+import type { Reviewer } from './review.js';
 import { launchStateSchema } from './state.js';
 import type { PlanWriter } from './writer.js';
 
@@ -42,6 +52,12 @@ export interface LaunchAgentDeps<
   report: ReportWriter<R>;
   /** Web research for release timing and the market, or none. */
   research: Researcher<R>;
+  /** Reads what the request needs before anything is searched. Scripted when omitted. */
+  analyst?: Analyst;
+  /** Judges what the first round of queries covers and picks a second. */
+  researchPlanner?: ResearchPlanner;
+  /** Compares a draft plan with the request and sends it back. */
+  reviewer?: Reviewer;
   followUps: FollowUpReader;
   /** Checks what a plan was built from, when a follow up reruns it. */
   inputsSchema: z.ZodType<LaunchInputs<R>>;
@@ -53,6 +69,8 @@ export interface LaunchAgentDeps<
   plan: (outputId: string) => Promise<{ output: Output; inputs: unknown } | null>;
   /** The planner for an answer: the model planner, or a scripted summary of the plan. */
   planner: (plan: Output) => Planner;
+  /** The planner for a standalone chat. Without a model it says it cannot talk freely. */
+  standalone?: Planner;
   maxSteps: number;
 }
 
@@ -86,6 +104,9 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
     const build: LaunchDeps<R, P> = {
       config: this.deps.config,
       read: this.deps.read,
+      analyst: this.deps.analyst,
+      researchPlanner: this.deps.researchPlanner,
+      reviewer: this.deps.reviewer,
       queries: this.deps.queries,
       writer: this.deps.writer,
       research: this.deps.research,
@@ -108,6 +129,20 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
           return runFix(handoff, audit, { state, reply: resume.reply });
       }
     }
+    if (handoff.fresh) {
+      const refusal = refusalFor(handoff.message.text);
+      if (refusal) {
+        emit({ type: 'message', body: refusal, claims: [] });
+        return { reason: 'finished', state: null, receipts: [], output: null, tokens: 0 };
+      }
+      return runStandalone(handoff, {
+        tools,
+        emit,
+        config: this.deps.config,
+        planner: this.deps.standalone ?? new StandalonePlanner(),
+        maxSteps: this.deps.maxSteps,
+      });
+    }
     const saved = handoff.planId ? await this.deps.plan(handoff.planId) : null;
     if (!saved) {
       // Plain words win over the project's mode: a person in a build project who attaches a plan
@@ -129,16 +164,6 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
     const parsed = this.deps.inputsSchema.safeParse(saved.inputs);
     const inputs = parsed.success ? parsed.data : null;
     const chat = handoff.recent.slice(0, -1);
-    emit({
-      type: 'memory.used',
-      items: [
-        { source: 'plan', label: output.label },
-        { source: 'project', label: 'your brief' },
-        ...(chat.length
-          ? [{ source: 'chat' as const, label: `the last ${chat.length} messages of this chat` }]
-          : []),
-      ],
-    });
     const { reading, tokens } = await this.deps.followUps.read({
       text: handoff.message.text,
       recent: chat,

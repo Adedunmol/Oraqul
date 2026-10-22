@@ -10,6 +10,8 @@ import { eq } from 'drizzle-orm';
 import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { RunService } from '../src/agent/run.service.js';
+import { toFold } from '../src/agent/summary/chat-summarizer.js';
+import { ThreadStore } from '../src/agent/thread-store.js';
 import { AuthModule } from '../src/auth/auth.module.js';
 import { type AuthedRequest, SessionGuard } from '../src/auth/session.guard.js';
 import { UsersService } from '../src/auth/users.service.js';
@@ -205,6 +207,127 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
     await request(http()).get('/s/not-a-real-token').expect(404);
   });
 
+  it('starts a new chat on the project memory or as a standalone chat', async () => {
+    const res = await request(http())
+      .post(`/teams/${teamId}/projects`)
+      .set(as)
+      .send({
+        text: 'Launch plan for my film "Dock Lights" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights".',
+        mode: 'build',
+        category: 'film',
+      })
+      .expect(201);
+    const { threadId, projectId } = res.body as { threadId: string; projectId: string };
+    const first = await settled(threadId);
+    const planId = first.thread.baseOutputId;
+    expect(planId).not.toBeNull();
+
+    // The plan is remembered, by code, once the run has stopped.
+    type Note = { id: string; kind: string; text: string };
+    let notes: Note[] = [];
+    for (let i = 0; i < 100 && notes.length === 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      notes = (await request(http()).get(`/projects/${projectId}/memory`).set(as).expect(200))
+        .body as Note[];
+    }
+    expect(notes.map((n) => n.kind)).toEqual(['plan']);
+    expect(notes[0]?.text).toContain('Dock Lights');
+    // A plan pointer is kept by code, so the person cannot rewrite it, only forget it.
+    await request(http())
+      .put(`/projects/${projectId}/memory/${notes[0]?.id}`)
+      .set(as)
+      .send({ text: 'Changed' })
+      .expect(404);
+
+    // No body means a chat on the project: it starts on the project's current plan.
+    const withMemory = await request(http())
+      .post(`/projects/${projectId}/threads`)
+      .set(as)
+      .expect(201);
+    const a = await request(http())
+      .get(`/threads/${(withMemory.body as { threadId: string }).threadId}`)
+      .set(as)
+      .expect(200);
+    expect(threadDetailSchema.parse(a.body).thread).toMatchObject({
+      fresh: false,
+      baseOutputId: planId,
+      fromOutputId: planId,
+    });
+
+    // A standalone chat knows nothing of the plan.
+    const alone = await request(http())
+      .post(`/projects/${projectId}/threads`)
+      .set(as)
+      .send({ fresh: true })
+      .expect(201);
+    const b = await request(http())
+      .get(`/threads/${(alone.body as { threadId: string }).threadId}`)
+      .set(as)
+      .expect(200);
+    expect(threadDetailSchema.parse(b.body).thread).toMatchObject({
+      fresh: true,
+      baseOutputId: null,
+      fromOutputId: null,
+    });
+
+    // A message in a standalone chat is not a rebuild of the project's brief.
+    const aloneId = (alone.body as { threadId: string }).threadId;
+    await request(http())
+      .post(`/threads/${aloneId}/messages`)
+      .set(as)
+      .send({
+        kind: 'text',
+        text: 'What would a wild release strategy look like for a film like this?',
+      })
+      .expect(202);
+    const talked = await settled(aloneId);
+    expect(talked.outputs).toHaveLength(0);
+    expect(talked.items.some((i) => i.role === 'agent')).toBe(true);
+    expect(talked.items.some((i) => i.role === 'output')).toBe(false);
+
+    await request(http()).get(`/projects/${projectId}/memory`).set(stranger).expect(403);
+    await request(http())
+      .delete(`/projects/${projectId}/memory/${notes[0]?.id}`)
+      .set(viewer)
+      .expect(403);
+    await request(http())
+      .delete(`/projects/${projectId}/memory/${notes[0]?.id}`)
+      .set(as)
+      .expect(204);
+    const left = await request(http()).get(`/projects/${projectId}/memory`).set(as).expect(200);
+    expect(left.body).toEqual([]);
+  });
+
+  it('reads a long chat as a summary of the older part and the newest lines', async () => {
+    const store = app.get(ThreadStore, { strict: false });
+    const res = await request(http())
+      .post(`/teams/${teamId}/projects`)
+      .set(as)
+      .send({
+        text: 'Launch plan for my film "Quay Nine" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights".',
+        mode: 'build',
+        category: 'film',
+      })
+      .expect(201);
+    const { threadId } = res.body as { threadId: string };
+    await settled(threadId);
+    for (let i = 0; i < 45; i++) await store.appendUser(threadId, `message ${i}`, []);
+    const before = await store.unsummarised(threadId);
+    expect(before.rows.length).toBeGreaterThan(45);
+    expect(toFold(before.rows.length)).toBe(before.rows.length - 20);
+
+    const folded = before.rows.slice(0, toFold(before.rows.length));
+    await store.saveSummary(threadId, 'The person planned a launch.', folded.at(-1)?.seq ?? 0);
+    const lines = await store.recentLines(threadId, 40, 12_000);
+    expect(lines[0]).toEqual({
+      from: 'oraqul',
+      text: 'Earlier in this chat, in short: The person planned a launch.',
+    });
+    expect(lines).toHaveLength(21);
+    expect(lines.at(-1)?.text).toBe('message 44');
+    expect((await store.unsummarised(threadId)).rows).toHaveLength(20);
+  });
+
   it('answers, reruns a what-if, checks rival dates and drafts a partner brief', async () => {
     const res = await request(http())
       .post(`/teams/${teamId}/projects`)
@@ -232,9 +355,8 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
     // A question: answered from the plan's findings, checked, with no new output.
     const answered = await say('Which cinemas should we screen at?');
     expect(answered.outputs).toHaveLength(1);
-    expect(answered.items.findLast((i) => i.role === 'context')).toMatchObject({
-      items: expect.arrayContaining([{ source: 'plan', label: plan.label }]),
-    });
+    // No "Using" line: a reply is just the answer.
+    expect(answered.items.some((i) => i.role === 'context')).toBe(false);
     const reply = answered.items.findLast((i) => i.role === 'agent');
     const findings = plan.plan?.findings.map((f) => f.text) ?? [];
     expect(findings.some((f) => reply?.role === 'agent' && reply.text.includes(f))).toBe(true);

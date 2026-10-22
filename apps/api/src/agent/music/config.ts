@@ -115,6 +115,7 @@ function gapsSection(read: MusicRead, comps: { used: CompUsed[] }): LaunchSectio
 
 export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
   category: 'music',
+  catalog: Object.values(musicPlan.MUSIC_QUERIES),
   anchorTypes: ['urn:entity:artist'],
   rivalTypes: ['urn:entity:artist'],
   genreTagPrefix: musicPlan.TAG_SPACES.support.prefix,

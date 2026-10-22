@@ -28,6 +28,7 @@ import {
   type CategoryAgents,
   cutFiles,
   type Handoff,
+  type NewOutput,
   type Reply,
   ReplyError,
   type Said,
@@ -35,7 +36,9 @@ import {
   saidSchema,
 } from './category-agents.js';
 import { GATE, type Gate, type GatePending, gateDecide, gateStateSchema } from './gate/gate.js';
-import { OutputStore } from './output-store.js';
+import { MemoryStore } from './memory/memory-store.js';
+import { checkOps, MEMORY_WRITER, type MemoryWriter } from './memory/memory-writer.js';
+import { BASES, OutputStore } from './output-store.js';
 import { OFF_TOPIC_REPLY, readingLine } from './router/copy.js';
 import type { Reader } from './router/reader.js';
 import {
@@ -47,6 +50,7 @@ import {
   routerStateSchema,
   routeTurn,
 } from './router/router.js';
+import { CHAT_SUMMARIZER, type ChatSummarizer, toFold } from './summary/chat-summarizer.js';
 import { ThreadStore } from './thread-store.js';
 import { THREAD_TITLER, type Titler, UNNAMED_THREAD } from './titler.js';
 
@@ -61,8 +65,10 @@ export interface LiveEvent {
 type CreateProject = z.output<typeof createProjectInputSchema>;
 type PostMessage = z.output<typeof postMessageSchema>;
 
-// What the gate judges a message against, and what the agent reads of the chat before it.
-const RECENT_LINES = 8;
+// What the gate judges a message against, and what the agent reads of the chat before it: the
+// whole conversation while it fits, newest first when it does not.
+const RECENT_LINES = 40;
+const RECENT_CHARS = 12_000;
 
 // Projects started before the first message was kept on the project have none.
 const NO_INPUTS: Said = { text: '', files: [] };
@@ -85,6 +91,9 @@ export class RunService implements OnModuleInit {
     @Inject(THREAD_TITLER) private readonly titler: Titler,
     @Inject(GATE) private readonly gate: Gate,
     @Inject(OutputStore) private readonly outputs: OutputStore,
+    @Inject(MemoryStore) private readonly memory: MemoryStore,
+    @Inject(MEMORY_WRITER) private readonly memoryWriter: MemoryWriter,
+    @Inject(CHAT_SUMMARIZER) private readonly summarizer: ChatSummarizer,
   ) {}
 
   /** A run that was going when the process stopped will never finish, so say so. */
@@ -157,7 +166,7 @@ export class RunService implements OnModuleInit {
       return;
     }
 
-    const { category, mode, name, inputs, planId } = project;
+    const { category, mode, name, inputs, planId, fresh } = project;
     if (!category || !mode || !name) throw new Error('An active project has no category or mode');
     const handoff = async (message: Said): Promise<Handoff> => ({
       category,
@@ -165,8 +174,10 @@ export class RunService implements OnModuleInit {
       title: name,
       inputs,
       message,
-      recent: await this.store.recentLines(threadId, RECENT_LINES),
+      recent: await this.store.recentLines(threadId, RECENT_LINES, RECENT_CHARS),
       planId,
+      fresh,
+      memory: fresh ? [] : await this.memory.lines(project.id),
     });
 
     // A card the agent asked: the reply resumes that run, and the gate does not judge it.
@@ -385,6 +396,7 @@ export class RunService implements OnModuleInit {
   ): Promise<void> {
     const runId = await this.newRun(threadId, handoff.category, handoff.mode, null);
     const steps: string[] = [];
+    const said: string[] = [];
     // The agent emits without waiting on the store, so events are chained to keep their order.
     let stored: Promise<void> = Promise.resolve();
     try {
@@ -392,6 +404,7 @@ export class RunService implements OnModuleInit {
         handoff,
         (event) => {
           if (event.type === 'trace.step') steps.push(event.text);
+          if (event.type === 'message') said.push(event.body);
           stored = stored.then(() => this.emit(threadId, event));
         },
         resume,
@@ -407,16 +420,92 @@ export class RunService implements OnModuleInit {
       for (const outputId of outputIds) {
         await this.emit(threadId, { type: 'output.created', outputId });
       }
+      // The notes are kept before the run stops, so the reply can say what was remembered. A
+      // failed memory update never fails the run.
+      if (run.reason === 'finished' && !handoff.fresh) {
+        const made = [...(run.earlier ?? []), ...(run.output ? [run.output] : [])].map(
+          (output, i) => ({ id: outputIds[i], output }),
+        );
+        const saved = await this.remember(
+          threadId,
+          projectId,
+          handoff,
+          said.at(-1) ?? '',
+          made,
+        ).catch((err: unknown) => {
+          this.logger.error(err);
+          return [];
+        });
+        if (saved.length) {
+          await this.emit(threadId, {
+            type: 'memory.used',
+            items: saved.map((label) => ({ source: 'saved' as const, label })),
+          });
+        }
+      }
       await this.stop(threadId, runId, run.reason, {
         state: run.state,
         steps,
         tokens: run.tokens,
         qlooCalls: run.qlooCalls,
       });
+      void this.summarise(threadId).catch((err: unknown) => this.logger.error(err));
     } catch (err) {
       await stored.catch(() => undefined);
       await this.fail(threadId, runId, err, { state: null, steps, tokens: 0 });
     }
+  }
+
+  /**
+   * Updates the project's memory from one finished exchange, like a careful assistant keeping
+   * notes. Plans are pointed at by code; key points and decisions come from the memory writer.
+   */
+  private async remember(
+    threadId: string,
+    projectId: string,
+    handoff: Handoff,
+    reply: string,
+    made: { id: string | undefined; output: NewOutput }[],
+  ): Promise<string[]> {
+    for (const { id, output } of made) {
+      if (id && BASES.includes(output.kind)) {
+        await this.memory.rememberPlan(projectId, threadId, {
+          id,
+          text: `${output.title}. ${output.headline}`,
+        });
+      }
+    }
+    const notes = await this.memory.notes(projectId);
+    const last = made.at(-1);
+    const { ops } = await this.memoryWriter.write({
+      category: handoff.category,
+      title: handoff.title,
+      notes,
+      message: handoff.message.text,
+      reply,
+      output: last ? { label: last.output.title, headline: last.output.headline } : null,
+    });
+    const checked = checkOps(ops, notes);
+    await this.memory.apply(projectId, checked, { threadId, outputId: last?.id ?? null });
+    return checked.flatMap((op) => (op.op === 'remove' ? [] : [op.text]));
+  }
+
+  /**
+   * Folds the older part of a long chat into the thread's summary, so a reply reads the summary and
+   * the newest lines instead of everything. Runs after a run has stopped and never fails it.
+   */
+  private async summarise(threadId: string): Promise<void> {
+    const { summary, rows } = await this.store.unsummarised(threadId);
+    const count = toFold(rows.length);
+    if (count === 0) return;
+    const folded = rows.slice(0, count);
+    const through = folded.at(-1)?.seq;
+    if (through === undefined) return;
+    const text = await this.summarizer.summarize({
+      previous: summary,
+      lines: folded.map((r) => r.line),
+    });
+    await this.store.saveSummary(threadId, text, through);
   }
 
   private async agentWaiting(
@@ -538,6 +627,7 @@ export class RunService implements OnModuleInit {
         inputs: projects.inputs,
         threadName: threads.name,
         planId: threads.baseOutputId,
+        fresh: threads.fresh,
       })
       .from(threads)
       .innerJoin(projects, eq(projects.id, threads.projectId))

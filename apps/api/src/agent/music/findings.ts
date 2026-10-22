@@ -36,6 +36,7 @@ const { RECENT_FILMS, RECENT_SHOWS, TAG_SPACES, MAX_CITIES_PER_QUERY } = musicPl
 // Most calls the brand and community queries make between them, so they cannot spend the run.
 const MAX_BRAND_CALLS = 4;
 const MAX_COMMUNITY_CALLS = 8;
+const MAX_VENUE_CALLS = 6;
 
 export type GroundInput = LaunchGroundInput<MusicRead, MusicQueryPlan>;
 
@@ -219,6 +220,23 @@ async function runQueries(kit: GroundKit<MusicRead, MusicQueryPlan>): Promise<vo
     }
   }
 
+  if (want('venues')) {
+    const pairs = tags.venues.flatMap((tag) => plan.venueCities.map((city) => ({ tag, city })));
+    for (const { tag, city } of pairs.slice(0, MAX_VENUE_CALLS)) {
+      jobs.push(
+        taste(
+          'venues',
+          `${capitalise(plural(tag.name))} in ${city}`,
+          `f-venues-${slug(tag.name)}-${slug(city)}`,
+          { type: 'urn:entity:place', tags: [tag.id], city },
+          (names) =>
+            `In ${city}, the ${plural(tag.name)} that rank highest with ${crowd} are ${names}.`,
+          { city, tags: [tag.name] },
+        ),
+      );
+    }
+  }
+
   if (want('community')) {
     const pairs = tags.community.flatMap((tag) =>
       plan.communityCities.map((city) => ({ tag, city })),
@@ -334,6 +352,7 @@ async function resolve(
   films: Tag | null;
   brands: Tag[];
   community: Tag[];
+  venues: Tag[];
 }> {
   type Ask = { phrase: string; space: keyof typeof TAG_SPACES };
   const asks: Ask[] = [
@@ -350,8 +369,18 @@ async function resolve(
     ...(want('community')
       ? plan.communityPlaces.slice(0, 2).map((phrase) => ({ phrase, space: 'community' as const }))
       : []),
+    ...(want('venues')
+      ? plan.venuePlaces.slice(0, 2).map((phrase) => ({ phrase, space: 'venues' as const }))
+      : []),
   ];
-  const empty = { support: null, podcasts: null, films: null, brands: [], community: [] };
+  const empty = {
+    support: null,
+    podcasts: null,
+    films: null,
+    brands: [],
+    community: [],
+    venues: [],
+  };
   if (asks.length === 0) return empty;
   const run = await tools.resolveTags.run(deps.tools, {
     phrases: asks.map(({ phrase, space }) => ({
@@ -374,5 +403,6 @@ async function resolve(
     films: of('films')[0] ?? null,
     brands: of('brands'),
     community: of('community'),
+    venues: of('venues'),
   };
 }

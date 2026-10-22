@@ -1,6 +1,7 @@
 import type { ToolContext } from '@oraqul/engine';
 import type { ThreadEvent } from '@oraqul/schema';
 import type { Handoff, Reply } from '../category-agents.js';
+import type { Analyst } from '../launch/analyse.js';
 import type { LaunchDeps } from '../launch/config.js';
 import {
   type LaunchInputs,
@@ -8,6 +9,8 @@ import {
   type PlanRun,
   runBuild,
 } from '../launch/pipeline.js';
+import type { ResearchPlanner } from '../launch/research-loop.js';
+import type { Reviewer } from '../launch/review.js';
 import { filmLaunch } from './config.js';
 import type { Change } from './follow-up.js';
 import type { QueryPlan, QueryPlanner } from './planner.js';
@@ -30,6 +33,9 @@ export interface FilmDeps {
   writer: PlanWriter;
   tools: ToolContext;
   emit(event: ThreadEvent): void;
+  analyst?: Analyst;
+  researchPlanner?: ResearchPlanner;
+  reviewer?: Reviewer;
 }
 
 /** Reads the brief with Film's reader and keeps only what the person said. */
@@ -49,6 +55,9 @@ export function launchDeps(deps: FilmDeps): LaunchDeps<FilmRead, QueryPlan> {
     writer: deps.writer,
     tools: deps.tools,
     emit: deps.emit,
+    analyst: deps.analyst,
+    researchPlanner: deps.researchPlanner,
+    reviewer: deps.reviewer,
   };
 }
 

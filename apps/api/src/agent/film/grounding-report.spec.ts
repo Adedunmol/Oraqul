@@ -39,6 +39,8 @@ describe('rank kept', () => {
   const planWith = (text: string): LaunchPlan => ({
     scope: 'full',
     writer: 'model',
+    understanding: null,
+    review: null,
     comps: [],
     sources: [],
     dropped: [],
@@ -79,6 +81,8 @@ describe('groundingReport', () => {
   const plan: LaunchPlan = {
     scope: 'full',
     writer: 'model',
+    understanding: null,
+    review: null,
     comps: [],
     findings: [finding('f1'), finding('f2'), finding('f3')],
     sources: [{ id: 'w1', fact: 'A fact.', title: 'T', url: 'https://example.com/a' }],

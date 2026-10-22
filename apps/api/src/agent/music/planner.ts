@@ -43,6 +43,8 @@ export interface MusicQueryPlan extends QueryPlanCore {
   podcastCity: string | null;
   communityPlaces: string[];
   communityCities: string[];
+  venuePlaces: string[];
+  venueCities: string[];
 }
 
 export type QueryPlanInput = LaunchPlanInput<MusicRead>;
@@ -85,6 +87,8 @@ export function defaultPlan(input: QueryPlanInput): MusicQueryPlan {
     podcastCity: away[0] ?? cities[0] ?? null,
     communityPlaces: musicPlan.MUSIC_COMMUNITY_PLACES,
     communityCities: cities,
+    venuePlaces: musicPlan.MUSIC_VENUE_PLACES,
+    venueCities: cities,
     areas: [],
     brandCandidates: [],
   };

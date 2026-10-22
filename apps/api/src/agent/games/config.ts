@@ -255,6 +255,7 @@ function beliefs(read: GamesRead, text: string, grounded: Grounded): DraftItem[]
 
 export const gamesLaunch: LaunchConfig<GamesRead, GamesQueryPlan> = {
   category: 'games',
+  catalog: Object.values(gamesPlan.GAMES_QUERIES),
   anchorTypes: ['urn:entity:videogame'],
   rivalTypes: ['urn:entity:videogame'],
   genreTagPrefix: gamesPlan.TAG_SPACES.gameGenre.prefix,

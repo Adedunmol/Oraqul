@@ -43,7 +43,11 @@
       "f-shows-lagos": ["Midnight Harbor", "Eko Nights", "Harbor Precinct"],
       "f-shows-london": ["Midnight Harbor", "Eko Nights", "Harbor Precinct"],
       "f-community-university-houston": ["Gulf Coast University"],
-      "f-community-university-lagos": ["Lagoon City University"]
+      "f-community-university-lagos": ["Lagoon City University"],
+      "f-venues-concert-hall-lagos": ["Harbor Hall"],
+      "f-venues-concert-hall-london": ["Southbank Hall"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"],
+      "f-venues-night-club-london": ["Camden After Hours"]
     },
     "sections": {
       "bottom-line": "3/0",
@@ -75,6 +79,12 @@
       }
     },
     "dropped": 0,
-    "cannot": ["Streams, ticket sales and revenue", "Recent films", "Universities in London"]
+    "cannot": [
+      "Streams, ticket sales and revenue",
+      "Concert halls in Houston",
+      "Night clubs in Houston",
+      "Recent films",
+      "Universities in London"
+    ]
   }
 }

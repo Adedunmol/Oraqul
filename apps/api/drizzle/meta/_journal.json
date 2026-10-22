@@ -64,6 +64,20 @@
       "when": 1792332440177,
       "tag": "0008_normal_satana",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792625624141,
+      "tag": "0009_small_lilith",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792629240914,
+      "tag": "0010_absent_husk",
+      "breakpoints": true
     }
   ]
 }

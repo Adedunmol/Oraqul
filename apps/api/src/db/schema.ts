@@ -184,6 +184,10 @@ export const threads = pgTable(
     baseOutputId: uuid('base_output_id').references((): AnyPgColumn => outputs.id),
     fromOutputId: uuid('from_output_id').references((): AnyPgColumn => outputs.id),
     fresh: boolean('fresh').notNull().default(false),
+    /** The older part of a long chat, folded down so replies are not sent all of it. */
+    summary: text('summary'),
+    /** The `seq` of the last message the summary covers. */
+    summarizedThrough: integer('summarized_through').notNull().default(0),
     createdBy: uuid('created_by')
       .notNull()
       .references(() => users.id),
@@ -191,6 +195,34 @@ export const threads = pgTable(
     updatedAt: updatedAt(),
   },
   (table) => [index('threads_project_idx').on(table.projectId)],
+);
+
+export const memoryKinds = ['point', 'decision', 'plan'] as const;
+
+/**
+ * What a project remembers: key points and decisions moving forward, and a pointer to each plan
+ * worth keeping. Context for later chats, never evidence. A `plan` item belongs to the chat that
+ * made it, so a newer plan from that chat replaces it and a plan from another chat sits beside it.
+ */
+export const memoryItems = pgTable(
+  'memory_items',
+  {
+    id: id(),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    kind: text('kind', { enum: memoryKinds }).notNull(),
+    text: text('text').notNull(),
+    sourceOutputId: uuid('source_output_id').references((): AnyPgColumn => outputs.id, {
+      onDelete: 'set null',
+    }),
+    sourceThreadId: uuid('source_thread_id').references((): AnyPgColumn => threads.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [index('memory_items_project_idx').on(table.projectId, table.updatedAt)],
 );
 
 export const messageRoles = ['user', 'agent', 'question', 'trace', 'output', 'context'] as const;
