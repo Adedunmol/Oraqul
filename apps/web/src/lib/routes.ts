@@ -3,20 +3,32 @@ import { type Category, categories, type StartMode } from '@oraqul/schema';
 /** Which projects a list shows: one category, or `all`. A category id is a fixed set, so `all` cannot clash with one. */
 export type CategoryScope = Category | 'all';
 
-export function parseScope(value: string): CategoryScope | undefined {
-  if (value === 'all') return 'all';
+/** Reads the `category` filter of the project list. No filter means every category. */
+export function parseScope(value: string | undefined): CategoryScope | undefined {
+  if (value === undefined || value === 'all') return 'all';
   return categories.find((c) => c === value);
 }
 
 export const overviewPath = '/overview';
 
+/** The project list. A category is a filter on that one list, so it rides in the query. */
 export function projectsPath(scope: CategoryScope = 'all'): string {
-  return `/categories/${scope}/projects`;
+  return scope === 'all' ? '/projects' : `/projects?category=${scope}`;
 }
 
-/** The one canonical address of a project: under its own category, never under `all`. */
-export function projectPath(project: { id: string; category: Category }): string {
-  return `${projectsPath(project.category)}/${project.id}`;
+/** The one address of a project. It opens the project's newest chat. */
+export function projectPath(project: { id: string }): string {
+  return `/projects/${project.id}`;
+}
+
+/** One chat of a project, with the project's workspace around it. */
+export function chatPath(chatId: string): string {
+  return `/chats/${chatId}`;
+}
+
+/** A saved output. `tab` opens one of its tabs. */
+export function outputPath(outputId: string, tab?: string): string {
+  return tab ? `/outputs/${outputId}?tab=${tab}` : `/outputs/${outputId}`;
 }
 
 /**

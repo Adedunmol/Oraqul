@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Space_Grotesk } from 'next/font/google';
+import { Geist, Geist_Mono, Inter, Space_Grotesk } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
@@ -15,6 +15,13 @@ const spaceGrotesk = Space_Grotesk({
 
 const geist = Geist({
   variable: '--font-geist',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+// The body of a plan or report: a sans built for reading text on screens, with open, even letters.
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -41,7 +48,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${geist.variable} ${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

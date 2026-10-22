@@ -21,7 +21,7 @@ export function OutputScreen({
   const router = useRouter();
   const canEdit = viewer.role !== 'viewer';
   return (
-    <div className="flex flex-col gap-5" data-cat={detail.project.category}>
+    <div className="flex flex-col gap-5" data-wide data-cat={detail.project.category}>
       <OutputView
         detail={detail}
         initialTab={initialTab}

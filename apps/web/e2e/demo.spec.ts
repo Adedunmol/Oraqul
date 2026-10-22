@@ -24,7 +24,7 @@ test('the shared view has no horizontal scroll at 400px', async ({ page }) => {
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
-for (const path of ['/categories/opera/projects', '/categories/opera/projects/some-id']) {
+for (const path of ['/projects?category=opera']) {
   test(`an unknown category is not found at ${path}`, async ({ page }) => {
     // loading.tsx streams first, so the status is already 200; the page shows the not found UI.
     await page.goto(path);

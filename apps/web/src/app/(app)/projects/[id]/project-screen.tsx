@@ -14,7 +14,7 @@ import {
 import { Button, buttonClassName, ChipButton, Icon, Input } from '@oraqul/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Dropdown } from '@/app/_components/dropdown';
 import { ChartCard, StackedColumns } from '@/app/_workspace/charts';
 import { KindTag } from '@/app/_workspace/chat/chat-panel';
@@ -31,15 +31,17 @@ import {
 } from '@/lib/api/projects';
 import type { Viewer } from '@/lib/api/viewer';
 import { getCategory } from '@/lib/demo/catalog';
-import { projectsPath } from '@/lib/routes';
-import { ConfirmDialog } from '../../../../_components/confirm-dialog';
-import { Modal } from '../../../../_components/modal';
+import { chatPath, outputPath, projectsPath } from '@/lib/routes';
+import { ConfirmDialog } from '../../_components/confirm-dialog';
+import { Modal } from '../../_components/modal';
 
 type ProjectUpdate = Extract<ThreadEvent, { type: 'project.updated' }>;
 
 const isPlan = (o: Output): boolean => (planKinds as readonly string[]).includes(o.kind);
 
 const bar = 'rounded-md bg-surface2 motion-safe:animate-pulse';
+
+const PANEL_KEY = 'oraqul-chats-panel';
 
 /**
  * The project workspace. While the router is still reading the first message, the name, category
@@ -60,6 +62,7 @@ export function ProjectWorkspace({
   const [details, setDetails] = useState(false);
   const [choosing, setChoosing] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
   const canEdit = detail.myRole !== 'viewer';
   const onProjectUpdated = useCallback((event: ProjectUpdate) => setUpdate(event), []);
 
@@ -74,9 +77,27 @@ export function ProjectWorkspace({
   const chatName = (id: string, stored: string) =>
     update && id === selectedId ? update.threadName : stored;
 
+  // The saved choice is read after mount, so the server and first client render agree.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(PANEL_KEY) === 'closed') setPanelOpen(false);
+    } catch {
+      // Storage can be refused; the panel then starts open.
+    }
+  }, []);
+  function togglePanel() {
+    const next = !panelOpen;
+    setPanelOpen(next);
+    try {
+      localStorage.setItem(PANEL_KEY, next ? 'open' : 'closed');
+    } catch {
+      // The choice then lasts until the page is closed.
+    }
+  }
+
   async function newChat(fresh: boolean) {
     try {
-      router.push(`/threads/${await createThread(project.id, fresh)}`);
+      router.push(chatPath(await createThread(project.id, fresh)));
     } catch {
       toast('Could not start a new chat. Try again.');
     }
@@ -143,18 +164,37 @@ export function ProjectWorkspace({
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 min-[900px]:grid-cols-[232px_minmax(0,1fr)]">
-        <aside aria-label="Chats" className="hidden flex-col gap-4 min-[900px]:flex">
-          {current ? <CurrentPlan output={current} /> : null}
-          <div className="flex flex-col gap-1.5">
-            <p className="px-3 text-[12px] font-semibold text-muted">Chats</p>
-            <ChatList
+      <div
+        data-workspace
+        className={`grid grid-cols-1 gap-3 min-[900px]:transition-[grid-template-columns] min-[900px]:duration-200 motion-reduce:transition-none ${panelOpen ? 'min-[900px]:grid-cols-[232px_minmax(0,1fr)]' : 'min-[900px]:grid-cols-[44px_minmax(0,1fr)]'}`}
+      >
+        <aside aria-label="Chats" className="hidden min-w-0 min-[900px]:block">
+          {panelOpen ? (
+            <div className="flex flex-col gap-4">
+              {current ? <CurrentPlan output={current} /> : null}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between pl-3">
+                  <p className="text-[12px] font-semibold text-muted">Chats</p>
+                  <PanelToggle open onClick={togglePanel} />
+                </div>
+                <ChatList
+                  threads={threads}
+                  selectedId={selectedId}
+                  nameOf={chatName}
+                  reading={reading}
+                />
+              </div>
+            </div>
+          ) : (
+            <ChatRail
               threads={threads}
               selectedId={selectedId}
               nameOf={chatName}
-              reading={reading}
+              current={current}
+              onOpen={togglePanel}
+              onNew={canEdit && !reading ? () => setChoosing(true) : undefined}
             />
-          </div>
+          )}
         </aside>
         <details className="rounded-2xl bg-card px-4 py-3 min-[900px]:hidden">
           <summary className="cursor-pointer text-sm font-semibold">
@@ -172,17 +212,19 @@ export function ProjectWorkspace({
         {chat ? (
           <section
             aria-label={`Chat: ${chatName(chat.thread.id, chat.thread.name)}`}
-            className="flex h-[calc(100dvh-24px)] min-h-[480px] min-w-0 min-[900px]:h-[calc(100dvh-180px)] min-[900px]:min-h-[520px] flex-col overflow-hidden rounded-2xl bg-card"
+            className="flex h-[calc(100dvh-24px)] min-h-[480px] min-w-0 flex-col overflow-hidden rounded-2xl bg-card min-[900px]:h-[calc(100dvh-168px)] min-[900px]:min-h-[520px]"
           >
-            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-4 pt-3.5">
-              {reading ? (
-                <span aria-hidden className={`block h-4 w-24 ${bar}`} />
-              ) : (
-                <h2 className="font-display truncate text-[15px] font-semibold">
-                  {chatName(chat.thread.id, chat.thread.name)}
-                </h2>
-              )}
-              <p className="text-[12.5px] text-muted">{builtOnText(chat.thread, labels)}</p>
+            <div className="flex items-center justify-between gap-3 px-4 pt-3 pb-1">
+              <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                {reading ? (
+                  <span aria-hidden className={`block h-4 w-24 ${bar}`} />
+                ) : (
+                  <h2 className="font-display truncate text-[15px] font-semibold">
+                    {chatName(chat.thread.id, chat.thread.name)}
+                  </h2>
+                )}
+                <p className="text-[12.5px] text-muted">{builtOnText(chat.thread, labels)}</p>
+              </div>
             </div>
             <LiveChat
               key={chat.thread.id}
@@ -281,7 +323,7 @@ function CurrentPlan({ output }: { output: Output }) {
         Current plan
       </p>
       <Link
-        href={`/outputs/${output.id}`}
+        href={outputPath(output.id)}
         className="flex flex-col gap-1 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         <span className="flex items-center gap-1.5 text-sm font-semibold">
@@ -293,6 +335,96 @@ function CurrentPlan({ output }: { output: Output }) {
         </span>
       </Link>
     </section>
+  );
+}
+
+function PanelToggle({ open, onClick }: { open: boolean; onClick: () => void }) {
+  const label = open ? 'Collapse chats' : 'Show chats';
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      aria-expanded={open}
+      data-tip={label}
+      className="grid size-8 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
+    >
+      <Icon name={open ? 'panelClose' : 'panelOpen'} className="size-4" />
+    </button>
+  );
+}
+
+/**
+ * The chats panel folded to a thin strip: the way back, a new chat, the current plan, and one
+ * tile per chat with its first letter, so the person can still hop between chats.
+ */
+function ChatRail({
+  threads,
+  selectedId,
+  nameOf,
+  current,
+  onOpen,
+  onNew,
+}: {
+  threads: ThreadSummary[];
+  selectedId: string | undefined;
+  nameOf: (id: string, stored: string) => string;
+  current: Output | undefined;
+  onOpen: () => void;
+  onNew: (() => void) | undefined;
+}) {
+  const tile =
+    'grid size-9 place-items-center rounded-lg text-[13px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none';
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <PanelToggle open={false} onClick={onOpen} />
+      {onNew ? (
+        <button
+          type="button"
+          onClick={onNew}
+          aria-label="New chat"
+          data-tip="New chat"
+          className={`${tile} bg-secondary text-secondary-ink hover:bg-secondary-hover`}
+        >
+          <Icon name="plus" className="size-4" />
+        </button>
+      ) : null}
+      {current ? (
+        <Link
+          href={outputPath(current.id)}
+          aria-label={`Current plan: ${current.label}`}
+          data-tip={`Current plan: ${current.label}`}
+          className={`${tile} text-accent hover:bg-surface2`}
+        >
+          <Icon name="flag" className="size-4" />
+        </Link>
+      ) : null}
+      <ul className="mt-1 flex flex-col items-center gap-1.5 border-t border-line pt-2.5">
+        {threads.map(({ thread, unread }) => {
+          const selected = thread.id === selectedId;
+          const name = nameOf(thread.id, thread.name);
+          return (
+            <li key={thread.id}>
+              <Link
+                href={chatPath(thread.id)}
+                aria-current={selected ? 'page' : undefined}
+                aria-label={unread && !selected ? `${name}, new` : name}
+                data-tip={name}
+                className={`${tile} relative ${selected ? 'bg-card text-ink' : 'text-muted hover:bg-surface2 hover:text-ink'}`}
+              >
+                {name.trim().charAt(0).toUpperCase() || '·'}
+                {unread && !selected ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-1 right-1 size-2 rounded-full bg-accent"
+                  />
+                ) : null}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
@@ -317,7 +449,7 @@ function ChatList({
         return (
           <li key={thread.id}>
             <Link
-              href={`/threads/${thread.id}`}
+              href={chatPath(thread.id)}
               aria-current={selected ? 'page' : undefined}
               className={`flex flex-col rounded-xl px-3 py-2.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none ${selected ? 'bg-card font-semibold' : 'hover:bg-surface2'}`}
             >
@@ -588,7 +720,7 @@ function OutputsList({
                 In {names.get(o.threadId)} · {o.createdBy}, {formatDay(o.createdAt)}
               </p>
             </div>
-            <Link href={`/outputs/${o.id}`} className={buttonClassName('default', 'small')}>
+            <Link href={outputPath(o.id)} className={buttonClassName('default', 'small')}>
               Open
             </Link>
           </div>
@@ -652,7 +784,7 @@ function Lineage({ plans }: { plans: Output[] }) {
                     : 'Starting plan'}
                 </p>
               </div>
-              <Link href={`/outputs/${o.id}`} className={buttonClassName('default', 'small')}>
+              <Link href={outputPath(o.id)} className={buttonClassName('default', 'small')}>
                 Open
               </Link>
             </div>

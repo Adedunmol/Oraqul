@@ -2,16 +2,16 @@ import { expect, test } from '@playwright/test';
 
 for (const route of [
   { path: '/overview', heading: 'We could not load your overview.' },
-  { path: '/categories/all/projects', heading: 'We could not load your projects.' },
-  { path: '/categories/music/projects', heading: 'We could not load your projects.' },
+  { path: '/projects', heading: 'We could not load your projects.' },
+  { path: '/projects?category=music', heading: 'We could not load your projects.' },
   { path: '/start?mode=audit', heading: 'We could not load this page.' },
   {
-    path: '/categories/all/projects/6f1d0c4e-1b9e-4c1e-9a3f-0a0b0c0d0e0f',
+    path: '/projects/6f1d0c4e-1b9e-4c1e-9a3f-0a0b0c0d0e0f',
     heading: 'We could not load this project.',
   },
   {
-    path: '/threads/6f1d0c4e-1b9e-4c1e-9a3f-0a0b0c0d0e0f',
-    heading: 'We could not load this thread.',
+    path: '/chats/6f1d0c4e-1b9e-4c1e-9a3f-0a0b0c0d0e0f',
+    heading: 'We could not load this chat.',
   },
 ]) {
   test(`${route.path} shows a plain error with a retry when the API is down`, async ({ page }) => {
@@ -24,11 +24,13 @@ for (const route of [
   });
 }
 
-test('old project addresses move to the category routes', async ({ request }) => {
+test('old project and chat addresses move to the current routes', async ({ request }) => {
   for (const [from, to] of [
-    ['/projects', '/categories/all/projects'],
-    ['/projects/abc', '/categories/all/projects/abc'],
-    ['/categories/books', '/categories/books/projects'],
+    ['/categories/all/projects', '/projects'],
+    ['/categories/books/projects', '/projects?category=books'],
+    ['/categories/all/projects/abc', '/projects/abc'],
+    ['/categories/books', '/projects?category=books'],
+    ['/threads/abc', '/chats/abc'],
   ]) {
     const response = await request.get(from, { maxRedirects: 0 });
     expect(response.status()).toBe(307);

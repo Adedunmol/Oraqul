@@ -18,7 +18,8 @@ import {
   ReceiptChip,
 } from '@oraqul/ui';
 import Link from 'next/link';
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Modal } from '@/app/(app)/_components/modal';
 import { answerQuestion, markThreadRead, runNextStep, sendMessage } from '@/lib/demo/actions';
 import {
@@ -27,15 +28,17 @@ import {
   type NextStep,
 } from '@/lib/demo/queries';
 import { useDemo } from '@/lib/demo/use-demo';
+import { outputPath } from '@/lib/routes';
 import { toneClass, verdictTone } from '../charts';
-import { plural } from '../format';
+import { formatDay, plural } from '../format';
 import { ExportMenu } from '../output/export-menu';
-import { PlanDocument } from '../output/plan-document';
+import { FollowUp, PlanDocument, PlanFollowUp } from '../output/plan-document';
 import { ReceiptDrawer } from '../output/receipt-drawer';
-import { ReportDocument } from '../output/report-document';
+import { ReportDocument, ReportLines } from '../output/report-document';
 import { copyText } from '../toast';
 import { type Attachment, Composer } from './composer';
 import { QuestionCard } from './question-card';
+import { splitQuote, toQuote } from './quote';
 
 // How many items of each thread have been on screen, so a re-render never replays an
 // arrival animation (design-system §8). Kept for the session, like the demo state.
@@ -125,6 +128,8 @@ export function ChatView({
   const [from, setFrom] = useState(() => seen.get(threadId) ?? items.length);
   const scroller = useRef<HTMLDivElement>(null);
   const [receipt, setReceipt] = useState<{ output: Output; lineId: string } | null>(null);
+  const [quote, setQuote] = useState<string | null>(null);
+  const reply = useReplySelection(scroller, canEdit && !busy);
 
   const openQuestion = [...items].reverse().find((x) => x.role === 'question' && x.answer === null);
   const textOpen = openQuestion?.role === 'question' && openQuestion.question.card === 'text';
@@ -179,7 +184,7 @@ export function ChatView({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
-        <div className="mx-auto flex w-full max-w-[820px] flex-col gap-3">
+        <div className="mx-auto flex w-full max-w-[880px] flex-col gap-4">
           {items.map((item, i) => (
             <Item
               key={item.id}
@@ -198,7 +203,26 @@ export function ChatView({
           ))}
         </div>
       </div>
-      <div className="mx-auto flex w-full max-w-[852px] flex-col gap-2 px-4 pt-1 pb-4">
+      {reply.pick
+        ? createPortal(
+            <button
+              type="button"
+              // Pressing the button must not collapse the selection it is about to quote.
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => {
+                setQuote(toQuote(reply.pick?.text ?? ''));
+                reply.clear();
+              }}
+              style={{ left: reply.pick.x, top: reply.pick.y }}
+              className="fixed z-50 inline-flex -translate-x-1/2 -translate-y-full items-center gap-1.5 rounded-lg bg-ink px-2.5 py-1.5 text-[13px] font-semibold text-bg shadow-md hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              <Icon name="reply" className="size-3.5" />
+              Reply
+            </button>,
+            document.body,
+          )
+        : null}
+      <div className="mx-auto flex w-full max-w-[912px] flex-col gap-2 px-4 pt-1 pb-4">
         {canEdit && idle && steps.length ? (
           <div className="flex flex-col gap-1.5">
             <p className="flex items-center gap-1.5 text-[12px] font-semibold text-muted">
@@ -231,6 +255,8 @@ export function ChatView({
           disabled={!canEdit || busy}
           allowFiles
           compact
+          quote={quote}
+          onClearQuote={() => setQuote(null)}
           onSend={send}
         />
       </div>
@@ -243,6 +269,58 @@ export function ChatView({
       ) : null}
     </div>
   );
+}
+
+/**
+ * Tracks a selection inside the transcript and where to float the Reply button: above the first
+ * line of the selection, in viewport coordinates.
+ */
+function useReplySelection(scroller: RefObject<HTMLDivElement | null>, enabled: boolean) {
+  const [pick, setPick] = useState<{ text: string; x: number; y: number } | null>(null);
+  useEffect(() => {
+    if (!enabled) {
+      setPick(null);
+      return;
+    }
+    const read = () => {
+      const selection = document.getSelection();
+      const root = scroller.current;
+      if (!selection || selection.isCollapsed || selection.rangeCount === 0 || !root) {
+        setPick(null);
+        return;
+      }
+      const range = selection.getRangeAt(0);
+      if (!root.contains(range.commonAncestorContainer) || !selection.toString().trim()) {
+        setPick(null);
+        return;
+      }
+      const first = range.getClientRects()[0] ?? range.getBoundingClientRect();
+      setPick({
+        text: selection.toString(),
+        x: Math.min(Math.max(first.left + first.width / 2, 48), window.innerWidth - 48),
+        y: Math.max(first.top - 8, 44),
+      });
+    };
+    // Read once the pointer or key is released, so the button does not chase a drag.
+    const settle = () => requestAnimationFrame(read);
+    const hide = () => setPick(null);
+    document.addEventListener('mouseup', settle);
+    document.addEventListener('keyup', settle);
+    const box = scroller.current;
+    box?.addEventListener('scroll', hide);
+    return () => {
+      box?.removeEventListener('scroll', hide);
+      document.removeEventListener('mouseup', settle);
+      document.removeEventListener('keyup', settle);
+    };
+  }, [scroller, enabled]);
+  return {
+    pick,
+    clear: () => {
+      document.getSelection()?.removeAllRanges();
+      setPick(null);
+    },
+  };
 }
 
 function Item({
@@ -264,14 +342,21 @@ function Item({
   onFix: (() => void) | undefined;
 }) {
   switch (item.role) {
-    case 'user':
+    case 'user': {
+      const { quote, body } = splitQuote(item.text);
       return (
         <div
-          className={`max-w-[92%] self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-inset px-3.5 py-2.5 ${isNew ? 'item-new' : ''}`}
+          className={`flex max-w-[92%] flex-col gap-2 self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-inset px-3.5 py-2.5 ${isNew ? 'item-new' : ''}`}
         >
-          {item.text}
+          {quote ? (
+            <p className="line-clamp-3 rounded-lg bg-surface2 px-2.5 py-1.5 text-[13px] text-muted">
+              {quote}
+            </p>
+          ) : null}
+          {body}
         </div>
       );
+    }
     case 'agent':
       return <AgentText text={item.text} isNew={isNew} />;
     case 'question':
@@ -446,7 +531,8 @@ function Step({ text, running }: { text: string; running: boolean }) {
 }
 
 // A launch plan in the conversation is the plan itself, in full, as a document: the agent's
-// message above is one line, and everything a reader needs follows. Actions sit in its header.
+// message above is one line, and everything a reader needs follows. The card holds the plan only.
+// The review's open points and suggestions are advice about it, so they sit beneath the card.
 function PlanCard({
   output,
   plan,
@@ -460,34 +546,27 @@ function PlanCard({
 }) {
   const changes = new Map(output.changes.map((c) => [c.lineId, c]));
   return (
-    <article
-      className={`flex flex-col gap-6 rounded-2xl bg-card px-5 py-5 min-[640px]:px-7 ${isNew ? 'item-new' : ''}`}
-    >
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <KindTag kind={output.kind} label={output.kindLabel} />
-          <h3 className="truncate font-display text-[18px] font-semibold tracking-[-0.02em]">
-            {output.label}
-          </h3>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
+    <div className={`flex flex-col gap-4 ${isNew ? 'item-new' : ''}`}>
+      <article className="flex flex-col gap-8 rounded-2xl bg-card px-5 py-6 min-[640px]:px-9 min-[640px]:py-8">
+        <OutputHeader output={output}>
           <ExportMenu output={output} />
           <Link
-            href={`/outputs/${output.id}`}
+            href={outputPath(output.id)}
             className={buttonClassName('primary', 'default', 'icon')}
           >
             <Icon name="external" className="size-4" />
             Open plan
           </Link>
-        </div>
-      </header>
-      <PlanDocument plan={plan} changes={changes} onSource={onReceipt} />
-    </article>
+        </OutputHeader>
+        <PlanDocument plan={plan} changes={changes} onSource={onReceipt} />
+      </article>
+      <PlanFollowUp plan={plan} />
+    </div>
   );
 }
 
-// An audit report in the conversation is the report itself, as a document, with the one next step
-// that follows from it: a fixed plan, in the same project.
+// An audit report in the conversation is the report itself, as a document. What is worth a look
+// and the one next step that follows from it, a fixed plan in the same project, sit beneath it.
 function ReportCard({
   output,
   report,
@@ -502,34 +581,58 @@ function ReportCard({
   onFix: (() => void) | undefined;
 }) {
   return (
-    <article
-      className={`flex flex-col gap-6 rounded-2xl bg-card px-5 py-5 min-[640px]:px-7 ${isNew ? 'item-new' : ''}`}
-    >
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <KindTag kind={output.kind} label={output.kindLabel} />
-          <h3 className="truncate font-display text-[18px] font-semibold tracking-[-0.02em]">
-            {output.label}
-          </h3>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
+    <div className={`flex flex-col gap-4 ${isNew ? 'item-new' : ''}`}>
+      <article className="flex flex-col gap-8 rounded-2xl bg-card px-5 py-6 min-[640px]:px-9 min-[640px]:py-8">
+        <OutputHeader output={output}>
           <ExportMenu output={output} />
           <Link
-            href={`/outputs/${output.id}`}
-            className={buttonClassName('default', 'default', 'icon')}
+            href={outputPath(output.id)}
+            className={buttonClassName('primary', 'default', 'icon')}
           >
             <Icon name="external" className="size-4" />
             Open report
           </Link>
+        </OutputHeader>
+        <ReportDocument report={report} onSource={onReceipt} />
+      </article>
+      {report.alternatives.length > 0 || onFix ? (
+        <FollowUp label="What to do next">
+          <ReportLines
+            title="Worth a look"
+            lines={report.alternatives}
+            report={report}
+            onSource={onReceipt}
+            quiet
+          />
           {onFix ? (
-            <Button variant="primary" onClick={onFix}>
-              Fix this plan
-            </Button>
+            <div>
+              <Button variant="primary" onClick={onFix}>
+                Fix this plan
+              </Button>
+            </div>
           ) : null}
-        </div>
-      </header>
-      <ReportDocument report={report} onSource={onReceipt} />
-    </article>
+        </FollowUp>
+      ) : null}
+    </div>
+  );
+}
+
+// The top of an output's card: what it is, its name, and who made it when, with the actions to
+// the side. A rule below keeps the document from running into it.
+function OutputHeader({ output, children }: { output: Output; children: ReactNode }) {
+  return (
+    <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-b border-line pb-6">
+      <div className="flex min-w-0 flex-col items-start gap-2">
+        <KindTag kind={output.kind} label={output.kindLabel} />
+        <h3 className="font-display text-[clamp(21px,2.2vw,26px)] leading-[1.2] font-semibold tracking-[-0.025em] text-balance">
+          {output.label}
+        </h3>
+        <p className="text-[13px] text-muted">
+          {output.createdBy}, {formatDay(output.createdAt)}
+        </p>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">{children}</div>
+    </header>
   );
 }
 
@@ -565,7 +668,7 @@ function OutputCard({
         <span className="shrink-0 text-muted">Summary</span>
       </button>
       <Link
-        href={`/outputs/${output.id}`}
+        href={outputPath(output.id)}
         className="rounded-lg px-2 py-1.5 text-[13px] text-muted transition-colors hover:bg-surface2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
       >
         Full details
@@ -618,7 +721,7 @@ function OutputCard({
         </div>
         <div className="flex flex-wrap gap-2">
           <Link
-            href={`/outputs/${output.id}`}
+            href={outputPath(output.id)}
             className={buttonClassName('primary', 'small', 'icon')}
           >
             <Icon name="external" className="size-4" />
@@ -641,7 +744,7 @@ function OutputCard({
             </Button>
           ) : null}
           <Link
-            href={`/outputs/${output.id}?tab=evidence`}
+            href={outputPath(output.id, 'evidence')}
             className={buttonClassName('ghost', 'small')}
           >
             Evidence{' '}

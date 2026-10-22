@@ -1,11 +1,12 @@
 import { getProjectDetail, getThreadDetail } from '@/lib/api/projects-server';
 import { getViewer } from '@/lib/api/viewer';
-import { ProjectWorkspace } from '../../categories/[category]/projects/[id]/project-screen';
+import { chatPath } from '@/lib/routes';
+import { ProjectWorkspace } from '../../projects/[id]/project-screen';
 
-/** A thread's address opens its project's workspace with that chat selected. */
-export default async function ThreadPage({ params }: PageProps<'/threads/[id]'>) {
+/** A chat's address opens its project's workspace with that chat selected. */
+export default async function ChatPage({ params }: PageProps<'/chats/[id]'>) {
   const { id } = await params;
-  const returnTo = `/threads/${id}`;
+  const returnTo = chatPath(id);
   const [viewer, chat] = await Promise.all([getViewer(returnTo), getThreadDetail(id, returnTo)]);
   const detail = await getProjectDetail(chat.thread.projectId, returnTo);
   return <ProjectWorkspace key={id} detail={detail} chat={chat} viewer={viewer} />;
