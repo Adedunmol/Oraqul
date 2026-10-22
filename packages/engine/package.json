@@ -24,6 +24,7 @@
     "qloo:smoke": "tsx --env-file=../../.env scripts/qloo-smoke.ts",
     "qloo:film-probes": "tsx --env-file=../../.env scripts/qloo-film-probes.ts",
     "qloo:music-probes": "tsx --env-file=../../.env scripts/qloo-music-probes.ts",
+    "qloo:catalog-probes": "tsx --env-file=../../.env scripts/qloo-catalog-probes.ts",
     "qloo:games-probes": "tsx --env-file=../../.env scripts/qloo-games-probes.ts",
     "qloo:podcasts-probes": "tsx --env-file=../../.env scripts/qloo-podcasts-probes.ts",
     "qloo:books-probes": "tsx --env-file=../../.env scripts/qloo-books-probes.ts"
