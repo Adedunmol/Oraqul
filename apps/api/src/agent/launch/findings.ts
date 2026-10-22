@@ -103,6 +103,49 @@ export function wideningsOf(shape: TasteShape): { shape: TasteShape; dropped: st
   return steps.slice(0, MAX_WIDENINGS);
 }
 
+/** A way to ask a query again that Qloo answered with nothing, offered to the research check. */
+export interface MissAlternative {
+  key: string;
+  /** What the retry asks, for the finding and the trace: "without the genre tag". */
+  says: string;
+}
+
+/** A query that came back empty and has retries left. Only the ones code offers can be chosen. */
+export interface Miss {
+  /** The id the finding would have had. */
+  id: string;
+  /** The catalog query that came back empty. */
+  key: string;
+  label: string;
+  alternatives: MissAlternative[];
+}
+
+/**
+ * Other ways to ask a query that came back empty after widening: the same anchors with one
+ * limiting filter off. Widening drops the demographic filters; these drop the ones that shape the
+ * list itself (genre tag, country, popularity band). A version must keep one shaping parameter.
+ */
+export function alternativesOf(shape: TasteShape): (MissAlternative & { shape: TasteShape })[] {
+  if (shape.only?.length) return [];
+  // Stricter than widening: release years and a country alone leave a list of whatever is popular
+  // overall, which is not a retry worth offering.
+  const shaped = (s: TasteShape) => !!(s.tags?.length || s.city || s.ages?.length);
+  const options: (MissAlternative & { shape: TasteShape })[] = [];
+  const offer = (key: string, says: string, next: TasteShape) => {
+    if (shaped(next)) options.push({ key, says, shape: next });
+  };
+  // A place or brand list is shaped by its category tag (cinemas, drinks), not a genre: without it
+  // the list is of anything, so it is not offered.
+  const categoryTag = shape.type === 'urn:entity:place' || shape.type === 'urn:entity:brand';
+  if (shape.tags?.length && !categoryTag)
+    offer('no-tags', 'without the genre tag', { ...shape, tags: [] });
+  if (shape.country)
+    offer('no-country', 'without the release country', { ...shape, country: null });
+  if (shape.popularity)
+    offer('no-band', 'without the popularity band', { ...shape, popularity: null });
+  return options;
+}
+
 export interface GroundDeps {
   tools: ToolContext;
   emit(event: ThreadEvent): void;
@@ -131,6 +174,13 @@ export interface Grounded {
   gaps: { item: string; why: string }[];
   /** True when the call budget ran out before every query ran. */
   budgetOut: boolean;
+  /** Queries that came back empty and can be asked another way. */
+  misses: Miss[];
+  /**
+   * Asks a miss again in one of its offered ways. Findings and receipts come back for the caller
+   * to merge; nothing is added to this run's own lists. Costs one Qloo call.
+   */
+  retry(missId: string, altKey: string): Promise<{ findings: Finding[]; receipts: Receipt[] }>;
 }
 
 type Add = (
@@ -225,30 +275,35 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
   const gaps: Grounded['gaps'] = [];
   let budgetOut = false;
 
-  const add: Add = (finding, call) => {
-    const full: Finding = {
-      ...finding,
-      numbers: { ...numbersIn(finding.text), ...(finding.numbers ?? {}) },
-      context: {
-        city: null,
-        ages: [],
-        tags: [],
-        country: null,
-        yearFrom: null,
-        audience: null,
-        ...finding.context,
-      },
-      callIds: [call.callId],
+  const makeAdd =
+    (into: Finding[], intoReceipts: Receipt[]): Add =>
+    (finding, call) => {
+      const full: Finding = {
+        ...finding,
+        numbers: { ...numbersIn(finding.text), ...(finding.numbers ?? {}) },
+        context: {
+          city: null,
+          ages: [],
+          tags: [],
+          country: null,
+          yearFrom: null,
+          audience: null,
+          ...finding.context,
+        },
+        callIds: [call.callId],
+      };
+      into.push(full);
+      intoReceipts.push({
+        ...call,
+        lineId: full.id,
+        rule: `${full.text} ${call.rule}`,
+        confidence: full.confidence,
+      });
+      deps.emit({ type: 'finding', finding: full });
     };
-    findings.push(full);
-    receipts.push({
-      ...call,
-      lineId: full.id,
-      rule: `${full.text} ${call.rule}`,
-      confidence: full.confidence,
-    });
-    deps.emit({ type: 'finding', finding: full });
-  };
+  const add = makeAdd(findings, receipts);
+  const misses: Miss[] = [];
+  const retries = new Map<string, (altKey: string, into: Add) => Promise<void>>();
 
   const want = (key: string) => plan.queries.includes(key);
 
@@ -334,6 +389,44 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
         item: label,
         why: 'Qloo returned nothing for this audience with this context.',
       });
+      // The retries only change what shapes the list, so they are offered only where one exists.
+      const alternatives = alternativesOf(start);
+      if (alternatives.length > 0) {
+        misses.push({
+          id,
+          key,
+          label,
+          alternatives: alternatives.map(({ key: altKey, says }) => ({ key: altKey, says })),
+        });
+        retries.set(id, async (altKey, into) => {
+          const alt = alternatives.find((a) => a.key === altKey);
+          if (!alt) return;
+          const again = await ask(alt.shape);
+          if (!again?.call || again.out.candidates.length === 0) return;
+          const names = list(again.out.candidates.slice(0, NAMED).map((c) => c.name));
+          into(
+            {
+              id,
+              query: key,
+              text: `${label}: nothing came back as asked, so this asks ${alt.says}: ${names}.`,
+              entities: again.out.candidates.map((c) =>
+                entity(c.name, c.affinity, c.detail, c.entityId),
+              ),
+              verdict: null,
+              // A retried read is a lead, never above medium.
+              confidence:
+                rank[again.out.confidence] > rank.medium ? 'medium' : again.out.confidence,
+              why: `${again.out.why} Retried: Qloo had nothing as asked, so this asks ${alt.says}.`,
+              context: {
+                ...context,
+                ...(alt.shape.tags?.length ? {} : { tags: [] }),
+                ...(alt.shape.country ? {} : { country: null }),
+              },
+            },
+            again.call,
+          );
+        });
+      }
       return;
     }
     const names = list(out.candidates.slice(0, NAMED).map((c) => c.name));
@@ -409,7 +502,14 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
     return i === -1 ? spec.queryOrder.length : i;
   };
   findings.sort((a, b) => at(a.query) - at(b.query) || a.id.localeCompare(b.id));
-  return { findings, receipts, brief, gaps, budgetOut };
+  const retry: Grounded['retry'] = async (missId, altKey) => {
+    const run = retries.get(missId);
+    const found: Finding[] = [];
+    const made: Receipt[] = [];
+    if (run) await run(altKey, makeAdd(found, made));
+    return { findings: found, receipts: made };
+  };
+  return { findings, receipts, brief, gaps, budgetOut, misses, retry };
 }
 
 function coreFindings<R extends LaunchRead>(
@@ -686,7 +786,7 @@ export function entity(
 }
 
 // Every number written in a finding's text, so a line may quote any of them.
-function numbersIn(text: string): Record<string, number> {
+export function numbersIn(text: string): Record<string, number> {
   return Object.fromEntries(
     [...text.matchAll(/-?\d+(?:\.\d+)?/g)].map((m, i) => [`n${i}`, Number(m[0])]),
   );

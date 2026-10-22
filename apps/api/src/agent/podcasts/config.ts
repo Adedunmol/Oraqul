@@ -262,6 +262,16 @@ export const podcastsLaunch: LaunchConfig<PodcastsRead, PodcastsQueryPlan> = {
     artistPitch: 'a trailer swap or a guest slot',
     compsVerb: 'hears',
   },
+  // Qloo has no data on guests as people, but a guest who is also an artist can be measured. One
+  // that Qloo does not know as an artist comes back empty and is not claimed.
+  consults: (read) =>
+    read.guests.slice(0, 2).map((name) => ({
+      id: `consult-guest-${slug(name)}`,
+      category: 'music',
+      types: ['urn:entity:artist'],
+      name,
+      why: `${name} is a guest, so if they are an artist, who listens to them and where shows whether their audience matches the show's.`,
+    })),
   minimum: {
     id: 'podcasts.minimum',
     example:

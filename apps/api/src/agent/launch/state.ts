@@ -2,8 +2,9 @@ import { questionSchema } from '@oraqul/schema';
 import { z } from 'zod';
 
 /**
- * What a paused run needs to resume. A build pauses only when the brief has no description or no
- * market (PRD C1): one question, then it plans with whatever it has.
+ * What a paused run needs to resume. A build pauses before it plans only when the brief has no
+ * description or no market (PRD C1): one question, then it plans with whatever it has. After a
+ * plan is saved flagged, it may ask once more (`settle`) for the one thing only the person can say.
  */
 export const buildStateSchema = z.object({
   job: z.literal('build'),
@@ -12,6 +13,8 @@ export const buildStateSchema = z.object({
   /** What the person typed to the question, added to the brief before it is read again. */
   extra: z.string().default(''),
   asked: z.boolean().default(true),
+  /** Set when the plan is already saved and the question is the one that would settle it. */
+  settle: z.boolean().default(false),
   pending: questionSchema.nullable(),
 });
 

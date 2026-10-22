@@ -22,6 +22,7 @@ import {
   type LaunchSectionKey,
   type Move,
   type OverallConfidence,
+  type PlanProcess,
   type PlanReview,
   type PlanSource,
   type Question,
@@ -44,6 +45,7 @@ import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
 import { capital } from './brief.js';
 import { type CheckContext, checkSections } from './check.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
+import { type ConsultOffer, runConsult } from './consult.js';
 import { ensureDecisions } from './decisions.js';
 import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
@@ -54,7 +56,9 @@ import {
   applyAssessment,
   applyRound2,
   MAX_EXTRA,
+  MAX_RESEARCH_ROUNDS,
   MIN_CALLS_LEFT,
+  openChecks,
   ScriptedResearchPlanner,
 } from './research-loop.js';
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
@@ -191,12 +195,19 @@ export interface Asked<P extends QueryPlanCore = QueryPlanCore> {
   sources: PlanSource[];
   /** The request's checks with what the research found for each, when the run read one. */
   understanding: Understanding | null;
+  /** What each research round was missing and did, for the plan's record. */
+  rounds: ResearchRound[];
+  /** Consults any round has asked, so a later round only offers the rest. */
+  consulted: string[];
 }
 
+/** What one research round did, as saved on the plan. */
+type ResearchRound = PlanProcess['research'][number];
+
 /**
- * A later round of research: the catalog queries asked for, run on the brief the first round
- * built and merged into its findings. Each check an extra query was for is marked from what that
- * query found.
+ * A later round of research: the catalog queries asked for, empty queries asked another way, and
+ * questions put to another side, all run on the brief the first round built and merged into its
+ * findings. Each check a pick was for is marked from what that pick found.
  */
 async function runExtra<R extends LaunchRead, P extends QueryPlanCore>(
   deps: LaunchDeps<R, P>,
@@ -209,34 +220,99 @@ async function runExtra<R extends LaunchRead, P extends QueryPlanCore>(
     grounded: Grounded;
     understanding: Understanding;
     extra: { query: string; check: string; why: string }[];
+    retry?: { miss: string; alt: string; check: string; why: string }[];
+    consult?: { offer: string; check: string; why: string }[];
+    offers?: ConsultOffer[];
   },
-): Promise<{ grounded: Grounded; understanding: Understanding }> {
-  const { grounded, extra } = input;
-  const labels = extra.map(
-    (e) => deps.config.catalog.find((q) => q.key === e.query)?.label ?? e.query,
-  );
-  ctx.trace(`Looking wider: ${list(labels)}`);
-  const more = await deps.config.ground(
-    { tools: deps.tools, emit: deps.emit, keep: ctx.keep },
-    {
-      read: input.read,
-      anchors: input.comps.resolved,
-      dropped: input.comps.dropped,
-      plan: { ...input.queryPlan, queries: extra.map((e) => e.query) },
-      year: new Date().getFullYear(),
-      more: { brief: grounded.brief },
-    },
-  );
-  const merged: Grounded = {
-    ...grounded,
-    findings: [...grounded.findings, ...more.findings],
-    receipts: [...grounded.receipts, ...more.receipts],
-    gaps: [...grounded.gaps, ...more.gaps],
-    budgetOut: grounded.budgetOut || more.budgetOut,
-  };
+): Promise<{
+  grounded: Grounded;
+  understanding: Understanding;
+  round: Omit<ResearchRound, 'round' | 'open'>;
+}> {
+  const { grounded } = input;
+  const round: Omit<ResearchRound, 'round' | 'open'> = { asked: [], retried: [], consulted: [] };
+  let merged: Grounded = grounded;
+  const credited: { query: string; check: string }[] = [];
+  let made: Finding[] = [];
+
+  if (input.extra.length) {
+    const labels = input.extra.map(
+      (e) => deps.config.catalog.find((q) => q.key === e.query)?.label ?? e.query,
+    );
+    ctx.trace(`Looking wider: ${list(labels)}`);
+    const more = await deps.config.ground(
+      { tools: deps.tools, emit: deps.emit, keep: ctx.keep },
+      {
+        read: input.read,
+        anchors: input.comps.resolved,
+        dropped: input.comps.dropped,
+        plan: { ...input.queryPlan, queries: input.extra.map((e) => e.query) },
+        year: new Date().getFullYear(),
+        more: { brief: grounded.brief },
+      },
+    );
+    const owns = new Set(more.misses.map((m) => m.id));
+    merged = {
+      ...grounded,
+      findings: [...grounded.findings, ...more.findings],
+      receipts: [...grounded.receipts, ...more.receipts],
+      gaps: [...grounded.gaps, ...more.gaps],
+      budgetOut: grounded.budgetOut || more.budgetOut,
+      misses: [...grounded.misses, ...more.misses],
+      retry: (id, alt) => (owns.has(id) ? more.retry(id, alt) : grounded.retry(id, alt)),
+    };
+    made = more.findings;
+    credited.push(...input.extra.map((e) => ({ query: e.query, check: e.check })));
+    round.asked = input.extra.map((e, i) => ({
+      label: labels[i] ?? e.query,
+      why: e.why,
+      found: more.findings.some((f) => f.query === e.query),
+    }));
+  }
+
+  for (const pick of input.retry ?? []) {
+    const miss = merged.misses.find((m) => m.id === pick.miss);
+    const alt = miss?.alternatives.find((a) => a.key === pick.alt);
+    if (!miss || !alt) continue;
+    ctx.trace(`Qloo had nothing for ${miss.label}, so asking again ${alt.says}`);
+    const again = await merged.retry(miss.id, alt.key);
+    const found = again.findings.length > 0;
+    round.retried.push({ label: miss.label, says: alt.says, found });
+    if (!found) continue;
+    made = [...made, ...again.findings];
+    credited.push({ query: miss.key, check: pick.check });
+    merged = {
+      ...merged,
+      findings: [...merged.findings, ...again.findings],
+      receipts: [...merged.receipts, ...again.receipts],
+      gaps: merged.gaps.filter((g) => g.item !== miss.label),
+      misses: merged.misses.filter((m) => m.id !== miss.id),
+    };
+  }
+
+  for (const pick of input.consult ?? []) {
+    const offer = input.offers?.find((o) => o.id === pick.offer);
+    if (!offer) continue;
+    ctx.trace(`Asking the ${offer.category} side about ${offer.name}`);
+    const asked = await runConsult(deps.tools, merged.brief, offer, (finding) =>
+      deps.emit({ type: 'finding', finding }),
+    );
+    ctx.keep(asked.receipts);
+    round.consulted.push({ category: offer.category, name: offer.name, found: asked.found });
+    if (!asked.found) continue;
+    made = [...made, ...asked.findings];
+    credited.push({ query: 'consult', check: pick.check });
+    merged = {
+      ...merged,
+      findings: [...merged.findings, ...asked.findings],
+      receipts: [...merged.receipts, ...asked.receipts.filter((r) => r.lineId)],
+    };
+  }
+
   return {
     grounded: merged,
-    understanding: applyRound2(input.understanding, more.findings, extra, merged.findings),
+    understanding: applyRound2(input.understanding, made, credited, merged.findings),
+    round,
   };
 }
 
@@ -283,10 +359,23 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
 
   let understanding = input.understanding ?? null;
   const extraKeys: string[] = [];
-  if (understanding) {
-    ctx.trace('Checking what the research covers');
-    const ran = new Set(queryPlan.queries);
+  const consulted: string[] = [];
+  const rounds: ResearchRound[] = [];
+  const offers = deps.config.consults?.(read) ?? [];
+  // The research check and what it sends out take turns until every check that needs evidence is
+  // covered, nothing is left to try, or the budget is low. Each turn is in the trace.
+  for (let round = 1; understanding && round <= MAX_RESEARCH_ROUNDS; round++) {
+    const open = openChecks(understanding);
+    if (round > 1 && open.length === 0) break;
+    ctx.trace(
+      round === 1
+        ? 'Checking what the research covers'
+        : `Research check, round ${round}: ${open.length} ${open.length === 1 ? 'question is' : 'questions are'} still open`,
+    );
+    const ran = new Set([...queryPlan.queries, ...extraKeys]);
     const unrun = deps.config.catalog.filter((q) => !ran.has(q.key) && q.key !== 'areas');
+    const consults = offers.filter((o) => !consulted.includes(o.id));
+    if (unrun.length === 0 && grounded.misses.length === 0 && consults.length === 0) break;
     const callsLeft = deps.tools.qloo.callsLeft;
     const judged = await (deps.researchPlanner ?? new ScriptedResearchPlanner()).assess({
       category: deps.config.category,
@@ -295,6 +384,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
       findings: grounded.findings,
       gaps: grounded.gaps,
       unrun,
+      misses: grounded.misses,
+      consults,
       callsLeft,
     });
     ctx.tokens += judged.tokens;
@@ -304,20 +395,26 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
       judged.assessment,
       unrun,
       callsLeft,
+      { misses: grounded.misses, consults },
     );
     understanding = applied.understanding;
-    if (applied.extra.length) {
-      extraKeys.push(...applied.extra.map((e) => e.query));
-      ({ grounded, understanding } = await runExtra(deps, ctx, {
-        title,
-        read,
-        comps,
-        queryPlan,
-        grounded,
-        understanding,
-        extra: applied.extra,
-      }));
-    }
+    if (applied.extra.length + applied.retry.length + applied.consult.length === 0) break;
+    extraKeys.push(...applied.extra.map((e) => e.query));
+    consulted.push(...applied.consult.map((c) => c.offer));
+    const done = await runExtra(deps, ctx, {
+      title,
+      read,
+      comps,
+      queryPlan,
+      grounded,
+      understanding,
+      extra: applied.extra,
+      retry: applied.retry,
+      consult: applied.consult,
+      offers,
+    });
+    ({ grounded, understanding } = done);
+    rounds.push({ round, open: open.map((c) => c.text), ...done.round });
   }
 
   let sources: PlanSource[] = [];
@@ -333,7 +430,7 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.tokens += found.tokens;
   }
   const ran = [...new Set([...queryPlan.queries, ...extraKeys])];
-  return { modules, queryPlan, grounded, ran, sources, understanding };
+  return { modules, queryPlan, grounded, ran, sources, understanding, rounds, consulted };
 }
 
 /** The build (spec §4.1, §6.1): findings first, then the plan, every line checked. */
@@ -367,7 +464,15 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     knownDropped = changed.dropped;
     for (const a of known) deps.tools.entities.set(a.entityId, a);
   } else {
-    if (resume) {
+    if (resume?.state.settle) {
+      const answer = replyText(resume.state, resume.reply);
+      if (resume.reply.kind !== 'typed' && resume.reply.kind !== 'text') {
+        deps.emit({ type: 'message', body: 'Left as it is.', claims: [] });
+        return ctx.stop('finished');
+      }
+      extra = `${resume.state.extra}\n\n${answer}`.trim();
+      kind = resume.state.kind;
+    } else if (resume) {
       extra = `${resume.state.extra}\n\n${replyText(resume.state, resume.reply)}`.trim();
       kind = resume.state.kind;
     }
@@ -401,7 +506,14 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         hint: deps.config.minimum.example,
       };
       deps.emit({ type: 'question', agent: deps.config.category, ...question });
-      return ctx.stop('waiting', { job: 'build', kind, extra, asked: true, pending: question });
+      return ctx.stop('waiting', {
+        job: 'build',
+        kind,
+        extra,
+        asked: true,
+        settle: false,
+        pending: question,
+      });
     }
   }
 
@@ -481,8 +593,12 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   let grounded = asked.grounded;
   let understanding = asked.understanding;
   let ran = asked.ran;
+  const researchRounds = [...asked.rounds];
+  const everDropped: PlanProcess['dropped'] = [];
+  let drafts = 0;
 
   const draft = async (feedback: string[]) => {
+    drafts += 1;
     const writeInput: WriteInput<R> = {
       title,
       request: [text, extra].filter(Boolean).join('\n\n'),
@@ -548,11 +664,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       },
       deps.config.decisions,
     );
-    return {
-      sections,
-      dropped: [...checked.dropped, ...filled.dropped],
-      by: written.by,
-    };
+    const dropped = [...checked.dropped, ...filled.dropped];
+    everDropped.push(...dropped.map((d) => ({ ...d, draft: drafts })));
+    return { sections, dropped, by: written.by };
   };
 
   const reviewer = deps.reviewer ?? new ScriptedReviewer();
@@ -561,6 +675,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   let next: string[] = [];
   let feedback: string[] = [];
   let lastBlocking = new Set<string>();
+  let ask: string | null = null;
   let current = await (async () => {
     ctx.trace('Writing the plan');
     return draft(feedback);
@@ -589,11 +704,15 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       unrun,
       codeSections,
       round,
+      earlier: rounds.flatMap((r) =>
+        r.issues.filter((i) => i.blocking).map((i) => `${i.check}: ${i.text}`),
+      ),
     });
     ctx.tokens += out.tokens;
     if (!out.review) break;
     const verdict = judge(out.review, understanding, unrun, codeSections);
     next = verdict.next;
+    ask = verdict.ask;
     if (verdict.passed) {
       rounds.push({ round, issues: verdict.issues, action: 'approved' });
       status = 'passed';
@@ -611,7 +730,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     let action: 'rewrote' | 'researched' = 'rewrote';
     const wider = verdict.research.slice(0, MAX_EXTRA);
     if (wider.length && deps.tools.qloo.callsLeft >= MIN_CALLS_LEFT) {
-      ({ grounded, understanding } = await runExtra(deps, ctx, {
+      const done = await runExtra(deps, ctx, {
         title,
         read,
         comps,
@@ -619,7 +738,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         grounded,
         understanding,
         extra: wider,
-      }));
+      });
+      ({ grounded, understanding } = done);
+      researchRounds.push({
+        round: researchRounds.length + 1,
+        open: openChecks(understanding).map((c) => c.text),
+        ...done.round,
+      });
       ran = [...ran, ...wider.map((w) => w.query)];
       action = 'researched';
     }
@@ -643,6 +768,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     writer: current.by,
     understanding,
     review: understanding ? reviewOf(status, rounds, next) : null,
+    process: { research: researchRounds, drafts, dropped: everDropped },
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];
@@ -670,9 +796,24 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     ...lineReceipts,
     ...ctx.receipts.filter((r) => !cited.has(r.callId)),
   );
+  // The plan is saved either way. When the red team still has a blocking issue that only the
+  // person can settle, one question follows the delivery; a plan is never held back for it.
+  const settle: Question | null =
+    kind !== 'fix' && status === 'flagged' && ask
+      ? {
+          id: `${deps.config.category}.settle`,
+          card: 'single',
+          prompt: `One thing would settle this plan: ${ask}`,
+          options: [{ id: 'leave', label: 'Leave it as it is' }],
+          hint: 'Or type your answer and the plan is made again with it.',
+        }
+      : null;
+  if (settle) deps.emit({ type: 'question', agent: deps.config.category, ...settle });
   return ctx.stop(
-    'finished',
-    null,
+    settle ? 'waiting' : 'finished',
+    settle && kind !== 'fix'
+      ? { job: 'build', kind, extra, asked: true, settle: true, pending: settle }
+      : null,
     {
       kind,
       title,

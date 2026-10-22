@@ -151,6 +151,8 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
             { query: 'podcasts', check: 'c2', why: 'press angles need the shows they hear' },
             { query: 'not-in-the-catalog', check: 'c2', why: 'made up' },
           ],
+          retry: [],
+          consult: [],
         },
       }),
     };
@@ -179,6 +181,7 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
       blocking: true,
       query: null,
       section: null,
+      ask: null,
       ...over,
     });
     const reviewerOf = (reviews: RawReview[]) => {
@@ -238,6 +241,69 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
       const plan = launchPlanSchema.parse(run.output?.plan);
       expect(plan.findings.some((f) => f.query === 'podcasts')).toBe(true);
       expect(plan.review?.rounds.map((r) => r.action)).toEqual(['researched', 'approved']);
+    });
+
+    it('records how the plan was made: the drafts and every line the check removed', async () => {
+      const { handoff, deps } = setup(BRIEF);
+      const { reviewer } = reviewerOf([
+        { issues: [issue()], next: [] },
+        { issues: [], next: [] },
+      ]);
+      const run = await runFilmBuild(handoff, { ...deps(), reviewer });
+      const plan = launchPlanSchema.parse(run.output?.plan);
+      expect(plan.process?.drafts).toBe(2);
+      expect(plan.process?.dropped.every((d) => d.draft === 1 || d.draft === 2)).toBe(true);
+    });
+
+    describe('when only the person can settle it', () => {
+      const asking = [{ issues: [issue({ ask: 'Which market do you open in first?' })], next: [] }];
+
+      it('saves the plan, then asks the one question', async () => {
+        const { events, handoff, deps } = setup(BRIEF);
+        const { reviewer } = reviewerOf(asking);
+        const run = await runFilmBuild(handoff, { ...deps(), reviewer });
+        const state = waiting(run);
+        expect(state.settle).toBe(true);
+        expect(run.output?.plan?.review?.status).toBe('flagged');
+        const question = events.findLast((e) => e.type === 'question');
+        expect(question?.type === 'question' && question.prompt).toContain(
+          'Which market do you open in first?',
+        );
+        expect(events.findLast((e) => e.type === 'question')).toBeDefined();
+      });
+
+      it('leaves the plan as it is, with no new work, when told to', async () => {
+        const { handoff, deps } = setup(BRIEF);
+        const { reviewer } = reviewerOf(asking);
+        const first = await runFilmBuild(handoff, { ...deps(), reviewer });
+        const state = waiting(first);
+        const again = setup(BRIEF);
+        const tools = again.deps().tools;
+        const run = await runFilmBuild(
+          handoff,
+          { ...again.deps(), tools, reviewer },
+          { state, reply: { kind: 'options', questionId: 'film.settle', optionIds: ['leave'] } },
+        );
+        expect(run.reason).toBe('finished');
+        expect(run.output).toBeNull();
+        expect(tools.qloo.callsUsed).toBe(0);
+      });
+
+      it('makes the plan again with the answer when the person types one', async () => {
+        const { handoff, deps } = setup(BRIEF);
+        const first = await runFilmBuild(handoff, {
+          ...deps(),
+          reviewer: reviewerOf(asking).reviewer,
+        });
+        const state = waiting(first);
+        const run = await runFilmBuild(
+          handoff,
+          { ...deps(), reviewer: reviewerOf([{ issues: [], next: [] }]).reviewer },
+          { state, reply: { kind: 'typed', text: 'Lagos first, in March' } },
+        );
+        expect(run.reason).toBe('finished');
+        expect(run.output?.plan).not.toBeNull();
+      });
     });
 
     it('saves the draft flagged, with what would help, when the same issue comes back', async () => {

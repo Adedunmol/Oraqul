@@ -1,5 +1,6 @@
 import { filmPlan } from '@oraqul/packs';
 import type { CompUsed, LaunchLine, LaunchSection } from '@oraqul/schema';
+import { slug } from '../launch/brief.js';
 import type { LaunchConfig } from '../launch/config.js';
 import { filmBeliefs } from './audit-verdicts.js';
 import { FILM_RULES } from './check.js';
@@ -118,6 +119,16 @@ export const filmLaunch: LaunchConfig<FilmRead, QueryPlan> = {
       'For example: “A Nigerian crime thriller for 25 to 34, opening in Lagos and London, with Nike as a partner.”',
     artistPitch: 'the soundtrack or a launch single',
   },
+  // The soundtrack artists the team named are asked of the Music side: who listens to them, and
+  // where, set against this film's audience.
+  consults: (read) =>
+    read.soundtrack.slice(0, 2).map((name) => ({
+      id: `consult-music-${slug(name)}`,
+      category: 'music',
+      types: ['urn:entity:artist'],
+      name,
+      why: `${name} is on the soundtrack, so who listens to them and where shows whether the music reaches the film's audience.`,
+    })),
   minimum: {
     id: 'film.minimum',
     example: 'For example: “A Nigerian crime thriller, opening in Lagos and London.”',
