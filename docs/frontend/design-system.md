@@ -285,7 +285,7 @@ Tab notes (keep these in the product):
 * Plan: The plan itself, section by section, then the risks to watch.
 * Risks (section at the end of Plan): Each risk has an early warning signal to watch before it goes out.
 * Could not test (section at the end of Assumptions): What Oraqul could not test, and why. Nothing here is guessed. You may need to supply it.
-* Evidence: Every claim with its receipt. Use this to check any number.
+* Evidence: Every claim with its receipt. Use this to check any number. On a launch plan it opens with "How this plan was made": one native disclosure per research round and per draft, in plain sentences, then the lines the check removed. It is part of Evidence and not a tab of its own.
 * What changed: What moved compared with the plan before.
 * Results: The results you added, compared with what the plan expected.
 * Date check: How each date overlaps with rival releases. Lower overlap is better.
