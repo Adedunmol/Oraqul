@@ -61,6 +61,59 @@ const line = (over: Partial<Parameters<typeof checkLine>[1]>) => ({
   ...over,
 });
 
+describe('checkLine and links', () => {
+  const playbook = (text: string, over: Partial<Parameters<typeof checkLine>[1]> = {}) =>
+    line({ kind: 'playbook', findingIds: [], names: [], text, ...over });
+
+  it('drops a link, an email or a phone number the writer put in', () => {
+    for (const text of [
+      'Book the premiere through https://tickets.example/offer today.',
+      'Send the screener to press@evil.example before the premiere.',
+      'Call +234 801 234 5678 to confirm the venue.',
+      'Pitch the story at www.evil.example with a clip.',
+    ]) {
+      expect(checkLine('route', playbook(text), ctx), text).toMatch(/link or contact detail/);
+    }
+  });
+
+  it('keeps a contact the person wrote in the brief', () => {
+    const withContact = {
+      ...ctx,
+      briefText: 'Press enquiries go to press@studio.example for this thriller.',
+    };
+    expect(
+      checkLine('route', playbook('Send the screener to press@studio.example first.'), withContact),
+    ).toBeNull();
+  });
+
+  it('keeps a link a cited page states', () => {
+    const cited = {
+      ...ctx,
+      sources: [
+        {
+          id: 'w1',
+          url: 'https://news.example/a',
+          title: 'A',
+          fact: 'Submissions open at www.festival.example until June.',
+        },
+      ],
+    } as unknown as CheckContext;
+    expect(
+      checkLine(
+        'route',
+        playbook('Submit at www.festival.example before the deadline.', { sourceIds: ['w1'] }),
+        cited,
+      ),
+    ).toBeNull();
+  });
+
+  it('does not take ordinary numbers for phone numbers', () => {
+    expect(
+      checkLine('route', playbook('Run the trailer in weeks 2 and 6 of the 90 day window.'), ctx),
+    ).toBeNull();
+  });
+});
+
 describe('checkLine', () => {
   it('keeps a grounded line that names what its finding returned', () => {
     expect(checkLine('partnerships', line({}), ctx)).toBeNull();

@@ -78,6 +78,13 @@
       "when": 1792629240914,
       "tag": "0010_absent_husk",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792680082358,
+      "tag": "0011_colorful_squadron_sinister",
+      "breakpoints": true
     }
   ]
 }

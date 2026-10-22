@@ -45,6 +45,11 @@ const has = (haystack: string, needle: string) => {
   return n.length > 0 && ` ${normalise(haystack)} `.includes(` ${n} `);
 };
 
+// A link, an email address or a phone number. Text from an upload or a web page can ask a model to
+// put one in a plan, and nothing else in this check would stop it, so a line may carry one only if
+// the person's own words or a page the line cites already contain it.
+const CONTACT = /\bhttps?:\/\/\S+|\bwww\.\S+|[\w.+-]+@[\w-]+\.[\w.-]+|\+\d[\d\s().-]{7,}\d/gi;
+
 // Words a marketing team would not use, and talk about the measurement instead of the move.
 const JARGON =
   /\b(lift|index(?:es)?|indexing|affinity|cells|qloo|findings?|could not be (?:tested|ranked|measured)|not enough data|limited (?:market )?(?:testing )?data|low confidence)\b/i;
@@ -171,6 +176,13 @@ export function checkLine(
   const sourced = webCited.filter((src): src is PlanSource => src !== undefined);
   // A figure is fine when a page it cites states it. The same goes for a date or a name.
   const sourceText = sourced.map((src) => src.fact).join(' ');
+
+  const contact = line.text
+    .match(CONTACT)
+    ?.find((c) => !ctx.briefText.includes(c) && !sourceText.includes(c));
+  if (contact) {
+    return `It carries ${contact}, a link or contact detail that neither the brief nor a page it cites contains.`;
+  }
 
   if (line.kind === 'playbook') {
     // Launch practice may name anything the model knows: distributors, regulators, rival
