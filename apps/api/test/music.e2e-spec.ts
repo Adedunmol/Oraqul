@@ -114,7 +114,15 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
       (await request(http()).get(`/outputs/${outputItem.outputId}`).set(viewer).expect(200)).body,
     );
     expect(output.label).toBe('v1 · Night Songs');
-    expect(output.tabs.map((t) => t.key)).toEqual(['plan', 'audience', 'assumptions', 'evidence']);
+    expect(output.tabs.map((t) => t.key)).toEqual([
+      'plan',
+      'route',
+      'supportacts',
+      'audience',
+      'assumptions',
+      'contrast',
+      'evidence',
+    ]);
     if (!output.plan) throw new Error('Expected a launch plan');
     expect(output.plan.comps.map((c) => c.name).sort()).toEqual(['Ada Lux', 'Kola Wave']);
     const keys = output.plan.sections.map((s) => s.key);
@@ -221,8 +229,11 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
     expect(plan.tabs.map((t) => t.key)).toEqual([
       'plan',
       'fixes',
+      'route',
+      'supportacts',
       'audience',
       'assumptions',
+      'contrast',
       'evidence',
     ]);
     expect(plan.receipts.every((r) => r.source === 'demo')).toBe(true);
