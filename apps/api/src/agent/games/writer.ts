@@ -71,7 +71,6 @@ Sections (write only the ones listed in the request, in that order):
 - publicity: gaming podcasts, press and the press kit, with the angle for each.
 - partnerships: brand partners, each tied to the region of its finding, and what the partnership is.
 - community: Discord, campuses and events, and what to run with them.
-- measure: what to track, by name, no targets.
 - risks: what could go wrong and what to do. A risk about taste or audience is grounded.
 Launch beats, the budget split and what would sharpen the plan are written by code. Do not write them.`;
 

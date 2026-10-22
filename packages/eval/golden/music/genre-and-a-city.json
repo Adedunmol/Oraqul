@@ -1,7 +1,11 @@
 {
   "title": "Slow Burn",
   "brief": "Launch plan for \"Slow Burn\", an afrobeats single, playing Lagos.",
-  "replies": [{ "optionIds": ["skip"] }],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    }
+  ],
   "expect": {
     "headline": "Start in Lagos: that is where the artist's audience is strongest among your cities.",
     "assumptions": {
@@ -47,7 +51,7 @@
       "publicity": "1/1",
       "community": "1/1",
       "sync": "1/0",
-      "timeline": "0/5",
+      "timeline": "0/7",
       "budget": "0/7",
       "measure": "0/4",
       "risks": "1/1",
@@ -55,8 +59,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 25,
-      "backed": 44,
+      "lines": 27,
+      "backed": 41,
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {

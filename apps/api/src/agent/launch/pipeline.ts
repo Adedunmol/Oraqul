@@ -10,7 +10,7 @@ import {
   tools,
   toReceipt,
 } from '@oraqul/engine';
-import { BAND_LABEL, FLAGSHIPS } from '@oraqul/packs';
+import { BAND_LABEL, FLAGSHIPS, rules } from '@oraqul/packs';
 import {
   type Claim,
   type CompUsed,
@@ -65,6 +65,7 @@ import {
   ScriptedResearchPlanner,
 } from './research-loop.js';
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
+import { measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
 import { list } from './text.js';
 import { CODE_SECTIONS, type WriteInput } from './writer.js';
@@ -629,6 +630,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   const { modules, queryPlan, sources } = asked;
   const text = briefText(handoff, input.chars, kind !== 'fix');
   const order = sectionOrder(modules);
+  const signal = signalOf(deps.config.category, [text, extra].join('\n'));
   const today = new Date().toISOString().slice(0, 10);
   // A section code writes whole, such as Games' launch beats, is not the writer's to write.
   const byCode = deps.config.codeSections.timeline && modules.includes('timeline');
@@ -650,7 +652,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       request: [text, extra, band ? bandLine(band) : ''].filter(Boolean).join('\n\n'),
       read,
       comps: comps.used,
-      sections: byCode ? order.filter((key) => key !== 'timeline') : order,
+      sections: order.filter((key) => !(key === 'measure' || (byCode && key === 'timeline'))),
       findings: grounded.findings,
       sources,
       today,
@@ -691,6 +693,15 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       : { sections: [], dropped: [] };
     const codeSections = [
       ...(modules.includes('budget') ? [deps.config.codeSections.budget(read)] : []),
+      ...(modules.includes('measure')
+        ? [
+            measureSection(
+              deps.config.rules.titles.measure,
+              signal,
+              deps.config.measures?.(read) ?? [],
+            ),
+          ]
+        : []),
       ...(byCode && deps.config.codeSections.timeline
         ? [deps.config.codeSections.timeline(read, today)]
         : []),
@@ -818,9 +829,12 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     understanding: understanding && band ? withBand(understanding, band) : understanding,
     review: understanding ? reviewOf(status, rounds, next) : null,
     process: { research: researchRounds, drafts, dropped: everDropped },
-    rules: null,
+    rules: {
+      category: deps.config.category,
+      version: rules[deps.config.category].version,
+    },
     band,
-    signal: null,
+    signal,
     territories: [],
     calls: [],
     partners: [],

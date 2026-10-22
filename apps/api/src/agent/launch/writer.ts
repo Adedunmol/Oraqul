@@ -104,8 +104,11 @@ export interface WriterKit<R extends LaunchRead = LaunchRead> {
   templateSection(key: LaunchSectionKey, input: WriteInput<R>): WrittenLine[];
 }
 
-/** Sections code writes itself: Gaps from what was not tested, Budget split from the convention. */
-export const CODE_SECTIONS: LaunchSectionKey[] = ['gaps', 'budget'];
+/**
+ * Sections code writes itself: Gaps from what was not tested, Budget split from the convention,
+ * and What to measure from the category's signal rule and the team's own target.
+ */
+export const CODE_SECTIONS: LaunchSectionKey[] = ['gaps', 'budget', 'measure'];
 
 export function findingsBlock(findings: Finding[]): string {
   return findings

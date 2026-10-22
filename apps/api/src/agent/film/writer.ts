@@ -73,9 +73,7 @@ Sections (write only the ones listed in the request, in that order):
 - publicity: podcasts, shows and press with the angle for each, and the creator plan: which kinds of creators and clip formats, in which cities, and how they get the film.
 - community: churches, campuses, associations and events, and what to run with them.
 - route: the release route and window, what to hold back for after the cinema run, and the case for opening the cities within days of each other.
-- timeline: the launch in weeks before release (T-12, T-8, T-4, T-1, opening, after), each with its concrete tasks. Real dates only if the brief gives a date.
 - cadence: binge, weekly or hybrid, for a series only.
-- measure: what to track, by name, no targets.
 - risks: what could go wrong and what to do. A risk about taste or audience is grounded.`;
 
 export const ANSWER_WRITER_SYSTEM = `You answer a question about a film or series launch plan for Oraqul, from findings measured in Qloo taste data and your launch knowledge. Two to five lines. Answer the question first.

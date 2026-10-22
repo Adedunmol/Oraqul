@@ -1,7 +1,8 @@
-import { filmPlan } from '@oraqul/packs';
+import { filmPlan, rules } from '@oraqul/packs';
 import type { CompUsed, LaunchLine, LaunchSection } from '@oraqul/schema';
 import { slug } from '../launch/brief.js';
 import type { LaunchConfig } from '../launch/config.js';
+import { beatsSection } from '../launch/signal.js';
 import { filmBeliefs } from './audit-verdicts.js';
 import { FILM_RULES } from './check.js';
 import { FILM_DECISIONS } from './decisions.js';
@@ -35,6 +36,11 @@ const EMPTY_READ: FilmRead = {
   scope: 'full',
   ask: null,
 };
+
+/** The calendar from the rule library, worked back from the release date. */
+function timelineSection(read: FilmRead, today: string): LaunchSection {
+  return beatsSection(filmPlan.SECTION_TITLES.timeline, rules.film.beats, read.window, today);
+}
 
 function budgetSection(read: FilmRead): LaunchSection {
   const budget = read.budget;
@@ -159,7 +165,7 @@ export const filmLaunch: LaunchConfig<FilmRead, QueryPlan> = {
     ],
     answer: (read) => [...read.places, ...read.cast, ...read.partners, ...read.soundtrack],
   },
-  codeSections: { budget: budgetSection, gaps: gapsSection },
+  codeSections: { budget: budgetSection, gaps: gapsSection, timeline: timelineSection },
   templateSection,
   emptyRead: EMPTY_READ,
   ground,

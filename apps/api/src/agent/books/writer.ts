@@ -72,7 +72,6 @@ Sections (write only the ones listed in the request, in that order):
 - audio: the audiobook release and its sample. Playbook.
 - schools: school and library lists, discussion guides and the people who buy for young readers. Playbook.
 - cadence: the series or backlist plan for the kind of launch: how the earlier books are used and when the next one is announced. Playbook.
-- measure: what to track, by name, no targets.
 - risks: what could go wrong and what to do. A risk about taste, comps or readers is grounded.
 Launch beats, the budget split and what would sharpen the plan are written by code. Do not write them.`;
 

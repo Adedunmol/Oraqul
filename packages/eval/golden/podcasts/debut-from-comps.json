@@ -1,7 +1,11 @@
 {
   "title": "Cold Case Files",
   "brief": "Launch plan for the podcast \"Cold Case Files\", a true crime interview show, launching on 2099-03-01 in London and Lagos. Comparable shows: \"Crime Junkie\" and \"Serial\".",
-  "replies": [{ "optionIds": ["skip"] }],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    }
+  ],
   "expect": {
     "headline": "Lead with London, then Lagos: that is where your show's listeners are strongest.",
     "assumptions": {
@@ -53,14 +57,14 @@
       "cadence": "0/1",
       "timeline": "0/7",
       "budget": "0/7",
-      "measure": "0/4",
+      "measure": "0/8",
       "risks": "2/1",
       "gaps": "0/7"
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 33,
-      "backed": 42,
+      "lines": 37,
+      "backed": 38,
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {

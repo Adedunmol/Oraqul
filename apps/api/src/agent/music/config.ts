@@ -1,9 +1,10 @@
-import { musicPlan } from '@oraqul/packs';
+import { musicPlan, rules } from '@oraqul/packs';
 import type { CompUsed, Finding, LaunchLine, LaunchSection } from '@oraqul/schema';
 import { testArtists } from '../launch/audit-verdicts.js';
 import type { CheckRules } from '../launch/check.js';
 import type { LaunchConfig } from '../launch/config.js';
 import type { DecisionWords } from '../launch/decisions.js';
+import { beatsSection } from '../launch/signal.js';
 import { list } from '../launch/text.js';
 import { ground } from './findings.js';
 import type { MusicQueryPlan } from './planner.js';
@@ -61,6 +62,11 @@ const codeLine = (id: string, text: string): LaunchLine => ({
   names: [],
   group: null,
 });
+
+/** The calendar from the rule library, worked back from the release date. */
+function timelineSection(read: MusicRead, today: string): LaunchSection {
+  return beatsSection(musicPlan.SECTION_TITLES.timeline, rules.music.beats, read.window, today);
+}
 
 function budgetSection(read: MusicRead): LaunchSection {
   const budget = read.budget;
@@ -166,7 +172,7 @@ export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
       ...read.featuredActs,
     ],
   },
-  codeSections: { budget: budgetSection, gaps: gapsSection },
+  codeSections: { budget: budgetSection, gaps: gapsSection, timeline: timelineSection },
   templateSection,
   emptyRead: EMPTY_READ,
   ground,

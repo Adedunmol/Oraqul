@@ -1,7 +1,11 @@
 {
   "title": "Quill Odyssey",
   "brief": "Launch plan for the game \"Zanzibar Quill Odyssey\", a cozy debut on Steam, launching in the UK. Comparable games: \"Tidewalker\" and \"Lantern Row\".",
-  "replies": [{ "optionIds": ["skip"] }],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    }
+  ],
   "expect": {
     "headline": "Lead with Manchester, then London: that is where your game's players are strongest.",
     "assumptions": {
@@ -52,14 +56,14 @@
       "community": "0/1",
       "timeline": "0/9",
       "budget": "0/7",
-      "measure": "0/6",
+      "measure": "0/10",
       "risks": "1/1",
       "gaps": "0/6"
     },
     "moves": ["f-markets", "f-audience", "f-fan-anime"],
     "grounding": {
-      "lines": 47,
-      "backed": 47,
+      "lines": 51,
+      "backed": 43,
       "rankKept": 100,
       "findingsUsed": 15,
       "cities": {

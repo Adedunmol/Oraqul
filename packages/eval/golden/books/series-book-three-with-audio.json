@@ -1,7 +1,11 @@
 {
   "title": "Ash Throne",
   "brief": "Launch plan for the book \"Ash Throne\", book three of a romantasy trilogy with a hardcover and an audiobook, published by a major press, launching in October 2027 in New York and London. Comparable books: \"A Court of Thorns and Roses\" and \"Fourth Wing\". Compare it with \"The Witcher\" and \"The Hunger Games\".",
-  "replies": [{ "optionIds": ["skip"] }],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    }
+  ],
   "expect": {
     "headline": "Lead with London, then New York: that is where your book's readers are strongest.",
     "assumptions": {
@@ -72,14 +76,14 @@
       "partnerships": "4/0",
       "timeline": "0/12",
       "budget": "0/8",
-      "measure": "0/4",
+      "measure": "0/8",
       "risks": "3/1",
       "gaps": "0/4"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 56,
-      "backed": 52,
+      "lines": 60,
+      "backed": 48,
       "rankKept": 100,
       "findingsUsed": 18,
       "cities": {

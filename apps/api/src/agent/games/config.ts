@@ -332,6 +332,7 @@ export const gamesLaunch: LaunchConfig<GamesRead, GamesQueryPlan> = {
       ...read.partners,
     ],
   },
+  measures: (read) => KIND_PROFILES[kindOf(read).kind].measures,
   codeSections: { budget: budgetSection, gaps: gapsSection, timeline: timelineSection },
   applyChange: (read, change) => ({
     ...read,

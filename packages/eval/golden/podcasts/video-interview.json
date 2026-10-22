@@ -1,7 +1,11 @@
 {
   "title": "Dugout Talk",
   "brief": "Launch plan for the podcast \"Dugout Talk\", a weekly video football interview show on YouTube and Spotify for 18 to 34 year olds, launching on 2099-05-01 in Lagos and Manchester. Comparable shows: \"SmartLess\" and \"The Daily\".",
-  "replies": [{ "optionIds": ["skip"] }],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    }
+  ],
   "expect": {
     "headline": "Lead with Manchester, then Lagos: that is where your show's listeners are strongest.",
     "assumptions": {
@@ -60,14 +64,14 @@
       "cadence": "0/1",
       "timeline": "0/8",
       "budget": "0/7",
-      "measure": "0/4",
+      "measure": "0/8",
       "risks": "2/1",
       "gaps": "0/5"
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 35,
-      "backed": 40,
+      "lines": 39,
+      "backed": 36,
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {

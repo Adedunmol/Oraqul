@@ -7,6 +7,7 @@ import { PODCASTS_RULES } from './podcasts';
 import { COUNTRY_CHANNELS } from './shared';
 import type { RuleLibrary } from './types';
 
+export { type Beat, type DatedBeat, datedBeats } from '../launch';
 export * from './shared';
 export type { Benchmark, Rule, RuleLibrary, RuleSource, SignalRule } from './types';
 export { BOOKS_RULES, FILM_RULES, GAMES_RULES, MUSIC_RULES, PODCASTS_RULES };
