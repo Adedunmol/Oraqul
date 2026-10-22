@@ -26,7 +26,7 @@ packages/engine     Qloo client, scoring, verdicts, receipts (pure TypeScript, n
 packages/packs      One folder per category: film, music, books, podcasts, games
 packages/schema     Zod schemas and shared types: brief, output, receipt, events
 packages/mcp        MCP server over the engine
-packages/eval       Test cases and the eval runner
+packages/eval       Golden cases and expected results
 ```
 
 Rules: `engine` and `packs` never import from `apps`. `schema` has no dependencies. The web app imports types from `schema` only.
@@ -111,20 +111,21 @@ Every tool returns `{ data, receipts }`, one receipt per Qloo call it made, and 
 | Tool | What it does |
 |---|---|
 | `searchEntity(name, type)` | Qloo search. Returns candidates. Ambiguous results become an entity match question card. |
-| `resolveBundle(names, types)` | Describes the launch as a bundle of anchors by finding each comparable title in Qloo, one search each. An anchor counts only on one exact name match; several are a pick for the user, none is not found. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. Talent and tags are not anchors: a person is rejected as a signal and tags alone are noisy ([qloo.md](../backend/qloo.md#behaviour-to-know)). |
+| `resolveBundle(names, types)` | Describes the launch as a bundle of anchors by finding each comparable title in Qloo, one search each. A year in brackets ("Lionheart (2018)") settles two titles of one name when only one was released that year, and an IMDb id or a Spotify artist or show link is looked up directly, with no name search. An anchor counts only on one exact name match; several are a pick for the user, none is not found. The normal path before release, since the title is not in Qloo. After release the title joins the bundle as one more anchor. Talent and tags are not anchors: a person is rejected as a signal and tags alone are noisy ([qloo.md](../backend/qloo.md#behaviour-to-know)). |
 | `audienceBySegment(entities, place?)` | Age and gender skews as an affinity index per segment. |
 | `lift(entities, type, candidates, baseline)` | Lift of candidate titles over a baseline of other kinds for the anchors' audience, from one scoring call, then one rerun per anchor left out (§5.1). Verified for books; for films and series `TODO(verify)`. |
 | `rankPlaces(entities, places)` | City ranking by mean cell affinity, from one heatmap call over every city's box, then one rerun per anchor left out (§5.1). Cities from any region in the engine's city table (`places.ts`); a city not in it, or with fewer than 25 cells, is not ranked. Box size `TODO(verify)`. |
 | `scoreRivals(entities, type, rivals, leaveOneOut?)` | Rival overlap: each rival scored against the anchors in one call of the rivals' entity type, overlap = affinity × 100 (§5), with leave one out unless it is turned off. Built for the rival date check, for the Games fan base bridge (§4.3), which scores each kind of media in its own call, for the Podcasts cross promotion list (§4.4), and for the Books adaptation bridge (§4.5), where a rival can also be a book. |
 | `crossTaste(anchors, type, candidates, baseline)` | Scores comparable titles of our kind against titles of other kinds, in one call, with the anchors' audience as the signal, such as fans of top selling musicians for a book. Planned: the Books bridge scores each kind of media in its own call instead (§4.5). The lift thresholds do not apply to these affinity values yet. `TODO(verify)` |
 | `partnerFit(entities, type, take, releasedFrom?, exclude?)` | The films, series, brands or podcasts the anchors' audience likes most, from one open call. Not used by Film builds any more: an open list drifts to what is popular overall (§4.1). |
-| `findTaste(entities, type, tags?, city?, ages?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, book, brand, place, video game, person), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. |
+| `findTaste(entities, type, tags?, city?, ages?, gender?, rating?, popularity?, country?, yearFrom?)` | What the anchors' audience likes in one entity type (artist, film, series, podcast, book, brand, place, video game, person), shaped by context, from one call. Every shaping parameter is verified in [qloo.md](../backend/qloo.md). For places the city is where results are; otherwise it biases the ranking. The release country is a full name. `gender` is the brief's "mostly women" or "mostly men", sent for films, series, artists, podcasts, books and games, and the first thing dropped when the list comes back empty. `rating` keeps films and series to family or adult-only releases. `popularity` is a band for the brand lookup by category, so it returns mid-size names. |
 | `resolveTags(phrases)` | A phrase and the urn prefix it must start with to a Qloo tag, one lookup each. Brand categories need the parent type `urn:entity:brand`. No match is null, never a guess. |
 | `themeTags(entities, kinds)` | The theme, archetype or audience tags that best describe the anchors, one call per kind. |
 | `bookProfiles(entities)` | What Qloo lists for each book: publication year, pages, series, genres, formats and age ranges, from one lookup. Nothing is scored. Verified in [qloo.md](../backend/qloo.md). |
 | `gameProfiles(entities)` | What Qloo lists for each game: platforms, typed tags (genre, store category, gameplay, tone), age rating, developer and publisher, from one lookup. Nothing is scored. Verified in [qloo.md](../backend/qloo.md). |
 | `topicMap(entities, rivals, take?)` | The topics a show's audience carries that rival shows' audiences do not, for the podcast topic map: one `/v2/analysis/compare` call with the anchors against the rivals. Each side lists every tag its group carries with a count of the group's shows that carry it; yours are the subject tags only your side lists, shared are on both sides, the rivals' only theirs (§4.4). Verified live in [qloo.md](../backend/qloo.md). |
-| `momentum(entity)` | Trend over time, where Qloo supplies it. Not built. |
+| `filmProfiles(entities)` | What Qloo lists for each film or series: release year, content rating, genres, subgenres and themes, from one lookup. Nothing is scored. Verified in [qloo.md](../backend/qloo.md). |
+| `momentum(entity)` | Trend over time, where Qloo supplies it. Not built: the newest point showed no velocity for the three types that answer, so there is nothing to lean a line on yet. |
 | `explain(receiptId)` | Reads back a receipt in plain words. Not built. |
 | `applyScenario(brief, change)` | Marks dependent lines, reruns only those, returns the diff. Not built. |
 | `compareResults(brief, results)` | Planned against actual shares, the largest negative and positive gaps. Not built. |
@@ -141,7 +142,7 @@ Stage 1 of every Film reply (direction: findings, then the reply). The model sha
 |---|---|---|---|
 | `audience` | core | `audienceBySegment` on the comps; also tests the team's age band and gender (§5.2) | — |
 | `markets` | core | `rankPlaces` over the team's cities plus up to 4 nearby table cities, which only ever appear as Worth a look | — |
-| `themes` | core | `themeTags`, theme and archetype | — |
+| `themes` | core | `themeTags`, theme and archetype, then `filmProfiles` on the comps (one lookup) for a second finding: the genres most comps carry and their ratings, which says when the comps may not fit together, or when comps are rated for adults for a release the brief calls family | — |
 | `shows` | core | `findTaste` tv_show per city | diaspora cities first, series from the last 6 years |
 | `cinemas` | core, unless streaming | `findTaste` place with the movie theater category per city | the team's cities |
 | `music` | partnerships | `findTaste` artist per city | a music scene tag (pack default by country of origin, or the model's), the team's age band. No scene: not asked, and Gaps says why |

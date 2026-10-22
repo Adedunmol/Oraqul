@@ -1,5 +1,7 @@
 import {
+  filmProfilesOutputSchema,
   findTasteOutputSchema,
+  ratingGroups,
   resolveTagsOutputSchema,
   themeTagsOutputSchema,
   tools,
@@ -9,6 +11,7 @@ import { filmPlan } from '@oraqul/packs';
 import type { BriefLabels } from '../launch/brief.js';
 import {
   agesPhrase,
+  BRAND_BAND,
   brandPool,
   capitalise,
   entity,
@@ -82,6 +85,8 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
   const agesText = read.ages.length ? ` ${agesPhrase(read.ages)}` : '';
   const tags = await resolve(deps, plan, want);
 
+  if (want('themes')) jobs.push(compFit(kit));
+
   if (want('themes')) {
     const run = await kit.safely('Themes and archetypes', () =>
       tools.themeTags.run(deps.tools, { entityIds: ids, kinds: ['theme', 'archetype'] }),
@@ -118,7 +123,7 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
           'shows',
           `Series in ${city}`,
           `f-shows-${slug(city)}`,
-          { type: 'urn:entity:tv_show', city, yearFrom: from },
+          { type: 'urn:entity:tv_show', city, yearFrom: from, rating: read.rating },
           (names) =>
             `In ${city}, the series since ${from} that rank highest with your comps' audience are ${names}.`,
           { city, yearFrom: from },
@@ -203,9 +208,9 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
             'brands',
             `${capitalise(tag.name)} brands in ${city}`,
             `f-brands-${slug(tag.name)}-${slug(city)}`,
-            { type: 'urn:entity:brand', tags: [tag.id], city },
+            { type: 'urn:entity:brand', tags: [tag.id], city, popularity: BRAND_BAND },
             (names) =>
-              `In ${city}, the ${tag.name.toLowerCase()} brands that rank highest with your comps' audience are ${names}.`,
+              `In ${city}, the mid-size ${tag.name.toLowerCase()} brands that rank highest with your comps' audience are ${names}.`,
             { city, tags: [tag.name] },
           ),
         );
@@ -237,6 +242,7 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
           {
             type: 'urn:entity:movie',
             yearFrom: from,
+            rating: read.rating,
             ...(plan.country ? { country: plan.country } : { tags: genre ? [genre.id] : [] }),
           },
           (names) =>
@@ -250,6 +256,7 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
           {
             type: 'urn:entity:movie',
             yearFrom: from,
+            rating: read.rating,
             ...(plan.country ? { country: plan.country } : { tags: genre ? [genre.id] : [] }),
           },
           plan.country ? `films from ${what}` : `${what.toLowerCase()} films`,
@@ -411,7 +418,13 @@ async function resolve(
  */
 export async function topicsAgainstRecentFilms(
   kit: GroundKit<FilmRead, QueryPlan>,
-  shape: { type: 'urn:entity:movie'; yearFrom: number; country?: string; tags?: string[] },
+  shape: {
+    type: 'urn:entity:movie';
+    yearFrom: number;
+    rating: 'family' | 'adult' | null;
+    country?: string;
+    tags?: string[];
+  },
   recent: string,
 ): Promise<void> {
   const { deps, ids } = kit;
@@ -444,6 +457,65 @@ export async function topicsAgainstRecentFilms(
         ...out.rivals.map((t) => entity(t.name, null, 'recent films')),
       ],
       numbers: Object.fromEntries(out.yours.map((t) => [`weight ${t.name}`, t.weight])),
+      verdict: null,
+      confidence: out.confidence,
+      why: out.why,
+    },
+    call,
+  );
+}
+
+const adultRatings: readonly string[] = ratingGroups.adult;
+
+/**
+ * Whether the comps fit together, from what Qloo lists for each (spec §4.1): the genres most of
+ * them carry, and their ratings. It is a description, not a verdict: no band decides it.
+ * When the brief says the release is for families, comps rated for adults are named.
+ */
+export async function compFit(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
+  const { deps, ids, read } = kit;
+  const run = await kit.safely('What your comps are', () =>
+    tools.filmProfiles.run(deps.tools, { entityIds: ids.slice(0, 20) }),
+  );
+  if (!run) return;
+  const out = filmProfilesOutputSchema.parse(run.data);
+  const [call] = run.receipts;
+  const withGenres = out.films.filter((f) => f.genres.length > 0);
+  if (!call || withGenres.length < 2) return;
+
+  const counts = new Map<string, { name: string; n: number }>();
+  for (const f of withGenres) {
+    for (const g of new Set(f.genres.map((x) => x.toLowerCase()))) {
+      const name = f.genres.find((x) => x.toLowerCase() === g) ?? g;
+      counts.set(g, { name, n: (counts.get(g)?.n ?? 0) + 1 });
+    }
+  }
+  const majority = Math.floor(withGenres.length / 2) + 1;
+  const shared = [...counts.values()]
+    .filter((c) => c.n >= majority)
+    .sort((a, b) => b.n - a.n)
+    .map((c) => c.name);
+  const ratings = [
+    ...new Set(out.films.flatMap((f) => (f.contentRating ? [f.contentRating] : []))),
+  ];
+  const adults = out.films.filter((f) => f.contentRating && adultRatings.includes(f.contentRating));
+  const clash =
+    read.rating === 'family' && adults.length > 0
+      ? ` You said this is for families, but ${list(adults.map((f) => f.name))} ${adults.length === 1 ? 'is' : 'are'} rated for adults.`
+      : '';
+  kit.add(
+    {
+      id: 'f-comp-fit',
+      query: 'themes',
+      text: `${
+        shared.length
+          ? `Qloo lists ${list(shared.slice(0, 3).map((g) => g.toLowerCase()))} for most of your comps`
+          : 'Qloo lists no genre for most of your comps, so they may not sit together'
+      }${ratings.length ? `, and rates them ${list(ratings)}` : ''}.${clash}`,
+      entities: [
+        ...shared.slice(0, 3).map((g) => entity(g, null, 'shared genre')),
+        ...out.films.map((f) => entity(f.name, null, f.contentRating ?? 'no rating listed')),
+      ],
       verdict: null,
       confidence: out.confidence,
       why: out.why,

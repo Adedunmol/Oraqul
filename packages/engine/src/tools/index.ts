@@ -1,6 +1,7 @@
 import type { ToolName } from '@oraqul/schema';
 import { audienceBySegment, audienceOutputSchema } from './audience-by-segment';
 import { bookProfiles, bookProfilesOutputSchema } from './book-profiles';
+import { filmProfiles, filmProfilesOutputSchema } from './film-profiles';
 import { findTaste, findTasteOutputSchema } from './find-taste';
 import { gameProfiles, gameProfilesOutputSchema } from './game-profiles';
 import { lift, liftOutputSchema } from './lift';
@@ -15,7 +16,7 @@ import type { Tool } from './tool';
 import { topicMap, topicMapOutputSchema, topicOwnership } from './topic-map';
 
 export { seriesOf } from './book-profiles';
-export { type TasteType, tasteTypes } from './find-taste';
+export { ratingGroups, type TasteType, tasteTypes } from './find-taste';
 export { gameTagKinds } from './game-profiles';
 export { normalizeTitle } from './resolve-bundle';
 export { type RivalType, rivalTypeOf, rivalTypes } from './score-rivals';
@@ -36,12 +37,14 @@ export const tools: Record<ToolName, Tool> = {
   themeTags,
   gameProfiles,
   bookProfiles,
+  filmProfiles,
   topicMap,
 };
 
 export {
   audienceOutputSchema,
   bookProfilesOutputSchema,
+  filmProfilesOutputSchema,
   findTasteOutputSchema,
   gameProfilesOutputSchema,
   liftOutputSchema,

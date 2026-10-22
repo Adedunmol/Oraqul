@@ -39,6 +39,13 @@ export { agesPhrase, capitalise, list, plural } from './text.js';
 export const KEEP = 6;
 export const NAMED = 3;
 
+/**
+ * Mid-size brands, for the category lookup that runs when the model named no usable candidates.
+ * Without the floor Qloo returns records with no popularity at all, and without the cap only the
+ * biggest names (qloo.md); the category tag keeps it from drifting.
+ */
+export const BRAND_BAND = { min: 0.4, max: 0.85 };
+
 /** What shapes one taste query, as `GroundKit.taste` takes it. */
 export interface TasteShape {
   type: TasteType;
@@ -47,9 +54,25 @@ export interface TasteShape {
   country?: string | null;
   yearFrom?: number | null;
   ages?: string[];
+  /** Set by `taste` from the brief for the types where it is verified; not by a category. */
+  gender?: 'male' | 'female' | null;
+  /** Films and series only: family or adult-only releases. */
+  rating?: 'family' | 'adult' | null;
+  /** A band of popularity, for a category list that would otherwise return only the biggest names. */
+  popularity?: { min: number; max: number } | null;
   /** Rank only these, so the answer is among candidates that could really say yes. */
   only?: string[];
 }
+
+/** The entity types a gender signal is verified for (qloo.md); Qloo ignores it elsewhere. */
+const GENDER_TYPES: readonly string[] = [
+  'urn:entity:movie',
+  'urn:entity:tv_show',
+  'urn:entity:artist',
+  'urn:entity:podcast',
+  'urn:entity:book',
+  'urn:entity:videogame',
+];
 
 const MAX_WIDENINGS = 2;
 
@@ -62,7 +85,7 @@ const MAX_WIDENINGS = 2;
 export function wideningsOf(shape: TasteShape): { shape: TasteShape; dropped: string[] }[] {
   if (shape.only?.length) return [];
   const shaped = (s: TasteShape) =>
-    !!(s.tags?.length || s.country || s.city || s.ages?.length || s.yearFrom != null);
+    !!(s.tags?.length || s.country || s.city || s.ages?.length || s.yearFrom != null || s.gender);
   const steps: { shape: TasteShape; dropped: string[] }[] = [];
   let current = shape;
   const dropped: string[] = [];
@@ -72,6 +95,7 @@ export function wideningsOf(shape: TasteShape): { shape: TasteShape; dropped: st
     dropped.push(what);
     steps.push({ shape: current, dropped: [...dropped] });
   };
+  if (current.gender) drop('the gender of the audience', { ...current, gender: null });
   if (current.yearFrom != null) drop('the release years', { ...current, yearFrom: null });
   if (current.ages?.length) drop('the age band', { ...current, ages: [] });
   if (current.city && current.type !== 'urn:entity:place')
@@ -272,12 +296,18 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
       return { out, call: run.receipts[0] };
     };
 
-    let answer = await ask(shape);
+    // The brief's gender goes to Qloo only where it is verified, and is the first thing dropped if
+    // the list comes back empty.
+    const start: TasteShape =
+      read.gender && GENDER_TYPES.includes(shape.type) && shape.gender === undefined
+        ? { ...shape, gender: read.gender }
+        : shape;
+    let answer = await ask(start);
     if (!answer) return;
     let dropped: string[] = [];
     // Nothing came back: ask again with the narrowest filter off, so the plan has something
     // to rest on. The finding says it is the wider read.
-    for (const step of wideningsOf(shape)) {
+    for (const step of wideningsOf(start)) {
       if (answer.call && answer.out.candidates.length > 0) break;
       const wider = await ask(step.shape);
       if (!wider) return;
@@ -310,6 +340,9 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
           : out.why,
         context: {
           ...context,
+          ...(start.gender && !dropped.includes('the gender of the audience')
+            ? { audience: start.gender === 'female' ? 'mostly women' : 'mostly men' }
+            : {}),
           ...(dropped.includes('the city') ? { city: null } : {}),
           ...(dropped.includes('the age band') ? { ages: [] } : {}),
           ...(dropped.includes('the release years') ? { yearFrom: null } : {}),

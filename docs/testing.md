@@ -48,7 +48,7 @@ No "undefined" or "NaN" in the text, no horizontal scroll at 400px, correct in l
 
 ## Rules
 
-- Evals are the proof the product works. Golden runs, the grounding check and the refusal tests live in `packages/eval` and run as part of `pnpm test`, on recorded fixtures, so they need no Qloo key.
+- Evals are the proof the product works. The golden cases and their expected results live in `packages/eval/golden`; the specs that run them, the grounding check and the refusal tests live next to the code they test in `apps/api` and run as part of `pnpm test`, on committed demo data, so they need no Qloo key.
 - `pnpm test` runs before every commit and `pnpm check` (lint, typecheck, test) before every push, through the hooks in `.githooks`. `pnpm install` turns them on (`prepare` sets `core.hooksPath`). A commit or push that fails them does not go through. `--no-verify` is for an emergency only, and the PR says why.
 
 - Scoring and verdict thresholds are tested at the boundary on both sides (74 vs 75).

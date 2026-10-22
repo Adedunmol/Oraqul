@@ -25,7 +25,7 @@ Next.js (Vercel)  ->  NestJS API (VPS)  ->  agent runtime (module in the API)
 | `packages/packs` | One config per category | `schema` |
 | `packages/ui` | Design system components | `schema` |
 | `packages/mcp` | MCP server over the engine tools | `engine`, `schema` |
-| `packages/eval` | Golden runs and the eval runner | `engine`, `packs`, `schema` |
+| `packages/eval` | The golden cases and their expected results (the specs that run them are in `apps/api`) | `engine`, `packs`, `schema` |
 
 Rules:
 

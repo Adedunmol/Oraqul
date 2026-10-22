@@ -3,6 +3,7 @@ import { type Receipt, receiptSchema } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
 import { demoFetch, QlooClient } from '../qloo';
 import { liftBand } from '../scoring';
+import { filmProfilesOutputSchema } from './film-profiles';
 import { findTasteOutputSchema } from './find-taste';
 import { tools } from './index';
 import { leaveOneOut } from './leave-one-out';
@@ -309,5 +310,48 @@ describe('readAreas', () => {
       scored,
     );
     expect(read.map((a) => a.name)).toEqual(['Peckham']);
+  });
+});
+
+describe('filmProfiles', () => {
+  it('reads the rating and the typed tags, and says nothing is scored', async () => {
+    const { jsonResponse, stubFetch, testClient } = await import('../qloo/fake-fetch');
+    stubFetch(
+      jsonResponse({
+        success: true,
+        results: [
+          {
+            entity_id: 'F1',
+            name: 'Heat',
+            popularity: 0.9,
+            properties: { content_rating: 'R', release_year: 1995 },
+            tags: [
+              { type: 'urn:tag:genre:qloo', name: 'Crime' },
+              { type: 'urn:tag:genre:qloo', name: 'Crime' },
+              { type: 'urn:tag:subgenre:qloo', name: 'Heist' },
+              { type: 'urn:tag:theme:qloo', name: 'Loyalty' },
+              { type: 'urn:tag:keyword:qloo', name: 'ignored' },
+            ],
+          },
+          { entity_id: 'F2', name: 'Bare', popularity: null },
+        ],
+      }),
+    );
+    const ctx: ToolContext = {
+      qloo: testClient(),
+      source: 'demo',
+      entities: new Map<string, SeenEntity>(),
+    };
+    const { data, receipts } = await tools.filmProfiles.run(ctx, { entityIds: ['F1', 'F2'] });
+    const out = filmProfilesOutputSchema.parse(data);
+    expect(out.films[0]).toMatchObject({
+      contentRating: 'R',
+      releaseYear: 1995,
+      genres: ['Crime'],
+      subgenres: ['Heist'],
+      themes: ['Loyalty'],
+    });
+    expect(out.films[1]?.genres).toEqual([]);
+    expect(receipts).toHaveLength(1);
   });
 });

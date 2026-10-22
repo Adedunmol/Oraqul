@@ -7,7 +7,7 @@ import {
 import type { Receipt } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
 import type { GroundKit } from '../launch/findings.js';
-import { topicsAgainstRecentFilms } from './findings.js';
+import { compFit, topicsAgainstRecentFilms } from './findings.js';
 import type { QueryPlan } from './planner.js';
 import type { FilmRead } from './read.js';
 
@@ -69,7 +69,12 @@ function setup(recent: number) {
   return { kit, added, paths };
 }
 
-const shape = { type: 'urn:entity:movie' as const, yearFrom: 2020, country: 'Nigeria' };
+const shape = {
+  type: 'urn:entity:movie' as const,
+  yearFrom: 2020,
+  rating: null,
+  country: 'Nigeria',
+};
 
 describe('topicsAgainstRecentFilms', () => {
   it('names the topics only the comps carry, from one comparison call', async () => {
@@ -101,5 +106,61 @@ describe('topicsAgainstRecentFilms', () => {
     await topicsAgainstRecentFilms(kit, shape, 'films from Nigeria');
     expect(paths.filter((p) => p === '/v2/insights')).toHaveLength(1);
     expect(paths.filter((p) => p === '/v2/analysis/compare')).toHaveLength(1);
+  });
+});
+
+describe('compFit', () => {
+  const profile = (id: string, name: string, rating: string, genres: string[]) => ({
+    entity_id: id,
+    name,
+    popularity: 0.5,
+    properties: { content_rating: rating },
+    tags: genres.map((g) => ({ type: 'urn:tag:genre:qloo', name: g })),
+  });
+
+  function fitKit(results: object[], rating: 'family' | 'adult' | null) {
+    const { kit, added } = setup(0);
+    const fetchImpl: typeof fetch = async () =>
+      new Response(JSON.stringify({ success: true, results }), { status: 200 });
+    kit.deps.tools.qloo = new QlooClient({
+      baseUrl: 'https://recorded.invalid',
+      apiKey: 'test',
+      fetch: fetchImpl,
+      callBudget: 5,
+      retryDelayMs: 0,
+    });
+    (kit as unknown as { read: { rating: string | null } }).read = { rating };
+    return { kit, added };
+  }
+
+  it('names the genres half of the comps share and their ratings', async () => {
+    const { kit, added } = fitKit(
+      [
+        profile('C1', 'Heat', 'R', ['Crime', 'Drama']),
+        profile('C2', 'Sicario', 'R', ['Crime', 'Thriller']),
+        profile('C3', 'Zodiac', 'R', ['Mystery']),
+      ],
+      null,
+    );
+    await compFit(kit);
+    expect(added[0]?.id).toBe('f-comp-fit');
+    expect(added[0]?.text).toContain('crime');
+    expect(added[0]?.text).toContain('rates them R');
+  });
+
+  it('says so when no genre is shared, and when family comps are rated for adults', async () => {
+    const { kit, added } = fitKit(
+      [profile('C1', 'Heat', 'R', ['Crime']), profile('C2', 'Frozen', 'PG', ['Animation'])],
+      'family',
+    );
+    await compFit(kit);
+    expect(added[0]?.text).toContain('no genre');
+    expect(added[0]?.text).toContain('You said this is for families, but Heat is rated for adults');
+  });
+
+  it('stays silent when fewer than two comps list a genre', async () => {
+    const { kit, added } = fitKit([profile('C1', 'Heat', 'R', ['Crime'])], null);
+    await compFit(kit);
+    expect(added).toHaveLength(0);
   });
 });

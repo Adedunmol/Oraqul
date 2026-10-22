@@ -57,6 +57,8 @@ export const filmReadingSchema = z.object({
   window: said(z.string().min(1)).nullable(),
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
+  /** Only when they say the release is for families or for adults only. */
+  rating: said(z.enum(['family', 'adult'])).nullable(),
   /**
    * Comparable titles the agent proposes when the person named fewer than 3. Not their words, so
    * code checks each one in Qloo and the plan keeps them apart from the person's own.
@@ -87,6 +89,7 @@ export const filmReadSchema = z.object({
   partners: z.array(z.string()).default([]),
   scope: z.enum(['full', 'narrow']).default('full'),
   ask: z.enum(filmPlan.FILM_MODULES).nullable().default(null),
+  rating: z.enum(['family', 'adult']).nullable().default(null),
 });
 export type FilmRead = z.infer<typeof filmReadSchema>;
 
@@ -130,6 +133,7 @@ export function checkReading(reading: FilmReading, { title, text }: FilmReaderIn
     window: kept(reading.window),
     ages: unique(reading.ages.flatMap((a) => (inWords(a.quote, text) ? [a.value] : []))),
     gender: kept(reading.gender),
+    rating: kept(reading.rating),
     suggestedComps: comps.length >= 3 ? [] : unique(suggested),
     logline: kept(reading.logline),
     country: kept(reading.country),
@@ -156,6 +160,7 @@ Rules:
 - places: cities or territories the person names as markets for the launch.
 - ages: map what they say about age to Qloo's bands (24_and_younger, 25_to_29, 30_to_34, 35_to_44, 45_to_54, 55_and_older). "18 to 34" is the first three bands. Quote their words.
 - gender: only when they say the audience is mostly women or mostly men.
+- rating: "family" when they say it is for families or children, "adult" when they say it is for adults only or carries an adult rating. Otherwise null.
 - genre and logline: the kind of film or series and what it is about, in their words.
 - country: the country it comes from, as a full country name ("Nigeria", never "NG"). language: the language it is in.
 - cast and director: names of people attached, exactly as written. soundtrack: artists already on the soundtrack.
@@ -228,6 +233,10 @@ export class ScriptedFilmReader implements FilmReader {
     const genre = text.match(GENRES)?.[0];
     const demonym = text.match(new RegExp(`\\b(${Object.keys(DEMONYMS).join('|')})\\b`, 'i'))?.[0];
     const logline = text.split(/(?<=[.!?])\s+/)[0]?.trim();
+    const family = text.match(
+      /\b(?:for (?:the )?family|family[- ]friendly|for kids|children'?s)\b/i,
+    )?.[0];
+    const adult = text.match(/\b(?:adults? only|for adults|18\+|rated r)\b/i)?.[0];
     const route = text.match(
       /\b(streaming|netflix|prime video|cinemas?|theatrical|festival)\b/i,
     )?.[0];
@@ -262,6 +271,11 @@ export class ScriptedFilmReader implements FilmReader {
         ? { value: 'female', quote: women }
         : men
           ? { value: 'male', quote: men }
+          : null,
+      rating: family
+        ? { value: 'family', quote: family }
+        : adult
+          ? { value: 'adult', quote: adult }
           : null,
       suggestedComps: [],
     };

@@ -15,6 +15,7 @@ import type { BriefLabels } from '../launch/brief.js';
 import { slug } from '../launch/brief.js';
 import {
   agesPhrase,
+  BRAND_BAND,
   brandPool,
   capitalise,
   entity,
@@ -167,9 +168,9 @@ async function runQueries(kit: GroundKit<PodcastsRead, PodcastsQueryPlan>): Prom
             'brands',
             `${capitalise(tag.name)} brands${city ? ` in ${city}` : ''}`,
             `f-brands-${slug(tag.name)}${city ? `-${slug(city)}` : ''}`,
-            { type: 'urn:entity:brand', tags: [tag.id], city },
+            { type: 'urn:entity:brand', tags: [tag.id], city, popularity: BRAND_BAND },
             (names) =>
-              `${city ? `In ${city}, the` : 'The'} ${tag.name.toLowerCase()} brands that rank highest with ${crowd} are ${names}.`,
+              `${city ? `In ${city}, the` : 'The'} mid-size ${tag.name.toLowerCase()} brands that rank highest with ${crowd} are ${names}.`,
             { city: city ?? null, tags: [tag.name] },
           ),
         );

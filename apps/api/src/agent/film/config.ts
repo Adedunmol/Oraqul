@@ -20,6 +20,7 @@ const EMPTY_READ: FilmRead = {
   window: null,
   ages: [],
   gender: null,
+  rating: null,
   suggestedComps: [],
   logline: null,
   country: null,

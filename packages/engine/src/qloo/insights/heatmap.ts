@@ -1,11 +1,6 @@
 import type { QlooClient, QlooResult } from '../client';
 import { hasParam } from '../params';
-import {
-  type EntityInsightsResponse,
-  entityInsightsResponseSchema,
-  type HeatmapResponse,
-  heatmapResponseSchema,
-} from '../responses';
+import { type HeatmapResponse, heatmapResponseSchema } from '../responses';
 import type { HeatmapDimension } from '../urns';
 import type { EntityBaseParams, SignalParams } from './filters';
 
@@ -50,21 +45,5 @@ export function heatmap(
     '/v2/insights',
     { ...request, 'filter.type': 'urn:heatmap', 'output.heatmap.boundary': 'urn:geohash' },
     heatmapResponseSchema,
-  );
-}
-
-/**
- * The same question, answered with named localities (cities, neighbourhoods) instead of cells.
- * Large: Nigeria returned 224 localities (6.8 MB). Keep the few a line needs for the receipt.
- */
-export function heatmapByLocality(
-  client: QlooClient,
-  request: HeatmapRequest,
-): Promise<QlooResult<EntityInsightsResponse>> {
-  assertAnchored(request);
-  return client.get(
-    '/v2/insights',
-    { ...request, 'filter.type': 'urn:heatmap', 'output.heatmap.boundary': 'urn:entity:locality' },
-    entityInsightsResponseSchema,
   );
 }

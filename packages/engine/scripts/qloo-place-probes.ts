@@ -55,28 +55,6 @@ async function ids(names: string[], type: QlooEntityType): Promise<string[]> {
 
 const films = await ids(['City of God', 'Sicario', 'Heat'], 'urn:entity:movie');
 
-await step('D9: named localities against geohash cells', async () => {
-  for (const city of ['Lagos', 'London']) {
-    const named = await insights.heatmapByLocality(qloo, {
-      'filter.location.query': city,
-      'signal.interests.entities': films,
-      take: 10,
-    });
-    const rows = named.data.results.entities;
-    console.log(
-      `${city}: ${rows.length} localities; first: ${rows
-        .slice(0, 10)
-        .map((e) => `${e.name} (${e.query?.affinity?.toFixed(2) ?? 'n/a'})`)
-        .join(' | ')}`,
-    );
-    const cells = await insights.heatmap(qloo, {
-      'filter.location.query': city,
-      'signal.interests.entities': films,
-    });
-    console.log(`${city}: ${cells.data.results.heatmap.length} geohash cells`);
-  }
-});
-
 const sets: { label: string; type: QlooEntityType; mine: string[]; rivals: string[] }[] = [
   {
     label: 'Film',
