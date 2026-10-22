@@ -769,6 +769,12 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     understanding,
     review: understanding ? reviewOf(status, rounds, next) : null,
     process: { research: researchRounds, drafts, dropped: everDropped },
+    rules: null,
+    band: null,
+    signal: null,
+    territories: [],
+    calls: [],
+    partners: [],
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];

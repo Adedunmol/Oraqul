@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { findingSchema } from './finding';
+import { confidenceSchema, directionSchema } from './verdict';
 
 // The launch plan: a minimum core plus modules (spec §6.1). The model writes the lines from the
 // findings (stage 2) and code checks every line before the plan is saved.
@@ -22,6 +23,15 @@ export const launchModuleKeys = [
   'budget',
   'measure',
   'risks',
+  // Every full plan: channels written by code, and short creative briefs (guides, never assets).
+  'channels',
+  'creative',
+  // A creative kit's sections.
+  'hooks',
+  'scripts',
+  'shots',
+  'keyart',
+  'captions',
   // Music only. Each category picks its own modules from this list (`pickModules` in its pack).
   'tour',
   'support',
@@ -200,6 +210,86 @@ export const planProcessSchema = z.object({
 });
 export type PlanProcess = z.infer<typeof planProcessSchema>;
 
+export const budgetBands = ['micro', 'independent', 'mid', 'major'] as const;
+export const budgetBandSchema = z.enum(budgetBands);
+export type BudgetBand = z.infer<typeof budgetBandSchema>;
+
+/** The budget band a plan was written for, and how it was learned. */
+export const planBandSchema = z.object({
+  band: budgetBandSchema,
+  source: z.enum(['brief', 'asked', 'assumed']),
+});
+export type PlanBand = z.infer<typeof planBandSchema>;
+
+/** The one signal the plan is judged on. A target is a goal, never a forecast. */
+export const signalSchema = z.object({
+  key: z.string(),
+  primary: z.string(),
+  secondary: z.array(z.string()),
+  /** Days from release when the signal is read. Negative is before. */
+  checkpoints: z.array(z.number().int()),
+  target: z
+    .object({
+      value: z.number(),
+      floor: z.number().nullable(),
+      unit: z.string(),
+      from: z.enum(['team', 'rule']),
+      ruleId: z.string().nullable(),
+    })
+    .nullable(),
+});
+export type Signal = z.infer<typeof signalSchema>;
+
+/** A call on a decision, computed by code. A team choice keeps the choice and says how to handle it. */
+export const directionCallSchema = z.object({
+  id: z.string().min(1),
+  subject: z.enum(['date', 'territory', 'partner']),
+  name: z.string(),
+  direction: directionSchema,
+  confidence: confidenceSchema,
+  why: z.string(),
+  findingIds: z.array(z.string()),
+  teamChoice: z.boolean(),
+  territory: z.string().nullable(),
+});
+export type DirectionCall = z.infer<typeof directionCallSchema>;
+
+/** One territory of the plan: home first, then the diaspora cities. */
+export const territorySchema = z.object({
+  id: z.string().min(1),
+  name: z.string(),
+  role: z.enum(['home', 'diaspora', 'other']),
+  order: z.number().int().min(0),
+  /** The direction call for opening here. Null when Qloo could not rank the place. */
+  callId: z.string().nullable(),
+  channels: z.array(z.object({ name: z.string(), lead: z.boolean() })),
+  partnerIds: z.array(z.string()),
+  /** Plan lines that belong to this territory. */
+  lineIds: z.array(z.string()),
+});
+export type Territory = z.infer<typeof territorySchema>;
+
+export const partnerTiers = ['A', 'B', 'C'] as const;
+export const partnerTierSchema = z.enum(partnerTiers);
+export type PartnerTier = z.infer<typeof partnerTierSchema>;
+
+/** A partner the plan can approach, with its tier, Qloo fit and budget fit. Price is never known. */
+export const partnerOptionSchema = z.object({
+  id: z.string().min(1),
+  name: z.string(),
+  tier: partnerTierSchema,
+  market: z.string(),
+  from: z.enum(['seed', 'qloo', 'team']),
+  /** Place in the list Qloo ranked for this audience. Null when Qloo did not rank it. */
+  fit: z
+    .object({ place: z.number().int(), of: z.number().int(), direction: directionSchema })
+    .nullable(),
+  budgetFit: z.enum(['fits', 'stretch', 'out']),
+  price: z.literal('unknown'),
+  findingIds: z.array(z.string()),
+});
+export type PartnerOption = z.infer<typeof partnerOptionSchema>;
+
 export const launchPlanSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question. */
   scope: z.enum(['full', 'narrow']),
@@ -217,5 +307,12 @@ export const launchPlanSchema = z.object({
   review: planReviewSchema.nullable().default(null),
   /** What the research and the line check did on the way. Plans saved before it have none. */
   process: planProcessSchema.nullable().default(null),
+  /** The rule library version the plan was written with. Plans saved before it have none. */
+  rules: z.object({ category: z.string(), version: z.string() }).nullable().default(null),
+  band: planBandSchema.nullable().default(null),
+  signal: signalSchema.nullable().default(null),
+  territories: z.array(territorySchema).default([]),
+  calls: z.array(directionCallSchema).default([]),
+  partners: z.array(partnerOptionSchema).default([]),
 });
 export type LaunchPlan = z.infer<typeof launchPlanSchema>;

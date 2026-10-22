@@ -39,6 +39,13 @@ export const SECTION_TITLES = {
   retail: 'Retail and pre-orders',
   audio: 'Audiobook',
   schools: 'Schools and libraries',
+  channels: 'Channels',
+  creative: 'Creative briefs',
+  hooks: 'Hook options',
+  scripts: 'Scripts',
+  shots: 'Shot lists',
+  keyart: 'Key art briefs',
+  captions: 'Caption packs',
 } as const satisfies Record<LaunchSectionKey, string>;
 
 /**

@@ -37,6 +37,7 @@ const KIND_LABEL: Record<Job, string> = {
   fix: 'Fixed plan',
   date: 'Rival date check',
   partner: 'Partner brief',
+  creative: 'Creative kit',
 };
 const PREFIX: Record<Job, string> = {
   build: 'v',
@@ -45,6 +46,7 @@ const PREFIX: Record<Job, string> = {
   fix: 'F',
   date: 'D',
   partner: 'B',
+  creative: 'K',
 };
 
 // Product copy for the tabs (spec §9.3). The web demo has the same words until it is removed.

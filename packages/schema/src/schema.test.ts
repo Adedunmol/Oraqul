@@ -261,3 +261,85 @@ describe('auditReportSchema', () => {
     ).toBe(false);
   });
 });
+
+describe('launchPlanSchema, older saved plans', () => {
+  // A plan saved before direction calls, territories and the rule library existed.
+  const legacy = {
+    scope: 'full',
+    sections: [],
+    comps: [],
+    findings: [],
+    dropped: [],
+    writer: 'model',
+  };
+
+  it('still parses, with the newer parts empty', () => {
+    const plan = launchPlanSchema.parse(legacy);
+    expect(plan.rules).toBeNull();
+    expect(plan.band).toBeNull();
+    expect(plan.signal).toBeNull();
+    expect(plan.territories).toEqual([]);
+    expect(plan.calls).toEqual([]);
+    expect(plan.partners).toEqual([]);
+  });
+
+  it('holds a partner with no price and a direction call', () => {
+    const plan = launchPlanSchema.parse({
+      ...legacy,
+      calls: [
+        {
+          id: 'call-houston',
+          subject: 'territory',
+          name: 'Houston',
+          direction: 'risky',
+          confidence: 'medium',
+          why: 'Houston ranks below the other cities.',
+          findingIds: ['f-markets'],
+          teamChoice: true,
+          territory: 'Houston',
+        },
+      ],
+      partners: [
+        {
+          id: 'p-mtn',
+          name: 'MTN',
+          tier: 'A',
+          market: 'Nigeria',
+          from: 'seed',
+          fit: null,
+          budgetFit: 'out',
+          price: 'unknown',
+          findingIds: [],
+        },
+      ],
+    });
+    expect(plan.calls[0]?.direction).toBe('risky');
+    expect(plan.partners[0]?.price).toBe('unknown');
+  });
+
+  it('refuses a priced partner', () => {
+    const bad = launchPlanSchema.safeParse({
+      ...legacy,
+      partners: [
+        {
+          id: 'p',
+          name: 'X',
+          tier: 'C',
+          market: 'Nigeria',
+          from: 'seed',
+          fit: null,
+          budgetFit: 'fits',
+          price: '£500',
+          findingIds: [],
+        },
+      ],
+    });
+    expect(bad.success).toBe(false);
+  });
+});
+
+describe('outputNature', () => {
+  it('treats a creative kit as a plan', () => {
+    expect(outputNature('creative')).toBe('plan');
+  });
+});
