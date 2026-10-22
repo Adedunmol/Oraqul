@@ -247,7 +247,7 @@ export async function runStandalone<R extends LaunchRead>(
   const state = newRunState(project, handoff.mode, deps.maxSteps, {
     prior: [],
     context: [
-      `${STANDALONE_CONTEXT} This is a standalone chat inside the project "${handoff.title}". The name is only a label: do not look it up in Qloo unless the person asks you to. It has no brief, plan or notes from the project, so treat anything about the project as unknown until the person says it. Answer the person's question directly and in plain words. Use Qloo only where it makes the answer sounder, for what an audience likes or where it is, and cite those calls. If the question needs no Qloo data, answer from your launch knowledge and say so.`,
+      `${STANDALONE_CONTEXT} This is a standalone chat inside a ${deps.config.category} project. You know exactly two things about the project: its category is ${deps.config.category} and its name is "${handoff.title}". State them when asked. You have no brief, plan, cities, comps or notes from the project, so do not guess any, and never ask the person to supply the title or category: you already have them. Do not look the name up in Qloo unless the person asks you to. Answer the person's question directly and in plain words. Use Qloo only where it makes the answer sounder, for what an audience likes or where it is, and cite those calls. If the question needs no Qloo data, just answer from your launch knowledge, without saying where it comes from.`,
       'Chat so far:',
       ...handoff.recent.map((l) => `${l.from === 'person' ? 'Person' : 'Oraqul'}: ${l.text}`),
     ].join('\n'),

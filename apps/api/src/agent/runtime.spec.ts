@@ -4,7 +4,7 @@ import { demoProjects } from '@oraqul/packs';
 import type { Category, ThreadEvent } from '@oraqul/schema';
 import { AnswerError, advance, newRunState, type RuntimeDeps } from './runtime.js';
 import { ScriptedPlanner } from './scripted-planner.js';
-import type { Planner } from './types.js';
+import { type Planner, STANDALONE_CONTEXT } from './types.js';
 
 function setup(
   category: Category,
@@ -149,5 +149,43 @@ describe('limits and failures', () => {
     await advance(state, deps);
 
     expect(lastOf('run.stopped')?.reason).toBe('steps');
+  });
+});
+
+describe('a standalone chat', () => {
+  const made: Planner = {
+    next: async () => ({
+      kind: 'finish',
+      reply: {
+        message: 'The project is called Night Ferry.',
+        claims: [{ text: 'The project is called Night Ferry.', receiptIds: ['made-up'] }],
+      },
+    }),
+  };
+
+  it('keeps a citation the model made up out of the answer instead of failing the run', async () => {
+    const { deps, lastOf } = setup('film', { planner: made });
+    const state = newRunState(demoProjects.film, 'build', 12, {
+      prior: [],
+      context: `${STANDALONE_CONTEXT} No plan here.`,
+      question: 'What is this project called?',
+    });
+    await advance(state, deps);
+    expect(lastOf('run.stopped')?.reason).toBe('finished');
+    expect(lastOf('message')).toMatchObject({
+      body: 'The project is called Night Ferry.',
+      claims: [],
+    });
+  });
+
+  it('still rejects a made up citation when the chat is about a plan', async () => {
+    const { deps, lastOf } = setup('film', { planner: made });
+    const state = newRunState(demoProjects.film, 'build', 12, {
+      prior: [],
+      context: 'Plan v1.',
+      question: 'Why Lagos?',
+    });
+    await advance(state, deps);
+    expect(lastOf('run.stopped')?.reason).toBe('error');
   });
 });

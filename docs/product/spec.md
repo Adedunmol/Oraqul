@@ -102,7 +102,7 @@ There is no team layer. Nothing is remembered across projects.
 **New chats.** A new chat asks one question before the first message: use the project's memory, or stand alone.
 
 * **Uses project memory** (the default). It starts on the project's current plan (`threads.base_output_id` and `from_output_id`) and reads the plan and the notes, so the first message is a follow up, not a rebuild. The chat says nothing about what it pulled in; it just knows.
-* **Standalone** (`threads.fresh`). It stays in the project but sees no plan, no notes and no brief, and it writes nothing back to the project's memory, so wild questions stay out of the project's own thinking. It knows the category and the project's name. It talks on the tool loop: Qloo can ground what it says about taste, audience and place, and it makes no plan.
+* **Standalone** (`threads.fresh`). It stays in the project but sees no plan, no notes and no brief, and it writes nothing back to the project's memory, so wild questions stay out of the project's own thinking. It knows the category and the project's name. It talks on the tool loop: Qloo can ground what it says about taste, audience and place, and it makes no plan. It is a conversation, so it is the one place a citation the model made up does not fail the run: the answer goes through as plain talk with only the real citations kept, and launch knowledge is not labelled. Any claim about taste, audience or place still needs a real receipt, and the gate lets in basic questions about the project's subject.
 
 ## 4. Tools
 
