@@ -22,9 +22,12 @@ export const questionOptionSchema = z.object({
   description: z.string().optional(),
 });
 
-/** Something a run started from, for the chat's "Using" line (spec §3.7). Context, never evidence. */
+/**
+ * Something a run started from, or a note it just saved to the project's memory (`saved`). Shown
+ * as a quiet line under the reply (spec §3.7). Context, never evidence.
+ */
 export const contextItemSchema = z.object({
-  source: z.enum(['project', 'plan', 'chat']),
+  source: z.enum(['project', 'plan', 'chat', 'saved']),
   label: z.string().min(1),
 });
 export type ContextItem = z.infer<typeof contextItemSchema>;
