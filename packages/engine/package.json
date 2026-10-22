@@ -27,7 +27,13 @@
     "qloo:catalog-probes": "tsx --env-file=../../.env scripts/qloo-catalog-probes.ts",
     "qloo:games-probes": "tsx --env-file=../../.env scripts/qloo-games-probes.ts",
     "qloo:podcasts-probes": "tsx --env-file=../../.env scripts/qloo-podcasts-probes.ts",
-    "qloo:books-probes": "tsx --env-file=../../.env scripts/qloo-books-probes.ts"
+    "qloo:books-probes": "tsx --env-file=../../.env scripts/qloo-books-probes.ts",
+    "qloo:budget-probes": "tsx --env-file=../../.env scripts/qloo-budget-probes.ts",
+    "qloo:profile-probes": "tsx --env-file=../../.env scripts/qloo-profile-probes.ts",
+    "qloo:search-probes": "tsx --env-file=../../.env scripts/qloo-search-probes.ts",
+    "qloo:signal-probes": "tsx --env-file=../../.env scripts/qloo-signal-probes.ts",
+    "qloo:region-probes": "tsx --env-file=../../.env scripts/qloo-region-probes.ts",
+    "qloo:place-probes": "tsx --env-file=../../.env scripts/qloo-place-probes.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
