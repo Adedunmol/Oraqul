@@ -52,7 +52,11 @@
       "f-brands-telecom-lagos": ["Spine Mobile"],
       "f-brands-telecom-london": ["Spine Mobile"],
       "f-shops-lagos": ["Terra Kulture", "The Jazzhole"],
-      "f-shops-london": ["Housmans Bookshop", "Skoob Books"]
+      "f-shops-london": ["Housmans Bookshop", "Skoob Books"],
+      "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-london-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-london-brands": ["Coca-Cola", "Nike", "McDonald's"]
     },
     "sections": {
       "bottom-line": "3/0",

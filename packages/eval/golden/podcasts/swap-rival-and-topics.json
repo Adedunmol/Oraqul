@@ -44,7 +44,11 @@
       "f-crosspromo": ["Armchair Expert", "Midnight Ledger", "Case Closed Weekly"],
       "f-promo-armchair-expert": ["Armchair Expert"],
       "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"]
+      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"],
+      "f-region-accra-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-accra-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"]
     },
     "sections": {
       "bottom-line": "3/0",

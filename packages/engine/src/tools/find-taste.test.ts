@@ -43,4 +43,31 @@ describe('findTaste shaping', () => {
     expect(params.get('filter.popularity.min')).toBe('0.4');
     expect(params.get('filter.popularity.max')).toBe('0.85');
   });
+
+  it('asks with no anchors for a city and an age band, and sends no signal title', async () => {
+    const params = await sent({
+      entityIds: [],
+      type: 'urn:entity:artist',
+      city: 'Lagos',
+      ages: ['25_to_29', '30_to_34'],
+    });
+    expect(params.has('signal.interests.entities')).toBe(false);
+    expect(params.has('filter.exclude.entities')).toBe(false);
+    expect(params.get('signal.location.query')).toBe('Lagos');
+    expect(params.get('signal.demographics.age')).toBe('25_to_29,30_to_34');
+  });
+
+  it('refuses no anchors without both a city and an age band', async () => {
+    stubFetch(jsonResponse(entityInsightsBody));
+    await expect(
+      tools.findTaste.run(context(), { entityIds: [], type: 'urn:entity:artist', city: 'Lagos' }),
+    ).rejects.toThrow('needs an anchor');
+    await expect(
+      tools.findTaste.run(context(), {
+        entityIds: [],
+        type: 'urn:entity:artist',
+        ages: ['25_to_29'],
+      }),
+    ).rejects.toThrow('needs an anchor');
+  });
 });

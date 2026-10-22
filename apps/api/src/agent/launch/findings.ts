@@ -198,6 +198,15 @@ export interface GroundKit<R extends LaunchRead, P extends QueryPlanCore> {
   ): Promise<T | null>;
 }
 
+/** Fewer comps named by the team than this is a thin brief: the audience rests on one or two titles. */
+export const THIN_ANCHORS = 3;
+/** Cities the region read covers, and the lists asked for each. */
+const SEED_CITIES = 2;
+const SEED_TYPES = [
+  ['urn:entity:artist', 'artists'],
+  ['urn:entity:brand', 'brands'],
+] as const;
+
 const rank: Record<Confidence, number> = { lower: 0, medium: 1, high: 2 };
 
 /**
@@ -372,6 +381,9 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
   try {
     await spec.runQueries(kit);
     await Promise.all(kit.jobs);
+    // Thin means the team named fewer than three comps itself: the reader fills the rest with its own
+    // proposals, so the number of anchors would almost never be small.
+    if (ids.length > 0 && read.comps.length < THIN_ANCHORS) await regionSeeds(kit);
   } catch (err) {
     if (!(err instanceof QlooBudgetError)) throw err;
     budgetOut = true;
@@ -670,4 +682,59 @@ function numbersIn(text: string): Record<string, number> {
   return Object.fromEntries(
     [...text.matchAll(/-?\d+(?:\.\d+)?/g)].map((m, i) => [`n${i}`, Number(m[0])]),
   );
+}
+
+/**
+ * What the age band likes in the team's cities with no title behind it, for a thin brief (decision
+ * D21). It is a separate finding at lower confidence, never mixed into what the comps' audience
+ * likes, and says so in its own words. Checked live for large markets: artists and brands came
+ * back local for London and Lagos; series and films did not, so they are not asked.
+ */
+export async function regionSeeds<R extends LaunchRead, P extends QueryPlanCore>(
+  kit: GroundKit<R, P>,
+): Promise<void> {
+  const { deps, read, plan } = kit;
+  if (read.ages.length === 0) return;
+  const age = agesPhrase(read.ages);
+  for (const city of plan.cities.slice(0, SEED_CITIES)) {
+    for (const [type, noun] of SEED_TYPES) {
+      const run = await kit.safely(`What people ${age} in ${city} like`, () =>
+        tools.findTaste.run(deps.tools, {
+          type,
+          city,
+          ages: read.ages,
+          gender: read.gender,
+          take: NAMED + 1,
+          exclude: kit.ids,
+        }),
+      );
+      if (!run) continue;
+      const out = findTasteOutputSchema.parse(run.data);
+      const [call] = run.receipts;
+      if (!call || out.candidates.length === 0) continue;
+      const names = list(out.candidates.slice(0, NAMED).map((c) => c.name));
+      kit.add(
+        {
+          id: `f-region-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${noun}`,
+          query: 'region',
+          text: `With no comps to go on, here is what people ${age} in ${city} like, from the place and age band alone: the ${noun} ${names}. This is taste for the place, not for your comps.`,
+          entities: out.candidates.map((c) => entity(c.name, c.affinity, c.detail, c.entityId)),
+          verdict: null,
+          confidence: 'lower',
+          why: 'lower: a thin brief, so this rests on the place and age band alone',
+          context: {
+            city,
+            ages: read.ages,
+            tags: [],
+            country: null,
+            yearFrom: null,
+            audience: read.gender
+              ? `${read.gender === 'female' ? 'mostly women' : 'mostly men'}, region and age only`
+              : 'region and age only',
+          },
+        },
+        call,
+      );
+    }
+  }
 }

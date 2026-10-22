@@ -52,7 +52,11 @@
       "f-brands-beverage-toronto": ["Page Turner Coffee", "Lantern Tea"],
       "f-brands-telecom-new-york": ["Spine Mobile"],
       "f-brands-telecom-toronto": ["Spine Mobile"],
-      "f-shops-new-york": ["Books Are Magic"]
+      "f-shops-new-york": ["Books Are Magic"],
+      "f-region-new-york-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-new-york-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-toronto-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-toronto-brands": ["Coca-Cola", "Nike", "McDonald's"]
     },
     "sections": {
       "bottom-line": "3/0",
