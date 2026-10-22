@@ -11,7 +11,13 @@ import type {
 } from '@oraqul/schema';
 import { z } from 'zod';
 import { ungroundedClaims } from './grounding.js';
-import type { AgentContext, HistoryItem, Planner, Step } from './types.js';
+import {
+  type AgentContext,
+  type HistoryItem,
+  type Planner,
+  STANDALONE_CONTEXT,
+  type Step,
+} from './types.js';
 
 type CategoryPack = (typeof packs)[Category];
 
@@ -201,6 +207,12 @@ async function runLoop(state: RunState, deps: RuntimeDeps, loop: Loop): Promise<
         trace('Writing up what the receipts show');
         const bad = ungroundedClaims(step.reply, [...state.receipts, ...state.prior]);
         if (bad.length === 0) return { outcome: 'finished', reply: step.reply };
+        // A standalone chat is a conversation: a citation the model made up is dropped, and the
+        // answer goes through as plain talk with only the citations that are real.
+        if (state.context?.startsWith(STANDALONE_CONTEXT)) {
+          const claims = step.reply.claims.filter((c) => !bad.includes(c.text));
+          return { outcome: 'finished', reply: { ...step.reply, claims } };
+        }
         loop.groundingRetries += 1;
         if (loop.groundingRetries > 1) return { outcome: 'ungrounded' };
         loop.history.push({
