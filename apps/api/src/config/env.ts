@@ -27,6 +27,8 @@ export const envSchema = z
     QLOO_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
     QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(80),
     QLOO_MODE: z.enum(['demo', 'live']).default('demo'),
+    /** The commit the server was built from; saved on every plan. Empty in development. */
+    CODE_VERSION: z.string().default(''),
     AGENT_MAX_STEPS: z.coerce.number().int().positive().default(12),
     LLM_PROVIDER: z.enum(llmProviders).default('openai'),
     LLM_API_KEY: z.string().default(''),

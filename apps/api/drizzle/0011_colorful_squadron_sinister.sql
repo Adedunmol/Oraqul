@@ -1,0 +1,1 @@
+ALTER TABLE "outputs" ADD COLUMN "versions" jsonb;

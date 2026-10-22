@@ -251,6 +251,7 @@ Checked once in `responses.ts`.
 - Games: an anime tag on a game signal (the list came back empty); what a genre tag as the only signal returns (unrelated games in the probe); theme and audience tags for games, which read as generic ("Health Optimization") where gameplay type, tone and platform read well. `person` returned mostly streamers and video creators with some executives and designers, so `CREATORS_GROUNDED` stays false until someone decides that mix is good enough to name.
 - Games, settled: `filter.results.entities` scores every medium probed, and an open discovery call and a scored call give the same affinity for one id, so scoring is needed only for a candidate discovery would not list, such as a collab.
 - Books: other genres and markets, a book genre tag as the only signal for a book Qloo does not know (one demographics row in the probe), the franchise or series property, `filter.publication_year.max`, and how many books carry age and gender rows (about half in the first measurement). `person` is not used for authors until a list that fits every genre is shown.
+- Whether name lookups may be stored beyond a run. The 14 day lookup cache lives in memory and is lost on a restart; a database copy waits on Qloo's terms.
 - Quota header, and whether recorded responses may be committed or shown on a public share link.
 
 ## Rules

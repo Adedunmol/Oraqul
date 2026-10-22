@@ -132,6 +132,10 @@ The product behaviour is in [spec §3.6](../product/spec.md). The kind comes fro
 
 A date check or partner brief does not become the chat's current plan; a scenario does. Not built: corrections that change the category or mode ("check my plan instead", "start fresh").
 
+## Versions
+
+Every saved plan carries `outputs.versions`: the writer model (null when the template writer ran), a hash of the system prompts the pipeline sends (`promptVersion`, `agent/versions.ts`), the commit the server was built from (`CODE_VERSION`, `dev` when unset) and the Qloo host (`demo` in demo mode). A drop in quality can then be pinned to a change, and two plans are compared fairly only when these match.
+
 ## Memory
 
 Product behaviour is [spec §3.7](../product/spec.md): two layers (chat, project), memory is context and never evidence, the person can see, rewrite and forget what the project remembers. There is no team layer.

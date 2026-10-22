@@ -149,6 +149,7 @@ import {
 } from './summary/chat-summarizer.js';
 import { ThreadStore } from './thread-store.js';
 import { createTitler, THREAD_TITLER } from './titler.js';
+import { VERSIONS, versionsOf } from './versions.js';
 
 const logger = new Logger('Router');
 
@@ -597,6 +598,20 @@ const lookups = new LookupCache();
           scripted,
           (err) => logger.warn(`Model summariser failed, keeping the person's words: ${err}`),
         );
+      },
+    },
+    {
+      provide: VERSIONS,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<Env, true>) => {
+        const get = <K extends keyof Env>(key: K) => config.get(key, { infer: true });
+        const writes = get('LLM_API_KEY') !== '' || get('LLM_WRITER_API_KEY') !== '';
+        return versionsOf({
+          writerModel: writes ? get('LLM_WRITER_MODEL') || get('LLM_MODEL') : '',
+          qlooMode: get('QLOO_MODE'),
+          qlooBaseUrl: get('QLOO_BASE_URL'),
+          codeVersion: get('CODE_VERSION'),
+        });
       },
     },
     MemoryStore,

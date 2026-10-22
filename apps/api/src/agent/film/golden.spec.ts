@@ -270,3 +270,47 @@ describe('Film golden runs on recorded live responses', { timeout: 20_000 }, () 
     expect(summarise(result)).toEqual(recorded.expect);
   });
 });
+
+// The same inputs over live Qloo with nothing recorded or saved (decision D45). The wording is the
+// template writer's, so what is judged is what code decides: that every grounded line cites a
+// finding, that each of the team's cities is backed, and that the run stays inside the call budget.
+// Run it with `LIVE_EVAL=1` and a key; it uses real calls, about 55 per case.
+describe('Film live eval', { timeout: 300_000 }, () => {
+  const key = process.env.QLOO_API_KEY;
+  const base = process.env.QLOO_BASE_URL;
+  const enabled = process.env.LIVE_EVAL === '1' && !!key && !!base;
+  const budget = Number(process.env.QLOO_CALL_BUDGET ?? 80);
+
+  it.skipIf(!enabled || liveCases.length === 0).each(liveCases.length ? liveCases : ['none'])(
+    '%s',
+    async (file) => {
+      const golden = caseSchema.parse(JSON.parse(readFileSync(`${dir}${file}`, 'utf8')));
+      const live: typeof fetch = async (input, init) => {
+        const raw = new URL(input instanceof Request ? input.url : input);
+        const url = new URL(raw.pathname + raw.search, base);
+        return fetch(url, { ...init, headers: { ...init?.headers, 'X-Api-Key': key as string } });
+      };
+      const result = await run(golden, live, 'qloo');
+      const output = result.output;
+      if (!output) throw new Error(`The run stopped ${result.reason} with no plan`);
+      expect(ungroundedLines(output.brief, result.receipts)).toEqual([]);
+      checkRules(
+        result,
+        output.brief.places.map((p) => p.name),
+      );
+      const calls = new Set(result.receipts.map((r) => r.callId)).size;
+      expect(calls, 'a run must stay inside the call budget').toBeLessThanOrEqual(budget);
+      if (!output.plan) throw new Error('Expected a plan');
+      const report = groundingReport(
+        output.plan,
+        output.brief.places.map((p) => p.name),
+      );
+      for (const [city, n] of Object.entries(report.cities)) {
+        expect(n, `${city} has too few lines backed by Qloo`).toBeGreaterThanOrEqual(3);
+      }
+      console.log(
+        `${file}: ${calls} calls, ${report.backed} of ${report.lines} lines backed, ${report.findingsUsed} findings used`,
+      );
+    },
+  );
+});

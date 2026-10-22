@@ -261,6 +261,8 @@ export const outputs = pgTable('outputs', {
   report: jsonb('report'),
   /** What the plan was built from (the agent's reading and the comps it used), so a follow up can rerun it. */
   inputs: jsonb('inputs'),
+  /** What the plan was made with (writer model, prompts, code, Qloo host). Null on plans saved before this. */
+  versions: jsonb('versions'),
   changedIds: text('changed_ids').array().notNull().default([]),
   headline: text('headline'),
   moves: jsonb('moves'),

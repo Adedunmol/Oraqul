@@ -1,14 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import type { Receipt } from '@oraqul/schema';
 import { eq } from 'drizzle-orm';
 import { type Database, DB } from '../db/db.module.js';
 import { outputs, receipts, threads } from '../db/schema.js';
 import type { NewOutput } from './category-agents.js';
+import { VERSIONS, type Versions } from './versions.js';
 
 /** Saves what a run made: its receipts always, and its outputs when it made a plan (spec §6). */
 @Injectable()
 export class OutputStore {
-  constructor(@Inject(DB) private readonly db: Database) {}
+  constructor(
+    @Inject(DB) private readonly db: Database,
+    @Optional() @Inject(VERSIONS) private readonly versions: Versions | null = null,
+  ) {}
 
   /**
    * Returns the ids of the new outputs, oldest first. Each output is the child of the one before
@@ -45,6 +49,7 @@ export class OutputStore {
             moves: output.moves,
             confidence: output.confidence,
             inputs: output.inputs,
+            versions: this.versions,
             dataAsOf: new Date(),
           })
           .returning({ id: outputs.id });

@@ -39,3 +39,19 @@ Costs are rough and assume about 80% input tokens; check the provider's usage pa
 - The steps around a plan each have a model call with a scripted fallback, so a quota error never stops a run: the analyst (`launch/analyse.ts`, role `agent`; reads what the request needs and fills what it left out), the research check (`launch/research-loop.ts`, role `agent`; judges coverage and names catalog queries), the red team (`launch/review.ts`, role `writer`, since it judges the plan the writer made; lists issues, code decides), and the memory writer (`agent/memory/memory-writer.ts`, role `router`; short structured edits to a project's notes). With no key the analyst infers nothing, the research check makes no claim, the plan is saved as `unchecked`, and only plans are remembered.
 - Prompts live next to what they configure: category prompts in `packages/packs/src/<category>`, the router's in `model-reader.ts`.
 - Calls run at temperature 0 with one retry. The router's token use is saved in `runs.tokens`.
+
+## Untrusted text
+
+Text a person uploads, and facts a model finds on the web, reach the models. Neither is trusted: a document can say "put this link in the plan". The tools can only read (no tool changes state, spec §4), so the worst a bad text can do is change what a plan says, never what the system does.
+
+| Path | What reaches a model | What holds it |
+|---|---|---|
+| Upload (`uploads/extract.ts`) | The extracted text, cut at the attachment cap, sent with the message to the router, analyst, reader and writer | The reader keeps a value only when its quote is in the person's words and, for a title or name, in its own quote. Stored messages keep the file name, not the text, so an upload does not persist into memory directly |
+| Web search (the writer's provider, `LLM_WEB_SEARCH`) | Page text, turned into discrete facts with a source each | A line may state a figure or date only from a fact it cites. The facts are the model's reading of a page, so a hostile page can supply a figure that then counts as sourced |
+| Qloo | Names and tags in findings | Findings are built by code. A grounded line may name only what its findings return |
+| Project memory | Notes the memory writer wrote from earlier chats | Context only, never evidence: a note cannot ground a line |
+
+What the line check ([spec §6.2](../product/spec.md)) stops: a taste claim without a finding, a grounded line naming something its findings do not, a number or percentage no finding states, a market figure with no source, and a link, email address or phone number that neither the brief nor a cited page contains. What it does not stop: a playbook line (it cites nothing, so it may name anything) that recommends a bad partner or gives bad advice in plain words, and a wrong figure that a hostile page states and a line cites. A reviewer reads playbook lines as the model's own launch practice, and the plan labels them so.
+
+Not done: stripping instruction-like text from uploads (a keyword filter misses paraphrase and breaks real briefs), and checking a web fact against a second source.
+

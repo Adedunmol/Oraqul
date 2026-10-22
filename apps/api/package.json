@@ -18,7 +18,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:backfill-thread-names": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/backfill-thread-names.js"
+    "db:backfill-thread-names": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/backfill-thread-names.js",
+    "error-sample": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/error-sample.js",
+    "cost-report": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/cost-report.js"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.99",
