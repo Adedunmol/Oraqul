@@ -1,7 +1,7 @@
 {
   "title": "The Last Ferry",
   "brief": "Launch plan for the podcast \"The Last Ferry\", a narrative true crime storytelling show for Apple Podcasts, launching on 2099-04-01 in Toronto and New York. Comparable shows: \"Serial\" and \"Casefile\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Lead with New York, then Toronto: that is where your show's listeners are strongest.",
     "assumptions": {

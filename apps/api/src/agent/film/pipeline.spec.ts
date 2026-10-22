@@ -11,7 +11,8 @@ import { TemplatePlanWriter } from './writer.js';
 
 function setup(text: string, callBudget = 60) {
   const events: ThreadEvent[] = [];
-  const said = { text, files: [] };
+  // Most specs are not about the budget band card, so the brief states one.
+  const said = { text: `${text} An independent budget.`, files: [] };
   const handoff: Handoff = {
     category: 'film',
     mode: 'build',
@@ -341,5 +342,61 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
       const run = await runFilmBuild(handoff, deps());
       expect(launchPlanSchema.parse(run.output?.plan).review?.status).toBe('unchecked');
     });
+  });
+});
+
+describe('the budget band card', () => {
+  const bare =
+    'Launch plan for "Night Ferry", a thriller opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor".';
+
+  function bandSetup(text: string) {
+    const { handoff, deps } = setup(text);
+    // `setup` states a band so other specs skip the card; this one asks for it.
+    const bareHandoff = { ...handoff, inputs: { text, files: [] }, message: { text, files: [] } };
+    return { handoff: bareHandoff, deps };
+  }
+
+  it('asks for the band once, after the plan can be read and before any research', async () => {
+    const { handoff, deps } = bandSetup(bare);
+    const first = await runFilmBuild(handoff, deps());
+    expect(first.reason).toBe('waiting');
+    expect(first.state?.job === 'build' && first.state.pending).toMatchObject({
+      id: 'film.band',
+      card: 'single',
+    });
+    expect(first.receipts).toEqual([]);
+  });
+
+  it('sizes the plan for the band that was picked, and says so only when it was not stated', async () => {
+    const { handoff, deps } = bandSetup(bare);
+    const first = await runFilmBuild(handoff, deps());
+    if (first.state?.job !== 'build' || !first.state.pending) throw new Error('no card');
+    const done = await runFilmBuild(handoff, deps(), {
+      state: first.state,
+      reply: { kind: 'options', questionId: 'film.band', optionIds: ['micro'] },
+    });
+    expect(done.reason).toBe('finished');
+    expect(done.output?.plan?.band).toEqual({ band: 'micro', source: 'asked' });
+    expect(done.output?.plan?.understanding?.assumed.map((a) => a.what)).toContain('Budget band');
+  });
+
+  it('assumes an independent release when the card is skipped', async () => {
+    const { handoff, deps } = bandSetup(bare);
+    const first = await runFilmBuild(handoff, deps());
+    if (first.state?.job !== 'build') throw new Error('no state');
+    const done = await runFilmBuild(handoff, deps(), {
+      state: first.state,
+      reply: { kind: 'options', questionId: 'film.band', optionIds: ['skip'] },
+    });
+    expect(done.output?.plan?.band).toEqual({ band: 'independent', source: 'assumed' });
+  });
+
+  it('does not ask when the brief states a budget or a band', async () => {
+    for (const stated of ['Budget $40k.', 'A mid-size budget.']) {
+      const { handoff, deps } = bandSetup(`${bare} ${stated}`);
+      const run = await runFilmBuild(handoff, deps());
+      expect(run.reason).toBe('finished');
+      expect(run.output?.plan?.band?.source).toBe('brief');
+    }
   });
 });

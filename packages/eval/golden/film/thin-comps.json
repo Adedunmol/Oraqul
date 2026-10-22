@@ -5,7 +5,8 @@
   "replies": [
     {
       "text": "It opens in Lagos and Accra."
-    }
+    },
+    { "optionIds": ["skip"] }
   ],
   "expect": {
     "headline": "Open in Accra first, then Lagos: that is where your comps' audience is strongest among your cities.",

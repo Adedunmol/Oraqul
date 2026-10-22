@@ -10,7 +10,8 @@ import { TemplatePlanWriter } from './writer.js';
 
 function setup(text: string, callBudget = 60) {
   const events: ThreadEvent[] = [];
-  const said = { text, files: [] };
+  // Most specs are not about the budget band card, so the brief states one.
+  const said = { text: `${text} An independent budget.`, files: [] };
   const handoff: Handoff = {
     category: 'music',
     mode: 'build',

@@ -1,4 +1,5 @@
 import { cityNames } from '@oraqul/engine';
+import { ASSET_OFFER, BAND_LABEL, type BudgetBand, bandCarries } from '@oraqul/packs';
 import type {
   DroppedLine,
   Finding,
@@ -38,6 +39,12 @@ export interface CheckContext {
   teamAges: AgeBand[];
   /** The plan's sections: the core plus its modules. */
   allowed: LaunchSectionKey[];
+  /** The budget band the plan is sized for. A band that cannot carry flagship partners drops them. */
+  band?: BudgetBand | null;
+  /** Flagship brands for the plan's market, which only a mid-size or major budget can carry. */
+  flagships?: string[];
+  /** Partners the team already signed, which are never dropped for budget. */
+  teamPartners?: string[];
 }
 
 const has = (haystack: string, needle: string) => {
@@ -154,6 +161,15 @@ const numbers = (text: string) =>
     Number(m[0].replace(/,/g, '')),
   );
 
+// A flagship the team did not name already. A signed partner is theirs, whatever the budget.
+function flagshipIn(line: WrittenLine, ctx: CheckContext): string | null {
+  const signed = new Set((ctx.teamPartners ?? []).map((p) => normalise(p)));
+  return (
+    (ctx.flagships ?? []).find((name) => !signed.has(normalise(name)) && names(line.text, name)) ??
+    null
+  );
+}
+
 /** The line check (spec §6.2). Returns why a line fails, or null. */
 export function checkLine(
   section: LaunchSectionKey,
@@ -168,6 +184,13 @@ export function checkLine(
   }
   if (JARGON.test(line.text)) {
     return 'It uses data jargon or talks about what was measured; the plan speaks plainly.';
+  }
+  if (ASSET_OFFER.test(line.text)) {
+    return 'It offers to make the ad, trailer, image or video; Oraqul writes the guide or script and a person makes it.';
+  }
+  const flagship = ctx.band && !bandCarries(ctx.band, 'A') ? flagshipIn(line, ctx) : null;
+  if (flagship) {
+    return `It proposes ${flagship}, a flagship partner that a ${BAND_LABEL[ctx.band as BudgetBand].toLowerCase()} budget cannot carry.`;
   }
   const dictionary = dictionaryOf(ctx.findings, ctx.rules.tagOnly);
   const webCited = line.sourceIds.map((id) => ctx.sources.find((src) => src.id === id));

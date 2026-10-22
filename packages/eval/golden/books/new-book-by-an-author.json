@@ -1,7 +1,7 @@
 {
   "title": "The Salt Ledger",
   "brief": "Launch plan for the book \"The Salt Ledger\", the latest novel by Ada Obi, a literary novel from a major press launching on 2099-05-01 in London and Lagos. Earlier books: from the author of \"The Harbour Wives\". Comparable books: \"Americanah\" and \"Normal People\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Lead with Lagos, then London: that is where your book's readers are strongest.",
     "assumptions": {

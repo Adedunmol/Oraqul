@@ -46,7 +46,7 @@ describe('Books agent: the job a message does before a chat has a plan', () => {
     mode,
     title: 'The Lagos Ledger',
     inputs: { text: 'I want to work on my new book', files: [] },
-    message: { text, files: [] },
+    message: { text: `${text} An independent budget.`, files: [] },
     recent: [],
     planId: null,
   });

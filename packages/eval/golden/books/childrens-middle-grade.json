@@ -1,7 +1,7 @@
 {
   "title": "Kofi and the River",
   "brief": "Launch plan for the book \"Kofi and the River\", a middle grade adventure published by a children's imprint, launching in September 2027 in London and Lagos. Comparable books: \"Wonder\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Lead with London, then Lagos: that is where your book's readers are strongest.",
     "assumptions": {

@@ -1,7 +1,7 @@
 {
   "title": "Serial",
   "brief": "Launch plan for season 3 of the podcast \"Serial\", an audio only true crime show on Apple Podcasts, launching on 2099-09-01 in New York and London. Comparable shows: \"Crime Junkie\" and \"Casefile\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Lead with New York, then London: that is where your show's listeners are strongest.",
     "assumptions": {

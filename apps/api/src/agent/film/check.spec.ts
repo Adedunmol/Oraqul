@@ -461,3 +461,42 @@ describe('checkSections', () => {
     expect(dropped[0]?.why).toMatch(/section/);
   });
 });
+
+describe('the budget band and the creative rule', () => {
+  const play = (text: string) => ({
+    kind: 'playbook' as const,
+    text,
+    findingIds: [],
+    sourceIds: [],
+    names: [],
+    group: null,
+  });
+  const banded = (over: Partial<CheckContext>): CheckContext => ({
+    ...ctx,
+    flagships: ['Guinness', 'MTN'],
+    ...over,
+  });
+
+  it('drops a flagship partner a micro or independent budget cannot carry', () => {
+    const line = play('Approach Guinness for premiere hospitality in Lagos.');
+    expect(checkLine('partnerships', line, banded({ band: 'micro' }))).toMatch(/cannot carry/);
+    expect(checkLine('partnerships', line, banded({ band: 'independent' }))).toMatch(
+      /cannot carry/,
+    );
+  });
+
+  it('keeps it for a mid-size budget, or when the team already signed the partner', () => {
+    const line = play('Approach Guinness for premiere hospitality in Lagos.');
+    expect(checkLine('partnerships', line, banded({ band: 'mid' }))).toBeNull();
+    expect(
+      checkLine('partnerships', line, banded({ band: 'micro', teamPartners: ['Guinness'] })),
+    ).toBeNull();
+  });
+
+  it('drops a line that offers to make the trailer, and keeps one that briefs it', () => {
+    const offer = play('We will generate the trailer for each territory.');
+    const brief = play('Write the trailer script and a shot list for the lead territory.');
+    expect(checkLine('partnerships', offer, ctx)).toMatch(/guide or script/);
+    expect(checkLine('partnerships', brief, ctx)).toBeNull();
+  });
+});

@@ -1,7 +1,7 @@
 {
   "title": "Night Songs",
   "brief": "Launch plan for \"Night Songs\", an afrobeats album from artist \"Neon Tide\" for 18 to 34 year olds, touring Lagos, London and Houston. Sound-alikes: \"Ada Lux\" and \"Kola Wave\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.",
     "assumptions": {

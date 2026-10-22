@@ -10,6 +10,7 @@ import {
   tools,
   toReceipt,
 } from '@oraqul/engine';
+import { BAND_LABEL, FLAGSHIPS } from '@oraqul/packs';
 import {
   type Claim,
   type CompUsed,
@@ -22,6 +23,7 @@ import {
   type LaunchSectionKey,
   type Move,
   type OverallConfidence,
+  type PlanBand,
   type PlanProcess,
   type PlanReview,
   type PlanSource,
@@ -42,6 +44,7 @@ import {
 } from '../category-agents.js';
 import { ungroundedClaims } from '../grounding.js';
 import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
+import { bandFromAnswer, bandFromBrief, bandQuestion, bandQuestionId } from './band.js';
 import { capital } from './brief.js';
 import { type CheckContext, checkSections } from './check.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
@@ -105,6 +108,8 @@ export interface LaunchInputs<R extends LaunchRead = LaunchRead> {
   dropped: { name: string; why: string }[];
   used: CompUsed[];
   understanding?: Understanding | null;
+  /** The budget band the plan was sized for, so a what-if keeps it. */
+  band?: PlanBand | null;
 }
 
 export interface PlanRun {
@@ -452,6 +457,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let knownUsed: CompUsed[] = [];
   let knownDropped: { name: string; why: string }[] = [];
   let understanding: Understanding | null = null;
+  let band: PlanBand | null = null;
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -462,6 +468,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     understanding = from.inputs.understanding ?? applyAnalysis(read, null).understanding;
     knownUsed = changed.used;
     knownDropped = changed.dropped;
+    band = from.inputs.band ?? null;
     for (const a of known) deps.tools.entities.set(a.entityId, a);
   } else {
     if (resume?.state.settle) {
@@ -472,9 +479,20 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       }
       extra = `${resume.state.extra}\n\n${answer}`.trim();
       kind = resume.state.kind;
+    } else if (resume?.state.pending?.id === bandQuestionId(deps.config.category)) {
+      // The band card's answer is a band, not more of the brief: its label has a figure in it that
+      // would be read as the budget.
+      const typed = resume.reply.kind === 'typed' || resume.reply.kind === 'text';
+      band = bandFromAnswer(
+        typed ? null : (resume.reply as { optionIds: string[] }).optionIds,
+        typed ? (resume.reply as { text: string }).text : null,
+      );
+      extra = resume.state.extra;
+      kind = resume.state.kind;
     } else if (resume) {
       extra = `${resume.state.extra}\n\n${replyText(resume.state, resume.reply)}`.trim();
       kind = resume.state.kind;
+      band = resume.state.band;
     }
     ctx.trace('Reading your brief');
     const input = {
@@ -495,7 +513,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.tokens += analysed.tokens;
     ({ read, understanding } = applyAnalysis(read, analysed.analysis));
 
-    // The only question a build ever asks: there is nothing to plan from without these (PRD C1).
+    // The first question a build may ask: there is nothing to plan from without these (PRD C1). A full plan may also ask for the budget band, below.
     const missing = deps.config.minimum.missing(read);
     if (missing.length && (!resume || deps.config.minimum.strict)) {
       const question: Question = {
@@ -512,6 +530,26 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         extra,
         asked: true,
         settle: false,
+        askedBand: false,
+        band: null,
+        pending: question,
+      });
+    }
+
+    // The second question a full build may ask: what the budget can carry decides which partners
+    // and moves the plan may propose, so it is asked before the research and only once.
+    band = band ?? bandFromBrief(read, input.text);
+    if (!band && read.scope === 'full' && !resume?.state.askedBand) {
+      const question = bandQuestion(deps.config.category);
+      deps.emit({ type: 'question', agent: deps.config.category, ...question });
+      return ctx.stop('waiting', {
+        job: 'build',
+        kind,
+        extra,
+        asked: true,
+        settle: false,
+        askedBand: true,
+        band: null,
         pending: question,
       });
     }
@@ -550,6 +588,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     extra,
     kind,
     intro: `Here is the launch plan for “${title}”.`,
+    band,
   });
 }
 
@@ -573,6 +612,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     kind: 'build' | 'scenario' | 'fix';
     /** The chat line that introduces the plan. */
     intro: string;
+    /** The band the person gave or the brief stated. Null reads it from the brief again. */
+    band?: PlanBand | null;
     /** Characters of each file the writer may read. */
     chars?: number;
     /** The outputs this run made first, saved before the plan. */
@@ -580,6 +621,11 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   },
 ): Promise<PlanRun> {
   const { handoff, title, read, comps, asked, extra, kind } = input;
+  // A full plan is always sized for a band: stated, asked, or assumed to be independent.
+  const band: PlanBand | null =
+    input.band ??
+    bandFromBrief(read, [briefText(handoff), extra].join('\n')) ??
+    (read.scope === 'full' ? { band: 'independent', source: 'assumed' } : null);
   const { modules, queryPlan, sources } = asked;
   const text = briefText(handoff, input.chars, kind !== 'fix');
   const order = sectionOrder(modules);
@@ -601,7 +647,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     drafts += 1;
     const writeInput: WriteInput<R> = {
       title,
-      request: [text, extra].filter(Boolean).join('\n\n'),
+      request: [text, extra, band ? bandLine(band) : ''].filter(Boolean).join('\n\n'),
       read,
       comps: comps.used,
       sections: byCode ? order.filter((key) => key !== 'timeline') : order,
@@ -627,6 +673,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       teamAges: read.ages,
       allowed: order,
       rules: deps.config.rules,
+      band: band?.band ?? null,
+      flagships: FLAGSHIPS,
+      teamPartners: read.partners,
     };
     const writerSections = written.sections.filter(
       (s) => !CODE_SECTIONS.includes(s.key) && !(byCode && s.key === 'timeline'),
@@ -766,11 +815,11 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     ),
     dropped: current.dropped,
     writer: current.by,
-    understanding,
+    understanding: understanding && band ? withBand(understanding, band) : understanding,
     review: understanding ? reviewOf(status, rounds, next) : null,
     process: { research: researchRounds, drafts, dropped: everDropped },
     rules: null,
-    band: null,
+    band,
     signal: null,
     territories: [],
     calls: [],
@@ -818,7 +867,16 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   return ctx.stop(
     settle ? 'waiting' : 'finished',
     settle && kind !== 'fix'
-      ? { job: 'build', kind, extra, asked: true, settle: true, pending: settle }
+      ? {
+          job: 'build',
+          kind,
+          extra,
+          asked: true,
+          settle: true,
+          askedBand: true,
+          band,
+          pending: settle,
+        }
       : null,
     {
       kind,
@@ -841,6 +899,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         resolved: comps.resolved,
         dropped: comps.dropped,
         used: comps.used,
+        band,
         understanding,
       } satisfies LaunchInputs<R>,
     },
@@ -1214,6 +1273,30 @@ export function briefText(
         .filter((t, i, all) => t && t !== first && t !== now && all.indexOf(t) === i)
     : [];
   return [first, ...earlier, now && now !== first ? now : ''].filter(Boolean).join('\n\n');
+}
+
+/** The writer is told what the band can carry; the line check enforces it for flagship partners. */
+function bandLine(band: PlanBand): string {
+  return `Budget band: ${BAND_LABEL[band.band].toLowerCase()}. Propose only what this budget can carry, and no flagship partner (a national brand that sells at scale) unless the team named it or the band is mid-size or major.`;
+}
+
+// A band the person did not state shows under the bottom line with the other assumptions.
+function withBand(understanding: Understanding, band: PlanBand): Understanding {
+  if (band.source === 'brief') return understanding;
+  return {
+    ...understanding,
+    assumed: [
+      ...understanding.assumed,
+      {
+        what: 'Budget band',
+        value: BAND_LABEL[band.band],
+        why:
+          band.source === 'asked'
+            ? 'You gave it when asked.'
+            : 'You skipped the question, so the plan is sized for an independent release.',
+      },
+    ],
+  };
 }
 
 export function replyText(state: { pending: Question | null }, reply: Reply): string {

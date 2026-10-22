@@ -2,7 +2,7 @@
   "data": "demo",
   "title": "Night Ferry",
   "brief": "Launch plan for \"Night Ferry\", a thriller film for 18 to 34 year olds, opening in Lagos and London. Comps: \"Salt Road\", \"The Glass Lantern\" and \"Midnight Harbor\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Open in London first, then Lagos: that is where your comps' audience is strongest among your cities.",
     "assumptions": {

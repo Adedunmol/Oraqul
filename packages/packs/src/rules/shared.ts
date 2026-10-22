@@ -1,4 +1,7 @@
+import { type BudgetBand, budgetBands } from '@oraqul/schema';
 import type { Rule, RuleSource } from './types';
+
+export { type BudgetBand, budgetBands };
 
 /** Launch craft Oraqul's team set. Dated so a reader can tell how old a rule is. */
 export const TEAM_RULE: RuleSource = {
@@ -11,9 +14,6 @@ export const teamRule = <T>(id: string, value: T): Rule<T> => ({ id, value, sour
 
 // Budget bands. The thresholds are chosen conventions, not measured, and are the first thing to
 // change if the bands feel wrong. A budget in another currency is read as the nearest listed one.
-export const budgetBands = ['micro', 'independent', 'mid', 'major'] as const;
-export type BudgetBand = (typeof budgetBands)[number];
-
 export const BAND_LABEL: Record<BudgetBand, string> = {
   micro: 'Micro',
   independent: 'Independent',
@@ -97,6 +97,11 @@ export const PARTNER_SEEDS: Record<string, Record<PartnerTier, TierSeed>> = {
     C: { names: [], kinds: ['independent cinemas', 'creators', 'diaspora businesses'] },
   },
 };
+
+/** Every flagship name in the seed library. A band that cannot carry tier A drops lines that propose them. */
+export const FLAGSHIPS: string[] = [
+  ...new Set(Object.values(PARTNER_SEEDS).flatMap((tiers) => tiers.A.names)),
+];
 
 /** Diaspora hubs by country of origin, in the order a rollout reaches them. */
 export const DIASPORA: Record<string, string[]> = {

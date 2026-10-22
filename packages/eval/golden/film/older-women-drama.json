@@ -2,7 +2,7 @@
   "data": "demo",
   "title": "Long Table",
   "brief": "Plan the release of \"Long Table\", a family drama film for women aged 35 to 54. Markets: Houston, Atlanta, Nairobi and Kumasi. Comps: \"Harbor Lights\", \"Third Mainland\" and \"Salt Road\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Open in Nairobi first, then Atlanta and Houston: that is where your comps' audience is strongest among your cities.",
     "assumptions": {

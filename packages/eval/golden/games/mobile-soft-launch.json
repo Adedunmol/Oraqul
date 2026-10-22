@@ -1,7 +1,7 @@
 {
   "title": "Ember Keep",
   "brief": "Launch plan for the game \"Ember Keep\", a free-to-play mobile roguelike on iOS and Android. Comparable games: \"Void Courier\" and \"Lantern Row\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Lead with Toronto, then Auckland and Manila: that is where your game's players are strongest of the regions checked.",
     "assumptions": {

@@ -1,7 +1,7 @@
 {
   "title": "Ember Keep",
   "brief": "Launch plan for the game \"Ember Keep\", a free-to-play roguelike on PlayStation and Xbox for 18 to 29 year olds, launching in North America. Comparable games: \"Hollow Hills\", \"Crown of Ash\" and \"Tidewalker\". Collab with \"Kitsune Drift\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }],
   "expect": {
     "headline": "Lead with Los Angeles, then Toronto and New York: that is where your game's players are strongest.",
     "assumptions": {
