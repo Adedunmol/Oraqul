@@ -1,6 +1,6 @@
 'use client';
 
-import type { LineChange, Output, Receipt } from '@oraqul/schema';
+import type { LineChange, Output, ReactionKind, Receipt } from '@oraqul/schema';
 import { createContext, use } from 'react';
 
 export interface OutputView {
@@ -13,6 +13,8 @@ export interface OutputView {
   goToTab: (key: Output['tabs'][number]['key']) => void;
   /** The output this one was built on, for "open that evidence". */
   builtOn: { id: string; label: string } | undefined;
+  /** The caller's own rating of the plan. Null when there is none, and on a shared link. */
+  reaction: ReactionKind | null;
   /** False for viewers and on a shared link. */
   canEdit: boolean;
   shared: boolean;

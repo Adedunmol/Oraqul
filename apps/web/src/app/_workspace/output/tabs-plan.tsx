@@ -4,10 +4,11 @@ import type { LaunchPlan } from '@oraqul/schema';
 import { useEffect, useMemo, useState } from 'react';
 import { useOutputView } from './context';
 import { PlanDocument, PlanFollowUp, planOutline } from './plan-document';
+import { PlanFeedback } from './plan-feedback';
 
 /** The launch plan page: the document, in a reading column. Evidence is one click behind it. */
 export function LaunchPlanTab({ plan }: { plan: LaunchPlan }) {
-  const { output, openReceipt, shared } = useOutputView();
+  const { output, openReceipt, shared, reaction } = useOutputView();
   const changes = useMemo(
     () => new Map(output.changes.map((c) => [c.lineId, c])),
     [output.changes],
@@ -17,6 +18,7 @@ export function LaunchPlanTab({ plan }: { plan: LaunchPlan }) {
       <div className="flex flex-col gap-10">
         <PlanDocument plan={plan} changes={changes} onSource={(id) => openReceipt(id)} />
         {shared ? null : <PlanFollowUp plan={plan} />}
+        {shared ? null : <PlanFeedback outputId={output.id} initial={reaction} />}
       </div>
       <Outline items={planOutline(plan)} />
     </div>

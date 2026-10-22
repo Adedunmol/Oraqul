@@ -11,6 +11,8 @@ import {
   type PinnedProjects,
   type PostMessage,
   pinnedProjectsSchema,
+  type ReactionKind,
+  reactionStateSchema,
   type ShareState,
   shareStateSchema,
 } from '@oraqul/schema';
@@ -62,6 +64,18 @@ export function setShare(outputId: string, enabled: boolean): Promise<ShareState
     { method: 'PUT', body: { enabled } },
     shareStateSchema,
   );
+}
+
+/** Rates a plan useful or wrong; `null` takes the rating back. Any member of the team may. */
+export function setReaction(
+  outputId: string,
+  kind: ReactionKind | null,
+): Promise<ReactionKind | null> {
+  return clientRequest(
+    `/outputs/${outputId}/reaction`,
+    { method: 'PUT', body: { kind } },
+    reactionStateSchema,
+  ).then((state) => state.kind);
 }
 
 export function deleteProject(projectId: string): Promise<void> {

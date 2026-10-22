@@ -83,6 +83,8 @@ export interface OutputDetail {
   builtOn: Output | null;
   /** Demo outputs have no share link. */
   share: null;
+  /** Demo outputs cannot be rated. */
+  reaction: null;
 }
 
 /** `GET /outputs/:id` */
@@ -98,6 +100,7 @@ export function getOutputDetail(s: DemoState, id: string): OutputDetail | undefi
     thread,
     builtOn: s.outputs.find((o) => o.id === builtOnId) ?? null,
     share: null,
+    reaction: null,
   };
 }
 

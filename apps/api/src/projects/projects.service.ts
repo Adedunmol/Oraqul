@@ -29,6 +29,7 @@ import {
   outputs,
   pins,
   projects,
+  reactions,
   runs,
   shareLinks,
   threadReads,
@@ -140,7 +141,8 @@ export class ProjectsService {
   }
 
   /** `GET /outputs/:outputId`: the output, its project and chat, and what it was built on. */
-  async outputDetail(outputId: string): Promise<OutputDetail> {
+  /** `userId` adds the caller's own reaction; without it (an export, a share check) there is none. */
+  async outputDetail(outputId: string, userId?: string): Promise<OutputDetail> {
     const owner = await this.outputs.owner(outputId);
     if (!owner) throw new NotFoundException('No such output');
     const [row] = await this.db
@@ -159,12 +161,20 @@ export class ProjectsService {
       .from(shareLinks)
       .where(eq(shareLinks.outputId, outputId))
       .limit(1);
+    const [mine] = userId
+      ? await this.db
+          .select({ kind: reactions.kind })
+          .from(reactions)
+          .where(and(eq(reactions.outputId, outputId), eq(reactions.userId, userId)))
+          .limit(1)
+      : [];
     return {
       output,
       project,
       thread: toThread(row.thread, row.by),
       builtOn: all.find((o) => o.id === output.parentId) ?? null,
       share: link ?? null,
+      reaction: mine?.kind ?? null,
     };
   }
 
