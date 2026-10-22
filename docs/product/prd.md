@@ -75,13 +75,13 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, comps, age band, cast, soundtrack, route, budget, partners and the job. It asks only when the minimum is missing: a description or genre, and at least one market. Comps the user names lead; with fewer than 3 the agent proposes more, kept apart ("You named 2. I added 2 more."). A same-name Qloo match is settled by code from year, country and popularity, and the plan states the choice. The user corrects anything by typing. | P0 |
 | C2 | The agent asks question cards instead of forms: single, multiple, text, split sliders, date, file, confirm, and entity match. | P0 |
 | C3 | The agent trace is shown live and kept collapsed afterwards. Findings appear in it as plain sentences while the queries run. | P0 |
-| C4 | A project holds several threads, shown as chats beside the project's current chat. A new one builds on the current plan without asking and says what context it pulled in. The user can type "start fresh" or "use an older plan" to change that. | P0 |
+| C4 | A project holds several threads, shown as chats beside the project's current chat. A new chat asks whether to use the project's memory or stand alone. One that uses memory starts on the current plan and the project's notes; a standalone chat sees none of it. | P0 |
 | C5 | The agent refuses forecasts and sending, and says why. | P0 |
 | C6 | Each category changes the questions, suggested next steps and results format. | P0 |
 | C7 | After each output the agent suggests up to three next steps built from it and the project (a scenario not yet tried, results if none are in, a brief or a date check). Each also works typed. | P0 |
-| C8 | Memory in three layers. In a chat the agent knows the whole chat. A project's chats share what the project knows (its inputs, current plan and facts the person confirmed). A team's standing facts (home market, usual territories, language, usual partners) apply to every project. The chat says which memory it used. | P0 |
-| C9 | A new chat asks whether to continue from the project or start fresh. Fresh ignores project memory and the earlier plan. Team memory can be switched off for that chat. Typed "start fresh" does the same. | P0 |
-| C10 | The agent offers to remember a fact ("Remember that you launch in Lagos first?") as a card with project, team or not now. Nothing is saved without a yes. The team and each project have a memory list where every item can be edited, archived or deleted, and says where it came from. | P0 |
+| C8 | Memory in two layers. In a chat the agent knows the whole chat. A project remembers key points, decisions and its plans, and keeps them up to date as plans, reports and fixes change; a new plan from the same chat replaces the old one and a plan from another chat sits beside it. | P0 |
+| C9 | A new chat asks whether to use the project's memory or stand alone. A standalone chat knows only the category and the project's name and writes nothing to the project's memory. | P0 |
+| C10 | The project has a memory list where every note can be rewritten or forgotten. The agent never offers a card to save a fact; it keeps the list itself. | P0 |
 
 ### 6.2 The three jobs
 

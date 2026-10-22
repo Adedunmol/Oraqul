@@ -45,7 +45,7 @@ Film is a configuration of the shared launch runtime in `apps/api/src/agent/laun
 | Run service | `apps/api/src/agent/run.service.ts` | Starts runs, picks router, gate or agent, resumes a run waiting on a card, saves, streams events |
 | Router | `agent/router/` | First message only: title, category, mode. Quote checked |
 | Gate | `agent/gate/` | Every later message: on topic, off topic (fixed refusal) or unclear (a card) |
-| Handoff | `agent/category-agents.ts` | What the agent gets: title, category, mode, `inputs`, `message`, `recent` (last 8 chat lines), `planId` |
+| Handoff | `agent/category-agents.ts` | What the agent gets: title, category, mode, `inputs`, `message`, `recent` (the newest chat lines that fit about 40 lines), `planId`, `fresh` and `memory` |
 | Film agent | `agent/launch/agent.ts` (`LaunchAgent`), `film/agent.ts`, `film/config.ts` | Does the job the project started with (build, audit or fix) if the chat has no plan, unless the message plainly asks for an audit or a fix, which wins (`askedJob`); otherwise refuse, or read the follow up and pick its job |
 | Brief reader | `agent/film/read.ts` | Model (or scripted) turns the brief into every field it gives, each with the words it came from |
 | Researcher | `agent/launch/research.ts`, prompts in `film/research.ts` | Web search for release timing and the market, facts tied to source pages |
@@ -70,16 +70,17 @@ Film is a configuration of the shared launch runtime in `apps/api/src/agent/laun
 
 Code sets the steps and their order. Each step is a `trace.step` in the chat.
 
-1. **Using.** Emits `memory.used` (your brief, files read).
-2. **Read** (model, quotes checked). The reader returns format, genre, logline, country of origin, language, comps, cities, window, age bands, gender, cast, director, soundtrack, route, budget (the number is read by code from the quote), signed partners, the scope (full or narrow) and the module a narrow ask names. `checkReading` keeps a value only if its quote is in your words; "launch plan", "go-to-market" and the like always make a full plan. If you named fewer than 3 comps, the model proposes more, kept apart.
-3. **The one question.** Only when there is no description or genre, or no city at all: one text card. After it, the run plans with what it has.
+1. **Read** (model, quotes checked). The reader returns format, genre, logline, country of origin, language, comps, cities, window, age bands, gender, cast, director, soundtrack, route, budget (the number is read by code from the quote), signed partners, the scope (full or narrow) and the module a narrow ask names. `checkReading` keeps a value only if its quote is in your words; "launch plan", "go-to-market" and the like always make a full plan. If you named fewer than 3 comps, the model proposes more, kept apart.
+2. **Understand the request** (`launch/analyse.ts`, model). What was asked, goals, constraints, the checks a good answer must pass, and what you left unsaid but the request makes clear (a home market from a country, a genre from a logline). Inferences fill only empty fields and show on the plan as assumptions.
+3. **The one question.** Only when there is still no description or genre, or no city at all after that: one text card. After it, the run plans with what it has.
 4. **Find the comps** (`resolveBundle`). Your comps lead; proposals fill to 4 (5 at most). An exact name match (ignoring case and accents) counts first. Same-name matches are settled by code: the one from the brief's country, then the best known. With no exact match, code uses the closest title Qloo returned (one whose name contains or sits inside the comp's, else Qloo's top result) and the plan states the substitution. Only a search with no results at all is listed in Gaps.
 5. **Choose what to ask** (`pickModules`, then the query planner). The modules come from the scope and the brief (spec §6.1); the queries from the modules (spec §4.1). The model may change the music scene, brand categories, genres, place kinds and which of your cities each query uses; code keeps only your cities, table cities for Worth a look, and short phrases. It also names up to 4 partner brands per city that could realistically say yes (Qloo ranks only those) and neighbourhoods with a centre inside the city (read from the heatmap cells already fetched, no extra call). Lookups of names are kept for 14 days across runs.
-6. **Ask Qloo** (`ground`). The audience and the cities run first, in parallel (one heatmap call over your cities and up to 4 nearby ones, with leave one out). Then every phrase is resolved to a tag in one `resolveTags` run, and the other queries run. Each result becomes a finding, streamed as a `finding` event. A query that fails or returns nothing becomes a Gap; a spent budget stops the rest.
+6. **Ask Qloo** (`ground`). The audience and the cities run first, in parallel (one heatmap call over your cities and up to 4 nearby ones, with leave one out). Then every phrase is resolved to a tag in one `resolveTags` run, and the other queries run. Each result becomes a finding, streamed as a `finding` event. A query that returns nothing is asked again with its narrowest filter dropped (years, then age band, then city), at most twice; a wider read is said to be one and is never above medium confidence. A query that still returns nothing, or fails, becomes a Gap; a spent budget stops the rest. A research check then judges what the findings cover for each of the request's checks and may add up to three catalog queries for a thin one (`launch/research-loop.ts`).
 7. **Look up the market** (only when the writer's provider has search). `research.ts` asks the provider's web search about release timing, rivals, distributors and exhibitors, and market numbers for the genre, country and cities, never the title or story, then extracts facts each tied to a source page. A failure writes the plan without it.
 8. **Write** (model, or templates with no key). The writer gets the brief, the comps and the findings, and writes every section but "To sharpen" and Budget split, which code writes. `decisions.ts` then makes sure every city and every comp the team named is answered.
-9. **Check** (`checkSections`). Every line against spec §6.2. A core section left empty is filled from the templates and checked again.
-10. **Save.** The output holds the brief (Audience and Assumptions tabs), the plan, and `inputs` (the reading and the resolved comps, so a what-if can rerun it). Each finding has a receipt with `lineId` = the finding's id, so it opens to its call.
+9. **Check** (`checkSections`). Every line against spec §6.2. A core section left empty is filled from the templates and checked again. A line that fails goes back to the writer with its reason.
+10. **Red team** (`launch/review.ts`). A model compares the request, the chat and the draft and lists issues; code decides pass or fail. A blocking issue sends the draft back, with more research when it names a query, up to three drafts.
+11. **Save.** The output holds the brief (Audience and Assumptions tabs), the plan, and `inputs` (the reading and the resolved comps, so a what-if can rerun it). Each finding has a receipt with `lineId` = the finding's id, so it opens to its call.
 
 ## What decides what
 
@@ -97,7 +98,7 @@ Code sets the steps and their order. Each step is a `trace.step` in the chat.
 | The plan's wording | Model (templates with no key) | `film/writer.ts` | Checked line by line |
 | To sharpen, Budget split | Code | `launch/pipeline.ts`, `film/config.ts` | Convention table in the pack |
 | Every team city and comp answered, home-market premiere | Code | `launch/decisions.ts` | Backstop for what the writer missed |
-| Follow-up job | Code, from the model's reading | `launch/follow-up.ts` | Rivals with dates → date; "partner" → brief; a change → what-if; else answer |
+| Follow-up job | Code, from the model's reading | `launch/follow-up.ts` | Rivals with dates → date; "partner" → brief; a change → what-if unless it is asked as a question; else answer |
 | Refusals | Code | `REFUSALS` in `packages/packs` | Regex, fixed words, before any call |
 
 ## Where the model comes in (and where it never does)
@@ -135,7 +136,7 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 
 ## Follow ups (after the chat has a plan)
 
-`FilmAgent` loads the plan, emits a "Using" line (the plan, your brief, the chat), refuses forecasts, pricing or sending with fixed words, then reads the message and lets code pick the job:
+`FilmAgent` loads the plan, refuses forecasts, pricing or sending with fixed words, then reads the message and lets code pick the job:
 
 | Job | Trigger | What runs | Saves |
 |---|---|---|---|
@@ -149,7 +150,7 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 ## Data and events
 
 - **Tables** (spec §6): `outputs.plan` holds the launch plan, `outputs.brief` the audience and verdicts, `outputs.inputs` what to rerun from. `receipts` has one row per call or per line, with `lineId` set to a brief line's id or a finding's id.
-- **Events** (`threadEventSchema`): `memory.used`, `trace.step`, `finding`, `question`, `receipt`, `message`, `output.created`, `project.updated`, `run.stopped`, `error`. A `finding` is stored as a trace row and folds into the trace item.
+- **Events** (`threadEventSchema`): `trace.step`, `finding`, `question`, `receipt`, `message`, `output.created`, `project.updated`, `run.stopped`, `error`. A `finding` is stored as a trace row and folds into the trace item.
 
 ## The web side
 

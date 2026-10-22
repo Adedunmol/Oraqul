@@ -37,11 +37,12 @@ Every tool returns `{ data, receipts }` (`ToolResult` in `packages/engine`): one
 ## Rules that must hold
 
 - Scores, verdicts and confidence are computed by code in `engine`. The model explains and never sets a number.
+- The model may pick which catalog queries run in a second round, never what a query asks beyond the catalog and the plan's checked parameters. Code validates every pick, runs the query and makes the findings.
 - Every entity the model names must appear in data Qloo returned in that run. A validator rejects the output otherwise and the step reruns.
 - If Qloo errors after one retry, the line is "could not test". Never fill from the model.
 - Agents do not call each other. Only exception: in the generic tool loop, Books may ask Film one bounded question. The Books launch pipeline does not.
 - Limits per run: max steps and max Qloo calls (`QLOO_CALL_BUDGET`). The stop rule and rerunning only the lines whose inputs changed are not built: a what-if reruns every query.
-- No model reviews a finished brief. The stress test is the leave one out rerun in `engine` (spec §3.3).
+- A model reviews a draft plan but sets no number: it lists issues and code decides. The stress test of the audience is still the leave one out rerun in `engine` (spec §3.3).
 - The agent refuses forecasts, pricing advice and sending anything. Drafts only.
 
 ## How a run works
@@ -91,11 +92,14 @@ The tool loop is for conversation, not plans (see [Shape](#shape)). In it the pl
 Film's build job, in `launch/pipeline.ts` (the audit and the fix reuse its stages: [film-overview.md](film-overview.md#the-audit-and-the-fix)); [film-overview.md](film-overview.md) is the step by step map. Product behaviour is [spec §3.2](../product/spec.md) and the Film tests are [spec §5.2](../product/spec.md#52-film-assumption-tests-build). Every reply runs two stages, findings and then the reply:
 
 1. Read the brief (model, every value carries the words it came from, checked by code).
-2. Find the comps with `resolveBundle`, settling same-name titles in code and proposing comps only below 3.
-3. Pick the modules and shape the queries (model, bounded by code, spec §4.1).
-4. Ground: run the queries and turn each result into a finding, streamed to the chat.
-5. Write the plan (model, or templates with no key).
-6. Check every line (spec §6.2), then save.
+2. Analyse the request (`launch/analyse.ts`, model with a scripted fallback that infers nothing): what was asked, goals, constraints, the checks a good answer must pass, and values the person left unsaid. `applyAnalysis` fills only empty fields, and only with a city in the city table or a Qloo age band; each fill is returned as an assumption on the plan. This runs before the one question a build may ask, so a brief with a country but no city plans instead of asking.
+3. Find the comps with `resolveBundle`, settling same-name titles in code and proposing comps only below 3.
+4. Pick the modules and shape the queries (model, bounded by code, spec §4.1).
+5. Ground: run the queries and turn each result into a finding, streamed to the chat. A query Qloo answers with nothing is asked again with its narrowest filter dropped (release years, then age band, then city; never a place list's city, never a list with nothing left to shape it), at most twice. The finding says it is the wider read and is never above medium confidence.
+6. Check the research (`launch/research-loop.ts`, model with a scripted fallback that makes no claim): the model says, for each check the analyst set, whether the findings cover it, and may name up to three catalog queries the first round did not run. Code keeps a coverage claim only when a real finding above low confidence backs it, keeps only queries on the catalog's unrun list, and skips the round when fewer than 12 Qloo calls are left. The extra queries run on the first round's brief, so the audience and cities are not asked twice.
+7. Rank the evidence in code (`launch/evidence.ts`): each check's findings by confidence and affinity. The writer gets them as "What each check rests on".
+8. Write the plan (model, or templates with no key), then check every line (spec §6.2). A line that fails is dropped and goes back to the writer with its reason.
+9. Red team (`launch/review.ts`, model on the writer role, none with no key): compares the request, the chat, the checks and the draft. The model lists issues, each against a check, with a type, a fix and whether it blocks; code decides pass or fail from the list alone and never from the model's own verdict. A blocking issue sends the draft back to the writer with the issues, after up to three more catalog queries when the issue names one on the unrun list and enough Qloo calls are left. At most three drafts. Nothing is saved before this ends: the plan is saved once, passed, or flagged with the open issues and what the person could give to settle them. With no key the plan is saved as `unchecked`. A fix is not reviewed, since the audit it is written from already tested the plan.
 
 No model writes a number, verdict or confidence. Each step is a `trace.step`. A clarifying question pauses the pipeline as an ask does in the loop, and the answer resumes it at the step that asked. Scenario, date and partner are the same pipeline started from a saved plan. Golden runs ([testing.md](../testing.md)) run it on recorded Qloo responses and expect the same findings every time.
 
@@ -110,7 +114,8 @@ No model writes a number, verdict or confidence. Each step is a `trace.step`. A 
 - `category`, `mode` and `title`, from the router;
 - `inputs`: the first message and its files, kept on the project (`projects.inputs`, spec §6) when the project is created;
 - `message`: the message this run answers, which right after routing is the first message again, and on a gate card pick is the picked option;
-- `recent`: the chat's last 8 lines, oldest first, ending with `message`; empty right after routing. The gate judges the same lines.
+- `recent`: the newest lines of the chat that fit about 40 lines, oldest first, ending with `message`; empty right after routing. The gate judges the same lines.
+- `fresh` and `memory`: a standalone chat, and what the project remembers for a chat that uses it (see [Memory](#memory)).
 - `planId`: the plan the chat works on now (`threads.base_output_id`), null before the first plan.
 
 **Resuming.** When the agent's last run in a chat stopped `waiting` on a card, the next message or card answer resumes that run with its saved `runs.state`, and the gate does not judge it. `replyLabel` checks the answer first, so a wrong option is a 400 before anything runs.
@@ -127,21 +132,22 @@ The product behaviour is in [spec §3.6](../product/spec.md). The kind comes fro
 
 A date check or partner brief does not become the chat's current plan; a scenario does. Not built: corrections that change the category or mode ("check my plan instead", "start fresh").
 
-## Memory (partly built)
+## Memory
 
-Product behaviour is [spec §3.7](../product/spec.md): three layers (chat, project, team), memory is context and never evidence, the person confirms what is saved and can see, edit and delete it. Built for Film: a run starts from the project's brief and files (`projects.inputs`), the chat's current plan and its receipts, and the chat's last 8 lines, and emits `memory.used` with those items, which the chat shows as one "Using" line. Not built: `memory_items`, team memory, `remember` cards, long-chat summaries and the continue-or-fresh choice for a new chat.
+Product behaviour is [spec §3.7](../product/spec.md): two layers (chat, project), memory is context and never evidence, the person can see, rewrite and forget what the project remembers. There is no team layer.
 
-**Planned: assembling it.** `buildMemory({ team, project, thread })` returns one bounded block per run, in this order: team items, project inputs and items, the current plan (or `from_output_id`) with its receipts by id, the thread's summary and recent messages. The block is labelled "context, not evidence" in the shared base prompt, and a hard character cap per layer drops the oldest items first. A `fresh` thread leaves out the project items and the plan; `team_memory` false leaves out the team items.
+**Reading it.** `RunService` builds the `Handoff` for each message. A chat that uses project memory gets `memory`: the project's `plan` items first, then its key points and decisions (`MemoryStore.lines`). A standalone chat (`threads.fresh`) gets none, and `fresh: true` on the handoff sends it to `runStandalone` (`launch/follow-ups.ts`) on the tool loop with no plan, brief or notes, knowing only the category and the project's name. The notes are put in the follow-up planner's context, the answer writer's chat block and the red team's context, each labelled as the project's notes. The base prompt tells every model that notes are context, not evidence.
 
-**Citing (built for plan receipts).** A claim may cite only receipts from this run or from an earlier plan's receipts by id. A memory item has no receipt, so the grounding check (`grounding.ts`) rejects a claim that cites one. The output validator does not yet check numbers in the text (see Finish step).
+**The chat.** `recentLines` returns the thread's summary as a first line ("Earlier in this chat, in short: …"), then the newest lines after it that fit about 40 lines and 12 000 characters (`withinChars`), after filtering out trace, output and context rows in SQL so they cannot crowd the real lines out. Once more than 40 lines are not summarised, `RunService.summarise` folds all but the newest 20 into `threads.summary` (`summary/chat-summarizer.ts`, role `router`; with no key it keeps the person's own words) and moves `threads.summarized_through` to the last line folded, after the run has stopped. The gate, the follow-up reader, the analyst and the answer writer read the same lines.
 
-**Planned: saving.** The planner may return a `remember` step with the fact and a suggested scope. The runtime turns it into a `single` card (this project, the whole team, not now) and stops `waiting`, as an ask step does. Only a yes writes a `memory_items` row. The agent never writes memory on its own.
+**Writing it.** After a run that finished in a chat that uses project memory, `RunService.remember` runs before the run stops, so the reply can say what was kept (a failure is logged and never fails the run):
 
-**Seeing it (built for the plan, brief and chat).** The run emits `memory.used` with the items it started from (a source and a label each), and the chat shows them as a "Using" line. Editing or deleting an item changes the next run, not past ones.
+1. Each saved plan, scenario, audit or fix is remembered by code as a `plan` item (`MemoryStore.rememberPlan`): a newer output from the same chat replaces that chat's item, one from another chat adds a second.
+2. The memory writer (`memory/memory-writer.ts`, role `router`) reads the notes kept and the exchange and returns add, update and remove operations. `checkOps` keeps an operation only when it is safe: an update or remove names a note that exists, a repeat is dropped, text is at most 280 characters, and the project keeps at most 30 notes. With no model key no notes are written; plans are still remembered.
 
-**Planned: long chats.** When a thread passes a size limit its older messages are summarised into `threads.summary` by a model call that sees only those messages, and the summary replaces them in the block. The summary is context like any memory item.
+When notes were added or changed the chat gets a quiet "Remembered: …" line under the reply (a `memory.used` event whose items have the source `saved`). A standalone chat writes nothing.
 
-**Other (built).** The gate also gets the project's title and the team's market, so "what about Lagos?" reads as on topic. A run still starts with an empty tool history: receipts from an earlier run are cited by id, not re run, unless an input changed.
+**Citing.** A claim may cite only receipts from this run or from an earlier plan's receipts by id. A memory item has no receipt, so the grounding check (`grounding.ts`) rejects a claim that cites one.
 
 ## Demo mode
 
