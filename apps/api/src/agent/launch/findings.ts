@@ -662,9 +662,12 @@ function keepFailure(deps: GroundDeps, err: QlooError) {
 // (a square or abbey at popularity 1.0, a hotel or mall among cinemas). Neither is somewhere to
 // screen a film or meet a community, so code leaves them out before the writer sees the list.
 const LANDMARK_POPULARITY = 0.999;
-const NOT_A_VENUE = /\b(hotel|mall|shopping|flea|market|resort|spa|square|police|union)\b/i;
+// A crawl, a tour or a casino is an activity or a gambling floor, not a place to hold a screening
+// or meet a community (a live Film plan listed "The Camden Pub Crawl" and "Empire Casino" as bars).
+const NOT_A_VENUE =
+  /\b(hotel|mall|shopping|flea|market|resort|spa|square|police|union|casino|crawl|tours?)\b/i;
 
-function isVenue(c: { name: string; popularity: number | null }): boolean {
+export function isVenue(c: { name: string; popularity: number | null }): boolean {
   return (c.popularity ?? 0) < LANDMARK_POPULARITY && !NOT_A_VENUE.test(c.name);
 }
 
