@@ -47,7 +47,11 @@
       "f-venues-concert-hall-lagos": ["Harbor Hall"],
       "f-venues-concert-hall-london": ["Southbank Hall"],
       "f-venues-night-club-lagos": ["Eko Nights Club"],
-      "f-venues-night-club-london": ["Camden After Hours"]
+      "f-venues-night-club-london": ["Camden After Hours"],
+      "f-region-lagos-artists": ["Sade Rhythm"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-london-artists": ["Sade Rhythm"],
+      "f-region-london-brands": ["Coca-Cola", "Nike", "McDonald's"]
     },
     "sections": {
       "bottom-line": "3/0",

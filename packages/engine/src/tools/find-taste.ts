@@ -67,7 +67,11 @@ export const findTaste = defineTool({
   description:
     "Finds what the anchors' audience likes in one entity type, shaped by context: tags (urns from `resolveTags`), a city, age bands, a community audience, a release country and a first year. One call. Always give at least one shaping parameter: an open-ended list drifts to what is popular overall.",
   input: z.object({
-    entityIds: z.array(z.string()).min(1),
+    /**
+     * The anchors. May be empty only with a city and an age band: Qloo then lists what that age band
+     * likes in that place, with no title behind it (verified in qloo.md, for large markets).
+     */
+    entityIds: z.array(z.string()).default([]),
     type: tasteTypeSchema,
     tags: z.array(z.string()).default([]),
     /** For places this is where the results are; for everything else it biases the ranking. */
@@ -99,6 +103,9 @@ export const findTaste = defineTool({
     only: z.array(z.string()).max(50).default([]),
   }),
   async run(ctx, input) {
+    if (input.entityIds.length === 0 && !(input.city && input.ages.length > 0)) {
+      throw new Error('findTaste needs an anchor, or a city and an age band');
+    }
     const left = [...input.entityIds, ...input.exclude];
     const { data: response, call } = await qloo.insights.entities(ctx.qloo, request(input, left));
     const candidates = response.results.entities
@@ -162,8 +169,8 @@ interface Shape {
 
 function request(input: Shape, left: string[]): EntityInsightsRequest {
   const base = {
-    'signal.interests.entities': input.entityIds,
-    'filter.exclude.entities': left,
+    ...(input.entityIds.length ? { 'signal.interests.entities': input.entityIds } : {}),
+    ...(left.length ? { 'filter.exclude.entities': left } : {}),
     // Exclusions come back out of the take, so ask for enough to fill it.
     take: Math.min(input.take + left.length, 50),
     ...(input.only.length ? { 'filter.results.entities': input.only } : {}),

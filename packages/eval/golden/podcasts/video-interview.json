@@ -39,7 +39,11 @@
       "f-topics": ["Diaspora life", "Faith", "Technology"],
       "f-crosspromo": ["Case Closed Weekly", "The Long Con", "Midnight Ledger"],
       "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"]
+      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"],
+      "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-manchester-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-manchester-brands": ["Coca-Cola", "Nike", "McDonald's"]
     },
     "sections": {
       "bottom-line": "3/0",
