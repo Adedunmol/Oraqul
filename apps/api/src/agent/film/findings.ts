@@ -1,4 +1,10 @@
-import { resolveTagsOutputSchema, themeTagsOutputSchema, tools } from '@oraqul/engine';
+import {
+  findTasteOutputSchema,
+  resolveTagsOutputSchema,
+  themeTagsOutputSchema,
+  tools,
+  topicMapOutputSchema,
+} from '@oraqul/engine';
 import { filmPlan } from '@oraqul/packs';
 import type { BriefLabels } from '../launch/brief.js';
 import {
@@ -11,6 +17,7 @@ import {
   type GroundKit,
   type GroundSpec,
   ground as groundLaunch,
+  KEEP,
   type GroundInput as LaunchGroundInput,
   list,
   plural,
@@ -29,6 +36,9 @@ const { CINEMA_TAG, RECENT_FILMS, RECENT_SHOWS, TAG_SPACES, MAX_CITIES_PER_QUERY
 const MAX_BRAND_CALLS = 4;
 const MAX_COMMUNITY_CALLS = 8;
 const MAX_VENUE_CALLS = 6;
+// The most rival films one comparison takes, and the topics shown from it.
+const TOPIC_RIVALS = 6;
+const TOPICS_SHOWN = 6;
 
 export type GroundInput = LaunchGroundInput<FilmRead, QueryPlan>;
 
@@ -234,6 +244,17 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
           { country: plan.country, yearFrom: from, tags: genre ? [genre.name] : [] },
         ),
       );
+      jobs.push(
+        topicsAgainstRecentFilms(
+          kit,
+          {
+            type: 'urn:entity:movie',
+            yearFrom: from,
+            ...(plan.country ? { country: plan.country } : { tags: genre ? [genre.id] : [] }),
+          },
+          plan.country ? `films from ${what}` : `${what.toLowerCase()} films`,
+        ),
+      );
     }
   }
 
@@ -381,4 +402,52 @@ async function resolve(
     community: of('community'),
     venues: of('venues'),
   };
+}
+
+/**
+ * What the comps carry that the recent films of the same country or genre do not, from one
+ * comparison call. The rivals are the films the recent films finding lists, asked with the same
+ * request so the client serves them from its cache and only the comparison is a new call.
+ */
+export async function topicsAgainstRecentFilms(
+  kit: GroundKit<FilmRead, QueryPlan>,
+  shape: { type: 'urn:entity:movie'; yearFrom: number; country?: string; tags?: string[] },
+  recent: string,
+): Promise<void> {
+  const { deps, ids } = kit;
+  const listed = await kit.safely('Recent films to compare with', () =>
+    tools.findTaste.run(deps.tools, { entityIds: ids, take: KEEP, ...shape, exclude: [] }),
+  );
+  if (!listed) return;
+  const rivalIds = findTasteOutputSchema
+    .parse(listed.data)
+    .candidates.map((c) => c.entityId)
+    .slice(0, TOPIC_RIVALS);
+  // Too few rivals make a topic look yours by chance.
+  if (rivalIds.length < 3) return;
+  const run = await kit.safely('Topics against recent films', () =>
+    tools.topicMap.run(deps.tools, { entityIds: ids, rivalIds, take: TOPICS_SHOWN }),
+  );
+  if (!run) return;
+  const out = topicMapOutputSchema.parse(run.data);
+  const [call] = run.receipts;
+  const yours = out.yours.slice(0, 3).map((t) => t.name.toLowerCase());
+  if (!call || yours.length === 0) return;
+  kit.add(
+    {
+      id: 'f-film-topics',
+      query: 'themes',
+      text: `Compared with the recent ${recent} that rank highest with your comps' audience, the topics your comps carry that those films do not are ${list(yours)}.`,
+      entities: [
+        ...out.yours.map((t) => entity(t.name, null, `yours · ${t.weight}×`)),
+        ...out.shared.map((t) => entity(t.name, null, 'shared')),
+        ...out.rivals.map((t) => entity(t.name, null, 'recent films')),
+      ],
+      numbers: Object.fromEntries(out.yours.map((t) => [`weight ${t.name}`, t.weight])),
+      verdict: null,
+      confidence: out.confidence,
+      why: out.why,
+    },
+    call,
+  );
 }
