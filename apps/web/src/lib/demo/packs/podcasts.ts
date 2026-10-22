@@ -287,7 +287,7 @@ export const podcasts: DemoPack = {
           date: 'Sep 4',
           wk: 0,
           rival: 'Kitchen Tongues, new season',
-          overlap: 66,
+          overlap: 86,
           rec: 'High overlap, risky',
         },
         {
@@ -303,7 +303,7 @@ export const podcasts: DemoPack = {
           date: 'Sep 18',
           wk: 2,
           rival: 'Taste of Home Radio, special',
-          overlap: 43,
+          overlap: 73,
           rec: 'Moderate',
         },
       ],

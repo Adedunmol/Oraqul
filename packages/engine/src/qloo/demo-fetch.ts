@@ -402,7 +402,7 @@ const gameFanBase: DemoEntity[] = [
   // Well known games the Games agent falls back to for a short brief. Found by name only.
   ...(
     [
-      ['DEMO-GAME-0201', 'Call of Duty: Mobile', 0.9],
+      ['DEMO-GAME-0201', 'Call of Duty Mobile', 0.9],
       ['DEMO-GAME-0202', 'PUBG MOBILE', 0.88],
       ['DEMO-GAME-0203', 'Garena Free Fire', 0.85],
     ] as const

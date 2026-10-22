@@ -74,8 +74,8 @@ describe('routeFinding (spec §5.4)', () => {
   it('is weak when another order starts noticeably stronger, and offers it beside the team’s', () => {
     const { brief, found } = run([
       ['Houston', 0.5],
-      ['London', 1.0],
       ['Lagos', 2.0],
+      ['London', 1.0],
     ]);
     expect(found?.verdict).toBe('weak');
     // The strongest order is listed first, and the text states how far the team's order reaches.

@@ -84,9 +84,10 @@ describe('audienceIndex and averageBands', () => {
 describe('routeVerdict (spec §5.4)', () => {
   it.each([
     [1.5, 1.5, 'holds'],
-    [1.43, 1.5, 'holds'],
+    [1.46, 1.5, 'holds'],
+    [1.45, 1.5, 'weak'],
     [1.4, 1.5, 'weak'],
-    [1.28, 1.5, 'weak'],
+    [1.39, 1.5, 'breaks'],
     [1.2, 1.5, 'breaks'],
   ] as const)('route score %s against best %s is %s', (actual, best, verdict) => {
     expect(routeVerdict(actual, best).verdict).toBe(verdict);

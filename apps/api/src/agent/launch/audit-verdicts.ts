@@ -13,7 +13,8 @@ import type { LaunchRead } from './read-core.js';
 import type { WrittenLine } from './writer.js';
 
 // Spec §5.3. A named partner or artist is tested by where Qloo ranks it among the candidates it
-// ranked in one call. Starting values, `TODO(verify)` on a live run before a report leads with them.
+// ranked in one call. Chosen conventions (spec §5.3), not measured: a rank among a handful of
+// candidates is only a direction, so fewer than three ranked is "could not test".
 const MIN_RANKED = 3;
 export const ARTIST_TOP = 3;
 

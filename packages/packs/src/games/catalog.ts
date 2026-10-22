@@ -3,8 +3,8 @@ import type { LaunchKind } from './modules';
 
 // The Games query catalog (spec §4.3). The model picks from these and fills in their context; code
 // runs them, within the call budget, and turns each result into a finding.
-// TODO(verify): game signals on the live host for every query below, with `qloo-games-probes.ts`.
-// Until docs/backend/qloo.md says so, none of these is verified for Games.
+// Game signals are checked live for every query below, with `qloo-games-probes.ts`
+// (docs/backend/qloo.md).
 
 export const gamesQueryKeys = [
   'audience',
@@ -141,7 +141,8 @@ export const GAMES_COMMUNITY_PLACES = ['university'];
  * none, so a short description is enough to plan from. The first rule whose words match the brief
  * and whose kinds include the launch kind wins; the last rule of each kind is its default. Qloo
  * finds each by name, or stands in the nearest game it has, and the plan labels them as added by
- * Oraqul. TODO(verify): that each name resolves to one exact match on the live host.
+ * Oraqul. Each name was checked on the live host: the ones with no match or a wrong one were
+ * replaced, and a few resolve to a longer official title (the nearest match is used).
  */
 export const FALLBACK_COMPS: {
   match: RegExp;
@@ -152,11 +153,11 @@ export const FALLBACK_COMPS: {
     match: /shoot|\bfps\b|battle royale|\bgun/i,
     kinds: ['mobile'],
     names: [
-      'Call of Duty: Mobile',
+      'Call of Duty Mobile',
       'PUBG MOBILE',
       'Garena Free Fire',
       'Critical Ops',
-      'Modern Combat 5',
+      'Brawl Stars',
     ],
   },
   {
@@ -165,13 +166,7 @@ export const FALLBACK_COMPS: {
   },
   {
     match: /football|soccer|sport/i,
-    names: [
-      'eFootball',
-      'EA SPORTS FC 24',
-      'Dream League Soccer 2024',
-      'Football Manager 2024',
-      'NBA 2K24',
-    ],
+    names: ['eFootball', 'EA SPORTS FC 24', 'Football Manager 2024', 'NBA 2K24'],
   },
   {
     match: /racing|driving|\bcar\b/i,
@@ -199,11 +194,17 @@ export const FALLBACK_COMPS: {
   },
   {
     match: /puzzle|match|word|trivia/i,
-    names: ['Candy Crush Saga', 'Monument Valley', 'Wordle', 'Royal Match', 'Two Dots'],
+    names: ['Candy Crush Saga', 'Monument Valley', 'Wordle'],
   },
   {
     match: /strategy|tower defen[cs]e|4x|\bwar\b|kingdom|empire/i,
-    names: ['Clash of Clans', 'Clash Royale', 'Civilization VI', 'Bloons TD 6', 'Rise of Kingdoms'],
+    names: [
+      'Clash of Clans',
+      'Clash Royale',
+      "Sid Meier's Civilization VI",
+      'Bloons TD 6',
+      'Plants vs. Zombies',
+    ],
   },
   {
     match: /horror|scary|survival/i,
@@ -233,7 +234,7 @@ export const FALLBACK_COMPS: {
       'Subway Surfers',
       'Candy Crush Saga',
       'Clash of Clans',
-      'Call of Duty: Mobile',
+      'Call of Duty Mobile',
       'Among Us',
     ],
   },

@@ -26,20 +26,13 @@ export type SignalParams = {
 };
 
 /**
- * In the Parameter Reference or the OpenAPI definition, but not in the Entity Type Parameter
- * Guide's table, and not yet tried against the live API. Qloo ignores a parameter it does not
- * support without an error, so none of these is known to work. TODO(verify) with `qloo:smoke`.
+ * In the Parameter Reference or the OpenAPI definition and tried live without an effect we could
+ * see: a tag-only signal timed out (504) with the operator, and the other two returned the same
+ * list as without them. Qloo ignores a parameter it does not support without an error, so none of
+ * these is known to work. Leave them unused until a probe shows a change.
  */
 export type UnconfirmedParams = {
-  'signal.interests.tags.weight'?: Weight;
   'operator.signal.interests.tags'?: SetOperator;
-  'signal.demographics.age.weight'?: Weight;
-  'signal.demographics.gender.weight'?: Weight;
-  /** A WKT shape or a locality id. Longitude comes first in WKT. */
-  'signal.location'?: string;
-  'signal.location.weight'?: Weight;
-  'bias.content_based'?: number;
-  'backfill.cross_domain.take'?: number;
   'backfill.content_based.take'?: number;
   'filter.exists'?: ('properties.image' | 'properties.description')[];
 };
@@ -53,6 +46,16 @@ export type EntityBaseParams = SignalParams &
     'signal.location.query'?: string;
     /** Changes the ranking when mixed with another signal. */
     'signal.interests.entities.weight'?: Weight;
+    // Each of these changed the results on a movie signal (live probe), so Qloo applies them:
+    'signal.interests.tags.weight'?: Weight;
+    'signal.demographics.age.weight'?: Weight;
+    'signal.demographics.gender.weight'?: Weight;
+    /** A WKT shape or a locality id. Longitude comes first in WKT. */
+    'signal.location'?: string;
+    'signal.location.weight'?: Weight;
+    'bias.content_based'?: number;
+    /** Changed an artist list from a movie signal. */
+    'backfill.cross_domain.take'?: number;
     /** Adds `query.explainability` to each result. */
     'feature.explainability'?: boolean;
     'bias.trends'?: BiasLevel;
@@ -62,8 +65,8 @@ export type EntityBaseParams = SignalParams &
     'filter.tags'?: string[];
     'operator.filter.tags'?: SetOperator;
     'filter.exclude.tags'?: string[];
-    // TODO(verify): the OpenAPI definition calls this `operator.filter.exclude.tags`.
-    'operator.exclude.tags'?: SetOperator;
+    // `operator.exclude.tags`, the name in the reference, is ignored; this one is applied.
+    'operator.filter.exclude.tags'?: SetOperator;
     'filter.exclude.entities'?: string[];
     /** Rank only these entities. Used to score named candidates against a signal. */
     'filter.results.entities'?: string[];
@@ -78,9 +81,6 @@ type FilmFilters = {
   'filter.content_rating'?: ContentRating[];
   'filter.release_year.min'?: number;
   'filter.release_year.max'?: number;
-  // TODO(verify): in the OpenAPI definition only.
-  'filter.release_date.min'?: string;
-  'filter.release_date.max'?: string;
   /** Countries the title was first released in. */
   'filter.release_country'?: string[];
   'operator.filter.release_country'?: SetOperator;
@@ -166,7 +166,6 @@ export type PlaceInsights = EntityBaseParams &
     'filter.properties.business_rating.max'?: number;
     'filter.references_brand'?: string[];
     'operator.filter.references_brand'?: SetOperator;
-    // TODO(verify): the Entity Type Parameter Guide spells the Resy names differently.
     'filter.external.resy.rating.min'?: number;
     'filter.external.resy.rating.max'?: number;
     'filter.external.resy.count.min'?: number;

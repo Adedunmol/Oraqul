@@ -289,7 +289,7 @@ export const books: DemoPack = {
           date: 'Mar 4',
           wk: 1,
           rival: 'A Cold Harbour (literary)',
-          overlap: 71,
+          overlap: 91,
           rec: 'High overlap, risky',
         },
         {
@@ -297,7 +297,7 @@ export const books: DemoPack = {
           date: 'Mar 11',
           wk: 2,
           rival: 'The Last Orchard (novel)',
-          overlap: 46,
+          overlap: 76,
           rec: 'Moderate',
         },
       ],

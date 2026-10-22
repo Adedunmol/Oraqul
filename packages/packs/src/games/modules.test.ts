@@ -204,7 +204,7 @@ describe('games catalog', () => {
 describe('fallbackComps', () => {
   it('picks games like the one described, by genre and then by kind', () => {
     expect(fallbackComps('a mobile video game that involves shooting', 'mobile')).toContain(
-      'Call of Duty: Mobile',
+      'Call of Duty Mobile',
     );
     expect(fallbackComps('a cozy farming game', 'premium')).toContain('Stardew Valley');
     expect(fallbackComps('a roguelike', 'early_access')).toContain('Hades');
@@ -217,7 +217,7 @@ describe('fallbackComps', () => {
 
   it('keeps a kind-specific rule for the kind it is for', () => {
     // The mobile shooter list is for mobile only: a premium shooter gets console and PC games.
-    expect(fallbackComps('a shooter', 'premium')).not.toContain('Call of Duty: Mobile');
+    expect(fallbackComps('a shooter', 'premium')).not.toContain('Call of Duty Mobile');
   });
 
   it('never suggests more than asked for, and names no duplicates', () => {

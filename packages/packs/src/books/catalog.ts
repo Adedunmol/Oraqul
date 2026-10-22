@@ -3,7 +3,7 @@ import type { LaunchModuleKey, LaunchSectionKey } from '@oraqul/schema';
 // The Books query catalog (spec §4.5). The model picks from these and fills in their context; code
 // runs them, within the call budget, and turns each result into a finding.
 // Verified live on one literary fiction brief and one romantasy brief, with
-// `qloo-books-probes.ts` (docs/backend/qloo.md). TODO(verify): other genres and markets.
+// `qloo-books-probes.ts` (docs/backend/qloo.md). Other genres and markets are not probed one by one; thin data shows as a gap.
 
 export const booksQueryKeys = [
   'audience',
