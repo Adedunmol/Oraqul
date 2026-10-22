@@ -26,7 +26,6 @@ interface PlanDoc {
   byline: string;
   inBrief: DocLine[];
   sections: DocSection[];
-  sharpen: string[];
   sources: { n: number; text: string; from: string }[];
 }
 
@@ -66,7 +65,6 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
     sections: plan.sections
       .filter((s) => s.key !== 'bottom-line' && s.key !== 'gaps')
       .map((s) => ({ title: s.title, groups: groups(s.lines) })),
-    sharpen: (plan.sections.find((s) => s.key === 'gaps')?.lines ?? []).map((l) => l.text),
     sources: [...order].flatMap(([id, n]) => {
       const web = plan.sources.find((src) => src.id === id);
       if (web) return [{ n, text: web.fact, from: `${web.title}, ${web.url}` }];
@@ -161,14 +159,12 @@ function reportDoc(output: Output, report: AuditReport): PlanDoc {
     assumptions,
     ...results,
     { title: 'Risks', groups: lists(report.risks) },
-    { title: 'Worth a look', groups: lists(report.alternatives) },
   ].filter((s) => s.groups.length > 0);
   return {
     title: output.title,
     byline: `Audit report · ${output.createdBy} · ${day(output.createdAt)}`,
     inBrief,
     sections,
-    sharpen: [],
     sources: [...order].flatMap(([id, n]) => {
       const web = report.sources.find((src) => src.id === id);
       if (web) return [{ n, text: web.fact, from: `${web.title}, ${web.url}` }];
@@ -191,7 +187,6 @@ function docOf(output: Output): PlanDoc | null {
 }
 
 const IN_BRIEF = 'In brief';
-const SHARPEN = 'To sharpen this plan';
 const SOURCES = 'Sources';
 
 /** The plan as Markdown, for email, Slack or Notion. */
@@ -208,7 +203,6 @@ export function toMarkdown(output: Output): string {
       out.push(...g.lines.map((l) => `- ${line(l)}`), '');
     }
   }
-  if (doc.sharpen.length) out.push(`## ${SHARPEN}`, '', ...doc.sharpen.map((t) => `- ${t}`), '');
   if (doc.sources.length) {
     out.push(`## ${SOURCES}`, '', ...doc.sources.map((s) => `[^${s.n}]: ${s.text} ${s.from}`));
   }
@@ -251,10 +245,6 @@ export async function toDocx(output: Output): Promise<Buffer> {
         );
       }
     }
-    if (doc.sharpen.length) {
-      children.push(new Paragraph({ text: SHARPEN, heading: HeadingLevel.HEADING_1 }));
-      children.push(...doc.sharpen.map((t) => new Paragraph({ text: t, bullet: { level: 0 } })));
-    }
   }
   const document = new Document({
     title: output.title,
@@ -295,7 +285,10 @@ export function toPdf(output: Output): Promise<Buffer> {
   const ink = '#111114';
   const muted = '#5a5a63';
   const accent = '#2f3d7a';
+  const bottom = () => pdf.page.height - pdf.page.margins.bottom;
   const heading = (text: string) => {
+    // A heading never ends a page: it moves over with the first lines that follow it.
+    if (pdf.y + 90 > bottom()) pdf.addPage();
     pdf.moveDown(1.1);
     pdf.font('Helvetica-Bold').fontSize(14).fillColor(ink).text(pdfSafe(text));
     pdf.moveDown(0.4);
@@ -303,11 +296,18 @@ export function toPdf(output: Output): Promise<Buffer> {
   const line = (l: DocLine, lead: string) => {
     const indent = 14;
     const x = pdf.page.margins.left;
+    const width = pdf.page.width - pdf.page.margins.left - pdf.page.margins.right - indent;
+    // The bullet and its text are placed at one explicit y. If the line does not fit under it,
+    // PDFKit would break the page between them and leave a stray page, so break first.
+    pdf.font('Helvetica').fontSize(10.5);
+    if (pdf.y + pdf.heightOfString(pdfSafe(l.text), { width, lineGap: 2 }) > bottom()) {
+      pdf.addPage();
+    }
     const y = pdf.y;
-    pdf.font('Helvetica').fontSize(10.5).fillColor(ink).text(lead, x, y, { width: indent });
+    pdf.fillColor(ink).text(lead, x, y, { width: indent });
     pdf
       .text(pdfSafe(l.text), x + indent, y, {
-        width: pdf.page.width - pdf.page.margins.left - pdf.page.margins.right - indent,
+        width,
         continued: l.refs.length > 0,
         lineGap: 2,
       })
@@ -342,10 +342,6 @@ export function toPdf(output: Output): Promise<Buffer> {
       }
       for (const l of g.lines) line(l, '•');
     }
-  }
-  if (doc.sharpen.length) {
-    heading(SHARPEN);
-    for (const t of doc.sharpen) line({ text: t, refs: [] }, '•');
   }
   if (doc.sources.length) {
     heading(SOURCES);
