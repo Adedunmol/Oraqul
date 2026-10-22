@@ -2,6 +2,7 @@
   "data": "demo",
   "title": "Long Table",
   "brief": "Plan the release of \"Long Table\", a family drama film for women aged 35 to 54. Markets: Houston, Atlanta, Nairobi and Kumasi. Comps: \"Harbor Lights\", \"Third Mainland\" and \"Salt Road\".",
+  "callBudget": 60,
   "replies": [
     {
       "optionIds": ["skip"]
@@ -100,6 +101,22 @@
       "Recent films",
       "Universities in Atlanta",
       "Universities in Nairobi"
-    ]
+    ],
+    "launch": {
+      "rules": "film@2026-10-22.1",
+      "band": "independent (assumed)",
+      "signal": "Advance screenings and presales",
+      "territories": ["Nairobi:other:okay", "Atlanta:other:avoid", "Houston:other:avoid"],
+      "calls": [
+        "territory:Nairobi:okay:lower",
+        "territory:Atlanta:avoid:lower",
+        "territory:Houston:avoid:lower"
+      ],
+      "partners": {
+        "A": 0,
+        "B": 4,
+        "C": 3
+      }
+    }
   }
 }

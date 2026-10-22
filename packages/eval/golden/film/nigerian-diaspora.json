@@ -1,0 +1,138 @@
+{
+  "data": "demo",
+  "title": "Night Ferry",
+  "brief": "Launch plan for \"Night Ferry\", a Nigerian thriller film for 18 to 34 year olds, opening in Atlanta, London, Lagos and Houston on 2099-03-12. Comps: \"Salt Road\", \"The Glass Lantern\" and \"Midnight Harbor\". A mid-size budget.\nRivals: Harbor Lights on 2099-03-12; Third Mainland opens 2099-03-19",
+  "callBudget": 200,
+  "replies": [],
+  "expect": {
+    "headline": "Open in London first, then Houston, Atlanta and Lagos: that is where your comps' audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "breaks",
+      "a-place-london": "holds",
+      "a-place-houston": "weak",
+      "a-place-atlanta": "breaks",
+      "a-comps": "weak"
+    },
+    "cities": ["London", "Houston", "Atlanta", "Lagos"],
+    "comps": [
+      {
+        "name": "Salt Road",
+        "source": "you"
+      },
+      {
+        "name": "The Glass Lantern",
+        "source": "you"
+      },
+      {
+        "name": "Midnight Harbor",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-atlanta": [],
+      "f-a-place-houston": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["London", "Houston", "Atlanta"],
+      "f-themes": ["Survival", "Community", "Loyalty"],
+      "f-shows-atlanta": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-shows-houston": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-shows-lagos": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-shows-london": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
+      "f-cinemas-atlanta": ["Peachtree Pictures"],
+      "f-cinemas-houston": ["Bayou Cinema"],
+      "f-cinemas-lagos": ["Marina Picturehouse", "Lekki Screens"],
+      "f-cinemas-london": ["Southbank Screen"],
+      "f-music-atlanta": ["Ada Lux", "Kola Wave", "Sade Rhythm"],
+      "f-music-houston": ["Ada Lux", "Kola Wave", "Sade Rhythm"],
+      "f-music-lagos": ["Ada Lux", "Kola Wave", "Sade Rhythm"],
+      "f-music-london": ["Ada Lux", "Kola Wave", "Sade Rhythm"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-beverage-london": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-telecom-london": ["Lagoon Mobile"],
+      "f-films": ["Harbor Lights", "Third Mainland"],
+      "f-podcasts": ["Crime Junkie", "Serial"],
+      "f-community-church-houston": ["Grace Chapel Houston"],
+      "f-community-church-london": ["Pentecost House"],
+      "f-community-university-houston": ["Gulf Coast University"],
+      "f-community-university-lagos": ["Lagoon City University"],
+      "f-games-lagos": ["Ember Keep", "Crown of Ash", "Hollow Hills"],
+      "f-games-london": ["Ember Keep", "Crown of Ash", "Hollow Hills"],
+      "f-venues-bar-lagos": ["Harbor Lounge"],
+      "f-venues-bar-london": ["Soho Social"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"],
+      "f-venues-night-club-london": ["Camden After Hours"],
+      "f-clash": ["Harbor Lights", "Third Mainland"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "5/0",
+      "audience": "9/0",
+      "markets": "4/0",
+      "partnerships": "8/0",
+      "placement": "5/0",
+      "publicity": "1/1",
+      "community": "4/1",
+      "route": "0/2",
+      "channels": "0/4",
+      "creative": "0/4",
+      "timeline": "0/9",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "3/1",
+      "gaps": "0/3"
+    },
+    "moves": ["f-markets", "f-audience", "f-music-atlanta"],
+    "grounding": {
+      "lines": 68,
+      "backed": 62,
+      "rankKept": 100,
+      "findingsUsed": 28,
+      "cities": {
+        "London": 9,
+        "Houston": 9,
+        "Atlanta": 8,
+        "Lagos": 10
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Box office and viewing numbers",
+      "Bars in Atlanta",
+      "Bars in Houston",
+      "Churches in Atlanta",
+      "Churches in Lagos",
+      "Universities in Atlanta",
+      "Universities in London"
+    ],
+    "launch": {
+      "rules": "film@2026-10-22.1",
+      "band": "mid (brief)",
+      "signal": "Advance screenings and presales",
+      "territories": [
+        "Lagos:home:avoid",
+        "London:diaspora:okay",
+        "Houston:diaspora:risky",
+        "Atlanta:diaspora:avoid"
+      ],
+      "calls": [
+        "date:2099-03-12:okay:high",
+        "date:2099-03-19:okay:high",
+        "territory:Lagos:avoid:lower",
+        "territory:London:okay:lower",
+        "territory:Houston:risky:lower",
+        "territory:Atlanta:avoid:lower"
+      ],
+      "partners": {
+        "A": 3,
+        "B": 8,
+        "C": 3
+      }
+    }
+  }
+}

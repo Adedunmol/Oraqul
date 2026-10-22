@@ -45,6 +45,16 @@ const expectSchema = z.object({
   }),
   dropped: z.number().int(),
   cannot: z.array(z.string()),
+  // The launch rules a plan carries: the library version, the budget band, the one signal and its
+  // target, each territory with its call, each call, and the partners per tier.
+  launch: z.object({
+    rules: z.string().nullable(),
+    band: z.string().nullable(),
+    signal: z.string().nullable(),
+    territories: z.array(z.string()),
+    calls: z.array(z.string()),
+    partners: z.record(z.string(), z.number().int()),
+  }),
 });
 type Expected = z.infer<typeof expectSchema>;
 
@@ -53,6 +63,8 @@ const caseSchema = z.object({
   data: z.enum(['demo', 'live']).default('demo'),
   title: z.string(),
   brief: z.string(),
+  // A plan for several cities with rivals makes more calls than the default budget allows.
+  callBudget: z.number().int().default(60),
   replies: z.array(
     z.union([z.object({ optionIds: z.array(z.string()) }), z.object({ text: z.string() })]),
   ),
@@ -84,7 +96,7 @@ async function run(golden: GoldenCase, fetchImpl: typeof fetch, source: Receipt[
         baseUrl: source === 'demo' ? 'https://demo.invalid' : 'https://recorded.invalid',
         apiKey: 'golden',
         fetch: fetchImpl,
-        callBudget: 60,
+        callBudget: golden.callBudget,
         retryDelayMs: 0,
       }),
       source,
@@ -147,6 +159,20 @@ function summarise(result: PlanRun): Expected {
     ),
     dropped: plan.dropped.length,
     cannot: b.cannot.map((c) => c.item),
+    launch: {
+      rules: plan.rules?.version ?? null,
+      band: plan.band ? `${plan.band.band} (${plan.band.source})` : null,
+      signal: plan.signal
+        ? `${plan.signal.primary}${plan.signal.target ? ` -> ${plan.signal.target.value} (${plan.signal.target.from})` : ''}`
+        : null,
+      territories: plan.territories.map(
+        (t) => `${t.name}:${t.role}:${plan.calls.find((c) => c.id === t.callId)?.direction ?? 'none'}`,
+      ),
+      calls: plan.calls.map((c) => `${c.subject}:${c.name}:${c.direction}:${c.confidence}`),
+      partners: Object.fromEntries(
+        (['A', 'B', 'C'] as const).map((t) => [t, plan.partners.filter((p) => p.tier === t).length]),
+      ),
+    },
   };
 }
 
