@@ -146,7 +146,7 @@ Stage 1 of every Film reply (direction: findings, then the reply). The model sha
 | `cinemas` | core, unless streaming | `findTaste` place with the movie theater category per city | the team's cities |
 | `music` | partnerships | `findTaste` artist per city | a music scene tag (pack default by country of origin, or the model's), the team's age band. No scene: not asked, and Gaps says why |
 | `brands` | partnerships | per city: the model proposes up to 4 brands that could realistically partner; code resolves them and `findTaste` brand ranks only those (`only`, sent as `filter.results.entities`). Falls back to one call per category (`urn:tag:genre:brand:*`, never luxury) when no candidates resolve. 4 calls at most | brand candidates the model names per city, or brand categories |
-| `films` | placement | `findTaste` movie | release country (full name), films from the last 3 years, or a genre tag with no country |
+| `films` | placement | `findTaste` movie, then `topicMap` (§4) over the films it lists (3 to 6) when there are at least 3 | release country (full name), films from the last 3 years, or a genre tag with no country. The comparison reuses the films request from the cache, so it adds one call, and it gives a second finding: the topics the comps carry that those recent films do not (positioning) |
 | `podcasts` | publicity | `findTaste` podcast | a podcast genre tag, one city |
 | `community` | community | `findTaste` place per kind and city, 8 calls at most | place kinds such as church and university |
 | `games` | partnerships | `findTaste` videogame per city, the home market and one away | a city. No tag: a game genre tag returned nothing (checked live), so the list rests on the city alone |

@@ -60,7 +60,7 @@ Film is a configuration of the shared launch runtime in `apps/api/src/agent/laun
 | Follow-up reader | `agent/launch/follow-up.ts` | Reads a later message; code picks the job |
 | Follow ups | `agent/launch/follow-ups.ts` | Answer (findings, writer, check), rival date check, partner brief |
 | Baseline | `agent/launch/baseline.ts` | Mass-market names a named partner is scored against, as a confidence aid |
-| Engine | `packages/engine` | Qloo client, tools (`findTaste`, `resolveTags`, `themeTags`, `rankPlaces`, …), confidence, verdicts |
+| Engine | `packages/engine` | Qloo client, tools (`findTaste`, `resolveTags`, `themeTags`, `topicMap`, `rankPlaces`, …), confidence, verdicts |
 | Pack | `packages/packs/src/film` | Prompt, query catalog and defaults (`catalog.ts`), module rules, budget convention, taste words (`modules.ts`) |
 | Saving | `agent/output-store.ts` | Receipts and the output (brief, plan, inputs) in one transaction |
 | Presenting | `apps/api/src/outputs/present.ts` | Stored output → the `Output` the screens render (tabs, findings in Evidence, changes) |
