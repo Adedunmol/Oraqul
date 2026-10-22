@@ -98,7 +98,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Night Ferry", a thriller for 18 to 34 year olds opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor".',
+        text: 'Launch plan for my film "Night Ferry", a thriller for 18 to 34 year olds opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor". An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -125,6 +125,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
     expect(output.tabs.map((t) => t.key)).toEqual([
       'plan',
       'territories',
+      'calls',
       'audience',
       'assumptions',
       'contrast',
@@ -219,7 +220,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Dock Lights" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights".',
+        text: 'Launch plan for my film "Dock Lights" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -311,7 +312,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Quay Nine" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights".',
+        text: 'Launch plan for my film "Quay Nine" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -340,7 +341,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Night Ferry" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights".',
+        text: 'Launch plan for my film "Night Ferry" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -417,7 +418,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Night Ferry", a thriller. Comps: "Salt Road".',
+        text: 'Launch plan for my film "Night Ferry", a thriller. Comps: "Salt Road". An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -502,6 +503,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       'plan',
       'fixes',
       'territories',
+      'calls',
       'audience',
       'assumptions',
       'contrast',

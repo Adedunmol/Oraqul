@@ -61,6 +61,7 @@
       "tour": "1/0",
       "sync": "2/0",
       "channels": "0/2",
+      "creative": "0/4",
       "timeline": "0/7",
       "budget": "0/7",
       "measure": "0/4",
@@ -69,8 +70,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 35,
-      "backed": 49,
+      "lines": 39,
+      "backed": 44,
       "rankKept": 100,
       "findingsUsed": 12,
       "cities": {

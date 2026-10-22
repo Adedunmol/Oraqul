@@ -99,7 +99,7 @@ describe('Games build end to end (real agents, demo Qloo, scripted reader)', () 
   });
 
   const BRIEF =
-    'Launch plan for the game "Ember Keep", a roguelike for Steam and Switch for 18 to 34 year olds, launching in London and Seoul on 2099-03-01. Comparable games: "Hollow Hills" and "Crown of Ash". Collab with "Pixel Choir".';
+    'Launch plan for the game "Ember Keep", a roguelike for Steam and Switch for 18 to 34 year olds, launching in London and Seoul on 2099-03-01. Comparable games: "Hollow Hills" and "Crown of Ash". Collab with "Pixel Choir". An independent budget.';
 
   it('plans a launch: a fan base bridge, regions, platform tests and a calendar from code', async () => {
     const { threadId } = await start(BRIEF, 'build');
@@ -118,6 +118,8 @@ describe('Games build end to end (real agents, demo Qloo, scripted reader)', () 
       'plan',
       'fanbase',
       'regions',
+      'territories',
+      'calls',
       'audience',
       'assumptions',
       'contrast',
@@ -227,6 +229,8 @@ describe('Games build end to end (real agents, demo Qloo, scripted reader)', () 
       'fixes',
       'fanbase',
       'regions',
+      'territories',
+      'calls',
       'audience',
       'assumptions',
       'contrast',

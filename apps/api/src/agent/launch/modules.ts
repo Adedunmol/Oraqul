@@ -17,7 +17,10 @@ export function withSharedModules(
   read: Pick<LaunchRead, 'scope' | 'places'>,
 ): ModulePick {
   if (read.scope !== 'full') return pick;
-  const shared: LaunchModuleKey[] = read.places.length > 0 ? ['channels'] : [];
+  const shared: LaunchModuleKey[] = [
+    ...(read.places.length > 0 ? (['channels'] as const) : []),
+    'creative',
+  ];
   const wanted = shared.filter((key) => !pick.modules.includes(key));
   if (wanted.length === 0) return pick;
   const at = pick.modules.findIndex((k) => k === 'timeline' || k === 'budget');

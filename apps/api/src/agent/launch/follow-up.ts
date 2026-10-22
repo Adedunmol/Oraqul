@@ -46,6 +46,7 @@ export type FollowUp =
   | { job: 'scenario'; change: Change }
   | { job: 'date'; rivals: { title: string; date: string }[] }
   | { job: 'partner'; partner: string | null }
+  | { job: 'creative' }
   | { job: 'audit' }
   | { job: 'fix' };
 
@@ -88,6 +89,15 @@ const QUESTION =
  * Whether a message plainly asks for an audit or a fix, in words code can read. It is what lets a
  * new chat in a project that started as a build run an audit when the person asks for one.
  */
+// The creative kit is asked for in plain words, so code reads it and no model decides it.
+const CREATIVE_ASK =
+  /\b(?:creative kit|caption packs?|shot lists?|key art briefs?|hook options?|(?:trailer|video|ad|reel|tiktok) scripts?|scripts? for (?:the|a|our|my))\b/i;
+
+/** Whether a message asks for the creative kit: the guides a team needs to make the creative. */
+export function askedCreative(text: string): boolean {
+  return CREATIVE_ASK.test(text);
+}
+
 export function askedJob(text: string): 'audit' | 'fix' | null {
   if (FIX_ASK.test(text)) return 'fix';
   if (AUDIT_ASK.test(text)) return 'audit';
@@ -127,6 +137,7 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
       0 || change.gender !== null;
 
   if (rivals.length) return { job: 'date', rivals };
+  if (askedCreative(text)) return { job: 'creative' };
   const asked = askedJob(text);
   if (asked) return { job: asked };
   if (/\bpartner|\boutreach\b|\bsponsor/i.test(text) && reading.job === 'partner') {

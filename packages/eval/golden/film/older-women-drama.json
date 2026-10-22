@@ -65,6 +65,7 @@
       "community": "2/1",
       "route": "0/2",
       "channels": "0/3",
+      "creative": "0/4",
       "timeline": "0/9",
       "budget": "0/7",
       "measure": "0/4",
@@ -73,8 +74,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 46,
-      "backed": 52,
+      "lines": 50,
+      "backed": 48,
       "rankKept": 100,
       "findingsUsed": 16,
       "cities": {

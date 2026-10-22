@@ -63,6 +63,7 @@
       "creators": "0/1",
       "partnerships": "4/0",
       "community": "0/1",
+      "creative": "2/1",
       "timeline": "0/11",
       "budget": "0/8",
       "measure": "0/8",
@@ -71,13 +72,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 49,
-      "backed": 41,
+      "lines": 52,
+      "backed": 42,
       "rankKept": 100,
       "findingsUsed": 12,
       "cities": {
         "Abuja": 4,
-        "Lagos": 6
+        "Lagos": 8
       }
     },
     "dropped": 0,

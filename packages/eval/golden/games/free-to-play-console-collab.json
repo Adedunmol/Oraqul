@@ -62,6 +62,7 @@
       "store": "2/1",
       "partnerships": "2/0",
       "publicity": "1/1",
+      "creative": "0/3",
       "timeline": "0/6",
       "budget": "0/7",
       "measure": "0/9",
@@ -70,8 +71,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-fan-collab-kitsune-drift"],
     "grounding": {
-      "lines": 50,
-      "backed": 48,
+      "lines": 53,
+      "backed": 45,
       "rankKept": 100,
       "findingsUsed": 16,
       "cities": {

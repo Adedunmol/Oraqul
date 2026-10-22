@@ -107,13 +107,18 @@ describe('channelsSection', () => {
 describe('withSharedModules', () => {
   const pick = { modules: ['partnerships', 'timeline', 'budget'] as never, ruledOut: [] };
 
-  it('adds channels to a full plan with a city, before the timeline', () => {
+  it('adds channels and creative briefs to a full plan with a city, before the timeline', () => {
     const out = withSharedModules(pick, { scope: 'full', places: ['Lagos'] });
-    expect(out.modules).toEqual(['partnerships', 'channels', 'timeline', 'budget']);
+    expect(out.modules).toEqual(['partnerships', 'channels', 'creative', 'timeline', 'budget']);
   });
 
-  it('adds nothing to a narrow ask or to a plan with no city', () => {
+  it('adds nothing to a narrow ask, and only the creative briefs when there is no city', () => {
     expect(withSharedModules(pick, { scope: 'narrow', places: ['Lagos'] })).toBe(pick);
-    expect(withSharedModules(pick, { scope: 'full', places: [] })).toBe(pick);
+    expect(withSharedModules(pick, { scope: 'full', places: [] }).modules).toEqual([
+      'partnerships',
+      'creative',
+      'timeline',
+      'budget',
+    ]);
   });
 });

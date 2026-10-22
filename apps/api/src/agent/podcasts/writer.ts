@@ -68,6 +68,7 @@ Sections (write only the ones listed in the request, in that order):
 - live: live recordings and meet-ups in the best markets, from the markets finding.
 - community: where listeners gather and what to run there.
 - cadence: how often to release, how long episodes run and when the season ends, for the show's style. Playbook.
+- creative: two to four hook options for the lead territory, and one key art brief (what the image must show, the tone, what to avoid). Guides only: Oraqul writes the brief and a person makes the trailer, ad or image. Never offer to generate one. Channels, what to measure and the timeline are written by code, so write none of them, and state no targets.
 - risks: what could go wrong and what to do. A risk about taste, topics or audience is grounded.
 Launch beats, the budget split and what would sharpen the plan are written by code. Do not write them.`;
 

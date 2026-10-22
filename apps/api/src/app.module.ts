@@ -6,6 +6,7 @@ import { DbModule } from './db/db.module.js';
 import { HealthModule } from './health/health.module.js';
 import { LlmModule } from './llm/llm.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
+import { RulesModule } from './rules/rules.module.js';
 import { TeamsModule } from './teams/teams.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 
@@ -20,6 +21,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     LlmModule,
     AuthModule,
     HealthModule,
+    RulesModule,
     ProjectsModule,
     UploadsModule,
     TeamsModule,

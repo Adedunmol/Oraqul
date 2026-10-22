@@ -99,7 +99,7 @@ describe('Books build end to end (real agents, demo Qloo, scripted reader)', () 
   });
 
   const BRIEF =
-    'Launch plan for the book "The Lagos Ledger", a debut literary novel by Ada Obi, published by an independent press with a hardcover, an ebook and an audiobook, for readers aged 25 to 44, launching in Lagos and London on 2099-03-01. Comparable books: "Americanah" and "Purple Hibiscus". Compare it with "Normal People". Bookshop "Terra Kulture".';
+    'Launch plan for the book "The Lagos Ledger", a debut literary novel by Ada Obi, published by an independent press with a hardcover, an ebook and an audiobook, for readers aged 25 to 44, launching in Lagos and London on 2099-03-01. Comparable books: "Americanah" and "Purple Hibiscus". Compare it with "Normal People". Bookshop "Terra Kulture". An independent budget.';
 
   it('plans a launch: a comp shelf, an adaptation bridge, market tests and a calendar from code', async () => {
     const { threadId } = await start(BRIEF, 'build');
@@ -119,6 +119,8 @@ describe('Books build end to end (real agents, demo Qloo, scripted reader)', () 
       ['shelf', 'Comp shelf'],
       ['bridge', 'Adaptation bridge'],
       ['regions', 'Markets'],
+      ['territories', 'Territories'],
+      ['calls', 'Direction calls'],
       ['audience', 'Audience'],
       ['assumptions', 'Assumptions'],
       ['contrast', 'With and without Qloo'],
@@ -237,6 +239,8 @@ describe('Books build end to end (real agents, demo Qloo, scripted reader)', () 
       'shelf',
       'bridge',
       'regions',
+      'territories',
+      'calls',
       'audience',
       'assumptions',
       'contrast',

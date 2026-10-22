@@ -52,6 +52,7 @@
       "community": "1/1",
       "sync": "1/0",
       "channels": "0/1",
+      "creative": "0/4",
       "timeline": "0/7",
       "budget": "0/7",
       "measure": "0/4",
@@ -60,8 +61,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 28,
-      "backed": 39,
+      "lines": 32,
+      "backed": 34,
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {

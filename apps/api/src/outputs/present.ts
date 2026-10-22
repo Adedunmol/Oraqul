@@ -62,7 +62,11 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
   plan: 'The plan itself, section by section, then the risks to watch.',
   evidence: 'Every claim with its receipt. Use this to check any number.',
   changes: 'What moved compared with the plan before.',
-  territories: 'Where to open first, ranked by how strongly each territory fits.',
+  territories:
+    'One plan per territory: the home market first, then the diaspora cities, each with its call, its lead channels and its partners.',
+  calls:
+    'Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned.',
+  kit: 'Guides for the team that makes the creative: hooks, a script, a shot list, a key art brief and captions. Oraqul does not make the asset.',
   contrast:
     'What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it.',
   route: 'The tour stops in your order, scored against the strongest order.',
@@ -84,6 +88,8 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   evidence: 'Evidence',
   changes: 'What changed',
   territories: 'Territories',
+  calls: 'Direction calls',
+  kit: 'Creative kit',
   contrast: 'With and without Qloo',
   route: 'Tour route',
   supportacts: 'Support acts',
@@ -199,8 +205,13 @@ export function presentOutput({
     ...moves.map((m, i) => `${i + 1}. ${m.text}`),
     `Confidence: ${capital(confidence.level)}. ${confidence.why}`,
   ].join('\n');
+  // A plan with territories shows one plan per territory, whatever the category. Film plans saved
+  // before territories were stored keep the old rule, which regroups their lines by city.
   const territories: OutputTabKey[] =
-    category === 'film' && brief.places.length >= 2 ? ['territories'] : [];
+    (plan?.territories.length ?? 0) > 0 ||
+    (plan && plan.territories.length === 0 && category === 'film' && brief.places.length >= 2)
+      ? ['territories']
+      : [];
   // Games: the fan base bridge and the regions sit next to the plan, only when there is something
   // to show (the bridge needs a fan base, the regions need two to compare).
   // Podcasts: the topic map and the swap list, with the markets, on the same terms.
@@ -223,7 +234,9 @@ export function presentOutput({
   // support acts, from the route score and the support findings. Every plan: what Qloo changed.
   const planTabs: OutputTabKey[] = plan
     ? [
-        ...(category === 'film' && brief.places.length >= 2 ? (['territories'] as const) : []),
+        ...territories,
+        // The calls on dates, territories and partners, set by code.
+        ...(plan.calls.length > 0 ? (['calls'] as const) : []),
         // Rivals the team named in the brief were checked inside the build.
         ...(brief.dates.length > 0 ? (['date'] as const) : []),
         ...(category === 'music'
@@ -237,46 +250,57 @@ export function presentOutput({
       ]
     : [];
   // A launch plan opens on the plan itself (PRD O1); the evidence sits behind it.
-  const tabKeys: OutputTabKey[] = audit
-    ? [
-        'summary',
-        'assumptions',
-        'risks',
-        'alternatives',
-        ...(audit.results ? (['results'] as const) : []),
-        'evidence',
-      ]
-    : plan
-      ? row.kind === 'scenario'
+  const tabKeys: OutputTabKey[] =
+    row.kind === 'creative'
+      ? ['kit', 'evidence']
+      : audit
         ? [
-            'plan',
-            'changes',
-            ...gameTabs,
-            ...planTabs,
-            'audience',
+            'summary',
             'assumptions',
-            'contrast',
+            'risks',
+            'alternatives',
+            ...(audit.results ? (['results'] as const) : []),
             'evidence',
           ]
-        : row.kind === 'fix' && report
-          ? [
-              'plan',
-              'fixes',
-              ...gameTabs,
-              ...planTabs,
-              'audience',
-              'assumptions',
-              'contrast',
-              'evidence',
-            ]
-          : ['plan', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'contrast', 'evidence']
-      : row.kind === 'date'
-        ? ['summary', 'date', 'evidence']
-        : row.kind === 'partner'
-          ? ['summary', 'partners', 'evidence']
-          : row.kind === 'scenario'
-            ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
-            : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
+        : plan
+          ? row.kind === 'scenario'
+            ? [
+                'plan',
+                'changes',
+                ...gameTabs,
+                ...planTabs,
+                'audience',
+                'assumptions',
+                'contrast',
+                'evidence',
+              ]
+            : row.kind === 'fix' && report
+              ? [
+                  'plan',
+                  'fixes',
+                  ...gameTabs,
+                  ...planTabs,
+                  'audience',
+                  'assumptions',
+                  'contrast',
+                  'evidence',
+                ]
+              : [
+                  'plan',
+                  ...gameTabs,
+                  ...planTabs,
+                  'audience',
+                  'assumptions',
+                  'contrast',
+                  'evidence',
+                ]
+          : row.kind === 'date'
+            ? ['summary', 'date', 'evidence']
+            : row.kind === 'partner'
+              ? ['summary', 'partners', 'evidence']
+              : row.kind === 'scenario'
+                ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
+                : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
   const focusIds =
     row.kind === 'date'
       ? brief.dates.map((d) => d.id)

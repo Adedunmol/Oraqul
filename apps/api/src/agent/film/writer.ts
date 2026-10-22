@@ -74,6 +74,7 @@ Sections (write only the ones listed in the request, in that order):
 - community: churches, campuses, associations and events, and what to run with them.
 - route: the release route and window, what to hold back for after the cinema run, and the case for opening the cities within days of each other.
 - cadence: binge, weekly or hybrid, for a series only.
+- creative: two to four hook options for the lead territory, and one key art brief (what the image must show, the tone, what to avoid). Guides only: Oraqul writes the brief and a person makes the trailer, ad or image. Never offer to generate one. Channels, what to measure and the timeline are written by code, so write none of them, and state no targets.
 - risks: what could go wrong and what to do. A risk about taste or audience is grounded.`;
 
 export const ANSWER_WRITER_SYSTEM = `You answer a question about a film or series launch plan for Oraqul, from findings measured in Qloo taste data and your launch knowledge. Two to five lines. Answer the question first.
