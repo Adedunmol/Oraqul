@@ -40,7 +40,7 @@ Every tool returns `{ data, receipts }` (`ToolResult` in `packages/engine`): one
 - The model may pick which catalog queries run in a second round, never what a query asks beyond the catalog and the plan's checked parameters. Code validates every pick, runs the query and makes the findings.
 - Every entity the model names must appear in data Qloo returned in that run. A validator rejects the output otherwise and the step reruns.
 - If Qloo errors after one retry, the line is "could not test". Never fill from the model.
-- Agents do not call each other. Only exception: in the generic tool loop, Books may ask Film one bounded question. The Books launch pipeline does not.
+- Agents do not call each other. Only exception: Books asks the Film side one bounded question about a screen title the team named (`filmConsult` in `books/findings.ts`, a fixed step of the launch pipeline). The generic tool loop can also consult.
 - Limits per run: max steps and max Qloo calls (`QLOO_CALL_BUDGET`). The stop rule and rerunning only the lines whose inputs changed are not built: a what-if reruns every query.
 - A model reviews a draft plan but sets no number: it lists issues and code decides. The stress test of the audience is still the leave one out rerun in `engine` (spec §3.3).
 - The agent refuses forecasts, pricing advice and sending anything. Drafts only.
@@ -83,7 +83,7 @@ The tool loop is for conversation, not plans (see [Shape](#shape)). In it the pl
 
 - **Tool step.** Checked against the pack's allowlist. The tool runs, its receipt is stored and streamed as a `receipt` event, and the planner sees the data and the receipt id. A `QlooError` becomes a receipt with confidence `lower` and a "could not test" history item. A spent budget ends the run with `budget` and a message listing the calls made.
 - **Ask step.** The question is stored as pending, a `question` event goes out, and the run stops with `waiting`. The answer must name that question id and option ids on the card.
-- **Consult step.** Only if the pack lists the target, and only in this generic loop: Books lists `film`, but its launch pipeline answers the screen angle from its own adaptation bridge (spec §4.5) and never consults. A nested loop for the target pack runs with a 4 step cap and no questions, shares the run's receipts, and shows in the trace as `books→film`. Its claims come back to the caller, which can cite them.
+- **Consult step.** Only if the pack lists the target, and only in this generic loop: Books lists `film`. Its launch pipeline does not use this step; it runs the Film tests on a named screen title as a fixed step (spec §3.4). A nested loop for the target pack runs with a 4 step cap and no questions, shares the run's receipts, and shows in the trace as `books→film`. Its claims come back to the caller, which can cite them.
 - **Finish step.** Every receipt id in every claim must exist in the run. One retry, then the run stops with `error`. This is a first cut of the output validator: it does not yet check entity names or numbers in the text.
 - **Limits.** `AGENT_MAX_STEPS` per agent, `QLOO_CALL_BUDGET` per run: `ToolContext` makes one `QlooClient` per run and the budget is that client's. A run is one `runs` row, so a run that resumes after a question gets a new client, budget and cache, and a consult shares its caller's client. There is no cap per thread or team; `runs.qloo_calls` keeps each run's count, so one can be added from it if the monthly quota needs it.
 

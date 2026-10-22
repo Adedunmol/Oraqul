@@ -32,9 +32,9 @@ The same as Film's ([film-agent.md](film-agent.md#rules-held-in-code)): verdicts
 
 ## What it does not yet do
 
-- **Wide live coverage.** The queries were run live on four briefs. Other genres and markets are `TODO(verify)` in [qloo.md](../backend/qloo.md), and Qloo holds age and gender for only about half of books. Run `pnpm --filter @oraqul/engine qloo:books-probes` after any change to the queries.
+- **Wide live coverage.** The queries were run live on four briefs. Other genres and markets are not probed one by one (see [qloo.md](../backend/qloo.md)), and Qloo holds age and gender for only about half of books. Run `pnpm --filter @oraqul/engine qloo:books-probes` after any change to the queries.
 - **A default screen angle for non fiction.** Qloo's open lists of series and films drift, so the bridge scores titles we choose. For a memoir or a self help book the pack has none, and the bridge shows the podcasts until the model or the team names a title.
 - **Creators and authors.** Qloo returns lists, but they do not fit every genre, so Creators is launch practice.
 - **Recorded live golden runs.** Books has demo goldens only.
-- **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): memory, next-step suggestions, the results cards, and the missing engine tools.
+- **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): the results cards, and the missing engine tools.
 - **The screens** are the shared ones (Plan tab, receipts drawer, exports) plus the Comp shelf, Adaptation bridge and Markets tabs. They have not been compared with the prototype.

@@ -46,21 +46,20 @@ Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Mu
 
 ### Not built for Film
 
-- **Memory** (spec §3.7): team and project memory, and summaries of long chats. The agent uses only the current plan and the last 8 chat lines.
-- **Next-step suggestions after each output.** The web passes none to the chat. The only suggested step is the Fix this plan button on a report.
+- **Team memory** (spec §3.7). Project memory and chat summaries are built; nothing is kept across a team's projects.
 - **Missing engine tools:** `crossTaste`, `tagWeights`, `momentum`, `explain`, `applyScenario` and `compareResults`. Rerunning only what changed in a what-if (spec §3.5) is still a `TODO`, so a what-if reruns every query.
 - **Results cards.** The docs describe split, confirm and date cards for entering results. Results come in through a text card, parsed from lines like "Lagos: 4,200", or by the model reader. There is no form or file column mapping.
 - **Dropped-line visibility.** Lines the check drops are stored but not shown anywhere in the product.
 
 ### Not verified against real Qloo
 
-- `backend/qloo.md` still has `TODO(verify)` items, and the live smoke run has not been run with a key.
-- Contract tests against recorded responses are "not started" in [testing.md](../testing.md).
+- `backend/qloo.md` still has `TODO(verify)` items. The live smoke run and the per category probes have run on the hackathon host only.
+- Contract tests against recorded responses are "not started" in [testing.md](../testing.md); the recordings stay local until Qloo confirms what may be republished.
 - The cut-offs for partner and artist verdicts and for results gaps (spec §5.3) are starting values and need a live run.
 
-### Only Film, Music, Games and Podcasts exist
+### Books to Film consult
 
-- The Books to Film consult exists only in the generic tool loop, which no launch agent uses. Books answers its screen angle from its own adaptation bridge.
+- Books asks the Film side one question about a named screen title as a fixed step of its launch (`filmConsult`). The generic tool loop's `consults` step is still unused by the launch agents.
 
 ### Gaps in audit and fix
 

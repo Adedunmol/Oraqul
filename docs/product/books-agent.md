@@ -76,7 +76,7 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 
 ## Known limits
 
-- **Checked on a few genres.** The queries were run live on literary fiction and romantasy briefs, and a whole plan on self help and middle grade briefs ([qloo.md](../backend/qloo.md)). Other genres and markets are `TODO(verify)`, and the plan is not claimed to beat a chatbot on them. Re-run `pnpm --filter @oraqul/engine qloo:books-probes` after any change to the queries.
+- **Checked on a few genres.** The queries were run live on literary fiction and romantasy briefs, and a whole plan on self help and middle grade briefs ([qloo.md](../backend/qloo.md)). Other genres and markets are not probed one by one; where Qloo has little data the plan says so, and it is not claimed to beat a chatbot there. Re-run `pnpm --filter @oraqul/engine qloo:books-probes` after any change to the queries.
 - **Qloo holds age and gender for only about half of books.** A comp with none is left out of the audience read, and the plan counts how many returned a row. A genre tag can stand in, labelled as the genre's.
 - **The shelf rests on one list.** Qloo ranks recent books for the comps' readers, tightly: scores sit close together, so the order is a lead and not a margin. A book of the author's own series never fills it, and one book stands for each series.
 - **Screen titles are chosen, not found.** Qloo's open lists of series and films for a book audience drift (documentaries and independent dramas), so the bridge scores titles the team named and ones the model or the pack chose. For a memoir, a self help book or other non fiction, no default screen title exists, and the bridge shows the podcasts until a title is named.

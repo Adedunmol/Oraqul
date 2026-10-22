@@ -77,8 +77,8 @@ packages/
     fixtures/       Recorded responses (local)
   packs/          One config per category: film, music, books, podcasts, games
   ui/             Design system components, tokens only
-  mcp/            MCP server (placeholder)
-  eval/           Evals and golden sets (placeholder)
+  mcp/            MCP server over the engine tools (stdio)
+  eval/           Golden runs for every category
 docs/             Product docs and engineering guides
 ```
 

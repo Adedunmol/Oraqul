@@ -66,7 +66,7 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 
 ## Known limits
 
-- **Checked on one subject only.** The queries were verified live on one true crime brief (2026-10-20, [qloo.md](../backend/qloo.md)). Other subjects and markets are `TODO(verify)`, and the plan is not claimed to beat a chatbot on them. Re-run `pnpm --filter @oraqul/engine qloo:podcasts-probes` after any change to the queries.
+- **Checked on one subject only.** The queries were verified live on one true crime brief (2026-10-20, [qloo.md](../backend/qloo.md)). Other subjects and markets are not probed one by one; where Qloo has little data the plan says so, and it is not claimed to beat a chatbot there. Re-run `pnpm --filter @oraqul/engine qloo:podcasts-probes` after any change to the queries.
 - **The topic map rests on one call.** Qloo lists the tags each group of shows carries, and only subject tags count. Where a team's own topic is not among them ("storytelling" was not), it is cannot test, never weak. With very few rival shows the weights are coarse.
 - **Guests, artists and series are launch practice.** Qloo returned people, artists and series for a podcast audience, but with no subject context they drifted (reality TV personalities and comedies for a true crime audience). Until a list with context fits, the Guests section is playbook, the crossover query is off, and Gaps says so.
 - **Some shows must be named in full.** A show matches by its exact title, so "Casefile" is found as "Casefile True Crime" (a longer title that starts with the name is accepted when there is no exact one), and a show Qloo lacks (such as "The Daily") is not found.

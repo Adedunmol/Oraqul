@@ -30,7 +30,7 @@ The same as Film's ([film-agent.md](film-agent.md#rules-held-in-code)): verdicts
 
 ## What it does not yet do
 
-- **Live Qloo, partly.** The artist-as-signal queries were checked live on one Afrobeats brief (2026-10-20, [qloo.md](../backend/qloo.md)); other genres and markets are not. The starting values for the tour order verdict (95% and 85%) are too forgiving on live lifts and are still `TODO(verify)` in the spec.
+- **Live Qloo, partly.** The artist-as-signal queries were checked live on one Afrobeats brief (2026-10-20, [qloo.md](../backend/qloo.md)); other genres and markets are not. The tour order verdict edges (97% and 93%) come from two live Afrobeats briefs.
 - **Recorded live golden runs.** Music has demo goldens only.
-- **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): memory, next-step suggestions, the results cards, and the missing engine tools.
+- **The gaps Film has** ([film-agent.md](film-agent.md#what-the-docs-say-it-should-do-that-it-does-not-yet)): the results cards, and the missing engine tools.
 - **The screens** are the shared ones (Plan tab, receipts drawer, exports). The Music sections render with the same components as Film's, and they have not been compared with the prototype.

@@ -85,7 +85,7 @@ A 401 from the API sends the person to `/sign-in`. It is handled in one place pe
 
 Screens and components never check for a 401 themselves. A 403 is an error, not a redirect.
 
-TODO(verify): `unauthorized()` and `unauthorized.tsx` are experimental in this Next version and need `authInterrupts` in `next.config.ts`. Do not use them until the team decides to.
+`unauthorized()` and `unauthorized.tsx` are experimental in this Next version and need `authInterrupts` in `next.config.ts` (confirmed in `node_modules/next/dist/docs`). Do not use them until the team decides to.
 
 ## Demo backend (until the API serves projects)
 
