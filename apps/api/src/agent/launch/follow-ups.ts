@@ -1,12 +1,12 @@
 import {
-  compareAudiencesOutputSchema,
-  compareTypeOf,
   fitBand,
   fitFromLift,
   liftOutputSchema,
   QlooBudgetError,
   QlooError,
   resolveBundleOutputSchema,
+  rivalTypeOf,
+  scoreRivalsOutputSchema,
   type ToolContext,
   tools,
 } from '@oraqul/engine';
@@ -339,15 +339,15 @@ export async function runDateCheck<R extends LaunchRead>(
     }
 
     trace(2, 'Measuring how much of your audience each rival shares');
-    const rivalType = compareTypeOf(deps.config.rivalTypes);
+    const rivalType = rivalTypeOf(deps.config.rivalTypes);
     if (!rivalType) return done('error');
-    const scored = await tools.compareAudiences.run(deps.tools, {
+    const scored = await tools.scoreRivals.run(deps.tools, {
       entityIds: anchors,
       type: rivalType,
       rivals: resolved.map((r) => r.entityId),
     });
     keep(scored.receipts);
-    const data = compareAudiencesOutputSchema.parse(scored.data);
+    const data = scoreRivalsOutputSchema.parse(scored.data);
     const [call] = scored.receipts;
     if (!call) return done('error');
 

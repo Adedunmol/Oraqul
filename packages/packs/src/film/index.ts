@@ -26,7 +26,7 @@ export const film: CategoryPack = {
     'rankPlaces',
     'lift',
     'partnerFit',
-    'compareAudiences',
+    'scoreRivals',
   ],
   consults: [],
   qloo: { titles: ['urn:entity:movie', 'urn:entity:tv_show'], ...sharedQlooCoverage },

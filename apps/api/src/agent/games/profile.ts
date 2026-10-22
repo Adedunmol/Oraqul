@@ -23,9 +23,9 @@ export function platformShares(
   }));
 }
 
-/** Every genre, store tag and typed tag a game carries, once each, as Qloo writes them. */
-export function tagsOfGame(game: Pick<Game, 'genres' | 'steamTags' | 'tags'>): string[] {
-  const all = [...game.genres, ...game.steamTags, ...Object.values(game.tags).flat()];
+/** Every typed tag a game carries, once each, as Qloo writes them. */
+export function tagsOfGame(game: Pick<Game, 'tags'>): string[] {
+  const all = Object.values(game.tags).flat();
   const seen = new Set<string>();
   return all.filter((t) => {
     const key = normalise(t);
@@ -35,10 +35,10 @@ export function tagsOfGame(game: Pick<Game, 'genres' | 'steamTags' | 'tags'>): s
   });
 }
 
-const hasTags = (g: Pick<Game, 'genres' | 'steamTags' | 'tags'>) => tagsOfGame(g).length > 0;
+const hasTags = (g: Pick<Game, 'tags'>) => tagsOfGame(g).length > 0;
 
 /** Comps Qloo holds any tag for. */
-export function gamesWithTags(games: Pick<Game, 'genres' | 'steamTags' | 'tags'>[]): number {
+export function gamesWithTags(games: Pick<Game, 'tags'>[]): number {
   return games.filter(hasTags).length;
 }
 
@@ -46,7 +46,7 @@ export function gamesWithTags(games: Pick<Game, 'genres' | 'steamTags' | 'tags'>
  * The tags at least half of the comps carry, most shared first. With fewer than two comps that
  * have tags, nothing is shared.
  */
-export function sharedTags(games: Pick<Game, 'genres' | 'steamTags' | 'tags'>[]): string[] {
+export function sharedTags(games: Pick<Game, 'tags'>[]): string[] {
   const withTags = games.filter(hasTags);
   if (withTags.length < 2) return [];
   const counts = new Map<string, { name: string; n: number }>();

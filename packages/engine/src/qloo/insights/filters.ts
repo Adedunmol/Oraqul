@@ -17,15 +17,12 @@ import type {
 
 type Paging = { take?: number; page?: number; offset?: number };
 
-/** What the results should be close to. Entities, tags, demographics and audiences. */
+/** What the results should be close to. Entities, tags and demographics. */
 export type SignalParams = {
   'signal.interests.entities'?: string[];
   'signal.interests.tags'?: string[];
   'signal.demographics.age'?: SignalAgeBand[];
   'signal.demographics.gender'?: Gender;
-  /** The `id` (not `entity_id`) of audiences from `lookup.audiences`. */
-  'signal.demographics.audiences'?: string[];
-  'signal.demographics.audiences.weight'?: Weight;
 };
 
 /**

@@ -121,12 +121,15 @@ const baseEntities: DemoEntity[] = [
     tags: ['roguelike'],
     properties: {
       platforms: ['PC (Windows)', 'Nintendo Switch'],
-      genre: ['Action'],
       content_rating: 'T',
       developer: 'Cinder Works',
-      universe: 'Ember',
     },
-    tagGroups: { gameplay_type: ['Single-player'], emotional_tone: ['tense'] },
+    tagGroups: {
+      genre: ['Action'],
+      category: ['Roguelite'],
+      gameplay_type: ['Single-player'],
+      emotional_tone: ['tense'],
+    },
   },
   {
     id: 'DEMO-FILM-0101',
@@ -972,7 +975,6 @@ const demoTagNames: Record<string, string[]> = {
   theme: ['Ambition', 'Family', 'Power', 'Loyalty', 'Survival', 'Community'],
   archetype: ['The Matriarch', 'The Rival', 'The Outsider', 'The Fixer'],
   audience: ['Drama Fans', 'Action Seekers', 'Stylish', 'Resilient'],
-  plot: ['Bold', 'Timely', 'Tense', 'Lively'],
 };
 
 function json(body: object, status = 200): Response {

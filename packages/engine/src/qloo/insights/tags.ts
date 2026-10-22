@@ -30,7 +30,6 @@ export function tags(
   const anchored = [
     'signal.interests.entities',
     'signal.interests.tags',
-    'signal.demographics.audiences',
     'signal.location',
     'signal.location.query',
     'filter.tag.types',

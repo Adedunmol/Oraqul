@@ -12,7 +12,7 @@ export {
 } from './client';
 export { demoEntities, demoFetch } from './demo-fetch';
 export * as insights from './insights';
-export type { AudienceSearchParams, SearchParams, TagSearchParams } from './lookup';
+export type { SearchParams, TagSearchParams } from './lookup';
 export * as lookup from './lookup';
 export { hasParam, type QlooParams, serializeParams } from './params';
 export * from './responses';

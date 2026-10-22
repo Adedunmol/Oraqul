@@ -29,7 +29,7 @@ export const games: CategoryPack = {
     'rankPlaces',
     'lift',
     'partnerFit',
-    'compareAudiences',
+    'scoreRivals',
     'findTaste',
     'themeTags',
     'gameProfiles',

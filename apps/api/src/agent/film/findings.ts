@@ -74,7 +74,7 @@ async function runQueries(kit: GroundKit<FilmRead, QueryPlan>): Promise<void> {
 
   if (want('themes')) {
     const run = await kit.safely('Themes and archetypes', () =>
-      tools.themeTags.run(deps.tools, { entityIds: ids, kinds: ['theme'] }),
+      tools.themeTags.run(deps.tools, { entityIds: ids, kinds: ['theme', 'archetype'] }),
     );
     if (run) {
       const out = themeTagsOutputSchema.parse(run.data);

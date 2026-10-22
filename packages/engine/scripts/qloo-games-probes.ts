@@ -14,8 +14,6 @@
  */
 import {
   audienceOutputSchema,
-  compareAudiencesOutputSchema,
-  compareTypeOf,
   gameProfilesOutputSchema,
   insights,
   lookup,
@@ -23,7 +21,9 @@ import {
   QlooError,
   rankPlacesOutputSchema,
   resolveBundleOutputSchema,
+  rivalTypeOf,
   type SeenEntity,
+  scoreRivalsOutputSchema,
   type ToolContext,
   themeTagsOutputSchema,
   tools,
@@ -106,11 +106,11 @@ if (!leadId || compIds.length === 0) {
 const bundle = { 'signal.interests.entities': [leadId, ...compIds] };
 const anchors = [leadId as string, ...compIds];
 
-await step('Metadata: /entities for games (platforms, rating, tags, franchise)', async () => {
+await step('Metadata: /entities for games (platforms, rating, tags)', async () => {
   const { data } = await tools.gameProfiles.run(ctx, { entityIds: anchors });
   for (const g of gameProfilesOutputSchema.parse(data).games) {
     console.log(
-      `${g.name}: platforms ${g.platforms.join(',') || '(none)'} | rating ${g.contentRating ?? 'n/a'} | franchise ${g.franchise ?? 'n/a'} | tag kinds ${Object.keys(g.tags).join(',') || '(none)'}`,
+      `${g.name}: platforms ${g.platforms.join(',') || '(none)'} | rating ${g.contentRating ?? 'n/a'} | tag kinds ${Object.keys(g.tags).join(',') || '(none)'}`,
     );
   }
 });
@@ -183,20 +183,20 @@ await step('Fan bases: what a game audience likes in each medium', async () => {
 await step('Scoring named candidates in every medium (filter.results.entities)', async () => {
   for (const [label, rows] of discovered) {
     const asked = fanBases.find(([l]) => l === label)?.[1]['filter.type'] ?? 'urn:entity:tv_show';
-    const type = compareTypeOf([asked]);
+    const type = rivalTypeOf([asked]);
     if (!type) continue;
     const ids = rows.slice(0, 3).map((r) => r.id);
     if (ids.length < 2) {
       console.log(`${label}: fewer than two candidates, skipped`);
       continue;
     }
-    const { data } = await tools.compareAudiences.run(ctx, {
+    const { data } = await tools.scoreRivals.run(ctx, {
       entityIds: anchors,
       type,
       rivals: ids,
       leaveOneOut: false,
     });
-    const scored = compareAudiencesOutputSchema.parse(data).rivals;
+    const scored = scoreRivalsOutputSchema.parse(data).rivals;
     const same = rows
       .slice(0, 3)
       .map((r, i) => {

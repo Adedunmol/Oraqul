@@ -15,7 +15,7 @@ const bandSchema = z.enum(['risky', 'moderate', 'low']);
 
 // The type the rivals are scored as. Qloo's scoring call filters on one type, so a film rival and
 // an artist rival cannot share a call.
-export const compareTypes = [
+export const rivalTypes = [
   'urn:entity:movie',
   'urn:entity:tv_show',
   'urn:entity:artist',
@@ -24,14 +24,14 @@ export const compareTypes = [
   'urn:entity:podcast',
   'urn:entity:book',
 ] as const;
-export type CompareType = (typeof compareTypes)[number];
+export type RivalType = (typeof rivalTypes)[number];
 
 /** The first of a category's rival types that Qloo can score, or undefined when none can. */
-export function compareTypeOf(types: readonly string[]): CompareType | undefined {
-  return compareTypes.find((t) => types.includes(t));
+export function rivalTypeOf(types: readonly string[]): RivalType | undefined {
+  return rivalTypes.find((t) => types.includes(t));
 }
 
-export const compareAudiencesOutputSchema = z.object({
+export const scoreRivalsOutputSchema = z.object({
   rivals: z.array(
     z.object({
       entityId: z.string(),
@@ -48,14 +48,14 @@ export const compareAudiencesOutputSchema = z.object({
 
 type Scored = Map<string, { name: string; affinity: number | null }>;
 
-export const compareAudiences = defineTool({
-  name: 'compareAudiences',
+export const scoreRivals = defineTool({
+  name: 'scoreRivals',
   description:
     "How much of the anchors' audience each rival title shares, as an overlap from 0 to 100, from one scoring call. Use it for a rival date check.",
   input: z.object({
     entityIds: z.array(z.string()).min(1),
     /** What the rivals are. Must match their entity type, or Qloo scores none of them. */
-    type: z.enum(compareTypes).default('urn:entity:movie'),
+    type: z.enum(rivalTypes).default('urn:entity:movie'),
     rivals: z.array(z.string()).min(1).max(12),
     /** Off when the caller scores many groups and cannot spend a rerun per anchor on each. */
     leaveOneOut: z.boolean().default(true),
@@ -138,7 +138,7 @@ export const compareAudiences = defineTool({
       confidence: level,
       source: ctx.source,
     });
-    const data: z.infer<typeof compareAudiencesOutputSchema> = {
+    const data: z.infer<typeof scoreRivalsOutputSchema> = {
       rivals: rows,
       confidence: level,
       why: reason,

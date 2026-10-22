@@ -15,15 +15,15 @@
 import {
   analysis,
   audienceOutputSchema,
-  compareAudiencesOutputSchema,
-  compareTypeOf,
   insights,
   lookup,
   QlooClient,
   QlooError,
   rankPlacesOutputSchema,
   resolveBundleOutputSchema,
+  rivalTypeOf,
   type SeenEntity,
+  scoreRivalsOutputSchema,
   type ToolContext,
   tools,
   topicMapOutputSchema,
@@ -157,13 +157,13 @@ await step('Scoring: a candidate list of shows against the audience, in one call
     console.log('(no candidates)');
     return;
   }
-  const { data } = await tools.compareAudiences.run(ctx, {
+  const { data } = await tools.scoreRivals.run(ctx, {
     entityIds: anchors,
-    type: compareTypeOf(['urn:entity:podcast']) ?? 'urn:entity:podcast',
+    type: rivalTypeOf(['urn:entity:podcast']) ?? 'urn:entity:podcast',
     rivals: ids,
     leaveOneOut: false,
   });
-  const out = compareAudiencesOutputSchema.parse(data);
+  const out = scoreRivalsOutputSchema.parse(data);
   console.log(out.rivals.map((r) => `${r.name} ${r.overlap ?? 'n/a'}`).join(' | '));
 });
 

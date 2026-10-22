@@ -68,7 +68,7 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 
 ## Known limits
 
-- **Game signals are mostly verified.** A game works as a signal for music, series, films, brands, podcasts, games, people and regions (`qloo:games-probes`, recorded in [qloo.md](../backend/qloo.md)). Anime, the franchise property and the genre-only fallback are not yet, and the plan is not claimed to beat a chatbot on them.
+- **Game signals are mostly verified.** A game works as a signal for music, series, films, brands, podcasts, games, people and regions (`qloo:games-probes`, recorded in [qloo.md](../backend/qloo.md)). Anime and the genre-only fallback are not yet, and the plan is not claimed to beat a chatbot on them.
 - **Creators and streamers are launch practice.** Qloo may not hold them. Until the probe says it does, the Creators section is playbook, and the Assumptions tab says creators were not measured.
 - **A debut is planned from its comparable games.** If those are off, the audience is off. The plan says what it rests on.
 - **Platform and store rules are launch knowledge.** The Steam and console rules in the calendar come from the platforms' own documentation and can change. Check them before a date is announced.

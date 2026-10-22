@@ -26,7 +26,7 @@ The two stages are Film's: code runs the queries and turns each result into a fi
 | Follow-up reader | `podcasts/follow-up.ts` | The prompt that reads a later message, including a swap to add |
 | Run wrappers | `podcasts/runs.ts` | `runPodcastsBuild`, `runPodcastsAudit`, `runPodcastsFix` with Podcasts' dependencies, for the tests |
 | Pack | `packages/packs/src/podcasts/` | Query catalog and fallback shows (`catalog.ts`), launch kinds, formats, platforms, calendars, measures, budget splits and module rules (`modules.ts`), the pack (`index.ts`) |
-| Engine | `packages/engine/src/` | `topicMap` tool (`tools/topic-map.ts`), `topicVerdict` (`verdicts.ts`), `compareAudiences` with a podcast rival type, and the demo data (`qloo/demo-fetch.ts`) |
+| Engine | `packages/engine/src/` | `topicMap` tool (`tools/topic-map.ts`), `topicVerdict` (`verdicts.ts`), `scoreRivals` with a podcast rival type, and the demo data (`qloo/demo-fetch.ts`) |
 
 Sections for a plan are the module keys of spec §6.1. Podcasts adds `crosspromo`, `guests`, `live` and `video` to `launchModuleKeys`, and uses `partnerships` for Sponsors, `publicity` for Press and newsletters and `cadence` for Episode cadence. The shared partner brief writes into `partnerships`, so Sponsors keeps that key.
 
@@ -46,7 +46,7 @@ Sections for a plan are the module keys of spec §6.1. Podcasts adds `crosspromo
 
 **The topic map** (`topicMap` in `podcasts/findings.ts`). `findTaste` lists the shows the audience hears in the genre (one call, shared by cross promotion and the topic map). The rivals are the shows the team named, or with none those shows. `tools.topicMap` makes one `analysis.compare` call, anchors against rivals, and `topicOwnership` splits the tags: a topic only the anchors' side lists is yours, one on both sides is shared, one only the rivals' side lists is theirs. A yours topic's weight is its count against the mean count of a rival topic, which orders and sizes topics and never decides who owns one. The topics go to `brief.topics` (the Topic map tab). Each topic the team named is an assumption (`a-topic-<slug>`) with a finding of the same name, tested with `topicVerdict`: yours holds, shared is weak, the rivals' breaks, not returned is cannot test.
 
-**Cross promotion** (`crossPromotion`). `findTaste` lists shows, then one `compareAudiences` of type podcast scores them together with any swap the team named, so a named show is a ranked row (`f-promo-<slug>`). The rows go to `brief.fan` with medium podcast and the note "Your pick"; `before` and `after` are equal, since a swap is a ranked row, not a moved bar. A swap is found by exact name with `searchEntity`; several exact matches are not guessed.
+**Cross promotion** (`crossPromotion`). `findTaste` lists shows, then one `scoreRivals` of type podcast scores them together with any swap the team named, so a named show is a ranked row (`f-promo-<slug>`). The rows go to `brief.fan` with medium podcast and the note "Your pick"; `before` and `after` are equal, since a swap is a ranked row, not a moved bar. A swap is found by exact name with `searchEntity`; several exact matches are not guessed.
 
 **Guests and crossover.** `GUESTS_GROUNDED` and `CROSSOVER_GROUNDED` in `packages/packs/src/podcasts/catalog.ts` are false: the live probe (2026-10-20) returned people, artists and series for a podcast audience, but with no subject context they drifted (reality TV personalities and comedies for a true crime audience). While false, the Guests section is playbook and the crossover query is not run; the gaps say so.
 

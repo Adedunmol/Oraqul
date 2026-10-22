@@ -4,5 +4,5 @@ import type { QlooCoverage } from '@oraqul/schema';
 export const sharedQlooCoverage: Omit<QlooCoverage, 'titles'> = {
   talent: ['urn:entity:person'],
   partners: ['urn:entity:brand'],
-  places: ['urn:entity:locality', 'urn:entity:place', 'urn:entity:destination'],
+  places: ['urn:entity:place'],
 };

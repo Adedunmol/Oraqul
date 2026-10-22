@@ -1,11 +1,11 @@
 import {
-  compareAudiencesOutputSchema,
   findTasteOutputSchema,
   gameProfilesOutputSchema,
   normalizeTitle,
   overlapFromAffinity,
   platformVerdict,
   resolveTagsOutputSchema,
+  scoreRivalsOutputSchema,
   searchEntityOutputSchema,
   storeTagVerdict,
   themeTagsOutputSchema,
@@ -508,7 +508,7 @@ async function fanBases(
       call = found.receipts[0];
     } else {
       const scored = await kit.safely(capitalise(noun), () =>
-        tools.compareAudiences.run(deps.tools, {
+        tools.scoreRivals.run(deps.tools, {
           entityIds: kit.ids,
           type: spec.type,
           rivals: ids.slice(0, 12),
@@ -516,7 +516,7 @@ async function fanBases(
         }),
       );
       if (!scored) continue;
-      const parsed = compareAudiencesOutputSchema.parse(scored.data);
+      const parsed = scoreRivalsOutputSchema.parse(scored.data);
       ranked = parsed.rivals
         .filter((r) => r.overlap !== null)
         .sort((a, b) => (b.overlap ?? 0) - (a.overlap ?? 0));

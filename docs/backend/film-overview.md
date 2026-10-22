@@ -144,7 +144,7 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 | What-if | any change to places, comps, ages or gender | The build from the plan's `inputs` with the change; every query reruns | `scenario` output; "What changed" compares plan lines by id; becomes the chat's plan |
 | Audit | The plan is the whole ask: "audit my plan", "check my plan", "why did it fail". "Check how the plan plays in Lagos" is an answer | The audit of the plan the chat has: a saved audit is rerun with the new message (results, say); an Oraqul plan is read back as text | `audit` output |
 | Fix | The plan is the whole ask: "fix this plan", "write a better plan" (also the Fix this plan button on a report). "Fix the budget in this plan" is an answer | The fix; on a saved report only the plan is new | `fix` output (and an `audit` when there was none) |
-| Rival date check | rival titles with YYYY-MM-DD dates | `compareAudiences`: rivals scored against the comps | `date` output |
+| Rival date check | rival titles with YYYY-MM-DD dates | `scoreRivals`: rivals scored against the comps | `date` output |
 | Partner brief | "partner" + a name, or the first brand the plan names | An artist the plan's music findings ranked is backed by that finding; a brand or podcast is scored with `lift` against the baseline. The model drafts the pitch from findings, checked; the template is the fallback | `partner` output |
 
 ## Data and events

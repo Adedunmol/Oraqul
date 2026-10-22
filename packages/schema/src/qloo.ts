@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-// Values are from the Qloo Insights API docs (docs/backend/qloo.md). Not yet confirmed with our
-// own key, see the status table there.
+// Values are from the Qloo Insights API docs. Which ones are confirmed against the live API is in
+// the status table in docs/backend/qloo.md.
 
-/** Entity types Insights can return. `locality` is only partly supported by Qloo. */
+/** Entity types Insights can return. `destination` and `locality` are not used by any category yet, and `locality` is only partly supported by Qloo. */
 export const qlooEntityTypes = [
   'urn:entity:artist',
   'urn:entity:book',

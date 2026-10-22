@@ -29,7 +29,7 @@ export const books: CategoryPack = {
     'rankPlaces',
     'lift',
     'partnerFit',
-    'compareAudiences',
+    'scoreRivals',
     'findTaste',
     'resolveTags',
     'themeTags',
