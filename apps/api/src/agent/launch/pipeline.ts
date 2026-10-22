@@ -30,6 +30,7 @@ import {
   type Question,
   type Receipt,
   type StopReason,
+  type Territory,
   type ThreadEvent,
   type Understanding,
   understandingSchema,
@@ -51,10 +52,12 @@ import { type Clash, clashFinding, type Rival, rivalsFrom, scoreClash } from './
 import type { LaunchConfig, LaunchDeps } from './config.js';
 import { type ConsultOffer, runConsult } from './consult.js';
 import { ensureDecisions } from './decisions.js';
+import { dateCalls, territoryCalls } from './direction.js';
 import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
 import type { Change } from './follow-up.js';
 import { withSharedModules } from './modules.js';
+import { marketsOf, partnerOptions, withSeeds } from './partners.js';
 import type { QueryPlanCore } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import {
@@ -70,7 +73,7 @@ import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './
 import { measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
 import { channelsSection, territoriesOf, withLines } from './territories.js';
-import { list } from './text.js';
+import { list, releaseDate } from './text.js';
 import { CODE_SECTIONS, type WriteInput } from './writer.js';
 
 // A bundle needs 3 to 5 comps to be coherent (PRD C1). Below 3, proposals fill to 4.
@@ -348,6 +351,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     understanding?: Understanding | null;
     /** Rival releases with the day the team says they open (spec §5). */
     rivals?: Rival[];
+    /** The budget band, which decides which seeded partners are asked about. */
+    band?: PlanBand | null;
   },
 ): Promise<Asked<P>> {
   const { title, read, comps } = input;
@@ -361,7 +366,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     compsCountry,
   });
   ctx.tokens += tokens;
-  const queryPlan = input.adjust ? input.adjust(planned) : planned;
+  const adjusted = input.adjust ? input.adjust(planned) : planned;
+  const queryPlan = input.band ? withSeeds(adjusted, input.band.band, read.places) : adjusted;
 
   ctx.trace('Asking Qloo about your audience');
   const groundDeps = { tools: deps.tools, emit: deps.emit, keep: ctx.keep };
@@ -629,7 +635,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   }
   for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);
 
-  const asked = await askQloo(deps, ctx, { title, read, comps, understanding, rivals });
+  const asked = await askQloo(deps, ctx, { title, read, comps, understanding, rivals, band });
   return writePlan(deps, ctx, {
     handoff,
     title,
@@ -877,6 +883,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   }
 
   const { sections } = current;
+  const finished = decisionsOf({
+    asked,
+    read,
+    band,
+    territories,
+    markets: marketsOf(queryPlan.country, read.places),
+    release: releaseDate(read.window),
+  });
   const plan: LaunchPlan = {
     scope: read.scope,
     sections,
@@ -897,9 +911,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     },
     band,
     signal,
-    territories: withLines(territories, sections),
-    calls: [],
-    partners: [],
+    territories: withLines(finished.territories, sections),
+    calls: finished.calls,
+    partners: finished.partners,
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];
@@ -1360,6 +1374,43 @@ export function briefText(
         .filter((t, i, all) => t && t !== first && t !== now && all.indexOf(t) === i)
     : [];
   return [first, ...earlier, now && now !== first ? now : ''].filter(Boolean).join('\n\n');
+}
+
+// The calls on dates, territories and partners, and the partners with their tiers. All computed
+// from what Qloo returned; the model sets none of it (hard rule 1).
+function decisionsOf(input: {
+  asked: Asked;
+  read: LaunchRead;
+  band: PlanBand | null;
+  territories: Territory[];
+  markets: string[];
+  release: string | null;
+}) {
+  const { asked, read, band, markets } = input;
+  const ranked = asked.grounded.brief.teamOrder;
+  const strongest = ranked.find((p) => p.status === 'ranked')?.place ?? null;
+  const placed = territoryCalls(
+    input.territories,
+    ranked.map((p) => ({ ...p })),
+    strongest,
+  );
+  const { partners, calls: partnerCalls } = partnerOptions({
+    findings: asked.grounded.findings,
+    signed: read.partners,
+    band: band?.band ?? 'independent',
+    markets,
+  });
+  const partnered = placed.territories.map((t) => ({
+    ...t,
+    partnerIds: partnerCalls
+      .filter((c) => c.territory && c.territory.toLowerCase() === t.name.toLowerCase())
+      .map((c) => `partner-${c.id.replace(/^call-partner-/, '')}`),
+  }));
+  return {
+    territories: partnered,
+    partners,
+    calls: [...dateCalls(asked.clash, input.release), ...placed.calls, ...partnerCalls],
+  };
 }
 
 /** The writer is told what the band can carry; the line check enforces it for flagship partners. */

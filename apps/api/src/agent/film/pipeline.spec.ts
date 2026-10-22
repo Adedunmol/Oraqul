@@ -428,3 +428,47 @@ describe('the rival date check inside a build', () => {
     expect(done.output?.brief.dates).toEqual([]);
   });
 });
+
+describe('a Nigerian film planned for its diaspora (D4, D5, D9)', () => {
+  const brief =
+    'Launch plan for "Night Ferry", a Nigerian thriller opening in Atlanta, London, Lagos and Houston on 2099-03-12. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor". A mid-size budget.\nRivals: Harbor Lights on 2099-03-12';
+
+  it('plans Lagos first, then London, Houston and Atlanta, each with channels and a call', async () => {
+    const { handoff, deps } = setup(brief, 200);
+    const done = await runFilmBuild(handoff, deps());
+    const plan = done.output?.plan;
+    expect(done.reason).toBe('finished');
+    expect(plan?.territories.map((t) => [t.name, t.role])).toEqual([
+      ['Lagos', 'home'],
+      ['London', 'diaspora'],
+      ['Houston', 'diaspora'],
+      ['Atlanta', 'diaspora'],
+    ]);
+    const lagos = plan?.territories[0];
+    expect(lagos?.channels.slice(0, 2).map((c) => c.name)).toEqual(['WhatsApp', 'Instagram']);
+    expect(plan?.sections.find((s) => s.key === 'channels')?.lines).toHaveLength(4);
+    for (const t of plan?.territories ?? []) {
+      expect(t.callId === null || plan?.calls.some((c) => c.id === t.callId)).toBe(true);
+    }
+  });
+
+  it('calls the opening day against the rival', async () => {
+    const { handoff, deps } = setup(brief, 200);
+    const done = await runFilmBuild(handoff, deps());
+    const date = done.output?.plan?.calls.find((c) => c.subject === 'date');
+    expect(date?.name).toBe('2099-03-12');
+    expect(['okay', 'risky', 'avoid']).toContain(date?.direction);
+  });
+
+  it('lists partners by tier with the price unknown and the band the plan was sized for', async () => {
+    const { handoff, deps } = setup(brief, 200);
+    const done = await runFilmBuild(handoff, deps());
+    const plan = done.output?.plan;
+    expect(plan?.band).toEqual({ band: 'mid', source: 'brief' });
+    expect(plan?.partners.length).toBeGreaterThan(0);
+    expect(plan?.partners.every((p) => p.price === 'unknown')).toBe(true);
+    expect(plan?.partners.some((p) => p.tier === 'C')).toBe(true);
+    expect(plan?.rules?.version).toMatch(/^film@/);
+    expect(plan?.signal?.primary).toBe('Advance screenings and presales');
+  });
+});

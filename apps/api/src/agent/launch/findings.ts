@@ -663,7 +663,7 @@ export async function brandPool(deps: GroundDeps, names: string[]): Promise<stri
   if (names.length === 0) return [];
   try {
     const { data, receipts } = await tools.resolveBundle.run(deps.tools, {
-      names: names.slice(0, 4),
+      names: names.slice(0, 8),
       types: ['urn:entity:brand'],
     });
     deps.keep(receipts);
