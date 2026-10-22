@@ -169,3 +169,56 @@ export function contrastOf(
     },
   };
 }
+
+export interface ProcessView {
+  /** One entry per research round, as plain sentences. */
+  research: { title: string; steps: string[] }[];
+  /** One entry per red-team round, as plain sentences. */
+  review: { title: string; steps: string[] }[];
+  /** Lines the check removed from a draft, so no removal is silent. */
+  dropped: { draft: number; text: string; why: string }[];
+  drafts: number;
+}
+
+const found = (yes: boolean) => (yes ? 'Qloo had an answer.' : 'Qloo had nothing for it.');
+
+const REVIEW_ACTION: Record<NonNullable<LaunchPlan['review']>['rounds'][number]['action'], string> =
+  {
+    approved: 'The draft passed.',
+    rewrote: 'The plan was written again with these points.',
+    researched: 'More Qloo evidence was asked for, then the plan was written again.',
+    stopped: 'The same point came back, so the draft was kept with it open.',
+  };
+
+/**
+ * How the plan was made, in the person's terms: what each research round was missing and ran, what
+ * the red team said about each draft and what was done, and the lines the check removed. All of it
+ * is read from what the plan saved.
+ */
+export function processOf(plan: Pick<LaunchPlan, 'process' | 'review'>): ProcessView | null {
+  const { process, review } = plan;
+  if (!process && !review) return null;
+  const research = (process?.research ?? []).map((r) => ({
+    title: `Research round ${r.round}`,
+    steps: [
+      r.open.length ? `Still open: ${r.open.join('; ')}.` : 'Nothing was open.',
+      ...r.asked.map(
+        (a) => `Asked Qloo for ${a.label}, because ${a.why.replace(/\.$/, '')}. ${found(a.found)}`,
+      ),
+      ...r.retried.map((a) => `Asked again for ${a.label} ${a.says}. ${found(a.found)}`),
+      ...r.consulted.map((c) => `Asked the ${c.category} side about ${c.name}. ${found(c.found)}`),
+    ],
+  }));
+  const rounds = (review?.rounds ?? []).map((r) => ({
+    title: `Draft ${r.round}`,
+    steps: [
+      ...(r.issues.length
+        ? r.issues.map((i) => `${i.blocking ? 'Blocking' : 'Noted'}: ${i.text}`)
+        : ['No points raised.']),
+      REVIEW_ACTION[r.action],
+    ],
+  }));
+  const dropped = process?.dropped ?? [];
+  if (research.length === 0 && rounds.length === 0 && dropped.length === 0) return null;
+  return { research, review: rounds, dropped, drafts: process?.drafts ?? rounds.length };
+}

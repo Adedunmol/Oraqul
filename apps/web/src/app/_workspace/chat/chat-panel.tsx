@@ -471,7 +471,8 @@ function Trace({
         </div>
         <div className="flex flex-col gap-1.5">
           {steps.slice(0, done + 1).map((s, i) => (
-            <Step key={s} text={s} running={i === done} />
+            // biome-ignore lint/suspicious/noArrayIndexKey: a step's text repeats (each draft is checked), so only its place is unique
+            <Step key={i} text={s} running={i === done} />
           ))}
         </div>
         {findings.length ? <Findings findings={findings.slice(-LIVE_FINDINGS)} /> : null}
@@ -484,8 +485,9 @@ function Trace({
         Agent trace · {plural(steps.length, 'step')}
       </summary>
       <div className="mt-2 flex flex-col gap-1.5">
-        {steps.map((s) => (
-          <Step key={s} text={s} running={false} />
+        {steps.map((s, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: a step's text repeats (each draft is checked), so only its place is unique
+          <Step key={i} text={s} running={false} />
         ))}
       </div>
       {findings.length ? <Findings findings={findings} /> : null}
