@@ -40,7 +40,7 @@ From [spec §9.1](../product/spec.md). Tick as built.
 - [x] Confidence, ReceiptChip
 - [x] Tabs (controlled), TabNote
 - [~] Line, ReceiptDrawer, SummaryCard: in `apps/web/src/app/_workspace/output/` (they read the output context)
-- [~] StartComposer, the start message box with its three hints: `apps/web/src/app/_workspace/start-composer.tsx`. Message box with files: `_workspace/chat/composer.tsx`, used by every chat. ProjectCard and the category filter: in `apps/web/src/app/_workspace/projects-screen.tsx`. The project workspace: `app/(app)/categories/[category]/projects/[id]/project-screen.tsx`, also rendered by `/threads/:id`
+- [~] StartComposer, the start message box with its three hints: `apps/web/src/app/_workspace/start-composer.tsx`. Message box with files: `_workspace/chat/composer.tsx`, used by every chat. ProjectCard and the category filter: in `apps/web/src/app/_workspace/projects-screen.tsx`. The project workspace: `app/(app)/projects/[id]/project-screen.tsx`, also rendered by `/chats/:id`
 - [~] QuestionCard, Trace: in `apps/web/src/app/_workspace/chat/`
 - [~] Chart (with table toggle and `data-tip` hover text): `apps/web/src/app/_workspace/charts.tsx`
 - [~] Palette in `(app)/_components/palette.tsx`, Toast in `_workspace/toast.tsx`

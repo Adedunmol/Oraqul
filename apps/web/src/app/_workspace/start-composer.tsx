@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createProject } from '@/lib/api/projects';
 import { getCategory } from '@/lib/demo/catalog';
+import { chatPath } from '@/lib/routes';
 import { type Attachment, Composer } from './chat/composer';
 import { toast } from './toast';
 
@@ -78,7 +79,7 @@ export function StartComposer({
         category,
         attachments: files.map((f) => ({ name: f.name, text: f.text })),
       });
-      router.push(`/threads/${threadId}`);
+      router.push(chatPath(threadId));
     } catch {
       setSending(false);
       toast('Oraqul could not save that. Try again in a moment.');

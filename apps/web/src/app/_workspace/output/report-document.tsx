@@ -36,8 +36,9 @@ export function reportLines(report: AuditReport): LaunchLine[] {
 
 /**
  * The audit report as a document, used in the chat and on the report page: what held, what did
- * not, how the launch compared with the plan, then the risks and what is worth a look. What a line
- * rests on is a quiet number that opens the evidence.
+ * not, how the launch compared with the plan, then the risks. What is worth a look is advice, so
+ * the chat shows it beneath the card (`ReportLines`). What a line rests on is a quiet number that
+ * opens the evidence.
  */
 export function ReportDocument({
   report,
@@ -47,16 +48,10 @@ export function ReportDocument({
   onSource: (findingId: string) => void;
 }) {
   return (
-    <div className="flex flex-col gap-9">
+    <div className="font-read flex flex-col gap-10">
       <ReportItems report={report} onSource={onSource} />
       {report.results ? <ReportResults results={report.results} /> : null}
       <ReportLines title="Risks" lines={report.risks} report={report} onSource={onSource} />
-      <ReportLines
-        title="Worth a look"
-        lines={report.alternatives}
-        report={report}
-        onSource={onSource}
-      />
     </div>
   );
 }
@@ -153,16 +148,23 @@ export function ReportLines({
   lines,
   report,
   onSource,
+  quiet = false,
 }: {
   title: string;
   lines: LaunchLine[];
   report: AuditReport;
   onSource: (findingId: string) => void;
+  /** Advice beneath a card rather than a section of the document: a smaller title. */
+  quiet?: boolean;
 }) {
   if (lines.length === 0) return null;
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="font-display text-[20px] font-semibold tracking-[-0.02em]">{title}</h2>
+      <h2
+        className={`font-display font-semibold tracking-[-0.02em] ${quiet ? 'text-[16px]' : 'text-[20px]'}`}
+      >
+        {title}
+      </h2>
       <Groups
         lines={lines.map((l) =>
           l.group?.toLowerCase() === title.toLowerCase() ? { ...l, group: null } : l,

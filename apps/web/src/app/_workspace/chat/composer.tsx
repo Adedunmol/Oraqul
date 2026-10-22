@@ -1,8 +1,17 @@
 'use client';
 
 import { Button, Icon } from '@oraqul/ui';
-import { type DragEvent, type FormEvent, type KeyboardEvent, useId, useRef, useState } from 'react';
+import {
+  type DragEvent,
+  type FormEvent,
+  type KeyboardEvent,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 import { readUpload, UploadRefused } from '@/lib/api/uploads';
+import { withQuote } from './quote';
 
 export interface Attachment {
   name: string;
@@ -44,6 +53,8 @@ export function Composer({
   autoFocus,
   allowFiles,
   compact,
+  quote,
+  onClearQuote,
   onSend,
 }: {
   placeholder: string;
@@ -52,15 +63,24 @@ export function Composer({
   allowFiles?: boolean;
   /** One line to start, growing as the person types. For a chat that is already going. */
   compact?: boolean;
+  /** A passage from the chat the message replies to, shown above the box and sent with it. */
+  quote?: string | null;
+  onClearQuote?: () => void;
   onSend: (text: string, files: Attachment[]) => void;
 }) {
   const id = useId();
   const picker = useRef<HTMLInputElement>(null);
+  const field = useRef<HTMLTextAreaElement>(null);
   const [draft, setDraft] = useState('');
   const [files, setFiles] = useState<Attachment[]>([]);
   const [problem, setProblem] = useState('');
   const [dragging, setDragging] = useState(false);
   const ready = !disabled && (draft.trim() !== '' || files.length > 0);
+
+  // Picking a passage to reply to hands the person straight to the box.
+  useEffect(() => {
+    if (quote) field.current?.focus();
+  }, [quote]);
 
   async function add(list: FileList | null) {
     if (!list?.length) return;
@@ -95,7 +115,8 @@ export function Composer({
   function send(event?: FormEvent) {
     event?.preventDefault();
     if (!ready) return;
-    onSend(draft.trim(), files);
+    onSend(withQuote(quote ?? null, draft.trim()), files);
+    onClearQuote?.();
     setDraft('');
     setFiles([]);
     setProblem('');
@@ -127,6 +148,22 @@ export function Composer({
       onDrop={onDrop}
       className={`flex flex-col gap-2 rounded-xl border bg-surface p-2 shadow-sm transition-colors focus-within:border-accent motion-reduce:transition-none ${dragging ? 'border-accent bg-accent-soft' : 'border-line'}`}
     >
+      {quote ? (
+        <div className="flex items-start gap-2 rounded-lg bg-inset py-1.5 pr-1 pl-3 text-[13px]">
+          <p className="line-clamp-2 min-w-0 flex-1 py-0.5 text-muted">
+            <span className="font-semibold text-ink">Replying to </span>
+            {quote}
+          </p>
+          <button
+            type="button"
+            aria-label="Remove quoted text"
+            onClick={onClearQuote}
+            className="grid size-6 shrink-0 place-items-center rounded-md text-muted hover:bg-surface2 hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
+          >
+            <Icon name="close" className="size-3.5" />
+          </button>
+        </div>
+      ) : null}
       {files.length ? (
         <ul aria-label="Attached files" className="flex flex-wrap gap-1.5 px-1 pt-1">
           {files.map((file) => (
@@ -152,6 +189,7 @@ export function Composer({
         Message
       </label>
       <textarea
+        ref={field}
         id={id}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}

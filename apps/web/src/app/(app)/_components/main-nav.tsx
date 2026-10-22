@@ -15,9 +15,12 @@ const groupLabel = 'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 // The project the current page belongs to, so its sidebar row stays lit inside it. A chat's
 // address does not name its project, so inside a chat Projects stays lit instead.
 function currentProjectId(pathname: string): string | undefined {
-  const [, section, , , projectId] = pathname.split('/');
-  return section === 'categories' ? projectId : undefined;
+  const [, section, projectId] = pathname.split('/');
+  return section === 'projects' ? projectId : undefined;
 }
+
+const inProjectArea = (pathname: string) =>
+  pathname.startsWith('/projects') || pathname.startsWith('/chats/');
 
 function Item({
   href,
@@ -116,7 +119,7 @@ export function MainNav({
   );
   // Projects lights on the list pages, and inside a project that has no row of its own here.
   const shown = current !== undefined && [...pinned, ...recent].some((p) => p.id === current);
-  const inProjects = current === undefined ? pathname.startsWith('/categories/') : !shown;
+  const inProjects = current === undefined ? inProjectArea(pathname) : !shown;
 
   return (
     <>
@@ -155,7 +158,7 @@ export function MobileNav({ search }: { search: ReactNode }) {
       href: projectsPath(),
       icon: 'projects',
       label: 'Projects',
-      active: pathname.startsWith('/categories/'),
+      active: inProjectArea(pathname),
     },
   ];
   const team = {

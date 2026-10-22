@@ -5,7 +5,7 @@ import { Button, buttonClassName, Icon, TabNote, Tabs } from '@oraqul/ui';
 import Link from 'next/link';
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { exportOutput } from '@/lib/api/projects';
-import { projectPath, projectsPath } from '@/lib/routes';
+import { chatPath, projectPath, projectsPath } from '@/lib/routes';
 import { KindTag } from '../chat/chat-panel';
 import { Crumbs } from '../crumbs';
 import { formatDay } from '../format';
@@ -236,7 +236,7 @@ export function OutputView({
                 {shared ? null : (
                   // On desktop the dock chat does this; below 900px the dock is hidden.
                   <Link
-                    href={`/threads/${thread.id}`}
+                    href={chatPath(thread.id)}
                     className={`${buttonClassName('primary', 'default', 'icon')} min-[900px]:hidden`}
                   >
                     <Icon name="sparkles" className="size-4" />

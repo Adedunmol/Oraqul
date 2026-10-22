@@ -5,7 +5,7 @@ import { Chip, Icon, PageHead } from '@oraqul/ui';
 import type { ReactNode } from 'react';
 import type { Viewer } from '@/lib/api/viewer';
 import { getCategory } from '@/lib/demo/catalog';
-import { projectPath } from '@/lib/routes';
+import { chatPath, projectPath } from '@/lib/routes';
 import { formatDay, plural } from './format';
 import { CardShell, cardGridClass } from './project-card';
 import { StartComposer } from './start-composer';
@@ -94,7 +94,7 @@ const NEED_ACTION: Record<NeedsYouItem['reason'], string> = {
 
 function NeedRow({ item }: { item: NeedsYouItem }) {
   const action = NEED_ACTION[item.reason];
-  const href = item.reason === 'results' ? projectPath(item.project) : `/threads/${item.thread.id}`;
+  const href = item.reason === 'results' ? projectPath(item.project) : chatPath(item.thread.id);
   const category = getCategory(item.project.category).short;
   let title = '';
   let detail = '';
@@ -139,7 +139,7 @@ function ThreadRow({ recent }: { recent: RecentThread }) {
   return (
     <CardShell
       category={project.category}
-      href={`/threads/${thread.id}`}
+      href={chatPath(thread.id)}
       title={thread.name}
       meta={`${getCategory(project.category).short} · ${project.name} · ${plural(outputCount, 'output')}`}
       footerStart={<Chip className="min-w-0 truncate bg-surface/70!">{project.status}</Chip>}

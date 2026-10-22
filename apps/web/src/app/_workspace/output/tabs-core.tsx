@@ -4,6 +4,7 @@ import type { Verdict } from '@oraqul/schema';
 import { Button, ChipButton, Confidence, Kbd, ReceiptChip, VerdictPill } from '@oraqul/ui';
 import Link from 'next/link';
 import { useState } from 'react';
+import { outputPath } from '@/lib/routes';
 import {
   ChartCard,
   DataTable,
@@ -838,7 +839,7 @@ export function EvidenceTab() {
           <p className="text-muted">
             Their evidence is in {builtOn.label}.{' '}
             <Link
-              href={`/outputs/${builtOn.id}?tab=evidence`}
+              href={outputPath(builtOn.id, 'evidence')}
               className="text-accent underline underline-offset-2"
             >
               Open that evidence

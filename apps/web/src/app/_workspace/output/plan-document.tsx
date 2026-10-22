@@ -1,6 +1,7 @@
 'use client';
 
 import type { LaunchLine, LaunchPlan, LineChange, PlanSource } from '@oraqul/schema';
+import type { ReactNode } from 'react';
 
 /** Finding ids in the order the plan first cites them, numbered from 1, as in the exports. */
 export function footnotes(plan: LaunchPlan): Map<string, number> {
@@ -17,6 +18,20 @@ export function footnotesOf(lines: LaunchLine[]): Map<string, number> {
   }
   return order;
 }
+
+/** The plan's sections as a jump list, in the order the document shows them. */
+export function planOutline(plan: LaunchPlan): { id: string; label: string }[] {
+  const brief = plan.sections.find((s) => s.key === 'bottom-line');
+  return [
+    ...(brief ? [{ id: 'in-brief', label: 'In brief' }] : []),
+    ...((plan.understanding?.assumed.length ?? 0) > 0 ? [{ id: 'assumed', label: 'Assumed' }] : []),
+    ...plan.sections
+      .filter((s) => s.key !== 'bottom-line' && s.key !== 'gaps')
+      .map((s) => ({ id: `plan-${s.key}`, label: s.title })),
+  ];
+}
+
+const sectionTitle = 'font-display text-[20px] font-semibold tracking-[-0.02em]';
 
 /**
  * The launch plan as a document, used in the chat and on the plan page. What a line rests on is a
@@ -35,27 +50,24 @@ export function PlanDocument({
 }) {
   const notes = footnotes(plan);
   const inBrief = plan.sections.find((s) => s.key === 'bottom-line');
-  const rest = plan.sections.filter((s) => s.key !== 'bottom-line');
+  const rest = plan.sections.filter((s) => s.key !== 'bottom-line' && s.key !== 'gaps');
   return (
-    <div className="flex flex-col gap-9">
+    <div className="font-read flex flex-col gap-10">
       {inBrief ? (
-        <section aria-labelledby="in-brief" className="flex flex-col gap-3">
-          <h2
-            id="in-brief"
-            className="font-display text-[13px] font-semibold tracking-[0.04em] text-muted uppercase"
-          >
+        <section aria-labelledby="in-brief" className="flex scroll-mt-48 flex-col gap-4">
+          <h2 id="in-brief" className={sectionTitle}>
             In brief
           </h2>
-          <ol className="flex flex-col gap-3">
+          <ol className="flex flex-col gap-4">
             {inBrief.lines.map((line, i) => (
-              <li key={line.id} className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3.5">
+              <li key={line.id} className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4">
                 <span
                   aria-hidden="true"
-                  className="mt-0.5 grid size-7 place-items-center rounded-lg bg-accent-soft font-mono text-[13px] font-semibold text-accent"
+                  className="mt-px grid size-7 place-items-center rounded-lg bg-accent-soft text-[13px] font-semibold text-accent tabular-nums"
                 >
                   {i + 1}
                 </span>
-                <p className="font-display text-[19px] leading-[1.4] font-medium tracking-[-0.01em]">
+                <p className="text-[18px] leading-[1.55] font-medium">
                   <LineText
                     line={line}
                     notes={notes}
@@ -69,13 +81,14 @@ export function PlanDocument({
           </ol>
         </section>
       ) : null}
-      <Review plan={plan} />
       <Assumed plan={plan} />
       {rest.map((section) => (
-        <section key={section.key} className="flex flex-col gap-3">
-          <h2 className="font-display text-[20px] font-semibold tracking-[-0.02em]">
-            {section.title}
-          </h2>
+        <section
+          key={section.key}
+          id={`plan-${section.key}`}
+          className="flex scroll-mt-48 flex-col gap-4"
+        >
+          <h2 className={sectionTitle}>{section.title}</h2>
           <Groups
             lines={section.lines}
             notes={notes}
@@ -91,20 +104,35 @@ export function PlanDocument({
 }
 
 /**
- * What the red team made of the saved draft. A plan that passed gets a quiet line; one that did
- * not lists what is still open and what the person could give to settle it.
+ * What the red team made of the saved draft: whether it passed, what is still open and what the
+ * person could give to settle it. It is advice about the plan, not part of it, so it sits beneath
+ * the plan's card and never inside it. Renders nothing when there is nothing to say.
  */
-function Review({ plan }: { plan: LaunchPlan }) {
-  const review = plan.review;
-  if (!review || review.status === 'unchecked') return null;
+export function PlanFollowUp({ plan }: { plan: LaunchPlan }) {
+  const gaps = plan.sections.find((s) => s.key === 'gaps');
+  const review = plan.review?.status === 'unchecked' ? null : plan.review;
+  if (!gaps?.lines.length && !review) return null;
+  return (
+    <FollowUp label="Review of this plan">
+      {gaps?.lines.length ? (
+        <div className="flex flex-col gap-2.5">
+          <h2 className="font-display text-[17px] font-semibold tracking-[-0.02em]">
+            {gaps.title}
+          </h2>
+          <FollowUpList items={gaps.lines.map((l) => ({ key: l.id, text: l.text }))} />
+        </div>
+      ) : null}
+      {review ? <Review review={review} /> : null}
+    </FollowUp>
+  );
+}
+
+function Review({ review }: { review: NonNullable<LaunchPlan['review']> }) {
   const passed = review.status === 'passed';
   const open = review.rounds.at(-1)?.issues.filter((i) => i.blocking) ?? [];
   const drafts = review.rounds.length;
   return (
-    <section aria-labelledby="review" className="flex flex-col gap-2">
-      <h2 id="review" className="sr-only">
-        Review
-      </h2>
+    <>
       <p
         className={`inline-flex w-fit items-center gap-1.5 rounded-md px-[9px] py-0.5 text-xs font-semibold ${passed ? 'bg-holds-bg text-holds' : 'bg-weak-bg text-weak'}`}
       >
@@ -114,42 +142,59 @@ function Review({ plan }: { plan: LaunchPlan }) {
           : `Reviewed, ${open.length} open ${open.length === 1 ? 'point' : 'points'}`}
       </p>
       {!passed && open.length > 0 ? (
-        <ul className="flex flex-col gap-1 text-[14px] leading-[1.6] text-muted">
-          {open.map((issue) => (
-            <li key={`${issue.check}-${issue.text}`}>{issue.text}</li>
-          ))}
-        </ul>
+        <FollowUpList items={open.map((i) => ({ key: `${i.check}-${i.text}`, text: i.text }))} />
       ) : null}
       {review.next.length > 0 ? (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <h3 className="text-[14px] font-semibold">To make this stronger</h3>
-          <ul className="flex flex-col gap-1 text-[14px] leading-[1.6] text-muted">
-            {review.next.map((n) => (
-              <li key={n}>{n}</li>
-            ))}
-          </ul>
+          <FollowUpList items={review.next.map((n) => ({ key: n, text: n }))} />
         </div>
       ) : null}
+    </>
+  );
+}
+
+/** The frame for advice that belongs beneath an output: no card, so it reads as a reply to it. */
+export function FollowUp({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <section aria-label={label} className="flex flex-col gap-3 px-1.5">
+      {children}
     </section>
   );
 }
+
+export function FollowUpList({ items }: { items: { key: string; text: string }[] }) {
+  return (
+    <ul className="font-read flex flex-col gap-1.5 text-[16px] leading-[1.65] text-muted">
+      {items.map((item) => (
+        <li
+          key={item.key}
+          className="relative pl-4 before:absolute before:top-[0.75em] before:left-0 before:size-1 before:rounded-full before:bg-muted"
+        >
+          {item.text}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** The reason arrives as a sentence; after "because" it reads as a clause. */
+const lowerFirst = (text: string) => text.replace(/^([A-Z])(?=[a-z])/, (c) => c.toLowerCase());
 
 /** What the plan filled in because the brief did not say it, so a wrong guess is easy to spot. */
 function Assumed({ plan }: { plan: LaunchPlan }) {
   const assumed = plan.understanding?.assumed ?? [];
   if (assumed.length === 0) return null;
   return (
-    <section aria-labelledby="assumed" className="flex flex-col gap-2">
-      <h2
-        id="assumed"
-        className="font-display text-[13px] font-semibold tracking-[0.04em] text-muted uppercase"
-      >
+    <section aria-labelledby="assumed" className="flex scroll-mt-48 flex-col gap-4">
+      <h2 id="assumed" className={sectionTitle}>
         Assumed
       </h2>
-      <ul className="flex flex-col gap-1 text-[14px] leading-[1.6] text-muted">
+      <ul className="flex flex-col gap-1.5 text-[16px] leading-[1.65] text-muted">
         {assumed.map((a) => (
           <li key={`${a.what}-${a.value}`}>
-            <span className="text-ink">{a.value}</span>, because {a.why}
+            <span className="text-ink">{a.value.replaceAll('_', ' ')}</span>, because{' '}
+            {lowerFirst(a.why)}
           </li>
         ))}
       </ul>
@@ -177,16 +222,16 @@ export function Groups({
     else groups.push({ name: line.group, lines: [line] });
   }
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {groups.map((g, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: a group name can repeat, so its place is the identity
-        <div key={i} className="flex flex-col gap-1.5">
-          {g.name ? <h3 className="text-[14px] font-semibold">{g.name}</h3> : null}
-          <ul className="flex flex-col gap-2">
+        <div key={i} className="flex flex-col gap-2">
+          {g.name ? <h3 className="text-[14.5px] font-semibold">{g.name}</h3> : null}
+          <ul className="flex flex-col gap-2.5">
             {g.lines.map((line) => (
               <li
                 key={line.id}
-                className="relative pl-4 text-[15.5px] leading-[1.65] before:absolute before:top-[0.8em] before:left-0 before:size-1 before:rounded-full before:bg-muted"
+                className="relative pl-4 text-[16px] leading-[1.7] before:absolute before:top-[0.9em] before:left-0 before:size-1 before:rounded-full before:bg-muted"
               >
                 <LineText
                   line={line}

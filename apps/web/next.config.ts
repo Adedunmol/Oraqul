@@ -15,16 +15,28 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   // A phone on the same Wi-Fi opens the dev server by LAN address. Without this Next blocks its scripts, the page never hydrates and everything that waits on <Reveal> stays hidden.
   allowedDevOrigins: ['192.168.*.*'],
-  // Old addresses from before projects moved under their category. Temporary, so they can be reused.
+  // Old addresses, from when projects lived under their category and chats were called threads.
+  // Temporary, so they can be reused.
   async redirects() {
     return [
-      { source: '/projects', destination: '/categories/all/projects', permanent: false },
-      { source: '/projects/:id', destination: '/categories/all/projects/:id', permanent: false },
+      { source: '/categories/all/projects', destination: '/projects', permanent: false },
       {
-        source: '/categories/:category',
-        destination: '/categories/:category/projects',
+        source: '/categories/:category/projects',
+        destination: '/projects?category=:category',
         permanent: false,
       },
+      {
+        source: '/categories/:category/projects/:id',
+        destination: '/projects/:id',
+        permanent: false,
+      },
+      { source: '/categories/all', destination: '/projects', permanent: false },
+      {
+        source: '/categories/:category',
+        destination: '/projects?category=:category',
+        permanent: false,
+      },
+      { source: '/threads/:id', destination: '/chats/:id', permanent: false },
     ];
   },
   partialPrefetching: true,

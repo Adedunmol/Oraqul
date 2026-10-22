@@ -86,7 +86,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </Suspense>
       </header>
 
-      <main className="flex-1 border-t border-line bg-canvas [--page-x:clamp(16px,2.4vw,32px)] [--page-y:clamp(16px,2vw,28px)] px-(--page-x) py-(--page-y) min-[900px]:my-2 min-[900px]:mr-2 min-[900px]:rounded-2xl min-[900px]:border">
+      <main
+        data-app-main
+        className="flex-1 border-t border-line bg-canvas [--page-x:clamp(16px,2.4vw,32px)] [--page-y:clamp(16px,2vw,28px)] px-(--page-x) py-(--page-y) min-[900px]:my-2 min-[900px]:mr-2 min-[900px]:rounded-2xl min-[900px]:border"
+      >
         <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
           {children}
           <div className="flex flex-wrap gap-2 min-[900px]:hidden">

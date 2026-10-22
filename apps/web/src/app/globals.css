@@ -66,6 +66,7 @@
     var(--font-space-grotesk), var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-body: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: var(--font-geist-mono), ui-monospace, Menlo, Consolas, monospace;
+  --f-read: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
 }
 
@@ -251,6 +252,7 @@
   --font-display: var(--f-display);
   --font-sans: var(--f-body);
   --font-mono: var(--f-mono);
+  --font-read: var(--f-read);
 }
 
 /* Cards stand out from the canvas by fill and a small lift, never an outline. Set once here so
@@ -455,6 +457,18 @@ body {
   .app-shell {
     transition: none;
   }
+}
+
+/* The project workspace has its own two columns, so its main panel gives up some side padding to
+   keep the chats panel close to the sidebar. */
+@media (min-width: 900px) {
+  [data-app-main]:has([data-workspace]) {
+    --page-x: 12px;
+  }
+}
+/* These screens use the whole panel instead of a centred 1280px column. */
+[data-app-main]:has([data-workspace], [data-wide]) > div {
+  max-width: none;
 }
 
 /* One scrim for every dialog: the modal, the search palette and the receipt drawer. A plain dim,
