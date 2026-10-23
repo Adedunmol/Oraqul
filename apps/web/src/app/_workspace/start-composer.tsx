@@ -56,12 +56,15 @@ export function StartComposer({
   teamId,
   category,
   mode: initialMode,
+  text,
   autoFocus,
 }: {
   /** The team the project is made in. */
   teamId: string;
   category?: Category;
   mode?: StartMode;
+  /** A brief to start from, such as one built in the guide. */
+  text?: string;
   autoFocus?: boolean;
 }) {
   const router = useRouter();
@@ -98,6 +101,7 @@ export function StartComposer({
       <Composer
         placeholder={choice?.placeholder ?? START_CHOICES[0]?.placeholder ?? ''}
         allowFiles
+        initialText={text}
         autoFocus={autoFocus}
         disabled={sending}
         onSend={send}

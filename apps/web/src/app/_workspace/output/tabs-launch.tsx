@@ -1,0 +1,294 @@
+'use client';
+
+import type {
+  DirectionCall,
+  LaunchLine,
+  LaunchPlan,
+  PartnerOption,
+  PartnerTier,
+  Territory,
+} from '@oraqul/schema';
+import { Button, Confidence, DirectionPill, ReceiptChip } from '@oraqul/ui';
+import { copyText } from '../toast';
+import { useOutputView } from './context';
+import { Mark, Stack, TabTitle } from './line';
+import { footnotes, LineText } from './plan-document';
+
+const TIER: Record<PartnerTier, { name: string; what: string }> = {
+  A: { name: 'Flagship', what: 'Big national brands. Only for releases with scale.' },
+  B: {
+    name: 'Category and integration',
+    what: 'Banks and payment brands, food and drink, hospitality, telecom bundles.',
+  },
+  C: {
+    name: 'Local',
+    what: 'Cinemas, creators, diaspora businesses and community groups. Most realistic for an independent release.',
+  },
+};
+
+const BUDGET: Record<PartnerOption['budgetFit'], string> = {
+  fits: 'Fits the budget',
+  stretch: 'A stretch for the budget',
+  out: 'Out of budget',
+};
+
+const ROLE: Record<Territory['role'], string> = {
+  home: 'Home market',
+  diaspora: 'Diaspora city',
+  other: 'Market',
+};
+
+function PartnerRow({ partner }: { partner: PartnerOption }) {
+  const { openReceipt } = useOutputView();
+  const finding = partner.findingIds[0];
+  return (
+    <li className="flex flex-col gap-1 rounded-xl bg-card px-4 py-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <b className="text-sm">{partner.name}</b>
+        {partner.from === 'team' ? <Mark>Your partner</Mark> : null}
+        {partner.fit ? <DirectionPill direction={partner.fit.direction} /> : null}
+        {finding ? (
+          <ReceiptChip onClick={() => openReceipt(finding)} aria-label="Open receipt" />
+        ) : null}
+      </div>
+      <p className="text-[13px] text-muted">
+        {partner.fit
+          ? `Qloo fit: ${partner.fit.place} of ${partner.fit.of} brands ranked for this audience.`
+          : 'Qloo fit: not ranked.'}{' '}
+        {BUDGET[partner.budgetFit]}. Price: unknown.
+      </p>
+    </li>
+  );
+}
+
+/** Partners grouped by tier, flagship first. A tier with none is left out. */
+export function PartnerTiers({ partners }: { partners: PartnerOption[] }) {
+  if (partners.length === 0) return null;
+  return (
+    <section aria-label="Partners by tier" className="flex flex-col gap-3">
+      <h3 className="font-display text-base font-semibold tracking-[-0.02em]">Partners by tier</h3>
+      {(['A', 'B', 'C'] as const).map((tier) => {
+        const rows = partners.filter((p) => p.tier === tier);
+        if (rows.length === 0) return null;
+        return (
+          <div key={tier} className="flex flex-col gap-2">
+            <h4 className="text-[13px] font-semibold">
+              Tier {tier}, {TIER[tier].name}
+              <span className="ml-2 font-normal text-muted">{TIER[tier].what}</span>
+            </h4>
+            <ul className="flex flex-col gap-2">
+              {rows.map((p) => (
+                <PartnerRow key={p.id} partner={p} />
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+function linesOf(plan: LaunchPlan, ids: string[]): LaunchLine[] {
+  const all = new Map(plan.sections.flatMap((s) => s.lines.map((l) => [l.id, l] as const)));
+  return ids.flatMap((id) => all.get(id) ?? []);
+}
+
+/** One plan per territory: the home market first, then the diaspora cities. */
+export function StructuredTerritories() {
+  const { output, openReceipt } = useOutputView();
+  const plan = output.plan;
+  if (!plan) return null;
+  const notes = footnotes(plan);
+  return (
+    <>
+      <TabTitle
+        title="Territories"
+        note="One plan per territory: the home market first, then the diaspora cities. Each has its call, its lead channels, its partners and the lines of the plan that are about it."
+      />
+      <Stack>
+        {plan.territories.map((t) => {
+          const call = plan.calls.find((c) => c.id === t.callId);
+          const lead = t.channels.filter((c) => c.lead);
+          const partners = plan.partners.filter((p) => t.partnerIds.includes(p.id));
+          const lines = linesOf(plan, t.lineIds);
+          return (
+            <section
+              key={t.id}
+              aria-labelledby={t.id}
+              className="flex flex-col gap-3 rounded-2xl bg-card px-5 py-[18px]"
+            >
+              <header className="flex flex-wrap items-center justify-between gap-2">
+                <h3 id={t.id} className="font-display text-[17px] font-semibold tracking-[-0.02em]">
+                  {t.order + 1}. {t.name}
+                  <Mark>{ROLE[t.role]}</Mark>
+                </h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  {call ? (
+                    <>
+                      <DirectionPill direction={call.direction} />
+                      <Confidence level={call.confidence} />
+                      <ReceiptChip
+                        onClick={() => openReceipt(call.findingIds[0] ?? '')}
+                        aria-label="Open receipt"
+                      />
+                    </>
+                  ) : null}
+                </div>
+              </header>
+              {call ? <p className="text-[13px] text-muted">{call.why}</p> : null}
+              <p className="text-[13px]">
+                <span className="font-semibold">Lead on </span>
+                {lead.map((c) => c.name).join(', ')}
+                {t.channels.length > lead.length
+                  ? `, then ${t.channels
+                      .filter((c) => !c.lead)
+                      .map((c) => c.name)
+                      .join(', ')}`
+                  : ''}
+                .
+              </p>
+              {lines.length > 0 ? (
+                <ul className="font-read flex flex-col gap-1.5 text-[15px] leading-[1.55]">
+                  {lines.map((line) => (
+                    <li key={line.id}>
+                      <LineText
+                        line={line}
+                        notes={notes}
+                        sources={plan.sources}
+                        onSource={(id) => openReceipt(id)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {partners.length > 0 ? (
+                <ul className="flex flex-col gap-2">
+                  {partners.map((p) => (
+                    <PartnerRow key={p.id} partner={p} />
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          );
+        })}
+      </Stack>
+      <PartnerTiers partners={plan.partners} />
+    </>
+  );
+}
+
+const SUBJECT: Record<DirectionCall['subject'], string> = {
+  date: 'Opening dates',
+  territory: 'Territories',
+  partner: 'Partners',
+};
+
+/** Okay, risky or avoid for every date, territory and partner, set by code. */
+export function CallsTab() {
+  const { output, openReceipt } = useOutputView();
+  const calls = output.plan?.calls ?? [];
+  return (
+    <>
+      <TabTitle
+        title="Direction calls"
+        note="Okay, risky or avoid for each date, territory and partner, set by code from what Qloo returned. A call on something you chose keeps your choice and says how to handle it. These are directions, not forecasts."
+      />
+      {(['date', 'territory', 'partner'] as const).map((subject) => {
+        const rows = calls.filter((c) => c.subject === subject);
+        if (rows.length === 0) return null;
+        return (
+          <section key={subject} className="flex flex-col gap-2.5">
+            <h3 className="font-display text-base font-semibold tracking-[-0.02em]">
+              {SUBJECT[subject]}
+            </h3>
+            <ul className="flex flex-col gap-2.5">
+              {rows.map((c) => (
+                <li
+                  key={c.id}
+                  className="grid grid-cols-1 gap-x-4 gap-y-2 rounded-xl bg-card px-4 py-3.5 min-[900px]:grid-cols-[minmax(0,1fr)_auto]"
+                >
+                  <div className="min-w-0">
+                    <h4 className="text-sm font-semibold">
+                      {c.name}
+                      {c.teamChoice ? <Mark>Your choice</Mark> : null}
+                    </h4>
+                    <p className="mt-0.5 text-[13px] text-muted">{c.why}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 min-[900px]:justify-end">
+                    <DirectionPill direction={c.direction} />
+                    <Confidence level={c.confidence} />
+                    {c.findingIds[0] ? (
+                      <ReceiptChip
+                        onClick={() => openReceipt(c.findingIds[0] ?? '')}
+                        aria-label="Open receipt"
+                      />
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+/** The creative kit: guides for the team that makes the final creative. */
+export function KitTab() {
+  const { output, openReceipt } = useOutputView();
+  const plan = output.plan;
+  if (!plan) return null;
+  const notes = footnotes(plan);
+  const groups = [...new Set(plan.sections.flatMap((s) => s.lines.map((l) => l.group ?? '')))];
+  return (
+    <>
+      <TabTitle
+        title="Creative kit"
+        note="Guides for the team that makes the creative: hooks, a script outline, a shot list, a key art brief and captions. Oraqul does not make the ad, trailer, image or video. A person does."
+      />
+      {groups.map((group) => (
+        <Stack key={group}>
+          {group ? (
+            <h3 className="font-display text-[17px] font-semibold tracking-[-0.02em]">{group}</h3>
+          ) : null}
+          {plan.sections.map((s) => {
+            const lines = s.lines.filter((l) => (l.group ?? '') === group);
+            if (lines.length === 0) return null;
+            return (
+              <section
+                key={s.key}
+                className="flex flex-col gap-2.5 rounded-2xl bg-card px-5 py-[18px]"
+              >
+                <header className="flex items-center justify-between gap-2">
+                  <h4 className="text-sm font-semibold">{s.title}</h4>
+                  <Button
+                    variant="ghost"
+                    size="small"
+                    onClick={() =>
+                      copyText(lines.map((l) => l.text).join('\n'), `${s.title} copied`)
+                    }
+                  >
+                    Copy
+                  </Button>
+                </header>
+                <ul className="font-read flex flex-col gap-1.5 text-[15px] leading-[1.55]">
+                  {lines.map((line) => (
+                    <li key={line.id}>
+                      <LineText
+                        line={line}
+                        notes={notes}
+                        sources={plan.sources}
+                        onSource={(id) => openReceipt(id)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+        </Stack>
+      ))}
+    </>
+  );
+}

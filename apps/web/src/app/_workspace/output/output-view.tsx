@@ -26,6 +26,7 @@ import {
   ResultsTab,
   SummaryTab,
 } from './tabs-core';
+import { CallsTab, KitTab } from './tabs-launch';
 import {
   AlternativesTab,
   FixesTab,
@@ -72,6 +73,8 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   date: DateTab,
   partners: PartnersTab,
   territories: TerritoriesTab,
+  calls: CallsTab,
+  kit: KitTab,
   route: RouteTab,
   supportacts: SupportActsTab,
   contrast: ContrastTab,

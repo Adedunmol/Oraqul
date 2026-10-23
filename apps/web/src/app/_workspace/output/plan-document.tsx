@@ -2,6 +2,7 @@
 
 import type { LaunchLine, LaunchPlan, LineChange, PlanSource } from '@oraqul/schema';
 import type { ReactNode } from 'react';
+import { PlanFrame } from './plan-frame';
 
 /** Finding ids in the order the plan first cites them, numbered from 1, as in the exports. */
 export function footnotes(plan: LaunchPlan): Map<string, number> {
@@ -81,6 +82,7 @@ export function PlanDocument({
           </ol>
         </section>
       ) : null}
+      <PlanFrame plan={plan} />
       <Assumed plan={plan} />
       {rest.map((section) => (
         <section

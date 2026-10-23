@@ -52,6 +52,7 @@ export function Composer({
   disabled,
   autoFocus,
   allowFiles,
+  initialText,
   compact,
   quote,
   onClearQuote,
@@ -61,6 +62,8 @@ export function Composer({
   disabled?: boolean;
   autoFocus?: boolean;
   allowFiles?: boolean;
+  /** Words already in the box, such as a brief built in the guide. */
+  initialText?: string;
   /** One line to start, growing as the person types. For a chat that is already going. */
   compact?: boolean;
   /** A passage from the chat the message replies to, shown above the box and sent with it. */
@@ -71,7 +74,7 @@ export function Composer({
   const id = useId();
   const picker = useRef<HTMLInputElement>(null);
   const field = useRef<HTMLTextAreaElement>(null);
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(initialText ?? '');
   const [files, setFiles] = useState<Attachment[]>([]);
   const [problem, setProblem] = useState('');
   const [dragging, setDragging] = useState(false);

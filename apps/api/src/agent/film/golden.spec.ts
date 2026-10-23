@@ -166,11 +166,15 @@ function summarise(result: PlanRun): Expected {
         ? `${plan.signal.primary}${plan.signal.target ? ` -> ${plan.signal.target.value} (${plan.signal.target.from})` : ''}`
         : null,
       territories: plan.territories.map(
-        (t) => `${t.name}:${t.role}:${plan.calls.find((c) => c.id === t.callId)?.direction ?? 'none'}`,
+        (t) =>
+          `${t.name}:${t.role}:${plan.calls.find((c) => c.id === t.callId)?.direction ?? 'none'}`,
       ),
       calls: plan.calls.map((c) => `${c.subject}:${c.name}:${c.direction}:${c.confidence}`),
       partners: Object.fromEntries(
-        (['A', 'B', 'C'] as const).map((t) => [t, plan.partners.filter((p) => p.tier === t).length]),
+        (['A', 'B', 'C'] as const).map((t) => [
+          t,
+          plan.partners.filter((p) => p.tier === t).length,
+        ]),
       ),
     },
   };

@@ -38,15 +38,16 @@ export interface DOutput {
   src?: 'you' | 'calendar';
 }
 
-const KIND_LABEL: Record<'build' | 'audit' | 'scenario' | 'fix', string> = {
+const KIND_LABEL: Record<'build' | 'audit' | 'scenario' | 'fix' | 'creative', string> = {
+  creative: 'Creative kit',
   build: 'Plan',
   audit: 'Audit',
   scenario: 'Scenario',
   fix: 'Fix',
 };
 
-const isPlanKind = (k: Job): k is 'build' | 'audit' | 'scenario' | 'fix' =>
-  k === 'build' || k === 'audit' || k === 'scenario' || k === 'fix';
+const isPlanKind = (k: Job): k is 'build' | 'audit' | 'scenario' | 'fix' | 'creative' =>
+  k === 'build' || k === 'audit' || k === 'scenario' || k === 'fix' || k === 'creative';
 
 export function kindLabel(pack: DemoPack, kind: Job): string {
   if (kind === 'date') return pack.dateLabel;
@@ -96,6 +97,8 @@ const TAB_NOTE: Record<OutputTabKey, string> = {
   regions: 'Regions ranked by fit, against the lead region the plan names.',
   alternatives: 'Stronger options the data points to. Your own choices stay in the plan.',
   fixes: 'What the audit found weak or broken, and what the new plan does about it.',
+  calls: 'Okay, risky or avoid for each date, territory and partner.',
+  kit: 'Guides for the team that makes the creative.',
 };
 
 const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
@@ -122,6 +125,7 @@ function tabsFor(pack: DemoPack, o: DOutput): OutputTab[] {
     fix: ['summary', 'results', 'changes', 'assumptions', ...sig, 'evidence'],
     date: ['summary', 'date', 'evidence'],
     partner: ['summary', 'partners', 'evidence'],
+    creative: ['kit', 'evidence'],
   };
   return keys[o.kind].map((key) => ({ key, label: tabLabel(pack, key), note: TAB_NOTE[key] }));
 }
@@ -457,6 +461,7 @@ function headlineFor(
     .filter((a) => a.verdict === 'breaks' || a.verdict === 'weak')
     .sort((x, y) => (x.verdict === 'breaks' ? 0 : 1) - (y.verdict === 'breaks' ? 0 : 1));
   switch (o.kind) {
+    case 'creative':
     case 'build': {
       const first = bad[0];
       const headline =
@@ -757,7 +762,15 @@ export function buildOutput(r: Project, o: DOutput, all: DOutput[]): Output {
   const parent = o.parentId ? all.find((x) => x.id === o.parentId) : undefined;
   const { headline, moves, stats } = headlineFor(r, pack, o, parent);
   const confidence = confidenceFor(r, pack, o);
-  const prefix = { build: 'v', scenario: 'S', audit: 'A', fix: 'R', date: 'D', partner: 'B' };
+  const prefix = {
+    build: 'v',
+    scenario: 'S',
+    audit: 'A',
+    fix: 'R',
+    date: 'D',
+    partner: 'B',
+    creative: 'K',
+  };
   const summary = [
     headline,
     ...moves.map((m, i) => `${i + 1}. ${m.text}`),

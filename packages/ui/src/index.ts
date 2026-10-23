@@ -2,6 +2,7 @@ export { Button, buttonClassName } from './button';
 export { Card } from './card';
 export { Chip, ChipButton } from './chip';
 export { Confidence } from './confidence';
+export { DirectionPill } from './direction-pill';
 export { Icon, type IconName } from './icon';
 export { Input } from './input';
 export { Logo } from './logo';

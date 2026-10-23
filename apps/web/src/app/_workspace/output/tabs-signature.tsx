@@ -8,6 +8,7 @@ import { ChangeMark, Evidence, FitBar, Line, Mark, Num, Stack, TabTitle } from '
 import { footnotesOf, LineText } from './plan-document';
 import { type SupportGridView, supportActsOf, territoriesOf } from './plan-views';
 import { FitRow } from './tabs-core';
+import { StructuredTerritories } from './tabs-launch';
 
 const bandTone: Record<LiftBand, Tone> = { strong: 'good', usable: 'warn', weak: 'crit' };
 const placeTone = (p: Place): Tone => (p.confidence === 'lower' ? 'na' : bandTone[p.band]);
@@ -54,6 +55,7 @@ const placeBars = (places: Place[], label: (p: Place, i: number) => string) =>
 export function TerritoriesTab() {
   const { output } = useOutputView();
   const places = output.brief.places.slice().sort((a, b) => b.lift - a.lift);
+  if (output.plan && output.plan.territories.length > 0) return <StructuredTerritories />;
   if (output.plan) return <TerritoryPlans />;
   return (
     <>
