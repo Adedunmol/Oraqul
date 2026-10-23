@@ -37,11 +37,11 @@ export function Jobs() {
   return (
     <section aria-labelledby="jobs-title" className={band}>
       <div className={`${wrap} flex flex-col gap-14`}>
-        <div className="grid gap-6 min-[900px]:grid-cols-[1.2fr_1fr] min-[900px]:items-end">
+        <div className="flex flex-col items-center gap-6 text-center">
           <h2 id="jobs-title" className={h2Class}>
             Plan it. Check it. Fix it.
           </h2>
-          <p className={`${leadClass} min-[900px]:justify-self-end`}>
+          <p className={leadClass}>
             Say what you are working on, the way you would tell a colleague. Oraqul works out which
             job it is.
           </p>
