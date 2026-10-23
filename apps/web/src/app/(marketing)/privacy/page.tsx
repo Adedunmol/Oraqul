@@ -14,7 +14,7 @@ export default function Privacy() {
       <PageHero
         wash
         title="Privacy, in plain words."
-        lead="Last updated 14 October 2026. Oraqul is a hackathon project, so this is short and specific to what the product actually does."
+        lead="Last updated 23 October 2026. This is short and specific to what the product actually does."
       />
       <PrivacyBody />
     </>

@@ -39,8 +39,9 @@ export function Hero() {
 
         <div className="mk-word" style={at(300)}>
           <p className="max-w-[44ch] text-balance text-[clamp(17px,1.5vw,20px)] leading-[1.5] text-ink/75">
-            Launch plans grounded in what audiences actually like, across film, music, books,
-            podcasts and games. Every claim comes with the Qloo taste data behind it.
+            Launch plans grounded in what audiences actually like, for film, music, books, podcasts
+            and games. One plan per territory, worked back from your date, with the Qloo taste data
+            behind every claim.
           </p>
         </div>
 

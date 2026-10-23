@@ -12,9 +12,9 @@ const sections: { id: string; title: string; body: ReactNode }[] = [
     title: 'Who we are',
     body: (
       <p>
-        Oraqul is a hackathon project built and run by Wahab and Adedunmola. It is an AI agent for
-        launch planning in media and entertainment. This page says what we collect, why, and who
-        else handles it. If anything here is unclear, ask {contact}.
+        Oraqul is built and run by Wahab and Adedunmola. It is an AI agent for launch planning in
+        media and entertainment. This page says what we collect, why, and who else handles it. If
+        anything here is unclear, ask {contact}.
       </p>
     ),
   },

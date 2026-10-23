@@ -9,8 +9,6 @@ export interface ExampleCase {
   title: string;
   meta: string;
   why: string;
-  /** The seeded output it opens (lib/demo/seed.ts), turned into an id with uuidFrom. */
-  outputKey: string;
 }
 
 const filmCase: ExampleCase = {
@@ -18,10 +16,9 @@ const filmCase: ExampleCase = {
   category: 'film',
   job: 'Make a plan',
   noun: 'film',
-  title: 'Salt Road',
-  meta: 'Crime drama film · UK, Canada and Mexico',
-  why: 'A plan for three markets, where Oraqul finds the Mexico release cannot reuse the UK audience.',
-  outputKey: 'output:r1:1',
+  title: 'Night Ferry',
+  meta: 'Nigerian thriller · Lagos, London, Houston and Atlanta',
+  why: 'One plan for each of four territories, home first, with rival dates checked and a call on each place.',
 };
 
 // Three launches that each show a different job, category and part of the world.
@@ -30,22 +27,20 @@ export const exampleCases: ExampleCase[] = [
   {
     id: 'music',
     category: 'music',
-    job: 'Check my plan',
-    noun: 'tour',
-    title: 'Neon Hours tour',
-    meta: 'Indie pop tour · London, Austin, Toronto, Mexico City, Seoul',
-    why: 'A tour plan checked city by city, with cities on four continents ranked in one list.',
-    outputKey: 'output:r3:1',
+    job: 'Make a plan',
+    noun: 'release',
+    title: 'Night Songs',
+    meta: 'Afrobeats album · Lagos, London and Houston',
+    why: 'A six to eight week rollout worked back from the release date, led on short video, with the tour route scored.',
   },
   {
     id: 'podcasts',
     category: 'podcasts',
-    job: 'Fix my plan',
+    job: 'Make a plan',
     noun: 'podcast',
-    title: 'The Long Table',
-    meta: 'Podcast, season two · results by region and age band',
-    why: 'Season two missed. Oraqul compares who listened with who the plan expected, and rebuilds around them.',
-    outputKey: 'output:r6:2',
+    title: 'Cold Case Lagos',
+    meta: 'True crime podcast · Lagos and London · micro budget',
+    why: 'Days one to sixty are the campaign, judged on downloads per episode, with partners sized to a micro budget.',
   },
 ];
 

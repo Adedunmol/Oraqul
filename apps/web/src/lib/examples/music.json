@@ -1,0 +1,3591 @@
+{
+  "output": {
+    "id": "00000000-0000-4000-8000-000000000201",
+    "projectId": "00000000-0000-4000-8000-000000000202",
+    "threadId": "00000000-0000-4000-8000-000000000203",
+    "kind": "build",
+    "parentId": null,
+    "title": "Night Songs",
+    "label": "v1 · Night Songs",
+    "shortLabel": "v1",
+    "kindLabel": "Plan",
+    "createdBy": "Example",
+    "createdAt": "2026-10-01T10:00:00.000Z",
+    "headline": "Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.",
+    "moves": [
+      {
+        "text": "Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.",
+        "lineId": "f-markets"
+      },
+      {
+        "text": "Aim the campaign at people aged 34 and under, as planned.",
+        "lineId": "f-audience"
+      },
+      {
+        "text": "Open the shows with Sade Rhythm, who rank highest with this audience in Houston.",
+        "lineId": "f-support-houston"
+      }
+    ],
+    "confidence": {
+      "level": "low",
+      "why": "Lower: the result rests on Neon Tide."
+    },
+    "stats": [
+      {
+        "label": "Assumptions",
+        "value": "6"
+      },
+      {
+        "label": "Hold",
+        "value": "2",
+        "verdict": "holds"
+      },
+      {
+        "label": "Weak or break",
+        "value": "4",
+        "verdict": "breaks"
+      },
+      {
+        "label": "Could not test",
+        "value": "0",
+        "verdict": "cant"
+      }
+    ],
+    "counts": {
+      "holds": 2,
+      "weak": 2,
+      "breaks": 2,
+      "cant": 0
+    },
+    "summary": "Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.\n1. Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.\n2. Aim the campaign at people aged 34 and under, as planned.\n3. Open the shows with Sade Rhythm, who rank highest with this audience in Houston.\nConfidence: Low. Lower: the result rests on Neon Tide.",
+    "changes": [],
+    "focusIds": [],
+    "tabs": [
+      {
+        "key": "plan",
+        "label": "Plan",
+        "note": ""
+      },
+      {
+        "key": "territories",
+        "label": "Territories",
+        "note": "One plan per territory: the home market first, then the diaspora cities, each with its call, its lead channels and its partners."
+      },
+      {
+        "key": "calls",
+        "label": "Direction calls",
+        "note": "Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned."
+      },
+      {
+        "key": "route",
+        "label": "Tour route",
+        "note": "The tour stops in your order, scored against the strongest order."
+      },
+      {
+        "key": "supportacts",
+        "label": "Support acts",
+        "note": "The acts Qloo ranks highest with your audience in each tour city."
+      },
+      {
+        "key": "audience",
+        "label": "Audience",
+        "note": "Who it is for, measured against Qloo taste data."
+      },
+      {
+        "key": "assumptions",
+        "label": "Assumptions",
+        "note": "Every belief your plan rests on. Holds means Qloo data supports it. Breaks means it does not. Each one has a receipt: the exact Qloo call behind it. What could not be tested is at the end."
+      },
+      {
+        "key": "contrast",
+        "label": "With and without Qloo",
+        "note": "What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it."
+      },
+      {
+        "key": "evidence",
+        "label": "Evidence",
+        "note": "Every claim with its receipt. Use this to check any number."
+      }
+    ],
+    "sections": [
+      {
+        "key": "s1",
+        "title": "Support acts",
+        "one": "Support act"
+      },
+      {
+        "key": "s2",
+        "title": "Partner brands",
+        "one": "Partner brand"
+      },
+      {
+        "key": "s3",
+        "title": "Press and playlists",
+        "one": "Press or playlist"
+      },
+      {
+        "key": "s4",
+        "title": "Cities",
+        "one": "City"
+      }
+    ],
+    "glance": [],
+    "brief": {
+      "audience": [
+        {
+          "id": "aud-24_and_younger",
+          "name": "Aged 24 and under",
+          "affinity": 67,
+          "evidence": "Affinity 0.33 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-25_to_29",
+          "name": "Aged 25 to 29",
+          "affinity": 61,
+          "evidence": "Affinity 0.22 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-30_to_34",
+          "name": "Aged 30 to 34",
+          "affinity": 52,
+          "evidence": "Affinity 0.03 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-female",
+          "name": "Women",
+          "affinity": 51,
+          "evidence": "Affinity 0.03 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-male",
+          "name": "Men",
+          "affinity": 49,
+          "evidence": "Affinity -0.03 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-35_to_44",
+          "name": "Aged 35 to 44",
+          "affinity": 41,
+          "evidence": "Affinity -0.18 across 3 of 3 comps"
+        }
+      ],
+      "assumptions": [
+        {
+          "id": "a-age",
+          "text": "The audience is aged 24 and under, aged 25 to 29, aged 30 to 34",
+          "verdict": "holds",
+          "why": "It is the top age band, or close to it (affinity 0.33, top band 0.33).",
+          "fix": "",
+          "unstated": false
+        },
+        {
+          "id": "a-place-lagos",
+          "text": "Lagos is a strong market for this artist",
+          "verdict": "weak",
+          "why": "About average for this audience (lift 1.02 over an average city in the same call).",
+          "fix": "",
+          "unstated": false
+        },
+        {
+          "id": "a-place-london",
+          "text": "London is a strong market for this artist",
+          "verdict": "breaks",
+          "why": "The audience is thinner here than elsewhere (lift 0.91 over an average city in the same call).",
+          "fix": "Keep London, and open it after Lagos, where lift is 1.02.",
+          "unstated": false
+        },
+        {
+          "id": "a-place-houston",
+          "text": "Houston is a strong market for this artist",
+          "verdict": "breaks",
+          "why": "The audience is thinner here than elsewhere (lift 0.80 over an average city in the same call).",
+          "fix": "Keep Houston, and open it after Lagos, where lift is 1.02.",
+          "unstated": false
+        },
+        {
+          "id": "a-comps",
+          "text": "The artist and its sound-alikes describe one audience",
+          "verdict": "weak",
+          "why": "The city order rests on Neon Tide.",
+          "fix": "Add or swap comps so no single title carries the result.",
+          "unstated": true
+        },
+        {
+          "id": "a-route",
+          "text": "The tour order is the strongest",
+          "verdict": "holds",
+          "why": "The tour order is at or near the strongest order (route score 0.91 against 0.91 for the strongest order).",
+          "fix": "",
+          "unstated": false
+        }
+      ],
+      "s1": [],
+      "s2": [],
+      "s3": [],
+      "s4": [],
+      "places": [
+        {
+          "id": "place-lagos",
+          "name": "Lagos",
+          "lift": 1.02,
+          "band": "weak",
+          "audience": "Aged 24 and under",
+          "confidence": "lower",
+          "note": "120 cells. lower: the result rests on Neon Tide"
+        },
+        {
+          "id": "place-london",
+          "name": "London",
+          "lift": 0.91,
+          "band": "weak",
+          "audience": "Aged 24 and under",
+          "confidence": "lower",
+          "note": "120 cells. lower: the result rests on Neon Tide"
+        },
+        {
+          "id": "place-houston",
+          "name": "Houston",
+          "lift": 0.8,
+          "band": "weak",
+          "audience": "Aged 24 and under",
+          "confidence": "lower",
+          "note": "120 cells. lower: the result rests on Neon Tide"
+        }
+      ],
+      "weeks": [],
+      "dates": [],
+      "chosenDate": "",
+      "partners": [],
+      "risks": [
+        {
+          "id": "risk-a-place-lagos",
+          "text": "Lagos is a strong market for this artist",
+          "signal": "About average for this audience (lift 1.02 over an average city in the same call).",
+          "action": ""
+        },
+        {
+          "id": "risk-a-place-london",
+          "text": "London is a strong market for this artist",
+          "signal": "The audience is thinner here than elsewhere (lift 0.91 over an average city in the same call).",
+          "action": "Keep London, and open it after Lagos, where lift is 1.02."
+        },
+        {
+          "id": "risk-a-place-houston",
+          "text": "Houston is a strong market for this artist",
+          "signal": "The audience is thinner here than elsewhere (lift 0.80 over an average city in the same call).",
+          "action": "Keep Houston, and open it after Lagos, where lift is 1.02."
+        },
+        {
+          "id": "risk-a-comps",
+          "text": "The artist and its sound-alikes describe one audience",
+          "signal": "The city order rests on Neon Tide.",
+          "action": "Add or swap comps so no single title carries the result."
+        }
+      ],
+      "cannot": [
+        {
+          "id": "cant-box-office",
+          "item": "Streams, ticket sales and revenue",
+          "reason": "Qloo has taste data, not sales. Add your own numbers when you fix a plan."
+        },
+        {
+          "id": "cant-q-1",
+          "item": "Concert halls in Houston",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-2",
+          "item": "Night clubs in Houston",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-3",
+          "item": "Recent films",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-4",
+          "item": "Universities in London",
+          "reason": "Qloo returned nothing for this audience with this context."
+        }
+      ],
+      "groupLabels": [],
+      "planned": [],
+      "results": null,
+      "course": null,
+      "route": {
+        "score": 0.91,
+        "bestScore": 0.91,
+        "bestOrder": ["Lagos", "London", "Houston"],
+        "isBestOrder": true,
+        "order": ["Lagos", "London", "Houston"]
+      }
+    },
+    "plan": {
+      "scope": "full",
+      "sections": [
+        {
+          "key": "bottom-line",
+          "title": "Bottom line",
+          "lines": [
+            {
+              "id": "bottom-line-1",
+              "kind": "grounded",
+              "text": "Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.",
+              "findingIds": ["f-markets"],
+              "sourceIds": [],
+              "names": ["Lagos", "London", "Houston"],
+              "group": null
+            },
+            {
+              "id": "bottom-line-2",
+              "kind": "grounded",
+              "text": "Aim the campaign at people aged 34 and under, as planned.",
+              "findingIds": ["f-audience"],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "bottom-line-3",
+              "kind": "grounded",
+              "text": "Open the shows with Sade Rhythm, who rank highest with this audience in Houston.",
+              "findingIds": ["f-support-houston"],
+              "sourceIds": [],
+              "names": ["Sade Rhythm", "Houston"],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "positioning",
+          "title": "Positioning",
+          "lines": [
+            {
+              "id": "positioning-1",
+              "kind": "playbook",
+              "text": "Lead with the sound: afrobeats.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook"
+            },
+            {
+              "id": "positioning-2",
+              "kind": "playbook",
+              "text": "Pitch the artist to press, playlists and promoters in the company of Ada Lux and Kola Wave.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave"],
+              "group": "Comps"
+            }
+          ]
+        },
+        {
+          "key": "audience",
+          "title": "Audience",
+          "lines": [
+            {
+              "id": "audience-1",
+              "kind": "grounded",
+              "text": "The core audience is people 24 and under, then 25 to 29.",
+              "findingIds": ["f-audience"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Who they are"
+            },
+            {
+              "id": "audience-2",
+              "kind": "grounded",
+              "text": "In Houston they also watch Midnight Harbor, Eko Nights and Harbor Precinct.",
+              "findingIds": ["f-shows-houston"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Eko Nights", "Harbor Precinct", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "audience-3",
+              "kind": "grounded",
+              "text": "In Lagos they also watch Midnight Harbor, Eko Nights and Harbor Precinct.",
+              "findingIds": ["f-shows-lagos"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Eko Nights", "Harbor Precinct", "Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "audience-4",
+              "kind": "grounded",
+              "text": "In London they also watch Midnight Harbor, Eko Nights and Harbor Precinct.",
+              "findingIds": ["f-shows-london"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Eko Nights", "Harbor Precinct", "London"],
+              "group": "London"
+            },
+            {
+              "id": "audience-5",
+              "kind": "grounded",
+              "text": "In Houston they also play Sade Rhythm.",
+              "findingIds": ["f-support-houston"],
+              "sourceIds": [],
+              "names": ["Sade Rhythm", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "audience-6",
+              "kind": "grounded",
+              "text": "In Lagos they also play Sade Rhythm.",
+              "findingIds": ["f-support-lagos"],
+              "sourceIds": [],
+              "names": ["Sade Rhythm", "Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "audience-7",
+              "kind": "grounded",
+              "text": "In London they also play Sade Rhythm.",
+              "findingIds": ["f-support-london"],
+              "sourceIds": [],
+              "names": ["Sade Rhythm", "London"],
+              "group": "London"
+            }
+          ]
+        },
+        {
+          "key": "markets",
+          "title": "Cities",
+          "lines": [
+            {
+              "id": "markets-1",
+              "kind": "grounded",
+              "text": "Plan Lagos as a solid market: book it selectively and grow it with local press and campus events.",
+              "findingIds": ["f-a-place-lagos"],
+              "sourceIds": [],
+              "names": ["Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "markets-2",
+              "kind": "grounded",
+              "text": "Plan London as a smaller market: keep the date small and lean on creators and community.",
+              "findingIds": ["f-a-place-london"],
+              "sourceIds": [],
+              "names": ["London"],
+              "group": "London"
+            },
+            {
+              "id": "markets-3",
+              "kind": "grounded",
+              "text": "Plan Houston as a smaller market: keep the date small and lean on creators and community.",
+              "findingIds": ["f-a-place-houston"],
+              "sourceIds": [],
+              "names": ["Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "markets-4",
+              "kind": "grounded",
+              "text": "Manchester has a stronger audience for this artist than Houston.",
+              "findingIds": ["f-worth-a-look"],
+              "sourceIds": [],
+              "names": ["Manchester", "Houston"],
+              "group": "Worth a look"
+            }
+          ]
+        },
+        {
+          "key": "partnerships",
+          "title": "Partnerships",
+          "lines": [
+            {
+              "id": "partnerships-1",
+              "kind": "grounded",
+              "text": "Brands: Night Market Cola in Lagos.",
+              "findingIds": ["f-brands-beverage-lagos"],
+              "sourceIds": [],
+              "names": ["Night Market Cola", "Lagos"],
+              "group": "Brands"
+            },
+            {
+              "id": "partnerships-2",
+              "kind": "grounded",
+              "text": "Brands: Lagoon Mobile in Lagos.",
+              "findingIds": ["f-brands-telecom-lagos"],
+              "sourceIds": [],
+              "names": ["Lagoon Mobile", "Lagos"],
+              "group": "Brands"
+            }
+          ]
+        },
+        {
+          "key": "publicity",
+          "title": "Press and playlists",
+          "lines": [
+            {
+              "id": "publicity-1",
+              "kind": "grounded",
+              "text": "Pitch the artist to Late Signal, Crime Junkie and The Joe Rogan Experience.",
+              "findingIds": ["f-podcasts"],
+              "sourceIds": [],
+              "names": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"],
+              "group": "Podcasts"
+            },
+            {
+              "id": "publicity-2",
+              "kind": "playbook",
+              "text": "Send the record to critics, radio and playlist editors four weeks before release, with a short note on the story.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Press"
+            }
+          ]
+        },
+        {
+          "key": "community",
+          "title": "Community and grassroots",
+          "lines": [
+            {
+              "id": "community-1",
+              "kind": "grounded",
+              "text": "Run a campus listening session or a short set with Gulf Coast University in Houston.",
+              "findingIds": ["f-community-university-houston"],
+              "sourceIds": [],
+              "names": ["Gulf Coast University", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "community-2",
+              "kind": "grounded",
+              "text": "Run a campus listening session or a short set with Lagoon City University in Lagos.",
+              "findingIds": ["f-community-university-lagos"],
+              "sourceIds": [],
+              "names": ["Lagoon City University", "Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "community-3",
+              "kind": "playbook",
+              "text": "Give community partners an early listen and a share-ready clip.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "tour",
+          "title": "Tour route",
+          "lines": [
+            {
+              "id": "tour-1",
+              "kind": "grounded",
+              "text": "Keep your order: it already opens with the cities where the audience is strongest.",
+              "findingIds": ["f-a-route"],
+              "sourceIds": [],
+              "names": ["Lagos", "London", "Houston"],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "support",
+          "title": "Support acts",
+          "lines": [
+            {
+              "id": "support-1",
+              "kind": "grounded",
+              "text": "In Houston, approach Sade Rhythm to open.",
+              "findingIds": ["f-support-houston"],
+              "sourceIds": [],
+              "names": ["Sade Rhythm", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "support-2",
+              "kind": "grounded",
+              "text": "In Lagos, approach Sade Rhythm to open.",
+              "findingIds": ["f-support-lagos"],
+              "sourceIds": [],
+              "names": ["Sade Rhythm", "Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "support-3",
+              "kind": "grounded",
+              "text": "In London, approach Sade Rhythm to open.",
+              "findingIds": ["f-support-london"],
+              "sourceIds": [],
+              "names": ["Sade Rhythm", "London"],
+              "group": "London"
+            }
+          ]
+        },
+        {
+          "key": "sync",
+          "title": "Sync and placement",
+          "lines": [
+            {
+              "id": "sync-1",
+              "kind": "grounded",
+              "text": "Pitch the music to the music supervisors behind Midnight Harbor and Eko Nights in Houston.",
+              "findingIds": ["f-shows-houston"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Eko Nights", "Houston"],
+              "group": "Series"
+            },
+            {
+              "id": "sync-2",
+              "kind": "grounded",
+              "text": "Pitch the music to the music supervisors behind Midnight Harbor and Eko Nights in Lagos.",
+              "findingIds": ["f-shows-lagos"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Eko Nights", "Lagos"],
+              "group": "Series"
+            },
+            {
+              "id": "sync-3",
+              "kind": "grounded",
+              "text": "Pitch the music to the music supervisors behind Midnight Harbor and Eko Nights in London.",
+              "findingIds": ["f-shows-london"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Eko Nights", "London"],
+              "group": "Series"
+            }
+          ]
+        },
+        {
+          "key": "channels",
+          "title": "Channels",
+          "lines": [
+            {
+              "id": "channels-lagos",
+              "kind": "playbook",
+              "text": "Lead on WhatsApp, Instagram and TikTok, then add Instagram Reels and YouTube Shorts.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "channels-london",
+              "kind": "playbook",
+              "text": "Lead on TikTok, Instagram Reels and YouTube Shorts.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "channels-houston",
+              "kind": "playbook",
+              "text": "Lead on TikTok, Instagram Reels and YouTube Shorts.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            }
+          ]
+        },
+        {
+          "key": "creative",
+          "title": "Creative briefs",
+          "lines": [
+            {
+              "id": "creative-1",
+              "kind": "playbook",
+              "text": "Hook one: open on the strongest image of Night Songs in the first two seconds.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-2",
+              "kind": "playbook",
+              "text": "Hook two: open on the question this release answers, as text on screen over the first shot.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-3",
+              "kind": "playbook",
+              "text": "Hook three: open on Lagos itself, with the name on screen.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-4",
+              "kind": "playbook",
+              "text": "Key art brief: one image, the title Night Songs and at most one line of text. Say what the image must show, what to avoid and where it will be seen, then hand it to a designer. Oraqul writes the brief; a person makes the art.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Key art brief"
+            }
+          ]
+        },
+        {
+          "key": "timeline",
+          "title": "Timeline",
+          "lines": [
+            {
+              "id": "timeline-deliver",
+              "kind": "playbook",
+              "text": "T-8: Deliver the release to the distributor with artwork and metadata, and pitch the playlists the platform allows.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-teaser",
+              "kind": "playbook",
+              "text": "T-8 to T-6: Start short-video teasers: the hook, the lyric and the story behind the song, three to five a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-presave",
+              "kind": "playbook",
+              "text": "T-6: Open the pre-save link and put it in every post.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-press-wave",
+              "kind": "playbook",
+              "text": "T-4 to T-3: Send the song to press, radio and the playlist curators on the shortlist.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-video",
+              "kind": "playbook",
+              "text": "T-2: Release the video or visualizer and the creator challenge or sound page.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-release",
+              "kind": "playbook",
+              "text": "Launch week: Release, and go live on the lead short-video platform the same day.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-follow-through",
+              "kind": "playbook",
+              "text": "T+1 to T+4: Post a new angle every few days, answer comments, and move spend to the cities where saves and completion are ahead.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "budget",
+          "title": "Budget split",
+          "lines": [
+            {
+              "id": "budget-1",
+              "kind": "playbook",
+              "text": "A starting split of the marketing budget, as shares: adjust it with your label or booking agent, and move money first to the cities with the strongest ticket sales.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-2",
+              "kind": "playbook",
+              "text": "Paid media and playlist placement: 35%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-3",
+              "kind": "playbook",
+              "text": "Publicity, press and radio: 15%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-4",
+              "kind": "playbook",
+              "text": "Live dates and tour support: 20%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-5",
+              "kind": "playbook",
+              "text": "Creative (video, artwork, content): 15%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-6",
+              "kind": "playbook",
+              "text": "Partnerships and sync pitching: 5%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-7",
+              "kind": "playbook",
+              "text": "Contingency: 10%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "measure",
+          "title": "What to measure",
+          "lines": [
+            {
+              "id": "measure-primary",
+              "kind": "playbook",
+              "text": "Judge this plan on one signal: save rate and stream completion.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-target",
+              "kind": "playbook",
+              "text": "No target is set. Give your own number, such as “target 10,000”, and the plan will carry it.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-checkpoints",
+              "kind": "playbook",
+              "text": "Read it day 7 and day 28.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-secondary",
+              "kind": "playbook",
+              "text": "Followers, Views, Playlist adds are secondary: track them, but do not judge the plan on them.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "risks",
+          "title": "Risks",
+          "lines": [
+            {
+              "id": "risks-1",
+              "kind": "grounded",
+              "text": "Houston may sell softer than your other cities: keep the date small and lean on creators and community there.",
+              "findingIds": ["f-a-place-houston"],
+              "sourceIds": [],
+              "names": ["Houston"],
+              "group": null
+            },
+            {
+              "id": "risks-2",
+              "kind": "grounded",
+              "text": "Lagos may sell softer than your other cities: keep the date small and lean on creators and community there.",
+              "findingIds": ["f-a-place-lagos"],
+              "sourceIds": [],
+              "names": ["Lagos"],
+              "group": null
+            },
+            {
+              "id": "risks-3",
+              "kind": "grounded",
+              "text": "London may sell softer than your other cities: keep the date small and lean on creators and community there.",
+              "findingIds": ["f-a-place-london"],
+              "sourceIds": [],
+              "names": ["London"],
+              "group": null
+            },
+            {
+              "id": "risks-4",
+              "kind": "playbook",
+              "text": "A slipped release date: hold the date, and keep the first dates to the cities you can fully support.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "gaps",
+          "title": "To sharpen this plan",
+          "lines": [
+            {
+              "id": "gaps-1",
+              "kind": "playbook",
+              "text": "Add a release date or tour window, and the timeline turns into real dates.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "gaps-2",
+              "kind": "playbook",
+              "text": "Add a marketing budget, and the split turns into amounts.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        }
+      ],
+      "comps": [
+        {
+          "name": "Ada Lux",
+          "source": "you",
+          "match": null,
+          "choice": null
+        },
+        {
+          "name": "Kola Wave",
+          "source": "you",
+          "match": null,
+          "choice": null
+        }
+      ],
+      "findings": [
+        {
+          "id": "f-a-age",
+          "query": "audience",
+          "text": "Your target (aged 34 and under) is where the artist's audience is strongest.",
+          "entities": [],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": "holds",
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005000"]
+        },
+        {
+          "id": "f-a-comps",
+          "query": "audience",
+          "text": "Your artist and its sound-alikes lean on one name for the result, so another sound-alike of your own would firm it up.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "weak",
+          "confidence": "lower",
+          "why": "lower: the result rests on Neon Tide",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-audience",
+          "query": "audience",
+          "text": "Your artist's audience is strongest among people aged 24 and under, then aged 25 to 29.",
+          "entities": [],
+          "numbers": {
+            "n0": 24,
+            "n1": 25,
+            "n2": 29,
+            "Aged 24 and under": 67,
+            "Aged 25 to 29": 61,
+            "Aged 30 to 34": 52,
+            "Women": 51,
+            "Men": 49,
+            "Aged 35 to 44": 41
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "people 24 and under, then 25 to 29"
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005000"]
+        },
+        {
+          "id": "f-a-place-houston",
+          "query": "markets",
+          "text": "Houston has a smaller audience for this artist than your other cities.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "breaks",
+          "confidence": "lower",
+          "why": "lower: the result rests on Neon Tide",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-a-place-lagos",
+          "query": "markets",
+          "text": "Lagos is an average city for this audience.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "weak",
+          "confidence": "lower",
+          "why": "lower: the result rests on Neon Tide",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-a-place-london",
+          "query": "markets",
+          "text": "London has a smaller audience for this artist than your other cities.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "breaks",
+          "confidence": "lower",
+          "why": "lower: the result rests on Neon Tide",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-a-route",
+          "query": "markets",
+          "text": "Your tour order (Lagos, London and Houston) is already the strongest order for this audience.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Lagos",
+              "affinity": 0.6066079321882237,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "London",
+              "affinity": 0.5398138502758184,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Houston",
+              "affinity": 0.47397911006048776,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "share of the strongest order": 100,
+            "route score": 0.91
+          },
+          "verdict": "holds",
+          "confidence": "lower",
+          "why": "lower: the result rests on Neon Tide",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-markets",
+          "query": "markets",
+          "text": "Among your cities, your artist's audience is strongest in Lagos, then London and Houston.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Lagos",
+              "affinity": 0.6066079321882237,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "London",
+              "affinity": 0.5398138502758184,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Houston",
+              "affinity": 0.47397911006048776,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "lift Lagos": 1.02,
+            "lift London": 0.91,
+            "lift Houston": 0.8
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: the result rests on Neon Tide",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-worth-a-look",
+          "query": "markets",
+          "text": "Manchester has a stronger audience for this artist than Houston.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Manchester",
+              "affinity": 0.7190638612237288,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "lift Manchester": 1.21
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "Ranked in the same heatmap call as your cities.",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-support-houston",
+          "query": "support",
+          "text": "In Houston, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.6231808757696256,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": ["afrobeats"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005026"]
+        },
+        {
+          "id": "f-support-lagos",
+          "query": "support",
+          "text": "In Lagos, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.6231808757696256,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": ["afrobeats"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005024"]
+        },
+        {
+          "id": "f-support-london",
+          "query": "support",
+          "text": "In London, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.6231808757696256,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": ["afrobeats"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005025"]
+        },
+        {
+          "id": "f-brands-beverage-lagos",
+          "query": "brands",
+          "text": "In Lagos, the mid-size beverage brands that rank highest with the artist's audience are Night Market Cola.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0004",
+              "name": "Night Market Cola",
+              "affinity": 0.47346292537950513,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["beverage"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005028"]
+        },
+        {
+          "id": "f-brands-telecom-lagos",
+          "query": "brands",
+          "text": "In Lagos, the mid-size telecom brands that rank highest with the artist's audience are Lagoon Mobile.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0006",
+              "name": "Lagoon Mobile",
+              "affinity": 0.47502546291216863,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["telecom"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005027"]
+        },
+        {
+          "id": "f-podcasts",
+          "query": "podcasts",
+          "text": "The podcasts that rank highest with the artist's audience in Lagos are Late Signal, Crime Junkie and The Joe Rogan Experience.",
+          "entities": [
+            {
+              "entityId": "DEMO-POD-0001",
+              "name": "Late Signal",
+              "affinity": 0.7267781520324708,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-POD-0003",
+              "name": "Crime Junkie",
+              "affinity": 0.7252156144998072,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-POD-0002",
+              "name": "The Joe Rogan Experience",
+              "affinity": 0.7244343457334754,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-POD-0005",
+              "name": "Lagos After Dark",
+              "affinity": 0.7236530769671436,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-POD-0004",
+              "name": "Serial",
+              "affinity": 0.7228718082008119,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005029"]
+        },
+        {
+          "id": "f-shows-houston",
+          "query": "shows",
+          "text": "In Houston, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0002",
+              "name": "Midnight Harbor",
+              "affinity": 0.7517125902817847,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0002",
+              "name": "Eko Nights",
+              "affinity": 0.7194554366216658,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0001",
+              "name": "Harbor Precinct",
+              "affinity": 0.7171116303226704,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2020
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2020,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005032"]
+        },
+        {
+          "id": "f-shows-lagos",
+          "query": "shows",
+          "text": "In Lagos, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0002",
+              "name": "Midnight Harbor",
+              "affinity": 0.7517125902817847,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0002",
+              "name": "Eko Nights",
+              "affinity": 0.7194554366216658,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0001",
+              "name": "Harbor Precinct",
+              "affinity": 0.7171116303226704,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2020
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2020,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005030"]
+        },
+        {
+          "id": "f-shows-london",
+          "query": "shows",
+          "text": "In London, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0002",
+              "name": "Midnight Harbor",
+              "affinity": 0.7517125902817847,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0002",
+              "name": "Eko Nights",
+              "affinity": 0.7194554366216658,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0001",
+              "name": "Harbor Precinct",
+              "affinity": 0.7171116303226704,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2020
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2020,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005031"]
+        },
+        {
+          "id": "f-community-university-houston",
+          "query": "community",
+          "text": "In Houston, the universities that rank highest with the artist's audience are Gulf Coast University.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0008",
+              "name": "Gulf Coast University",
+              "affinity": 0.6268567424562892,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": [],
+            "tags": ["university"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005038"]
+        },
+        {
+          "id": "f-community-university-lagos",
+          "query": "community",
+          "text": "In Lagos, the universities that rank highest with the artist's audience are Lagoon City University.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0009",
+              "name": "Lagoon City University",
+              "affinity": 0.627638011222621,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["university"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005037"]
+        },
+        {
+          "id": "f-venues-concert-hall-lagos",
+          "query": "venues",
+          "text": "In Lagos, the concert halls that rank highest with the artist's audience are Harbor Hall.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0014",
+              "name": "Harbor Hall",
+              "affinity": 0.62842612963366,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["concert hall"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005035"]
+        },
+        {
+          "id": "f-venues-concert-hall-london",
+          "query": "venues",
+          "text": "In London, the concert halls that rank highest with the artist's audience are Southbank Hall.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0015",
+              "name": "Southbank Hall",
+              "affinity": 0.6276448608673282,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["concert hall"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005036"]
+        },
+        {
+          "id": "f-venues-night-club-lagos",
+          "query": "venues",
+          "text": "In Lagos, the night clubs that rank highest with the artist's audience are Eko Nights Club.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0011",
+              "name": "Eko Nights Club",
+              "affinity": 0.6245197858020011,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["night club"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005033"]
+        },
+        {
+          "id": "f-venues-night-club-london",
+          "query": "venues",
+          "text": "In London, the night clubs that rank highest with the artist's audience are Camden After Hours.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0013",
+              "name": "Camden After Hours",
+              "affinity": 0.6260823233346646,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["night club"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005034"]
+        },
+        {
+          "id": "f-region-lagos-artists",
+          "query": "region",
+          "text": "With no comps to go on, here is what people aged 34 and under in Lagos like, from the place and age band alone: the artists Sade Rhythm. This is taste for the place, not for your comps.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.3,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: a thin brief, so this rests on the place and age band alone",
+          "context": {
+            "city": "Lagos",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "region and age only"
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005039"]
+        },
+        {
+          "id": "f-region-lagos-brands",
+          "query": "region",
+          "text": "With no comps to go on, here is what people aged 34 and under in Lagos like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0001",
+              "name": "Coca-Cola",
+              "affinity": 0.3,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-BRAND-0002",
+              "name": "Nike",
+              "affinity": 0.3,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-BRAND-0003",
+              "name": "McDonald's",
+              "affinity": 0.3,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-BRAND-0004",
+              "name": "Night Market Cola",
+              "affinity": 0.3,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: a thin brief, so this rests on the place and age band alone",
+          "context": {
+            "city": "Lagos",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "region and age only"
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005040"]
+        },
+        {
+          "id": "f-region-london-artists",
+          "query": "region",
+          "text": "With no comps to go on, here is what people aged 34 and under in London like, from the place and age band alone: the artists Sade Rhythm. This is taste for the place, not for your comps.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.3,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: a thin brief, so this rests on the place and age band alone",
+          "context": {
+            "city": "London",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "region and age only"
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005041"]
+        },
+        {
+          "id": "f-region-london-brands",
+          "query": "region",
+          "text": "With no comps to go on, here is what people aged 34 and under in London like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0001",
+              "name": "Coca-Cola",
+              "affinity": 0.3,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-BRAND-0002",
+              "name": "Nike",
+              "affinity": 0.3,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-BRAND-0003",
+              "name": "McDonald's",
+              "affinity": 0.3,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-BRAND-0004",
+              "name": "Night Market Cola",
+              "affinity": 0.3,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: a thin brief, so this rests on the place and age band alone",
+          "context": {
+            "city": "London",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "region and age only"
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005042"]
+        }
+      ],
+      "sources": [],
+      "dropped": [],
+      "writer": "template",
+      "understanding": {
+        "asked": "A launch plan.",
+        "goals": [],
+        "constraints": [],
+        "assumed": [],
+        "criteria": [
+          {
+            "id": "c1",
+            "text": "Answers what the person asked, using the cities, comps, window and budget they gave.",
+            "evidence": false,
+            "status": "unchecked",
+            "findingIds": []
+          },
+          {
+            "id": "c2",
+            "text": "Rests every claim about the audience on measured data, and keeps playbook advice apart.",
+            "evidence": true,
+            "status": "unchecked",
+            "findingIds": []
+          },
+          {
+            "id": "c3",
+            "text": "Gives moves a team can act on this week, not general advice.",
+            "evidence": false,
+            "status": "unchecked",
+            "findingIds": []
+          }
+        ],
+        "by": "scripted"
+      },
+      "review": {
+        "status": "unchecked",
+        "rounds": [],
+        "next": []
+      },
+      "process": {
+        "research": [],
+        "drafts": 1,
+        "dropped": []
+      },
+      "rules": {
+        "category": "music",
+        "version": "music@2026-10-22.1"
+      },
+      "band": {
+        "band": "independent",
+        "source": "brief"
+      },
+      "signal": {
+        "key": "save-rate-completion",
+        "primary": "Save rate and stream completion",
+        "secondary": ["Followers", "Views", "Playlist adds"],
+        "checkpoints": [7, 28],
+        "target": null
+      },
+      "territories": [
+        {
+          "id": "territory-lagos",
+          "name": "Lagos",
+          "role": "other",
+          "order": 0,
+          "callId": "call-territory-lagos",
+          "channels": [
+            {
+              "name": "WhatsApp",
+              "lead": true
+            },
+            {
+              "name": "Instagram",
+              "lead": true
+            },
+            {
+              "name": "TikTok",
+              "lead": true
+            },
+            {
+              "name": "Instagram Reels",
+              "lead": false
+            },
+            {
+              "name": "YouTube Shorts",
+              "lead": false
+            }
+          ],
+          "partnerIds": [],
+          "lineIds": [
+            "audience-3",
+            "audience-6",
+            "markets-1",
+            "community-2",
+            "support-2",
+            "channels-lagos"
+          ]
+        },
+        {
+          "id": "territory-london",
+          "name": "London",
+          "role": "other",
+          "order": 1,
+          "callId": "call-territory-london",
+          "channels": [
+            {
+              "name": "TikTok",
+              "lead": true
+            },
+            {
+              "name": "Instagram Reels",
+              "lead": true
+            },
+            {
+              "name": "YouTube Shorts",
+              "lead": true
+            }
+          ],
+          "partnerIds": [],
+          "lineIds": ["audience-4", "audience-7", "markets-2", "support-3", "channels-london"]
+        },
+        {
+          "id": "territory-houston",
+          "name": "Houston",
+          "role": "other",
+          "order": 2,
+          "callId": "call-territory-houston",
+          "channels": [
+            {
+              "name": "TikTok",
+              "lead": true
+            },
+            {
+              "name": "Instagram Reels",
+              "lead": true
+            },
+            {
+              "name": "YouTube Shorts",
+              "lead": true
+            }
+          ],
+          "partnerIds": [],
+          "lineIds": [
+            "audience-2",
+            "audience-5",
+            "markets-3",
+            "community-1",
+            "support-1",
+            "channels-houston"
+          ]
+        }
+      ],
+      "calls": [
+        {
+          "id": "call-territory-lagos",
+          "subject": "territory",
+          "name": "Lagos",
+          "direction": "risky",
+          "confidence": "lower",
+          "why": "Audience strength 1.0, where 1.0 is an average city in the same ranking. A smaller audience than the rest: lead with the local angle.",
+          "findingIds": ["f-markets"],
+          "teamChoice": true,
+          "territory": "Lagos"
+        },
+        {
+          "id": "call-territory-london",
+          "subject": "territory",
+          "name": "London",
+          "direction": "avoid",
+          "confidence": "lower",
+          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after Lagos.",
+          "findingIds": ["f-markets"],
+          "teamChoice": true,
+          "territory": "London"
+        },
+        {
+          "id": "call-territory-houston",
+          "subject": "territory",
+          "name": "Houston",
+          "direction": "avoid",
+          "confidence": "lower",
+          "why": "Audience strength 0.8, where 1.0 is an average city in the same ranking. Keep it, and open it after Lagos.",
+          "findingIds": ["f-markets"],
+          "teamChoice": true,
+          "territory": "Houston"
+        }
+      ],
+      "partners": [
+        {
+          "id": "partner-guinness",
+          "name": "Guinness",
+          "tier": "A",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-mtn",
+          "name": "MTN",
+          "tier": "A",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-indomie",
+          "name": "Indomie",
+          "tier": "A",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-night-market-cola",
+          "name": "Night Market Cola",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "qloo",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": ["f-brands-beverage-lagos"]
+        },
+        {
+          "id": "partner-lagoon-mobile",
+          "name": "Lagoon Mobile",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "qloo",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": ["f-brands-telecom-lagos"]
+        },
+        {
+          "id": "partner-verve",
+          "name": "Verve",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-quickteller",
+          "name": "QuickTeller",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-ee",
+          "name": "EE",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-monzo",
+          "name": "Monzo",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-lyft",
+          "name": "Lyft",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-cash-app",
+          "name": "Cash App",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-c-nigeria-cinemas",
+          "name": "Cinemas",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-c-nigeria-creators",
+          "name": "Creators",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-c-nigeria-diaspora-businesses",
+          "name": "Diaspora businesses",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        }
+      ]
+    },
+    "report": null,
+    "evidence": [
+      {
+        "lineId": "f-a-age",
+        "label": "Your target (aged 34 and under) is where the artist's audience is strongest.",
+        "group": "Findings",
+        "verdict": "holds",
+        "returned": "Confidence high. high: 3 anchors with data, 2 well known",
+        "driver": false
+      },
+      {
+        "lineId": "f-a-comps",
+        "label": "Your artist and its sound-alikes lean on one name for the result, so another sound-alike of your own would firm it up.",
+        "group": "Findings",
+        "verdict": "weak",
+        "returned": "Confidence lower. lower: the result rests on Neon Tide",
+        "driver": true
+      },
+      {
+        "lineId": "f-audience",
+        "label": "Your artist's audience is strongest among people aged 24 and under, then aged 25 to 29.",
+        "group": "Findings",
+        "returned": "Confidence high. high: 3 anchors with data, 2 well known",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-place-houston",
+        "label": "Houston has a smaller audience for this artist than your other cities.",
+        "group": "Findings",
+        "verdict": "breaks",
+        "returned": "Confidence lower. lower: the result rests on Neon Tide",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-place-lagos",
+        "label": "Lagos is an average city for this audience.",
+        "group": "Findings",
+        "verdict": "weak",
+        "returned": "Confidence lower. lower: the result rests on Neon Tide",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-place-london",
+        "label": "London has a smaller audience for this artist than your other cities.",
+        "group": "Findings",
+        "verdict": "breaks",
+        "returned": "Confidence lower. lower: the result rests on Neon Tide",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-route",
+        "label": "Your tour order (Lagos, London and Houston) is already the strongest order for this audience.",
+        "group": "Findings",
+        "verdict": "holds",
+        "returned": "Lagos, London, Houston",
+        "driver": false
+      },
+      {
+        "lineId": "f-markets",
+        "label": "Among your cities, your artist's audience is strongest in Lagos, then London and Houston.",
+        "group": "Findings",
+        "returned": "Lagos, London, Houston",
+        "driver": true
+      },
+      {
+        "lineId": "f-worth-a-look",
+        "label": "Manchester has a stronger audience for this artist than Houston.",
+        "group": "Findings",
+        "returned": "Manchester",
+        "driver": false
+      },
+      {
+        "lineId": "f-support-houston",
+        "label": "In Houston, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm.",
+        "group": "Findings",
+        "returned": "Sade Rhythm",
+        "driver": true
+      },
+      {
+        "lineId": "f-support-lagos",
+        "label": "In Lagos, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm.",
+        "group": "Findings",
+        "returned": "Sade Rhythm",
+        "driver": false
+      },
+      {
+        "lineId": "f-support-london",
+        "label": "In London, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm.",
+        "group": "Findings",
+        "returned": "Sade Rhythm",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-beverage-lagos",
+        "label": "In Lagos, the mid-size beverage brands that rank highest with the artist's audience are Night Market Cola.",
+        "group": "Findings",
+        "returned": "Night Market Cola",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-telecom-lagos",
+        "label": "In Lagos, the mid-size telecom brands that rank highest with the artist's audience are Lagoon Mobile.",
+        "group": "Findings",
+        "returned": "Lagoon Mobile",
+        "driver": false
+      },
+      {
+        "lineId": "f-podcasts",
+        "label": "The podcasts that rank highest with the artist's audience in Lagos are Late Signal, Crime Junkie and The Joe Rogan Experience.",
+        "group": "Findings",
+        "returned": "Late Signal, Crime Junkie, The Joe Rogan Experience, Lagos After Dark, Serial",
+        "driver": false
+      },
+      {
+        "lineId": "f-shows-houston",
+        "label": "In Houston, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct.",
+        "group": "Findings",
+        "returned": "Midnight Harbor, Eko Nights, Harbor Precinct",
+        "driver": false
+      },
+      {
+        "lineId": "f-shows-lagos",
+        "label": "In Lagos, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct.",
+        "group": "Findings",
+        "returned": "Midnight Harbor, Eko Nights, Harbor Precinct",
+        "driver": false
+      },
+      {
+        "lineId": "f-shows-london",
+        "label": "In London, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct.",
+        "group": "Findings",
+        "returned": "Midnight Harbor, Eko Nights, Harbor Precinct",
+        "driver": false
+      },
+      {
+        "lineId": "f-community-university-houston",
+        "label": "In Houston, the universities that rank highest with the artist's audience are Gulf Coast University.",
+        "group": "Findings",
+        "returned": "Gulf Coast University",
+        "driver": false
+      },
+      {
+        "lineId": "f-community-university-lagos",
+        "label": "In Lagos, the universities that rank highest with the artist's audience are Lagoon City University.",
+        "group": "Findings",
+        "returned": "Lagoon City University",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-concert-hall-lagos",
+        "label": "In Lagos, the concert halls that rank highest with the artist's audience are Harbor Hall.",
+        "group": "Findings",
+        "returned": "Harbor Hall",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-concert-hall-london",
+        "label": "In London, the concert halls that rank highest with the artist's audience are Southbank Hall.",
+        "group": "Findings",
+        "returned": "Southbank Hall",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-night-club-lagos",
+        "label": "In Lagos, the night clubs that rank highest with the artist's audience are Eko Nights Club.",
+        "group": "Findings",
+        "returned": "Eko Nights Club",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-night-club-london",
+        "label": "In London, the night clubs that rank highest with the artist's audience are Camden After Hours.",
+        "group": "Findings",
+        "returned": "Camden After Hours",
+        "driver": false
+      },
+      {
+        "lineId": "f-region-lagos-artists",
+        "label": "With no comps to go on, here is what people aged 34 and under in Lagos like, from the place and age band alone: the artists Sade Rhythm. This is taste for the place, not for your comps.",
+        "group": "Findings",
+        "returned": "Sade Rhythm",
+        "driver": false
+      },
+      {
+        "lineId": "f-region-lagos-brands",
+        "label": "With no comps to go on, here is what people aged 34 and under in Lagos like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps.",
+        "group": "Findings",
+        "returned": "Coca-Cola, Nike, McDonald's, Night Market Cola",
+        "driver": false
+      },
+      {
+        "lineId": "f-region-london-artists",
+        "label": "With no comps to go on, here is what people aged 34 and under in London like, from the place and age band alone: the artists Sade Rhythm. This is taste for the place, not for your comps.",
+        "group": "Findings",
+        "returned": "Sade Rhythm",
+        "driver": false
+      },
+      {
+        "lineId": "f-region-london-brands",
+        "label": "With no comps to go on, here is what people aged 34 and under in London like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps.",
+        "group": "Findings",
+        "returned": "Coca-Cola, Nike, McDonald's, Night Market Cola",
+        "driver": false
+      },
+      {
+        "lineId": "a-age",
+        "label": "The audience is aged 24 and under, aged 25 to 29, aged 30 to 34",
+        "group": "Assumptions",
+        "verdict": "holds",
+        "returned": "It is the top age band, or close to it (affinity 0.33, top band 0.33).",
+        "driver": false
+      },
+      {
+        "lineId": "a-place-lagos",
+        "label": "Lagos is a strong market for this artist",
+        "group": "Assumptions",
+        "verdict": "weak",
+        "returned": "About average for this audience (lift 1.02 over an average city in the same call).",
+        "driver": true
+      },
+      {
+        "lineId": "a-place-london",
+        "label": "London is a strong market for this artist",
+        "group": "Assumptions",
+        "verdict": "breaks",
+        "returned": "The audience is thinner here than elsewhere (lift 0.91 over an average city in the same call).",
+        "driver": true
+      },
+      {
+        "lineId": "a-place-houston",
+        "label": "Houston is a strong market for this artist",
+        "group": "Assumptions",
+        "verdict": "breaks",
+        "returned": "The audience is thinner here than elsewhere (lift 0.80 over an average city in the same call).",
+        "driver": true
+      },
+      {
+        "lineId": "a-comps",
+        "label": "The artist and its sound-alikes describe one audience",
+        "group": "Assumptions",
+        "verdict": "weak",
+        "returned": "The city order rests on Neon Tide.",
+        "driver": true
+      },
+      {
+        "lineId": "a-route",
+        "label": "The tour order is the strongest",
+        "group": "Assumptions",
+        "verdict": "holds",
+        "returned": "The tour order is at or near the strongest order (route score 0.91 against 0.91 for the strongest order).",
+        "driver": false
+      },
+      {
+        "lineId": "aud-24_and_younger",
+        "label": "Aged 24 and under",
+        "group": "Audience",
+        "returned": "Affinity 0.33 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-25_to_29",
+        "label": "Aged 25 to 29",
+        "group": "Audience",
+        "returned": "Affinity 0.22 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-30_to_34",
+        "label": "Aged 30 to 34",
+        "group": "Audience",
+        "returned": "Affinity 0.03 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-female",
+        "label": "Women",
+        "group": "Audience",
+        "returned": "Affinity 0.03 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-male",
+        "label": "Men",
+        "group": "Audience",
+        "returned": "Affinity -0.03 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-35_to_44",
+        "label": "Aged 35 to 44",
+        "group": "Audience",
+        "returned": "Affinity -0.18 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "place-lagos",
+        "label": "Lagos",
+        "group": "Places",
+        "returned": "Lift 1.02x. 120 cells. lower: the result rests on Neon Tide",
+        "driver": false
+      },
+      {
+        "lineId": "place-london",
+        "label": "London",
+        "group": "Places",
+        "returned": "Lift 0.91x. 120 cells. lower: the result rests on Neon Tide",
+        "driver": false
+      },
+      {
+        "lineId": "place-houston",
+        "label": "Houston",
+        "group": "Places",
+        "returned": "Lift 0.80x. 120 cells. lower: the result rests on Neon Tide",
+        "driver": false
+      }
+    ],
+    "receipts": [
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-24_and_younger",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-25_to_29",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-30_to_34",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-female",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-male",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-35_to_44",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "place-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "place-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "place-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "a-age",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "It is the top age band, or close to it (affinity 0.33, top band 0.33). Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-place-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "About average for this audience (lift 1.02 over an average city in the same call). Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-place-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The audience is thinner here than elsewhere (lift 0.91 over an average city in the same call). Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-place-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The audience is thinner here than elsewhere (lift 0.80 over an average city in the same call). Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-comps",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The city order rests on Neon Tide. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-route",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "The tour order is at or near the strongest order (route score 0.91 against 0.91 for the strongest order). Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "f-audience",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Your artist's audience is strongest among people aged 24 and under, then aged 25 to 29. The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "f-a-age",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Your target (aged 34 and under) is where the artist's audience is strongest. It is the top age band, or close to it (affinity 0.33, top band 0.33). Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-place-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Lagos is an average city for this audience. About average for this audience (lift 1.02 over an average city in the same call). Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-place-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "London has a smaller audience for this artist than your other cities. The audience is thinner here than elsewhere (lift 0.91 over an average city in the same call). Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-place-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Houston has a smaller audience for this artist than your other cities. The audience is thinner here than elsewhere (lift 0.80 over an average city in the same call). Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-comps",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Your artist and its sound-alikes lean on one name for the result, so another sound-alike of your own would firm it up. The city order rests on Neon Tide. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-markets",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Among your cities, your artist's audience is strongest in Lagos, then London and Houston. Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-worth-a-look",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Manchester has a stronger audience for this artist than Houston. Each city is the mean affinity of the heatmap cells inside its box, all from one call so they compare. A city with fewer than 25 cells is not ranked. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-route",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Your tour order (Lagos, London and Houston) is already the strongest order for this audience. Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Neon Tide.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005024",
+        "lineId": "f-support-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.tags": "urn:tag:genre:music:afrobeats",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005025",
+        "lineId": "f-support-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.tags": "urn:tag:genre:music:afrobeats",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005026",
+        "lineId": "f-support-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.tags": "urn:tag:genre:music:afrobeats",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Houston",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the afrobeats artists that rank highest with the artist's audience aged 34 and under are Sade Rhythm. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005027",
+        "lineId": "f-brands-telecom-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the mid-size telecom brands that rank highest with the artist's audience are Lagoon Mobile. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005028",
+        "lineId": "f-brands-beverage-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the mid-size beverage brands that rank highest with the artist's audience are Night Market Cola. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005029",
+        "lineId": "f-podcasts",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.type": "urn:entity:podcast",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The podcasts that rank highest with the artist's audience in Lagos are Late Signal, Crime Junkie and The Joe Rogan Experience. The 5 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005030",
+        "lineId": "f-shows-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.release_year.min": "2020",
+          "filter.type": "urn:entity:tv_show",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005031",
+        "lineId": "f-shows-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.release_year.min": "2020",
+          "filter.type": "urn:entity:tv_show",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005032",
+        "lineId": "f-shows-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.release_year.min": "2020",
+          "filter.type": "urn:entity:tv_show",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Houston",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the series since 2020 that rank highest with the artist's audience are Midnight Harbor, Eko Nights and Harbor Precinct. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005033",
+        "lineId": "f-venues-night-club-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:night_club",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the night clubs that rank highest with the artist's audience are Eko Nights Club. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005034",
+        "lineId": "f-venues-night-club-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:night_club",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the night clubs that rank highest with the artist's audience are Camden After Hours. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005035",
+        "lineId": "f-venues-concert-hall-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:concert_hall",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the concert halls that rank highest with the artist's audience are Harbor Hall. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005036",
+        "lineId": "f-venues-concert-hall-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:concert_hall",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the concert halls that rank highest with the artist's audience are Southbank Hall. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005037",
+        "lineId": "f-community-university-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:university",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the universities that rank highest with the artist's audience are Lagoon City University. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005038",
+        "lineId": "f-community-university-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "Houston",
+          "filter.tags": "urn:tag:category:place:university",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the universities that rank highest with the artist's audience are Gulf Coast University. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005039",
+        "lineId": "f-region-lagos-artists",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "Lagos",
+          "take": "7"
+        },
+        "returned": {},
+        "rule": "With no comps to go on, here is what people aged 34 and under in Lagos like, from the place and age band alone: the artists Sade Rhythm. This is taste for the place, not for your comps. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005040",
+        "lineId": "f-region-lagos-brands",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.type": "urn:entity:brand",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "Lagos",
+          "take": "7"
+        },
+        "returned": {},
+        "rule": "With no comps to go on, here is what people aged 34 and under in Lagos like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005041",
+        "lineId": "f-region-london-artists",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "London",
+          "take": "7"
+        },
+        "returned": {},
+        "rule": "With no comps to go on, here is what people aged 34 and under in London like, from the place and age band alone: the artists Sade Rhythm. This is taste for the place, not for your comps. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005042",
+        "lineId": "f-region-london-brands",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.type": "urn:entity:brand",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "London",
+          "take": "7"
+        },
+        "returned": {},
+        "rule": "With no comps to go on, here is what people aged 34 and under in London like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005043",
+        "endpoint": "/search",
+        "input": {
+          "query": "Neon Tide",
+          "take": "5",
+          "types": "urn:entity:artist"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005044",
+        "endpoint": "/search",
+        "input": {
+          "query": "Ada Lux",
+          "take": "5",
+          "types": "urn:entity:artist"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005045",
+        "endpoint": "/search",
+        "input": {
+          "query": "Kola Wave",
+          "take": "5",
+          "types": "urn:entity:artist"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005046",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0002,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same ranking without Neon Tide.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005047",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0003"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same ranking without Ada Lux.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005048",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same ranking without Kola Wave.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005049",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "afrobeats",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"afrobeats\" whose urn starts with urn:tag:genre:music. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005050",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "afrobeats",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"afrobeats\" whose urn starts with urn:tag:genre:media. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005051",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.parents.types": "urn:entity:brand",
+          "filter.query": "telecom",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"telecom\" whose urn starts with urn:tag:genre:brand. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005052",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.parents.types": "urn:entity:brand",
+          "filter.query": "beverage",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"beverage\" whose urn starts with urn:tag:genre:brand. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005053",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "university",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"university\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005054",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "night club",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"night club\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005055",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "concert hall",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"concert hall\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005056",
+        "endpoint": "/search",
+        "input": {
+          "query": "Verve",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005057",
+        "endpoint": "/search",
+        "input": {
+          "query": "QuickTeller",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005058",
+        "endpoint": "/search",
+        "input": {
+          "query": "EE",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005059",
+        "endpoint": "/search",
+        "input": {
+          "query": "Monzo",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005060",
+        "endpoint": "/search",
+        "input": {
+          "query": "Lyft",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005061",
+        "endpoint": "/search",
+        "input": {
+          "query": "Cash App",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005062",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.release_year.min": "2023",
+          "filter.tags": "urn:tag:genre:media:afrobeats",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005063",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "Houston",
+          "filter.tags": "urn:tag:category:place:night_club",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005064",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "Houston",
+          "filter.tags": "urn:tag:category:place:concert_hall",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005065",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:university",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005066",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.tags": "urn:tag:genre:media:afrobeats",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      }
+    ],
+    "limits": "Qloo shows current taste, not history. Streams, chart positions and ticket sales are not in Qloo. Every number comes from the sound-alike artists you confirmed."
+  },
+  "project": {
+    "id": "00000000-0000-4000-8000-000000000202",
+    "category": "music",
+    "name": "Night Songs",
+    "kind": "",
+    "genre": "",
+    "places": ["Lagos", "London", "Houston"],
+    "window": "",
+    "lead": "",
+    "comps": [],
+    "status": "active",
+    "updatedAt": "2026-10-01T10:00:00.000Z",
+    "qlooMatch": null,
+    "extra": {}
+  },
+  "thread": {
+    "id": "00000000-0000-4000-8000-000000000203",
+    "projectId": "00000000-0000-4000-8000-000000000202",
+    "name": "Night Songs",
+    "createdBy": "Example",
+    "createdAt": "2026-10-01T10:00:00.000Z",
+    "baseOutputId": "00000000-0000-4000-8000-000000000201",
+    "fromOutputId": null,
+    "fresh": false
+  },
+  "builtOn": null,
+  "share": null,
+  "reaction": null
+}

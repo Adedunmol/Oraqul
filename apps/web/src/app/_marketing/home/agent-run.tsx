@@ -18,10 +18,10 @@ const kindLabel: Record<Kind, string> = {
 const run: { kind: Kind; text: string; out: string }[] = [
   {
     kind: 'read',
-    text: 'Series, crime drama, UK and US',
+    text: 'Series, crime drama, Lagos, London and Houston, 12 March',
     out: 'Job: make a plan',
   },
-  { kind: 'tool', text: 'searchEntity("Night Ferry", series)', out: '1 match' },
+  { kind: 'code', text: 'Budget band not stated: ask once', out: 'Independent' },
   {
     kind: 'tool',
     text: 'resolveBundle(comps: Grey Tide, The Ferry Office)',
@@ -29,17 +29,22 @@ const run: { kind: Kind; text: string; out: string }[] = [
   },
   {
     kind: 'tool',
-    text: 'rankPlaces(bundle, UK, US, Canada, Mexico City, London)',
-    out: '5 ranked',
+    text: 'rankPlaces(bundle, Lagos, London, Houston)',
+    out: '3 ranked',
   },
-  { kind: 'code', text: 'lift(London) = 0.81 ÷ 0.50 = 1.62', out: 'Holds' },
-  { kind: 'tool', text: 'partnerFit(ages 25 to 34, brands)', out: '3 partners' },
+  { kind: 'code', text: 'lift(London) = 0.81 ÷ 0.50 = 1.62', out: 'Okay' },
+  {
+    kind: 'tool',
+    text: 'scoreRivals(bundle, Harbor Lights on 12 March)',
+    out: 'Overlap: moderate',
+  },
+  { kind: 'tool', text: 'findTaste(brands: MTN, Bolt, Verve)', out: '3 ranked' },
   {
     kind: 'check',
-    text: 'Start from a different comp and try to beat the plan',
-    out: 'No stronger option',
+    text: 'Compare the draft with your request, and send it back if it falls short',
+    out: 'Passed after 2 drafts',
   },
-  { kind: 'write', text: 'Bottom line and three steps', out: '9 beliefs, 11 receipts' },
+  { kind: 'write', text: 'Bottom line, one plan per territory', out: '9 beliefs, 14 receipts' },
 ];
 
 const traits = [
@@ -49,8 +54,8 @@ const traits = [
     'Every call is recorded, and every recorded call becomes a receipt.',
   ],
   [
-    'Argues with itself',
-    'A second model call, blind to the first one’s reasoning, tries to break the top recommendation.',
+    'Checks its own draft',
+    'A review step compares the plan with your request and sends it back, up to three drafts, until it passes or says what is still open.',
   ],
   ['Knows when to stop', 'A call budget and a stop rule, so it never loops or pads the answer.'],
 ];
@@ -127,7 +132,7 @@ export function AgentRun() {
               className="mk-stream px-3 pt-2 font-sans text-[14px] text-ink"
               style={{ '--i': run.length } as CSSProperties}
             >
-              Open in Mexico City and London, then Toronto
+              Open in Lagos, then London. Hold Houston until week two
               <span className="mk-caret" aria-hidden="true" />
             </p>
           </Reveal>

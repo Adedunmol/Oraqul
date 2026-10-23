@@ -7,7 +7,7 @@ import { band, h2Class, wrap } from '../section';
 const faqs: { q: string; a: ReactNode }[] = [
   {
     q: 'Is Oraqul an AI agent or a dashboard?',
-    a: 'An agent. You tell it what you are working on in plain words. It plans its own steps, calls tools that query Qloo, tests what it finds, has a second model call try to break its answer, and comes back with a plan. You keep talking to it in the same chat.',
+    a: 'An agent. You tell it what you are working on in plain words. It plans its own steps, calls tools that query Qloo, tests what it finds, reviews its own draft against your request, and comes back with a plan. You keep talking to it in the same chat.',
   },
   {
     q: 'Where does the data come from?',
@@ -26,19 +26,39 @@ const faqs: { q: string; a: ReactNode }[] = [
   },
   {
     q: 'What is a receipt?',
-    a: 'The record behind one claim: what was sent to Qloo, what came back, and the rule that turned it into a verdict. Open it from any line with View receipt.',
+    a: 'The record behind one claim: what was sent to Qloo, what came back, and the rule that turned it into a verdict. In a plan, a claim about taste carries a small number that opens the finding behind it, and the Evidence tab lists every call.',
+  },
+  {
+    q: 'Does it ask about my budget?',
+    a: 'Once, if your brief does not say. It asks for a band (micro, independent, mid-size or major), or you can skip it and it plans for an independent release and says so. The band decides which partners and moves it may propose: a flagship brand is not offered to a budget that cannot carry it.',
+  },
+  {
+    q: 'Can I set a target?',
+    a: 'Yes. Every plan is judged on one signal for its category, such as advance screenings and presales for a film or wishlists for a game. Give your own number, or where Oraqul has a sourced benchmark it shows it. A target is a goal you set, never a prediction.',
+  },
+  {
+    q: 'What is a territory plan?',
+    a: 'One plan for each place you open: the home market first, then the diaspora cities, such as Lagos, then London, Houston and Atlanta. Each has its own call (okay, risky or avoid), lead channels and partners. Your own cities are never dropped.',
+  },
+  {
+    q: 'Can it check my release date against rivals?',
+    a: 'Yes, with the rival releases and dates you give it, for example “Rivals: Harbor Lights on 2027-03-12”. Qloo has no release calendar, so the dates are yours; Oraqul measures how much of your audience each rival shares.',
+  },
+  {
+    q: 'Does it make trailers or ads?',
+    a: 'No. It writes the scripts, shot lists, key art briefs, caption packs and hook options a team needs to make them, for each territory and channel. A person makes the final creative.',
   },
   {
     q: 'Does it forecast sales or streams?',
-    a: 'It measures audience taste: who likes what, and where. Sales, streams and ticket numbers are yours to bring, and when you add them Oraqul compares them with what the plan expected.',
+    a: 'No. It measures audience taste, who likes what and where, and gives a direction, not a forecast. Sales, streams and ticket numbers are yours to bring, and when you add them Oraqul compares them with what the plan expected.',
   },
   {
     q: 'What if my title is not in Qloo yet?',
-    a: 'That is expected. Qloo holds taste, not unreleased titles, so Oraqul does not look for yours. It describes the launch by what surrounds it: comparable titles, the people involved, themes and the audience you want, and asks Qloo about those. It can also check taste across domains, such as whether the fans of top selling musicians also read books like yours. A clear match is evidence for the plan. A weak one is only read as a warning when it is compared with other titles in the same call.',
+    a: 'That is expected. Qloo holds taste, not unreleased titles, so Oraqul does not look for yours. It describes the launch by what surrounds it: comparable titles, the people involved, themes and the audience you want, and asks Qloo about those. A clear match is evidence for the plan. A weak one is only read as a warning when it is compared with other titles in the same call.',
   },
   {
     q: 'What kinds of launch does it cover?',
-    a: 'Film and series releases, albums and tours, book launches, podcast seasons and game launches. Each category has its own questions, views and what if tests.',
+    a: 'Film and series releases, music releases and tours, book launches, podcast seasons and game launches. Each category has its own checks, its own calendar worked back from your date, and its own signal.',
   },
   {
     q: 'Does it work outside the US and UK?',

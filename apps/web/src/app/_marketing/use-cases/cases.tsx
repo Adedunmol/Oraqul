@@ -24,8 +24,8 @@ export const cases = [
   },
   {
     id: 'whatif',
-    title: 'Test a what if',
-    line: 'You are weighing a date, a city or a partner.',
+    title: 'Keep going',
+    line: 'You are weighing a date, a city, a partner or the creative.',
   },
 ] as const;
 
@@ -159,7 +159,16 @@ export function PlanCase() {
               Also in the plan: the audience, comparable titles, partner brands and the risks to
               watch.
             </p>
-            <Tabs tabs={['Summary', 'Audience', 'Plan', 'Territories', 'Evidence']} />
+            <Tabs
+              tabs={[
+                'Plan',
+                'Territories',
+                'Direction calls',
+                'Audience',
+                'Assumptions',
+                'Evidence',
+              ]}
+            />
           </div>
         </Reveal>
       </div>
@@ -235,7 +244,7 @@ export function CheckCase() {
             Every belief is marked Holds, Weak, Breaks or Could not test, with a stronger option for
             anything that breaks. Bring your plan, pasted or as a file.
           </p>
-          <ExampleLink href="/examples?case=music&tab=assumptions" />
+          <ExampleLink href="/examples?case=music&tab=plan" />
         </div>
       </div>
     </section>
@@ -331,16 +340,17 @@ const weeks: {
   { day: 'Fri 28 March', rival: 'The biggest rival', overlap: 'Risky overlap' },
 ];
 
-/** Test a what if lays the options out as the weeks they are, with the safest one raised. */
+/** Keep going lays the options out as the weeks they are, with the safest one raised. */
 export function WhatIfCase() {
   return (
-    <section id="whatif" aria-label="Test a what if" className={`bg-bg ${band} scroll-mt-16`}>
+    <section id="whatif" aria-label="Keep going" className={`bg-bg ${band} scroll-mt-16`}>
       <div className={`${wrap} flex flex-col items-center gap-12`}>
         <div className="flex flex-col items-center gap-6 text-center">
-          <h2 className={h2Class}>Test a what if</h2>
+          <h2 className={h2Class}>Keep going</h2>
           <p className="max-w-[46ch] text-[18px] leading-[1.55] text-ink/75">
-            Ask before you lock a date, a city or a partner. Oraqul compares the options against the
-            same audience and says which one is safer, with the receipt for each.
+            Ask before you lock a date, a city or a partner, then make the creative kit. Oraqul
+            compares the options against the same audience and says which one is safer, with the
+            receipt for each.
           </p>
         </div>
         <Reveal className="grid w-full gap-3 min-[640px]:grid-cols-2 min-[1000px]:grid-cols-4 min-[1000px]:items-end">
@@ -370,8 +380,8 @@ export function WhatIfCase() {
             weekend?”
           </p>
           <p className="text-[15px] leading-[1.55] text-ink/75">
-            You get the overlap for each option, lower is better, and what changes in the plan.
-            Bring the options you are weighing.
+            You get the overlap for each option, lower is better, and what changes in the plan. Give
+            real rivals with the day each opens: “Rivals: Harbor Lights on 2027-03-12”.
           </p>
         </div>
       </div>

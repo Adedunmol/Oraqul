@@ -154,7 +154,8 @@ export function Asks() {
           <p>
             Oraqul says what it read and what it assumed, with an example of how to correct it. It
             asks a question only when a wrong assumption would waste the run: the category, the
-            title, or which match in Qloo is yours.
+            title, which match in Qloo is yours, and, for a full plan, the budget band, which
+            decides what it may propose.
           </p>
           <p>Type a correction any time. Only what it changes runs again.</p>
         </StepHead>
@@ -310,7 +311,7 @@ export function KeepGoing() {
           {[
             [
               'Ask for the next step',
-              'Check rival dates, draft a partner brief or test a what if, from the chips under the message box.',
+              'Check rival dates, draft a partner brief, test a what if or make the creative kit, from the chips under the message box.',
             ],
             [
               'Correct it in words',

@@ -1,4 +1,4 @@
-import { Chip, VerdictPill } from '@oraqul/ui';
+import { DirectionPill, VerdictPill } from '@oraqul/ui';
 import type { ReactNode } from 'react';
 import { band, h2Class, leadClass, wrap } from '../section';
 import { StickySteps } from '../sticky-steps';
@@ -27,20 +27,22 @@ const stages: Stage[] = [
     id: 'plan',
     when: 'Months out',
     title: 'Make a plan',
-    prompt: 'Plan the release of Night Ferry, a Mexico City crime drama, for the UK and the US.',
-    gets: 'The audience, comparable titles, where to open and in what order, and partner brands.',
-    brings: 'A title and a short description.',
-    reply: 'Reading this as a new plan. Here is where your audience is strongest.',
+    prompt:
+      'Plan the release of Night Ferry, a Nigerian crime drama, opening 12 March in Lagos, London and Houston. Independent budget.',
+    gets: 'One plan per territory, home first. A calendar worked back from your date, one signal to judge it on, and partners that fit the budget.',
+    brings:
+      'A title, a release date and the cities. A budget band, comps and rivals make it sharper.',
+    reply: 'Reading this as a new plan. Here is where to open, and what each territory needs.',
     preview: (
       <>
         <Row>
-          Open in Mexico City and London <Chip>Recommended</Chip>
+          Lagos, home market <DirectionPill direction="okay" />
         </Row>
         <Row>
-          Add Toronto in week two <Chip>Usable</Chip>
+          London, diaspora city <DirectionPill direction="okay" />
         </Row>
         <Row>
-          Partner with a streaming night brand <Chip>Recommended</Chip>
+          Houston, diaspora city <DirectionPill direction="risky" />
         </Row>
       </>
     ),
@@ -70,21 +72,22 @@ const stages: Stage[] = [
   {
     id: 'whatif',
     when: 'Weeks out',
-    title: 'Test a what if',
-    prompt: 'What if a rival series opens the same weekend?',
-    gets: 'How each date overlaps with rival releases, and what moves in the plan.',
-    brings: 'The dates or options you are weighing.',
-    reply: 'Here is the overlap for each Friday. Lower is better.',
+    title: 'Keep going',
+    prompt:
+      'Rivals: Harbor Lights on 14 March; Third Mainland on 21 March. Then make the creative kit for Lagos.',
+    gets: 'Rival dates checked against the audience they share, what ifs rerun on the plan, and the guides a team needs to make the creative.',
+    brings: 'The rival releases and dates you are weighing.',
+    reply: 'Here is each date against its rivals. Lower overlap is better.',
     preview: (
       <>
         <Row>
-          Friday 14 March <Chip>Low overlap</Chip>
+          Friday 14 March <DirectionPill direction="avoid" />
         </Row>
         <Row>
-          Friday 21 March <Chip>Moderate overlap</Chip>
+          Friday 21 March <DirectionPill direction="risky" />
         </Row>
         <Row>
-          Friday 28 March <Chip>Risky overlap</Chip>
+          Friday 28 March <DirectionPill direction="okay" />
         </Row>
       </>
     ),
@@ -168,12 +171,12 @@ export function Lifecycle() {
             Useful from the first idea to the week after launch.
           </h2>
           <p className={leadClass}>
-            Start from what you have: a title, a plan, a worry about a date, or results that did not
-            land.
+            Start from what you have: a title and a date, a plan, or results that did not land. Then
+            check the dates, test a what if and make the creative kit from the same chat.
           </p>
         </div>
         <StickySteps
-          label="Four jobs, in launch order"
+          label="Three jobs and what comes after, in launch order"
           steps={stages.map((stage) => ({
             id: stage.id,
             text: <StageText stage={stage} />,
