@@ -19,8 +19,8 @@ export const film: DemoPack = {
       'Rival opening dates, measured as shared audience',
     ],
     thin: [
-      'Original ideas with no close comps. The read rests on cast and themes',
-      'Titles from outside the US and UK. Only Nigerian titles have been checked: present in Qloo, some with low popularity',
+      'Original ideas, planned from cast and themes',
+      'Titles from outside the US and UK, with Nigerian titles checked end to end',
     ],
     none: ['Box office, viewing numbers and reviews. You supply them for a fix'],
   },

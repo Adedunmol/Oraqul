@@ -15,12 +15,20 @@ const columns = [
   {
     title: 'Resources',
     links: [
+      { href: '/guide', label: 'Guide' },
       { href: '/method', label: 'Method' },
       { href: '/trust', label: 'Trust' },
+      { href: '/developers', label: 'Developers' },
     ],
   },
   { title: 'Company', links: [{ href: '/about', label: 'About' }] },
-  { title: 'Legal', links: [{ href: '/privacy', label: 'Privacy' }] },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/privacy', label: 'Privacy' },
+      { href: '/terms', label: 'Terms' },
+    ],
+  },
 ];
 
 export function SiteFooter() {
@@ -32,8 +40,8 @@ export function SiteFooter() {
         <div className="col-span-2 flex max-w-xs flex-col gap-3 min-[700px]:col-span-1">
           <Logo />
           <p className="text-[13.5px] text-muted">
-            A culturally grounded launch agent for media and entertainment. Launch plans grounded in
-            what audiences actually like, from Qloo taste data.
+            An AI agent that plans launches for media and entertainment, grounded in what audiences
+            actually like. Taste data from Qloo.
           </p>
         </div>
         {columns.map((column) => (

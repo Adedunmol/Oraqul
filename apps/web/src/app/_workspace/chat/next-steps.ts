@@ -16,7 +16,10 @@ export interface StepSource {
     places: { name: string; lift: number }[];
     assumptions: { id: string; text: string }[];
   };
-  plan: { findings: { query: string; entities: { name: string }[] }[] } | null;
+  plan: {
+    findings: { query: string; entities: { name: string }[] }[];
+    territories?: { name: string }[];
+  } | null;
 }
 
 const key = (text: string) => text.trim().toLowerCase();
@@ -55,6 +58,14 @@ export function nextStepsFor(outputs: StepSource[]): NextStep[] {
       id: `scn:lead:${key(lead.name)}`,
       label: `What if we open in ${lead.name} first?`,
       message: `What if we open in ${lead.name} first?`,
+    });
+  }
+  const home = base.plan.territories?.[0]?.name;
+  if (home && !outputs.some((o) => o.kind === 'creative')) {
+    steps.push({
+      id: 'creative',
+      label: 'Make the creative kit',
+      message: `Make the creative kit for ${home}`,
     });
   }
   if (!outputs.some((o) => o.kind === 'date')) {

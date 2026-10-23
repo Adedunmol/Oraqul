@@ -4,32 +4,26 @@ import { AgentRun } from '../_marketing/home/agent-run';
 import { CategoriesSection } from '../_marketing/home/categories-section';
 import { Faq } from '../_marketing/home/faq';
 import { Hero } from '../_marketing/home/hero';
-import { Lifecycle } from '../_marketing/home/lifecycle';
-import { Lift } from '../_marketing/home/lift';
-import { Markup } from '../_marketing/home/markup';
-import { Problems } from '../_marketing/home/problems';
-import { Prompts } from '../_marketing/home/prompts';
+import { Jobs } from '../_marketing/home/jobs';
+import { ProductPreview } from '../_marketing/home/product-preview';
 import { TasteMap } from '../_marketing/home/taste-map';
 
 export const metadata: Metadata = {
   title: 'Oraqul: launch plans grounded in what audiences actually like',
   description:
-    'Oraqul plans, checks and fixes launches: film and series releases, albums and tours, books, podcasts and games. Every claim is tested against Qloo cultural taste data and comes with a receipt.',
+    'Oraqul is an AI agent that plans, checks and fixes launches for film and series, music, books, podcasts and games, with every claim about your audience backed by real taste data.',
 };
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <Prompts />
-      <Problems />
+      <ProductPreview />
+      <Jobs />
       <AgentRun />
       <TasteMap />
-      <Lifecycle />
-      <Markup />
-      <Lift />
       <CategoriesSection />
-      <Faq />
+      <Faq short />
       <Closing />
     </>
   );

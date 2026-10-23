@@ -1,0 +1,4685 @@
+{
+  "output": {
+    "id": "00000000-0000-4000-8000-000000000101",
+    "projectId": "00000000-0000-4000-8000-000000000102",
+    "threadId": "00000000-0000-4000-8000-000000000103",
+    "kind": "build",
+    "parentId": null,
+    "title": "Night Ferry",
+    "label": "v1 · Night Ferry",
+    "shortLabel": "v1",
+    "kindLabel": "Plan",
+    "createdBy": "Example",
+    "createdAt": "2026-10-01T10:00:00.000Z",
+    "headline": "Open in London first, then Houston, Atlanta and Lagos: that is where your comps' audience is strongest among your cities.",
+    "moves": [
+      {
+        "text": "Open in London first, then Houston, Atlanta and Lagos: that is where your comps' audience is strongest among your cities.",
+        "lineId": "f-markets"
+      },
+      {
+        "text": "Aim the campaign at people aged 34 and under, as planned.",
+        "lineId": "f-audience"
+      },
+      {
+        "text": "Build the soundtrack and launch music around Ada Lux and Kola Wave, who rank highest with this audience in Atlanta.",
+        "lineId": "f-music-atlanta"
+      }
+    ],
+    "confidence": {
+      "level": "low",
+      "why": "Lower: the result rests on Salt Road."
+    },
+    "stats": [
+      {
+        "label": "Assumptions",
+        "value": "6"
+      },
+      {
+        "label": "Hold",
+        "value": "2",
+        "verdict": "holds"
+      },
+      {
+        "label": "Weak or break",
+        "value": "4",
+        "verdict": "breaks"
+      },
+      {
+        "label": "Could not test",
+        "value": "0",
+        "verdict": "cant"
+      }
+    ],
+    "counts": {
+      "holds": 2,
+      "weak": 2,
+      "breaks": 2,
+      "cant": 0
+    },
+    "summary": "Open in London first, then Houston, Atlanta and Lagos: that is where your comps' audience is strongest among your cities.\n1. Open in London first, then Houston, Atlanta and Lagos: that is where your comps' audience is strongest among your cities.\n2. Aim the campaign at people aged 34 and under, as planned.\n3. Build the soundtrack and launch music around Ada Lux and Kola Wave, who rank highest with this audience in Atlanta.\nConfidence: Low. Lower: the result rests on Salt Road.",
+    "changes": [],
+    "focusIds": [],
+    "dateSource": "you",
+    "tabs": [
+      {
+        "key": "plan",
+        "label": "Plan",
+        "note": ""
+      },
+      {
+        "key": "territories",
+        "label": "Territories",
+        "note": "One plan per territory: the home market first, then the diaspora cities, each with its call, its lead channels and its partners."
+      },
+      {
+        "key": "calls",
+        "label": "Direction calls",
+        "note": "Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned."
+      },
+      {
+        "key": "date",
+        "label": "Rival date check",
+        "note": "How each date overlaps with rival releases. Lower overlap is better."
+      },
+      {
+        "key": "audience",
+        "label": "Audience",
+        "note": "Who it is for, measured against Qloo taste data."
+      },
+      {
+        "key": "assumptions",
+        "label": "Assumptions",
+        "note": "Every belief your plan rests on. Holds means Qloo data supports it. Breaks means it does not. Each one has a receipt: the exact Qloo call behind it. What could not be tested is at the end."
+      },
+      {
+        "key": "contrast",
+        "label": "With and without Qloo",
+        "note": "What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it."
+      },
+      {
+        "key": "evidence",
+        "label": "Evidence",
+        "note": "Every claim with its receipt. Use this to check any number."
+      }
+    ],
+    "sections": [
+      {
+        "key": "s1",
+        "title": "Trailer pairings",
+        "one": "Trailer pairing"
+      },
+      {
+        "key": "s2",
+        "title": "Partner brands",
+        "one": "Partner brand"
+      },
+      {
+        "key": "s3",
+        "title": "Press and podcasts",
+        "one": "Press or podcast"
+      },
+      {
+        "key": "s4",
+        "title": "Cities",
+        "one": "City"
+      }
+    ],
+    "glance": [],
+    "brief": {
+      "audience": [
+        {
+          "id": "aud-25_to_29",
+          "name": "Aged 25 to 29",
+          "affinity": 60,
+          "evidence": "Affinity 0.20 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-24_and_younger",
+          "name": "Aged 24 and under",
+          "affinity": 59,
+          "evidence": "Affinity 0.17 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-30_to_34",
+          "name": "Aged 30 to 34",
+          "affinity": 54,
+          "evidence": "Affinity 0.08 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-male",
+          "name": "Men",
+          "affinity": 54,
+          "evidence": "Affinity 0.07 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-female",
+          "name": "Women",
+          "affinity": 47,
+          "evidence": "Affinity -0.07 across 3 of 3 comps"
+        },
+        {
+          "id": "aud-45_to_54",
+          "name": "Aged 45 to 54",
+          "affinity": 44,
+          "evidence": "Affinity -0.12 across 3 of 3 comps"
+        }
+      ],
+      "assumptions": [
+        {
+          "id": "a-age",
+          "text": "The audience is aged 24 and under, aged 25 to 29, aged 30 to 34",
+          "verdict": "holds",
+          "why": "It is the top age band, or close to it (affinity 0.17, top band 0.20).",
+          "fix": "",
+          "unstated": false
+        },
+        {
+          "id": "a-place-lagos",
+          "text": "Lagos is a strong market for this film",
+          "verdict": "breaks",
+          "why": "The audience is thinner here than elsewhere (lift 0.85 over an average city in the same call).",
+          "fix": "Keep Lagos, and open it after London, where lift is 1.23.",
+          "unstated": false
+        },
+        {
+          "id": "a-place-london",
+          "text": "London is a strong market for this film",
+          "verdict": "holds",
+          "why": "The audience concentrates here (lift 1.23 over an average city in the same call).",
+          "fix": "",
+          "unstated": false
+        },
+        {
+          "id": "a-place-houston",
+          "text": "Houston is a strong market for this film",
+          "verdict": "weak",
+          "why": "About average for this audience (lift 1.08 over an average city in the same call).",
+          "fix": "Keep Houston, and open it after London, where lift is 1.23.",
+          "unstated": false
+        },
+        {
+          "id": "a-place-atlanta",
+          "text": "Atlanta is a strong market for this film",
+          "verdict": "breaks",
+          "why": "The audience is thinner here than elsewhere (lift 0.92 over an average city in the same call).",
+          "fix": "Keep Atlanta, and open it after London, where lift is 1.23.",
+          "unstated": false
+        },
+        {
+          "id": "a-comps",
+          "text": "The comps describe one audience",
+          "verdict": "weak",
+          "why": "The city order rests on Salt Road.",
+          "fix": "Add or swap comps so no single title carries the result.",
+          "unstated": true
+        }
+      ],
+      "s1": [],
+      "s2": [],
+      "s3": [],
+      "s4": [],
+      "places": [
+        {
+          "id": "place-london",
+          "name": "London",
+          "lift": 1.23,
+          "band": "usable",
+          "audience": "Aged 25 to 29",
+          "confidence": "lower",
+          "note": "120 cells. lower: the result rests on Salt Road"
+        },
+        {
+          "id": "place-houston",
+          "name": "Houston",
+          "lift": 1.08,
+          "band": "weak",
+          "audience": "Aged 25 to 29",
+          "confidence": "lower",
+          "note": "120 cells. lower: the result rests on Salt Road"
+        },
+        {
+          "id": "place-atlanta",
+          "name": "Atlanta",
+          "lift": 0.92,
+          "band": "weak",
+          "audience": "Aged 25 to 29",
+          "confidence": "lower",
+          "note": "120 cells. lower: the result rests on Salt Road"
+        },
+        {
+          "id": "place-lagos",
+          "name": "Lagos",
+          "lift": 0.85,
+          "band": "weak",
+          "audience": "Aged 25 to 29",
+          "confidence": "lower",
+          "note": "120 cells. lower: the result rests on Salt Road"
+        }
+      ],
+      "weeks": ["2099-03-12", "2099-03-19"],
+      "dates": [
+        {
+          "id": "date-2099-03-12-harbor-lights",
+          "date": "2099-03-12",
+          "week": 0,
+          "rival": "Harbor Lights",
+          "overlap": 43,
+          "band": "low",
+          "advice": "Safe: little shared audience."
+        },
+        {
+          "id": "date-2099-03-19-third-mainland",
+          "date": "2099-03-19",
+          "week": 1,
+          "rival": "Third Mainland",
+          "overlap": 43,
+          "band": "low",
+          "advice": "Safe: little shared audience."
+        }
+      ],
+      "chosenDate": "2099-03-12",
+      "partners": [],
+      "risks": [
+        {
+          "id": "risk-a-place-lagos",
+          "text": "Lagos is a strong market for this film",
+          "signal": "The audience is thinner here than elsewhere (lift 0.85 over an average city in the same call).",
+          "action": "Keep Lagos, and open it after London, where lift is 1.23."
+        },
+        {
+          "id": "risk-a-place-houston",
+          "text": "Houston is a strong market for this film",
+          "signal": "About average for this audience (lift 1.08 over an average city in the same call).",
+          "action": "Keep Houston, and open it after London, where lift is 1.23."
+        },
+        {
+          "id": "risk-a-place-atlanta",
+          "text": "Atlanta is a strong market for this film",
+          "signal": "The audience is thinner here than elsewhere (lift 0.92 over an average city in the same call).",
+          "action": "Keep Atlanta, and open it after London, where lift is 1.23."
+        },
+        {
+          "id": "risk-a-comps",
+          "text": "The comps describe one audience",
+          "signal": "The city order rests on Salt Road.",
+          "action": "Add or swap comps so no single title carries the result."
+        }
+      ],
+      "cannot": [
+        {
+          "id": "cant-box-office",
+          "item": "Box office and viewing numbers",
+          "reason": "Qloo has taste data, not sales. Add your own numbers when you fix a plan."
+        },
+        {
+          "id": "cant-q-1",
+          "item": "Bars in Atlanta",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-2",
+          "item": "Bars in Houston",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-3",
+          "item": "Churches in Atlanta",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-4",
+          "item": "Churches in Lagos",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-5",
+          "item": "Universities in Atlanta",
+          "reason": "Qloo returned nothing for this audience with this context."
+        },
+        {
+          "id": "cant-q-6",
+          "item": "Universities in London",
+          "reason": "Qloo returned nothing for this audience with this context."
+        }
+      ],
+      "groupLabels": [],
+      "planned": [],
+      "results": null,
+      "course": null
+    },
+    "plan": {
+      "scope": "full",
+      "sections": [
+        {
+          "key": "bottom-line",
+          "title": "Bottom line",
+          "lines": [
+            {
+              "id": "bottom-line-1",
+              "kind": "grounded",
+              "text": "Open in London first, then Houston, Atlanta and Lagos: that is where your comps' audience is strongest among your cities.",
+              "findingIds": ["f-markets"],
+              "sourceIds": [],
+              "names": ["London", "Houston", "Atlanta", "Lagos"],
+              "group": null
+            },
+            {
+              "id": "bottom-line-2",
+              "kind": "grounded",
+              "text": "Aim the campaign at people aged 34 and under, as planned.",
+              "findingIds": ["f-audience"],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "bottom-line-3",
+              "kind": "grounded",
+              "text": "Build the soundtrack and launch music around Ada Lux and Kola Wave, who rank highest with this audience in Atlanta.",
+              "findingIds": ["f-music-atlanta"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Atlanta"],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "positioning",
+          "title": "Positioning",
+          "lines": [
+            {
+              "id": "positioning-1",
+              "kind": "grounded",
+              "text": "Lead with survival and community: the themes your comps share most.",
+              "findingIds": ["f-themes"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook"
+            },
+            {
+              "id": "positioning-2",
+              "kind": "grounded",
+              "text": "A story about survival.",
+              "findingIds": ["f-themes"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Key messages"
+            },
+            {
+              "id": "positioning-3",
+              "kind": "grounded",
+              "text": "A story about community.",
+              "findingIds": ["f-themes"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Key messages"
+            },
+            {
+              "id": "positioning-4",
+              "kind": "grounded",
+              "text": "A story about loyalty.",
+              "findingIds": ["f-themes"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Key messages"
+            },
+            {
+              "id": "positioning-5",
+              "kind": "grounded",
+              "text": "Pitch it to buyers and press in the company of Salt Road, The Glass Lantern and Midnight Harbor.",
+              "findingIds": ["f-shows-atlanta"],
+              "sourceIds": [],
+              "names": ["Salt Road", "The Glass Lantern", "Midnight Harbor"],
+              "group": "Comps"
+            }
+          ]
+        },
+        {
+          "key": "audience",
+          "title": "Audience",
+          "lines": [
+            {
+              "id": "audience-1",
+              "kind": "grounded",
+              "text": "The core audience is people 25 to 29, then 24 and under, leaning male.",
+              "findingIds": ["f-audience"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Who they are"
+            },
+            {
+              "id": "audience-2",
+              "kind": "grounded",
+              "text": "In Atlanta they also watch Midnight Harbor, Harbor Precinct and Eko Nights.",
+              "findingIds": ["f-shows-atlanta"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "Eko Nights", "Atlanta"],
+              "group": "Atlanta"
+            },
+            {
+              "id": "audience-3",
+              "kind": "grounded",
+              "text": "In Houston they also watch Midnight Harbor, Harbor Precinct and Eko Nights.",
+              "findingIds": ["f-shows-houston"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "Eko Nights", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "audience-4",
+              "kind": "grounded",
+              "text": "In Lagos they also watch Midnight Harbor, Harbor Precinct and Eko Nights.",
+              "findingIds": ["f-shows-lagos"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "Eko Nights", "Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "audience-5",
+              "kind": "grounded",
+              "text": "In London they also watch Midnight Harbor, Harbor Precinct and Eko Nights.",
+              "findingIds": ["f-shows-london"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "Eko Nights", "London"],
+              "group": "London"
+            },
+            {
+              "id": "audience-6",
+              "kind": "grounded",
+              "text": "In Atlanta they also play Ada Lux, Kola Wave and Sade Rhythm.",
+              "findingIds": ["f-music-atlanta"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Sade Rhythm", "Atlanta"],
+              "group": "Atlanta"
+            },
+            {
+              "id": "audience-7",
+              "kind": "grounded",
+              "text": "In Houston they also play Ada Lux, Kola Wave and Sade Rhythm.",
+              "findingIds": ["f-music-houston"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Sade Rhythm", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "audience-8",
+              "kind": "grounded",
+              "text": "In Lagos they also play Ada Lux, Kola Wave and Sade Rhythm.",
+              "findingIds": ["f-music-lagos"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Sade Rhythm", "Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "audience-9",
+              "kind": "grounded",
+              "text": "In London they also play Ada Lux, Kola Wave and Sade Rhythm.",
+              "findingIds": ["f-music-london"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Sade Rhythm", "London"],
+              "group": "London"
+            }
+          ]
+        },
+        {
+          "key": "markets",
+          "title": "Markets",
+          "lines": [
+            {
+              "id": "markets-1",
+              "kind": "grounded",
+              "text": "Screen at Southbank Screen.",
+              "findingIds": ["f-cinemas-london"],
+              "sourceIds": [],
+              "names": ["Southbank Screen"],
+              "group": "London"
+            },
+            {
+              "id": "markets-2",
+              "kind": "grounded",
+              "text": "Screen at Bayou Cinema.",
+              "findingIds": ["f-cinemas-houston"],
+              "sourceIds": [],
+              "names": ["Bayou Cinema"],
+              "group": "Houston"
+            },
+            {
+              "id": "markets-3",
+              "kind": "grounded",
+              "text": "Screen at Peachtree Pictures.",
+              "findingIds": ["f-cinemas-atlanta"],
+              "sourceIds": [],
+              "names": ["Peachtree Pictures"],
+              "group": "Atlanta"
+            },
+            {
+              "id": "markets-4",
+              "kind": "grounded",
+              "text": "Screen at Marina Picturehouse and Lekki Screens.",
+              "findingIds": ["f-cinemas-lagos"],
+              "sourceIds": [],
+              "names": ["Marina Picturehouse", "Lekki Screens"],
+              "group": "Lagos"
+            }
+          ]
+        },
+        {
+          "key": "partnerships",
+          "title": "Partnerships",
+          "lines": [
+            {
+              "id": "partnerships-1",
+              "kind": "grounded",
+              "text": "Music: approach Ada Lux and Kola Wave for the soundtrack or a launch single in Atlanta.",
+              "findingIds": ["f-music-atlanta"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Atlanta"],
+              "group": "Music"
+            },
+            {
+              "id": "partnerships-2",
+              "kind": "grounded",
+              "text": "Music: approach Ada Lux and Kola Wave for the soundtrack or a launch single in Houston.",
+              "findingIds": ["f-music-houston"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Houston"],
+              "group": "Music"
+            },
+            {
+              "id": "partnerships-3",
+              "kind": "grounded",
+              "text": "Music: approach Ada Lux and Kola Wave for the soundtrack or a launch single in Lagos.",
+              "findingIds": ["f-music-lagos"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "Lagos"],
+              "group": "Music"
+            },
+            {
+              "id": "partnerships-4",
+              "kind": "grounded",
+              "text": "Music: approach Ada Lux and Kola Wave for the soundtrack or a launch single in London.",
+              "findingIds": ["f-music-london"],
+              "sourceIds": [],
+              "names": ["Ada Lux", "Kola Wave", "London"],
+              "group": "Music"
+            },
+            {
+              "id": "partnerships-5",
+              "kind": "grounded",
+              "text": "Brands: Night Market Cola in Lagos.",
+              "findingIds": ["f-brands-beverage-lagos"],
+              "sourceIds": [],
+              "names": ["Night Market Cola", "Lagos"],
+              "group": "Brands"
+            },
+            {
+              "id": "partnerships-6",
+              "kind": "grounded",
+              "text": "Brands: Night Market Cola in London.",
+              "findingIds": ["f-brands-beverage-london"],
+              "sourceIds": [],
+              "names": ["Night Market Cola", "London"],
+              "group": "Brands"
+            },
+            {
+              "id": "partnerships-7",
+              "kind": "grounded",
+              "text": "Brands: Lagoon Mobile in Lagos.",
+              "findingIds": ["f-brands-telecom-lagos"],
+              "sourceIds": [],
+              "names": ["Lagoon Mobile", "Lagos"],
+              "group": "Brands"
+            },
+            {
+              "id": "partnerships-8",
+              "kind": "grounded",
+              "text": "Brands: Lagoon Mobile in London.",
+              "findingIds": ["f-brands-telecom-london"],
+              "sourceIds": [],
+              "names": ["Lagoon Mobile", "London"],
+              "group": "Brands"
+            }
+          ]
+        },
+        {
+          "key": "placement",
+          "title": "Creative placement",
+          "lines": [
+            {
+              "id": "placement-1",
+              "kind": "grounded",
+              "text": "Attach the trailer to Harbor Lights and Third Mainland.",
+              "findingIds": ["f-films"],
+              "sourceIds": [],
+              "names": ["Harbor Lights", "Third Mainland"],
+              "group": "Films"
+            },
+            {
+              "id": "placement-2",
+              "kind": "grounded",
+              "text": "Run ads against Midnight Harbor and Harbor Precinct in Atlanta.",
+              "findingIds": ["f-shows-atlanta"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "Atlanta"],
+              "group": "Series"
+            },
+            {
+              "id": "placement-3",
+              "kind": "grounded",
+              "text": "Run ads against Midnight Harbor and Harbor Precinct in Houston.",
+              "findingIds": ["f-shows-houston"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "Houston"],
+              "group": "Series"
+            },
+            {
+              "id": "placement-4",
+              "kind": "grounded",
+              "text": "Run ads against Midnight Harbor and Harbor Precinct in Lagos.",
+              "findingIds": ["f-shows-lagos"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "Lagos"],
+              "group": "Series"
+            },
+            {
+              "id": "placement-5",
+              "kind": "grounded",
+              "text": "Run ads against Midnight Harbor and Harbor Precinct in London.",
+              "findingIds": ["f-shows-london"],
+              "sourceIds": [],
+              "names": ["Midnight Harbor", "Harbor Precinct", "London"],
+              "group": "Series"
+            }
+          ]
+        },
+        {
+          "key": "publicity",
+          "title": "Publicity and media",
+          "lines": [
+            {
+              "id": "publicity-1",
+              "kind": "grounded",
+              "text": "Pitch the cast and director to Crime Junkie and Serial.",
+              "findingIds": ["f-podcasts"],
+              "sourceIds": [],
+              "names": ["Crime Junkie", "Serial"],
+              "group": "Podcasts"
+            },
+            {
+              "id": "publicity-2",
+              "kind": "playbook",
+              "text": "Send screeners to critics and culture writers four weeks before release, watermarked.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Press"
+            }
+          ]
+        },
+        {
+          "key": "community",
+          "title": "Community and grassroots",
+          "lines": [
+            {
+              "id": "community-1",
+              "kind": "grounded",
+              "text": "Host a community screening with Grace Chapel Houston in Houston.",
+              "findingIds": ["f-community-church-houston"],
+              "sourceIds": [],
+              "names": ["Grace Chapel Houston", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "community-2",
+              "kind": "grounded",
+              "text": "Host a community screening with Pentecost House in London.",
+              "findingIds": ["f-community-church-london"],
+              "sourceIds": [],
+              "names": ["Pentecost House", "London"],
+              "group": "London"
+            },
+            {
+              "id": "community-3",
+              "kind": "grounded",
+              "text": "Host a community screening with Gulf Coast University in Houston.",
+              "findingIds": ["f-community-university-houston"],
+              "sourceIds": [],
+              "names": ["Gulf Coast University", "Houston"],
+              "group": "Houston"
+            },
+            {
+              "id": "community-4",
+              "kind": "grounded",
+              "text": "Host a community screening with Lagoon City University in Lagos.",
+              "findingIds": ["f-community-university-lagos"],
+              "sourceIds": [],
+              "names": ["Lagoon City University", "Lagos"],
+              "group": "Lagos"
+            },
+            {
+              "id": "community-5",
+              "kind": "playbook",
+              "text": "Give community partners an early screening and a share-ready trailer cut.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "route",
+          "title": "Release route and window",
+          "lines": [
+            {
+              "id": "route-1",
+              "kind": "playbook",
+              "text": "Open in cinemas in London first, then roll out to the other markets over two to four weeks.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": ["London"],
+              "group": null
+            },
+            {
+              "id": "route-2",
+              "kind": "playbook",
+              "text": "Hold the streaming window until the cinema run ends, unless a platform deal sets it.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "channels",
+          "title": "Channels",
+          "lines": [
+            {
+              "id": "channels-lagos",
+              "kind": "playbook",
+              "text": "Home market. Lead on Instagram, TikTok and YouTube.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "channels-london",
+              "kind": "playbook",
+              "text": "Diaspora city. Lead on YouTube, Instagram and TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "channels-houston",
+              "kind": "playbook",
+              "text": "Diaspora city. Lead on YouTube, Instagram and TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "channels-atlanta",
+              "kind": "playbook",
+              "text": "Diaspora city. Lead on YouTube, Instagram and TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Atlanta"
+            }
+          ]
+        },
+        {
+          "key": "creative",
+          "title": "Creative briefs",
+          "lines": [
+            {
+              "id": "creative-1",
+              "kind": "playbook",
+              "text": "Hook one: open on the strongest image of Night Ferry in the first two seconds.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-2",
+              "kind": "playbook",
+              "text": "Hook two: open on the question this release answers, as text on screen over the first shot.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-3",
+              "kind": "playbook",
+              "text": "Hook three: open on Lagos itself, with the name on screen.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-4",
+              "kind": "playbook",
+              "text": "Key art brief: one image, the title Night Ferry and at most one line of text. Say what the image must show, what to avoid and where it will be seen, then hand it to a designer. Oraqul writes the brief; a person makes the art.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Key art brief"
+            }
+          ]
+        },
+        {
+          "key": "timeline",
+          "title": "Timeline",
+          "lines": [
+            {
+              "id": "timeline-key-art",
+              "kind": "playbook",
+              "text": "T-26 to T-16: Lock the title treatment and key art, cut the first teaser and set up the sales and presale page.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-festival",
+              "kind": "playbook",
+              "text": "T-20 to T-12: Use a festival or market slot to build early press and distributor interest, never as the only beat.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-trailer-one",
+              "kind": "playbook",
+              "text": "T-12: Release the first trailer on the lead video platform and open advance screening sign-ups.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-community-screenings",
+              "kind": "playbook",
+              "text": "T-10 to T-6: Book advance screenings with community groups, cinemas and creators in each territory.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-presales",
+              "kind": "playbook",
+              "text": "T-8: Open presales where the cinema or platform allows it and read the first week against the target.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-press-wave",
+              "kind": "playbook",
+              "text": "T-4 to T-3: Send the press screener and the second trailer, and confirm premiere guests.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-premiere",
+              "kind": "playbook",
+              "text": "T-1: Hold the home-market premiere, with the other territories following within days.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-release",
+              "kind": "playbook",
+              "text": "Launch week: Release and report advance screenings and presales to the team daily.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-second-wave",
+              "kind": "playbook",
+              "text": "T+1 to T+4: Move spend to the territories where presales and screenings are ahead, and plan the streaming or home release window.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "budget",
+          "title": "Budget split",
+          "lines": [
+            {
+              "id": "budget-1",
+              "kind": "playbook",
+              "text": "A starting split of the marketing budget, as shares: adjust it with your distributor, and move money first to the cities with the strongest pre-sales.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-2",
+              "kind": "playbook",
+              "text": "Paid media and trailer placement: 40%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-3",
+              "kind": "playbook",
+              "text": "Publicity and press: 15%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-4",
+              "kind": "playbook",
+              "text": "Community screenings and events: 15%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-5",
+              "kind": "playbook",
+              "text": "Creative (trailer, key art, cut-downs): 15%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-6",
+              "kind": "playbook",
+              "text": "Partnerships and tie-ins: 5%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-7",
+              "kind": "playbook",
+              "text": "Contingency: 10%.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "measure",
+          "title": "What to measure",
+          "lines": [
+            {
+              "id": "measure-primary",
+              "kind": "playbook",
+              "text": "Judge this plan on one signal: advance screenings and presales.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-target",
+              "kind": "playbook",
+              "text": "No target is set. Give your own number, such as “target 10,000”, and the plan will carry it.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-checkpoints",
+              "kind": "playbook",
+              "text": "Read it 56, 28 and 7 days before release.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-secondary",
+              "kind": "playbook",
+              "text": "Trailer views, Followers, Press mentions are secondary: track them, but do not judge the plan on them.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "risks",
+          "title": "Risks",
+          "lines": [
+            {
+              "id": "risks-1",
+              "kind": "grounded",
+              "text": "Atlanta may open softer than your other cities: keep the booking small and lean on community screenings there.",
+              "findingIds": ["f-a-place-atlanta"],
+              "sourceIds": [],
+              "names": ["Atlanta"],
+              "group": null
+            },
+            {
+              "id": "risks-2",
+              "kind": "grounded",
+              "text": "Houston may open softer than your other cities: keep the booking small and lean on community screenings there.",
+              "findingIds": ["f-a-place-houston"],
+              "sourceIds": [],
+              "names": ["Houston"],
+              "group": null
+            },
+            {
+              "id": "risks-3",
+              "kind": "grounded",
+              "text": "Lagos may open softer than your other cities: keep the booking small and lean on community screenings there.",
+              "findingIds": ["f-a-place-lagos"],
+              "sourceIds": [],
+              "names": ["Lagos"],
+              "group": null
+            },
+            {
+              "id": "risks-4",
+              "kind": "playbook",
+              "text": "Piracy in the first week: watermark screeners and take down leaks fast.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "gaps",
+          "title": "To sharpen this plan",
+          "lines": [
+            {
+              "id": "gaps-1",
+              "kind": "playbook",
+              "text": "Add a release date or window, and the timeline turns into real dates.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "gaps-2",
+              "kind": "playbook",
+              "text": "Say whether it goes to cinemas, a platform or both, and the release route firms up.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "gaps-3",
+              "kind": "playbook",
+              "text": "Add a marketing budget, and the split turns into amounts.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        }
+      ],
+      "comps": [
+        {
+          "name": "Salt Road",
+          "source": "you",
+          "match": null,
+          "choice": null
+        },
+        {
+          "name": "The Glass Lantern",
+          "source": "you",
+          "match": null,
+          "choice": null
+        },
+        {
+          "name": "Midnight Harbor",
+          "source": "you",
+          "match": null,
+          "choice": "Qloo has 2 titles called “Midnight Harbor”. I used the best known one, the best known. Say which you mean if it is another."
+        }
+      ],
+      "findings": [
+        {
+          "id": "f-a-age",
+          "query": "audience",
+          "text": "Your target (aged 34 and under) is where the comps' audience is strongest.",
+          "entities": [],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": "holds",
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005000"]
+        },
+        {
+          "id": "f-a-comps",
+          "query": "audience",
+          "text": "Your comps lean on one title for the result, so another comp of your own would firm it up.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "weak",
+          "confidence": "lower",
+          "why": "lower: the result rests on Salt Road",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-audience",
+          "query": "audience",
+          "text": "Your comps' audience is strongest among people aged 25 to 29, then aged 24 and under, and leans male.",
+          "entities": [],
+          "numbers": {
+            "n0": 25,
+            "n1": 29,
+            "n2": 24,
+            "Aged 25 to 29": 60,
+            "Aged 24 and under": 59,
+            "Aged 30 to 34": 54,
+            "Men": 54,
+            "Women": 47,
+            "Aged 45 to 54": 44
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "people 25 to 29, then 24 and under, leaning male"
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005000"]
+        },
+        {
+          "id": "f-a-place-atlanta",
+          "query": "markets",
+          "text": "Atlanta has a smaller audience for these comps than your other cities.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "breaks",
+          "confidence": "lower",
+          "why": "lower: the result rests on Salt Road",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-a-place-houston",
+          "query": "markets",
+          "text": "Houston is an average city for this audience.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "weak",
+          "confidence": "lower",
+          "why": "lower: the result rests on Salt Road",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-a-place-lagos",
+          "query": "markets",
+          "text": "Lagos has a smaller audience for these comps than your other cities.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "breaks",
+          "confidence": "lower",
+          "why": "lower: the result rests on Salt Road",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-a-place-london",
+          "query": "markets",
+          "text": "London is one of the strongest cities for this audience.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "holds",
+          "confidence": "lower",
+          "why": "lower: the result rests on Salt Road",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-markets",
+          "query": "markets",
+          "text": "Among your cities, your comps' audience is strongest in London, then Houston, Atlanta and Lagos.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "London",
+              "affinity": 0.7112545158793041,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Houston",
+              "affinity": 0.6258711326515466,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Atlanta",
+              "affinity": 0.5296990624933269,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Lagos",
+              "affinity": 0.49348782066476715,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "lift London": 1.23,
+            "lift Houston": 1.08,
+            "lift Atlanta": 0.92,
+            "lift Lagos": 0.85
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: the result rests on Salt Road",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005006"]
+        },
+        {
+          "id": "f-themes",
+          "query": "themes",
+          "text": "Your comps share the themes survival, community, loyalty and ambition, and the archetypes The Outsider, The Fixer and The Matriarch.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Survival",
+              "affinity": 0.6095425661830719,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Community",
+              "affinity": 0.5822368461907771,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Loyalty",
+              "affinity": 0.48017171564205513,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Ambition",
+              "affinity": 0.4739719016494474,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Family",
+              "affinity": 0.40444022348874875,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "Power",
+              "affinity": 0.36922839362389137,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "The Outsider",
+              "affinity": 0.5283889622726452,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "The Fixer",
+              "affinity": 0.5124290492802616,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "The Matriarch",
+              "affinity": 0.4450732937808475,
+              "detail": null
+            },
+            {
+              "entityId": null,
+              "name": "The Rival",
+              "affinity": 0.20628822995496177,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005024"]
+        },
+        {
+          "id": "f-shows-atlanta",
+          "query": "shows",
+          "text": "In Atlanta, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0002",
+              "name": "Midnight Harbor",
+              "affinity": 0.7202289277269107,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0001",
+              "name": "Harbor Precinct",
+              "affinity": 0.6350618345511756,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0002",
+              "name": "Eko Nights",
+              "affinity": 0.6327180282521803,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2020
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Atlanta",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2020,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005028"]
+        },
+        {
+          "id": "f-shows-houston",
+          "query": "shows",
+          "text": "In Houston, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0002",
+              "name": "Midnight Harbor",
+              "affinity": 0.7202289277269107,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0001",
+              "name": "Harbor Precinct",
+              "affinity": 0.6350618345511756,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0002",
+              "name": "Eko Nights",
+              "affinity": 0.6327180282521803,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2020
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2020,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005027"]
+        },
+        {
+          "id": "f-shows-lagos",
+          "query": "shows",
+          "text": "In Lagos, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0002",
+              "name": "Midnight Harbor",
+              "affinity": 0.7202289277269107,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0001",
+              "name": "Harbor Precinct",
+              "affinity": 0.6350618345511756,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0002",
+              "name": "Eko Nights",
+              "affinity": 0.6327180282521803,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2020
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2020,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005025"]
+        },
+        {
+          "id": "f-shows-london",
+          "query": "shows",
+          "text": "In London, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0002",
+              "name": "Midnight Harbor",
+              "affinity": 0.7202289277269107,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0001",
+              "name": "Harbor Precinct",
+              "affinity": 0.6350618345511756,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-TV-0002",
+              "name": "Eko Nights",
+              "affinity": 0.6327180282521803,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2020
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2020,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005026"]
+        },
+        {
+          "id": "f-cinemas-atlanta",
+          "query": "cinemas",
+          "text": "In Atlanta, the cinemas that rank highest with your comps' audience are Peachtree Pictures.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0005",
+              "name": "Peachtree Pictures",
+              "affinity": 0.6953276910342574,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Atlanta",
+            "ages": [],
+            "tags": ["movie theater"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005032"]
+        },
+        {
+          "id": "f-cinemas-houston",
+          "query": "cinemas",
+          "text": "In Houston, the cinemas that rank highest with your comps' audience are Bayou Cinema.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0004",
+              "name": "Bayou Cinema",
+              "affinity": 0.6961089598005892,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": [],
+            "tags": ["movie theater"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005031"]
+        },
+        {
+          "id": "f-cinemas-lagos",
+          "query": "cinemas",
+          "text": "In Lagos, the cinemas that rank highest with your comps' audience are Marina Picturehouse and Lekki Screens.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0001",
+              "name": "Marina Picturehouse",
+              "affinity": 0.7047029162302387,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-PLACE-0002",
+              "name": "Lekki Screens",
+              "affinity": 0.703921647463907,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["movie theater"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005029"]
+        },
+        {
+          "id": "f-cinemas-london",
+          "query": "cinemas",
+          "text": "In London, the cinemas that rank highest with your comps' audience are Southbank Screen.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0003",
+              "name": "Southbank Screen",
+              "affinity": 0.7031403786975752,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["movie theater"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005030"]
+        },
+        {
+          "id": "f-music-atlanta",
+          "query": "music",
+          "text": "In Atlanta, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0002",
+              "name": "Ada Lux",
+              "affinity": 0.8022248222730646,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0003",
+              "name": "Kola Wave",
+              "affinity": 0.8014435535067328,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.800662284740401,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Atlanta",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": ["afrobeats"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005036"]
+        },
+        {
+          "id": "f-music-houston",
+          "query": "music",
+          "text": "In Houston, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0002",
+              "name": "Ada Lux",
+              "affinity": 0.8022248222730646,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0003",
+              "name": "Kola Wave",
+              "affinity": 0.8014435535067328,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.800662284740401,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": ["afrobeats"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005035"]
+        },
+        {
+          "id": "f-music-lagos",
+          "query": "music",
+          "text": "In Lagos, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0002",
+              "name": "Ada Lux",
+              "affinity": 0.8022248222730646,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0003",
+              "name": "Kola Wave",
+              "affinity": 0.8014435535067328,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.800662284740401,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": ["afrobeats"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005033"]
+        },
+        {
+          "id": "f-music-london",
+          "query": "music",
+          "text": "In London, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+          "entities": [
+            {
+              "entityId": "DEMO-MUSIC-0002",
+              "name": "Ada Lux",
+              "affinity": 0.8022248222730646,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0003",
+              "name": "Kola Wave",
+              "affinity": 0.8014435535067328,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-MUSIC-0004",
+              "name": "Sade Rhythm",
+              "affinity": 0.800662284740401,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 34
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": ["24_and_younger", "25_to_29", "30_to_34"],
+            "tags": ["afrobeats"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005034"]
+        },
+        {
+          "id": "f-brands-beverage-lagos",
+          "query": "brands",
+          "text": "In Lagos, the mid-size beverage brands that rank highest with your comps' audience are Night Market Cola.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0004",
+              "name": "Night Market Cola",
+              "affinity": 0.5036564147574027,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["beverage"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005039"]
+        },
+        {
+          "id": "f-brands-beverage-london",
+          "query": "brands",
+          "text": "In London, the mid-size beverage brands that rank highest with your comps' audience are Night Market Cola.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0004",
+              "name": "Night Market Cola",
+              "affinity": 0.5036564147574027,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["beverage"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005040"]
+        },
+        {
+          "id": "f-brands-telecom-lagos",
+          "query": "brands",
+          "text": "In Lagos, the mid-size telecom brands that rank highest with your comps' audience are Lagoon Mobile.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0006",
+              "name": "Lagoon Mobile",
+              "affinity": 0.5052189522900663,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["telecom"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005037"]
+        },
+        {
+          "id": "f-brands-telecom-london",
+          "query": "brands",
+          "text": "In London, the mid-size telecom brands that rank highest with your comps' audience are Lagoon Mobile.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0006",
+              "name": "Lagoon Mobile",
+              "affinity": 0.5052189522900663,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["telecom"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005038"]
+        },
+        {
+          "id": "f-films",
+          "query": "films",
+          "text": "The films from Nigeria since 2023 that rank highest with your comps' audience are Harbor Lights and Third Mainland.",
+          "entities": [
+            {
+              "entityId": "DEMO-FILM-0105",
+              "name": "Harbor Lights",
+              "affinity": 0.42928495498590286,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-FILM-0106",
+              "name": "Third Mainland",
+              "affinity": 0.428503686219571,
+              "detail": null
+            }
+          ],
+          "numbers": {
+            "n0": 2023
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": "Nigeria",
+            "yearFrom": 2023,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005041"]
+        },
+        {
+          "id": "f-podcasts",
+          "query": "podcasts",
+          "text": "The true crime podcasts that rank highest with your comps' audience in London are Crime Junkie and Serial.",
+          "entities": [
+            {
+              "entityId": "DEMO-POD-0003",
+              "name": "Crime Junkie",
+              "affinity": 0.5202728300402576,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-POD-0004",
+              "name": "Serial",
+              "affinity": 0.5132414111432715,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["true crime"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005042"]
+        },
+        {
+          "id": "f-community-church-houston",
+          "query": "community",
+          "text": "In Houston, the churches that rank highest with your comps' audience are Grace Chapel Houston.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0006",
+              "name": "Grace Chapel Houston",
+              "affinity": 0.6945464222679256,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": [],
+            "tags": ["church"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005050"]
+        },
+        {
+          "id": "f-community-church-london",
+          "query": "community",
+          "text": "In London, the churches that rank highest with your comps' audience are Pentecost House.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0007",
+              "name": "Pentecost House",
+              "affinity": 0.6937651535015938,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["church"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005049"]
+        },
+        {
+          "id": "f-community-university-houston",
+          "query": "community",
+          "text": "In Houston, the universities that rank highest with your comps' audience are Gulf Coast University.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0008",
+              "name": "Gulf Coast University",
+              "affinity": 0.6992340348659163,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Houston",
+            "ages": [],
+            "tags": ["university"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005052"]
+        },
+        {
+          "id": "f-community-university-lagos",
+          "query": "community",
+          "text": "In Lagos, the universities that rank highest with your comps' audience are Lagoon City University.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0009",
+              "name": "Lagoon City University",
+              "affinity": 0.6984527660995845,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["university"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005051"]
+        },
+        {
+          "id": "f-games-lagos",
+          "query": "games",
+          "text": "In Lagos, the games that rank highest with your comps' audience are Ember Keep, Crown of Ash and Hollow Hills.",
+          "entities": [
+            {
+              "entityId": "DEMO-GAME-0001",
+              "name": "Ember Keep",
+              "affinity": 0.6542193304640751,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0003",
+              "name": "Crown of Ash",
+              "affinity": 0.6526567929314115,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0002",
+              "name": "Hollow Hills",
+              "affinity": 0.6518755241650798,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0005",
+              "name": "Void Courier",
+              "affinity": 0.6448441052680938,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0004",
+              "name": "Tidewalker",
+              "affinity": 0.644062836501762,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0006",
+              "name": "Lantern Row",
+              "affinity": 0.6425002989690984,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005043"]
+        },
+        {
+          "id": "f-games-london",
+          "query": "games",
+          "text": "In London, the games that rank highest with your comps' audience are Ember Keep, Crown of Ash and Hollow Hills.",
+          "entities": [
+            {
+              "entityId": "DEMO-GAME-0001",
+              "name": "Ember Keep",
+              "affinity": 0.6542193304640751,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0003",
+              "name": "Crown of Ash",
+              "affinity": 0.6526567929314115,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0002",
+              "name": "Hollow Hills",
+              "affinity": 0.6518755241650798,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0005",
+              "name": "Void Courier",
+              "affinity": 0.6448441052680938,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0004",
+              "name": "Tidewalker",
+              "affinity": 0.644062836501762,
+              "detail": null
+            },
+            {
+              "entityId": "DEMO-GAME-0006",
+              "name": "Lantern Row",
+              "affinity": 0.6425002989690984,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005044"]
+        },
+        {
+          "id": "f-venues-bar-lagos",
+          "query": "venues",
+          "text": "In Lagos, the bars that rank highest with your comps' audience are Harbor Lounge.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0010",
+              "name": "Harbor Lounge",
+              "affinity": 0.6757891222312555,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["bar"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005045"]
+        },
+        {
+          "id": "f-venues-bar-london",
+          "query": "venues",
+          "text": "In London, the bars that rank highest with your comps' audience are Soho Social.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0012",
+              "name": "Soho Social",
+              "affinity": 0.6773516597639191,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["bar"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005046"]
+        },
+        {
+          "id": "f-venues-night-club-lagos",
+          "query": "venues",
+          "text": "In Lagos, the night clubs that rank highest with your comps' audience are Eko Nights Club.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0011",
+              "name": "Eko Nights Club",
+              "affinity": 0.6765703909975873,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "Lagos",
+            "ages": [],
+            "tags": ["night club"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005047"]
+        },
+        {
+          "id": "f-venues-night-club-london",
+          "query": "venues",
+          "text": "In London, the night clubs that rank highest with your comps' audience are Camden After Hours.",
+          "entities": [
+            {
+              "entityId": "DEMO-PLACE-0013",
+              "name": "Camden After Hours",
+              "affinity": 0.6781329285302509,
+              "detail": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": ["night club"],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005048"]
+        },
+        {
+          "id": "f-clash",
+          "query": "clash",
+          "text": "Against the rivals you named, your comps' audience overlaps most with Harbor Lights on 2099-03-12 (shared audience 43, low); Third Mainland on 2099-03-19 (shared audience 43, low).",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Harbor Lights",
+              "affinity": 0.43,
+              "detail": "2099-03-12"
+            },
+            {
+              "entityId": null,
+              "name": "Third Mainland",
+              "affinity": 0.43,
+              "detail": "2099-03-19"
+            }
+          ],
+          "numbers": {
+            "overlap Harbor Lights": 43,
+            "overlap Third Mainland": 43
+          },
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known, and it holds when each is left out",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005053"]
+        }
+      ],
+      "sources": [],
+      "dropped": [],
+      "writer": "template",
+      "understanding": {
+        "asked": "A launch plan.",
+        "goals": [],
+        "constraints": [],
+        "assumed": [],
+        "criteria": [
+          {
+            "id": "c1",
+            "text": "Answers what the person asked, using the cities, comps, window and budget they gave.",
+            "evidence": false,
+            "status": "unchecked",
+            "findingIds": []
+          },
+          {
+            "id": "c2",
+            "text": "Rests every claim about the audience on measured data, and keeps playbook advice apart.",
+            "evidence": true,
+            "status": "unchecked",
+            "findingIds": []
+          },
+          {
+            "id": "c3",
+            "text": "Gives moves a team can act on this week, not general advice.",
+            "evidence": false,
+            "status": "unchecked",
+            "findingIds": []
+          }
+        ],
+        "by": "scripted"
+      },
+      "review": {
+        "status": "unchecked",
+        "rounds": [],
+        "next": []
+      },
+      "process": {
+        "research": [],
+        "drafts": 1,
+        "dropped": []
+      },
+      "rules": {
+        "category": "film",
+        "version": "film@2026-10-22.1"
+      },
+      "band": {
+        "band": "independent",
+        "source": "brief"
+      },
+      "signal": {
+        "key": "screenings-presales",
+        "primary": "Advance screenings and presales",
+        "secondary": ["Trailer views", "Followers", "Press mentions"],
+        "checkpoints": [-56, -28, -7],
+        "target": null
+      },
+      "territories": [
+        {
+          "id": "territory-lagos",
+          "name": "Lagos",
+          "role": "home",
+          "order": 0,
+          "callId": "call-territory-lagos",
+          "channels": [
+            {
+              "name": "Instagram",
+              "lead": true
+            },
+            {
+              "name": "TikTok",
+              "lead": true
+            },
+            {
+              "name": "YouTube",
+              "lead": true
+            }
+          ],
+          "partnerIds": [],
+          "lineIds": ["audience-4", "audience-8", "markets-4", "community-4", "channels-lagos"]
+        },
+        {
+          "id": "territory-london",
+          "name": "London",
+          "role": "diaspora",
+          "order": 1,
+          "callId": "call-territory-london",
+          "channels": [
+            {
+              "name": "YouTube",
+              "lead": true
+            },
+            {
+              "name": "Instagram",
+              "lead": true
+            },
+            {
+              "name": "TikTok",
+              "lead": true
+            }
+          ],
+          "partnerIds": [],
+          "lineIds": ["audience-5", "audience-9", "markets-1", "community-2", "channels-london"]
+        },
+        {
+          "id": "territory-houston",
+          "name": "Houston",
+          "role": "diaspora",
+          "order": 2,
+          "callId": "call-territory-houston",
+          "channels": [
+            {
+              "name": "YouTube",
+              "lead": true
+            },
+            {
+              "name": "Instagram",
+              "lead": true
+            },
+            {
+              "name": "TikTok",
+              "lead": true
+            }
+          ],
+          "partnerIds": [],
+          "lineIds": [
+            "audience-3",
+            "audience-7",
+            "markets-2",
+            "community-1",
+            "community-3",
+            "channels-houston"
+          ]
+        },
+        {
+          "id": "territory-atlanta",
+          "name": "Atlanta",
+          "role": "diaspora",
+          "order": 3,
+          "callId": "call-territory-atlanta",
+          "channels": [
+            {
+              "name": "YouTube",
+              "lead": true
+            },
+            {
+              "name": "Instagram",
+              "lead": true
+            },
+            {
+              "name": "TikTok",
+              "lead": true
+            }
+          ],
+          "partnerIds": [],
+          "lineIds": ["audience-2", "audience-6", "markets-3", "channels-atlanta"]
+        }
+      ],
+      "calls": [
+        {
+          "id": "call-date-2099-03-12",
+          "subject": "date",
+          "name": "2099-03-12",
+          "direction": "okay",
+          "confidence": "high",
+          "why": "Harbor Lights opens that week and shares 43 of your audience on a scale of 100. Little shared audience.",
+          "findingIds": ["f-clash"],
+          "teamChoice": false,
+          "territory": null
+        },
+        {
+          "id": "call-date-2099-03-19",
+          "subject": "date",
+          "name": "2099-03-19",
+          "direction": "okay",
+          "confidence": "high",
+          "why": "Third Mainland opens that week and shares 43 of your audience on a scale of 100. Little shared audience.",
+          "findingIds": ["f-clash"],
+          "teamChoice": false,
+          "territory": null
+        },
+        {
+          "id": "call-territory-lagos",
+          "subject": "territory",
+          "name": "Lagos",
+          "direction": "avoid",
+          "confidence": "lower",
+          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after London.",
+          "findingIds": ["f-markets"],
+          "teamChoice": true,
+          "territory": "Lagos"
+        },
+        {
+          "id": "call-territory-london",
+          "subject": "territory",
+          "name": "London",
+          "direction": "okay",
+          "confidence": "lower",
+          "why": "Audience strength 1.2, where 1.0 is an average city in the same ranking.",
+          "findingIds": ["f-markets"],
+          "teamChoice": true,
+          "territory": "London"
+        },
+        {
+          "id": "call-territory-houston",
+          "subject": "territory",
+          "name": "Houston",
+          "direction": "risky",
+          "confidence": "lower",
+          "why": "Audience strength 1.1, where 1.0 is an average city in the same ranking. A smaller audience than the rest: lead with the local angle.",
+          "findingIds": ["f-markets"],
+          "teamChoice": true,
+          "territory": "Houston"
+        },
+        {
+          "id": "call-territory-atlanta",
+          "subject": "territory",
+          "name": "Atlanta",
+          "direction": "avoid",
+          "confidence": "lower",
+          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after London.",
+          "findingIds": ["f-markets"],
+          "teamChoice": true,
+          "territory": "Atlanta"
+        }
+      ],
+      "partners": [
+        {
+          "id": "partner-guinness",
+          "name": "Guinness",
+          "tier": "A",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-mtn",
+          "name": "MTN",
+          "tier": "A",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-indomie",
+          "name": "Indomie",
+          "tier": "A",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-night-market-cola",
+          "name": "Night Market Cola",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "qloo",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": ["f-brands-beverage-lagos"]
+        },
+        {
+          "id": "partner-lagoon-mobile",
+          "name": "Lagoon Mobile",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "qloo",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": ["f-brands-telecom-lagos"]
+        },
+        {
+          "id": "partner-verve",
+          "name": "Verve",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-quickteller",
+          "name": "QuickTeller",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-ee",
+          "name": "EE",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-monzo",
+          "name": "Monzo",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-lyft",
+          "name": "Lyft",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-cash-app",
+          "name": "Cash App",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-c-nigeria-cinemas",
+          "name": "Cinemas",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-c-nigeria-creators",
+          "name": "Creators",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        },
+        {
+          "id": "partner-c-nigeria-diaspora-businesses",
+          "name": "Diaspora businesses",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": []
+        }
+      ]
+    },
+    "report": null,
+    "evidence": [
+      {
+        "lineId": "f-a-age",
+        "label": "Your target (aged 34 and under) is where the comps' audience is strongest.",
+        "group": "Findings",
+        "verdict": "holds",
+        "returned": "Confidence high. high: 3 anchors with data, 2 well known",
+        "driver": false
+      },
+      {
+        "lineId": "f-a-comps",
+        "label": "Your comps lean on one title for the result, so another comp of your own would firm it up.",
+        "group": "Findings",
+        "verdict": "weak",
+        "returned": "Confidence lower. lower: the result rests on Salt Road",
+        "driver": true
+      },
+      {
+        "lineId": "f-audience",
+        "label": "Your comps' audience is strongest among people aged 25 to 29, then aged 24 and under, and leans male.",
+        "group": "Findings",
+        "returned": "Confidence high. high: 3 anchors with data, 2 well known",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-place-atlanta",
+        "label": "Atlanta has a smaller audience for these comps than your other cities.",
+        "group": "Findings",
+        "verdict": "breaks",
+        "returned": "Confidence lower. lower: the result rests on Salt Road",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-place-houston",
+        "label": "Houston is an average city for this audience.",
+        "group": "Findings",
+        "verdict": "weak",
+        "returned": "Confidence lower. lower: the result rests on Salt Road",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-place-lagos",
+        "label": "Lagos has a smaller audience for these comps than your other cities.",
+        "group": "Findings",
+        "verdict": "breaks",
+        "returned": "Confidence lower. lower: the result rests on Salt Road",
+        "driver": true
+      },
+      {
+        "lineId": "f-a-place-london",
+        "label": "London is one of the strongest cities for this audience.",
+        "group": "Findings",
+        "verdict": "holds",
+        "returned": "Confidence lower. lower: the result rests on Salt Road",
+        "driver": false
+      },
+      {
+        "lineId": "f-markets",
+        "label": "Among your cities, your comps' audience is strongest in London, then Houston, Atlanta and Lagos.",
+        "group": "Findings",
+        "returned": "London, Houston, Atlanta, Lagos",
+        "driver": true
+      },
+      {
+        "lineId": "f-themes",
+        "label": "Your comps share the themes survival, community, loyalty and ambition, and the archetypes The Outsider, The Fixer and The Matriarch.",
+        "group": "Findings",
+        "returned": "Survival, Community, Loyalty, Ambition, Family, Power, The Outsider, The Fixer, The Matriarch, The Rival",
+        "driver": false
+      },
+      {
+        "lineId": "f-shows-atlanta",
+        "label": "In Atlanta, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+        "group": "Findings",
+        "returned": "Midnight Harbor, Harbor Precinct, Eko Nights",
+        "driver": false
+      },
+      {
+        "lineId": "f-shows-houston",
+        "label": "In Houston, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+        "group": "Findings",
+        "returned": "Midnight Harbor, Harbor Precinct, Eko Nights",
+        "driver": false
+      },
+      {
+        "lineId": "f-shows-lagos",
+        "label": "In Lagos, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+        "group": "Findings",
+        "returned": "Midnight Harbor, Harbor Precinct, Eko Nights",
+        "driver": false
+      },
+      {
+        "lineId": "f-shows-london",
+        "label": "In London, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights.",
+        "group": "Findings",
+        "returned": "Midnight Harbor, Harbor Precinct, Eko Nights",
+        "driver": false
+      },
+      {
+        "lineId": "f-cinemas-atlanta",
+        "label": "In Atlanta, the cinemas that rank highest with your comps' audience are Peachtree Pictures.",
+        "group": "Findings",
+        "returned": "Peachtree Pictures",
+        "driver": false
+      },
+      {
+        "lineId": "f-cinemas-houston",
+        "label": "In Houston, the cinemas that rank highest with your comps' audience are Bayou Cinema.",
+        "group": "Findings",
+        "returned": "Bayou Cinema",
+        "driver": false
+      },
+      {
+        "lineId": "f-cinemas-lagos",
+        "label": "In Lagos, the cinemas that rank highest with your comps' audience are Marina Picturehouse and Lekki Screens.",
+        "group": "Findings",
+        "returned": "Marina Picturehouse, Lekki Screens",
+        "driver": false
+      },
+      {
+        "lineId": "f-cinemas-london",
+        "label": "In London, the cinemas that rank highest with your comps' audience are Southbank Screen.",
+        "group": "Findings",
+        "returned": "Southbank Screen",
+        "driver": false
+      },
+      {
+        "lineId": "f-music-atlanta",
+        "label": "In Atlanta, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+        "group": "Findings",
+        "returned": "Ada Lux, Kola Wave, Sade Rhythm",
+        "driver": true
+      },
+      {
+        "lineId": "f-music-houston",
+        "label": "In Houston, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+        "group": "Findings",
+        "returned": "Ada Lux, Kola Wave, Sade Rhythm",
+        "driver": false
+      },
+      {
+        "lineId": "f-music-lagos",
+        "label": "In Lagos, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+        "group": "Findings",
+        "returned": "Ada Lux, Kola Wave, Sade Rhythm",
+        "driver": false
+      },
+      {
+        "lineId": "f-music-london",
+        "label": "In London, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm.",
+        "group": "Findings",
+        "returned": "Ada Lux, Kola Wave, Sade Rhythm",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-beverage-lagos",
+        "label": "In Lagos, the mid-size beverage brands that rank highest with your comps' audience are Night Market Cola.",
+        "group": "Findings",
+        "returned": "Night Market Cola",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-beverage-london",
+        "label": "In London, the mid-size beverage brands that rank highest with your comps' audience are Night Market Cola.",
+        "group": "Findings",
+        "returned": "Night Market Cola",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-telecom-lagos",
+        "label": "In Lagos, the mid-size telecom brands that rank highest with your comps' audience are Lagoon Mobile.",
+        "group": "Findings",
+        "returned": "Lagoon Mobile",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-telecom-london",
+        "label": "In London, the mid-size telecom brands that rank highest with your comps' audience are Lagoon Mobile.",
+        "group": "Findings",
+        "returned": "Lagoon Mobile",
+        "driver": false
+      },
+      {
+        "lineId": "f-films",
+        "label": "The films from Nigeria since 2023 that rank highest with your comps' audience are Harbor Lights and Third Mainland.",
+        "group": "Findings",
+        "returned": "Harbor Lights, Third Mainland",
+        "driver": false
+      },
+      {
+        "lineId": "f-podcasts",
+        "label": "The true crime podcasts that rank highest with your comps' audience in London are Crime Junkie and Serial.",
+        "group": "Findings",
+        "returned": "Crime Junkie, Serial",
+        "driver": false
+      },
+      {
+        "lineId": "f-community-church-houston",
+        "label": "In Houston, the churches that rank highest with your comps' audience are Grace Chapel Houston.",
+        "group": "Findings",
+        "returned": "Grace Chapel Houston",
+        "driver": false
+      },
+      {
+        "lineId": "f-community-church-london",
+        "label": "In London, the churches that rank highest with your comps' audience are Pentecost House.",
+        "group": "Findings",
+        "returned": "Pentecost House",
+        "driver": false
+      },
+      {
+        "lineId": "f-community-university-houston",
+        "label": "In Houston, the universities that rank highest with your comps' audience are Gulf Coast University.",
+        "group": "Findings",
+        "returned": "Gulf Coast University",
+        "driver": false
+      },
+      {
+        "lineId": "f-community-university-lagos",
+        "label": "In Lagos, the universities that rank highest with your comps' audience are Lagoon City University.",
+        "group": "Findings",
+        "returned": "Lagoon City University",
+        "driver": false
+      },
+      {
+        "lineId": "f-games-lagos",
+        "label": "In Lagos, the games that rank highest with your comps' audience are Ember Keep, Crown of Ash and Hollow Hills.",
+        "group": "Findings",
+        "returned": "Ember Keep, Crown of Ash, Hollow Hills, Void Courier, Tidewalker, Lantern Row",
+        "driver": false
+      },
+      {
+        "lineId": "f-games-london",
+        "label": "In London, the games that rank highest with your comps' audience are Ember Keep, Crown of Ash and Hollow Hills.",
+        "group": "Findings",
+        "returned": "Ember Keep, Crown of Ash, Hollow Hills, Void Courier, Tidewalker, Lantern Row",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-bar-lagos",
+        "label": "In Lagos, the bars that rank highest with your comps' audience are Harbor Lounge.",
+        "group": "Findings",
+        "returned": "Harbor Lounge",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-bar-london",
+        "label": "In London, the bars that rank highest with your comps' audience are Soho Social.",
+        "group": "Findings",
+        "returned": "Soho Social",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-night-club-lagos",
+        "label": "In Lagos, the night clubs that rank highest with your comps' audience are Eko Nights Club.",
+        "group": "Findings",
+        "returned": "Eko Nights Club",
+        "driver": false
+      },
+      {
+        "lineId": "f-venues-night-club-london",
+        "label": "In London, the night clubs that rank highest with your comps' audience are Camden After Hours.",
+        "group": "Findings",
+        "returned": "Camden After Hours",
+        "driver": false
+      },
+      {
+        "lineId": "a-age",
+        "label": "The audience is aged 24 and under, aged 25 to 29, aged 30 to 34",
+        "group": "Assumptions",
+        "verdict": "holds",
+        "returned": "It is the top age band, or close to it (affinity 0.17, top band 0.20).",
+        "driver": false
+      },
+      {
+        "lineId": "a-place-lagos",
+        "label": "Lagos is a strong market for this film",
+        "group": "Assumptions",
+        "verdict": "breaks",
+        "returned": "The audience is thinner here than elsewhere (lift 0.85 over an average city in the same call).",
+        "driver": true
+      },
+      {
+        "lineId": "a-place-london",
+        "label": "London is a strong market for this film",
+        "group": "Assumptions",
+        "verdict": "holds",
+        "returned": "The audience concentrates here (lift 1.23 over an average city in the same call).",
+        "driver": false
+      },
+      {
+        "lineId": "a-place-houston",
+        "label": "Houston is a strong market for this film",
+        "group": "Assumptions",
+        "verdict": "weak",
+        "returned": "About average for this audience (lift 1.08 over an average city in the same call).",
+        "driver": true
+      },
+      {
+        "lineId": "a-place-atlanta",
+        "label": "Atlanta is a strong market for this film",
+        "group": "Assumptions",
+        "verdict": "breaks",
+        "returned": "The audience is thinner here than elsewhere (lift 0.92 over an average city in the same call).",
+        "driver": true
+      },
+      {
+        "lineId": "a-comps",
+        "label": "The comps describe one audience",
+        "group": "Assumptions",
+        "verdict": "weak",
+        "returned": "The city order rests on Salt Road.",
+        "driver": true
+      },
+      {
+        "lineId": "aud-25_to_29",
+        "label": "Aged 25 to 29",
+        "group": "Audience",
+        "returned": "Affinity 0.20 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-24_and_younger",
+        "label": "Aged 24 and under",
+        "group": "Audience",
+        "returned": "Affinity 0.17 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-30_to_34",
+        "label": "Aged 30 to 34",
+        "group": "Audience",
+        "returned": "Affinity 0.08 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-male",
+        "label": "Men",
+        "group": "Audience",
+        "returned": "Affinity 0.07 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-female",
+        "label": "Women",
+        "group": "Audience",
+        "returned": "Affinity -0.07 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-45_to_54",
+        "label": "Aged 45 to 54",
+        "group": "Audience",
+        "returned": "Affinity -0.12 across 3 of 3 comps",
+        "driver": false
+      },
+      {
+        "lineId": "place-london",
+        "label": "London",
+        "group": "Places",
+        "returned": "Lift 1.23x. 120 cells. lower: the result rests on Salt Road",
+        "driver": false
+      },
+      {
+        "lineId": "place-houston",
+        "label": "Houston",
+        "group": "Places",
+        "returned": "Lift 1.08x. 120 cells. lower: the result rests on Salt Road",
+        "driver": false
+      },
+      {
+        "lineId": "place-atlanta",
+        "label": "Atlanta",
+        "group": "Places",
+        "returned": "Lift 0.92x. 120 cells. lower: the result rests on Salt Road",
+        "driver": false
+      },
+      {
+        "lineId": "place-lagos",
+        "label": "Lagos",
+        "group": "Places",
+        "returned": "Lift 0.85x. 120 cells. lower: the result rests on Salt Road",
+        "driver": false
+      },
+      {
+        "lineId": "date-2099-03-12-harbor-lights",
+        "label": "2099-03-12 vs Harbor Lights",
+        "group": "Rival dates",
+        "returned": "Shared audience 43",
+        "driver": false
+      },
+      {
+        "lineId": "date-2099-03-19-third-mainland",
+        "label": "2099-03-19 vs Third Mainland",
+        "group": "Rival dates",
+        "returned": "Shared audience 43",
+        "driver": false
+      }
+    ],
+    "receipts": [
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-25_to_29",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-24_and_younger",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-30_to_34",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-male",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-female",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-45_to_54",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "place-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "place-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "place-atlanta",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "place-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "a-age",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "It is the top age band, or close to it (affinity 0.17, top band 0.20). Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-place-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The audience is thinner here than elsewhere (lift 0.85 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-place-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The audience concentrates here (lift 1.23 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-place-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "About average for this audience (lift 1.08 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-place-atlanta",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The audience is thinner here than elsewhere (lift 0.92 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "a-comps",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "The city order rests on Salt Road. Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "f-audience",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Your comps' audience is strongest among people aged 25 to 29, then aged 24 and under, and leans male. The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "f-a-age",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Your target (aged 34 and under) is where the comps' audience is strongest. It is the top age band, or close to it (affinity 0.17, top band 0.20). Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-place-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Lagos has a smaller audience for these comps than your other cities. The audience is thinner here than elsewhere (lift 0.85 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-place-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "London is one of the strongest cities for this audience. The audience concentrates here (lift 1.23 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-place-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Houston is an average city for this audience. About average for this audience (lift 1.08 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-place-atlanta",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Atlanta has a smaller audience for these comps than your other cities. The audience is thinner here than elsewhere (lift 0.92 over an average city in the same call). Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-a-comps",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Your comps lean on one title for the result, so another comp of your own would firm it up. The city order rests on Salt Road. Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005006",
+        "lineId": "f-markets",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Among your cities, your comps' audience is strongest in London, then Houston, Atlanta and Lagos. Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Salt Road.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005024",
+        "lineId": "f-themes",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.tag.types": "urn:tag:theme:qloo",
+          "filter.type": "urn:tag",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "Your comps share the themes survival, community, loyalty and ambition, and the archetypes The Outsider, The Fixer and The Matriarch. The theme tags Qloo ranks closest to the anchors, in Qloo's order.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005025",
+        "lineId": "f-shows-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.release_year.min": "2020",
+          "filter.type": "urn:entity:tv_show",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005026",
+        "lineId": "f-shows-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.release_year.min": "2020",
+          "filter.type": "urn:entity:tv_show",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005027",
+        "lineId": "f-shows-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.release_year.min": "2020",
+          "filter.type": "urn:entity:tv_show",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Houston",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005028",
+        "lineId": "f-shows-atlanta",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.release_year.min": "2020",
+          "filter.type": "urn:entity:tv_show",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Atlanta",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Atlanta, the series since 2020 that rank highest with your comps' audience are Midnight Harbor, Harbor Precinct and Eko Nights. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005029",
+        "lineId": "f-cinemas-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:movie_theater",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the cinemas that rank highest with your comps' audience are Marina Picturehouse and Lekki Screens. The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005030",
+        "lineId": "f-cinemas-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:movie_theater",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the cinemas that rank highest with your comps' audience are Southbank Screen. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005031",
+        "lineId": "f-cinemas-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Houston",
+          "filter.tags": "urn:tag:category:place:movie_theater",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the cinemas that rank highest with your comps' audience are Bayou Cinema. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005032",
+        "lineId": "f-cinemas-atlanta",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Atlanta",
+          "filter.tags": "urn:tag:category:place:movie_theater",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Atlanta, the cinemas that rank highest with your comps' audience are Peachtree Pictures. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005033",
+        "lineId": "f-music-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.tags": "urn:tag:genre:music:afrobeats",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005034",
+        "lineId": "f-music-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.tags": "urn:tag:genre:music:afrobeats",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005035",
+        "lineId": "f-music-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.tags": "urn:tag:genre:music:afrobeats",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Houston",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005036",
+        "lineId": "f-music-atlanta",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.tags": "urn:tag:genre:music:afrobeats",
+          "filter.type": "urn:entity:artist",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Atlanta",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Atlanta, the afrobeats artists that rank highest with your comps' audience aged 34 and under are Ada Lux, Kola Wave and Sade Rhythm. The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005037",
+        "lineId": "f-brands-telecom-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the mid-size telecom brands that rank highest with your comps' audience are Lagoon Mobile. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005038",
+        "lineId": "f-brands-telecom-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the mid-size telecom brands that rank highest with your comps' audience are Lagoon Mobile. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005039",
+        "lineId": "f-brands-beverage-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the mid-size beverage brands that rank highest with your comps' audience are Night Market Cola. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005040",
+        "lineId": "f-brands-beverage-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the mid-size beverage brands that rank highest with your comps' audience are Night Market Cola. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005041",
+        "lineId": "f-films",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.release_country": "Nigeria",
+          "filter.release_year.min": "2023",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The films from Nigeria since 2023 that rank highest with your comps' audience are Harbor Lights and Third Mainland. The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005042",
+        "lineId": "f-podcasts",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.tags": "urn:tag:genre:media:true_crime",
+          "filter.type": "urn:entity:podcast",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The true crime podcasts that rank highest with your comps' audience in London are Crime Junkie and Serial. The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005043",
+        "lineId": "f-games-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.type": "urn:entity:videogame",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the games that rank highest with your comps' audience are Ember Keep, Crown of Ash and Hollow Hills. The 6 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005044",
+        "lineId": "f-games-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.type": "urn:entity:videogame",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the games that rank highest with your comps' audience are Ember Keep, Crown of Ash and Hollow Hills. The 6 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005045",
+        "lineId": "f-venues-bar-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:bar",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the bars that rank highest with your comps' audience are Harbor Lounge. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005046",
+        "lineId": "f-venues-bar-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:bar",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the bars that rank highest with your comps' audience are Soho Social. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005047",
+        "lineId": "f-venues-night-club-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:night_club",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the night clubs that rank highest with your comps' audience are Eko Nights Club. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005048",
+        "lineId": "f-venues-night-club-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:night_club",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the night clubs that rank highest with your comps' audience are Camden After Hours. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005049",
+        "lineId": "f-community-church-london",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:church",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In London, the churches that rank highest with your comps' audience are Pentecost House. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005050",
+        "lineId": "f-community-church-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Houston",
+          "filter.tags": "urn:tag:category:place:church",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the churches that rank highest with your comps' audience are Grace Chapel Houston. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005051",
+        "lineId": "f-community-university-lagos",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:university",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Lagos, the universities that rank highest with your comps' audience are Lagoon City University. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005052",
+        "lineId": "f-community-university-houston",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Houston",
+          "filter.tags": "urn:tag:category:place:university",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "In Houston, the universities that rank highest with your comps' audience are Gulf Coast University. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005053",
+        "lineId": "date-2099-03-12-harbor-lights",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "2"
+        },
+        "returned": {},
+        "rule": "Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 85 is risky, 70 to 85 moderate, below 70 low. Confidence high: 3 anchors with data, 2 well known, and it holds when each is left out. Harbor Lights: overlap 43. You supplied the date.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005053",
+        "lineId": "date-2099-03-19-third-mainland",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "2"
+        },
+        "returned": {},
+        "rule": "Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 85 is risky, 70 to 85 moderate, below 70 low. Confidence high: 3 anchors with data, 2 well known, and it holds when each is left out. Third Mainland: overlap 43. You supplied the date.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005055",
+        "endpoint": "/search",
+        "input": {
+          "query": "Salt Road",
+          "take": "5",
+          "types": "urn:entity:movie,urn:entity:tv_show"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005056",
+        "endpoint": "/search",
+        "input": {
+          "query": "The Glass Lantern",
+          "take": "5",
+          "types": "urn:entity:movie,urn:entity:tv_show"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005057",
+        "endpoint": "/search",
+        "input": {
+          "query": "Midnight Harbor",
+          "take": "5",
+          "types": "urn:entity:movie,urn:entity:tv_show"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: several share the name.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005058",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0004,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same ranking without Salt Road.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005059",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0001"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same ranking without The Glass Lantern.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005060",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((-84.69 33.5, -84.09 33.5, -84.09 34, -84.69 34, -84.69 33.5)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
+          "filter.type": "urn:heatmap",
+          "output.heatmap.boundary": "urn:geohash",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same ranking without Midnight Harbor.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005061",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "afrobeats",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"afrobeats\" whose urn starts with urn:tag:genre:music. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005062",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "true crime",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"true crime\" whose urn starts with urn:tag:genre:media. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005063",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "movie theater",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"movie theater\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005064",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.parents.types": "urn:entity:brand",
+          "filter.query": "telecom",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"telecom\" whose urn starts with urn:tag:genre:brand. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005065",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.parents.types": "urn:entity:brand",
+          "filter.query": "beverage",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"beverage\" whose urn starts with urn:tag:genre:brand. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005066",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "church",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"church\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005067",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "university",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"university\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005068",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "bar",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"bar\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005069",
+        "endpoint": "/v2/tags",
+        "input": {
+          "filter.query": "night club",
+          "take": "10"
+        },
+        "returned": {},
+        "rule": "The first tag Qloo lists for \"night club\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005070",
+        "endpoint": "/entities",
+        "input": {
+          "entity_ids": "DEMO-FILM-0001,DEMO-FILM-0003,DEMO-FILM-0004"
+        },
+        "returned": {},
+        "rule": "What Qloo lists for each film or series, as returned. Nothing is scored. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005071",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.tag.types": "urn:tag:archetype:qloo",
+          "filter.type": "urn:tag",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The archetype tags Qloo ranks closest to the anchors, in Qloo's order.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005072",
+        "endpoint": "/search",
+        "input": {
+          "query": "Verve",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005073",
+        "endpoint": "/search",
+        "input": {
+          "query": "QuickTeller",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005074",
+        "endpoint": "/search",
+        "input": {
+          "query": "EE",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005075",
+        "endpoint": "/search",
+        "input": {
+          "query": "Monzo",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005076",
+        "endpoint": "/search",
+        "input": {
+          "query": "Lyft",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005077",
+        "endpoint": "/search",
+        "input": {
+          "query": "Cash App",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005078",
+        "endpoint": "/search",
+        "input": {
+          "query": "Lyft",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005079",
+        "endpoint": "/search",
+        "input": {
+          "query": "Cash App",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005080",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.release_country": "Nigeria",
+          "filter.release_year.min": "2023",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005081",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Houston",
+          "filter.tags": "urn:tag:category:place:bar",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005082",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Atlanta",
+          "filter.tags": "urn:tag:category:place:bar",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005083",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Lagos",
+          "filter.tags": "urn:tag:category:place:church",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005084",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Atlanta",
+          "filter.tags": "urn:tag:category:place:church",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005085",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "London",
+          "filter.tags": "urn:tag:category:place:university",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005086",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.location.query": "Atlanta",
+          "filter.tags": "urn:tag:category:place:university",
+          "filter.type": "urn:entity:place",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "9"
+        },
+        "returned": {},
+        "rule": "The 0 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: this line could not be tested.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005087",
+        "endpoint": "/search",
+        "input": {
+          "query": "Harbor Lights",
+          "take": "5",
+          "types": "urn:entity:movie"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005088",
+        "endpoint": "/search",
+        "input": {
+          "query": "Third Mainland",
+          "take": "5",
+          "types": "urn:entity:movie"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005089",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-FILM-0004,DEMO-FILM-0001",
+          "take": "2"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same scoring without Salt Road.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005090",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0001",
+          "take": "2"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same scoring without The Glass Lantern.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005091",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
+          "filter.type": "urn:entity:movie",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004",
+          "take": "2"
+        },
+        "returned": {},
+        "rule": "Leave one out: the same scoring without Midnight Harbor.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      }
+    ],
+    "limits": "Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Box office, viewing numbers and reviews are not in Qloo. Every number comes from the comps you confirmed."
+  },
+  "project": {
+    "id": "00000000-0000-4000-8000-000000000102",
+    "category": "film",
+    "name": "Night Ferry",
+    "kind": "",
+    "genre": "",
+    "places": ["London", "Houston", "Atlanta", "Lagos"],
+    "window": "",
+    "lead": "",
+    "comps": [],
+    "status": "active",
+    "updatedAt": "2026-10-01T10:00:00.000Z",
+    "qlooMatch": null,
+    "extra": {}
+  },
+  "thread": {
+    "id": "00000000-0000-4000-8000-000000000103",
+    "projectId": "00000000-0000-4000-8000-000000000102",
+    "name": "Night Ferry",
+    "createdBy": "Example",
+    "createdAt": "2026-10-01T10:00:00.000Z",
+    "baseOutputId": "00000000-0000-4000-8000-000000000101",
+    "fromOutputId": null,
+    "fresh": false
+  },
+  "builtOn": null,
+  "share": null,
+  "reaction": null
+}

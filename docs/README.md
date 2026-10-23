@@ -7,7 +7,8 @@ Product docs say **what** and **why**. The rest say **how we build it**. Each fa
 1. [product/overview.md](product/overview.md) – what Oraqul is, in plain words
 2. [product/prd.md](product/prd.md) – requirements and priorities (P0, P1, P2)
 3. [product/spec.md](product/spec.md) – technical spec: agents, tools, scoring, data model, API
-4. [architecture.md](architecture.md) – how the repo and the running system fit together
+4. [product/launch-rules.md](product/launch-rules.md) – the versioned launch rules per category, the budget bands, the partner tiers and the direction calls
+5. [architecture.md](architecture.md) – how the repo and the running system fit together
 
 
 Principles every category agent follows: [product/principles.md](product/principles.md). What makes a good Film plan, and how we judge one: [product/film-agent.md](product/film-agent.md). The same for Music: [product/music-agent.md](product/music-agent.md), for Games: [product/games-agent.md](product/games-agent.md), for Podcasts: [product/podcasts-agent.md](product/podcasts-agent.md), and for Books: [product/books-agent.md](product/books-agent.md).

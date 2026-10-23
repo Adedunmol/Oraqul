@@ -40,13 +40,15 @@ What to test and why is in [spec §11](product/spec.md). This file maps it to to
 | Research loop: picks the model may make (extra queries, retries of an empty query, consults), checked against what code offered; consult offers per category; the consult tests on a named artist; asking again with a filter off | `apps/api/src/agent/launch/research-loop.spec.ts`, `widen.spec.ts`, `consult.spec.ts`, `consult-offers.spec.ts` | done |
 | Red team ask and the settle question: the question only the person can answer, saved plan first, "leave it" ends with no new work, a typed answer makes the plan again; the process record of drafts and removed lines | `apps/api/src/agent/launch/review.spec.ts`, `apps/api/src/agent/film/pipeline.spec.ts`, `apps/web/src/app/_workspace/output/plan-views.test.ts` | done |
 | Refusal tests: forecast, pricing, send, and off topic through the gate | `packages/packs/src/packs.test.ts` (forecast, pricing, send patterns), `apps/api/src/agent/gate/gate.spec.ts` (off topic) | done |
+| The marketing examples | `apps/api/src/agent/examples.spec.ts` records the three examples (`apps/web/src/lib/examples/`) from the plan the pipeline writes on demo data, and fails when they drift. `UPDATE_EXAMPLES=1` records them again | done |
+| The launch rules | `packages/packs/src/rules/rules.test.ts` (every rule has a source and a date, bands, tiers, channels), `apps/api/src/agent/launch/{signal,territories,direction,clash,creative}.spec.ts`, the band card and clash specs in `film/pipeline.spec.ts`, and the film goldens, which pin the rules version, band, signal, territories, calls and partners per tier | done |
 | UI pass: every tab, every category | `apps/web/e2e` | smoke, sign in pages, redirects from the old project routes, and error states for `/overview`, `/projects`, a project, a chat, `/team`, `/invite/[token]`; signed out checks for `/s/[token]` and `/projects`. Signed in demo screens are walked by hand until e2e has a test session |
 
 The Playwright run reuses a dev server already on :3000. Stop your own `pnpm dev` first, or the error state tests find a live API and fail.
 
 ## UI checks every page must pass
 
-No "undefined" or "NaN" in the text, no horizontal scroll at 400px, correct in light and dark. `apps/web/e2e/smoke.spec.ts` shows the pattern.
+No "undefined" or "NaN" in the text, no horizontal scroll at 400px, correct in light and dark. `apps/web/e2e/smoke.spec.ts` shows the pattern, and `apps/web/e2e/marketing.spec.ts` runs it over every public page and walks the guide's brief builder.
 
 ## Rules
 

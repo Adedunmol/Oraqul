@@ -1,7 +1,12 @@
 {
   "title": "Naija Money",
   "brief": "A Nigerian business podcast, made for Nigerians.",
-  "replies": [],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
   "expect": {
     "headline": "Lead with Lagos, then Abuja: that is where your show's listeners are strongest.",
     "assumptions": {
@@ -49,16 +54,17 @@
       "live": "1/0",
       "community": "0/1",
       "cadence": "0/1",
+      "creative": "0/3",
       "timeline": "0/7",
       "budget": "0/7",
-      "measure": "0/4",
+      "measure": "0/8",
       "risks": "0/1",
       "gaps": "0/9"
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 33,
-      "backed": 39,
+      "lines": 40,
+      "backed": 33,
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {

@@ -1,7 +1,12 @@
 {
   "title": "Salt and Ink",
   "brief": "Launch plan for the book \"Salt and Ink\", a self-published contemporary romance on Kindle for women aged 25 to 34, launching in June 2027 in New York and Toronto, with a marketing budget of $5,000. Comparable books: \"Beach Read\" and \"Book Lovers\".",
-  "replies": [],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
   "expect": {
     "headline": "Lead with New York, then Toronto: that is where your book's readers are strongest.",
     "assumptions": {
@@ -70,16 +75,18 @@
       "creators": "0/1",
       "partnerships": "4/0",
       "community": "0/1",
+      "channels": "0/2",
+      "creative": "0/4",
       "timeline": "0/11",
       "budget": "0/8",
-      "measure": "0/4",
+      "measure": "0/8",
       "risks": "3/1",
       "gaps": "0/5"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 47,
-      "backed": 53,
+      "lines": 57,
+      "backed": 44,
       "rankKept": 100,
       "findingsUsed": 15,
       "cities": {

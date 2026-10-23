@@ -2,6 +2,7 @@
 
 import type { Category, StartMode } from '@oraqul/schema';
 import { ChipButton } from '@oraqul/ui';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createProject } from '@/lib/api/projects';
@@ -56,12 +57,15 @@ export function StartComposer({
   teamId,
   category,
   mode: initialMode,
+  text,
   autoFocus,
 }: {
   /** The team the project is made in. */
   teamId: string;
   category?: Category;
   mode?: StartMode;
+  /** A brief to start from, such as one built in the guide. */
+  text?: string;
   autoFocus?: boolean;
 }) {
   const router = useRouter();
@@ -98,6 +102,7 @@ export function StartComposer({
       <Composer
         placeholder={choice?.placeholder ?? START_CHOICES[0]?.placeholder ?? ''}
         allowFiles
+        initialText={text}
         autoFocus={autoFocus}
         disabled={sending}
         onSend={send}
@@ -119,7 +124,10 @@ export function StartComposer({
         {info
           ? `Oraqul will use its ${info.name} checks.`
           : 'Oraqul works out the category and the job from what you write.'}{' '}
-        The project is saved when you send.
+        The project is saved when you send.{' '}
+        <Link href="/guide#builder" className="text-accent hover:underline">
+          Not sure what to include? Build a brief.
+        </Link>
       </p>
     </section>
   );

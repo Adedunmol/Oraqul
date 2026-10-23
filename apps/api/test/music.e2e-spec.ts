@@ -100,7 +100,7 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
 
   it('plans a release: the artist is an anchor, the plan has a tour order and support acts', async () => {
     const { threadId } = await start(
-      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave".',
+      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave". An independent budget.',
       'build',
     );
     const done = await settled(threadId);
@@ -116,6 +116,8 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
     expect(output.label).toBe('v1 · Night Songs');
     expect(output.tabs.map((t) => t.key)).toEqual([
       'plan',
+      'territories',
+      'calls',
       'route',
       'supportacts',
       'audience',
@@ -152,7 +154,7 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
 
   it('answers, reruns a what-if, checks rival dates and drafts a partner brief', async () => {
     const { threadId } = await start(
-      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave".',
+      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave". An independent budget.',
       'build',
     );
     const planned = await settled(threadId);
@@ -229,6 +231,8 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
     expect(plan.tabs.map((t) => t.key)).toEqual([
       'plan',
       'fixes',
+      'territories',
+      'calls',
       'route',
       'supportacts',
       'audience',

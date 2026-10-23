@@ -53,9 +53,9 @@ export const books: CategoryPack = {
       'Which bookshops and podcasts those readers go to, and which brands they use',
     ],
     thin: [
-      'A debut Qloo does not know yet, planned from comparable books',
-      'Age and gender for books, which Qloo holds for only about half of them',
-      'Books for young children, whose readers are the adults who buy them',
+      'Debut authors, planned from comparable books and their readers',
+      'Reader age and gender, read from the book where Qloo has it and from its genre where it does not',
+      'Books for young children, planned around the adults who buy them',
     ],
     notSupported: [
       'Sales, pre-orders, chart positions, ratings and advances',

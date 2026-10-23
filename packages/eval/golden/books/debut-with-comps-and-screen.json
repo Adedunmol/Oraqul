@@ -1,7 +1,12 @@
 {
   "title": "The Lagos Ledger",
   "brief": "Launch plan for the book \"The Lagos Ledger\", a debut literary novel by Ada Obi, published by an independent press with a hardcover, an ebook and an audiobook, for readers aged 25 to 44, launching in Lagos and London in September 2027. Comparable books: \"Americanah\" and \"Purple Hibiscus\". Compare it with \"Normal People\". Bookshop \"Terra Kulture\".",
-  "replies": [],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
   "expect": {
     "headline": "Lead with London, then Lagos: that is where your book's readers are strongest.",
     "assumptions": {
@@ -74,16 +79,18 @@
       "partnerships": "4/0",
       "community": "0/1",
       "audio": "0/1",
+      "channels": "0/2",
+      "creative": "0/4",
       "timeline": "0/12",
       "budget": "0/8",
-      "measure": "0/4",
+      "measure": "0/8",
       "risks": "2/1",
       "gaps": "0/3"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 54,
-      "backed": 54,
+      "lines": 64,
+      "backed": 45,
       "rankKept": 100,
       "findingsUsed": 18,
       "cities": {

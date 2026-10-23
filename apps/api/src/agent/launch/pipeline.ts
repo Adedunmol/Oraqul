@@ -10,6 +10,7 @@ import {
   tools,
   toReceipt,
 } from '@oraqul/engine';
+import { BAND_LABEL, FLAGSHIPS, rules } from '@oraqul/packs';
 import {
   type Claim,
   type CompUsed,
@@ -22,12 +23,14 @@ import {
   type LaunchSectionKey,
   type Move,
   type OverallConfidence,
+  type PlanBand,
   type PlanProcess,
   type PlanReview,
   type PlanSource,
   type Question,
   type Receipt,
   type StopReason,
+  type Territory,
   type ThreadEvent,
   type Understanding,
   understandingSchema,
@@ -42,15 +45,28 @@ import {
 } from '../category-agents.js';
 import { ungroundedClaims } from '../grounding.js';
 import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
+import { bandFromAnswer, bandFromBrief, bandQuestion, bandQuestionId } from './band.js';
 import { capital } from './brief.js';
 import { type CheckContext, checkSections } from './check.js';
+import { type Clash, clashFinding, type Rival, rivalsFrom, scoreClash } from './clash.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
 import { type ConsultOffer, runConsult } from './consult.js';
 import { ensureDecisions } from './decisions.js';
+import { dateCalls, territoryCalls } from './direction.js';
 import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
 import type { Change } from './follow-up.js';
+import { withSharedModules } from './modules.js';
+import { marketsOf, partnerOptions, withSeeds } from './partners.js';
 import type { QueryPlanCore } from './planner.js';
+import {
+  marketOf,
+  platformLine,
+  platformQuestion,
+  platformQuestionId,
+  platformsFromAnswer,
+  platformsNamed,
+} from './platforms.js';
 import type { LaunchRead } from './read-core.js';
 import {
   applyAssessment,
@@ -62,8 +78,10 @@ import {
   ScriptedResearchPlanner,
 } from './research-loop.js';
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
+import { measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
-import { list } from './text.js';
+import { channelsSection, territoriesOf, withLines } from './territories.js';
+import { list, releaseDate } from './text.js';
 import { CODE_SECTIONS, type WriteInput } from './writer.js';
 
 // A bundle needs 3 to 5 comps to be coherent (PRD C1). Below 3, proposals fill to 4.
@@ -105,6 +123,12 @@ export interface LaunchInputs<R extends LaunchRead = LaunchRead> {
   dropped: { name: string; why: string }[];
   used: CompUsed[];
   understanding?: Understanding | null;
+  /** Rival releases the team named with their opening days, kept so a what-if keeps the check. */
+  rivals?: Rival[];
+  /** The budget band the plan was sized for, so a what-if keeps it. */
+  band?: PlanBand | null;
+  /** The platforms the campaign was planned on, so a what-if keeps them. Null when not chosen. */
+  platforms?: string[] | null;
 }
 
 export interface PlanRun {
@@ -199,6 +223,10 @@ export interface Asked<P extends QueryPlanCore = QueryPlanCore> {
   rounds: ResearchRound[];
   /** Consults any round has asked, so a later round only offers the rest. */
   consulted: string[];
+  /** How the rivals the team named overlap with the comps' audience. Null when none were named. */
+  clash: Clash | null;
+  /** The rivals the team named, kept on the plan inputs. */
+  rivals: Rival[];
 }
 
 /** What one research round did, as saved on the plan. */
@@ -331,11 +359,15 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     adjust?: (plan: P) => P;
     /** How the request was read. With it, a second round covers what the first left thin. */
     understanding?: Understanding | null;
+    /** Rival releases with the day the team says they open (spec §5). */
+    rivals?: Rival[];
+    /** The budget band, which decides which seeded partners are asked about. */
+    band?: PlanBand | null;
   },
 ): Promise<Asked<P>> {
   const { title, read, comps } = input;
   ctx.trace('Choosing what to ask Qloo');
-  const { modules } = deps.config.pickModules(read);
+  const { modules } = withSharedModules(deps.config.pickModules(read), read);
   const compsCountry = commonCountry(comps.used);
   const { plan: planned, tokens } = await deps.queries.plan({
     title,
@@ -344,7 +376,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     compsCountry,
   });
   ctx.tokens += tokens;
-  const queryPlan = input.adjust ? input.adjust(planned) : planned;
+  const adjusted = input.adjust ? input.adjust(planned) : planned;
+  const queryPlan = input.band ? withSeeds(adjusted, input.band.band, read.places) : adjusted;
 
   ctx.trace('Asking Qloo about your audience');
   const groundDeps = { tools: deps.tools, emit: deps.emit, keep: ctx.keep };
@@ -417,6 +450,31 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     rounds.push({ round, open: open.map((c) => c.text), ...done.round });
   }
 
+  // Rival dates are the team's own. Each rival is scored against the comps in one call, so the
+  // overlaps compare, and the result is a finding a plan line can cite.
+  let clash: Clash | null = null;
+  const rivals = input.rivals ?? [];
+  if (rivals.length > 0 && deps.tools.qloo.callsLeft > MIN_CALLS_LEFT) {
+    ctx.trace('Checking the rival release dates');
+    try {
+      clash = await scoreClash(
+        deps.tools,
+        comps.resolved.map((a) => a.entityId),
+        rivals,
+        deps.config.rivalTypes,
+      );
+      ctx.keep(clash.receipts);
+      const finding = clashFinding(clash);
+      if (finding) {
+        grounded = { ...grounded, findings: [...grounded.findings, finding] };
+        deps.emit({ type: 'finding', finding });
+      }
+    } catch (err) {
+      // The check is optional: a failed or over-budget call leaves the plan without it.
+      if (!(err instanceof QlooError || err instanceof QlooBudgetError)) throw err;
+    }
+  }
+
   let sources: PlanSource[] = [];
   if (deps.research.enabled) {
     ctx.trace('Checking release timing and the market');
@@ -430,7 +488,18 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.tokens += found.tokens;
   }
   const ran = [...new Set([...queryPlan.queries, ...extraKeys])];
-  return { modules, queryPlan, grounded, ran, sources, understanding, rounds, consulted };
+  return {
+    modules,
+    queryPlan,
+    grounded,
+    ran,
+    sources,
+    understanding,
+    rounds,
+    consulted,
+    clash,
+    rivals,
+  };
 }
 
 /** The build (spec §4.1, §6.1): findings first, then the plan, every line checked. */
@@ -452,6 +521,9 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let knownUsed: CompUsed[] = [];
   let knownDropped: { name: string; why: string }[] = [];
   let understanding: Understanding | null = null;
+  let band: PlanBand | null = null;
+  let platforms: string[] | null = null;
+  let rivals: Rival[] = [];
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -462,6 +534,9 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     understanding = from.inputs.understanding ?? applyAnalysis(read, null).understanding;
     knownUsed = changed.used;
     knownDropped = changed.dropped;
+    band = from.inputs.band ?? null;
+    platforms = from.inputs.platforms ?? null;
+    rivals = from.inputs.rivals ?? [];
     for (const a of known) deps.tools.entities.set(a.entityId, a);
   } else {
     if (resume?.state.settle) {
@@ -472,10 +547,33 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       }
       extra = `${resume.state.extra}\n\n${answer}`.trim();
       kind = resume.state.kind;
+    } else if (resume?.state.pending?.id === bandQuestionId(deps.config.category)) {
+      // The band card's answer is a band, not more of the brief: its label has a figure in it that
+      // would be read as the budget.
+      const typed = resume.reply.kind === 'typed' || resume.reply.kind === 'text';
+      band = bandFromAnswer(
+        typed ? null : (resume.reply as { optionIds: string[] }).optionIds,
+        typed ? (resume.reply as { text: string }).text : null,
+      );
+      extra = resume.state.extra;
+      kind = resume.state.kind;
+    } else if (resume?.state.pending?.id === platformQuestionId(deps.config.category)) {
+      // The platform card's answer is the campaign's platforms, not more of the brief.
+      const typed = resume.reply.kind === 'typed' || resume.reply.kind === 'text';
+      platforms = platformsFromAnswer(
+        typed ? null : (resume.reply as { optionIds: string[] }).optionIds,
+        typed ? (resume.reply as { text: string }).text : null,
+        resume.state.pending,
+      );
+      extra = resume.state.extra;
+      kind = resume.state.kind;
+      band = resume.state.band;
     } else if (resume) {
       extra = `${resume.state.extra}\n\n${replyText(resume.state, resume.reply)}`.trim();
       kind = resume.state.kind;
+      band = resume.state.band;
     }
+    platforms = platforms ?? resume?.state.platforms ?? null;
     ctx.trace('Reading your brief');
     const input = {
       title: handoff.title,
@@ -495,7 +593,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.tokens += analysed.tokens;
     ({ read, understanding } = applyAnalysis(read, analysed.analysis));
 
-    // The only question a build ever asks: there is nothing to plan from without these (PRD C1).
+    // The first question a build may ask: there is nothing to plan from without these (PRD C1). A full plan may also ask for the budget band, below.
     const missing = deps.config.minimum.missing(read);
     if (missing.length && (!resume || deps.config.minimum.strict)) {
       const question: Question = {
@@ -512,6 +610,52 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         extra,
         asked: true,
         settle: false,
+        askedBand: false,
+        band: null,
+        askedPlatforms: false,
+        platforms: null,
+        pending: question,
+      });
+    }
+
+    // The second question a full build may ask: what the budget can carry decides which partners
+    // and moves the plan may propose, so it is asked before the research and only once.
+    rivals = rivalsFrom(input.text);
+    band = band ?? bandFromBrief(read, input.text);
+    if (!band && read.scope === 'full' && !resume?.state.askedBand) {
+      const question = bandQuestion(deps.config.category);
+      deps.emit({ type: 'question', agent: deps.config.category, ...question });
+      return ctx.stop('waiting', {
+        job: 'build',
+        kind,
+        extra,
+        asked: true,
+        settle: false,
+        askedBand: true,
+        band: null,
+        askedPlatforms: false,
+        platforms: null,
+        pending: question,
+      });
+    }
+
+    // The third question a full build may ask: which platforms to plan on. A brief that names them
+    // has answered it. Asked before the research so the plan is written for the ones chosen.
+    platforms =
+      platforms ?? (platformsNamed(input.text).length ? platformsNamed(input.text) : null);
+    if (!platforms && read.scope === 'full' && !resume?.state.askedPlatforms) {
+      const question = platformQuestion(deps.config.category, marketOf(read));
+      deps.emit({ type: 'question', agent: deps.config.category, ...question });
+      return ctx.stop('waiting', {
+        job: 'build',
+        kind,
+        extra,
+        asked: true,
+        settle: false,
+        askedBand: true,
+        band,
+        askedPlatforms: true,
+        platforms: null,
         pending: question,
       });
     }
@@ -540,7 +684,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   }
   for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);
 
-  const asked = await askQloo(deps, ctx, { title, read, comps, understanding });
+  const asked = await askQloo(deps, ctx, { title, read, comps, understanding, rivals, band });
   return writePlan(deps, ctx, {
     handoff,
     title,
@@ -550,6 +694,8 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     extra,
     kind,
     intro: `Here is the launch plan for “${title}”.`,
+    band,
+    platforms,
   });
 }
 
@@ -573,6 +719,10 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     kind: 'build' | 'scenario' | 'fix';
     /** The chat line that introduces the plan. */
     intro: string;
+    /** The band the person gave or the brief stated. Null reads it from the brief again. */
+    band?: PlanBand | null;
+    /** The platforms the team chose. Null plans on the category's and the market's usual ones. */
+    platforms?: string[] | null;
     /** Characters of each file the writer may read. */
     chars?: number;
     /** The outputs this run made first, saved before the plan. */
@@ -580,9 +730,23 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   },
 ): Promise<PlanRun> {
   const { handoff, title, read, comps, asked, extra, kind } = input;
+  // A full plan is always sized for a band: stated, asked, or assumed to be independent.
+  const band: PlanBand | null =
+    input.band ??
+    bandFromBrief(read, [briefText(handoff), extra].join('\n')) ??
+    (read.scope === 'full' ? { band: 'independent', source: 'assumed' } : null);
   const { modules, queryPlan, sources } = asked;
   const text = briefText(handoff, input.chars, kind !== 'fix');
   const order = sectionOrder(modules);
+  const signal = signalOf(deps.config.category, [text, extra].join('\n'));
+  // One plan per territory: the home market first, then the diaspora cities (D4).
+  const territories = territoriesOf({
+    category: deps.config.category,
+    cities: read.places,
+    country: queryPlan.country,
+    ranked: asked.grounded.brief.teamOrder.map((p) => p.place),
+    platforms: input.platforms ?? null,
+  });
   const today = new Date().toISOString().slice(0, 10);
   // A section code writes whole, such as Games' launch beats, is not the writer's to write.
   const byCode = deps.config.codeSections.timeline && modules.includes('timeline');
@@ -601,10 +765,19 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     drafts += 1;
     const writeInput: WriteInput<R> = {
       title,
-      request: [text, extra].filter(Boolean).join('\n\n'),
+      request: [
+        text,
+        extra,
+        band ? bandLine(band) : '',
+        input.platforms?.length ? platformLine(input.platforms) : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n'),
       read,
       comps: comps.used,
-      sections: byCode ? order.filter((key) => key !== 'timeline') : order,
+      sections: order.filter(
+        (key) => !(key === 'measure' || key === 'channels' || (byCode && key === 'timeline')),
+      ),
       findings: grounded.findings,
       sources,
       today,
@@ -627,6 +800,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       teamAges: read.ages,
       allowed: order,
       rules: deps.config.rules,
+      band: band?.band ?? null,
+      flagships: FLAGSHIPS,
+      teamPartners: read.partners,
     };
     const writerSections = written.sections.filter(
       (s) => !CODE_SECTIONS.includes(s.key) && !(byCode && s.key === 'timeline'),
@@ -642,6 +818,18 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       : { sections: [], dropped: [] };
     const codeSections = [
       ...(modules.includes('budget') ? [deps.config.codeSections.budget(read)] : []),
+      ...(modules.includes('channels')
+        ? [channelsSection(deps.config.rules.titles.channels, territories)]
+        : []),
+      ...(modules.includes('measure')
+        ? [
+            measureSection(
+              deps.config.rules.titles.measure,
+              signal,
+              deps.config.measures?.(read) ?? [],
+            ),
+          ]
+        : []),
       ...(byCode && deps.config.codeSections.timeline
         ? [deps.config.codeSections.timeline(read, today)]
         : []),
@@ -755,6 +943,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   }
 
   const { sections } = current;
+  const finished = decisionsOf({
+    asked,
+    read,
+    band,
+    territories,
+    markets: marketsOf(queryPlan.country, read.places),
+    release: releaseDate(read.window),
+  });
   const plan: LaunchPlan = {
     scope: read.scope,
     sections,
@@ -766,9 +962,18 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     ),
     dropped: current.dropped,
     writer: current.by,
-    understanding,
+    understanding: understanding && band ? withBand(understanding, band) : understanding,
     review: understanding ? reviewOf(status, rounds, next) : null,
     process: { research: researchRounds, drafts, dropped: everDropped },
+    rules: {
+      category: deps.config.category,
+      version: rules[deps.config.category].version,
+    },
+    band,
+    signal,
+    territories: withLines(finished.territories, sections),
+    calls: finished.calls,
+    partners: finished.partners,
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];
@@ -788,7 +993,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   deps.emit({ type: 'message', body: reply.message, claims: reply.claims });
 
   // Line receipts replace the call receipts they copy, so each call shows once per line.
-  const lineReceipts = [...grounded.brief.lineReceipts, ...grounded.receipts];
+  const dateReceipts: Receipt[] = asked.clash?.call
+    ? asked.clash.lines.map((l) => ({
+        ...(asked.clash?.call as Receipt),
+        lineId: l.id,
+        rule: `${asked.clash?.call?.rule ?? ''} ${l.rival}: overlap ${Math.round(l.overlap)}. You supplied the date.`,
+      }))
+    : [];
+  const lineReceipts = [...grounded.brief.lineReceipts, ...grounded.receipts, ...dateReceipts];
   const cited = new Set(lineReceipts.map((r) => r.callId));
   ctx.receipts.splice(
     0,
@@ -812,13 +1024,27 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   return ctx.stop(
     settle ? 'waiting' : 'finished',
     settle && kind !== 'fix'
-      ? { job: 'build', kind, extra, asked: true, settle: true, pending: settle }
+      ? {
+          job: 'build',
+          kind,
+          extra,
+          asked: true,
+          settle: true,
+          askedBand: true,
+          band,
+          askedPlatforms: true,
+          platforms: input.platforms ?? null,
+          pending: settle,
+        }
       : null,
     {
       kind,
       title,
       brief: {
         ...grounded.brief.brief,
+        ...(asked.clash && asked.clash.lines.length > 0
+          ? { dates: asked.clash.lines, weeks: asked.clash.weeks, chosenDate: asked.clash.chosen }
+          : {}),
         cannot: [
           ...grounded.brief.brief.cannot,
           ...grounded.gaps.map((g, i) => ({ id: `cant-q-${i + 1}`, item: g.item, reason: g.why })),
@@ -835,6 +1061,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         resolved: comps.resolved,
         dropped: comps.dropped,
         used: comps.used,
+        band,
+        platforms: input.platforms ?? null,
+        rivals: asked.rivals,
         understanding,
       } satisfies LaunchInputs<R>,
     },
@@ -1208,6 +1437,67 @@ export function briefText(
         .filter((t, i, all) => t && t !== first && t !== now && all.indexOf(t) === i)
     : [];
   return [first, ...earlier, now && now !== first ? now : ''].filter(Boolean).join('\n\n');
+}
+
+// The calls on dates, territories and partners, and the partners with their tiers. All computed
+// from what Qloo returned; the model sets none of it (hard rule 1).
+function decisionsOf(input: {
+  asked: Asked;
+  read: LaunchRead;
+  band: PlanBand | null;
+  territories: Territory[];
+  markets: string[];
+  release: string | null;
+}) {
+  const { asked, read, band, markets } = input;
+  const ranked = asked.grounded.brief.teamOrder;
+  const strongest = ranked.find((p) => p.status === 'ranked')?.place ?? null;
+  const placed = territoryCalls(
+    input.territories,
+    ranked.map((p) => ({ ...p })),
+    strongest,
+  );
+  const { partners, calls: partnerCalls } = partnerOptions({
+    findings: asked.grounded.findings,
+    signed: read.partners,
+    band: band?.band ?? 'independent',
+    markets,
+  });
+  const partnered = placed.territories.map((t) => ({
+    ...t,
+    partnerIds: partnerCalls
+      .filter((c) => c.territory && c.territory.toLowerCase() === t.name.toLowerCase())
+      .map((c) => `partner-${c.id.replace(/^call-partner-/, '')}`),
+  }));
+  return {
+    territories: partnered,
+    partners,
+    calls: [...dateCalls(asked.clash, input.release), ...placed.calls, ...partnerCalls],
+  };
+}
+
+/** The writer is told what the band can carry; the line check enforces it for flagship partners. */
+function bandLine(band: PlanBand): string {
+  return `Budget band: ${BAND_LABEL[band.band].toLowerCase()}. Propose only what this budget can carry, and no flagship partner (a national brand that sells at scale) unless the team named it or the band is mid-size or major.`;
+}
+
+// A band the person did not state shows under the bottom line with the other assumptions.
+function withBand(understanding: Understanding, band: PlanBand): Understanding {
+  if (band.source === 'brief') return understanding;
+  return {
+    ...understanding,
+    assumed: [
+      ...understanding.assumed,
+      {
+        what: 'Budget band',
+        value: BAND_LABEL[band.band],
+        why:
+          band.source === 'asked'
+            ? 'You gave it when asked.'
+            : 'You skipped the question, so the plan is sized for an independent release.',
+      },
+    ],
+  };
 }
 
 export function replyText(state: { pending: Question | null }, reply: Reply): string {

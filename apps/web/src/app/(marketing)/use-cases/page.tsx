@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: 'Use cases · Oraqul',
   description:
-    'Make a plan, check the plan you have, fix one that missed, or test a what if. Four ways launch teams use Oraqul, each grounded in Qloo taste data.',
+    'Make a plan, check the plan you have, fix one that missed, then keep going with rival dates, what ifs and the creative kit. Each is grounded in real audience taste data.',
 };
 
 export default function UseCases() {
@@ -20,7 +20,7 @@ export default function UseCases() {
     <>
       <PageHero
         title="Four ways teams use Oraqul."
-        lead="Before a launch, while you weigh it, and after it is out. Start from whatever you have, and every answer is tested against Qloo taste data."
+        lead="Before a launch, while you weigh it, and after it is out. Start from whatever you have, and every claim about taste is checked against real data."
       >
         <CaseIndex />
       </PageHero>

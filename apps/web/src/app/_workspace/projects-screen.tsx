@@ -204,8 +204,8 @@ function ProjectGroup({
 }
 
 // A help button beside the filter: what Oraqul can and cannot do in one category, in a dialog, so
-// the list stays about projects. The views it has, what it tests, where it is less certain, and what
-// the team must bring. Gaps are said plainly, the same as on every output (PRD E3).
+// the list stays about projects. The views it has, what it tests, what else it handles, and what
+// the team brings. The same lists as the categories page.
 function CategoryHelp({ category }: { category: Category }) {
   const info = getCategory(category);
   const [open, setOpen] = useState(false);

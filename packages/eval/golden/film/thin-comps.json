@@ -2,10 +2,15 @@
   "data": "demo",
   "title": "Blue Hour",
   "brief": "We are releasing \"Blue Hour\", a slow-burn drama series. The only comp we have is \"Salt Road\".",
+  "callBudget": 60,
   "replies": [
     {
       "text": "It opens in Lagos and Accra."
-    }
+    },
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Open in Accra first, then Lagos: that is where your comps' audience is strongest among your cities.",
@@ -49,7 +54,9 @@
       "publicity": "1/1",
       "community": "1/1",
       "route": "0/2",
-      "timeline": "0/5",
+      "channels": "0/2",
+      "creative": "0/4",
+      "timeline": "0/9",
       "cadence": "0/1",
       "budget": "0/7",
       "measure": "0/4",
@@ -58,8 +65,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 34,
-      "backed": 53,
+      "lines": 44,
+      "backed": 41,
       "rankKept": 100,
       "findingsUsed": 12,
       "cities": {
@@ -79,6 +86,18 @@
       "Night clubs in Accra",
       "Recent films",
       "Universities in Accra"
-    ]
+    ],
+    "launch": {
+      "rules": "film@2026-10-22.1",
+      "band": "independent (assumed)",
+      "signal": "Advance screenings and presales",
+      "territories": ["Accra:other:okay", "Lagos:other:avoid"],
+      "calls": ["territory:Accra:okay:lower", "territory:Lagos:avoid:lower"],
+      "partners": {
+        "A": 3,
+        "B": 4,
+        "C": 4
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 import type { Verdict } from '@oraqul/schema';
-import { Confidence, VerdictPill } from '@oraqul/ui';
+import { Confidence, DirectionPill, VerdictPill } from '@oraqul/ui';
 import type { ReactNode } from 'react';
 import { liftZones, Scale } from '../scale';
 import { wrap } from '../section';
@@ -27,6 +27,8 @@ export const sections = [
   { id: 'lift', title: 'Lift' },
   { id: 'fit', title: 'Fit' },
   { id: 'overlap', title: 'Rival overlap' },
+  { id: 'direction', title: 'Direction calls' },
+  { id: 'rules', title: 'Launch rules' },
   { id: 'more', title: 'Route and topics' },
   { id: 'confidence', title: 'Confidence' },
   { id: 'held', title: 'Held back' },
@@ -172,6 +174,56 @@ export function MethodBody() {
           </div>
         </Block>
 
+        <Block id="direction" title="Direction calls">
+          <p className={prose}>
+            A verdict tests a belief. A direction says what to do about a decision: an opening date
+            against its rivals, a territory as a place to open, a partner among the brands Qloo
+            ranked. Code sets it from a value Qloo returned, with the confidence of the finding
+            behind it.
+          </p>
+          <ul className="overflow-hidden rounded-2xl bg-card">
+            {(
+              [
+                ['okay', 'Overlap below 70, a place at 1.2 or above, a partner in the top third.'],
+                [
+                  'risky',
+                  'Overlap 70 to 85, a place from 1.0 to 1.2, a partner in the middle third.',
+                ],
+                ['avoid', 'Overlap above 85, a place below 1.0, a partner in the bottom third.'],
+              ] as const
+            ).map(([direction, rule]) => (
+              <li
+                key={direction}
+                className="grid items-center gap-3 border-b border-line px-5 py-4 last:border-0 sm:grid-cols-[150px_1fr]"
+              >
+                <span>
+                  <DirectionPill direction={direction} />
+                </span>
+                <span className="text-[15.5px]">{rule}</span>
+              </li>
+            ))}
+          </ul>
+          <p className={prose}>
+            A call on something you chose keeps your choice. An avoid on your own city says to open
+            it after the stronger ones, and never to drop it. Something Qloo did not rank gets no
+            call.
+          </p>
+        </Block>
+
+        <Block id="rules" title="Launch rules">
+          <p className={prose}>
+            The craft around the data is written down per category and versioned: how a calendar is
+            worked back from the release date, the one signal a plan is judged on, the channels that
+            lead, and the partner tiers. Each rule carries its source and the date it was set, and
+            each plan records the version it used. A target is the goal you set, or a sourced
+            benchmark where there is one, and it is never a forecast. The rules are on the{' '}
+            <a href="/guide#rules" className="text-accent underline">
+              guide
+            </a>
+            .
+          </p>
+        </Block>
+
         <Block id="more" title="Route and topics">
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex flex-col gap-2 rounded-2xl bg-card p-6" data-cat="music">
@@ -187,8 +239,9 @@ export function MethodBody() {
                 Topic ownership, for podcasts
               </p>
               <p className="text-[15px] leading-[1.6] text-ink/80">
-                A topic’s weight in your audience divided by its weight in rival shows’ audiences.
-                Above 1 means the topic is yours.
+                One comparison of your audience with the rival shows’ audiences. A topic only your
+                side lists is yours; one on both sides is shared. The weight orders and sizes the
+                topics and never decides who owns one.
               </p>
             </div>
           </div>

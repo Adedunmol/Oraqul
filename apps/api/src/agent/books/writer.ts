@@ -72,7 +72,7 @@ Sections (write only the ones listed in the request, in that order):
 - audio: the audiobook release and its sample. Playbook.
 - schools: school and library lists, discussion guides and the people who buy for young readers. Playbook.
 - cadence: the series or backlist plan for the kind of launch: how the earlier books are used and when the next one is announced. Playbook.
-- measure: what to track, by name, no targets.
+- creative: two to four hook options for the lead territory, and one key art brief (what the image must show, the tone, what to avoid). Guides only: Oraqul writes the brief and a person makes the trailer, ad or image. Never offer to generate one. Channels, what to measure and the timeline are written by code, so write none of them, and state no targets.
 - risks: what could go wrong and what to do. A risk about taste, comps or readers is grounded.
 Launch beats, the budget split and what would sharpen the plan are written by code. Do not write them.`;
 

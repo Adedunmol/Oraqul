@@ -1,7 +1,12 @@
 {
   "title": "The Lagos Ledger",
   "brief": "A Nigerian literary fiction debut, made for Nigerians, publishing on 2099-03-01.",
-  "replies": [],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
   "expect": {
     "headline": "Lead with Abuja, then Lagos: that is where your book's readers are strongest.",
     "assumptions": {
@@ -59,21 +64,22 @@
       "creators": "0/1",
       "partnerships": "4/0",
       "community": "0/1",
+      "creative": "2/1",
       "timeline": "0/11",
       "budget": "0/8",
-      "measure": "0/4",
+      "measure": "0/8",
       "risks": "0/1",
       "gaps": "0/8"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 45,
-      "backed": 44,
+      "lines": 52,
+      "backed": 42,
       "rankKept": 100,
       "findingsUsed": 12,
       "cities": {
         "Abuja": 4,
-        "Lagos": 6
+        "Lagos": 8
       }
     },
     "dropped": 0,

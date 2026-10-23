@@ -99,7 +99,7 @@ describe('Podcasts build end to end (real agents, demo Qloo, scripted reader)', 
   });
 
   const BRIEF =
-    'Launch plan for the podcast "Cold Case Files", a weekly true crime interview show on Spotify and YouTube for 25 to 34 year olds, launching in London and Lagos on 2099-03-01. Comparable shows: "Crime Junkie" and "Serial". Swap with "Casefile". Rival "The Long Con". Topics: storytelling, money.';
+    'Launch plan for the podcast "Cold Case Files", a weekly true crime interview show on Spotify and YouTube for 25 to 34 year olds, launching in London and Lagos on 2099-03-01. Comparable shows: "Crime Junkie" and "Serial". Swap with "Casefile". Rival "The Long Con". Topics: storytelling, money. An independent budget.';
 
   it('plans a launch: a topic map, a swap list, market tests and a calendar from code', async () => {
     const { threadId } = await start(BRIEF, 'build');
@@ -119,6 +119,8 @@ describe('Podcasts build end to end (real agents, demo Qloo, scripted reader)', 
       ['topics', 'Topic map'],
       ['fanbase', 'Cross promotion'],
       ['regions', 'Markets'],
+      ['territories', 'Territories'],
+      ['calls', 'Direction calls'],
       ['audience', 'Audience'],
       ['assumptions', 'Assumptions'],
       ['contrast', 'With and without Qloo'],
@@ -237,6 +239,8 @@ describe('Podcasts build end to end (real agents, demo Qloo, scripted reader)', 
       'topics',
       'fanbase',
       'regions',
+      'territories',
+      'calls',
       'audience',
       'assumptions',
       'contrast',

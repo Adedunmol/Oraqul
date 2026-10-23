@@ -164,11 +164,12 @@ function seedChat(r: Project, t: Thread, made: DOutput[]): void {
       date: 'Check the dates.',
       partner: `Draft the ${pk.partnerWord} brief.`,
       fix: 'Add the results.',
+      creative: 'Make the creative kit.',
     }[o.kind];
     const steps =
       o.kind === 'scenario'
         ? traceForScenario(o.title.replace('Scenario: ', ''))
-        : pk.trace[o.kind].slice();
+        : pk.trace[o.kind === 'creative' ? 'build' : o.kind].slice();
     const summary = getState().outputs.find((x) => x.id === o.id)?.summary ?? '';
     const key = `${t.id}-${i}`;
     pushItem(t.id, { id: `${key}-u`, role: 'user', text: asked });

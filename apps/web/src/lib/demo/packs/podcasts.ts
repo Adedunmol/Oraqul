@@ -17,8 +17,8 @@ export const podcasts: DemoPack = {
       'Guests and sponsors ranked by listener overlap',
     ],
     thin: [
-      'New shows with no listeners yet. The read rests on hosts and comp shows',
-      'Niche topics with few comparable shows',
+      'New shows, planned from the hosts and comp shows',
+      'Niche topics, planned from the closest comparable shows',
     ],
     none: ['Downloads, retention and ad revenue. You supply them for a fix'],
   },

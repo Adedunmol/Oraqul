@@ -44,8 +44,8 @@ export const music: CategoryPack = {
       'Support acts, partner brands, podcasts and series that audience likes, city by city',
     ],
     thin: [
-      'A debut artist Qloo does not know yet, planned from sound-alike artists',
-      'Neighbourhood readings, which are coarse and a lead to confirm on the ground',
+      'Debut artists, planned from sound-alike artists and their audiences',
+      'Neighbourhood readings, as leads to confirm on the ground',
     ],
     notSupported: [
       'Ticket sales, streams and revenue',

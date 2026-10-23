@@ -2,13 +2,11 @@
 
 import type { OutputTabKey } from '@oraqul/schema';
 import { Icon } from '@oraqul/ui';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { OutputView } from '@/app/_workspace/output/output-view';
 import { Toaster } from '@/app/_workspace/toast';
 import { Tooltip } from '@/app/_workspace/tooltip';
-import { uuidFrom } from '@/lib/demo/ids';
-import { getOutputDetail } from '@/lib/demo/queries';
-import { useDemo } from '@/lib/demo/use-demo';
+import { exampleDetails } from '@/lib/examples';
 import { type ExampleCase, exampleCases } from './cases';
 
 /**
@@ -24,11 +22,7 @@ export function ExamplesView({
 }) {
   const [current, setCurrent] = useState(initialCase);
   const [tab, setTab] = useState(initialTab);
-  const state = useDemo();
-  const detail = useMemo(
-    () => getOutputDetail(state, uuidFrom(current.outputKey)),
-    [state, current],
-  );
+  const detail = exampleDetails[current.id];
 
   const choose = (c: ExampleCase) => {
     setCurrent(c);

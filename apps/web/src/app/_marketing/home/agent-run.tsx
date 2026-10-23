@@ -8,55 +8,63 @@ type Kind = 'read' | 'tool' | 'code' | 'check' | 'write';
 
 const kindLabel: Record<Kind, string> = {
   read: 'Reads',
-  tool: 'Tool',
-  code: 'Code',
-  check: 'Red team',
+  tool: 'Looks up',
+  code: 'Works out',
+  check: 'Review',
   write: 'Writes',
 };
 
-// One invented run. Tool names are the engine's own (spec §4); no Qloo endpoint is named.
+// One invented run, in the words a launch team would use.
 const run: { kind: Kind; text: string; out: string }[] = [
   {
     kind: 'read',
-    text: 'Series, crime drama, UK and US',
+    text: 'Series, crime drama, Lagos, London and Houston, 12 March',
     out: 'Job: make a plan',
   },
-  { kind: 'tool', text: 'searchEntity("Night Ferry", series)', out: '1 match' },
+  { kind: 'code', text: 'Budget not stated: plan for an independent release', out: 'Independent' },
   {
     kind: 'tool',
-    text: 'resolveBundle(comps: Grey Tide, The Ferry Office)',
-    out: '2 comps, 6 tags',
+    text: 'Taste of the comparable shows, Grey Tide and The Ferry Office',
+    out: '2 shows, 6 themes',
   },
   {
     kind: 'tool',
-    text: 'rankPlaces(bundle, UK, US, Canada, Mexico City, London)',
-    out: '5 ranked',
+    text: 'Rank Lagos, London and Houston for that audience',
+    out: '3 ranked',
   },
-  { kind: 'code', text: 'lift(London) = 0.81 ÷ 0.50 = 1.62', out: 'Holds' },
-  { kind: 'tool', text: 'partnerFit(ages 25 to 34, brands)', out: '3 partners' },
+  {
+    kind: 'code',
+    text: 'London fit: 0.81 against 0.50 for a neutral audience = 1.62',
+    out: 'Strong',
+  },
+  {
+    kind: 'tool',
+    text: 'Audience overlap with Harbor Lights, opening 12 March',
+    out: 'Overlap: moderate',
+  },
+  { kind: 'tool', text: 'Partner brands: MTN, Bolt, Verve', out: '3 ranked' },
   {
     kind: 'check',
-    text: 'Start from a different comp and try to beat the plan',
-    out: 'No stronger option',
+    text: 'Compare the draft with your request, and rewrite it if it falls short',
+    out: 'Passed after 2 drafts',
   },
-  { kind: 'write', text: 'Bottom line and three steps', out: '9 beliefs, 11 receipts' },
+  { kind: 'write', text: 'Bottom line, one plan per market', out: '9 assumptions, 14 receipts' },
 ];
 
 const traits = [
-  ['Plans its own steps', 'It reads the job and chooses which tools to call, one step at a time.'],
   [
-    'Calls Qloo through tools',
-    'Every call is recorded, and every recorded call becomes a receipt.',
+    'Plans its own steps',
+    'It reads your message, decides what to look up, and works one step at a time.',
   ],
   [
-    'Argues with itself',
-    'A second model call, blind to the first one’s reasoning, tries to break the top recommendation.',
+    'Checks its own draft',
+    'It compares the plan with what you asked for and rewrites it until it fits, up to three times.',
   ],
-  ['Knows when to stop', 'A call budget and a stop rule, so it never loops or pads the answer.'],
+  ['Shows its receipts', 'Each claim links to the exact data behind it, so you can check it.'],
 ];
 
 /**
- * The agent at work: a run streaming in line by line, as tool calls, code and a red team check.
+ * The agent at work: a run streaming in line by line, as lookups, calculations and a self-check.
  * Run again replays it, so the motion explains what the agent does rather than decorating.
  */
 export function AgentRun() {
@@ -127,7 +135,7 @@ export function AgentRun() {
               className="mk-stream px-3 pt-2 font-sans text-[14px] text-ink"
               style={{ '--i': run.length } as CSSProperties}
             >
-              Open in Mexico City and London, then Toronto
+              Open in Lagos, then London. Hold Houston until week two
               <span className="mk-caret" aria-hidden="true" />
             </p>
           </Reveal>

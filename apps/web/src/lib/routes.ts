@@ -38,13 +38,16 @@ export function outputPath(outputId: string, tab?: string): string {
 export function startPath({
   mode,
   category,
+  text,
 }: {
   mode?: StartMode;
   category?: Category;
+  text?: string;
 } = {}): string {
   const query = new URLSearchParams();
   if (mode) query.set('mode', mode);
   if (category) query.set('category', category);
+  if (text) query.set('text', text);
   const qs = query.toString();
   return qs ? `/start?${qs}` : '/start';
 }

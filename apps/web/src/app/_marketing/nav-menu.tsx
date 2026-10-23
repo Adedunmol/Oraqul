@@ -14,6 +14,7 @@ const product = [
 const top = [
   { href: '/use-cases', label: 'Use cases' },
   { href: '/categories', label: 'Categories' },
+  { href: '/guide', label: 'Guide' },
 ];
 
 const linkClass =

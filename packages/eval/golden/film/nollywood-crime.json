@@ -2,6 +2,6 @@
   "data": "live",
   "title": "Third Bridge",
   "brief": "Launch plan for \"Third Bridge\", a Nigerian crime thriller film for 18 to 34 year olds, opening in Lagos, London, Houston and Atlanta. Comps: \"Gangs of Lagos\", \"King of Boys\" and \"Citation\".",
-  "replies": [],
+  "replies": [{ "optionIds": ["skip"] }, { "text": "you choose" }],
   "expect": null
 }

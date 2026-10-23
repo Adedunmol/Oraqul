@@ -14,10 +14,12 @@ import { overviewPath, projectsPath } from '@/lib/routes';
 export function StartScreen({
   mode,
   category,
+  text,
   viewer,
 }: {
   mode?: StartMode;
   category?: Category;
+  text?: string;
   viewer: Viewer;
 }) {
   const back = category ? projectsPath(category) : overviewPath;
@@ -47,7 +49,13 @@ export function StartScreen({
         </h1>
       </header>
       <div className="mx-auto w-full max-w-[760px]">
-        <StartComposer teamId={viewer.teamId} category={category} mode={mode} autoFocus />
+        <StartComposer
+          teamId={viewer.teamId}
+          category={category}
+          mode={mode}
+          text={text}
+          autoFocus
+        />
       </div>
     </div>
   );

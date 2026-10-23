@@ -46,7 +46,10 @@ describe('Games agent: the job a message does before a chat has a plan', () => {
     mode,
     title: 'Ember Keep',
     inputs: { text: 'I want to work on my new game', files: [] },
-    message: { text, files: [] },
+    message: {
+      text: `${text} An independent budget. Platforms: Instagram, TikTok and YouTube.`,
+      files: [],
+    },
     recent: [],
     planId: null,
   });

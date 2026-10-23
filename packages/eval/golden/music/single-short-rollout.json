@@ -1,0 +1,74 @@
+{
+  "title": "Night Signal",
+  "brief": "Launch plan for \"Night Signal\", an afrobeats single from artist \"Zanzibar Quill Ensemble\" for 18 to 29 year olds, releasing in Lagos on 2099-05-01. Sound-alikes: \"Ada Lux\", \"Kola Wave\" and \"Sade Rhythm\".",
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
+  "expect": {
+    "headline": "Start in Lagos: that is where the artist's audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "weak",
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "you"
+      },
+      {
+        "name": "Sade Rhythm",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-markets": ["Lagos"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
+      "f-shows-lagos": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
+      "f-community-university-lagos": ["Lagoon City University"]
+    },
+    "sections": {
+      "bottom-line": "2/0",
+      "positioning": "0/2",
+      "audience": "2/0",
+      "markets": "1/0",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "community": "1/1",
+      "sync": "1/0",
+      "channels": "0/1",
+      "creative": "0/4",
+      "timeline": "0/7",
+      "budget": "0/7",
+      "measure": "0/4",
+      "risks": "1/1",
+      "gaps": "0/2"
+    },
+    "moves": ["f-markets", "f-audience"],
+    "grounding": {
+      "lines": 32,
+      "backed": 34,
+      "rankKept": 100,
+      "findingsUsed": 8,
+      "cities": {
+        "Lagos": 8
+      }
+    },
+    "dropped": 0,
+    "cannot": ["Zanzibar Quill Ensemble", "Streams, ticket sales and revenue", "Recent films"]
+  }
+}

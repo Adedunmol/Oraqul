@@ -61,8 +61,7 @@ Sections (write only the ones listed in the request, in that order):
 - partnerships: brand and media partners, each tied to the city of its finding, and what the partnership is.
 - publicity: podcasts, playlists and press with the angle for each, and the creator plan: which kinds of creators and clip formats, in which cities.
 - community: campuses, neighbourhoods and events, and what to run with them.
-- timeline: the launch in weeks before release (T-12, T-8, T-4, T-1, release, after), each with its concrete tasks. Real dates only if the brief gives a date.
-- measure: what to track, by name, no targets.
+- creative: two to four hook options for the lead territory, and one key art brief (what the image must show, the tone, what to avoid). Guides only: Oraqul writes the brief and a person makes the trailer, ad or image. Never offer to generate one. Channels, what to measure and the timeline are written by code, so write none of them, and state no targets.
 - risks: what could go wrong and what to do. A risk about taste or audience is grounded.`;
 
 export const ANSWER_WRITER_SYSTEM = `You answer a question about a music launch plan for Oraqul, from findings measured in Qloo taste data and your launch knowledge. Two to five lines. Answer the question first.

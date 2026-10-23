@@ -2,7 +2,13 @@
   "data": "demo",
   "title": "Long Table",
   "brief": "Plan the release of \"Long Table\", a family drama film for women aged 35 to 54. Markets: Houston, Atlanta, Nairobi and Kumasi. Comps: \"Harbor Lights\", \"Third Mainland\" and \"Salt Road\".",
-  "replies": [],
+  "callBudget": 60,
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
   "expect": {
     "headline": "Open in Nairobi first, then Atlanta and Houston: that is where your comps' audience is strongest among your cities.",
     "assumptions": {
@@ -60,7 +66,9 @@
       "publicity": "1/1",
       "community": "2/1",
       "route": "0/2",
-      "timeline": "0/5",
+      "channels": "0/3",
+      "creative": "0/4",
+      "timeline": "0/9",
       "budget": "0/7",
       "measure": "0/4",
       "risks": "2/1",
@@ -68,8 +76,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 39,
-      "backed": 62,
+      "lines": 50,
+      "backed": 48,
       "rankKept": 100,
       "findingsUsed": 16,
       "cities": {
@@ -94,6 +102,22 @@
       "Recent films",
       "Universities in Atlanta",
       "Universities in Nairobi"
-    ]
+    ],
+    "launch": {
+      "rules": "film@2026-10-22.1",
+      "band": "independent (assumed)",
+      "signal": "Advance screenings and presales",
+      "territories": ["Nairobi:other:okay", "Atlanta:other:avoid", "Houston:other:avoid"],
+      "calls": [
+        "territory:Nairobi:okay:lower",
+        "territory:Atlanta:avoid:lower",
+        "territory:Houston:avoid:lower"
+      ],
+      "partners": {
+        "A": 0,
+        "B": 4,
+        "C": 3
+      }
+    }
   }
 }

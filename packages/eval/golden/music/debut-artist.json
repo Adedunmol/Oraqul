@@ -1,7 +1,12 @@
 {
   "title": "First Light",
   "brief": "Launch plan for \"First Light\", a debut afrobeats EP from artist \"Zanzibar Quill Ensemble\" for 18 to 29 year olds, playing Lagos and London. Sound-alikes: \"Ada Lux\", \"Kola Wave\" and \"Sade Rhythm\".",
-  "replies": [],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
   "expect": {
     "headline": "Start in Lagos, then London: that is where the artist's audience is strongest among your cities.",
     "assumptions": {
@@ -56,7 +61,9 @@
       "community": "1/1",
       "tour": "1/0",
       "sync": "2/0",
-      "timeline": "0/5",
+      "channels": "0/2",
+      "creative": "0/4",
+      "timeline": "0/7",
       "budget": "0/7",
       "measure": "0/4",
       "risks": "2/1",
@@ -64,8 +71,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 31,
-      "backed": 55,
+      "lines": 39,
+      "backed": 44,
       "rankKept": 100,
       "findingsUsed": 12,
       "cities": {

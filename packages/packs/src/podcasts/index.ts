@@ -48,8 +48,8 @@ export const podcasts: CategoryPack = {
       'Which brands that audience uses, for sponsors',
     ],
     thin: [
-      'A new show Qloo does not know yet, planned from comparable shows',
-      'Guests and hosts, which Qloo may not hold',
+      'New shows, planned from comparable shows and their listeners',
+      'Guests and hosts, matched to the listener once they are named',
     ],
     notSupported: [
       'Downloads, chart positions, ratings and ad rates',

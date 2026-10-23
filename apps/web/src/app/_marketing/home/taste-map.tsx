@@ -13,7 +13,7 @@ interface Node {
   ring: 0 | 1;
 }
 
-// Invented examples. The page says so; nothing here is Qloo's data.
+// Invented examples. The page says so; nothing here is real data.
 const nodes: Node[] = [
   { name: 'Grey Tide', kind: 'Series', cat: 'film', angle: 0, ring: 1 },
   { name: 'Nia Okoro', kind: 'Artist', cat: 'music', angle: 45, ring: 0 },
@@ -32,30 +32,30 @@ const pos = (n: Node) => {
 };
 
 /**
- * Why the verdicts can be trusted: they come from Qloo, cultural data on what real audiences like
- * across film, music, books, podcasts, games, brands and places. Drawn as one title's taste map.
+ * Why the verdicts can be trusted: they come from taste data on what real audiences like across
+ * film, music, books, podcasts, games, brands and places (Qloo's). Drawn as one title's taste map.
  */
 export function TasteMap() {
   return (
-    <section aria-labelledby="qloo-title" className={`${band} bg-bg overflow-x-clip`}>
+    <section aria-labelledby="taste-title" className={`${band} bg-bg overflow-x-clip`}>
       <div className={`${wrap} grid items-center gap-14 min-[1000px]:grid-cols-[1fr_1.1fr]`}>
         <div className="flex flex-col gap-6">
-          <h2 id="qloo-title" className={h2Class}>
-            Grounded in what real audiences love.
+          <h2 id="taste-title" className={h2Class}>
+            Built on what real audiences love.
           </h2>
           <p className="max-w-[46ch] text-[18px] leading-[1.6] text-ink/75">
-            Oraqul tests every plan against Qloo, cultural data on the tastes of real audiences
-            across film and TV, music, books, podcasts, games, brands and places. The agent asks the
-            questions a plan rests on. Code turns the answers into verdicts.
+            Oraqul checks every plan against audience taste data: what people like across film and
+            TV, music, books, podcasts, games, brands and places. Then it works out the answer with
+            a fixed rule, not a guess.
           </p>
           <ul className="flex flex-col gap-4 border-t border-line pt-6">
             {[
-              ['Real taste, not a guess', 'Every number comes back from Qloo in the same run.'],
+              ['Real taste, not a guess', 'Every number comes from the data, never from the AI.'],
               [
                 'Across culture, not one shelf',
                 'Who your readers listen to, what your fans watch, where they live.',
               ],
-              ['Checkable by anyone', 'Each claim keeps the exact call behind it as a receipt.'],
+              ['Check any claim', 'Each one comes with a receipt: the exact data behind it.'],
             ].map(([title, text]) => (
               <li key={title} className="grid gap-1 min-[600px]:grid-cols-[200px_1fr]">
                 <span className="font-medium">{title}</span>
@@ -63,9 +63,10 @@ export function TasteMap() {
               </li>
             ))}
           </ul>
+          <p className="text-[13.5px] text-muted">Audience taste data from Qloo.</p>
         </div>
 
-        <figure className="flex flex-col gap-3">
+        <figure className="flex flex-col gap-3 max-[639px]:px-9">
           <figcaption className="sr-only">
             An example taste map: a series in the centre, linked to the films, artists, books,
             podcasts, games, brands and places its audience also likes.
@@ -124,7 +125,7 @@ export function TasteMap() {
             })}
           </Reveal>
           <p className="text-center text-[12.5px] text-muted">
-            Example taste map. Names are invented, not Qloo results.
+            Example taste map. Names are invented.
           </p>
         </figure>
       </div>

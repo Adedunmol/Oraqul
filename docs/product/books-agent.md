@@ -88,3 +88,13 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 - **Markets are cities.** A region such as West Africa is ranked through the cities in Qloo's table that stand for it. A region the table does not cover is not ranked, and the plan says so.
 - **Overlap is not a share of readers.** It is how close another audience is to the book's, scored by Qloo, on a scale of 0 to 100.
 - **Ambiguous names** are settled in code and the plan says which was chosen. Book names collide often. A wrong match is possible.
+
+
+## Launch rules
+
+Rules and thresholds: [launch-rules.md](launch-rules.md). For Books:
+
+* **Calendar.** Advance copies go out 2 to 3 months before publication (weeks 12 to 8 out). The beats themselves are the launch kind's (`books/modules.ts`).
+* **Signal.** Advance copy conversion and early reviews. Followers, views and pre-orders are secondary.
+* **Channels.** TikTok, Reels and Shorts lead.
+* **Territories.** One plan per named market, home first, beside the regions ranking.

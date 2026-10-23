@@ -14,6 +14,7 @@ import type { Planner } from '../types.js';
 import type { Analyst } from './analyse.js';
 import { type AuditDeps, type LaunchAuditInputs, runAudit } from './audit.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
+import { runCreativeKit } from './creative.js';
 import { runFix } from './fix.js';
 import { askedJob, decideFollowUp, type FollowUpReader } from './follow-up.js';
 import {
@@ -238,6 +239,16 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
       case 'date':
         return withTokens(
           await runDateCheck({ tools, emit, config: this.deps.config }, output, inputs, job.rivals),
+        );
+      case 'creative':
+        return withTokens(
+          await runCreativeKit(
+            { emit, config: this.deps.config },
+            output,
+            inputs,
+            handoff.message.text,
+            handoff.title,
+          ),
         );
       case 'partner':
         return withTokens(

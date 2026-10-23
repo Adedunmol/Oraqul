@@ -65,3 +65,24 @@ describe('nextStepsFor', () => {
     expect(nextStepsFor([plan({ plan: null, kind: 'audit' })])).toEqual([]);
   });
 });
+
+describe('the creative kit step', () => {
+  const withTerritories = plan({
+    plan: {
+      findings: [{ query: 'brands', entities: [{ name: 'Lagoon Mobile' }] }],
+      territories: [{ name: 'Lagos' }, { name: 'London' }],
+    },
+  });
+
+  it('offers the kit for the home territory, after the what-if', () => {
+    const steps = nextStepsFor([withTerritories]);
+    expect(steps.map((s) => s.id)).toEqual(['scn:lead:lagos', 'creative', 'date']);
+    expect(steps[1]?.message).toBe('Make the creative kit for Lagos');
+  });
+
+  it('is left out once a kit exists, or when the plan has no territory', () => {
+    const kit = plan({ kind: 'creative', title: 'Creative kit', plan: null });
+    expect(nextStepsFor([withTerritories, kit]).map((s) => s.id)).not.toContain('creative');
+    expect(nextStepsFor([plan()]).map((s) => s.id)).not.toContain('creative');
+  });
+});

@@ -1,9 +1,11 @@
-import { questionSchema } from '@oraqul/schema';
+import { planBandSchema, questionSchema } from '@oraqul/schema';
 import { z } from 'zod';
 
 /**
- * What a paused run needs to resume. A build pauses before it plans only when the brief has no
- * description or no market (PRD C1): one question, then it plans with whatever it has. After a
+ * What a paused run needs to resume. A build pauses before it plans when the brief has no
+ * description or no market (PRD C1): one question, then it plans with whatever it has. A full plan
+ * with no budget also asks for a band once (`askedBand`), and one that names no platform asks
+ * which to plan on once (`askedPlatforms`). After a
  * plan is saved flagged, it may ask once more (`settle`) for the one thing only the person can say.
  */
 export const buildStateSchema = z.object({
@@ -15,6 +17,14 @@ export const buildStateSchema = z.object({
   asked: z.boolean().default(true),
   /** Set when the plan is already saved and the question is the one that would settle it. */
   settle: z.boolean().default(false),
+  /** Set once the budget band card was asked, so a full build asks it only once. */
+  askedBand: z.boolean().default(false),
+  /** The band the person gave, kept across the pause. */
+  band: planBandSchema.nullable().default(null),
+  /** Set once the platform card was asked, so a full build asks it only once. */
+  askedPlatforms: z.boolean().default(false),
+  /** The platforms the person chose, kept across the pause. Null until chosen. */
+  platforms: z.array(z.string()).nullable().default(null),
   pending: questionSchema.nullable(),
 });
 

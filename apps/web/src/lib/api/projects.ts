@@ -91,6 +91,11 @@ export function postMessage(threadId: string, body: PostMessage): Promise<void> 
   );
 }
 
+/** Stops the run on a thread. The chat says it stopped on the event stream. */
+export function cancelRun(threadId: string): Promise<void> {
+  return clientRequest(`/threads/${threadId}/cancel`, { method: 'POST' }, emptyResponseSchema);
+}
+
 export function markThreadRead(threadId: string): Promise<void> {
   return clientRequest(`/threads/${threadId}/read`, { method: 'POST' }, emptyResponseSchema);
 }

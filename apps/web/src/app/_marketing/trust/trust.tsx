@@ -48,7 +48,7 @@ const ledger: { what: string; goes: string; kept: string }[] = [
   },
   {
     what: 'Your messages and plan text',
-    goes: 'The language model (Google Gemini today), to read the job and write the answer. Never to Qloo',
+    goes: 'The configured language model provider, to read the job and write the answer. Never to Qloo',
     kept: 'In your team’s project and its chats',
   },
   {

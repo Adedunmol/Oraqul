@@ -1,0 +1,85 @@
+{
+  "title": "Ember Keep",
+  "brief": "Launch plan for the game \"Ember Keep\", a roguelike for Steam for 18 to 34 year olds, launching in London on 2099-06-01. Comparable games: \"Hollow Hills\" and \"Crown of Ash\". Target 10,000 wishlists. A mid-size budget.",
+  "replies": [{ "text": "you choose" }],
+  "expect": {
+    "headline": "Lead with London: that is where your game's players are strongest.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-london": "breaks",
+      "a-comps": "weak",
+      "a-platform": "holds"
+    },
+    "cities": ["London"],
+    "comps": [
+      {
+        "name": "Hollow Hills",
+        "source": "you"
+      },
+      {
+        "name": "Crown of Ash",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-london": [],
+      "f-markets": ["London"],
+      "f-a-platform": [],
+      "f-profile": ["PC", "Switch", "PlayStation"],
+      "f-fan-anime": ["Iron Sparrow", "Kitsune Drift"],
+      "f-fan-brand": ["Voltage Energy", "Rival Gear"],
+      "f-fan-film": ["Ashfall"],
+      "f-fan-game": ["Lantern Row", "Void Courier", "Tidewalker"],
+      "f-fan-music": ["Low Battery", "Synthwave Kid", "Pixel Choir"],
+      "f-fan-podcast": ["Save Point", "Respawn Hour"],
+      "f-fan-series": ["The Long Watch"],
+      "f-tags-audience": ["Action Seekers", "Stylish", "Resilient"],
+      "f-tags-theme": ["Loyalty", "Ambition", "Community"],
+      "f-brands-beverage-london": ["Voltage Energy"],
+      "f-podcasts": ["Save Point", "Respawn Hour"],
+      "f-region-london-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-london-brands": ["Coca-Cola", "Nike", "McDonald's"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "5/0",
+      "markets": "1/0",
+      "store": "2/1",
+      "events": "0/2",
+      "collabs": "7/0",
+      "creators": "0/2",
+      "publicity": "1/1",
+      "partnerships": "1/0",
+      "community": "0/1",
+      "channels": "0/1",
+      "creative": "0/4",
+      "timeline": "0/9",
+      "budget": "0/7",
+      "measure": "0/10",
+      "risks": "1/1",
+      "gaps": "0/3"
+    },
+    "moves": ["f-markets", "f-audience", "f-fan-anime"],
+    "grounding": {
+      "lines": 55,
+      "backed": 38,
+      "rankKept": 100,
+      "findingsUsed": 14,
+      "cities": {
+        "London": 4
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Wishlists, sales, player counts and reviews",
+      "The release window (2099-06-01)",
+      "Creators and streamers",
+      "Telecom brands in London",
+      "Universities in London"
+    ]
+  }
+}

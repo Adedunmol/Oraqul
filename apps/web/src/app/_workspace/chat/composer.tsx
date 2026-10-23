@@ -52,26 +52,32 @@ export function Composer({
   disabled,
   autoFocus,
   allowFiles,
+  initialText,
   compact,
   quote,
   onClearQuote,
   onSend,
+  onStop,
 }: {
   placeholder: string;
   disabled?: boolean;
   autoFocus?: boolean;
   allowFiles?: boolean;
+  /** Words already in the box, such as a brief built in the guide. */
+  initialText?: string;
   /** One line to start, growing as the person types. For a chat that is already going. */
   compact?: boolean;
   /** A passage from the chat the message replies to, shown above the box and sent with it. */
   quote?: string | null;
   onClearQuote?: () => void;
   onSend: (text: string, files: Attachment[]) => void;
+  /** Set while the agent is working: Send becomes Stop, which ends the run. */
+  onStop?: () => void;
 }) {
   const id = useId();
   const picker = useRef<HTMLInputElement>(null);
   const field = useRef<HTMLTextAreaElement>(null);
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(initialText ?? '');
   const [files, setFiles] = useState<Attachment[]>([]);
   const [problem, setProblem] = useState('');
   const [dragging, setDragging] = useState(false);
@@ -239,9 +245,15 @@ export function Composer({
           <span className="hidden text-xs text-muted min-[700px]:inline">
             Shift Enter for a new line
           </span>
-          <Button type="submit" variant="primary" size="small" icon="arrowUp" disabled={!ready}>
-            Send
-          </Button>
+          {onStop ? (
+            <Button type="button" variant="primary" size="small" icon="close" onClick={onStop}>
+              Stop
+            </Button>
+          ) : (
+            <Button type="submit" variant="primary" size="small" icon="arrowUp" disabled={!ready}>
+              Send
+            </Button>
+          )}
         </span>
       </div>
     </form>

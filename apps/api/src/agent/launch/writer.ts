@@ -104,8 +104,41 @@ export interface WriterKit<R extends LaunchRead = LaunchRead> {
   templateSection(key: LaunchSectionKey, input: WriteInput<R>): WrittenLine[];
 }
 
-/** Sections code writes itself: Gaps from what was not tested, Budget split from the convention. */
-export const CODE_SECTIONS: LaunchSectionKey[] = ['gaps', 'budget'];
+/**
+ * Sections code writes itself: Gaps from what was not tested, Budget split from the convention,
+ * and What to measure from the category's signal rule and the team's own target.
+ */
+export const CODE_SECTIONS: LaunchSectionKey[] = ['gaps', 'budget', 'measure', 'channels'];
+
+/** Short creative briefs for a template plan: guides for a person to make the creative from. */
+function creativeLines<R extends LaunchRead>(input: WriteInput<R>): WrittenLine[] {
+  const city = input.read.places[0];
+  const line = (text: string, group: string): WrittenLine => ({
+    kind: 'playbook',
+    text,
+    findingIds: [],
+    sourceIds: [],
+    names: [],
+    group,
+  });
+  return [
+    line(
+      `Hook one: open on the strongest image of ${input.title} in the first two seconds.`,
+      'Hook options',
+    ),
+    line(
+      'Hook two: open on the question this release answers, as text on screen over the first shot.',
+      'Hook options',
+    ),
+    ...(city
+      ? [line(`Hook three: open on ${city} itself, with the name on screen.`, 'Hook options')]
+      : []),
+    line(
+      `Key art brief: one image, the title ${input.title} and at most one line of text. Say what the image must show, what to avoid and where it will be seen, then hand it to a designer. Oraqul writes the brief; a person makes the art.`,
+      'Key art brief',
+    ),
+  ];
+}
 
 export function findingsBlock(findings: Finding[]): string {
   return findings
@@ -269,7 +302,10 @@ export class TemplatePlanWriter<R extends LaunchRead = LaunchRead> implements Pl
   async write(input: WriteInput<R>) {
     const sections = input.sections
       .filter((key) => !CODE_SECTIONS.includes(key))
-      .map((key) => ({ key, lines: this.kit.templateSection(key, input) }));
+      .map((key) => ({
+        key,
+        lines: key === 'creative' ? creativeLines(input) : this.kit.templateSection(key, input),
+      }));
     return { sections, skipped: [], tokens: 0, by: 'template' as const };
   }
 

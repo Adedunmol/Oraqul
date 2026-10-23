@@ -30,6 +30,6 @@ export const agentReplySchema = z.object({
 });
 export type AgentReply = z.infer<typeof agentReplySchema>;
 
-export const stopReasons = ['finished', 'waiting', 'budget', 'steps', 'error'] as const;
+export const stopReasons = ['finished', 'waiting', 'budget', 'steps', 'error', 'stopped'] as const;
 export const stopReasonSchema = z.enum(stopReasons);
 export type StopReason = z.infer<typeof stopReasonSchema>;

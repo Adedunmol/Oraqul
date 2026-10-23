@@ -7,9 +7,17 @@ import { NoResearch } from './research.js';
 import { podcastsInputsSchema, runPodcastsBuild } from './runs.js';
 import { TemplatePlanWriter } from './writer.js';
 
-function setup(text: string, callBudget = 90) {
+function setup(
+  text: string,
+  callBudget = 90,
+  platforms = ' Platforms: Instagram, TikTok and YouTube.',
+) {
   const events: ThreadEvent[] = [];
-  const said = { text, files: [] };
+  // Most specs are not about the budget band card, so the brief states one.
+  const said = {
+    text: `${text} An independent budget.${platforms}`,
+    files: [],
+  };
   const handoff: Handoff = {
     category: 'podcasts',
     mode: 'build',
@@ -224,7 +232,7 @@ describe('Podcasts build pipeline on demo data', { timeout: 30_000 }, () => {
   });
 
   it('asks again, and plans nothing, when the answer to the one question says nothing', async () => {
-    const { handoff, deps } = setup('I want to work on my new podcast');
+    const { handoff, deps } = setup('I want to work on my new podcast', 90, '');
     const first = await runPodcastsBuild(handoff, deps());
     expect(first.reason).toBe('waiting');
     if (first.state?.job !== 'build') throw new Error('Expected a paused build');
@@ -240,7 +248,10 @@ describe('Podcasts build pipeline on demo data', { timeout: 30_000 }, () => {
     if (again.state?.job !== 'build') throw new Error('Expected a paused build');
     const done = await runPodcastsBuild(handoff, deps(), {
       state: again.state,
-      reply: { kind: 'typed', text: 'a weekly football chat show for Nigerians' },
+      reply: {
+        kind: 'typed',
+        text: 'a weekly football chat show for Nigerians, on Instagram and TikTok',
+      },
     });
     expect(done.reason).toBe('finished');
     const read = podcastsInputsSchema.parse(done.output?.inputs).read;

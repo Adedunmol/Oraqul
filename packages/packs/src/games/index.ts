@@ -49,8 +49,8 @@ export const games: CategoryPack = {
       'Which music, series, anime, films, brands, podcasts and games that audience follows',
     ],
     thin: [
-      'A debut game Qloo does not know yet, planned from comparable games',
-      'Creators and streamers, which Qloo may not hold',
+      'Debut games, planned from comparable games and their players',
+      'Creators and streamers, matched to the player once they are named',
     ],
     notSupported: [
       'Wishlists, sales, player counts and review scores',

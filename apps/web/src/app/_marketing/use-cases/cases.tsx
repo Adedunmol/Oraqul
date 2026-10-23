@@ -24,8 +24,8 @@ export const cases = [
   },
   {
     id: 'whatif',
-    title: 'Test a what if',
-    line: 'You are weighing a date, a city or a partner.',
+    title: 'Keep going',
+    line: 'You are weighing a date, a city, a partner or the creative.',
   },
 ] as const;
 
@@ -159,7 +159,16 @@ export function PlanCase() {
               Also in the plan: the audience, comparable titles, partner brands and the risks to
               watch.
             </p>
-            <Tabs tabs={['Summary', 'Audience', 'Plan', 'Territories', 'Evidence']} />
+            <Tabs
+              tabs={[
+                'Plan',
+                'Territories',
+                'Direction calls',
+                'Audience',
+                'Assumptions',
+                'Evidence',
+              ]}
+            />
           </div>
         </Reveal>
       </div>
@@ -201,7 +210,7 @@ export function CheckCase() {
         </div>
         <Reveal>
           <div className="mb-3 flex items-center justify-between gap-3 text-[13px] text-muted">
-            <span>Your plan, belief by belief</span>
+            <span>Your plan, assumption by assumption</span>
             <ExampleTag />
           </div>
           <ul className="border-t border-line">
@@ -232,10 +241,10 @@ export function CheckCase() {
         </Reveal>
         <div className="flex flex-col gap-3 text-[15px] text-ink/75 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <p className="max-w-[60ch]">
-            Every belief is marked Holds, Weak, Breaks or Could not test, with a stronger option for
-            anything that breaks. Bring your plan, pasted or as a file.
+            Every assumption is marked Holds, Weak, Breaks or Could not test, with a stronger option
+            for anything that breaks. Bring your plan, pasted or as a file.
           </p>
-          <ExampleLink href="/examples?case=music&tab=assumptions" />
+          <ExampleLink href="/examples?case=music&tab=plan" />
         </div>
       </div>
     </section>
@@ -306,7 +315,7 @@ export function FixCase() {
           <h2 className={h2Class}>Fix my plan</h2>
           <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
             It is out and the people who came are not the people you planned for. Oraqul finds the
-            belief that broke and rebuilds around who showed up.
+            assumption that broke and rebuilds around who showed up.
           </p>
           <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
             <span className="font-medium text-ink">You bring </span>your results by region or age
@@ -331,16 +340,17 @@ const weeks: {
   { day: 'Fri 28 March', rival: 'The biggest rival', overlap: 'Risky overlap' },
 ];
 
-/** Test a what if lays the options out as the weeks they are, with the safest one raised. */
+/** Keep going lays the options out as the weeks they are, with the safest one raised. */
 export function WhatIfCase() {
   return (
-    <section id="whatif" aria-label="Test a what if" className={`bg-bg ${band} scroll-mt-16`}>
+    <section id="whatif" aria-label="Keep going" className={`bg-bg ${band} scroll-mt-16`}>
       <div className={`${wrap} flex flex-col items-center gap-12`}>
         <div className="flex flex-col items-center gap-6 text-center">
-          <h2 className={h2Class}>Test a what if</h2>
+          <h2 className={h2Class}>Keep going</h2>
           <p className="max-w-[46ch] text-[18px] leading-[1.55] text-ink/75">
-            Ask before you lock a date, a city or a partner. Oraqul compares the options against the
-            same audience and says which one is safer, with the receipt for each.
+            Ask before you lock a date, a city or a partner, then make the creative kit. Oraqul
+            compares the options against the same audience and says which one is safer, with the
+            receipt for each.
           </p>
         </div>
         <Reveal className="grid w-full gap-3 min-[640px]:grid-cols-2 min-[1000px]:grid-cols-4 min-[1000px]:items-end">
@@ -370,8 +380,8 @@ export function WhatIfCase() {
             weekend?”
           </p>
           <p className="text-[15px] leading-[1.55] text-ink/75">
-            You get the overlap for each option, lower is better, and what changes in the plan.
-            Bring the options you are weighing.
+            You get the overlap for each option, lower is better, and what changes in the plan. Give
+            real rivals with the day each opens: “Rivals: Harbor Lights on 2027-03-12”.
           </p>
         </div>
       </div>

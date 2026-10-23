@@ -1,7 +1,12 @@
 {
   "title": "Ember Keep",
   "brief": "Launch plan for the game \"Ember Keep\", a roguelike in early access on Steam, launching on 2099-06-01 in Germany and Poland. Comparable games: \"Hollow Hills\" and \"Crown of Ash\".",
-  "replies": [],
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    { "text": "you choose" }
+  ],
   "expect": {
     "headline": "Lead with Berlin, then Warsaw: that is where your game's players are strongest.",
     "assumptions": {
@@ -48,16 +53,17 @@
       "creators": "0/2",
       "collabs": "7/0",
       "publicity": "1/1",
+      "creative": "0/3",
       "timeline": "0/10",
       "budget": "0/8",
-      "measure": "0/6",
+      "measure": "0/10",
       "risks": "0/1",
       "gaps": "0/4"
     },
     "moves": ["f-markets", "f-audience", "f-fan-anime"],
     "grounding": {
-      "lines": 48,
-      "backed": 40,
+      "lines": 55,
+      "backed": 35,
       "rankKept": 100,
       "findingsUsed": 12,
       "cities": {

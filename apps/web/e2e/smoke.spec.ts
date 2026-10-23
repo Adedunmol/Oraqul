@@ -12,9 +12,10 @@ test('the landing page shows the pitch, the example and the ways in', async ({ p
     'href',
     '/sign-in',
   );
-  for (const name of ['How it works', 'Five categories', 'Receipts']) {
-    await expect(page.getByText(name, { exact: true }).first()).toBeAttached();
+  for (const name of ['How it works', 'Guide', 'Categories']) {
+    await expect(page.getByRole('link', { name, exact: true }).first()).toBeAttached();
   }
+  await expect(page.locator('[aria-label="Five categories"]')).toBeAttached();
   expect(text).not.toContain('undefined');
   expect(text).not.toContain('NaN');
 });
@@ -32,10 +33,10 @@ test('tokens switch with the colour scheme', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/');
   const background = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  expect(await background()).toBe('rgb(244, 244, 241)');
+  expect(await background()).toBe('rgb(255, 255, 255)');
 
   await page.emulateMedia({ colorScheme: 'dark' });
-  expect(await background()).toBe('rgb(13, 14, 16)');
+  expect(await background()).toBe('rgb(9, 9, 10)');
 });
 
 test('the phone menu is a hamburger that closes from the dim or the close icon', async ({

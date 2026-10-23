@@ -13,7 +13,7 @@ import type {
 import { Button } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
-import { markThreadRead, postMessage } from '@/lib/api/projects';
+import { cancelRun, markThreadRead, postMessage } from '@/lib/api/projects';
 import { toast } from '../toast';
 import { ChatView } from './chat-panel';
 import type { Attachment } from './composer';
@@ -130,6 +130,16 @@ export function LiveChat({
     }
   }
 
+  // The chat frees up when the server's `run.stopped` event arrives, not on the click. A run that
+  // finished a moment before answers 409, and its own `run.stopped` frees the chat.
+  async function stop() {
+    try {
+      await cancelRun(threadId);
+    } catch {
+      toast('The run could not be stopped. Try again.');
+    }
+  }
+
   async function answer(itemId: string, value: QuestionAnswer) {
     const item = items.find((i) => i.id === itemId);
     if (item?.role !== 'question') return;
@@ -182,6 +192,7 @@ export function LiveChat({
       }}
       onAnswer={answer}
       onSend={send}
+      onStop={stop}
       onSeen={() => {
         if (!busy) void markThreadRead(threadId).catch(() => undefined);
       }}
@@ -235,7 +246,7 @@ function toCard(event: Extract<ThreadEvent, { type: 'question' }>): QuestionCard
     case 'match':
       return { id, prompt, card: 'match', options };
     case 'multi':
-      return { id, prompt, card: 'multi', options };
+      return { id, prompt, card: 'multi', options, hint };
     default:
       return { id, prompt, card: 'single', options, hint };
   }

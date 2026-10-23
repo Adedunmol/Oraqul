@@ -40,6 +40,9 @@ const nextConfig: NextConfig = {
     ];
   },
   partialPrefetching: true,
+  experimental: {
+    agentUpgrade: 'security',
+  },
   turbopack: {
     rules: {
       '*.css': {

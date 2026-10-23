@@ -45,10 +45,15 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
       if (!order.has(id)) order.set(id, order.size + 1);
     }
   }
+  // The calls and partners cite findings too, so those are footnoted after the plan's own lines.
+  for (const id of [...plan.calls, ...plan.partners].flatMap((x) => x.findingIds)) {
+    if (!order.has(id)) order.set(id, order.size + 1);
+  }
   const docLine = (l: LaunchPlan['sections'][number]['lines'][number]): DocLine => ({
     text: l.text,
     refs: [...l.findingIds, ...l.sourceIds].flatMap((id) => order.get(id) ?? []),
   });
+  const refsOf = (ids: string[]) => ids.flatMap((id) => order.get(id) ?? []);
   const groups = (lines: LaunchPlan['sections'][number]['lines']) => {
     const out: DocSection['groups'] = [];
     for (const l of lines) {
@@ -58,13 +63,18 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
     }
     return out;
   };
+  const kind = output.kind === 'creative' ? 'Creative kit' : 'Launch plan';
+  const rules = plan.rules ? ` · Rules ${plan.rules.version}` : '';
   return {
     title: output.title,
-    byline: `Launch plan · ${output.createdBy} · ${day(output.createdAt)}`,
+    byline: `${kind} · ${output.createdBy} · ${day(output.createdAt)}${rules}`,
     inBrief: (plan.sections.find((s) => s.key === 'bottom-line')?.lines ?? []).map(docLine),
-    sections: plan.sections
-      .filter((s) => s.key !== 'bottom-line' && s.key !== 'gaps')
-      .map((s) => ({ title: s.title, groups: groups(s.lines) })),
+    sections: [
+      ...plan.sections
+        .filter((s) => s.key !== 'bottom-line' && s.key !== 'gaps')
+        .map((s) => ({ title: s.title, groups: groups(s.lines) })),
+      ...decisionSections(plan, refsOf),
+    ],
     sources: [...order].flatMap(([id, n]) => {
       const web = plan.sources.find((src) => src.id === id);
       if (web) return [{ n, text: web.fact, from: `${web.title}, ${web.url}` }];
@@ -78,6 +88,79 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
       return [{ n, text: finding.text, from }];
     }),
   };
+}
+
+const DIRECTION_WORD = { okay: 'Okay', risky: 'Risky', avoid: 'Avoid' } as const;
+const TIER_WORD = { A: 'Flagship', B: 'Category and integration', C: 'Local' } as const;
+const BAND_WORD = {
+  fits: 'fits the budget',
+  stretch: 'a stretch for the budget',
+  out: 'out of budget',
+};
+
+/**
+ * What the plan decided, in words: each territory with its call, channels and partners, and the
+ * rival dates. The calls are set by code from what Qloo returned, and a partner's price is never known.
+ */
+function decisionSections(plan: LaunchPlan, refsOf: (ids: string[]) => number[]): DocSection[] {
+  const out: DocSection[] = [];
+  if (plan.territories.length > 0) {
+    out.push({
+      title: 'Territories',
+      groups: plan.territories.map((t) => {
+        const call = plan.calls.find((c) => c.id === t.callId);
+        const lead = t.channels.filter((c) => c.lead).map((c) => c.name);
+        const partners = plan.partners.filter((p) => t.partnerIds.includes(p.id));
+        return {
+          name: `${t.name}, ${t.role === 'home' ? 'home market' : t.role === 'diaspora' ? 'diaspora city' : 'market'}${call ? `: ${DIRECTION_WORD[call.direction]}` : ''}`,
+          lines: [
+            ...(call ? [{ text: call.why, refs: refsOf(call.findingIds) }] : []),
+            ...(lead.length ? [{ text: `Lead on ${lead.join(', ')}.`, refs: [] }] : []),
+            ...partners.map((p) => ({ text: partnerText(p), refs: refsOf(p.findingIds) })),
+          ],
+        };
+      }),
+    });
+  }
+  const dates = plan.calls.filter((c) => c.subject === 'date');
+  if (dates.length > 0) {
+    out.push({
+      title: 'Rival dates',
+      groups: [
+        {
+          name: null,
+          lines: dates.map((c) => ({
+            text: `${c.name}: ${DIRECTION_WORD[c.direction]}. ${c.why}`,
+            refs: refsOf(c.findingIds),
+          })),
+        },
+      ],
+    });
+  }
+  if (plan.partners.length > 0) {
+    out.push({
+      title: 'Partners by tier',
+      groups: (['A', 'B', 'C'] as const).flatMap((tier) => {
+        const rows = plan.partners.filter((p) => p.tier === tier);
+        return rows.length
+          ? [
+              {
+                name: `Tier ${tier}, ${TIER_WORD[tier].toLowerCase()}`,
+                lines: rows.map((p) => ({ text: partnerText(p), refs: refsOf(p.findingIds) })),
+              },
+            ]
+          : [];
+      }),
+    });
+  }
+  return out;
+}
+
+function partnerText(p: LaunchPlan['partners'][number]): string {
+  const fit = p.fit
+    ? `Qloo fit: ${p.fit.place} of ${p.fit.of} (${DIRECTION_WORD[p.fit.direction].toLowerCase()})`
+    : 'Qloo fit: not ranked';
+  return `${p.name}. ${fit}. Budget: ${BAND_WORD[p.budgetFit]}. Price: unknown.`;
 }
 
 const VERDICT_WORD: Record<Verdict, string> = {

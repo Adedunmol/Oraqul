@@ -82,6 +82,8 @@ export class RunService implements OnModuleInit {
   private readonly logger = new Logger(RunService.name);
   private readonly buses = new Map<string, Subject<LiveEvent>>();
   private readonly active = new Set<string>();
+  /** One per running thread. Aborting it stops the run at its next event. */
+  private readonly stops = new Map<string, AbortController>();
 
   constructor(
     @Inject(DB) private readonly db: Database,
@@ -106,6 +108,16 @@ export class RunService implements OnModuleInit {
 
   isBusy(threadId: string): boolean {
     return this.active.has(threadId);
+  }
+
+  /**
+   * Stops the run on a thread. The run ends at its next event, saves no plan and says it stopped.
+   * Work already sent to Qloo or the model finishes, but its result is dropped.
+   */
+  cancel(threadId: string): void {
+    const stop = this.stops.get(threadId);
+    if (!stop || !this.active.has(threadId)) throw new ConflictException('Nothing is running');
+    stop.abort();
   }
 
   /** Spec §9.2: the first message makes a draft project and its first chat, then the router reads it. */
@@ -397,12 +409,15 @@ export class RunService implements OnModuleInit {
     const runId = await this.newRun(threadId, handoff.category, handoff.mode, null);
     const steps: string[] = [];
     const said: string[] = [];
+    const signal = this.stops.get(threadId)?.signal;
     // The agent emits without waiting on the store, so events are chained to keep their order.
     let stored: Promise<void> = Promise.resolve();
     try {
       const run: AgentRun = await this.agents[handoff.category].run(
         handoff,
         (event) => {
+          // Throwing here is what stops the agent: it emits at every step.
+          if (signal?.aborted) throw new RunCancelled();
           if (event.type === 'trace.step') steps.push(event.text);
           if (event.type === 'message') said.push(event.body);
           stored = stored.then(() => this.emit(threadId, event));
@@ -410,6 +425,7 @@ export class RunService implements OnModuleInit {
         resume,
       );
       await stored;
+      if (signal?.aborted) throw new RunCancelled();
       const outputIds = await this.outputs.save({
         threadId,
         projectId,
@@ -537,13 +553,19 @@ export class RunService implements OnModuleInit {
   }
 
   private launch(threadId: string, work: () => Promise<void>): void {
+    const stop = new AbortController();
     this.active.add(threadId);
+    this.stops.set(threadId, stop);
     void work()
       .catch((err: unknown) => this.logger.error(err))
-      .finally(() => this.active.delete(threadId));
+      .finally(() => {
+        this.active.delete(threadId);
+        if (this.stops.get(threadId) === stop) this.stops.delete(threadId);
+      });
   }
 
   private async emit(threadId: string, event: ThreadEvent): Promise<void> {
+    if (this.stops.get(threadId)?.signal.aborted) throw new RunCancelled();
     const seq = await this.store.appendEvent(threadId, event);
     this.bus(threadId).next(seq === null ? { event } : { seq, event });
   }
@@ -559,9 +581,23 @@ export class RunService implements OnModuleInit {
   }
 
   private async fail(threadId: string, runId: string, err: unknown, record: RunRecord) {
+    if (err instanceof RunCancelled) return this.halt(threadId, runId, record);
     this.logger.error(err);
     await this.emit(threadId, { type: 'error', message: 'The agent hit an error and stopped.' });
     await this.stop(threadId, runId, 'error', record);
+  }
+
+  /** The person stopped the run: nothing was saved from it, and the chat is free for a new message. */
+  private async halt(threadId: string, runId: string, record: RunRecord): Promise<void> {
+    // The abort is spent. Clearing it lets the stop itself be said, and drops late events from work
+    // still running, which check the signal they were started with.
+    this.stops.delete(threadId);
+    await this.emit(threadId, {
+      type: 'message',
+      body: 'Stopped. Nothing from this run was saved. Send a message to start again.',
+      claims: [],
+    });
+    await this.stop(threadId, runId, 'stopped', record);
   }
 
   private async newRun(
@@ -644,6 +680,13 @@ export class RunService implements OnModuleInit {
       this.buses.set(threadId, bus);
     }
     return bus;
+  }
+}
+
+/** Thrown inside a run the person stopped, so it unwinds without saving anything. */
+class RunCancelled extends Error {
+  constructor() {
+    super('The run was stopped');
   }
 }
 

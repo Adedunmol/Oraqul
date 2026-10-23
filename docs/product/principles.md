@@ -55,7 +55,7 @@ The model may curate (skip a poor fit) but must not re-rank Qloo's lists or prom
 5. **One call with all the seeds.** Combine the comps in a single call; averaging separate calls loses what the joint signal carries. Location is a signal (taste context) and a filter (hard geography) and they do different things.
 6. **Qloo is stateless.** We keep the resolved ids and resend them every call.
 7. **Reject any name Qloo did not return.** Our line check does this. Fixtures and demo data are labelled.
-8. **Budget the quota.** A plan makes about 45 to 65 Qloo calls against a monthly allowance of about 10,000 on hackathon keys, so name lookups (comps, partner brands) are kept across runs for 14 days.
+8. **Budget the quota.** A plan makes about 45 to 65 Qloo calls against a monthly allowance of about 10,000 on development keys, so name lookups (comps, partner brands) are kept across runs for 14 days.
 9. **Resolve every name deterministically, and be careful with ambiguity.** Strong entries reject an ambiguous match or ask. We settle it in code (country, then popularity) and say which we chose, because we do not ask questions. A wrong match is a real risk (Qloo's series lists show Gangs of London beside Gangs of Lagos).
 10. **What to claim.** "Qloo beats an LLM" is not a measured result. The defensible claim is that an LLM lacks co-consumption and location-level taste data and is unreliable at ranking, so Qloo supplies the data and the order and the model supplies language. LLMs invent places far more than films (a single-author preprint, so use with care): named venues, churches and neighbourhoods are where we beat a chatbot most.
 

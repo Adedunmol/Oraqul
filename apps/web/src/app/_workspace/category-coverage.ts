@@ -8,13 +8,13 @@ export function coverageColumns(info: CategoryInfo) {
   return [
     { title: 'Tests', note: 'Checked against Qloo, with a receipt', items: info.coverage.tests },
     {
-      title: 'Less certain',
-      note: 'Still tested, with lower confidence when there is little to go on',
+      title: 'Also handles',
+      note: 'Planned from the closest comps and tags when a title is new or niche',
       items: info.coverage.thin,
     },
     {
       title: 'You bring',
-      note: 'Not in Qloo, so it is your numbers',
+      note: 'Your own numbers, read beside the taste data',
       items: info.coverage.notSupported,
     },
   ].filter((c) => c.items.length);
