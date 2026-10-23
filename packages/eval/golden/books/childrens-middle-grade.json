@@ -4,7 +4,8 @@
   "replies": [
     {
       "optionIds": ["skip"]
-    }
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Lead with London, then Lagos: that is where your book's readers are strongest.",

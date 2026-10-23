@@ -31,9 +31,10 @@ The Games, Books and Podcasts calendars still live in their `KIND_PROFILES` (bea
 | D4 | One plan per territory, home first, then diaspora cities. | `plan.territories`, in code (`territories.ts`) |
 | D5 | Direction, never forecasts. Okay, risky or avoid, with confidence set by code. | `plan.calls` (`direction.ts`) |
 | D6 | Ask for a budget band first. Propose only what it can carry. | One card in a full build, and the line check (`band.ts`, `check.ts`) |
-| D7 | Channels by audience. Music and books lead on TikTok, Reels and Shorts. Film and podcasts lead on YouTube. Nigeria leads on WhatsApp and Instagram. | Code writes Channels per territory (`channelsSection`) |
+| D7 | Channels by audience. Music and books lead on TikTok, Reels and Shorts. Film and podcasts lead on YouTube. Nigeria leads on Instagram and TikTok. WhatsApp is never a lead channel: it passes a launch between people who know each other, so it is offered last, as a sharing layer. The team picks the platforms (D10). | Code writes Channels per territory (`channelsSection`) |
 | D8 | Guides and scripts only. Oraqul does not generate ads, trailers, images or video. | The asset refusal, the line check, Creative briefs in every full plan, and the creative kit job |
 | D9 | Partners come in tiers, each with Qloo fit and budget fit, and price unknown. | `plan.partners` (`partners.ts`) |
+| D10 | Ask which platforms to plan on. Suggest them for the market, let the team pick several, and plan only those. | One multi-select card in a full build (`platforms.ts`), then `territoriesOf` |
 
 ## Targets are not forecasts
 
@@ -85,7 +86,7 @@ Oraqul writes guides, never the asset.
 - **Refusal.** A request to generate, make, design or produce an ad, trailer, image, video or key art is refused in fixed words, with the way to ask for the guide. "Write a trailer script" and "a trailer shot list" are guides and are not refused.
 - **Line check.** A line that offers to make the asset is dropped.
 - **Creative briefs.** Every full plan has a short section: hook options and a key art brief.
-- **Creative kit.** A follow-up job, "make the creative kit for Lagos on WhatsApp", saves an output with, for one territory and channel: hook options, a script outline, a shot list, a key art brief and a caption pack. Built by code from the plan's findings and the rule library, with every line checked. Only the tone and the places named come from Qloo and cite a finding.
+- **Creative kit.** A follow-up job, "make the creative kit for Lagos on Instagram", saves an output with, for one territory and channel: hook options, a script outline, a shot list, a key art brief and a caption pack. Built by code from the plan's findings and the rule library, with every line checked. Only the tone and the places named come from Qloo and cite a finding.
 
 ## Changing a rule
 

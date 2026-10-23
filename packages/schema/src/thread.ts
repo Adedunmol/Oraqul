@@ -38,7 +38,13 @@ export const questionCardSchema = z.discriminatedUnion('card', [
     hint: z.string().optional(),
   }),
   z.object({ ...questionBase, card: z.literal('match'), options: z.array(questionOptionSchema) }),
-  z.object({ ...questionBase, card: z.literal('multi'), options: z.array(questionOptionSchema) }),
+  z.object({
+    ...questionBase,
+    card: z.literal('multi'),
+    options: z.array(questionOptionSchema),
+    /** Under the options, such as that typing an answer works too. */
+    hint: z.string().optional(),
+  }),
   z.object({
     ...questionBase,
     card: z.literal('text'),

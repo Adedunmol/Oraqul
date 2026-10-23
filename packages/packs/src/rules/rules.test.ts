@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { TASTE_CLAIM } from '../launch';
-import { bandCarries, bandOf, leadChannels, rules } from './index';
+import {
+  bandCarries,
+  bandOf,
+  leadChannels,
+  platformsNamed,
+  rules,
+  suggestPlatforms,
+} from './index';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -63,9 +70,42 @@ describe('rule library', () => {
     expect(bandCarries('micro', 'C')).toBe(true);
   });
 
-  it('leads Nigerian launches on WhatsApp and Instagram (D7)', () => {
-    expect(leadChannels('music', 'Nigeria').slice(0, 2)).toEqual(['WhatsApp', 'Instagram']);
+  it('leads Nigerian launches on public platforms and never on WhatsApp (D7)', () => {
+    expect(leadChannels('music', 'Nigeria').slice(0, 2)).toEqual(['Instagram', 'TikTok']);
+    expect(leadChannels('film', 'Nigeria')).not.toContain('WhatsApp');
     expect(leadChannels('film', null)[0]).toBe('YouTube');
     expect(leadChannels('books', null)[0]).toBe('TikTok');
+  });
+});
+
+describe('platform suggestions (D7)', () => {
+  const names = (country: string | null, category: 'film' | 'games' = 'film') =>
+    suggestPlatforms(category, country).map((p) => p.name);
+
+  it('offers a spread of platforms for Nigeria, with WhatsApp last as a sharing layer', () => {
+    const nigeria = names('Nigeria');
+    expect(nigeria.length).toBeGreaterThanOrEqual(5);
+    expect(nigeria.slice(0, 3)).toEqual(['Instagram', 'TikTok', 'YouTube']);
+    expect(nigeria).toContain('X');
+    expect(nigeria.at(-1)).toBe('WhatsApp');
+    expect(new Set(nigeria).size).toBe(nigeria.length);
+  });
+
+  it('does not offer WhatsApp in a market that does not pass launches around on it', () => {
+    expect(names('United States')).not.toContain('WhatsApp');
+  });
+
+  it('adds the category’s own homes, such as Discord for games', () => {
+    expect(names(null, 'games')).toEqual(expect.arrayContaining(['YouTube', 'Discord']));
+  });
+
+  it('reads the platforms a brief names', () => {
+    expect(platformsNamed('Channels: WhatsApp, Instagram and TikTok')).toEqual([
+      'Instagram',
+      'TikTok',
+      'WhatsApp',
+    ]);
+    expect(platformsNamed('a launch on Twitter')).toEqual(['X']);
+    expect(platformsNamed('an expert on the x factor')).toEqual([]);
   });
 });

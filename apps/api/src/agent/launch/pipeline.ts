@@ -59,6 +59,14 @@ import type { Change } from './follow-up.js';
 import { withSharedModules } from './modules.js';
 import { marketsOf, partnerOptions, withSeeds } from './partners.js';
 import type { QueryPlanCore } from './planner.js';
+import {
+  marketOf,
+  platformLine,
+  platformQuestion,
+  platformQuestionId,
+  platformsFromAnswer,
+  platformsNamed,
+} from './platforms.js';
 import type { LaunchRead } from './read-core.js';
 import {
   applyAssessment,
@@ -119,6 +127,8 @@ export interface LaunchInputs<R extends LaunchRead = LaunchRead> {
   rivals?: Rival[];
   /** The budget band the plan was sized for, so a what-if keeps it. */
   band?: PlanBand | null;
+  /** The platforms the campaign was planned on, so a what-if keeps them. Null when not chosen. */
+  platforms?: string[] | null;
 }
 
 export interface PlanRun {
@@ -512,6 +522,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let knownDropped: { name: string; why: string }[] = [];
   let understanding: Understanding | null = null;
   let band: PlanBand | null = null;
+  let platforms: string[] | null = null;
   let rivals: Rival[] = [];
 
   if (from) {
@@ -524,6 +535,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     knownUsed = changed.used;
     knownDropped = changed.dropped;
     band = from.inputs.band ?? null;
+    platforms = from.inputs.platforms ?? null;
     rivals = from.inputs.rivals ?? [];
     for (const a of known) deps.tools.entities.set(a.entityId, a);
   } else {
@@ -545,11 +557,23 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       );
       extra = resume.state.extra;
       kind = resume.state.kind;
+    } else if (resume?.state.pending?.id === platformQuestionId(deps.config.category)) {
+      // The platform card's answer is the campaign's platforms, not more of the brief.
+      const typed = resume.reply.kind === 'typed' || resume.reply.kind === 'text';
+      platforms = platformsFromAnswer(
+        typed ? null : (resume.reply as { optionIds: string[] }).optionIds,
+        typed ? (resume.reply as { text: string }).text : null,
+        resume.state.pending,
+      );
+      extra = resume.state.extra;
+      kind = resume.state.kind;
+      band = resume.state.band;
     } else if (resume) {
       extra = `${resume.state.extra}\n\n${replyText(resume.state, resume.reply)}`.trim();
       kind = resume.state.kind;
       band = resume.state.band;
     }
+    platforms = platforms ?? resume?.state.platforms ?? null;
     ctx.trace('Reading your brief');
     const input = {
       title: handoff.title,
@@ -588,6 +612,8 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         settle: false,
         askedBand: false,
         band: null,
+        askedPlatforms: false,
+        platforms: null,
         pending: question,
       });
     }
@@ -607,6 +633,29 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         settle: false,
         askedBand: true,
         band: null,
+        askedPlatforms: false,
+        platforms: null,
+        pending: question,
+      });
+    }
+
+    // The third question a full build may ask: which platforms to plan on. A brief that names them
+    // has answered it. Asked before the research so the plan is written for the ones chosen.
+    platforms =
+      platforms ?? (platformsNamed(input.text).length ? platformsNamed(input.text) : null);
+    if (!platforms && read.scope === 'full' && !resume?.state.askedPlatforms) {
+      const question = platformQuestion(deps.config.category, marketOf(read));
+      deps.emit({ type: 'question', agent: deps.config.category, ...question });
+      return ctx.stop('waiting', {
+        job: 'build',
+        kind,
+        extra,
+        asked: true,
+        settle: false,
+        askedBand: true,
+        band,
+        askedPlatforms: true,
+        platforms: null,
         pending: question,
       });
     }
@@ -646,6 +695,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     kind,
     intro: `Here is the launch plan for “${title}”.`,
     band,
+    platforms,
   });
 }
 
@@ -671,6 +721,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     intro: string;
     /** The band the person gave or the brief stated. Null reads it from the brief again. */
     band?: PlanBand | null;
+    /** The platforms the team chose. Null plans on the category's and the market's usual ones. */
+    platforms?: string[] | null;
     /** Characters of each file the writer may read. */
     chars?: number;
     /** The outputs this run made first, saved before the plan. */
@@ -693,6 +745,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     cities: read.places,
     country: queryPlan.country,
     ranked: asked.grounded.brief.teamOrder.map((p) => p.place),
+    platforms: input.platforms ?? null,
   });
   const today = new Date().toISOString().slice(0, 10);
   // A section code writes whole, such as Games' launch beats, is not the writer's to write.
@@ -712,7 +765,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     drafts += 1;
     const writeInput: WriteInput<R> = {
       title,
-      request: [text, extra, band ? bandLine(band) : ''].filter(Boolean).join('\n\n'),
+      request: [
+        text,
+        extra,
+        band ? bandLine(band) : '',
+        input.platforms?.length ? platformLine(input.platforms) : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n'),
       read,
       comps: comps.used,
       sections: order.filter(
@@ -972,6 +1032,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
           settle: true,
           askedBand: true,
           band,
+          askedPlatforms: true,
+          platforms: input.platforms ?? null,
           pending: settle,
         }
       : null,
@@ -1000,6 +1062,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         dropped: comps.dropped,
         used: comps.used,
         band,
+        platforms: input.platforms ?? null,
         rivals: asked.rivals,
         understanding,
       } satisfies LaunchInputs<R>,

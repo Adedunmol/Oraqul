@@ -6,7 +6,8 @@
   "replies": [
     {
       "optionIds": ["skip"]
-    }
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Open in Nairobi first, then Atlanta and Houston: that is where your comps' audience is strongest among your cities.",

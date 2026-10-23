@@ -6,7 +6,8 @@
   "replies": [
     {
       "optionIds": ["skip"]
-    }
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Open in London first, then Lagos: that is where your comps' audience is strongest among your cities.",

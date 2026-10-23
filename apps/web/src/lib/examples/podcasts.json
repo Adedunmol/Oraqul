@@ -694,7 +694,7 @@
             {
               "id": "channels-london",
               "kind": "playbook",
-              "text": "Lead on YouTube, Instagram and TikTok.",
+              "text": "Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -703,7 +703,7 @@
             {
               "id": "channels-lagos",
               "kind": "playbook",
-              "text": "Lead on WhatsApp, Instagram and YouTube, then add TikTok.",
+              "text": "Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1759,14 +1759,6 @@
             {
               "name": "YouTube",
               "lead": true
-            },
-            {
-              "name": "Instagram",
-              "lead": true
-            },
-            {
-              "name": "TikTok",
-              "lead": true
             }
           ],
           "partnerIds": [],
@@ -1780,20 +1772,8 @@
           "callId": "call-territory-lagos",
           "channels": [
             {
-              "name": "WhatsApp",
-              "lead": true
-            },
-            {
-              "name": "Instagram",
-              "lead": true
-            },
-            {
               "name": "YouTube",
               "lead": true
-            },
-            {
-              "name": "TikTok",
-              "lead": false
             }
           ],
           "partnerIds": [],

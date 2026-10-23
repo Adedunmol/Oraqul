@@ -4,7 +4,8 @@
   "replies": [
     {
       "optionIds": ["skip"]
-    }
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Start in Lagos: that is where the artist's audience is strongest among your cities.",

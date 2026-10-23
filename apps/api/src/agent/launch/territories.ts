@@ -1,5 +1,5 @@
 import { cityCountry } from '@oraqul/engine';
-import { DIASPORA, leadChannels } from '@oraqul/packs';
+import { DIASPORA, leadChannels, platformOf, suggestPlatforms } from '@oraqul/packs';
 import type { Category, LaunchSection, LaunchSectionKey, Territory } from '@oraqul/schema';
 import { slug } from './brief.js';
 import { codeLine } from './signal.js';
@@ -8,6 +8,21 @@ const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLow
 
 /** How many channels lead. The rest are added once the lead ones are running. */
 const LEAD = 3;
+
+/**
+ * A territory's channels. The platforms the team chose, in the order that suits the territory's
+ * market (WhatsApp last, since it only passes a launch between people who know each other), or
+ * the market's usual ones when the team chose none.
+ */
+function channelsFor(category: Category, country: string | null, chosen: string[] | null) {
+  if (!chosen?.length) return leadChannels(category, country);
+  const order = suggestPlatforms(category, country).map((p) => p.name);
+  const rank = (name: string) => {
+    const i = order.indexOf(platformOf(name));
+    return i === -1 ? order.length : i;
+  };
+  return [...chosen].sort((a, b) => rank(a) - rank(b));
+}
 
 /**
  * One territory per city the team named: the home market first (the city in the release's
@@ -21,6 +36,8 @@ export function territoriesOf(input: {
   country: string | null;
   /** The team's cities in the order Qloo ranked them, for the cities that are neither. */
   ranked: string[];
+  /** The platforms the team chose. Null plans on the market's usual ones. */
+  platforms?: string[] | null;
 }): Territory[] {
   const { category, cities, country } = input;
   if (cities.length === 0) return [];
@@ -36,7 +53,7 @@ export function territoriesOf(input: {
   );
   const ordered = [...(home ? [home] : []), ...diaspora, ...rest];
   return ordered.map((name, order) => {
-    const channels = leadChannels(category, cityCountry(name));
+    const channels = channelsFor(category, cityCountry(name), input.platforms ?? null);
     return {
       id: `territory-${slug(name)}`,
       name,

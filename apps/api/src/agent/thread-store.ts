@@ -301,7 +301,7 @@ export function toCard(question: z.infer<typeof questionSchema>): QuestionCard {
     case 'match':
       return { id, prompt, card: 'match', options };
     case 'multi':
-      return { id, prompt, card: 'multi', options };
+      return { id, prompt, card: 'multi', options, hint };
     default:
       return { id, prompt, card: 'single', options, hint };
   }

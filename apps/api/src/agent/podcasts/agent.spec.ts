@@ -46,7 +46,10 @@ describe('Podcasts agent: the job a message does before a chat has a plan', () =
     mode,
     title: 'Cold Case Files',
     inputs: { text: 'I want to work on my new podcast', files: [] },
-    message: { text: `${text} An independent budget.`, files: [] },
+    message: {
+      text: `${text} An independent budget. Platforms: Instagram, TikTok and YouTube.`,
+      files: [],
+    },
     recent: [],
     planId: null,
   });

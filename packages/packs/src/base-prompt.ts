@@ -51,7 +51,7 @@ export const REFUSALS: {
     pattern:
       /\b(?:generate|make|create|design|produce|render|edit|animate|draw|shoot)\s+(?:me\s+|us\s+)?(?:(?:an?|the|our|my|some|new|short|full|\d+[- ]?(?:second|sec|s))\s+){0,3}(?:ads?|adverts?|trailers?|teasers?|posters?|images?|videos?|clips?|key art|artwork|logos?|banners?|thumbnails?)\b(?!\s+(?:scripts?|briefs?|shot|storyboards?|captions?|treatments?|guides?|copy|hooks?|ideas?|concepts?))/i,
     reply:
-      "I don't make ads, trailers, images or video. I write what a team needs to make them: scripts, shot lists, key art briefs, caption packs and hook options, and a person makes the final creative. Ask for the creative kit for a territory and channel, for example “make the creative kit for Lagos on WhatsApp”.",
+      "I don't make ads, trailers, images or video. I write what a team needs to make them: scripts, shot lists, key art briefs, caption packs and hook options, and a person makes the final creative. Ask for the creative kit for a territory and channel, for example “make the creative kit for Lagos on Instagram”.",
   },
 ];
 

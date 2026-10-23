@@ -175,7 +175,7 @@ The craft around the data is a versioned rule library per category, each rule wi
 | R4 | One plan per territory, home first, then the diaspora cities. The team's cities are never dropped. | P0 |
 | R5 | Okay, risky or avoid on each opening date, territory and partner, set by code with the confidence of its finding. A call on a team choice keeps the choice. | P0 |
 | R6 | A full plan with no budget or band asks for a band first, once. It proposes only what the band can carry. | P0 |
-| R7 | Channels by audience: music and books lead on short video, film and podcasts on YouTube, Nigeria on WhatsApp and Instagram. | P0 |
+| R7 | Channels by audience: music and books lead on short video, film and podcasts on YouTube, Nigeria on Instagram and TikTok, with WhatsApp only as a sharing layer. The team picks the platforms from a suggested list. | P0 |
 | R8 | Guides and scripts only. Every full plan has short creative briefs; a creative kit gives hooks, a script outline, a shot list, a key art brief and a caption pack for a territory and channel. Requests to generate an ad, trailer, image or video are refused. | P0 |
 | R9 | Partners come in tiers A, B and C with their Qloo fit and budget fit, and price unknown. | P0 |
 

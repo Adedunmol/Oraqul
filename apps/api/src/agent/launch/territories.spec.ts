@@ -32,7 +32,7 @@ describe('territoriesOf (D4)', () => {
     expect(territoriesOf({ ...nigerian, cities: [] })).toEqual([]);
   });
 
-  it('leads Nigeria on WhatsApp and Instagram and Lagos or London by category (D7)', () => {
+  it('leads Nigeria on public platforms and Lagos or London by category (D7)', () => {
     const film = territoriesOf(nigerian);
     const lagos = film.find((x) => x.name === 'Lagos');
     expect(
@@ -40,7 +40,7 @@ describe('territoriesOf (D4)', () => {
         .filter((c) => c.lead)
         .map((c) => c.name)
         .slice(0, 2),
-    ).toEqual(['WhatsApp', 'Instagram']);
+    ).toEqual(['Instagram', 'TikTok']);
     const london = film.find((x) => x.name === 'London');
     expect(london?.channels[0]).toEqual({ name: 'YouTube', lead: true });
 
@@ -72,7 +72,7 @@ describe('channelsSection', () => {
       allowed: ['channels' as const],
     };
     for (const line of section.lines) expect(checkLine('channels', line, ctx)).toBeNull();
-    expect(section.lines[0]?.text).toMatch(/^Home market\. Lead on WhatsApp, Instagram and/);
+    expect(section.lines[0]?.text).toMatch(/^Home market\. Lead on Instagram, TikTok and/);
   });
 
   it('collects each territory its plan lines by group', () => {

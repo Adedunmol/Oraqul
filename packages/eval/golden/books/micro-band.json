@@ -4,7 +4,8 @@
   "replies": [
     {
       "optionIds": ["micro"]
-    }
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Lead with Abuja, then Lagos: that is where your book's readers are strongest.",

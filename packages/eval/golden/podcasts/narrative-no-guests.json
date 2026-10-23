@@ -4,7 +4,8 @@
   "replies": [
     {
       "optionIds": ["skip"]
-    }
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Lead with New York, then Toronto: that is where your show's listeners are strongest.",

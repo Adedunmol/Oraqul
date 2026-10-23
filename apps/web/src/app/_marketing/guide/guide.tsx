@@ -282,7 +282,7 @@ export function GuideBody() {
               <b>Brief a partner.</b> A draft you review and send yourself. Oraqul never sends.
             </li>
             <li>
-              <b>Make the creative kit.</b> “Make the creative kit for Lagos on WhatsApp” gives
+              <b>Make the creative kit.</b> “Make the creative kit for Lagos on Instagram” gives
               hooks, a script outline, a shot list, a key art brief and a caption pack.
             </li>
             <li>

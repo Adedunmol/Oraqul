@@ -67,5 +67,5 @@ Rules and thresholds: [launch-rules.md](launch-rules.md). For Music:
 
 * **Calendar.** A rollout of 6 to 8 weeks, worked back from the release date in code: delivery and playlist pitches 8 weeks out, pre-save at 6, press at 4, the video at 2, then follow-through for four weeks.
 * **Signal.** Save rate and stream completion. Followers, views and playlist adds are secondary.
-* **Channels.** TikTok, Reels and Shorts lead; Nigeria leads on WhatsApp and Instagram.
+* **Channels.** TikTok, Reels and Shorts lead; Nigeria leads on Instagram and TikTok; WhatsApp is only a sharing layer.
 * **Territories.** One plan per tour city, the home market first, then the diaspora cities, beside the tour route.

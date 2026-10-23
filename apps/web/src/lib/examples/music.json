@@ -661,7 +661,7 @@
             {
               "id": "channels-lagos",
               "kind": "playbook",
-              "text": "Lead on WhatsApp, Instagram and TikTok, then add Instagram Reels and YouTube Shorts.",
+              "text": "Lead on Instagram, TikTok and YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -670,7 +670,7 @@
             {
               "id": "channels-london",
               "kind": "playbook",
-              "text": "Lead on TikTok, Instagram Reels and YouTube Shorts.",
+              "text": "Lead on TikTok, Instagram and YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -679,7 +679,7 @@
             {
               "id": "channels-houston",
               "kind": "playbook",
-              "text": "Lead on TikTok, Instagram Reels and YouTube Shorts.",
+              "text": "Lead on TikTok, Instagram and YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1906,10 +1906,6 @@
           "callId": "call-territory-lagos",
           "channels": [
             {
-              "name": "WhatsApp",
-              "lead": true
-            },
-            {
               "name": "Instagram",
               "lead": true
             },
@@ -1918,12 +1914,8 @@
               "lead": true
             },
             {
-              "name": "Instagram Reels",
-              "lead": false
-            },
-            {
-              "name": "YouTube Shorts",
-              "lead": false
+              "name": "YouTube",
+              "lead": true
             }
           ],
           "partnerIds": [],
@@ -1948,11 +1940,11 @@
               "lead": true
             },
             {
-              "name": "Instagram Reels",
+              "name": "Instagram",
               "lead": true
             },
             {
-              "name": "YouTube Shorts",
+              "name": "YouTube",
               "lead": true
             }
           ],
@@ -1971,11 +1963,11 @@
               "lead": true
             },
             {
-              "name": "Instagram Reels",
+              "name": "Instagram",
               "lead": true
             },
             {
-              "name": "YouTube Shorts",
+              "name": "YouTube",
               "lead": true
             }
           ],

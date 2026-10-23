@@ -12,7 +12,10 @@ import { TemplatePlanWriter } from './writer.js';
 function setup(text: string, callBudget = 60) {
   const events: ThreadEvent[] = [];
   // Most specs are not about the budget band card, so the brief states one.
-  const said = { text: `${text} An independent budget.`, files: [] };
+  const said = {
+    text: `${text} An independent budget. Platforms: Instagram, TikTok and YouTube.`,
+    files: [],
+  };
   const handoff: Handoff = {
     category: 'film',
     mode: 'build',
@@ -347,7 +350,7 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
 
 describe('the budget band card', () => {
   const bare =
-    'Launch plan for "Night Ferry", a thriller opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor".';
+    'Launch plan for "Night Ferry", a thriller opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor". On Instagram and TikTok.';
 
   function bandSetup(text: string) {
     const { handoff, deps } = setup(text);
@@ -403,7 +406,7 @@ describe('the budget band card', () => {
 
 describe('the rival date check inside a build', () => {
   const withRivals =
-    'Launch plan for "Night Ferry", a thriller opening in Lagos and London on 2099-03-12. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor". An independent budget.\nRivals: Harbor Lights on 2099-03-12; Third Mainland opens 2099-03-19';
+    'Launch plan for "Night Ferry", a thriller opening in Lagos and London on 2099-03-12. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor". An independent budget. Platforms: Instagram, TikTok and YouTube.\nRivals: Harbor Lights on 2099-03-12; Third Mainland opens 2099-03-19';
 
   it('scores the rivals the brief names against the comps and keeps the result on the plan', async () => {
     const { handoff, deps } = setup(withRivals);
@@ -445,7 +448,7 @@ describe('a Nigerian film planned for its diaspora (D4, D5, D9)', () => {
       ['Atlanta', 'diaspora'],
     ]);
     const lagos = plan?.territories[0];
-    expect(lagos?.channels.slice(0, 2).map((c) => c.name)).toEqual(['WhatsApp', 'Instagram']);
+    expect(lagos?.channels.slice(0, 2).map((c) => c.name)).toEqual(['Instagram', 'TikTok']);
     expect(plan?.sections.find((s) => s.key === 'channels')?.lines).toHaveLength(4);
     for (const t of plan?.territories ?? []) {
       expect(t.callId === null || plan?.calls.some((c) => c.id === t.callId)).toBe(true);
@@ -470,5 +473,84 @@ describe('a Nigerian film planned for its diaspora (D4, D5, D9)', () => {
     expect(plan?.partners.some((p) => p.tier === 'C')).toBe(true);
     expect(plan?.rules?.version).toMatch(/^film@/);
     expect(plan?.signal?.primary).toBe('Advance screenings and presales');
+  });
+});
+
+describe('the platform card', () => {
+  const bare =
+    'Launch plan for "Night Ferry", a thriller opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor". An independent budget.';
+
+  function platformSetup(text: string) {
+    const { handoff, deps } = setup(text);
+    // `setup` names platforms so other specs skip the card; this one asks for it.
+    return {
+      handoff: { ...handoff, inputs: { text, files: [] }, message: { text, files: [] } },
+      deps,
+    };
+  }
+
+  it('suggests platforms for the market before any research, and plans only the ones picked', async () => {
+    const { handoff, deps } = platformSetup(bare);
+    const first = await runFilmBuild(handoff, deps());
+    expect(first.reason).toBe('waiting');
+    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
+    const asked = first.state.pending;
+    expect(asked).toMatchObject({ id: 'film.platforms', card: 'multi' });
+    const offered = asked?.options.map((o) => o.id) ?? [];
+    expect(offered.length).toBeGreaterThanOrEqual(5);
+    expect(offered).toEqual(expect.arrayContaining(['Instagram', 'TikTok', 'X']));
+    expect(offered.at(-1)).toBe('WhatsApp');
+    expect(first.receipts).toHaveLength(0);
+
+    const done = await runFilmBuild(handoff, deps(), {
+      state: first.state,
+      reply: { kind: 'options', questionId: 'film.platforms', optionIds: ['X', 'Instagram'] },
+    });
+    expect(done.reason).toBe('finished');
+    const plan = done.output?.plan;
+    for (const t of plan?.territories ?? []) {
+      expect(t.channels.map((c) => c.name)).toEqual(['Instagram', 'X']);
+    }
+    expect(plan?.sections.find((s) => s.key === 'channels')?.lines[0]?.text).toMatch(
+      /Lead on Instagram and X\.$/,
+    );
+  });
+
+  it('leads with WhatsApp never, even when it is picked: it is added after the public platforms', async () => {
+    const { handoff, deps } = platformSetup(bare);
+    const first = await runFilmBuild(handoff, deps());
+    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
+    const done = await runFilmBuild(handoff, deps(), {
+      state: first.state,
+      reply: {
+        kind: 'options',
+        questionId: 'film.platforms',
+        optionIds: ['WhatsApp', 'Instagram', 'TikTok', 'YouTube'],
+      },
+    });
+    const lagos = done.output?.plan?.territories[0];
+    expect(lagos?.channels.at(-1)).toEqual({ name: 'WhatsApp', lead: false });
+  });
+
+  it('plans on the suggested lead platforms when the answer names none', async () => {
+    const { handoff, deps } = platformSetup(bare);
+    const first = await runFilmBuild(handoff, deps());
+    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
+    const done = await runFilmBuild(handoff, deps(), {
+      state: first.state,
+      reply: { kind: 'typed', text: 'you choose' },
+    });
+    expect(done.reason).toBe('finished');
+    expect(done.output?.plan?.territories[0]?.channels.map((c) => c.name)).not.toContain(
+      'WhatsApp',
+    );
+  });
+
+  it('does not ask when the brief names the platforms', async () => {
+    const { handoff, deps } = platformSetup(`${bare} Run it on TikTok and YouTube.`);
+    const run = await runFilmBuild(handoff, deps());
+    expect(run.reason).toBe('finished');
+    const lagos = run.output?.plan?.territories.find((t) => t.name === 'Lagos');
+    expect(lagos?.channels.map((c) => c.name)).toEqual(['TikTok', 'YouTube']);
   });
 });

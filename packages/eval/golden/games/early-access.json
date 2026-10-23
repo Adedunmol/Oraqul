@@ -4,7 +4,8 @@
   "replies": [
     {
       "optionIds": ["skip"]
-    }
+    },
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Lead with Berlin, then Warsaw: that is where your game's players are strongest.",

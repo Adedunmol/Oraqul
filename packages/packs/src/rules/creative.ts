@@ -81,6 +81,11 @@ export const CHANNEL_STYLE: Record<string, string> = {
   youtube: 'a thumbnail and a title that name the payoff, the hook inside the first five seconds',
   instagram: 'a carousel or a story set with a link sticker',
   whatsapp: 'a status image and a clip under a minute that is easy to forward',
+  x: 'one post with the clip, a line people can quote and a thread for the story behind it',
+  facebook: 'a native video and a post that gives a group something to answer',
+  snapchat: 'vertical, sound on, under 20 seconds, with a swipe-up link',
+  reddit: 'a plain post that answers a question the community asks, with the clip as proof',
+  twitch: 'a live segment with a creator and a clip made of its best moment',
   discord: 'a pinned post with the clip and one question that does not spoil it',
 };
 

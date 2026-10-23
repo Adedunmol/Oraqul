@@ -66,6 +66,6 @@ Rules and thresholds: [launch-rules.md](launch-rules.md). For Film:
 * **Calendar.** Months, worked back from the release date in code: key art and the sales page about 26 weeks out, the first trailer at 12, advance screenings from 10 to 6, presales at 8, the premiere at 1 and the second wave in the weeks after.
 * **Signal.** Advance screenings and presales. Trailer views, followers and press mentions are secondary. There is no benchmark number: the target is the team's own.
 * **Territories.** One plan per city, the home market (the city in the film's country) first, then the diaspora cities, such as Lagos, London, Houston and Atlanta, with a call on each.
-* **Channels.** YouTube leads, then Instagram and TikTok. Nigeria leads on WhatsApp and Instagram.
+* **Channels.** YouTube leads, then Instagram and TikTok. Nigeria leads on Instagram and TikTok; WhatsApp is only a sharing layer.
 * **Rivals.** Rival films with their opening days are scored against the comps in the build, and each date gets a call.
 * **Partners.** Tier A flagship brands (Guinness, MTN, Indomie in Nigeria) only for a release with scale, tier B (banks and payment brands, food and drink, hospitality, telecom bundles), tier C local (cinemas, creators, diaspora businesses, community groups).

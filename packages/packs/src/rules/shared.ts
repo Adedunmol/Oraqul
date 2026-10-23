@@ -113,9 +113,12 @@ export const DIASPORA: Record<string, string[]> = {
   'south korea': ['Los Angeles', 'New York'],
 };
 
-/** Channels that lead where a market's audience is, ahead of the category's own order. */
+/**
+ * Channels that lead where a market's audience is, ahead of the category's own order. WhatsApp is
+ * never one: it spreads a launch between people who know each other, so it is a sharing layer.
+ */
 export const COUNTRY_CHANNELS: Record<string, string[]> = {
-  nigeria: ['WhatsApp', 'Instagram'],
+  nigeria: ['Instagram', 'TikTok'],
 };
 
 /** Words that offer to make the asset itself, which Oraqul never does (a person makes it). */

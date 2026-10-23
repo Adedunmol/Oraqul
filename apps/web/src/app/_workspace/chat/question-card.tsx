@@ -112,7 +112,7 @@ function Body({
         </div>
       );
     case 'multi':
-      return <MultiBody options={q.options} canEdit={canEdit} onAnswer={onAnswer} />;
+      return <MultiBody options={q.options} hint={q.hint} canEdit={canEdit} onAnswer={onAnswer} />;
     case 'text':
       return (
         <TextBody hint={q.hint} attachments={q.attachments} canEdit={canEdit} onAnswer={onAnswer} />
@@ -146,9 +146,13 @@ type BodyProps = { canEdit: boolean; onAnswer: (answer: QuestionAnswer) => void 
 
 function MultiBody({
   options,
+  hint,
   canEdit,
   onAnswer,
-}: BodyProps & { options: { id: string; label: string; description?: string }[] }) {
+}: BodyProps & {
+  options: { id: string; label: string; description?: string }[];
+  hint?: string;
+}) {
   const [selected, setSelected] = useState<string[]>([]);
   return (
     <>
@@ -168,12 +172,17 @@ function MultiBody({
                 {on ? '✓ ' : ''}
                 {o.label}
               </span>
-              {o.description ? <small className="ml-auto text-muted">{o.description}</small> : null}
+              {o.description ? (
+                <small className="ml-auto max-w-[55%] text-right text-[12.5px] text-muted">
+                  {o.description}
+                </small>
+              ) : null}
             </button>
           );
         })}
       </div>
-      <div>
+      {hint ? <p className="text-[13px] text-muted">{hint}</p> : null}
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           variant="primary"
           icon="check"
@@ -181,6 +190,13 @@ function MultiBody({
           onClick={() => onAnswer({ card: 'options', optionIds: selected })}
         >
           Confirm
+        </Button>
+        <Button
+          variant="ghost"
+          disabled={!canEdit}
+          onClick={() => onAnswer({ card: 'text', text: 'You choose' })}
+        >
+          You choose
         </Button>
       </div>
     </>

@@ -38,11 +38,11 @@ const WHEN = '2026-10-01T10:00:00.000Z';
 const briefs = {
   film: {
     title: 'Night Ferry',
-    text: 'Launch plan for "Night Ferry", a Nigerian thriller film for 18 to 34 year olds, opening in Atlanta, London, Lagos and Houston on 2099-03-12. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor". An independent budget.\nRivals: Harbor Lights on 2099-03-12; Third Mainland opens 2099-03-19',
+    text: 'Launch plan for "Night Ferry", a Nigerian thriller film for 18 to 34 year olds, opening in Atlanta, London, Lagos and Houston on 2099-03-12. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor". An independent budget. Platforms: Instagram, TikTok and YouTube.\nRivals: Harbor Lights on 2099-03-12; Third Mainland opens 2099-03-19',
   },
   music: {
     title: 'Night Songs',
-    text: 'Launch plan for "Night Songs", an afrobeats album from artist "Neon Tide" for 18 to 34 year olds, touring Lagos, London and Houston, releasing on 2099-05-01. Sound-alikes: "Ada Lux" and "Kola Wave". An independent budget.',
+    text: 'Launch plan for "Night Songs", an afrobeats album from artist "Neon Tide" for 18 to 34 year olds, touring Lagos, London and Houston, releasing on 2099-05-01. Sound-alikes: "Ada Lux" and "Kola Wave". An independent budget. Platforms: Instagram, TikTok and YouTube.',
   },
   podcasts: {
     title: 'Cold Case Lagos',

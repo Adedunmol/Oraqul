@@ -799,7 +799,7 @@
             {
               "id": "channels-lagos",
               "kind": "playbook",
-              "text": "Home market. Lead on WhatsApp, Instagram and YouTube, then add TikTok.",
+              "text": "Home market. Lead on Instagram, TikTok and YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -2468,20 +2468,16 @@
           "callId": "call-territory-lagos",
           "channels": [
             {
-              "name": "WhatsApp",
+              "name": "Instagram",
               "lead": true
             },
             {
-              "name": "Instagram",
+              "name": "TikTok",
               "lead": true
             },
             {
               "name": "YouTube",
               "lead": true
-            },
-            {
-              "name": "TikTok",
-              "lead": false
             }
           ],
           "partnerIds": [],

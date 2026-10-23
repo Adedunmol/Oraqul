@@ -17,7 +17,7 @@ const territories = [
     role: 'Home market',
     direction: 'okay',
     confidence: 'high',
-    channels: 'WhatsApp, Instagram, YouTube',
+    channels: 'Instagram, TikTok, YouTube',
   },
   {
     name: 'London',
@@ -162,7 +162,7 @@ export function Craft() {
               trailer, ad or image.
             </p>
             <div className="flex flex-col gap-2 rounded-xl bg-inset p-4 text-[14px] leading-[1.55]">
-              <b className="text-[13px] text-muted">Lagos · WhatsApp</b>
+              <b className="text-[13px] text-muted">Lagos · Instagram</b>
               <span>
                 <b>Hook one:</b> open on the strongest image, in the first two seconds.
               </span>
