@@ -15,12 +15,20 @@ const columns = [
   {
     title: 'Resources',
     links: [
+      { href: '/guide', label: 'Guide' },
       { href: '/method', label: 'Method' },
       { href: '/trust', label: 'Trust' },
+      { href: '/developers', label: 'Developers' },
     ],
   },
   { title: 'Company', links: [{ href: '/about', label: 'About' }] },
-  { title: 'Legal', links: [{ href: '/privacy', label: 'Privacy' }] },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/privacy', label: 'Privacy' },
+      { href: '/terms', label: 'Terms' },
+    ],
+  },
 ];
 
 export function SiteFooter() {

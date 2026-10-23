@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@next/env": "^16.4.0",
+    "@oraqul/packs": "workspace:*",
     "@oraqul/schema": "workspace:*",
     "@oraqul/ui": "workspace:*",
     "next": "16.4.0",

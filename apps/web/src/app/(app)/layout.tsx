@@ -56,6 +56,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <NavLink href="/team" icon="team">
                 Team
               </NavLink>
+              <NavLink href="/guide" icon="help">
+                Guide
+              </NavLink>
             </div>
           </nav>
         </Suspense>

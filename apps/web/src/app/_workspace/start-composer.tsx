@@ -2,6 +2,7 @@
 
 import type { Category, StartMode } from '@oraqul/schema';
 import { ChipButton } from '@oraqul/ui';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createProject } from '@/lib/api/projects';
@@ -123,7 +124,10 @@ export function StartComposer({
         {info
           ? `Oraqul will use its ${info.name} checks.`
           : 'Oraqul works out the category and the job from what you write.'}{' '}
-        The project is saved when you send.
+        The project is saved when you send.{' '}
+        <Link href="/guide#builder" className="text-accent hover:underline">
+          Not sure what to include? Build a brief.
+        </Link>
       </p>
     </section>
   );
