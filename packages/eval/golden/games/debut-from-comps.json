@@ -56,6 +56,7 @@
       "partnerships": "2/0",
       "community": "0/1",
       "creative": "0/3",
+      "calendar": "0/13",
       "timeline": "0/9",
       "budget": "0/7",
       "measure": "0/10",
@@ -64,8 +65,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-fan-anime"],
     "grounding": {
-      "lines": 54,
-      "backed": 41,
+      "lines": 67,
+      "backed": 33,
       "rankKept": 100,
       "findingsUsed": 15,
       "cities": {

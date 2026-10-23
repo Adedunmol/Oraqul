@@ -4,15 +4,11 @@
   "brief": "We are releasing \"Blue Hour\", a slow-burn drama series. The only comp we have is \"Salt Road\".",
   "callBudget": 60,
   "replies": [
-    {
-      "text": "It opens in Lagos and Accra."
-    },
+    { "text": "It opens in Lagos and Accra." },
     {
       "optionIds": ["skip"]
     },
-    {
-      "text": "you choose"
-    }
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Open in Accra first, then Lagos: that is where your comps' audience is strongest among your cities.",
@@ -58,6 +54,7 @@
       "route": "0/2",
       "channels": "0/2",
       "creative": "0/4",
+      "calendar": "0/16",
       "timeline": "0/9",
       "cadence": "0/1",
       "budget": "0/7",
@@ -67,8 +64,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 44,
-      "backed": 41,
+      "lines": 60,
+      "backed": 30,
       "rankKept": 100,
       "findingsUsed": 12,
       "cities": {

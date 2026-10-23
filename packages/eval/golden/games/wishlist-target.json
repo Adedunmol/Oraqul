@@ -57,6 +57,7 @@
       "community": "0/1",
       "channels": "0/1",
       "creative": "0/4",
+      "calendar": "0/13",
       "timeline": "0/9",
       "budget": "0/7",
       "measure": "0/10",
@@ -65,8 +66,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-fan-anime"],
     "grounding": {
-      "lines": 55,
-      "backed": 38,
+      "lines": 68,
+      "backed": 31,
       "rankKept": 100,
       "findingsUsed": 14,
       "cities": {

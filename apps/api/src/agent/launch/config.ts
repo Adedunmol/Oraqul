@@ -1,4 +1,6 @@
 import type { ToolContext } from '@oraqul/engine';
+import type { Beat } from '@oraqul/packs';
+
 import type {
   Category,
   CompUsed,
@@ -108,6 +110,11 @@ export interface LaunchConfig<
     /** A calendar code builds from the release date and `today`, so no past date is advised. */
     timeline?(read: R, today: string): LaunchSection;
   };
+  /**
+   * The launch beats a content calendar follows, where the category's calendar rule holds no rows
+   * of its own (Books, Games, Podcasts). Chosen from the launch kind, like the timeline.
+   */
+  calendarBeats?(read: R): readonly Beat[];
   /** What else to track beside the plan's one signal, by name. Chosen from the launch kind. */
   measures?(read: R): readonly string[];
   /** The part of a what-if only this category reads, such as the collabs a person adds. */

@@ -41,6 +41,7 @@ export const SECTION_TITLES = {
   schools: 'Schools and libraries',
   channels: 'Channels',
   creative: 'Creative briefs',
+  calendar: 'Content calendar',
   hooks: 'Hook options',
   scripts: 'Scripts',
   shots: 'Shot lists',

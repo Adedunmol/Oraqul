@@ -48,6 +48,7 @@ import { ungroundedClaims } from '../grounding.js';
 import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
 import { bandFromAnswer, bandFromBrief, bandQuestion, bandQuestionId } from './band.js';
 import { capital } from './brief.js';
+import { calendarRows, calendarSection } from './calendar.js';
 import { type CheckContext, checkSections } from './check.js';
 import { type Clash, clashFinding, type Rival, rivalsFrom, scoreClash } from './clash.js';
 import type { LaunchConfig, LaunchDeps } from './config.js';
@@ -757,6 +758,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     platforms: input.platforms ?? null,
   });
   const today = new Date().toISOString().slice(0, 10);
+  // The content calendar: rows worked back from the release date, on each territory's lead channel.
+  const calendar = calendarRows({
+    category: deps.config.category,
+    release: releaseDate(read.window),
+    today,
+    territories,
+    beats: deps.config.calendarBeats?.(read) ?? [],
+  });
   // A section code writes whole, such as Games' launch beats, is not the writer's to write.
   const byCode = deps.config.codeSections.timeline && modules.includes('timeline');
   const core: LaunchSectionKey[] = ['bottom-line', 'positioning', 'audience', 'markets'];
@@ -785,7 +794,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       read,
       comps: comps.used,
       sections: order.filter(
-        (key) => !(key === 'measure' || key === 'channels' || (byCode && key === 'timeline')),
+        (key) =>
+          !(
+            key === 'measure' ||
+            key === 'channels' ||
+            key === 'calendar' ||
+            (byCode && key === 'timeline')
+          ),
       ),
       findings: grounded.findings,
       sources,
@@ -829,6 +844,9 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       ...(modules.includes('budget') ? [deps.config.codeSections.budget(read)] : []),
       ...(modules.includes('channels')
         ? [channelsSection(deps.config.rules.titles.channels, territories)]
+        : []),
+      ...(modules.includes('calendar')
+        ? [calendarSection(deps.config.rules.titles.calendar, calendar, deps.config.category)]
         : []),
       ...(modules.includes('measure')
         ? [
@@ -992,6 +1010,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     calls: finished.calls,
     partners: finished.partners,
     partnerNotes: finished.partnerNotes,
+    calendar: modules.includes('calendar') ? calendar : [],
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];

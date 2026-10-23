@@ -877,6 +877,264 @@
           ]
         },
         {
+          "key": "calendar",
+          "title": "Content calendar",
+          "lines": [
+            {
+              "id": "calendar-source",
+              "kind": "playbook",
+              "text": "This calendar follows blog-level guidance, one source for each point. Treat it as direction, not a measured result.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-lagos-print",
+              "kind": "playbook",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-exclusive",
+              "kind": "playbook",
+              "text": "T-4: Offer the trailer as an exclusive to one big outlet first, then release it everywhere. Asset: trailer. Lead on Instagram. Posts: 1.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-weekly",
+              "kind": "playbook",
+              "text": "T-4 to T-2: Put something new out every week: a still, a clip or a cast post. Asset: new asset. Lead on Instagram. Posts: at least 1 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-screener",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-podcasts",
+              "kind": "playbook",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-final-week",
+              "kind": "playbook",
+              "text": "T-1 to Launch week: Post something every day in the final week. Asset: daily post. Lead on Instagram. Posts: 1 a day.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-london-print",
+              "kind": "playbook",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-exclusive",
+              "kind": "playbook",
+              "text": "T-4: Offer the trailer as an exclusive to one big outlet first, then release it everywhere. Asset: trailer. Lead on YouTube. Posts: 1.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-weekly",
+              "kind": "playbook",
+              "text": "T-4 to T-2: Put something new out every week: a still, a clip or a cast post. Asset: new asset. Lead on YouTube. Posts: at least 1 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-screener",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-podcasts",
+              "kind": "playbook",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-final-week",
+              "kind": "playbook",
+              "text": "T-1 to Launch week: Post something every day in the final week. Asset: daily post. Lead on YouTube. Posts: 1 a day.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-houston-print",
+              "kind": "playbook",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-exclusive",
+              "kind": "playbook",
+              "text": "T-4: Offer the trailer as an exclusive to one big outlet first, then release it everywhere. Asset: trailer. Lead on YouTube. Posts: 1.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-weekly",
+              "kind": "playbook",
+              "text": "T-4 to T-2: Put something new out every week: a still, a clip or a cast post. Asset: new asset. Lead on YouTube. Posts: at least 1 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-screener",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-podcasts",
+              "kind": "playbook",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-final-week",
+              "kind": "playbook",
+              "text": "T-1 to Launch week: Post something every day in the final week. Asset: daily post. Lead on YouTube. Posts: 1 a day.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-atlanta-print",
+              "kind": "playbook",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Atlanta"
+            },
+            {
+              "id": "calendar-atlanta-exclusive",
+              "kind": "playbook",
+              "text": "T-4: Offer the trailer as an exclusive to one big outlet first, then release it everywhere. Asset: trailer. Lead on YouTube. Posts: 1.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Atlanta"
+            },
+            {
+              "id": "calendar-atlanta-weekly",
+              "kind": "playbook",
+              "text": "T-4 to T-2: Put something new out every week: a still, a clip or a cast post. Asset: new asset. Lead on YouTube. Posts: at least 1 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Atlanta"
+            },
+            {
+              "id": "calendar-atlanta-screener",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Atlanta"
+            },
+            {
+              "id": "calendar-atlanta-podcasts",
+              "kind": "playbook",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Atlanta"
+            },
+            {
+              "id": "calendar-atlanta-final-week",
+              "kind": "playbook",
+              "text": "T-1 to Launch week: Post something every day in the final week. Asset: daily post. Lead on YouTube. Posts: 1 a day.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Atlanta"
+            },
+            {
+              "id": "calendar-ads-1",
+              "kind": "playbook",
+              "text": "Put about 80 percent of paid spend behind creative that has already worked, and about 20 percent into testing new creative.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-2",
+              "kind": "playbook",
+              "text": "Run three to five ads in each ad group.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-3",
+              "kind": "playbook",
+              "text": "Judge a winner by its conversion count, not by how many days it has run.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            }
+          ]
+        },
+        {
           "key": "timeline",
           "title": "Timeline",
           "lines": [
@@ -2557,7 +2815,19 @@
             }
           ],
           "partnerIds": [],
-          "lineIds": ["audience-4", "audience-8", "markets-4", "community-4", "channels-lagos"]
+          "lineIds": [
+            "audience-4",
+            "audience-8",
+            "markets-4",
+            "community-4",
+            "channels-lagos",
+            "calendar-lagos-print",
+            "calendar-lagos-exclusive",
+            "calendar-lagos-weekly",
+            "calendar-lagos-screener",
+            "calendar-lagos-podcasts",
+            "calendar-lagos-final-week"
+          ]
         },
         {
           "id": "territory-london",
@@ -2580,7 +2850,19 @@
             }
           ],
           "partnerIds": [],
-          "lineIds": ["audience-5", "audience-9", "markets-1", "community-2", "channels-london"]
+          "lineIds": [
+            "audience-5",
+            "audience-9",
+            "markets-1",
+            "community-2",
+            "channels-london",
+            "calendar-london-print",
+            "calendar-london-exclusive",
+            "calendar-london-weekly",
+            "calendar-london-screener",
+            "calendar-london-podcasts",
+            "calendar-london-final-week"
+          ]
         },
         {
           "id": "territory-houston",
@@ -2609,7 +2891,13 @@
             "markets-2",
             "community-1",
             "community-3",
-            "channels-houston"
+            "channels-houston",
+            "calendar-houston-print",
+            "calendar-houston-exclusive",
+            "calendar-houston-weekly",
+            "calendar-houston-screener",
+            "calendar-houston-podcasts",
+            "calendar-houston-final-week"
           ]
         },
         {
@@ -2633,7 +2921,18 @@
             }
           ],
           "partnerIds": [],
-          "lineIds": ["audience-2", "audience-6", "markets-3", "channels-atlanta"]
+          "lineIds": [
+            "audience-2",
+            "audience-6",
+            "markets-3",
+            "channels-atlanta",
+            "calendar-atlanta-print",
+            "calendar-atlanta-exclusive",
+            "calendar-atlanta-weekly",
+            "calendar-atlanta-screener",
+            "calendar-atlanta-podcasts",
+            "calendar-atlanta-final-week"
+          ]
         }
       ],
       "calls": [
@@ -2903,6 +3202,384 @@
           "id": "partner-note-barter",
           "ruleId": "partners.lead-time",
           "text": "Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship."
+        }
+      ],
+      "calendar": [
+        {
+          "id": "calendar-lagos-print",
+          "territory": "Lagos",
+          "key": "print",
+          "at": -8,
+          "from": null,
+          "to": null,
+          "asset": "press pitch",
+          "post": "Pitch print outlets about two months before release.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-exclusive",
+          "territory": "Lagos",
+          "key": "exclusive",
+          "at": -4,
+          "from": null,
+          "to": null,
+          "asset": "trailer",
+          "post": "Offer the trailer as an exclusive to one big outlet first, then release it everywhere.",
+          "channel": "Instagram",
+          "count": 1,
+          "per": "span",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-weekly",
+          "territory": "Lagos",
+          "key": "weekly",
+          "at": -4,
+          "until": -2,
+          "from": null,
+          "to": null,
+          "asset": "new asset",
+          "post": "Put something new out every week: a still, a clip or a cast post.",
+          "channel": "Instagram",
+          "count": 1,
+          "per": "week",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-screener",
+          "territory": "Lagos",
+          "key": "screener",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "online screener",
+          "post": "Give reviewers an online screener and ask them to hold reviews until a few days before release.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-podcasts",
+          "territory": "Lagos",
+          "key": "podcasts",
+          "at": -2,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "guest pitch",
+          "post": "Pitch podcasts: they need one to two weeks of lead time.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-final-week",
+          "territory": "Lagos",
+          "key": "final-week",
+          "at": -1,
+          "until": 0,
+          "from": null,
+          "to": null,
+          "asset": "daily post",
+          "post": "Post something every day in the final week.",
+          "channel": "Instagram",
+          "count": 1,
+          "per": "day",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-print",
+          "territory": "London",
+          "key": "print",
+          "at": -8,
+          "from": null,
+          "to": null,
+          "asset": "press pitch",
+          "post": "Pitch print outlets about two months before release.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-exclusive",
+          "territory": "London",
+          "key": "exclusive",
+          "at": -4,
+          "from": null,
+          "to": null,
+          "asset": "trailer",
+          "post": "Offer the trailer as an exclusive to one big outlet first, then release it everywhere.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "span",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-weekly",
+          "territory": "London",
+          "key": "weekly",
+          "at": -4,
+          "until": -2,
+          "from": null,
+          "to": null,
+          "asset": "new asset",
+          "post": "Put something new out every week: a still, a clip or a cast post.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "week",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-screener",
+          "territory": "London",
+          "key": "screener",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "online screener",
+          "post": "Give reviewers an online screener and ask them to hold reviews until a few days before release.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-podcasts",
+          "territory": "London",
+          "key": "podcasts",
+          "at": -2,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "guest pitch",
+          "post": "Pitch podcasts: they need one to two weeks of lead time.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-final-week",
+          "territory": "London",
+          "key": "final-week",
+          "at": -1,
+          "until": 0,
+          "from": null,
+          "to": null,
+          "asset": "daily post",
+          "post": "Post something every day in the final week.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "day",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-print",
+          "territory": "Houston",
+          "key": "print",
+          "at": -8,
+          "from": null,
+          "to": null,
+          "asset": "press pitch",
+          "post": "Pitch print outlets about two months before release.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-exclusive",
+          "territory": "Houston",
+          "key": "exclusive",
+          "at": -4,
+          "from": null,
+          "to": null,
+          "asset": "trailer",
+          "post": "Offer the trailer as an exclusive to one big outlet first, then release it everywhere.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "span",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-weekly",
+          "territory": "Houston",
+          "key": "weekly",
+          "at": -4,
+          "until": -2,
+          "from": null,
+          "to": null,
+          "asset": "new asset",
+          "post": "Put something new out every week: a still, a clip or a cast post.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "week",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-screener",
+          "territory": "Houston",
+          "key": "screener",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "online screener",
+          "post": "Give reviewers an online screener and ask them to hold reviews until a few days before release.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-podcasts",
+          "territory": "Houston",
+          "key": "podcasts",
+          "at": -2,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "guest pitch",
+          "post": "Pitch podcasts: they need one to two weeks of lead time.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-final-week",
+          "territory": "Houston",
+          "key": "final-week",
+          "at": -1,
+          "until": 0,
+          "from": null,
+          "to": null,
+          "asset": "daily post",
+          "post": "Post something every day in the final week.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "day",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-atlanta-print",
+          "territory": "Atlanta",
+          "key": "print",
+          "at": -8,
+          "from": null,
+          "to": null,
+          "asset": "press pitch",
+          "post": "Pitch print outlets about two months before release.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-atlanta-exclusive",
+          "territory": "Atlanta",
+          "key": "exclusive",
+          "at": -4,
+          "from": null,
+          "to": null,
+          "asset": "trailer",
+          "post": "Offer the trailer as an exclusive to one big outlet first, then release it everywhere.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "span",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-atlanta-weekly",
+          "territory": "Atlanta",
+          "key": "weekly",
+          "at": -4,
+          "until": -2,
+          "from": null,
+          "to": null,
+          "asset": "new asset",
+          "post": "Put something new out every week: a still, a clip or a cast post.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "week",
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-atlanta-screener",
+          "territory": "Atlanta",
+          "key": "screener",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "online screener",
+          "post": "Give reviewers an online screener and ask them to hold reviews until a few days before release.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-atlanta-podcasts",
+          "territory": "Atlanta",
+          "key": "podcasts",
+          "at": -2,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "guest pitch",
+          "post": "Pitch podcasts: they need one to two weeks of lead time.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "film.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-atlanta-final-week",
+          "territory": "Atlanta",
+          "key": "final-week",
+          "at": -1,
+          "until": 0,
+          "from": null,
+          "to": null,
+          "asset": "daily post",
+          "post": "Post something every day in the final week.",
+          "channel": "YouTube",
+          "count": 1,
+          "per": "day",
+          "ruleId": "film.calendar",
+          "grade": "directional"
         }
       ]
     },

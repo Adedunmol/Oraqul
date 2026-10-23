@@ -730,6 +730,156 @@
           ]
         },
         {
+          "key": "calendar",
+          "title": "Content calendar",
+          "lines": [
+            {
+              "id": "calendar-source",
+              "kind": "playbook",
+              "text": "This calendar follows blog-level guidance, one source for each point. Treat it as direction, not a measured result.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-lagos-presave",
+              "kind": "playbook",
+              "text": "T-3: Open the pre-save at least three weeks before release and put the link in every post. Asset: pre-save link. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-teasers",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Post short teasers of 10 to 30 seconds, at least three a week. Asset: teaser, 10 to 30 seconds. Lead on Instagram. Posts: at least 3 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-release-day",
+              "kind": "playbook",
+              "text": "Launch week: Post on release day: the song, the link and the story behind it. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-after",
+              "kind": "playbook",
+              "text": "T+1 to T+3: Keep posting for two to three weeks after release, with a new angle each time. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-london-presave",
+              "kind": "playbook",
+              "text": "T-3: Open the pre-save at least three weeks before release and put the link in every post. Asset: pre-save link. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-teasers",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Post short teasers of 10 to 30 seconds, at least three a week. Asset: teaser, 10 to 30 seconds. Lead on TikTok. Posts: at least 3 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-release-day",
+              "kind": "playbook",
+              "text": "Launch week: Post on release day: the song, the link and the story behind it. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-after",
+              "kind": "playbook",
+              "text": "T+1 to T+3: Keep posting for two to three weeks after release, with a new angle each time. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-houston-presave",
+              "kind": "playbook",
+              "text": "T-3: Open the pre-save at least three weeks before release and put the link in every post. Asset: pre-save link. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-teasers",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Post short teasers of 10 to 30 seconds, at least three a week. Asset: teaser, 10 to 30 seconds. Lead on TikTok. Posts: at least 3 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-release-day",
+              "kind": "playbook",
+              "text": "Launch week: Post on release day: the song, the link and the story behind it. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-after",
+              "kind": "playbook",
+              "text": "T+1 to T+3: Keep posting for two to three weeks after release, with a new angle each time. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-ads-1",
+              "kind": "playbook",
+              "text": "Put about 80 percent of paid spend behind creative that has already worked, and about 20 percent into testing new creative.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-2",
+              "kind": "playbook",
+              "text": "Run three to five ads in each ad group.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-3",
+              "kind": "playbook",
+              "text": "Judge a winner by its conversion count, not by how many days it has run.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            }
+          ]
+        },
+        {
           "key": "timeline",
           "title": "Timeline",
           "lines": [
@@ -1972,7 +2122,11 @@
             "markets-1",
             "community-2",
             "support-2",
-            "channels-lagos"
+            "channels-lagos",
+            "calendar-lagos-presave",
+            "calendar-lagos-teasers",
+            "calendar-lagos-release-day",
+            "calendar-lagos-after"
           ]
         },
         {
@@ -1996,7 +2150,17 @@
             }
           ],
           "partnerIds": [],
-          "lineIds": ["audience-4", "audience-7", "markets-2", "support-3", "channels-london"]
+          "lineIds": [
+            "audience-4",
+            "audience-7",
+            "markets-2",
+            "support-3",
+            "channels-london",
+            "calendar-london-presave",
+            "calendar-london-teasers",
+            "calendar-london-release-day",
+            "calendar-london-after"
+          ]
         },
         {
           "id": "territory-houston",
@@ -2025,7 +2189,11 @@
             "markets-3",
             "community-1",
             "support-1",
-            "channels-houston"
+            "channels-houston",
+            "calendar-houston-presave",
+            "calendar-houston-teasers",
+            "calendar-houston-release-day",
+            "calendar-houston-after"
           ]
         }
       ],
@@ -2263,6 +2431,194 @@
           "id": "partner-note-barter",
           "ruleId": "partners.lead-time",
           "text": "Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship."
+        }
+      ],
+      "calendar": [
+        {
+          "id": "calendar-lagos-presave",
+          "territory": "Lagos",
+          "key": "presave",
+          "at": -3,
+          "from": null,
+          "to": null,
+          "asset": "pre-save link",
+          "post": "Open the pre-save at least three weeks before release and put the link in every post.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-teasers",
+          "territory": "Lagos",
+          "key": "teasers",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "teaser, 10 to 30 seconds",
+          "post": "Post short teasers of 10 to 30 seconds, at least three a week.",
+          "channel": "Instagram",
+          "count": 3,
+          "per": "week",
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-release-day",
+          "territory": "Lagos",
+          "key": "release-day",
+          "at": 0,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Post on release day: the song, the link and the story behind it.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-after",
+          "territory": "Lagos",
+          "key": "after",
+          "at": 1,
+          "until": 3,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Keep posting for two to three weeks after release, with a new angle each time.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-presave",
+          "territory": "London",
+          "key": "presave",
+          "at": -3,
+          "from": null,
+          "to": null,
+          "asset": "pre-save link",
+          "post": "Open the pre-save at least three weeks before release and put the link in every post.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-teasers",
+          "territory": "London",
+          "key": "teasers",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "teaser, 10 to 30 seconds",
+          "post": "Post short teasers of 10 to 30 seconds, at least three a week.",
+          "channel": "TikTok",
+          "count": 3,
+          "per": "week",
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-release-day",
+          "territory": "London",
+          "key": "release-day",
+          "at": 0,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Post on release day: the song, the link and the story behind it.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-after",
+          "territory": "London",
+          "key": "after",
+          "at": 1,
+          "until": 3,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Keep posting for two to three weeks after release, with a new angle each time.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-presave",
+          "territory": "Houston",
+          "key": "presave",
+          "at": -3,
+          "from": null,
+          "to": null,
+          "asset": "pre-save link",
+          "post": "Open the pre-save at least three weeks before release and put the link in every post.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-teasers",
+          "territory": "Houston",
+          "key": "teasers",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "teaser, 10 to 30 seconds",
+          "post": "Post short teasers of 10 to 30 seconds, at least three a week.",
+          "channel": "TikTok",
+          "count": 3,
+          "per": "week",
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-release-day",
+          "territory": "Houston",
+          "key": "release-day",
+          "at": 0,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Post on release day: the song, the link and the story behind it.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-after",
+          "territory": "Houston",
+          "key": "after",
+          "at": 1,
+          "until": 3,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Keep posting for two to three weeks after release, with a new angle each time.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
         }
       ]
     },

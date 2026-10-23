@@ -2,6 +2,7 @@
 
 import type { LaunchLine, LaunchPlan, LineChange, PlanSource } from '@oraqul/schema';
 import type { ReactNode } from 'react';
+import { CalendarTable } from './calendar-table';
 import { PlanFrame } from './plan-frame';
 
 /** Finding ids in the order the plan first cites them, numbered from 1, as in the exports. */
@@ -91,8 +92,15 @@ export function PlanDocument({
           className="flex scroll-mt-48 flex-col gap-4"
         >
           <h2 className={sectionTitle}>{section.title}</h2>
+          {section.key === 'calendar' && plan.calendar.length > 0 ? (
+            <CalendarTable rows={plan.calendar} />
+          ) : null}
           <Groups
-            lines={section.lines}
+            lines={
+              section.key === 'calendar' && plan.calendar.length > 0
+                ? section.lines.filter((l) => !plan.calendar.some((r) => r.id === l.id))
+                : section.lines
+            }
             notes={notes}
             sources={plan.sources}
             changes={changes}

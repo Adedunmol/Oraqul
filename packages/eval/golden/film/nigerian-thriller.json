@@ -7,9 +7,7 @@
     {
       "optionIds": ["skip"]
     },
-    {
-      "text": "you choose"
-    }
+    { "text": "you choose" }
   ],
   "expect": {
     "headline": "Open in London first, then Lagos: that is where your comps' audience is strongest among your cities.",
@@ -69,6 +67,7 @@
       "route": "0/2",
       "channels": "0/2",
       "creative": "0/4",
+      "calendar": "0/16",
       "timeline": "0/9",
       "budget": "0/7",
       "measure": "0/4",
@@ -77,8 +76,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 44,
-      "backed": 45,
+      "lines": 60,
+      "backed": 33,
       "rankKept": 100,
       "findingsUsed": 13,
       "cities": {

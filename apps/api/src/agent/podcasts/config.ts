@@ -331,6 +331,7 @@ export const podcastsLaunch: LaunchConfig<PodcastsRead, PodcastsQueryPlan> = {
   },
   measures: (read) => KIND_PROFILES[kindOf(read).kind].measures,
   codeSections: { budget: budgetSection, gaps: gapsSection, timeline: timelineSection },
+  calendarBeats: (read) => podcastsPlan.beatsFor(kindOf(read).kind, platformsOf(read)),
   applyChange: (read, change) => ({
     ...read,
     crossPromo: [...new Set([...read.crossPromo, ...change.addCollabs])],

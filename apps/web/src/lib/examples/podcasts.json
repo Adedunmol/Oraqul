@@ -754,6 +754,192 @@
           ]
         },
         {
+          "key": "calendar",
+          "title": "Content calendar",
+          "lines": [
+            {
+              "id": "calendar-source",
+              "kind": "playbook",
+              "text": "Not researched for this category. The rows follow the launch beats, and no post counts are stated.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-london-artwork-feed",
+              "kind": "playbook",
+              "text": "T-8 to T-6 (2099-01-04 to 2099-01-24): Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-editorial",
+              "kind": "playbook",
+              "text": "T-6 (2099-01-18): Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-trailer",
+              "kind": "playbook",
+              "text": "T-4 (2099-02-01): Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-swaps",
+              "kind": "playbook",
+              "text": "T-3 to T-1 (2099-02-08 to 2099-02-28): Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-launch",
+              "kind": "playbook",
+              "text": "Launch week (2099-03-01): Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-clips",
+              "kind": "playbook",
+              "text": "Launch week to T+8 (2099-03-01 to 2099-05-02): Publish a clip of every episode with captions, and a full episode on YouTube. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-chart-window",
+              "kind": "playbook",
+              "text": "T+1 to T+4 (2099-03-08 to 2099-04-04): Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-first-read",
+              "kind": "playbook",
+              "text": "T+4 to T+8 (2099-03-29 to 2099-05-02): Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-lagos-artwork-feed",
+              "kind": "playbook",
+              "text": "T-8 to T-6 (2099-01-04 to 2099-01-24): Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-editorial",
+              "kind": "playbook",
+              "text": "T-6 (2099-01-18): Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-trailer",
+              "kind": "playbook",
+              "text": "T-4 (2099-02-01): Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-swaps",
+              "kind": "playbook",
+              "text": "T-3 to T-1 (2099-02-08 to 2099-02-28): Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-launch",
+              "kind": "playbook",
+              "text": "Launch week (2099-03-01): Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-clips",
+              "kind": "playbook",
+              "text": "Launch week to T+8 (2099-03-01 to 2099-05-02): Publish a clip of every episode with captions, and a full episode on YouTube. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-chart-window",
+              "kind": "playbook",
+              "text": "T+1 to T+4 (2099-03-08 to 2099-04-04): Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-first-read",
+              "kind": "playbook",
+              "text": "T+4 to T+8 (2099-03-29 to 2099-05-02): Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked. Lead on YouTube. Posts: not researched.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-ads-1",
+              "kind": "playbook",
+              "text": "Put about 80 percent of paid spend behind creative that has already worked, and about 20 percent into testing new creative.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-2",
+              "kind": "playbook",
+              "text": "Run three to five ads in each ad group.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-3",
+              "kind": "playbook",
+              "text": "Judge a winner by its conversion count, not by how many days it has run.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            }
+          ]
+        },
+        {
           "key": "timeline",
           "title": "Launch beats",
           "lines": [
@@ -1805,7 +1991,19 @@
             }
           ],
           "partnerIds": [],
-          "lineIds": ["markets-1", "live-1", "channels-london"]
+          "lineIds": [
+            "markets-1",
+            "live-1",
+            "channels-london",
+            "calendar-london-artwork-feed",
+            "calendar-london-editorial",
+            "calendar-london-trailer",
+            "calendar-london-swaps",
+            "calendar-london-launch",
+            "calendar-london-clips",
+            "calendar-london-chart-window",
+            "calendar-london-first-read"
+          ]
         },
         {
           "id": "territory-lagos",
@@ -1820,7 +2018,18 @@
             }
           ],
           "partnerIds": [],
-          "lineIds": ["markets-2", "channels-lagos"]
+          "lineIds": [
+            "markets-2",
+            "channels-lagos",
+            "calendar-lagos-artwork-feed",
+            "calendar-lagos-editorial",
+            "calendar-lagos-trailer",
+            "calendar-lagos-swaps",
+            "calendar-lagos-launch",
+            "calendar-lagos-clips",
+            "calendar-lagos-chart-window",
+            "calendar-lagos-first-read"
+          ]
         }
       ],
       "calls": [
@@ -2046,6 +2255,258 @@
           "id": "partner-note-barter",
           "ruleId": "partners.lead-time",
           "text": "Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship."
+        }
+      ],
+      "calendar": [
+        {
+          "id": "calendar-london-artwork-feed",
+          "territory": "London",
+          "key": "artwork-feed",
+          "at": -8,
+          "until": -6,
+          "from": "2099-01-04",
+          "to": "2099-01-24",
+          "asset": null,
+          "post": "Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-london-editorial",
+          "territory": "London",
+          "key": "editorial",
+          "at": -6,
+          "from": "2099-01-18",
+          "to": "2099-01-18",
+          "asset": null,
+          "post": "Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-london-trailer",
+          "territory": "London",
+          "key": "trailer",
+          "at": -4,
+          "from": "2099-02-01",
+          "to": "2099-02-01",
+          "asset": null,
+          "post": "Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-london-swaps",
+          "territory": "London",
+          "key": "swaps",
+          "at": -3,
+          "until": -1,
+          "from": "2099-02-08",
+          "to": "2099-02-28",
+          "asset": null,
+          "post": "Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-london-launch",
+          "territory": "London",
+          "key": "launch",
+          "at": 0,
+          "from": "2099-03-01",
+          "to": "2099-03-01",
+          "asset": null,
+          "post": "Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-london-clips",
+          "territory": "London",
+          "key": "clips",
+          "at": 0,
+          "until": 8,
+          "from": "2099-03-01",
+          "to": "2099-05-02",
+          "asset": null,
+          "post": "Publish a clip of every episode with captions, and a full episode on YouTube.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-london-chart-window",
+          "territory": "London",
+          "key": "chart-window",
+          "at": 1,
+          "until": 4,
+          "from": "2099-03-08",
+          "to": "2099-04-04",
+          "asset": null,
+          "post": "Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-london-first-read",
+          "territory": "London",
+          "key": "first-read",
+          "at": 4,
+          "until": 8,
+          "from": "2099-03-29",
+          "to": "2099-05-02",
+          "asset": null,
+          "post": "Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-artwork-feed",
+          "territory": "Lagos",
+          "key": "artwork-feed",
+          "at": -8,
+          "until": -6,
+          "from": "2099-01-04",
+          "to": "2099-01-24",
+          "asset": null,
+          "post": "Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-editorial",
+          "territory": "Lagos",
+          "key": "editorial",
+          "at": -6,
+          "from": "2099-01-18",
+          "to": "2099-01-18",
+          "asset": null,
+          "post": "Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-trailer",
+          "territory": "Lagos",
+          "key": "trailer",
+          "at": -4,
+          "from": "2099-02-01",
+          "to": "2099-02-01",
+          "asset": null,
+          "post": "Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-swaps",
+          "territory": "Lagos",
+          "key": "swaps",
+          "at": -3,
+          "until": -1,
+          "from": "2099-02-08",
+          "to": "2099-02-28",
+          "asset": null,
+          "post": "Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-launch",
+          "territory": "Lagos",
+          "key": "launch",
+          "at": 0,
+          "from": "2099-03-01",
+          "to": "2099-03-01",
+          "asset": null,
+          "post": "Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-clips",
+          "territory": "Lagos",
+          "key": "clips",
+          "at": 0,
+          "until": 8,
+          "from": "2099-03-01",
+          "to": "2099-05-02",
+          "asset": null,
+          "post": "Publish a clip of every episode with captions, and a full episode on YouTube.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-chart-window",
+          "territory": "Lagos",
+          "key": "chart-window",
+          "at": 1,
+          "until": 4,
+          "from": "2099-03-08",
+          "to": "2099-04-04",
+          "asset": null,
+          "post": "Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-lagos-first-read",
+          "territory": "Lagos",
+          "key": "first-read",
+          "at": 4,
+          "until": 8,
+          "from": "2099-03-29",
+          "to": "2099-05-02",
+          "asset": null,
+          "post": "Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked.",
+          "channel": "YouTube",
+          "count": null,
+          "per": null,
+          "ruleId": "podcasts.calendar",
+          "grade": "not-researched"
         }
       ]
     },

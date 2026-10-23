@@ -26,6 +26,8 @@ export const launchModuleKeys = [
   // Every full plan: channels written by code, and short creative briefs (guides, never assets).
   'channels',
   'creative',
+  // The social content calendar: written by code from the release date, like the timeline.
+  'calendar',
   // A creative kit's sections.
   'hooks',
   'scripts',
@@ -323,6 +325,31 @@ export const partnerNoteSchema = z.object({
 });
 export type PartnerNote = z.infer<typeof partnerNoteSchema>;
 
+/** One row of the content calendar, for one territory on its lead channel. Written by code. */
+export const calendarRowSchema = z.object({
+  id: z.string().min(1),
+  /** The territory the row is for. Null when the plan has none. */
+  territory: z.string().nullable(),
+  key: z.string(),
+  /** Weeks from the release. Negative is before it. */
+  at: z.number().int(),
+  until: z.number().int().optional(),
+  /** `YYYY-MM-DD`, or null when the release date is not known. */
+  from: z.string().nullable(),
+  to: z.string().nullable(),
+  /** The kind of asset to post. Null where the rule names none. */
+  asset: z.string().nullable(),
+  post: z.string(),
+  channel: z.string(),
+  /** Posts, as the source states it. Null where there is no number. */
+  count: z.number().int().nullable(),
+  per: z.enum(['week', 'day', 'span']).nullable(),
+  /** The rule behind the row, and how far to lean on it. */
+  ruleId: z.string(),
+  grade: z.enum(['team', 'directional', 'not-researched']),
+});
+export type CalendarRow = z.infer<typeof calendarRowSchema>;
+
 export const launchPlanSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question. */
   scope: z.enum(['full', 'narrow']),
@@ -356,5 +383,7 @@ export const launchPlanSchema = z.object({
   calls: z.array(directionCallSchema).default([]),
   partners: z.array(partnerOptionSchema).default([]),
   partnerNotes: z.array(partnerNoteSchema).default([]),
+  /** The content calendar rows, for the table on the plan page. Plans saved before it have none. */
+  calendar: z.array(calendarRowSchema).default([]),
 });
 export type LaunchPlan = z.infer<typeof launchPlanSchema>;

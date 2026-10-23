@@ -333,3 +333,56 @@ describe('export of a partner brief', () => {
     expect(md).toContain('## A short pitch script');
   });
 });
+
+describe('export of the content calendar', () => {
+  it('carries the calendar rows by territory and the paid ads note', () => {
+    const brief = briefSchema.parse({ ...emptyBrief, places: [place('Lagos', 1.6)] });
+    const line = (id: string, text: string, group: string | null) => ({
+      id,
+      kind: 'playbook' as const,
+      text,
+      findingIds: [],
+      sourceIds: [],
+      names: [],
+      group,
+    });
+    const value = launchPlanSchema.parse({
+      scope: 'full',
+      sections: [
+        {
+          key: 'calendar',
+          title: 'Content calendar',
+          lines: [
+            line(
+              'calendar-lagos-exclusive',
+              'T-4: Offer the trailer to one outlet first.',
+              'Lagos',
+            ),
+            line(
+              'calendar-ads-1',
+              'Put about 80 percent behind creative that has worked.',
+              'Paid ads',
+            ),
+          ],
+        },
+      ],
+      comps: [],
+      findings: [],
+      dropped: [],
+      writer: 'template',
+    });
+    const output = presentOutput({
+      row: row(brief, value),
+      receipts: [],
+      category: 'film',
+      createdBy: 'Ada',
+      version: 1,
+      parentBrief: null,
+    });
+    const md = toMarkdown(output);
+    expect(md).toContain('## Content calendar');
+    expect(md).toContain('**Lagos**');
+    expect(md).toContain('Offer the trailer to one outlet first.');
+    expect(md).toContain('**Paid ads**');
+  });
+});
