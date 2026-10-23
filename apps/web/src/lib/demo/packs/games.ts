@@ -17,8 +17,8 @@ export const games: DemoPack = {
       'Region ranking, as lift over a neutral audience',
     ],
     thin: [
-      'Small indie titles. With few anchors the read rests on the studio and comp games',
-      'Niche genres with few comparable games',
+      'Small indie titles, planned from the studio and comp games',
+      'Niche genres, planned from the closest comparable games',
     ],
     none: ['Wishlists, sales, player counts and retention. You supply them for a fix'],
   },

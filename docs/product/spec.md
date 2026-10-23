@@ -52,7 +52,7 @@ One per category. Each is a configuration of the same runtime:
 | Plan modules | Which modules a plan can carry and the rules that pick them (`pickModules`), section titles, the budget convention |
 | Query catalog | The Qloo queries it runs and their context (§4.1, §4.2) |
 | Tool allowlist | Which engine tools it may call |
-| Coverage | Tests, where the read is less certain, and not supported lists shown on the category page |
+| Coverage | Tests, also handles, and what the team brings lists shown on the category page |
 
 A what-if is not a preset: the launch runtime changes places, comps, age or gender on the plan's saved inputs and reruns it. Results are read by the launch runtime (`results-read.ts`), and the launch plan and audit report shapes are in `packages/schema` (§6.1, §6.3).
 
@@ -628,7 +628,7 @@ The marketing and trust pages a signed out visitor sees.
 | `/how-it-works` | Describe it, the agent asks only what it must, tests each assumption, ends with a bottom line and receipts |
 | `/examples` | Three full read only sample outputs with every receipt openable: a Nigerian film planned for four territories, an Afrobeats album rollout and a podcast season sized to a micro budget, each a recorded run of the pipeline on the demo data (`apps/api/src/agent/examples.spec.ts` keeps them in step), picked with `?case=`. Built from the demo data and labelled as examples. The walkthrough video joins when it exists. `/example` redirects here |
 | `/use-cases` | Make a plan, check my plan, fix one that missed, and keep going (rival dates, what ifs, the creative kit). One page, a section for each |
-| `/categories` | One page for all five categories: what is tested, where it is less certain, what the team brings. The same content as the in app help dialog |
+| `/categories` | One page for all five categories: what is tested, what else it handles, what the team brings. The same content as the in app help dialog |
 | `/method` | How verdicts, lift, fit and confidence are computed, and what Oraqul never does (no forecasts). For people who judge the numbers |
 | `/trust` | What data goes where: only public names, places and age bands to Qloo, results stored as aggregates, roles. Separate from Method because the readers differ (a marketer or judge against a reviewer or legal) |
 | `/about` | Why it exists, the team, the global angle |

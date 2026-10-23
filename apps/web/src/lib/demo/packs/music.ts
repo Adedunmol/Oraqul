@@ -28,8 +28,8 @@ export const music: DemoPack = {
       'Support acts compared across the route cities',
     ],
     thin: [
-      'Venues and promoters. Oraqul has no venue data',
-      'New artists with a small catalogue. The read leans on sound alike artists and tags',
+      'Venues and promoters, matched to the audience once you name them',
+      'New artists, planned from sound alike artists and tags',
     ],
     none: ['Streams, ticket sales and pricing. You supply them for a fix.'],
   },

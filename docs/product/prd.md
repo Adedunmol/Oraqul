@@ -58,7 +58,7 @@ Media and entertainment is the one industry Oraqul serves. Its five categories a
 Hierarchy: Team, Category, Project, Job, Output.
 
 * **Team.** Members and roles. Plans, results and briefs are visible only to the team.
-* **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, where it is less certain, and what is not supported.
+* **Category.** A project belongs to exactly one. The agent reads it from the first message; in the app it is a filter on the project list. A category's list has a help button that says what Oraqul tests, what else it handles, and what the team brings.
 * **Project.** The launch. Holds inputs, threads and outputs.
 * **Job.** Plan, Audit, Fix (before or after launch). A job replies with a plan, a report or an answer. Scenario testing, rival date check and partner brief run inside a project.
 * **Output.** A saved result with its own details page, evidence and version.
