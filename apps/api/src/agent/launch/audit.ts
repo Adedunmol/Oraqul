@@ -326,6 +326,8 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     ),
     dropped,
     writer: written.by,
+    ruleChecks:
+      deps.config.ruleChecks?.(read, review.text, new Date().toISOString().slice(0, 10)) ?? [],
   };
 
   const moves = movesOf(items);

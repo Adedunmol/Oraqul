@@ -138,7 +138,7 @@ export function PromptBuilder() {
         >
           <Input
             id={`${uid}-release`}
-            label="Release date"
+            label={guide.dateLabel ?? 'Release date'}
             type="date"
             value={v.release}
             onChange={(e) => set('release', e.target.value)}
@@ -211,8 +211,8 @@ export function PromptBuilder() {
         </Group>
 
         <Group
-          title="Rival releases"
-          note="Real rivals with the day each opens. Oraqul checks how much of your audience each one shares."
+          title={`Rival ${guide.rivalLabel ?? 'releases'}`}
+          note="Real rivals with the day each opens. Oraqul checks how much of your audience each one shares, and for a live show whether it falls on your night or week."
         >
           {v.rivals.map((r, i) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: rows are edited in place and have no id
@@ -255,7 +255,7 @@ export function PromptBuilder() {
 
         <Group
           title="Already in place"
-          note="Partners you have signed stay in the plan. Channels you run are built on."
+          note="Partners you have signed stay in the plan. Brands you know are asked of Qloo beside the ones Oraqul proposes. The platforms you name are the ones the plan runs on."
         >
           <Input
             id={`${uid}-partners`}
@@ -265,8 +265,22 @@ export function PromptBuilder() {
             placeholder="MTN"
           />
           <Input
+            id={`${uid}-brands`}
+            label="Brands you already know"
+            value={v.brands}
+            onChange={(e) => set('brands', e.target.value)}
+            placeholder="A drinks brand, a bank"
+          />
+          <Input
+            id={`${uid}-tone`}
+            label="Content rating or tone"
+            value={v.tone}
+            onChange={(e) => set('tone', e.target.value)}
+            placeholder="R, violent crime"
+          />
+          <Input
             id={`${uid}-channels`}
-            label="Channels you already use"
+            label="Platforms to plan on"
             value={v.channels}
             onChange={(e) => set('channels', e.target.value)}
             placeholder="WhatsApp, Instagram"
@@ -372,6 +386,8 @@ function pick(p: Values): Partial<Values> {
     target: p.target,
     rivals: p.rivals,
     partners: p.partners,
+    brands: p.brands,
+    tone: p.tone,
     channels: p.channels,
     plan: p.plan,
   };

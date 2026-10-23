@@ -62,7 +62,7 @@ const SNACK: BrandCategory = {
 
 // Qloo has no brand category for apparel, hardware, ticketing, payments or banks, so those are kinds
 // of partner with no Qloo call. An unverified category stays listed with its probe note.
-export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<CategoryPartners>> = {
+export const CATEGORY_PARTNERS: Record<Category, Rule<CategoryPartners>> = {
   film: teamRule('partners.film', {
     brandCategories: [TELECOM, BEVERAGE, FOOD, BEAUTY],
     bKinds: ['food and drink', 'apparel', 'beauty', 'telecom bundles'],
@@ -121,6 +121,22 @@ export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<Category
       'a themed episode or segment made with the partner',
       'a live recording hosted at the partner’s space',
       'a listener offer announced on the show',
+    ],
+  }),
+  shows: teamRule('partners.shows', {
+    // Probed live 2026-10-23: ticketing and payments have no brand tag in Qloo, so they are kinds.
+    brandCategories: [BEVERAGE, TELECOM],
+    bKinds: ['title sponsor', 'drinks brand', 'ticketing and payments partner'],
+    cKinds: ['venue', 'creators', 'community groups'],
+    gets: [
+      'its name on the show page, the tickets and the stage or screen',
+      'a moment at the show, such as a bar, a stand or an announcement',
+      'content it can run on its own channels',
+    ],
+    ideas: [
+      'a presale or a ticket offer for the partner’s own customers',
+      'a branded bar or lounge at the venue on the night',
+      'a limited drop sold only at the show',
     ],
   }),
   games: teamRule('partners.games', {
@@ -208,7 +224,7 @@ export const FLAGSHIPS: string[] = [
 export const PARTNER_SEEDS = SEEDS.value;
 
 /** The brand categories Qloo may be asked for a category: only the probe-verified ones. */
-export function brandCategoriesFor(category: Exclude<Category, 'shows'>): string[] {
+export function brandCategoriesFor(category: Category): string[] {
   return CATEGORY_PARTNERS[category].value.brandCategories
     .filter((c) => c.verified)
     .map((c) => c.phrase);

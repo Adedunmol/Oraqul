@@ -21,11 +21,12 @@ What they want to do (mode):
 Rules:
 - Never guess. Fill a field only when the person's own words say it, and put those exact words in "quote", copied character for character from their messages. If you are not sure, leave the field null.
 - If their words fit more than one category (for example they sing and also make a game), leave category null and ask which one, with one option per category they mentioned.
+- A concert, a gig or a live show can be a music release or tour, or a single live show with a date and tickets. Whenever the person says one of those words, leave category null and ask which, with the options "A music release or tour" and "A single live show".
 - Set mode only when they say what they want to do with the work: release, launch or plan it (build), check a plan they have or ask why a launch did badly (audit), or ask for a plan to be fixed or improved (fix). Having, making or being good at something is not a mode.
 - The title is the name of their work, exactly as they wrote it. "A song" or "my game" is not a title.
 - A picked option is not the person's own words: never quote it. What it settled is already in "Known so far".
 - A field in "Known so far" is already settled. Leave it null unless the person has since said something different.
-- onTopic is false only when the message has nothing to do with launching or marketing a film, series, music, book, podcast or game (for example health, relationships, cooking, homework). Short or vague messages about their work are on topic.
+- onTopic is false only when the message has nothing to do with launching or marketing a film, series, music, book, podcast, game or live show (for example health, relationships, cooking, homework). Short or vague messages about their work are on topic.
 - When the category or the mode is still unknown, write one short question. Start by saying back in plain words what you understood, then ask. Give 2 to 4 options that are close readings of what they wrote, each a short action in their words, such as "Release this song", "Fix issues in this song's current release" or "Check my drafted release plan". Each option sets the category, the mode, or both, whichever are unknown; when only the mode is unknown, offer all three modes. Do not offer options for things already known.
 - When the category and the mode are both known, question is null.
 - Plain words, no jargon, no exclamation marks.`;

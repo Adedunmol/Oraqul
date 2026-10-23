@@ -141,6 +141,28 @@ import { ModelReader } from './router/model-reader.js';
 import { FallbackReader } from './router/router.js';
 import { ScriptedReader } from './router/scripted-reader.js';
 import { ROUTER_READER, RunService } from './run.service.js';
+import { ShowsAgent } from './shows/agent.js';
+import { ModelFollowUpReader as ModelShowsFollowUpReader } from './shows/follow-up.js';
+import {
+  FallbackQueryPlanner as FallbackShowsQueryPlanner,
+  ModelQueryPlanner as ModelShowsQueryPlanner,
+  ScriptedQueryPlanner as ScriptedShowsQueryPlanner,
+} from './shows/planner.js';
+import { FallbackShowsReader, ModelShowsReader, ScriptedShowsReader } from './shows/read.js';
+import {
+  FallbackReportWriter as FallbackShowsReportWriter,
+  ModelReportWriter as ModelShowsReportWriter,
+  TemplateReportWriter as TemplateShowsReportWriter,
+} from './shows/report-writer.js';
+import {
+  FallbackResearcher as FallbackShowsResearcher,
+  ModelResearcher as ModelShowsResearcher,
+} from './shows/research.js';
+import {
+  FallbackPlanWriter as FallbackShowsPlanWriter,
+  ModelPlanWriter as ModelShowsPlanWriter,
+  TemplatePlanWriter as TemplateShowsPlanWriter,
+} from './shows/writer.js';
 import {
   CHAT_SUMMARIZER,
   FallbackChatSummarizer,
@@ -365,6 +387,73 @@ const lookups = new LookupCache();
           standalone,
         });
 
+        // Live shows shares the tools, the results reader and the search; its readers, planner and
+        // writers carry the live shows prompts.
+        const scriptedShows = new ScriptedShowsReader();
+        const showsFollowUps = llm
+          ? new FallbackFollowUpReader(
+              new ModelShowsFollowUpReader(llm.model('agent'), llm.timeoutMs),
+              scriptedFollowUps,
+              (err) => logger.warn(`Model follow-up reader failed, using the scripted one: ${err}`),
+            )
+          : scriptedFollowUps;
+        const shows = new ShowsAgent({
+          reader: llm
+            ? new FallbackShowsReader(
+                new ModelShowsReader(llm.model('agent'), llm.timeoutMs),
+                scriptedShows,
+                (err) =>
+                  logger.warn(`Model reader failed, reading with the scripted reader: ${err}`),
+              )
+            : scriptedShows,
+          queries: llm
+            ? new FallbackShowsQueryPlanner(
+                new ModelShowsQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                new ScriptedShowsQueryPlanner(),
+                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+              )
+            : new ScriptedShowsQueryPlanner(),
+          writer: llm
+            ? new FallbackShowsPlanWriter(
+                new ModelShowsPlanWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateShowsPlanWriter(),
+                (err) => logger.warn(`Model writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateShowsPlanWriter(),
+          results,
+          report: llm
+            ? new FallbackShowsReportWriter(
+                new ModelShowsReportWriter(
+                  llm.model('writer'),
+                  llm.writerTimeoutMs,
+                  llm.writerOptions,
+                ),
+                new TemplateShowsReportWriter(),
+                (err) => logger.warn(`Model report writer failed, writing from templates: ${err}`),
+              )
+            : new TemplateShowsReportWriter(),
+          research:
+            llm && search
+              ? new FallbackShowsResearcher(
+                  new ModelShowsResearcher(search, llm.model('agent'), llm.writerTimeoutMs),
+                  (err) => logger.warn(`Web research failed, writing without it: ${err}`),
+                )
+              : new NoResearch(),
+          followUps: showsFollowUps,
+          tools,
+          plan: (id) => outputs.plan(id),
+          planner: planFor,
+          maxSteps,
+          analyst,
+          researchPlanner,
+          reviewer,
+          standalone,
+        });
+
         // Games shares the tools, the results reader and the search; its readers, planner and
         // writers carry the games prompts. Its scripted follow-up reader also reads a collab.
         const scriptedGames = new ScriptedGamesReader();
@@ -571,7 +660,7 @@ const lookups = new LookupCache();
           reviewer,
           standalone,
         });
-        return { ...placeholderAgents(), film, music, books, games, podcasts };
+        return { ...placeholderAgents(), film, music, books, games, podcasts, shows };
       },
     },
     {

@@ -91,6 +91,34 @@ export function withSeeds<P extends QueryPlanCore>(plan: P, band: BudgetBand, ci
   };
 }
 
+/**
+ * The brands the team already knows and wants considered, from a "Brands to consider:" line the
+ * Guide writes. They are asked of Qloo beside the model's own candidates, never signed.
+ */
+export function brandsFrom(text: string): string[] {
+  const line = text.match(/\bbrands to consider\s*:\s*([^\n]+)/i)?.[1] ?? '';
+  return line
+    .replace(/\.\s*$/, '')
+    .split(/\s*(?:,|;|\band\b)\s*/i)
+    .map((n) => n.trim())
+    .filter((n, i, all) => n && all.findIndex((x) => same(x, n)) === i)
+    .slice(0, 6);
+}
+
+/** Puts the team's own brands first among the candidates Qloo ranks in every city. */
+export function withTeamBrands<P extends QueryPlanCore>(plan: P, names: string[]): P {
+  if (names.length === 0) return plan;
+  const known = new Map(plan.brandCandidates.map((c) => [c.city, c.names]));
+  const cities = [...new Set([...plan.brandCandidates.map((c) => c.city), ...plan.cities])];
+  return {
+    ...plan,
+    brandCandidates: cities.map((city) => ({
+      city,
+      names: [...new Set([...names, ...(known.get(city) ?? [])])].slice(0, 8),
+    })),
+  };
+}
+
 /** How the work reads for a partner: a family or an adult tone, from the brief's own words. */
 export type Tone = 'family' | 'adult';
 

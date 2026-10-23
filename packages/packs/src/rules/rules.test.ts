@@ -14,6 +14,7 @@ import {
   platformsNamed,
   rules,
   SHARED_RULES,
+  SHOWS_PLAN_RULES,
   suggestPlatforms,
 } from './index';
 
@@ -129,6 +130,7 @@ describe('shared, partner and calendar rules', () => {
     PARTNER_RULES.pitch,
     ...Object.values(CALENDAR_RULES.categories),
     CALENDAR_RULES.ads,
+    ...Object.values(SHOWS_PLAN_RULES).flatMap((r) => (typeof r === 'string' ? [] : [r])),
   ];
 
   it('gives every rule a source, a grade and a date', () => {

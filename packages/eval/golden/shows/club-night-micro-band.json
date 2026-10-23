@@ -1,0 +1,72 @@
+{
+  "title": "After Hours",
+  "brief": "Launch plan for the club night \"After Hours\", an afrobeats DJ set by artist \"Sade Rhythm\", playing Lagos on 2099-06-20. A micro budget. Sound-alikes: \"Ada Lux\" and \"Kola Wave\".",
+  "replies": [
+    {
+      "text": "you choose"
+    }
+  ],
+  "expect": {
+    "headline": "Start in Lagos: that is where the act's audience is strongest among your cities.",
+    "assumptions": {
+      "a-place-lagos": "weak",
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-markets": ["Lagos"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "1/0",
+      "markets": "1/0",
+      "onsale": "0/7",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "venues": "1/0",
+      "finalpush": "0/5",
+      "channels": "0/1",
+      "creative": "0/4",
+      "calendar": "0/8",
+      "timeline": "0/4",
+      "budget": "0/4",
+      "measure": "0/6",
+      "risks": "1/1",
+      "gaps": "0/5"
+    },
+    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "grounding": {
+      "lines": 49,
+      "backed": 20,
+      "rankKept": 100,
+      "findingsUsed": 7,
+      "cities": {
+        "Lagos": 7
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Ticket sales and revenue",
+      "The release window (2099-06-20)",
+      "Acts that audience plays in Lagos"
+    ]
+  }
+}

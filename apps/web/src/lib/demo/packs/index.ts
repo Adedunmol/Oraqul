@@ -5,5 +5,6 @@ import { film } from './film';
 import { games } from './games';
 import { music } from './music';
 import { podcasts } from './podcasts';
+import { shows } from './shows';
 
-export const PACKS: Record<Category, DemoPack> = { film, music, books, podcasts, games };
+export const PACKS: Record<Category, DemoPack> = { film, music, books, podcasts, games, shows };

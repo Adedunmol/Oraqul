@@ -7,7 +7,10 @@ import type {
   LaunchModuleKey,
   LaunchSection,
   LaunchSectionKey,
+  PlanBand,
   QlooEntityType,
+  RuleCheck,
+  Signal,
   ThreadEvent,
 } from '@oraqul/schema';
 import type { Analyst } from './analyse.js';
@@ -29,6 +32,7 @@ export type AnchorType =
   | 'urn:entity:movie'
   | 'urn:entity:tv_show'
   | 'urn:entity:artist'
+  | 'urn:entity:person'
   | 'urn:entity:videogame'
   | 'urn:entity:podcast'
   | 'urn:entity:book';
@@ -109,7 +113,18 @@ export interface LaunchConfig<
     gaps(read: R, comps: { used: CompUsed[] }): LaunchSection;
     /** A calendar code builds from the release date and `today`, so no past date is advised. */
     timeline?(read: R, today: string): LaunchSection;
+    /**
+     * Sections only this category writes, by code, for the keys in `codeKeys` (Live shows' on-sale
+     * and final push). They are built from the date, the band and the signal's target.
+     */
+    extra?(read: R, ctx: { today: string; signal: Signal; band: PlanBand | null }): LaunchSection[];
   };
+  /** The sections `codeSections.extra` writes, so the writer is never asked for them. */
+  codeKeys?: readonly LaunchSectionKey[];
+  /** True where a rival counts by how near its date is to the show's (Live shows E6). */
+  clashByProximity?: boolean;
+  /** An audit's plan set beside the category's dated launch rules. Not a Qloo verdict. */
+  ruleChecks?(read: R, planText: string, today: string): RuleCheck[];
   /**
    * The launch beats a content calendar follows, where the category's calendar rule holds no rows
    * of its own (Books, Games, Podcasts). Chosen from the launch kind, like the timeline.

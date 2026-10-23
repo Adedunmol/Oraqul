@@ -102,6 +102,11 @@ export const rulesResponseSchema = z.object({
     ),
     pitch: ruleOf(z.object({ parts: z.array(z.string()), room: z.string() })),
   }),
+  /** The live show rules E1 to E8, each with its source. Their values vary, so they are free-form. */
+  shows: z.object({
+    version: z.string(),
+    rules: z.record(z.string(), ruleOf(z.unknown())),
+  }),
   calendar: z.object({
     version: z.string(),
     categories: z.record(

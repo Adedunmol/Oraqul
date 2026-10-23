@@ -86,6 +86,7 @@ const VERB: Record<Project['category'], string> = {
   books: 'Publish on',
   podcasts: 'Launch on',
   games: 'Launch on',
+  shows: 'Open on',
 };
 
 const ENDPOINT: Record<Exclude<EndpointKind, 'none'>, string> = {

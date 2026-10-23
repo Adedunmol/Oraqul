@@ -51,6 +51,10 @@ export const launchModuleKeys = [
   'guests',
   'live',
   'video',
+  // Live shows only. Code writes the first two from the show date and the on-sale rules.
+  'onsale',
+  'finalpush',
+  'venues',
   // Books only. Which of these a plan gets depends on the launch kind, the route and the readership.
   'comps',
   'adaptation',

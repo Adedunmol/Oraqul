@@ -284,6 +284,23 @@ describe('ScriptedReader', () => {
     expect(r.question?.options.map((o) => o.category)).toEqual(['music', 'games']);
   });
 
+  it('asks whether a concert or a gig is a music release or a live show', async () => {
+    for (const text of ['plan a concert in Lagos', 'I have a gig on 2027-03-12', 'a live show']) {
+      const r = await read(text);
+      expect(r.category, text).toBeNull();
+      expect(
+        r.question?.options.map((o) => o.category),
+        text,
+      ).toEqual(['music', 'shows']);
+    }
+  });
+
+  it('routes stand-up, club nights and stage plays straight to live shows, and a tour to music', async () => {
+    expect((await read('a stand-up night in Accra')).category?.value).toBe('shows');
+    expect((await read('our club night in London')).category?.value).toBe('shows');
+    expect((await read('an album tour')).category?.value).toBe('music');
+  });
+
   it('reads a fix even when it says release', async () => {
     expect((await read('fix issues in the current release of my album')).mode?.value).toBe('fix');
   });

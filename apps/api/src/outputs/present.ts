@@ -148,6 +148,8 @@ const LIMITS: Partial<Record<Category, string>> = {
     'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history, and holds age and gender for only about half of books. Sales, pre-orders, chart positions and ratings are not in Qloo. Every number comes from the comparable books you confirmed.',
   podcasts:
     'Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history. Downloads, chart positions, ratings and ad rates are not in Qloo. Every number comes from the comparable shows you confirmed.',
+  shows:
+    'Qloo shows current taste, not history. Ticket prices, venue capacity, ticket sales and event calendars are not in Qloo: the show date, the capacity, the price band and the rival dates are the ones you gave. Every audience number comes from the comparable acts you confirmed.',
 };
 
 const movesSchema = z.array(moveSchema);

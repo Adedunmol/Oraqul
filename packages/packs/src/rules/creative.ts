@@ -60,6 +60,17 @@ export const CREATIVE: Record<Category, Rule<CreativeRule>> = {
     ],
     proof: 'a rating or a listener quote',
   }),
+  shows: teamRule('shows.creative', {
+    asset: 'promo clip',
+    shots: [
+      'The act on stage or in rehearsal, held for two seconds.',
+      'The room or the venue the show is in, with the city named.',
+      'A line from the act, as text on screen.',
+      'A short moment from an earlier show or a rehearsal.',
+      'The date, the venue and the ticket link on screen for the last three seconds.',
+    ],
+    proof: 'a low tickets notice or a clip from an earlier show',
+  }),
   games: teamRule('games.creative', {
     asset: 'gameplay clip',
     shots: [

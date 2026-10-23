@@ -6,6 +6,7 @@ import type {
   ReportItem,
   ResultGap,
   ResultsComparison,
+  RuleCheck,
   Verdict,
 } from '@oraqul/schema';
 import { Confidence, ReceiptChip, VerdictPill } from '@oraqul/ui';
@@ -51,8 +52,51 @@ export function ReportDocument({
     <div className="font-read flex flex-col gap-10">
       <ReportItems report={report} onSource={onSource} />
       {report.results ? <ReportResults results={report.results} /> : null}
+      <RuleChecks checks={report.ruleChecks} />
       <ReportLines title="Risks" lines={report.risks} report={report} onSource={onSource} />
     </div>
+  );
+}
+
+// A rule check says whether the plan follows a launch rule. It is not a Qloo verdict, so it has its
+// own words and glyphs and no confidence.
+const RULE_STATUS: Record<RuleCheck['status'], { glyph: string; word: string; tone: string }> = {
+  follows: { glyph: '✓', word: 'Follows the rule', tone: 'text-holds' },
+  outside: { glyph: '!', word: 'Outside the rule', tone: 'text-warn' },
+  'not-stated': { glyph: '–', word: 'Not stated in the plan', tone: 'text-muted' },
+  'no-rule': { glyph: '·', word: 'No rule to check against', tone: 'text-muted' },
+};
+
+/** The plan's own dates and shares set beside the launch rules. Renders nothing without any. */
+export function RuleChecks({ checks }: { checks: RuleCheck[] }) {
+  if (checks.length === 0) return null;
+  return (
+    <section aria-labelledby="rule-checks" className="flex flex-col gap-3">
+      <h2 id="rule-checks" className="font-display text-[20px] font-semibold tracking-[-0.02em]">
+        Your plan against the rules
+      </h2>
+      <p className="text-[13px] text-muted">
+        Oraqul reads the dates and shares your plan states and sets them beside the launch rules.
+        This says whether the plan follows a rule, not whether it will work.
+      </p>
+      <ul className="flex flex-col gap-2">
+        {checks.map((c) => {
+          const s = RULE_STATUS[c.status];
+          return (
+            <li key={c.id} className="flex flex-col gap-1 rounded-xl bg-card px-4 py-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <b className="text-sm">{c.label}</b>
+                <span className={`text-[13px] font-semibold ${s.tone}`}>
+                  <span aria-hidden="true">{s.glyph} </span>
+                  {s.word}
+                </span>
+              </div>
+              <p className="text-[13px] text-muted">{c.why}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 

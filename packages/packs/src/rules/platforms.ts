@@ -49,6 +49,7 @@ export const CATEGORY_EXTRAS = teamRule<Record<Category, string[]>>('platforms.c
   books: ['Reddit', 'X'],
   podcasts: ['X', 'Reddit'],
   games: ['Reddit', 'Twitch', 'X'],
+  shows: ['Facebook', 'Snapchat', 'X'],
 });
 
 /** Platforms a market adds, after its own leaders. */

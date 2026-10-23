@@ -47,7 +47,7 @@ const GRADE_NOTE: Record<RuleSource['grade'], string | null> = {
  * holds none. One set of rows per territory, each on that territory's lead channel.
  */
 export function calendarRows(input: {
-  category: Exclude<Category, 'shows'>;
+  category: Category;
   release: string | null;
   today: string;
   territories: Territory[];
@@ -108,7 +108,7 @@ function when(row: CalendarRow): string {
 export function calendarSection(
   title: string,
   rows: CalendarRow[],
-  category: Exclude<Category, 'shows'>,
+  category: Category,
 ): LaunchSection {
   if (rows.length === 0) {
     return {

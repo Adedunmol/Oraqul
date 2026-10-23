@@ -54,7 +54,7 @@ const MUSIC_SOURCE = directional(
   'Blog-level advice for releases, not a measured result. The page behind each point is not recorded here.',
 );
 
-export const CALENDAR: Record<Exclude<Category, 'shows'>, Rule<CalendarRule>> = {
+export const CALENDAR: Record<Category, Rule<CalendarRule>> = {
   film: {
     id: 'film.calendar',
     source: FILM_SOURCE,
@@ -158,6 +158,18 @@ export const CALENDAR: Record<Exclude<Category, 'shows'>, Rule<CalendarRule>> = 
         },
       ],
     },
+  },
+  shows: {
+    id: 'shows.calendar',
+    source: {
+      kind: 'team',
+      label: 'Derived from the live show rules (E1 to E5)',
+      date: '2026-10-23',
+      grade: 'directional',
+      caveat:
+        'The rows follow the on-sale, presale and final push rules, which rest on a 2019 Eventbrite article and a secondhand ticketing blog figure. No Nigerian live event data was found. They state no post counts.',
+    },
+    value: { fromBeats: true, rows: [] },
   },
   books: { id: 'books.calendar', source: NOT_RESEARCHED, value: { fromBeats: true, rows: [] } },
   podcasts: {

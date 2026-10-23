@@ -91,6 +91,23 @@ export const resultsComparisonSchema = z.object({
 });
 export type ResultsComparison = z.infer<typeof resultsComparisonSchema>;
 
+/**
+ * A plan's own dates and shares set beside a launch rule (Live shows E1, E3, E4, E6). Code reads
+ * the figures the plan states and compares them with the rule. It is not a Qloo verdict and has no
+ * confidence: it says whether the plan follows the rule, never whether the plan will work.
+ */
+export const ruleCheckStatuses = ['follows', 'outside', 'not-stated', 'no-rule'] as const;
+export const ruleCheckSchema = z.object({
+  id: z.string().min(1),
+  /** The rule it is checked against, such as `shows.on-sale`. */
+  ruleId: z.string().min(1),
+  label: z.string().min(1),
+  status: z.enum(ruleCheckStatuses),
+  /** What the plan says and what the rule says, in words. */
+  why: z.string().min(1),
+});
+export type RuleCheck = z.infer<typeof ruleCheckSchema>;
+
 export const auditReportSchema = z.object({
   /** `post` when the launch is out and results were given. */
   phase: z.enum(['pre', 'post']),
@@ -104,5 +121,7 @@ export const auditReportSchema = z.object({
   sources: z.array(planSourceSchema).default([]),
   dropped: z.array(droppedLineSchema),
   writer: z.enum(['model', 'template']),
+  /** The plan set beside the launch rules, for categories that have dated rules. */
+  ruleChecks: z.array(ruleCheckSchema).default([]),
 });
 export type AuditReport = z.infer<typeof auditReportSchema>;

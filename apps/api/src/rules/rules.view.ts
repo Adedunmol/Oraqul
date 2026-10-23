@@ -10,6 +10,7 @@ import {
   PARTNER_RULES,
   rules,
   SHARED_RULES,
+  SHOWS_PLAN_RULES,
   TIER_LABEL,
 } from '@oraqul/packs';
 import { categories, type RulesResponse } from '@oraqul/schema';
@@ -50,6 +51,14 @@ export function rulesView(): RulesResponse {
       slots: PARTNER_RULES.slots,
       leadTime: PARTNER_RULES.leadTime,
       pitch: PARTNER_RULES.pitch,
+    },
+    shows: {
+      version: SHOWS_PLAN_RULES.version,
+      rules: Object.fromEntries(
+        Object.entries(SHOWS_PLAN_RULES).flatMap(([key, value]) =>
+          typeof value === 'object' && 'source' in value ? [[key, value]] : [],
+        ),
+      ),
     },
     calendar: {
       version: CALENDAR_RULES.version,

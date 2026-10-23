@@ -4,7 +4,7 @@ import type { StartMode } from '@oraqul/schema';
 // never change what a refusal or a fixed question says.
 
 export const OFF_TOPIC_REPLY =
-  "Oraqul works on launches for films, series, music, books, podcasts and games, so I can't help with that here. Tell me about a launch you're working on.";
+  "Oraqul works on launches for films, series, music, books, podcasts, games and live shows, so I can't help with that here. Tell me about a launch you're working on.";
 
 export const CATEGORY_PROMPT = 'Which category is this in?';
 export const MODE_PROMPT = 'What would you like to do?';

@@ -1,7 +1,8 @@
 import { placeVerdict } from '@oraqul/engine';
+import { SHOWS_PLAN_RULES } from '@oraqul/packs';
 import type { Confidence, Direction, DirectionCall, Territory, Verdict } from '@oraqul/schema';
 import { slug } from './brief.js';
-import type { Clash } from './clash.js';
+import type { Clash, Rival } from './clash.js';
 
 // A direction is the call on what to do, set by code from a value Qloo returned (hard rule 1).
 // The model never sets one. Okay, risky and avoid are the edges of the verdict rules in spec §5.
@@ -53,6 +54,64 @@ export function dateCalls(clash: Clash | null, release: string | null): Directio
       why: `${worst.rival} opens that week and shares ${Math.round(worst.overlap)} of your audience on a scale of 100.${say}`,
       findingIds: ['f-clash'],
       teamChoice,
+      territory: null,
+    };
+  });
+}
+
+const DAY = 86_400_000;
+
+/**
+ * One call per rival show date (E6), set by how near the date is to the show's own and, where Qloo
+ * scored the rival, by how much audience they share. A rival on the same night or in the same
+ * week is flagged; one further away is okay. A rival Qloo could not score is still flagged when it
+ * is that close, at the lowest confidence, because the date itself is the team's own. Direction
+ * only, never a forecast. Without a show date there is nothing to be near.
+ */
+export function showDateCalls(
+  clash: Clash | null,
+  rivals: Rival[],
+  show: string | null,
+): DirectionCall[] {
+  if (!show || rivals.length === 0) return [];
+  const { sameNightDays, sameWeekDays } = SHOWS_PLAN_RULES.clash.value;
+  const apart = (date: string) =>
+    Math.abs(Date.parse(`${date}T00:00:00Z`) - Date.parse(`${show}T00:00:00Z`)) / DAY;
+  return [...new Set(rivals.map((r) => r.date))].sort().map((date) => {
+    const near = apart(date);
+    const named = rivals.filter((r) => r.date === date).map((r) => r.title);
+    const scored = (clash?.lines ?? []).filter((l) => l.date === date);
+    const worst = [...scored].sort((a, b) => b.overlap - a.overlap)[0];
+    const measured = worst ? BAND_DIRECTION[worst.band] : null;
+    const sameNight = near <= sameNightDays;
+    const sameWeek = near <= sameWeekDays;
+    // On the same night even a small overlap is a risk; in the same week the overlap decides.
+    const direction: Direction = !sameWeek
+      ? 'okay'
+      : measured
+        ? sameNight && RANK[measured] < RANK.risky
+          ? 'risky'
+          : measured
+        : 'risky';
+    const when = sameNight
+      ? 'on the same night'
+      : sameWeek
+        ? 'in the same week'
+        : 'on another week';
+    const why = !sameWeek
+      ? `${named.join(' and ')} plays ${when}, so the two do not compete for the same night or week.`
+      : worst
+        ? `${worst.rival} plays ${when} and shares ${Math.round(worst.overlap)} of your audience on a scale of 100.${direction === 'avoid' ? ' Keep the date only with a campaign that sets the show apart, or move it.' : direction === 'risky' ? ' Possible, with a campaign that sets the show apart.' : ' Little shared audience.'}`
+        : `${named.join(' and ')} plays ${when}. Qloo could not measure how much audience it shares, so treat it as a risk until you have checked.`;
+    return {
+      id: `call-date-${date}`,
+      subject: 'date' as const,
+      name: date,
+      direction,
+      confidence: (worst && clash ? clash.confidence : 'lower') as Confidence,
+      why,
+      findingIds: worst ? ['f-clash'] : [],
+      teamChoice: date === show,
       territory: null,
     };
   });

@@ -31,6 +31,10 @@ export interface CategoryGuide {
   /** What the one signal is, so the target field can say what its number counts. */
   signal: string;
   unit: string;
+  /** What the date is called. Defaults to "Release date". */
+  dateLabel?: string;
+  /** What a rival is called. Defaults to "releases". */
+  rivalLabel?: string;
   extras: Extra[];
 }
 
@@ -109,6 +113,26 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
       { id: 'tags', label: 'Store tags', placeholder: 'Roguelike, Indie' },
     ],
   },
+  shows: {
+    name: 'Live shows',
+    noun: 'show',
+    compsLabel: 'Comparable acts',
+    signal: 'Tickets sold against capacity',
+    unit: 'percent of capacity',
+    dateLabel: 'Show date',
+    rivalLabel: 'shows',
+    extras: [
+      {
+        id: 'type',
+        label: 'Show type',
+        placeholder: 'Concert, comedy night, club night, stage play or screening',
+      },
+      { id: 'capacity', label: 'Venue capacity', placeholder: '500' },
+      { id: 'price', label: 'Ticket price band', placeholder: 'Under $30' },
+      { id: 'onsale', label: 'On sale', placeholder: '6 weeks before the show' },
+      { id: 'support', label: 'Support acts already booked', placeholder: 'Names' },
+    ],
+  },
 };
 
 export interface Rival {
@@ -130,6 +154,10 @@ export interface Values {
   target: string;
   rivals: Rival[];
   partners: string;
+  /** Brands the team already knows and wants considered. Not signed. */
+  brands: string;
+  /** The content rating or tone of the work, which a partner is checked against. */
+  tone: string;
   channels: string;
   extras: Record<string, string>;
   /** The plan to check or fix, pasted as written. */
@@ -150,6 +178,8 @@ export const emptyValues = (category: Category = 'film'): Values => ({
   target: '',
   rivals: [{ title: '', date: '' }],
   partners: '',
+  brands: '',
+  tone: '',
   channels: '',
   extras: {},
   plan: '',
@@ -197,7 +227,17 @@ export const DETAILS = [
     label: 'Partners already signed',
     why: 'They stay in the plan and are never suggested back.',
   },
-  { id: 'channels', label: 'Channels you already use', why: 'The channel plan builds on them.' },
+  {
+    id: 'brands',
+    label: 'Brands you already know',
+    why: 'They are asked of Qloo beside the ones Oraqul proposes, and never signed for you.',
+  },
+  {
+    id: 'tone',
+    label: 'Content rating or tone',
+    why: 'A partner that does not fit the content is flagged.',
+  },
+  { id: 'channels', label: 'Platforms to plan on', why: 'The plan runs on these platforms.' },
 ] as const;
 export type DetailId = (typeof DETAILS)[number]['id'];
 
@@ -211,6 +251,8 @@ export function filled(v: Values): Record<DetailId, boolean> {
     target: /\d/.test(v.target),
     ages: v.ages.trim() !== '',
     partners: words(v.partners).length > 0,
+    brands: words(v.brands).length > 0,
+    tone: v.tone.trim() !== '',
     channels: words(v.channels).length > 0,
   };
 }
@@ -248,6 +290,10 @@ export function buildBrief(v: Values): string {
     out.push(`Rivals: ${rivals.map((r) => `${r.title.trim()} on ${r.date}`).join('; ')}`);
   const partners = words(v.partners);
   if (partners.length) out.push(`Partners already signed: ${joined(partners)}.`);
+  const brands = words(v.brands);
+  if (brands.length) out.push(`Brands to consider: ${joined(brands)}.`);
+  const tone = v.tone.trim().replace(/[.]+$/, '');
+  if (tone) out.push(`Content rating or tone: ${tone}.`);
   const channels = words(v.channels);
   if (channels.length) out.push(`Channels we already use: ${joined(channels)}.`);
   if (v.mode !== 'build' && v.plan.trim()) out.push('', v.plan.trim());

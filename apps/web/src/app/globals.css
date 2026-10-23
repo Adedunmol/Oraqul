@@ -55,6 +55,7 @@
   --cat-books: #0e8a78;
   --cat-podcasts: #7a46d8;
   --cat-games: #dc6410;
+  --cat-shows: #2a7fc1;
   --canvas: #f2f2f4;
   --primary: #2f3d7a;
   --primary-hover: #202c60;
@@ -113,6 +114,7 @@
     --cat-books: #2cc0a8;
     --cat-podcasts: #a888f6;
     --cat-games: #f59a48;
+    --cat-shows: #5fb0ee;
     --canvas: #0e0e10;
     --primary: #909cd7;
     --primary-hover: #8a98d5;
@@ -167,6 +169,7 @@
   --cat-books: #2cc0a8;
   --cat-podcasts: #a888f6;
   --cat-games: #f59a48;
+  --cat-shows: #5fb0ee;
   --canvas: #0e0e10;
   --primary: #909cd7;
   --primary-hover: #8a98d5;
@@ -198,6 +201,9 @@
 }
 [data-cat="games"] {
   --cat: var(--cat-games);
+}
+[data-cat="shows"] {
+  --cat: var(--cat-shows);
 }
 
 @theme inline {
