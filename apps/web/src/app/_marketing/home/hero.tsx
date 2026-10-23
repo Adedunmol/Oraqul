@@ -9,8 +9,9 @@ import { HeroOrbit } from './hero-orbit';
 const at = (ms: number): CSSProperties => ({ animationDelay: `${ms}ms` });
 
 /**
- * Few words on purpose: the headline names the field and the promise. What the product is comes
- * from the art, the agent hub with the five kinds of media around it, and the light behind it.
+ * Few words on purpose: the headline names the promise and one lead line names the product. What
+ * the product looks like comes from the art, the agent hub with the five kinds of media around it,
+ * and the light behind it.
  */
 export function Hero() {
   return (
@@ -27,21 +28,20 @@ export function Hero() {
         <HeroOrbit />
         <h1
           id="hero-title"
-          className="max-w-[14.5ch] font-display text-[clamp(44px,5.8vw,84px)] font-semibold leading-[0.98] tracking-[-0.05em] text-balance"
+          className="max-w-[15ch] font-display text-[clamp(44px,5.8vw,84px)] font-semibold leading-[0.98] tracking-[-0.05em] text-balance"
         >
           <span className="mk-word" style={at(0)}>
-            Launch plans,
+            Launch to the audience
           </span>{' '}
           <span className="mk-word" style={at(90)}>
-            with the <span className="text-accent">proof</span> attached.
+            that&apos;s <span className="text-accent">actually there.</span>
           </span>
         </h1>
 
         <div className="mk-word" style={at(300)}>
           <p className="max-w-[44ch] text-balance text-[clamp(17px,1.5vw,20px)] leading-[1.5] text-ink/75">
-            Launch plans grounded in what audiences actually like, for film, music, books, podcasts
-            and games. One plan per territory, worked back from your date, with the Qloo taste data
-            behind every claim.
+            An AI agent that plans your launch for each market, grounded in real audience taste
+            data.
           </p>
         </div>
 
