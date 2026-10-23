@@ -283,7 +283,44 @@ function reportDoc(output: Output, report: AuditReport): PlanDoc {
 }
 
 /** What an output exports as: an audit as a report, a plan as a plan, anything else as no document. */
+/** A partner brief with its pitch kit, as a document the team edits before it sends anything. */
+function partnerDoc(output: Output): PlanDoc | null {
+  const partner =
+    output.brief.partners.find((p) => p.id === output.focusIds[0]) ?? output.brief.partners[0];
+  const kit = partner?.kit;
+  if (!partner || !kit) return null;
+  const receipt = output.receipts.find((r) => r.lineId === partner.id);
+  const lines = (items: string[]): DocSection['groups'] => [
+    { name: null, lines: items.map((text) => ({ text, refs: [] })) },
+  ];
+  return {
+    title: output.title,
+    byline: `Partner brief · ${output.createdBy} · ${day(output.createdAt)} · Draft only. Oraqul never sends it.`,
+    inBrief: [{ text: kit.why.text, refs: receipt ? [1] : [] }],
+    sections: [
+      { title: 'What the partner gets', groups: lines(kit.gets) },
+      { title: 'The ask', groups: lines([kit.ask]) },
+      { title: 'A proposed timeline', groups: lines(kit.timeline) },
+      { title: 'Ideas to start from', groups: lines([...kit.ideas, kit.room]) },
+      { title: 'A short pitch script', groups: lines([kit.script]) },
+    ],
+    sources: receipt
+      ? [
+          {
+            n: 1,
+            text: kit.why.text,
+            from:
+              receipt.source === 'demo'
+                ? 'Demo data, not Qloo.'
+                : `Qloo taste data, ${day(receipt.calledAt)}.`,
+          },
+        ]
+      : [],
+  };
+}
+
 function docOf(output: Output): PlanDoc | null {
+  if (output.kind === 'partner') return partnerDoc(output);
   if (output.kind === 'audit' && output.report) return reportDoc(output, output.report);
   return output.plan ? planDoc(output, output.plan) : null;
 }

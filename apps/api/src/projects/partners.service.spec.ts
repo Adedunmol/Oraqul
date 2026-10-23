@@ -111,7 +111,10 @@ describe('the team’s partners on a saved plan', () => {
     expect(JSON.stringify(saved?.plan)).toContain('Corner Cafe');
     const removed = await service.set(outputId, ['Verve']);
     expect(removed.partners.some((p) => p.name === 'Corner Cafe')).toBe(false);
-    expect(removed.partners.find((p) => p.name === 'Verve')?.fit).toMatchObject({ place: 2, of: 3 });
+    expect(removed.partners.find((p) => p.name === 'Verve')?.fit).toMatchObject({
+      place: 2,
+      of: 3,
+    });
   });
 
   it('refuses a kit, which has no partners to edit', async () => {

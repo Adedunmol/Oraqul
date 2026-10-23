@@ -1,0 +1,18 @@
+{
+  "name": "Fizz Cola",
+  "type": "Brand",
+  "kit": {
+    "whyCitesFinding": true,
+    "gets": 3,
+    "ideas": 2,
+    "timeline": [
+      "Now (DATE): send the pitch and ask for a call.",
+      "Before the campaign starts: agree the idea, and what each side makes and pays for.",
+      "Release: announce together on both sides’ channels.",
+      "After release: share what happened with the partner."
+    ],
+    "ask": "Ask Fizz Cola for a call to talk through what a partnership could be, and say whether you are hoping for cash, product, a venue or reach. Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship.",
+    "room": "These are starting ideas. Ask the partner what they would build, and leave the creative open to them.",
+    "scriptIsDraft": true
+  }
+}

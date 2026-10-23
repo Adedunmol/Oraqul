@@ -7,8 +7,9 @@
  * Only public names go to Qloo. The output names entities so it can be judged by eye and saves
  * nothing. About 60 calls.
  */
-import { insights, lookup, QlooClient, QlooError, resolveBundleOutputSchema, tools } from '../src';
+
 import type { SeenEntity, ToolContext } from '../src';
+import { insights, lookup, QlooClient, QlooError, resolveBundleOutputSchema, tools } from '../src';
 
 const apiKey = process.env.QLOO_API_KEY;
 const baseUrl = process.env.QLOO_BASE_URL;
@@ -21,8 +22,7 @@ const qloo = new QlooClient({ apiKey, baseUrl, callBudget: 120, timeoutMs: 120_0
 const ctx: ToolContext = { qloo, source: 'qloo', entities: new Map<string, SeenEntity>() };
 
 const seeds = (
-  process.env.PROBE_SEEDS ??
-  'Guinness,MTN,Indomie,Verve,QuickTeller,EE,Monzo,Lyft,Cash App,Bolt'
+  process.env.PROBE_SEEDS ?? 'Guinness,MTN,Indomie,Verve,QuickTeller,EE,Monzo,Lyft,Cash App,Bolt'
 ).split(',');
 const phrases = (
   process.env.PROBE_CATEGORIES ??
@@ -44,7 +44,11 @@ async function step(label: string, run: () => Promise<void>): Promise<void> {
 
 await step('Seed brands, by exact name', async () => {
   for (const name of seeds) {
-    const { data } = await lookup.search(qloo, { query: name, types: ['urn:entity:brand'], take: 3 });
+    const { data } = await lookup.search(qloo, {
+      query: name,
+      types: ['urn:entity:brand'],
+      take: 3,
+    });
     const top = data.results.map((r) => `${r.name} (${r.popularity ?? 'no popularity'})`);
     const exact = data.results.some((r) => r.name.toLowerCase() === name.toLowerCase());
     console.log(`${name}: ${exact ? 'EXACT' : 'no exact match'} | ${top.join(' | ') || '(none)'}`);

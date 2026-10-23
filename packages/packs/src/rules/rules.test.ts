@@ -11,9 +11,9 @@ import {
   FLAGSHIPS,
   leadChannels,
   PARTNER_RULES,
-  SHARED_RULES,
   platformsNamed,
   rules,
+  SHARED_RULES,
   suggestPlatforms,
 } from './index';
 

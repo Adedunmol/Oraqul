@@ -290,3 +290,46 @@ describe('exports of the launch rules', () => {
     expect(md).toContain('Tier B, category and integration');
   });
 });
+
+describe('export of a partner brief', () => {
+  it('writes the pitch kit as a document, with the ask, the timeline and the room for the partner', () => {
+    const brief = briefSchema.parse({
+      ...emptyBrief,
+      places: [place('Lagos', 1.6)],
+      partners: [
+        {
+          id: 'partner-bolt',
+          name: 'Bolt',
+          type: 'Brand',
+          fits: 'The comps’ audience',
+          evidence: 'Fit 72',
+          draft: 'Hi Bolt team',
+          kit: {
+            why: { text: 'Bolt fits this audience: fit 72.', findingIds: ['f-partner-bolt'] },
+            gets: ['A mention on the cinema ticket'],
+            ask: 'Ask Bolt for a call.',
+            timeline: ['Now (2026-10-23): send the pitch.'],
+            ideas: ['A premiere evening hosted with the partner'],
+            script: 'Hi Bolt team',
+            room: 'Leave the creative open to them.',
+          },
+        },
+      ],
+    });
+    const output = presentOutput({
+      row: { ...row(brief, null, 'partner'), title: 'Partner brief: Bolt' },
+      receipts: [],
+      category: 'film',
+      createdBy: 'Ada',
+      version: 1,
+      parentBrief: null,
+    });
+    const md = toMarkdown(output);
+    expect(md).toContain('Draft only. Oraqul never sends it.');
+    expect(md).toContain('## What the partner gets');
+    expect(md).toContain('Ask Bolt for a call.');
+    expect(md).toContain('## A proposed timeline');
+    expect(md).toContain('Leave the creative open to them.');
+    expect(md).toContain('## A short pitch script');
+  });
+});

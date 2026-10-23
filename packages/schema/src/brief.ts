@@ -72,6 +72,25 @@ export const rivalDateSchema = z.object({
   advice: z.string(),
 });
 
+/**
+ * A pitch kit for a partner, in text only: why the audience fits, what the partner gets, the ask,
+ * a timeline, a couple of ideas and a short script. Oraqul never sends any of it.
+ */
+export const partnerKitSchema = z.object({
+  /** The one grounded line: why this audience and this partner fit, citing the finding. */
+  why: z.object({ text: z.string(), findingIds: z.array(z.string()) }),
+  /** What the partner gets, through its own channels: on pack, in store, digital and events. */
+  gets: z.array(z.string()),
+  ask: z.string(),
+  timeline: z.array(z.string()),
+  /** Starting ideas. The partner is invited to shape them (T4). */
+  ideas: z.array(z.string()),
+  script: z.string(),
+  /** The room the pitch leaves the partner. */
+  room: z.string(),
+});
+export type PartnerKit = z.infer<typeof partnerKitSchema>;
+
 export const partnerSchema = z.object({
   id: lineIdSchema,
   name: z.string(),
@@ -80,6 +99,8 @@ export const partnerSchema = z.object({
   evidence: z.string(),
   /** Outreach text for a person to send. Oraqul never sends it. */
   draft: z.string(),
+  /** The pitch kit. Partner briefs saved before it have none. */
+  kit: partnerKitSchema.nullable().optional(),
 });
 
 export const riskSchema = z.object({

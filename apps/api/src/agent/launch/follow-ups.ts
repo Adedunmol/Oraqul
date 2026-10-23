@@ -34,8 +34,10 @@ import { baselineFor } from './baseline.js';
 import { round2, slug } from './brief.js';
 import { checkLine } from './check.js';
 import type { LaunchConfig } from './config.js';
+import { partnerKit } from './partners.js';
 import { briefText, type LaunchInputs, type PlanRun } from './pipeline.js';
 import type { LaunchRead } from './read-core.js';
+import { releaseDate } from './text.js';
 import type { PlanWriter, WrittenLine } from './writer.js';
 
 export interface FollowUpDeps<R extends LaunchRead = LaunchRead> {
@@ -548,6 +550,17 @@ export async function runPartnerBrief<R extends LaunchRead>(
       fits: segment?.name ?? 'The comps’ audience',
       evidence: `Fit ${fit}: lift ${round2(value)} over ${baseline.map((b) => b.name).join(', ')}, in the same call`,
       draft: draftText,
+      kit: partnerKit({
+        name,
+        category: deps.config.category,
+        why: {
+          text: `${name} fits this audience: fit ${fit}, lift ${round2(value)} over ${baseline.map((b) => b.name).join(', ')} in the same Qloo call.`,
+          findingIds: [`f-partner-${slug(name)}`],
+        },
+        script: draftText,
+        release: releaseDate(inputs.read.window),
+        today: new Date().toISOString().slice(0, 10),
+      }),
     };
     const lineReceipt: Receipt = {
       ...call,
@@ -673,6 +686,17 @@ async function artistBrief<R extends LaunchRead>(
     fits: city ? `The comps' audience in ${city}` : "The comps' audience",
     evidence: `Ranked ${place} of ${music.entities.length} in: ${music.text}`,
     draft,
+    kit: partnerKit({
+      name,
+      category: deps.config.category,
+      why: {
+        text: `${name} ranks ${place} of ${music.entities.length} with this audience${city ? ` in ${city}` : ''}.`,
+        findingIds: [music.id],
+      },
+      script: draft,
+      release: releaseDate(inputs.read.window),
+      today: new Date().toISOString().slice(0, 10),
+    }),
   };
   const call = plan.receipts.find((r) => r.lineId === music.id);
   if (!call) return done('error');

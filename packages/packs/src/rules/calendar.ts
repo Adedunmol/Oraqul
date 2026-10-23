@@ -42,8 +42,7 @@ const NOT_RESEARCHED: RuleSource = {
   label: 'Oraqul team rule',
   date: '2026-10-23',
   grade: 'not-researched',
-  caveat:
-    'Not researched. The rows come from the kind profile beats and carry no post counts.',
+  caveat: 'Not researched. The rows come from the kind profile beats and carry no post counts.',
 };
 
 const FILM_SOURCE = directional(

@@ -17,7 +17,7 @@ export class PartnersService {
   async set(outputId: string, names: string[]): Promise<PartnersState> {
     const { output, project } = await this.projects.outputDetail(outputId);
     const plan = output.plan;
-    if (!plan || plan.scope !== 'full' || output.kind === 'creative') {
+    if (plan?.scope !== 'full' || output.kind === 'creative') {
       throw new BadRequestException('Only a full plan has partners to edit');
     }
     const next = withTeamPartners(plan, names, project.category);

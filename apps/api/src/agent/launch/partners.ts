@@ -14,6 +14,7 @@ import type {
   Finding,
   LaunchPlan,
   PartnerFlag,
+  PartnerKit,
   PartnerNote,
   PartnerOption,
   Territory,
@@ -406,5 +407,39 @@ export function withTeamPartners(
     partners: reserve([...added, ...rest]),
     calls,
     territories: withPartnerIds(plan.territories, calls),
+  };
+}
+
+/**
+ * The pitch kit for one partner (T3, T4). Code writes it from the category's partner rules, the
+ * release date and today; the only line that claims anything is `why`, which cites the finding
+ * that ranked the partner. The ideas are offered for the partner to shape, not to accept.
+ */
+export function partnerKit(input: {
+  name: string;
+  category: Category;
+  why: { text: string; findingIds: string[] };
+  script: string;
+  release: string | null;
+  today: string;
+}): PartnerKit {
+  const { name, category, why, script, release, today } = input;
+  const own = CATEGORY_PARTNERS[category].value;
+  const lead = PARTNER_RULES.leadTime.value;
+  return {
+    why,
+    gets: own.gets,
+    ask: `Ask ${name} for a call to talk through what a partnership could be, and say whether you are hoping for cash, product, a venue or reach. ${lead.barter}`,
+    timeline: [
+      `Now (${today}): send the pitch and ask for a call.`,
+      'Before the campaign starts: agree the idea, and what each side makes and pays for.',
+      release
+        ? `Release (${release}): announce together on both sides’ channels.`
+        : 'Release: announce together on both sides’ channels.',
+      'After release: share what happened with the partner.',
+    ],
+    ideas: own.ideas.slice(0, 2),
+    script,
+    room: PARTNER_RULES.pitch.value.room,
   };
 }

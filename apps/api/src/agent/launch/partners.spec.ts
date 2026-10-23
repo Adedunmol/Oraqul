@@ -4,6 +4,7 @@ import {
   flagshipNames,
   flagsOf,
   marketsOf,
+  partnerKit,
   partnerNotes,
   partnerOptions,
   tierOf,
@@ -216,5 +217,43 @@ describe('the team’s own partners on a saved plan', () => {
     const names = ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10'];
     const next = withTeamPartners(planWith([]), names, 'film');
     expect(next.partners.filter((p) => p.from === 'team')).toHaveLength(names.length);
+  });
+});
+
+describe('the partner pitch kit (T3, T4)', () => {
+  const kit = (release: string | null) =>
+    partnerKit({
+      name: 'Page Turner Coffee',
+      category: 'books',
+      why: { text: 'Page Turner Coffee ranks 1 of 4.', findingIds: ['f-brands-london'] },
+      script: 'Hi team',
+      release,
+      today: '2026-10-23',
+    });
+
+  it('names what the partner gets, the ask, a timeline, one or two ideas and a script', () => {
+    const k = kit('2027-06-01');
+    expect(k.why.findingIds).toEqual(['f-brands-london']);
+    expect(k.gets.length).toBeGreaterThan(0);
+    expect(k.ask).toContain('Page Turner Coffee');
+    expect(k.ask).toContain('cash');
+    expect(k.timeline[0]).toContain('2026-10-23');
+    expect(k.timeline.some((t) => t.includes('2027-06-01'))).toBe(true);
+    expect(k.ideas.length).toBeGreaterThanOrEqual(1);
+    expect(k.ideas.length).toBeLessThanOrEqual(2);
+    expect(k.script).toBe('Hi team');
+  });
+
+  it('leaves the partner room to shape the idea, and says the date plainly when there is none', () => {
+    const k = kit(null);
+    expect(k.room).toContain('leave the creative open');
+    expect(k.timeline.some((t) => t.startsWith('Release:'))).toBe(true);
+  });
+
+  it('claims nothing about taste or assets outside the one grounded line', () => {
+    const k = kit('2027-06-01');
+    for (const t of [...k.gets, k.ask, ...k.timeline, ...k.ideas, k.room]) {
+      expect(/\b(fans?|loves?|likes?|affinity|taste)\b/i.test(t), t).toBe(false);
+    }
   });
 });
