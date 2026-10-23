@@ -44,7 +44,8 @@ Goals
 
 Non goals
 
-* Box office, sales, stream, download, wishlist or revenue forecasts.
+* Box office, sales, stream, download, wishlist or revenue forecasts. A target is a goal the team sets, or a sourced benchmark, and is never a prediction.
+* Generating ads, trailers, images or video. Oraqul writes the scripts, shot lists and briefs a team needs, and a person makes the creative.
 * Pricing advice and audience headcounts.
 * Release calendars from Qloo. Users supply their own dates and rivals.
 * Social media metrics.
@@ -72,7 +73,7 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 
 | ID | Requirement | P |
 |---|---|---|
-| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, comps, age band, cast, soundtrack, route, budget, partners and the job. It asks only when the minimum is missing: a description or genre, and at least one market. One exception comes after delivery: when the red team's last draft still has a blocking issue that only the person can settle, the plan is saved and one question follows ("Leave it as it is", or type the answer). Comps the user names lead; with fewer than 3 the agent proposes more, kept apart ("You named 2. I added 2 more."). A same-name Qloo match is settled by code from year, country and popularity, and the plan states the choice. The user corrects anything by typing. | P0 |
+| C1 | One chat entry. The user describes the launch, where, and what they have. The agent reads category, kind, genre, places, window, comps, age band, cast, soundtrack, route, budget, partners and the job. It asks only when the minimum is missing: a description or genre, and at least one market. A full plan whose brief states no budget or band also asks one band card before any research (R6). One exception comes after delivery: when the red team's last draft still has a blocking issue that only the person can settle, the plan is saved and one question follows ("Leave it as it is", or type the answer). Comps the user names lead; with fewer than 3 the agent proposes more, kept apart ("You named 2. I added 2 more."). A same-name Qloo match is settled by code from year, country and popularity, and the plan states the choice. The user corrects anything by typing. | P0 |
 | C2 | The agent asks question cards instead of forms: single, multiple, text, split sliders, date, file, confirm, and entity match. | P0 |
 | C3 | The agent trace is shown live and kept collapsed afterwards. Findings appear in it as plain sentences while the queries run. | P0 |
 | C4 | A project holds several threads, shown as chats beside the project's current chat. A new chat asks whether to use the project's memory or stand alone. One that uses memory starts on the current plan and the project's notes; a standalone chat sees none of it. | P0 |
@@ -91,7 +92,7 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | J2 | Audit: read a pasted or uploaded plan, extract stated and unstated assumptions, test each, mark the source in the plan, and find stronger alternatives for what is weak or broken, without ever advising a team to drop its own choice. The reply is a report: assumptions by verdict, risks, worth a look, and what to do about each. After launch, accept the results and set them against the plan to show why it fell short. Any report offers Fix this plan in the same project. | P0 |
 | J3 | Fix, before launch: audit the plan, save the report, and write a new plan from it. Fix, after launch: ask whether it is out, accept results as aggregates by form, file or chat, compare planned and actual audience, find the assumption that broke, and write a new plan around the audience that is there. A fix saves the report and then the plan, and the plan keeps every city and comp the team chose. | P0 |
 | J4 | Scenario: change one assumption, rerun only what depends on it, mark changed lines with what they were before. | P0 |
-| J5 | Rival date check: user supplies rivals and dates, or uses a public calendar. Oraqul measures shared audience with each rival from one ranking call. | P1 |
+| J5 | Rival date check: the user supplies rivals and dates, in the brief or later in the chat. Qloo has no release calendar. Oraqul measures shared audience with each rival from one ranking call, and in a build calls each date okay, risky or avoid (R5). | P1 |
 | J6 | Partner brief: a draft message that cites its findings. Never sent. | P1 |
 | J7 | Answer: a question about the plan is answered from its findings, with the same line kinds and check. If the answer would change a decision, the agent offers it as a scenario. | P0 |
 
@@ -153,14 +154,36 @@ The product has many new words and a deep structure, so it must explain itself b
 |---|---|---|
 | U1 | The overview opens with a message box. Three optional hints under it, Make a plan, Check my plan, Fix my plan, change the prompt and say what to bring. The first message creates the project. The agent states the job it read in its first reply and the user corrects it by typing ("check my plan instead"); it does not ask a confirm card. | P0 |
 | U2 | Every output tab opens with one plain sentence on what it shows. The Assumptions and Evidence notes explain Holds, Breaks and receipts. | P0 |
-| U3 | A launch plan opens on Plan, then Audience, Assumptions and Evidence. Other outputs show Summary, Plan, Assumptions and Evidence by default, plus the current tab, and the rest sit under More. Could not test sits at the end of Assumptions; Gaps closes the plan. | P0 |
+| U3 | A launch plan opens on Plan, then Audience, Assumptions and Evidence. Other outputs show Summary, Plan, Assumptions and Evidence by default, plus the current tab, and the rest sit under More. Could not test sits at the end of Assumptions; To sharpen this plan sits beneath the plan. | P0 |
 | U4 | Words stay plain. Verdicts are Holds, Weak, Breaks and Could not test. No jargon without a one line explanation beside it. | P0 |
 | U5 | Search on Ctrl K or Cmd K reaches categories, projects, outputs and actions. Number keys pick options on question cards. Both are extras, never the only way. | P1 |
 | U7 | Motion marks arrival and progress only: agent text appearing, the trace advancing, views opening. Reduced motion settings are respected. | P1 |
 
 ### 6.9 Look and feel
 
-Calm and clear, with a wide geometric grotesque (Space Grotesk) for titles and the bottom line and a clear sans (Geist) for everything else, and a more characterful face only on the landing page, and solid cards that stand out from a neutral canvas by fill and a small lift, with no outlines, solid buttons, small corners and few icons, like an enterprise product people trust with detail. Colour is used for verdicts and for the small category icons, nothing else. No gradients, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
+Calm and clear, with a wide geometric grotesque (Space Grotesk) for titles and the bottom line and a clear sans (Geist) for everything else, and Inter for the body of a plan, and solid cards that stand out from a neutral canvas by fill and a small lift, with no outlines, solid buttons, small corners and few icons, like an enterprise product people trust with detail. Colour is used for verdicts and directions, for the category icons and the category tint of project cards, and indigo for actions. One soft gradient per marketing page and none in the app, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
+
+### 6.10 Launch rules
+
+The craft around the data is a versioned rule library per category, each rule with its source and date ([launch-rules.md](launch-rules.md)). A plan records the version it used.
+
+| ID | Requirement | P |
+|---|---|---|
+| R1 | Plans work backwards from the release date, in code, for every category. A beat already over is dropped. | P0 |
+| R2 | One primary signal per plan, with the team's target or a sourced benchmark labelled a target and not a forecast. Followers and views are secondary. | P0 |
+| R3 | Rival dates the user supplies are checked against the comps' audience inside a build, not only afterwards. | P0 |
+| R4 | One plan per territory, home first, then the diaspora cities. The team's cities are never dropped. | P0 |
+| R5 | Okay, risky or avoid on each opening date, territory and partner, set by code with the confidence of its finding. A call on a team choice keeps the choice. | P0 |
+| R6 | A full plan with no budget or band asks for a band first, once. It proposes only what the band can carry. | P0 |
+| R7 | Channels by audience: music and books lead on short video, film and podcasts on YouTube, Nigeria on WhatsApp and Instagram. | P0 |
+| R8 | Guides and scripts only. Every full plan has short creative briefs; a creative kit gives hooks, a script outline, a shot list, a key art brief and a caption pack for a territory and channel. Requests to generate an ad, trailer, image or video are refused. | P0 |
+| R9 | Partners come in tiers A, B and C with their Qloo fit and budget fit, and price unknown. | P0 |
+
+### 6.11 Help
+
+| ID | Requirement | P |
+|---|---|---|
+| U8 | A public Guide explains what to put in a brief and why, builds one field by field in the forms Oraqul reads, shows which details are still missing, and opens the app with the text. It also lists the launch rules with their sources. | P1 |
 
 ## 7. Every market
 

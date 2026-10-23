@@ -96,7 +96,7 @@ export interface QlooClientOptions {
   /** Wait before the retry when Qloo sends no `Retry-After`. Default 500. */
   retryDelayMs?: number;
   /**
-   * Most requests in flight at once. Default 2: the hackathon host answers 429 to a plan's
+   * Most requests in flight at once. Default 2: the development host answers 429 to a plan's
    * parallel calls, so the rest wait their turn.
    */
   maxConcurrent?: number;

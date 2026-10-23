@@ -34,6 +34,7 @@ Adding a token: add it in all three places in `globals.css`, then map it in `@th
 From [spec §9.1](../product/spec.md). Tick as built.
 
 - [x] VerdictPill
+- [x] DirectionPill (okay, risky, avoid: the call on a date, territory or partner)
 - [x] Button (`buttonClassName` for links that must look like one), Input
 - [x] Chip and ChipButton, Kbd
 - [x] Card, Icon (Lucide behind our own names, see design-system §7.20), Logo, PageHead

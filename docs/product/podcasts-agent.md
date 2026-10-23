@@ -77,3 +77,13 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 - **Markets are cities.** A region such as West Africa is ranked through the cities in Qloo's table that stand for it. A region the table does not cover is not ranked, and the plan says so.
 - **Overlap is not a share of listeners.** It is how close another audience is to the show's, scored by Qloo, on a scale of 0 to 100.
 - **Ambiguous names** are settled in code and the plan says which was chosen. Show names collide often. A wrong match is possible.
+
+
+## Launch rules
+
+Rules and thresholds: [launch-rules.md](launch-rules.md). For Podcasts:
+
+* **Calendar.** Days 1 to 60 after release are the campaign, with the read at day 30 and day 60. The beats are the launch kind's (`podcasts/modules.ts`).
+* **Signal.** Downloads per episode at day 30 and day 60. Followers, views and ratings are secondary.
+* **Channels.** YouTube leads, then Instagram and TikTok.
+* **Territories.** One plan per named market, home first, beside the markets ranking.

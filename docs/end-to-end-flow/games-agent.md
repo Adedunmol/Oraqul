@@ -2,7 +2,7 @@
 
 A plain-language map of what the Games agent does from the first message to the saved output, what it can produce, and where it falls short of the docs. Product behaviour is in [product/spec.md](../product/spec.md); the technical map is [backend/games-overview.md](../backend/games-overview.md). It runs on the same runtime as the Film and Music agents, so the path of a message is the one in [film-agent.md](film-agent.md#the-path-of-a-message), with category `games`. Where this file and those disagree, they win.
 
-Status: built on the shared launch runtime, and tested on demo data (unit specs, golden runs, and an end-to-end spec through the API). It has not been run against live Qloo.
+Status: built on the shared launch runtime, and tested on demo data (unit specs, golden runs, and an end-to-end spec through the API). It is checked live on one brief and the probes in [qloo.md](../backend/qloo.md); other briefs and markets are not probed one by one.
 
 ## What it can do
 

@@ -7,7 +7,7 @@ Behaviour is specified in [product/spec.md](product/spec.md). This file covers h
 ```
 Next.js (Vercel)  ->  NestJS API (VPS)  ->  agent runtime (module in the API)
                            |                       |
-                        Postgres              Qloo API (hackathon.api.qloo.com) + model provider
+                        Postgres              Qloo API (QLOO_BASE_URL) + model provider
 ```
 
 - The web app talks only to the API. Runs stream to it over server sent events (event types in `packages/schema`, listed in [spec §8](product/spec.md)).

@@ -43,7 +43,7 @@ Before every commit, push or PR, and while implementing, flag anything that goes
 
 ## Doc map
 
-[frontend](docs/frontend/README.md) · [backend](docs/backend/README.md) · [agent](docs/backend/agent.md) · [llm](docs/backend/llm.md) · [qloo](docs/backend/qloo.md) · [testing](docs/testing.md) · [git](docs/git.md)
+[rules](docs/product/launch-rules.md) · [frontend](docs/frontend/README.md) · [backend](docs/backend/README.md) · [agent](docs/backend/agent.md) · [llm](docs/backend/llm.md) · [qloo](docs/backend/qloo.md) · [testing](docs/testing.md) · [git](docs/git.md)
 
 <!-- BEGIN:turborepo-agent-rules -->
 

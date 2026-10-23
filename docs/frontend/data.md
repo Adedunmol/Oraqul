@@ -87,7 +87,7 @@ Screens and components never check for a 401 themselves. A 403 is an error, not 
 
 `unauthorized()` and `unauthorized.tsx` are experimental in this Next version and need `authInterrupts` in `next.config.ts` (confirmed in `node_modules/next/dist/docs`). Do not use them until the team decides to.
 
-## Demo backend (until the API serves projects)
+## Projects, outputs and the demo layer
 
 Projects, chats, the overview and pins come from the API (`lib/api/projects-server.ts` for reads, `lib/api/projects.ts` for writes). A chat follows its run on the event stream through `_workspace/chat/use-thread-events.ts` and `live-chat.tsx`; the stream's stored events carry their seq as the SSE id, and the hook drops ones it has seen. The sidebar's pins, recents and Needs you count, and the search palette, are read once per request in `getSidebarProjects`.
 
@@ -97,7 +97,7 @@ Outputs and their receipts come from the API: `GET /outputs/:id` (`getOutputDeta
 - `lib/demo/queries.ts` has one function per endpoint in spec §7 (`getOverview`, `listProjects`, `getProjectDetail`, `getThreadDetail`, `getOutputDetail`, `comparePlans`). `lib/demo/actions.ts` mirrors the mutation helpers. Screens import only these two, `use-demo.ts` and `catalog.ts`.
 - Numbers, verdicts, confidence, headlines and receipts are computed in `lib/demo/build-output.ts`, never in a component (hard rule 1). Receipts carry `source: 'demo'`. Receipts a person opens on a public example show their rule and confidence only.
 - State lives in browser memory: new work survives client navigation and resets on reload. The server render and the browser start from the same seed, so hydration matches.
-- Files attached to a message stay in the browser. The composer reads small text files (txt, md, csv, json) so the router can read their words, and sends only the name of anything else. Nothing is uploaded until `POST /uploads` exists.
+- Files attached to a message stay in the browser. The composer reads small text files (txt, md, csv, json) so the router can read their words, and sends only the name of anything else. A PDF or Word file goes to `POST /uploads`, which answers its text only and stores nothing (`lib/api/uploads.ts`).
 - The sign in, the person and their team role are real (`lib/api/viewer.ts`). Viewers cannot chat or start work; only owners can delete a project.
 
 This bends two rules above on purpose: demo reads happen in client components, and writes skip `router.refresh()`. To move a resource to the API, write its fetcher in `lib/api/<resource>.ts`, call it in the route's `page.tsx`, pass the result to the same screen component as props, and delete the matching query and the demo state it used. When the last resource moves, delete `lib/demo`.

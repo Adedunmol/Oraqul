@@ -59,3 +59,13 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 - **Web research can find nothing for a city**, and what it finds can be stale. Check dates before acting on a rival or a window.
 - **Ambiguous names** are settled in code (country, then popularity) and the plan says which was chosen. Artist names collide often. A wrong match is possible.
 - **Cultural sensitivity.** Real scenes, institutions and neighbourhoods need care in anything the plan puts on screen or in a campaign.
+
+
+## Launch rules
+
+Rules and thresholds: [launch-rules.md](launch-rules.md). For Music:
+
+* **Calendar.** A rollout of 6 to 8 weeks, worked back from the release date in code: delivery and playlist pitches 8 weeks out, pre-save at 6, press at 4, the video at 2, then follow-through for four weeks.
+* **Signal.** Save rate and stream completion. Followers, views and playlist adds are secondary.
+* **Channels.** TikTok, Reels and Shorts lead; Nigeria leads on WhatsApp and Instagram.
+* **Territories.** One plan per tour city, the home market first, then the diaspora cities, beside the tour route.

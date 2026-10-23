@@ -77,3 +77,13 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 - **The bridge shows what the audience already follows.** Its candidates are the audience's own top picks in each kind of media, so a high overlap says "close to the players", not "will say yes". Anime is often empty: Qloo returned no anime for a game audience in the probe, and Gaps says so.
 - **Overlap is not a share of players.** It is how close another audience is to the players, scored by Qloo, on a scale of 0 to 100.
 - **Ambiguous names** are settled in code and the plan says which was chosen. Game and franchise names collide often. A wrong match is possible.
+
+
+## Launch rules
+
+Rules and thresholds: [launch-rules.md](launch-rules.md). For Games:
+
+* **Calendar.** About 85 percent of wishlists are collected at least four months before release, so the store page and the wishlist drive start by 16 weeks out at the latest. The beats are the launch kind's (`games/modules.ts`).
+* **Signal.** Wishlists, with a benchmark target of 7,000 and a floor of 5,000 where the team gives none. Followers, views and demo plays are secondary.
+* **Channels.** YouTube leads, then TikTok and Discord.
+* **Territories.** One plan per named region, home first, beside the regions ranking.

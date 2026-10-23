@@ -6,10 +6,10 @@ Qloo supplies the taste data. What we compute on top is in [spec §5](../product
 
 | Area | Status |
 |---|---|
-| Host `hackathon.api.qloo.com`, `X-Api-Key` auth | verified on the hackathon host only. Everything marked verified below was checked there. Before any public launch we need a production key for `api.qloo.com` and a rerun of `qloo:smoke` and every category probe |
+| The development host (`QLOO_BASE_URL`), `X-Api-Key` auth | verified on the development host only. Everything marked verified below was checked there. Before any public launch we need a production key for `api.qloo.com` and a rerun of `qloo:smoke` and every category probe |
 | `/search`, `/entities` (by Qloo id and by IMDb id) | verified |
 | `/v2/tags`, `/v2/tags/types` | verified on our key, and our parameters match Qloo's reference pages for Search Tags and Tag Types (`filter.query`, `filter.tag.types`, `filter.parents.types`, `filter.results.tags`, `filter.popularity.min|max`, `feature.typo_tolerance`, `feature.semantic_search`, `take`, `page`). The Tag Types page documents no response shape; ours is from live calls |
-| `/v2/audiences`, `/v2/audiences/types` | worked on the hackathon host, but Qloo's reference marks both `/v2/audiences` and `/v2/audiences/types` deprecated and names no replacement. Not used: the client has no call for them |
+| `/v2/audiences`, `/v2/audiences/types` | worked on the development host, but Qloo's reference marks both `/v2/audiences` and `/v2/audiences/types` deprecated and names no replacement. Not used: the client has no call for them |
 | `/v2/insights` for movie, tv_show, artist, book, podcast, videogame, brand, place | verified. Place needs `filter.tags` set to a place category and `filter.location.query` set to a city |
 | `/v2/insights` for person, destination, locality | documented, not exercised. A person as the only signal is rejected |
 | `/v2/insights` with `urn:tag`, `urn:demographics`, `urn:heatmap` (geohash) | verified. Locality heatmaps are unstable and not used |
@@ -40,12 +40,12 @@ Detail on why, and what a good plan is, is in [principles](../product/principles
 
 | Item | Value |
 |---|---|
-| Base URL | `QLOO_BASE_URL`. Production is `https://api.qloo.com`. We use `https://hackathon.api.qloo.com` |
+| Base URL | `QLOO_BASE_URL`. Production is `https://api.qloo.com`. Development uses the host in `.env.example` |
 | Auth | header `X-Api-Key: <key>`. Not a query parameter |
 | Method | `GET` with a query string. `POST` bodies exist for some `*.query` parameters. The client does not use them |
 | `take` | 1 to 50, default 20. Page with `page` (1 to 100) or `offset`. Not a limit everywhere (heatmaps, compare): slice in code |
 | Radius | `filter.location.radius` and `signal.location.radius` in metres, up to 800 000. `/search` `filter.radius` is in miles, up to 100 |
-| Rate | about 5 requests a second and about 10,000 a month on hackathon keys (unofficial). Parallel calls got 429, so the client keeps 2 in flight |
+| Rate | about 5 requests a second and about 10,000 a month on development keys (unofficial). Parallel calls got 429, so the client keeps 2 in flight |
 | Avoid | `/recommendations` and `/recs` (legacy), `urn:entity:audience` and `/v2/audiences` (deprecated), and the legacy search-only types actor, album, author, director. Use `person` |
 
 ## The client (`packages/engine/src/qloo`)
@@ -54,7 +54,7 @@ One `QlooClient` per agent run. Every call returns `{ data, call }`: `data` is t
 
 - **Concurrency.** At most 2 requests in flight (`maxConcurrent`).
 - **Retry.** Once on a network error, a timeout or a 5xx; twice on a 429, waiting for `Retry-After` (at most 10 s) or 2 s then 4 s. Not on other 4xx. Then it throws `QlooError` with `kind` (`http`, `network`, `timeout`, `invalid_response`) and the `call`.
-- **Budget.** `callBudget` (from `QLOO_CALL_BUDGET`, default 80) counts network calls (a plan makes about 20 to 40 distinct ones on the demo goldens, up to 53 on the recorded live Film run, so 80 leaves room); a retry is not a second call. When it is spent, `QlooBudgetError` is thrown before any request and the run ends with what is tested so far. A Film plan uses about 45 to 65 calls.
+- **Budget.** `callBudget` (from `QLOO_CALL_BUDGET`, default 80) counts network calls (a plan makes about 20 to 65 distinct ones: about 20 to 40 on the demo goldens and 45 to 65 on a live Film run, more with several cities, so a many-city plan with rivals needs a bigger budget than 80); a retry is not a second call. When it is spent, `QlooBudgetError` is thrown before any request and the run ends with what is tested so far. A Film plan uses about 45 to 65 calls.
 - **Memory.** An identical call later in the run, or made while the first is in flight, costs nothing and returns its own `call` with `cached: true`. Failures are not remembered.
 - **Lookup cache.** An optional `LookupCache` shared across runs keeps `/search` and `/entities` answers for 14 days (at most 2000). The hit keeps the original `calledAt`. Insights calls are never kept across runs.
 - **Injected `fetch`.** Tests and demo mode pass their own, so no request leaves the process.
