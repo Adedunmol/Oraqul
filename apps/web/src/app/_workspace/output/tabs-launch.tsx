@@ -101,10 +101,7 @@ export function StructuredTerritories() {
   const notes = footnotes(plan);
   return (
     <>
-      <TabTitle
-        title="Territories"
-        note="One plan per territory: the home market first, then the diaspora cities. Each has its call, its lead channels, its partners and the lines of the plan that are about it."
-      />
+      <TabTitle title="Territories" />
       <Stack>
         {plan.territories.map((t) => {
           const call = plan.calls.find((c) => c.id === t.callId);
@@ -191,8 +188,14 @@ export function CallsTab() {
     <>
       <TabTitle
         title="Direction calls"
-        note="Okay, risky or avoid for each date, territory and partner, set by code from what Qloo returned. A call on something you chose keeps your choice and says how to handle it. These are directions, not forecasts."
+        note="A call on something you chose keeps your choice and says how to handle it. These are directions, not forecasts."
       />
+      {calls.length === 0 ? (
+        <p className="rounded-xl bg-card px-4 py-3.5 text-[14px] text-muted">
+          No calls yet. Name rival releases with their dates, or plan for two or more cities, and
+          Oraqul calls each one.
+        </p>
+      ) : null}
       {(['date', 'territory', 'partner'] as const).map((subject) => {
         const rows = calls.filter((c) => c.subject === subject);
         if (rows.length === 0) return null;
@@ -245,7 +248,7 @@ export function KitTab() {
     <>
       <TabTitle
         title="Creative kit"
-        note="Guides for the team that makes the creative: hooks, a script outline, a shot list, a key art brief and captions. Oraqul does not make the ad, trailer, image or video. A person does."
+        note="Oraqul does not make the ad, trailer, image or video. A person does, from these guides."
       />
       {groups.map((group) => (
         <Stack key={group}>

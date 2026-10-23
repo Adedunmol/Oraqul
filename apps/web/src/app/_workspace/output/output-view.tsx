@@ -159,9 +159,13 @@ export function OutputView({
   );
 
   const all = output.tabs;
+  // Territories is the heart of a plan that has them, so it stays beside the plan.
+  const primary: OutputTabKey[] = output.plan?.territories.length
+    ? [...PRIMARY, 'territories']
+    : PRIMARY;
   const collapsible = all.length > 5;
   const visible =
-    collapsible && !more ? all.filter((t) => PRIMARY.includes(t.key) || t.key === tab) : all;
+    collapsible && !more ? all.filter((t) => primary.includes(t.key) || t.key === tab) : all;
   const hidden = all.length - visible.length;
   const items: { key: TabChoice; label: string; count?: number }[] = visible.map((t) => ({
     key: t.key,

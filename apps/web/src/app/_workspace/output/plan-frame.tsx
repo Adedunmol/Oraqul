@@ -1,11 +1,16 @@
 'use client';
 
 import type { LaunchPlan } from '@oraqul/schema';
+import { DirectionPill } from '@oraqul/ui';
 
 /** The budget band and the one signal a plan is judged on, under its In brief. */
 export function PlanFrame({ plan }: { plan: LaunchPlan }) {
   const { band, signal } = plan;
   if (!band && !signal) return null;
+  const calls = (['okay', 'risky', 'avoid'] as const).map((direction) => ({
+    direction,
+    count: plan.calls.filter((c) => c.direction === direction).length,
+  }));
   return (
     <section
       aria-label="What the plan is sized for"
@@ -20,6 +25,22 @@ export function PlanFrame({ plan }: { plan: LaunchPlan }) {
               ? `Target ${signal.target.value.toLocaleString('en-US')} ${signal.target.unit}${signal.target.floor === null ? '' : `, floor ${signal.target.floor.toLocaleString('en-US')}`}. A target, not a forecast.`
               : 'No target set. Give your own number in the chat.'}
           </span>
+        </div>
+      ) : null}
+      {plan.calls.length > 0 ? (
+        <div className="flex min-w-[160px] flex-col gap-1.5 rounded-xl bg-card px-4 py-3.5">
+          <span className="text-xs font-semibold text-muted">Calls</span>
+          <span className="flex flex-wrap gap-1.5">
+            {calls
+              .filter((c) => c.count > 0)
+              .map((c) => (
+                <span key={c.direction} className="inline-flex items-center gap-1.5">
+                  <DirectionPill direction={c.direction} />
+                  <b className="font-mono text-[13px] tabular-nums">{c.count}</b>
+                </span>
+              ))}
+          </span>
+          <span className="text-[13px] text-muted">Dates, territories and partners.</span>
         </div>
       ) : null}
       {band ? (
