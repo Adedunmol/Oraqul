@@ -40,8 +40,8 @@ export function SiteFooter() {
         <div className="col-span-2 flex max-w-xs flex-col gap-3 min-[700px]:col-span-1">
           <Logo />
           <p className="text-[13.5px] text-muted">
-            A culturally grounded launch agent for media and entertainment. Launch plans grounded in
-            what audiences actually like, from Qloo taste data.
+            An AI agent that plans launches for media and entertainment, grounded in what audiences
+            actually like. Taste data from Qloo.
           </p>
         </div>
         {columns.map((column) => (

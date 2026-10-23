@@ -17,9 +17,10 @@ export function Problem() {
         </h2>
         <div className="flex max-w-[46ch] flex-col gap-4 text-[17px] leading-[1.65] text-ink/80">
           <p>
-            A launch team bets real money on beliefs: this audience, these cities, this date. The
-            data that could settle those beliefs exists, but it sits in dashboards that answer one
-            question at a time, or behind chatbots that answer confidently with nothing behind them.
+            A launch team bets real money on assumptions: this audience, these cities, this date.
+            The data that could settle those assumptions exists, but it sits in dashboards that
+            answer one question at a time, or behind chatbots that answer confidently with nothing
+            behind them.
           </p>
           <p>
             Oraqul sits between the two. It talks like a colleague and works like an analyst who
@@ -35,11 +36,11 @@ export function Idea() {
   const lines = [
     [
       'A receipt for every claim',
-      'The exact Qloo call behind it, what went in and what came back.',
+      'The exact data lookup behind it, what went in and what came back.',
     ],
     [
       'Numbers from code',
-      'The model writes the words. Every score is computed from Qloo’s values.',
+      'The model writes the words. Every score is worked out by code from the data.',
     ],
     [
       'Gaps said plainly',

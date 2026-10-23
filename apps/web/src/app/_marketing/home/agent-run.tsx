@@ -8,60 +8,63 @@ type Kind = 'read' | 'tool' | 'code' | 'check' | 'write';
 
 const kindLabel: Record<Kind, string> = {
   read: 'Reads',
-  tool: 'Tool',
-  code: 'Code',
-  check: 'Red team',
+  tool: 'Looks up',
+  code: 'Works out',
+  check: 'Review',
   write: 'Writes',
 };
 
-// One invented run. Tool names are the engine's own (spec §4); no Qloo endpoint is named.
+// One invented run, in the words a launch team would use.
 const run: { kind: Kind; text: string; out: string }[] = [
   {
     kind: 'read',
     text: 'Series, crime drama, Lagos, London and Houston, 12 March',
     out: 'Job: make a plan',
   },
-  { kind: 'code', text: 'Budget band not stated: ask once', out: 'Independent' },
+  { kind: 'code', text: 'Budget not stated: plan for an independent release', out: 'Independent' },
   {
     kind: 'tool',
-    text: 'resolveBundle(comps: Grey Tide, The Ferry Office)',
-    out: '2 comps, 6 tags',
+    text: 'Taste of the comparable shows, Grey Tide and The Ferry Office',
+    out: '2 shows, 6 themes',
   },
   {
     kind: 'tool',
-    text: 'rankPlaces(bundle, Lagos, London, Houston)',
+    text: 'Rank Lagos, London and Houston for that audience',
     out: '3 ranked',
   },
-  { kind: 'code', text: 'lift(London) = 0.81 ÷ 0.50 = 1.62', out: 'Okay' },
+  {
+    kind: 'code',
+    text: 'London fit: 0.81 against 0.50 for a neutral audience = 1.62',
+    out: 'Strong',
+  },
   {
     kind: 'tool',
-    text: 'scoreRivals(bundle, Harbor Lights on 12 March)',
+    text: 'Audience overlap with Harbor Lights, opening 12 March',
     out: 'Overlap: moderate',
   },
-  { kind: 'tool', text: 'findTaste(brands: MTN, Bolt, Verve)', out: '3 ranked' },
+  { kind: 'tool', text: 'Partner brands: MTN, Bolt, Verve', out: '3 ranked' },
   {
     kind: 'check',
-    text: 'Compare the draft with your request, and send it back if it falls short',
+    text: 'Compare the draft with your request, and rewrite it if it falls short',
     out: 'Passed after 2 drafts',
   },
-  { kind: 'write', text: 'Bottom line, one plan per territory', out: '9 beliefs, 14 receipts' },
+  { kind: 'write', text: 'Bottom line, one plan per market', out: '9 assumptions, 14 receipts' },
 ];
 
 const traits = [
-  ['Plans its own steps', 'It reads the job and chooses which tools to call, one step at a time.'],
   [
-    'Calls Qloo through tools',
-    'Every call is recorded, and every recorded call becomes a receipt.',
+    'Plans its own steps',
+    'It reads your message, decides what to look up, and works one step at a time.',
   ],
   [
     'Checks its own draft',
-    'A review step compares the plan with your request and sends it back, up to three drafts, until it passes or says what is still open.',
+    'It compares the plan with what you asked for and rewrites it until it fits, up to three times.',
   ],
-  ['Knows when to stop', 'A call budget and a stop rule, so it never loops or pads the answer.'],
+  ['Shows its receipts', 'Each claim links to the exact data behind it, so you can check it.'],
 ];
 
 /**
- * The agent at work: a run streaming in line by line, as tool calls, code and a red team check.
+ * The agent at work: a run streaming in line by line, as lookups, calculations and a self-check.
  * Run again replays it, so the motion explains what the agent does rather than decorating.
  */
 export function AgentRun() {

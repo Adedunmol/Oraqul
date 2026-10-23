@@ -24,11 +24,6 @@
     transform: translate(var(--dx, 12px), var(--dy, -16px));
   }
 }
-@keyframes mk-marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
 @keyframes mk-travel {
   from {
     left: 0;
@@ -76,23 +71,17 @@
    so the canvas has depth without any colour under the headline's ink. */
 .mk-sky {
   background-image:
-    radial-gradient(38% 52% at 30% 18%, var(--bg), transparent 75%),
     radial-gradient(
-      50% 65% at 88% 22%,
-      color-mix(in srgb, var(--cat-podcasts) 26%, transparent),
+      60% 70% at 85% 20%,
+      color-mix(in srgb, var(--accent) 20%, transparent),
       transparent 70%
     ),
     radial-gradient(
-      42% 55% at 62% 16%,
-      color-mix(in srgb, var(--accent) 24%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      34% 46% at 100% 52%,
-      color-mix(in srgb, var(--cat-music) 14%, transparent),
+      40% 50% at 100% 70%,
+      color-mix(in srgb, var(--cat-podcasts) 12%, transparent),
       transparent 70%
     );
-  mask-image: linear-gradient(to bottom, transparent, black 18%, black 50%, transparent);
+  mask-image: linear-gradient(to bottom, black 70%, transparent);
 }
 /* On a phone the art is centred above the headline, so the light moves behind it. */
 @media (max-width: 999px) {
@@ -129,11 +118,10 @@
 
 /* The orbit art: the tiles tint with their category and drift, the hub stays put. */
 .mk-orbit {
-  opacity: 0.85;
+  opacity: 0.6;
 }
 .mk-orbit-tile {
-  background: color-mix(in srgb, var(--cat) 14%, var(--surface));
-  box-shadow: var(--elev-1);
+  background: color-mix(in srgb, var(--cat) 10%, var(--surface));
   animation:
     mk-pop 700ms var(--delay, 0ms) cubic-bezier(0.3, 1.4, 0.5, 1) both,
     mk-float var(--t, 16s) var(--delay, 0ms) ease-in-out infinite,
@@ -252,97 +240,13 @@
   transform: none;
 }
 
-/* Marquee of prompts. The track holds the list twice, so -50% loops seamlessly. */
-.mk-marquee {
-  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-}
-.mk-track {
-  display: flex;
-  width: max-content;
-  animation: mk-marquee var(--t, 60s) linear infinite;
-}
-.mk-track[data-reverse] {
-  animation-direction: reverse;
-}
-.mk-marquee:hover .mk-track {
-  animation-play-state: paused;
-}
-
-/* Marked up plan: each mark paints in when the document is on screen. */
-.mk-mark {
-  text-decoration-line: underline;
-  text-decoration-thickness: 0.14em;
-  text-underline-offset: 0.22em;
-  text-decoration-color: transparent;
-  transition:
-    text-decoration-color 500ms ease,
-    background-color 500ms ease;
-  transition-delay: calc(400ms + var(--i, 0) * 450ms);
-}
-[data-shown] .mk-mark[data-v="holds"] {
-  text-decoration-color: var(--holds);
-  background-color: var(--holds-bg);
-}
-.mk-mark[data-v="breaks"] {
-  text-decoration-line: line-through;
-  text-decoration-thickness: 0.1em;
-}
-[data-shown] .mk-mark[data-v="breaks"] {
-  text-decoration-color: var(--breaks);
-  color: var(--muted);
-}
-.mk-mark[data-v="weak"] {
-  text-decoration-style: wavy;
-  text-decoration-thickness: 0.08em;
-}
-[data-shown] .mk-mark[data-v="weak"] {
-  text-decoration-color: var(--weak);
-}
-.mk-mark[data-v="cant"] {
-  text-decoration-style: dotted;
-}
-[data-shown] .mk-mark[data-v="cant"] {
-  text-decoration-color: var(--cant);
-}
-.mk-insert {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 500ms ease,
-    transform 500ms ease;
-  transition-delay: calc(700ms + var(--i, 0) * 450ms);
-}
-[data-shown] .mk-insert {
-  opacity: 1;
-  transform: none;
-}
-.mk-note {
-  opacity: 0;
-  transform: translateX(16px);
-  transition:
-    opacity 500ms ease,
-    transform 500ms ease;
-  transition-delay: calc(500ms + var(--i, 0) * 450ms);
-}
-[data-shown] .mk-note {
-  opacity: 1;
-  transform: none;
-}
-
 /* Timeline axis draws across, and the lift marker slides to its value. */
 .mk-axis {
   transform-origin: left;
   transform: scaleX(0);
   transition: transform 1600ms cubic-bezier(0.6, 0, 0.2, 1);
 }
-.mk-axis-y {
-  transform-origin: top;
-  transform: scaleY(0);
-  transition: transform 1600ms cubic-bezier(0.6, 0, 0.2, 1);
-}
-[data-shown] .mk-axis,
-[data-shown] .mk-axis-y {
+[data-shown] .mk-axis {
   transform: none;
 }
 .mk-slide {
@@ -439,7 +343,6 @@
   .mk-orbit-hub,
   .mk-disc,
   .mk-tilt,
-  .mk-track,
   .mk-token,
   .mk-token-y,
   .mk-caret,
@@ -456,20 +359,9 @@
   .mk-token-y {
     display: none;
   }
-  .mk-track {
-    flex-wrap: wrap;
-    width: auto;
-  }
-  .mk-dup {
-    display: none;
-  }
   [data-reveal] .mk-in,
   [data-reveal] .mk-stream,
-  .mk-mark,
-  .mk-insert,
-  .mk-note,
   .mk-axis,
-  .mk-axis-y,
   .mk-slide,
   .mk-grow,
   .mk-line {

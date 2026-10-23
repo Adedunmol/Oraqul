@@ -1,66 +1,46 @@
-import { buttonClassName } from '@oraqul/ui';
-import Link from 'next/link';
 import type { CSSProperties } from 'react';
 import { wrap } from '../section';
-import { TasteDiscs } from '../taste-discs';
-import { AppPreview } from './app-preview';
 import { HeroOrbit } from './hero-orbit';
+import { HeroPrompt } from './hero-prompt';
 
 const at = (ms: number): CSSProperties => ({ animationDelay: `${ms}ms` });
 
 /**
- * Few words on purpose: the headline names the promise and one lead line names the product. What
- * the product looks like comes from the art, the agent hub with the five kinds of media around it,
- * and the light behind it.
+ * Few words on purpose: the headline names the promise, one lead line names the product, and the
+ * message box is the way in. What the product is comes from the art: the agent hub with the five
+ * kinds of media around it, faint and wordless. The app preview has its own band under it.
  */
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="relative overflow-x-clip">
-      <div
-        aria-hidden="true"
-        className="mk-sky pointer-events-none absolute inset-x-0 top-0 h-[78%]"
-      />
-      <div aria-hidden="true" className="scheme-dark absolute inset-x-0 bottom-0 h-[30%] bg-bg" />
+    <section
+      aria-labelledby="hero-title"
+      className="scheme-dark relative flex min-h-[min(100svh,980px)] flex-col justify-center overflow-x-clip bg-bg"
+    >
+      <div aria-hidden="true" className="mk-sky pointer-events-none absolute inset-0" />
 
-      <div
-        className={`${wrap} relative flex flex-col items-start gap-8 pt-[clamp(8px,10vw,160px)] pb-[clamp(56px,7vw,96px)]`}
-      >
+      <div className={`${wrap} relative flex flex-col items-start py-[clamp(88px,13vw,220px)]`}>
         <HeroOrbit />
         <h1
           id="hero-title"
-          className="max-w-[15ch] font-display text-[clamp(44px,5.8vw,84px)] font-semibold leading-[0.98] tracking-[-0.05em] text-balance"
+          className="max-w-[13ch] font-display text-[clamp(40px,5.8vw,84px)] font-semibold leading-[0.98] tracking-[-0.05em] text-balance"
         >
           <span className="mk-word" style={at(0)}>
-            Launch to the audience
+            Plan your launch for the
           </span>{' '}
-          <span className="mk-word" style={at(90)}>
-            that&apos;s <span className="text-accent">actually there.</span>
+          <span className="mk-word text-accent" style={at(90)}>
+            right audience.
           </span>
         </h1>
 
-        <div className="mk-word" style={at(300)}>
+        <div className="mk-word mt-[clamp(20px,2.4vw,32px)]" style={at(300)}>
           <p className="max-w-[44ch] text-balance text-[clamp(17px,1.5vw,20px)] leading-[1.5] text-ink/75">
-            An AI agent that plans your launch for each market, grounded in real audience taste
-            data.
+            An AI agent that works out who your launch is for and where, grounded in real audience
+            taste data.
           </p>
         </div>
 
-        <div className="mk-word" style={at(420)}>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/sign-up" className={buttonClassName('primary')}>
-              Create account
-            </Link>
-            <Link href="/examples" className={buttonClassName('default')}>
-              See the examples
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className={`${wrap} relative pb-[clamp(48px,7vw,96px)]`}>
-        <TasteDiscs set="hero" />
-        <div className="relative">
-          <AppPreview />
+        <div className="mk-word mt-[clamp(36px,4.6vw,64px)] w-full" style={at(420)}>
+          <HeroPrompt />
         </div>
       </div>
     </section>

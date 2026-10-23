@@ -6,7 +6,7 @@ import { PageHero } from '../../_marketing/page-hero';
 export const metadata: Metadata = {
   title: 'Categories · Oraqul',
   description:
-    'Film and series, music, books, podcasts and games: what Oraqul tests against Qloo taste data in each, what else it handles, and what your team brings.',
+    'Film and series, music, books, podcasts and games: what Oraqul checks in each, what else it handles, and what your team brings.',
 };
 
 export default function Categories() {
@@ -15,7 +15,7 @@ export default function Categories() {
       <PageHero
         wash
         title="Every kind of launch, tested its own way."
-        lead="For each category: what Oraqul checks against Qloo taste data, what else it handles when a title is new or niche, and what your team brings alongside the taste data."
+        lead="For each category: what Oraqul checks, what else it handles when a title is new or niche, and what your team brings."
       >
         <CategoryTiles />
       </PageHero>

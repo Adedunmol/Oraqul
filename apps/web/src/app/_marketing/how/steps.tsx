@@ -54,9 +54,9 @@ export function TraceCard() {
   const steps = [
     'Reading the message: series, crime drama',
     'Finding Night Ferry and its comparable titles',
-    'Asking Qloo who else your audience loves',
+    'Looking up who else your audience loves',
     'Ranking the UK, Canada and the US',
-    'Testing 9 beliefs in the plan',
+    'Testing 9 assumptions in the plan',
     'Writing the bottom line',
   ];
   return (
@@ -154,7 +154,7 @@ export function Asks() {
           <p>
             Oraqul says what it read and what it assumed, with an example of how to correct it. It
             asks a question only when a wrong assumption would waste the run: the category, the
-            title, which match in Qloo is yours, and, for a full plan, the budget band, which
+            title, which match in the data is yours, and, for a full plan, the budget band, which
             decides what it may propose.
           </p>
           <p>Type a correction any time. Only what it changes runs again.</p>
@@ -209,19 +209,19 @@ export function Tests() {
     <section aria-label="Step 3" className={`relative bg-bg ${band} overflow-x-clip`}>
       <div className={`${wrap} flex flex-col gap-14`}>
         <div className="min-[1000px]:max-w-[62%]">
-          <StepHead n={3} icon="search" title="It tests every belief against Qloo.">
+          <StepHead n={3} icon="search" title="It tests every assumption against real data.">
             <p>
-              Each belief in the plan becomes a question for Qloo’s taste data. Code reads the
-              values that come back and sets the verdict by a published rule. The model never sets a
-              number.
+              Each assumption in the plan becomes a question for the audience taste data. Code reads
+              the values that come back and sets the verdict by a published rule. The model never
+              sets a number.
             </p>
           </StepHead>
         </div>
 
         <Reveal className="overflow-hidden rounded-2xl bg-canvas">
           <div className="grid grid-cols-[1.4fr_1fr_1fr] gap-4 border-b border-line px-5 py-3 text-[13px] font-medium text-muted max-[699px]:hidden">
-            <span>Belief in the plan</span>
-            <span>Qloo call</span>
+            <span>Assumption in the plan</span>
+            <span>Data lookup</span>
             <span>Verdict</span>
           </div>
           <ul>

@@ -11,7 +11,7 @@ import { wrap } from '../../_marketing/section';
 export const metadata: Metadata = {
   title: 'Examples · Oraqul',
   description:
-    'Three full Oraqul plans: a film planned for four territories, an album rollout worked back from its date, and a podcast season sized to a micro budget. Invented data, every receipt open.',
+    'Three full Oraqul plans: a film planned for four markets, an album rollout worked back from its date, and a podcast season sized to a micro budget. Invented data, every receipt open.',
 };
 
 const legend: { verdict: Verdict; text: string }[] = [
@@ -44,7 +44,7 @@ export default function Examples({ searchParams }: PageProps<'/examples'>) {
       <PageHero
         tone="dark"
         title="Three launches, every receipt open."
-        lead="The real output screen, read only, for three made up launches: a film, an album and a podcast. Pick one, click through its territories, calls and evidence, and open any receipt."
+        lead="The real output screen, read only, for three made-up launches: a film, an album and a podcast. Pick one, click through its markets, calls and evidence, and open any receipt."
       >
         <ul className="grid gap-3 sm:grid-cols-2">
           {legend.map((l) => (

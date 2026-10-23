@@ -42,7 +42,7 @@ function CategoryVisual({ info }: { info: CategoryInfo }) {
       </div>
       <div className="flex flex-col gap-5">
         <p className="font-display text-[clamp(26px,2.8vw,38px)] leading-[1.1] font-semibold tracking-[-0.03em]">
-          Tested against Qloo, with a receipt
+          Checked against real audience data
         </p>
         <ul className="flex flex-col gap-4 text-[clamp(16px,1.4vw,19px)] leading-[1.5]">
           {info.coverage.tests.map((t) => (
@@ -63,6 +63,30 @@ function CategoryVisual({ info }: { info: CategoryInfo }) {
   );
 }
 
+/** Cards on a phone, where five pinned panels would stack into a very long scroll. */
+function CategoryCards({ infos }: { infos: CategoryInfo[] }) {
+  return (
+    <ul className="grid gap-3 min-[560px]:grid-cols-2 min-[1000px]:hidden">
+      {infos.map((info) => (
+        <li key={info.id} data-cat={info.id}>
+          <Link
+            href={`/categories#${info.id}`}
+            className={`flex h-full min-h-[168px] flex-col justify-between gap-8 rounded-2xl p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${field}`}
+          >
+            <Icon name={info.id} className="size-7" />
+            <span className="flex flex-col gap-1.5">
+              <span className="font-display text-[24px] leading-[1.05] font-semibold tracking-[-0.03em]">
+                {info.name}
+              </span>
+              <span className="text-[14.5px] leading-[1.45] opacity-90">{info.blurb}</span>
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function CategoriesSection() {
   const infos = categories.map((id) => getCategory(id));
   return (
@@ -70,21 +94,23 @@ export function CategoriesSection() {
       <div className={`${wrap} flex flex-col gap-14 min-[1000px]:gap-4`}>
         <div className="grid gap-5 min-[900px]:grid-cols-[1.3fr_1fr] min-[900px]:items-end">
           <h2 id="cats-title" className={h2Class}>
-            Every kind of launch, tested its own way.
+            Made for five kinds of launch.
           </h2>
           <p className={`${leadClass} min-[900px]:justify-self-end`}>
-            A tour is planned city by city, a book against its comparable titles, a game by the fan
-            bases next to it.
+            Each has its own questions, its own calendar and its own way to read the results.
           </p>
         </div>
-        <StickySteps
-          label="Five categories"
-          steps={infos.map((info) => ({
-            id: info.id,
-            text: <CategoryText info={info} />,
-            visual: <CategoryVisual info={info} />,
-          }))}
-        />
+        <CategoryCards infos={infos} />
+        <div className="max-[999px]:hidden">
+          <StickySteps
+            label="Five categories"
+            steps={infos.map((info) => ({
+              id: info.id,
+              text: <CategoryText info={info} />,
+              visual: <CategoryVisual info={info} />,
+            }))}
+          />
+        </div>
       </div>
     </section>
   );

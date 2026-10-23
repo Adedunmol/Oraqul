@@ -210,7 +210,7 @@ export function CheckCase() {
         </div>
         <Reveal>
           <div className="mb-3 flex items-center justify-between gap-3 text-[13px] text-muted">
-            <span>Your plan, belief by belief</span>
+            <span>Your plan, assumption by assumption</span>
             <ExampleTag />
           </div>
           <ul className="border-t border-line">
@@ -241,8 +241,8 @@ export function CheckCase() {
         </Reveal>
         <div className="flex flex-col gap-3 text-[15px] text-ink/75 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <p className="max-w-[60ch]">
-            Every belief is marked Holds, Weak, Breaks or Could not test, with a stronger option for
-            anything that breaks. Bring your plan, pasted or as a file.
+            Every assumption is marked Holds, Weak, Breaks or Could not test, with a stronger option
+            for anything that breaks. Bring your plan, pasted or as a file.
           </p>
           <ExampleLink href="/examples?case=music&tab=plan" />
         </div>
@@ -315,7 +315,7 @@ export function FixCase() {
           <h2 className={h2Class}>Fix my plan</h2>
           <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
             It is out and the people who came are not the people you planned for. Oraqul finds the
-            belief that broke and rebuilds around who showed up.
+            assumption that broke and rebuilds around who showed up.
           </p>
           <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
             <span className="font-medium text-ink">You bring </span>your results by region or age
