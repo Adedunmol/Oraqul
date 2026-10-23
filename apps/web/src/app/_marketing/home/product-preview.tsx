@@ -9,11 +9,11 @@ export function ProductPreview() {
       className="scheme-dark mk-glow relative overflow-x-clip bg-bg pt-[clamp(24px,4vw,64px)] pb-[clamp(72px,10vw,144px)]"
     >
       <div className={`${wrap} flex flex-col gap-[clamp(40px,6vw,80px)]`}>
-        <div className="grid gap-6 min-[900px]:grid-cols-[1.2fr_1fr] min-[900px]:items-end">
+        <div className="flex flex-col items-center gap-6 text-center">
           <h2 id="preview-title" className={h2Class}>
             A plan you can check, line by line.
           </h2>
-          <p className={`${leadClass} min-[900px]:justify-self-end`}>
+          <p className={leadClass}>
             Every claim about your audience comes with a receipt: the data it came from and the rule
             that turned it into a verdict.
           </p>
