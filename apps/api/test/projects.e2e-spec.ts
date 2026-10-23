@@ -28,7 +28,7 @@ import { type AuthedRequest, SessionGuard } from '../src/auth/session.guard.js';
 import { UsersService } from '../src/auth/users.service.js';
 import { envSchema } from '../src/config/env.js';
 import { DB, DbModule } from '../src/db/db.module.js';
-import { memberships, projects } from '../src/db/schema.js';
+import { runs as dbRuns, memberships, projects } from '../src/db/schema.js';
 import { LlmModule } from '../src/llm/llm.module.js';
 import { ProjectsModule } from '../src/projects/projects.module.js';
 import { TeamsService } from '../src/teams/teams.service.js';
@@ -50,9 +50,18 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
   const ids = {} as Record<keyof typeof emails, string>;
   const handoffs: Handoff[] = [];
   const placeholder = new PlaceholderAgent();
+  // When set, the agent says it has started, then waits here before its next step.
+  let hold: { entered: () => void; release: Promise<void> } | null = null;
   const recording: CategoryAgent = {
-    run: (handoff, emit) => {
+    run: async (handoff, emit) => {
       handoffs.push(handoff);
+      if (hold) {
+        const { entered, release } = hold;
+        emit({ type: 'trace.step', agent: handoff.category, step: 1, of: 2, text: 'Reading' });
+        entered();
+        await release;
+        emit({ type: 'trace.step', agent: handoff.category, step: 2, of: 2, text: 'Planning' });
+      }
       return placeholder.run(handoff, emit);
     },
     replyLabel: () => placeholder.replyLabel(),
@@ -254,6 +263,37 @@ describe('projects and the router (e2e, real guards and SQL, session lookup stub
     expect(events).toContain('trace.step');
     expect(events).toContain('message');
     expect(events.at(-1)).toBe('run.stopped');
+  });
+
+  it('stops a running agent on request, saves nothing and frees the chat', async () => {
+    let entered = () => {};
+    let release = () => {};
+    const started = new Promise<void>((resolve) => {
+      entered = resolve;
+    });
+    hold = { entered, release: new Promise<void>((resolve) => (release = resolve)) };
+    try {
+      const { threadId } = await start('Check my plan for the film "Salt Road"');
+      await started;
+      await request(http()).post(`/threads/${threadId}/cancel`).set(as('viewer')).expect(403);
+      await request(http()).post(`/threads/${threadId}/cancel`).set(as('editor')).expect(204);
+      release();
+      const done = await settled(threadId);
+      expect(done.busy).toBe(false);
+      expect(done.items.some((i) => i.role === 'output')).toBe(false);
+      expect(done.items.at(-1)).toMatchObject({
+        role: 'agent',
+        text: expect.stringMatching(/^Stopped/),
+      });
+      const [run] = await database.db
+        .select({ stopReason: dbRuns.stopReason, status: dbRuns.status })
+        .from(dbRuns)
+        .where(and(eq(dbRuns.threadId, threadId), eq(dbRuns.agent, 'film')));
+      expect(run).toEqual({ stopReason: 'stopped', status: 'done' });
+      await request(http()).post(`/threads/${threadId}/cancel`).set(as('editor')).expect(409);
+    } finally {
+      hold = null;
+    }
   });
 
   it('lets a typed message answer the open card', async () => {

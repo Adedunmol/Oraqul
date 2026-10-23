@@ -230,6 +230,14 @@ export class ProjectsController {
     return this.runs.post(threadId, body);
   }
 
+  /** Stops the run on this thread. A conflict when nothing is running. */
+  @Post('threads/:threadId/cancel')
+  @Roles('owner', 'editor')
+  @HttpCode(204)
+  cancel(@Param('threadId') threadId: string): void {
+    this.runs.cancel(threadId);
+  }
+
   @Post('threads/:threadId/read')
   @Roles('owner', 'editor', 'viewer')
   @HttpCode(204)

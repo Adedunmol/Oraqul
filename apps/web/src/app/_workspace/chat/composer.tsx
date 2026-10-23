@@ -57,6 +57,7 @@ export function Composer({
   quote,
   onClearQuote,
   onSend,
+  onStop,
 }: {
   placeholder: string;
   disabled?: boolean;
@@ -70,6 +71,8 @@ export function Composer({
   quote?: string | null;
   onClearQuote?: () => void;
   onSend: (text: string, files: Attachment[]) => void;
+  /** Set while the agent is working: Send becomes Stop, which ends the run. */
+  onStop?: () => void;
 }) {
   const id = useId();
   const picker = useRef<HTMLInputElement>(null);
@@ -242,9 +245,15 @@ export function Composer({
           <span className="hidden text-xs text-muted min-[700px]:inline">
             Shift Enter for a new line
           </span>
-          <Button type="submit" variant="primary" size="small" icon="arrowUp" disabled={!ready}>
-            Send
-          </Button>
+          {onStop ? (
+            <Button type="button" variant="primary" size="small" icon="close" onClick={onStop}>
+              Stop
+            </Button>
+          ) : (
+            <Button type="submit" variant="primary" size="small" icon="arrowUp" disabled={!ready}>
+              Send
+            </Button>
+          )}
         </span>
       </div>
     </form>

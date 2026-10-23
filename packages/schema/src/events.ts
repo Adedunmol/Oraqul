@@ -67,7 +67,7 @@ export const threadEventSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('memory.used'), items: z.array(contextItemSchema).min(1) }),
   z.object({
     type: z.literal('run.stopped'),
-    reason: z.enum(['finished', 'waiting', 'budget', 'steps', 'error']),
+    reason: z.enum(['finished', 'waiting', 'budget', 'steps', 'error', 'stopped']),
   }),
   z.object({ type: z.literal('error'), message: z.string() }),
 ]);

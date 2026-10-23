@@ -99,6 +99,7 @@ export function ChatView({
   onStep,
   onAnswer,
   onSend,
+  onStop,
   onSeen,
   notice,
 }: {
@@ -115,6 +116,8 @@ export function ChatView({
   /** `itemId` is the question item's id. */
   onAnswer: (itemId: string, answer: QuestionAnswer) => void;
   onSend: (text: string, files: Attachment[]) => void;
+  /** Ends the run in progress. Without it the message box only waits. */
+  onStop?: () => void;
   /** Called when new items have been on screen. */
   onSeen?: () => void;
   /** A line above the message box, such as a lost connection. */
@@ -255,6 +258,7 @@ export function ChatView({
           quote={quote}
           onClearQuote={() => setQuote(null)}
           onSend={send}
+          onStop={busy ? onStop : undefined}
         />
       </div>
       {receipt ? (

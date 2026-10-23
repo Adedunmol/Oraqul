@@ -546,6 +546,7 @@ GET    /projects/:projectId   DELETE /projects/:projectId
 POST   /projects/:projectId/threads   body `{ fresh? }` (§3.7)   GET /threads/:threadId
 GET    /projects/:projectId/memory   PUT, DELETE /projects/:projectId/memory/:itemId   (§3.7; the memory list is also on `GET /projects/:projectId`)
 POST   /threads/:threadId/messages    typed text or a card answer; 202, the reply comes on the stream; 409 while a run is going
+POST   /threads/:threadId/cancel      stops the run on the thread (owner, editor); 204, 409 when nothing is running. The run ends at its next step, saves nothing, says it stopped, and the stream sends `run.stopped` with the reason `stopped`
 POST   /threads/:threadId/read    marks what is stored so far as read
 GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
 GET    /rules                 the launch rule library with each rule's source and date. Public, static, the same for every team
