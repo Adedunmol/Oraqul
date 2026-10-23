@@ -43,7 +43,7 @@ test('the guide builds a brief from the fields and hands it to the app', async (
   await page.getByLabel('Title', { exact: true }).fill('Night Ferry');
   await page.getByLabel('Release date', { exact: true }).fill('2099-03-12');
   await page.getByLabel('Cities, home first').fill('Lagos, London');
-  await page.getByRole('radio', { name: /Mid-size/ }).click();
+  await page.getByLabel(/Mid-size/).check({ force: true });
   const brief = page.getByLabel('Your brief').locator('pre');
   await expect(brief).toContainText('Launch plan for the film "Night Ferry"');
   await expect(brief).toContainText('opening in Lagos and London on 2099-03-12');

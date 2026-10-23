@@ -37,12 +37,9 @@ function Group({
     <fieldset className="flex flex-col gap-3 rounded-2xl bg-card p-5">
       <legend className="sr-only">{title}</legend>
       <div className="flex flex-col gap-0.5">
-        <h3
-          className="font-display text-[17px] font-semibold tracking-[-0.02em]"
-          aria-hidden="true"
-        >
+        <p className="font-display text-[17px] font-semibold tracking-[-0.02em]" aria-hidden="true">
           {title}
-        </h3>
+        </p>
         {note ? <p className="text-[13px] text-muted">{note}</p> : null}
       </div>
       {children}
@@ -185,17 +182,22 @@ export function PromptBuilder() {
             className="grid gap-2 min-[560px]:grid-cols-2"
           >
             {bands.map((b) => (
-              <button
+              <label
                 key={b.id}
-                type="button"
-                role="radio"
-                aria-checked={v.band === b.id}
-                onClick={() => set('band', v.band === b.id ? '' : b.id)}
-                className={`flex flex-col items-start rounded-xl px-3.5 py-2.5 text-left transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none ${v.band === b.id ? 'bg-accent-soft text-accent' : 'bg-surface2 hover:bg-surface2-hover'}`}
+                className="flex cursor-pointer flex-col items-start rounded-xl bg-surface2 px-3.5 py-2.5 text-left transition-colors duration-150 hover:bg-surface2-hover has-[:checked]:bg-accent-soft has-[:checked]:text-accent has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent motion-reduce:transition-none"
               >
+                <input
+                  type="radio"
+                  name={`${uid}-band`}
+                  checked={v.band === b.id}
+                  onChange={() => set('band', b.id)}
+                  // A second click on the chosen band clears it, so the question can be left unanswered.
+                  onClick={() => v.band === b.id && set('band', '')}
+                  className="sr-only"
+                />
                 <b className="text-sm">{b.label}</b>
                 <span className="text-xs text-muted">{b.hint}</span>
-              </button>
+              </label>
             ))}
           </div>
           <Input
