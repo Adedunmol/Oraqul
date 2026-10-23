@@ -8,6 +8,13 @@ export interface RuleSource {
   url?: string;
   /** `YYYY-MM-DD`, the day the rule was written or checked. */
   date: string;
+  /**
+   * How far to lean on it. `team` is Oraqul's own craft, `directional` is one blog-level source
+   * for one point, and `not-researched` is a rule that holds no number because none was found.
+   */
+  grade: 'team' | 'directional' | 'not-researched';
+  /** What a reader should know before relying on it, such as who published the figure and when. */
+  caveat?: string;
 }
 
 export interface Rule<T> {

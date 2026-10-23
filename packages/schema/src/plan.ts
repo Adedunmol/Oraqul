@@ -273,6 +273,19 @@ export const partnerTiers = ['A', 'B', 'C'] as const;
 export const partnerTierSchema = z.enum(partnerTiers);
 export type PartnerTier = z.infer<typeof partnerTierSchema>;
 
+/** What each tier means, in one place so the rules, the plan screen and the exports say the same. */
+export const TIER_LABEL: Record<PartnerTier, { name: string; what: string }> = {
+  A: { name: 'Flagship', what: 'Big national brands. Only for releases with scale.' },
+  B: {
+    name: 'Category and integration',
+    what: 'Brands that fit the category, such as banks and payment brands, food and drink, hospitality and telecom bundles.',
+  },
+  C: {
+    name: 'Local',
+    what: 'Local businesses, creators, venues and community groups. Most realistic for an independent release.',
+  },
+};
+
 /** A partner the plan can approach, with its tier, Qloo fit and budget fit. Price is never known. */
 export const partnerOptionSchema = z.object({
   id: z.string().min(1),

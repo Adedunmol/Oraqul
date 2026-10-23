@@ -9,7 +9,9 @@ import { COUNTRY_CHANNELS } from './shared';
 import type { RuleLibrary } from './types';
 
 export { type Beat, type DatedBeat, datedBeats } from '../launch';
+export * from './calendar';
 export * from './creative';
+export * from './partners';
 export * from './platforms';
 export * from './shared';
 export type { Benchmark, Rule, RuleLibrary, RuleSource, SignalRule } from './types';

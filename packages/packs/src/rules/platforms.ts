@@ -43,7 +43,7 @@ export function platformOf(channel: string): string {
 }
 
 /** Platforms that a category adds beyond the common ones, strongest first. */
-const CATEGORY_EXTRAS = teamRule<Record<Category, string[]>>('platforms.category', {
+export const CATEGORY_EXTRAS = teamRule<Record<Category, string[]>>('platforms.category', {
   film: ['X', 'Facebook'],
   music: ['X', 'Snapchat'],
   books: ['Reddit', 'X'],
@@ -52,7 +52,7 @@ const CATEGORY_EXTRAS = teamRule<Record<Category, string[]>>('platforms.category
 });
 
 /** Platforms a market adds, after its own leaders. */
-const MARKET_EXTRAS = teamRule<Record<string, string[]>>('platforms.market', {
+export const MARKET_EXTRAS = teamRule<Record<string, string[]>>('platforms.market', {
   nigeria: ['X', 'Facebook', 'Snapchat'],
   ghana: ['X', 'Facebook', 'Snapchat'],
   'south africa': ['X', 'Facebook'],
