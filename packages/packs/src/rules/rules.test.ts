@@ -4,6 +4,7 @@ import {
   ASSET_OFFER,
   bandCarries,
   bandOf,
+  brandCategoriesFor,
   CALENDAR_ADS,
   CALENDAR_RULES,
   CATEGORY_PARTNERS,
@@ -172,13 +173,15 @@ describe('shared, partner and calendar rules', () => {
     expect(CALENDAR_RULES.ads.source.grade).toBe('directional');
   });
 
-  it('asks Qloo only for brand categories a probe verified', () => {
+  it('asks Qloo only for brand categories a probe verified, and explains the rest', () => {
     for (const r of Object.values(CATEGORY_PARTNERS)) {
       for (const c of r.value.brandCategories) {
-        if (!c.verified) continue;
-        expect(['beverage', 'telecom']).toContain(c.phrase);
+        if (c.verified) expect(['beverage', 'telecom', 'food', 'beauty']).toContain(c.phrase);
+        else expect(c.note, c.phrase).toBeTruthy();
       }
     }
+    expect(brandCategoriesFor('games')).toEqual(['beverage', 'telecom']);
+    expect(brandCategoriesFor('film')).toEqual(['telecom', 'beverage', 'food', 'beauty']);
   });
 
   it('reserves slots for every tier and names flagships only in the seeds', () => {

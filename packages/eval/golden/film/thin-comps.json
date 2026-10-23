@@ -10,7 +10,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Open in Accra first, then Lagos: that is where your comps' audience is strongest among your cities.",
@@ -95,7 +97,7 @@
       "calls": ["territory:Accra:okay:lower", "territory:Lagos:avoid:lower"],
       "partners": {
         "A": 3,
-        "B": 4,
+        "B": 7,
         "C": 4
       }
     }

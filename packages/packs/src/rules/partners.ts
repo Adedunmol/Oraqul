@@ -13,6 +13,8 @@ export interface BrandCategory {
    * (docs/backend/qloo.md). An unverified category is offered as a kind of partner and never asked.
    */
   verified: boolean;
+  /** What the probe of 2026-10-23 found, for a category that is not verified. */
+  note?: string;
 }
 
 export interface CategoryPartners {
@@ -39,12 +41,30 @@ export const PARTNERS_VERSION = 'partners@2026-10-23.1';
 
 const BEVERAGE: BrandCategory = { phrase: 'beverage', verified: true };
 const TELECOM: BrandCategory = { phrase: 'telecom', verified: true };
+// Probed live 2026-10-23 with an artist signal in Lagos and London (qloo-partner-probes).
+const FOOD: BrandCategory = { phrase: 'food', verified: true };
+const BEAUTY: BrandCategory = { phrase: 'beauty', verified: true };
+const COFFEE: BrandCategory = {
+  phrase: 'coffee',
+  verified: false,
+  note: 'Returned global tea and coffee brands in Lagos and London, not ones that operate there.',
+};
+const ENERGY: BrandCategory = {
+  phrase: 'energy drink',
+  verified: false,
+  note: 'One brand in Lagos and none in London.',
+};
+const SNACK: BrandCategory = {
+  phrase: 'snack',
+  verified: false,
+  note: 'One brand in Lagos, and mostly US brands in London.',
+};
 
-// Unverified categories (apparel, beauty, food, coffee, hardware, energy, ticketing) are listed in
-// `bKinds` only. They join `brandCategories` once a probe shows them (qloo.md).
+// Qloo has no brand category for apparel, hardware, ticketing, payments or banks, so those are kinds
+// of partner with no Qloo call. An unverified category stays listed with its probe note.
 export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<CategoryPartners>> = {
   film: teamRule('partners.film', {
-    brandCategories: [BEVERAGE, TELECOM],
+    brandCategories: [TELECOM, BEVERAGE, FOOD, BEAUTY],
     bKinds: ['food and drink', 'apparel', 'beauty', 'telecom bundles'],
     cKinds: ['cinemas', 'creators', 'community groups'],
     gets: [
@@ -59,7 +79,7 @@ export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<Category
     ],
   }),
   music: teamRule('partners.music', {
-    brandCategories: [BEVERAGE, TELECOM],
+    brandCategories: [TELECOM, BEVERAGE, BEAUTY],
     bKinds: ['drinks brands', 'telecom bundles', 'apparel'],
     cKinds: ['venues', 'creators', 'community groups'],
     gets: [
@@ -74,7 +94,7 @@ export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<Category
     ],
   }),
   books: teamRule('partners.books', {
-    brandCategories: [BEVERAGE],
+    brandCategories: [BEVERAGE, TELECOM, FOOD, COFFEE],
     bKinds: ['coffee and lifestyle brands', 'stationery'],
     cKinds: ['bookshops', 'reading communities', 'libraries'],
     gets: [
@@ -89,7 +109,7 @@ export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<Category
     ],
   }),
   podcasts: teamRule('partners.podcasts', {
-    brandCategories: [BEVERAGE, TELECOM],
+    brandCategories: [BEVERAGE, TELECOM, FOOD],
     bKinds: ['sponsor brands that fit the listener profile', 'telecom bundles'],
     cKinds: ['creators', 'networks', 'community groups'],
     gets: [
@@ -104,7 +124,7 @@ export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<Category
     ],
   }),
   games: teamRule('partners.games', {
-    brandCategories: [BEVERAGE, TELECOM],
+    brandCategories: [BEVERAGE, TELECOM, ENERGY, SNACK],
     bKinds: ['hardware and peripherals', 'energy and snack brands', 'telecom bundles'],
     cKinds: ['streamers', 'creators', 'community groups'],
     gets: [
@@ -123,11 +143,13 @@ export const CATEGORY_PARTNERS: Record<Exclude<Category, 'shows'>, Rule<Category
 /** Seed partners per market and tier. Seeds are asked of Qloo only for markets the plan reaches. */
 const SEEDS = teamRule<Record<string, Record<PartnerTier, TierSeed>>>('partners.seeds', {
   nigeria: {
-    // TODO(verify): Guinness, Indomie, Verve and QuickTeller have not been resolved in Qloo yet.
+    // Probed live 2026-10-23: Guinness, Indomie and Bolt match by exact name, and MTN matches as
+    // "MTN Group". Verve and QuickTeller did not resolve to the Nigerian payment brands ("Verve"
+    // found a coffee roaster, "QuickTeller" nothing), so they are a kind of partner, not a name.
     A: { names: ['Guinness', 'MTN', 'Indomie'], kinds: [] },
     B: {
-      names: ['Verve', 'QuickTeller'],
-      kinds: ['food and drink', 'hospitality', 'telecom bundles'],
+      names: ['Bolt'],
+      kinds: ['banks and payment brands', 'food and drink', 'hospitality', 'telecom bundles'],
     },
     C: { names: [], kinds: ['cinemas', 'creators', 'diaspora businesses', 'community groups'] },
   },

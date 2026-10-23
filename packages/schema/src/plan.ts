@@ -286,6 +286,13 @@ export const TIER_LABEL: Record<PartnerTier, { name: string; what: string }> = {
   },
 };
 
+/** A content fit or fan backlash flag on a partner (T2). */
+export const partnerFlagSchema = z.object({
+  type: z.enum(['content', 'backlash']),
+  why: z.string(),
+});
+export type PartnerFlag = z.infer<typeof partnerFlagSchema>;
+
 /** A partner the plan can approach, with its tier, Qloo fit and budget fit. Price is never known. */
 export const partnerOptionSchema = z.object({
   id: z.string().min(1),
@@ -300,8 +307,21 @@ export const partnerOptionSchema = z.object({
   budgetFit: z.enum(['fits', 'stretch', 'out']),
   price: z.literal('unknown'),
   findingIds: z.array(z.string()),
+  /** A named brand, or a kind of partner with no name yet, such as "bookshops". */
+  kind: z.enum(['brand', 'kind']).default('brand'),
+  /** Mismatches between the work and this partner, set by code. Direction only: never a drop. */
+  flags: z.array(partnerFlagSchema).default([]),
 });
 export type PartnerOption = z.infer<typeof partnerOptionSchema>;
+
+/** A note on lead time, band or barter, written by code from the partner rules (T1). */
+export const partnerNoteSchema = z.object({
+  id: z.string().min(1),
+  /** The rule behind it, such as `partners.lead-time`. */
+  ruleId: z.string(),
+  text: z.string().min(1),
+});
+export type PartnerNote = z.infer<typeof partnerNoteSchema>;
 
 export const launchPlanSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question. */
@@ -321,11 +341,20 @@ export const launchPlanSchema = z.object({
   /** What the research and the line check did on the way. Plans saved before it have none. */
   process: planProcessSchema.nullable().default(null),
   /** The rule library version the plan was written with. Plans saved before it have none. */
-  rules: z.object({ category: z.string(), version: z.string() }).nullable().default(null),
+  rules: z
+    .object({
+      category: z.string(),
+      version: z.string(),
+      /** The shared libraries the plan also used, by version. Older plans have none. */
+      parts: z.record(z.string(), z.string()).default({}),
+    })
+    .nullable()
+    .default(null),
   band: planBandSchema.nullable().default(null),
   signal: signalSchema.nullable().default(null),
   territories: z.array(territorySchema).default([]),
   calls: z.array(directionCallSchema).default([]),
   partners: z.array(partnerOptionSchema).default([]),
+  partnerNotes: z.array(partnerNoteSchema).default([]),
 });
 export type LaunchPlan = z.infer<typeof launchPlanSchema>;

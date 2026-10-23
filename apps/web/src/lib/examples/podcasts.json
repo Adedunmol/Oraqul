@@ -1199,13 +1199,15 @@
               "entityId": null,
               "name": "London",
               "affinity": 0.6288752036056344,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Lagos",
               "affinity": 0.5141774086631317,
-              "detail": null
+              "detail": null,
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1272,61 +1274,71 @@
               "entityId": null,
               "name": "Storytelling",
               "affinity": null,
-              "detail": "yours · 1×"
+              "detail": "yours · 1×",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Interviews",
               "affinity": null,
-              "detail": "yours · 1×"
+              "detail": "yours · 1×",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Technology",
               "affinity": null,
-              "detail": "yours · 0.75×"
+              "detail": "yours · 0.75×",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Faith",
               "affinity": null,
-              "detail": "yours · 0.5×"
+              "detail": "yours · 0.5×",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Humour",
               "affinity": null,
-              "detail": "shared"
+              "detail": "shared",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "True stories",
               "affinity": null,
-              "detail": "shared"
+              "detail": "shared",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Money",
               "affinity": null,
-              "detail": "shared"
+              "detail": "shared",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Relationships",
               "affinity": null,
-              "detail": "shared"
+              "detail": "shared",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Politics",
               "affinity": null,
-              "detail": "shared"
+              "detail": "shared",
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Diaspora life",
               "affinity": null,
-              "detail": "rivals"
+              "detail": "rivals",
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1357,31 +1369,36 @@
               "entityId": "DEMO-POD-0214",
               "name": "Casefile",
               "affinity": 0.65,
-              "detail": "Podcast"
+              "detail": "Podcast",
+              "popularity": null
             },
             {
               "entityId": "DEMO-POD-0203",
               "name": "The Long Con",
               "affinity": 0.64,
-              "detail": "Podcast"
+              "detail": "Podcast",
+              "popularity": null
             },
             {
               "entityId": "DEMO-POD-0202",
               "name": "Case Closed Weekly",
               "affinity": 0.64,
-              "detail": "Podcast"
+              "detail": "Podcast",
+              "popularity": null
             },
             {
               "entityId": "DEMO-POD-0201",
               "name": "Midnight Ledger",
               "affinity": 0.64,
-              "detail": "Podcast"
+              "detail": "Podcast",
+              "popularity": null
             },
             {
               "entityId": "DEMO-POD-0204",
               "name": "Dead Air",
               "affinity": 0.63,
-              "detail": "Podcast"
+              "detail": "Podcast",
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1415,7 +1432,8 @@
               "entityId": "DEMO-POD-0214",
               "name": "Casefile",
               "affinity": 0.65,
-              "detail": "Podcast"
+              "detail": "Podcast",
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1446,13 +1464,15 @@
               "entityId": "DEMO-BRAND-0202",
               "name": "Fizz Cola",
               "affinity": 0.5912348015446296,
-              "detail": null
+              "detail": null,
+              "popularity": 0.41
             },
             {
               "entityId": "DEMO-BRAND-0203",
               "name": "Lumen Coffee",
               "affinity": 0.5912348015446296,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             }
           ],
           "numbers": {},
@@ -1478,13 +1498,15 @@
               "entityId": "DEMO-BRAND-0201",
               "name": "Glide Mobile",
               "affinity": 0.5935786078436249,
-              "detail": null
+              "detail": null,
+              "popularity": 0.46
             },
             {
               "entityId": "DEMO-BRAND-0204",
               "name": "Orbit Data",
               "affinity": 0.5935786078436249,
-              "detail": null
+              "detail": null,
+              "popularity": 0.24
             }
           ],
           "numbers": {},
@@ -1510,25 +1532,29 @@
               "entityId": "DEMO-MUSIC-0001",
               "name": "Neon Tide",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.27
             },
             {
               "entityId": "DEMO-MUSIC-0002",
               "name": "Ada Lux",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.61
             },
             {
               "entityId": "DEMO-MUSIC-0003",
               "name": "Kola Wave",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.48
             },
             {
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1557,25 +1583,29 @@
               "entityId": "DEMO-BRAND-0001",
               "name": "Coca-Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0002",
               "name": "Nike",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0003",
               "name": "McDonald's",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.98
             },
             {
               "entityId": "DEMO-BRAND-0004",
               "name": "Night Market Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.32
             }
           ],
           "numbers": {
@@ -1604,25 +1634,29 @@
               "entityId": "DEMO-MUSIC-0001",
               "name": "Neon Tide",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.27
             },
             {
               "entityId": "DEMO-MUSIC-0002",
               "name": "Ada Lux",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.61
             },
             {
               "entityId": "DEMO-MUSIC-0003",
               "name": "Kola Wave",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.48
             },
             {
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1651,25 +1685,29 @@
               "entityId": "DEMO-BRAND-0001",
               "name": "Coca-Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0002",
               "name": "Nike",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0003",
               "name": "McDonald's",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.98
             },
             {
               "entityId": "DEMO-BRAND-0004",
               "name": "Night Market Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.32
             }
           ],
           "numbers": {
@@ -1735,7 +1773,12 @@
       },
       "rules": {
         "category": "podcasts",
-        "version": "podcasts@2026-10-22.1"
+        "version": "podcasts@2026-10-22.1",
+        "parts": {
+          "shared": "shared@2026-10-23.1",
+          "partners": "partners@2026-10-23.1",
+          "calendar": "calendar@2026-10-23.1"
+        }
       },
       "band": {
         "band": "micro",
@@ -1814,7 +1857,9 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": ["f-brands-beverage-lagos"]
+          "findingIds": ["f-brands-beverage-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-lumen-coffee",
@@ -1825,7 +1870,9 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": ["f-brands-beverage-lagos"]
+          "findingIds": ["f-brands-beverage-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-glide-mobile",
@@ -1836,7 +1883,9 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": ["f-brands-telecom-lagos"]
+          "findingIds": ["f-brands-telecom-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-orbit-data",
@@ -1847,106 +1896,87 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": ["f-brands-telecom-lagos"]
-        },
-        {
-          "id": "partner-verve",
-          "name": "Verve",
-          "tier": "B",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "stretch",
-          "price": "unknown",
-          "findingIds": []
-        },
-        {
-          "id": "partner-quickteller",
-          "name": "QuickTeller",
-          "tier": "B",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "stretch",
-          "price": "unknown",
-          "findingIds": []
+          "findingIds": ["f-brands-telecom-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-ee",
           "name": "EE",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United Kingdom",
           "from": "seed",
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-monzo",
           "name": "Monzo",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
+        },
+        {
+          "id": "partner-bolt",
+          "name": "Bolt",
           "tier": "B",
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
-          "id": "partner-c-nigeria-cinemas",
-          "name": "Cinemas",
-          "tier": "C",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "fits",
-          "price": "unknown",
-          "findingIds": []
-        },
-        {
-          "id": "partner-c-nigeria-creators",
-          "name": "Creators",
-          "tier": "C",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "fits",
-          "price": "unknown",
-          "findingIds": []
-        },
-        {
-          "id": "partner-c-nigeria-diaspora-businesses",
-          "name": "Diaspora businesses",
-          "tier": "C",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "fits",
-          "price": "unknown",
-          "findingIds": []
-        },
-        {
-          "id": "partner-c-nigeria-community-groups",
-          "name": "Community groups",
-          "tier": "C",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "fits",
-          "price": "unknown",
-          "findingIds": []
-        },
-        {
-          "id": "partner-c-united-kingdom-independent-cinemas",
-          "name": "Independent cinemas",
-          "tier": "C",
+          "id": "partner-b-sponsor-brands-that-fit-the-listener-profile",
+          "name": "Sponsor brands that fit the listener profile",
+          "tier": "B",
           "market": "United Kingdom",
           "from": "seed",
           "fit": null,
-          "budgetFit": "fits",
+          "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        },
+        {
+          "id": "partner-b-telecom-bundles",
+          "name": "Telecom bundles",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        },
+        {
+          "id": "partner-b-banks-and-payment-brands",
+          "name": "Banks and payment brands",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
         },
         {
           "id": "partner-c-united-kingdom-creators",
@@ -1957,7 +1987,65 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        },
+        {
+          "id": "partner-c-united-kingdom-networks",
+          "name": "Networks",
+          "tier": "C",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        },
+        {
+          "id": "partner-c-united-kingdom-community-groups",
+          "name": "Community groups",
+          "tier": "C",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        },
+        {
+          "id": "partner-c-united-kingdom-independent-cinemas",
+          "name": "Independent cinemas",
+          "tier": "C",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        }
+      ],
+      "partnerNotes": [
+        {
+          "id": "partner-note-lead",
+          "ruleId": "partners.lead-time",
+          "text": "The release is about 869 months away. Big brands plan annually, and specialists advise starting about 18 months before release. Big franchises attract the big brands."
+        },
+        {
+          "id": "partner-note-band",
+          "ruleId": "partners.lead-time",
+          "text": "An independent release usually has no franchise behind it, so lead with tier B and tier C partners."
+        },
+        {
+          "id": "partner-note-barter",
+          "ruleId": "partners.lead-time",
+          "text": "Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship."
         }
       ]
     },
@@ -3115,7 +3203,7 @@
         "callId": "00000000-0000-4000-8000-000000005060",
         "endpoint": "/search",
         "input": {
-          "query": "Verve",
+          "query": "Bolt",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3129,20 +3217,6 @@
         "callId": "00000000-0000-4000-8000-000000005061",
         "endpoint": "/search",
         "input": {
-          "query": "QuickTeller",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005062",
-        "endpoint": "/search",
-        "input": {
           "query": "EE",
           "take": "5",
           "types": "urn:entity:brand"
@@ -3154,7 +3228,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005063",
+        "callId": "00000000-0000-4000-8000-000000005062",
         "endpoint": "/search",
         "input": {
           "query": "Monzo",

@@ -8,8 +8,10 @@ import {
   emptyResponseSchema,
   type MemoryItem,
   memoryItemSchema,
+  type PartnersState,
   type PinnedProjects,
   type PostMessage,
+  partnersStateSchema,
   pinnedProjectsSchema,
   type ReactionKind,
   reactionStateSchema,
@@ -76,6 +78,15 @@ export function setReaction(
     { method: 'PUT', body: { kind } },
     reactionStateSchema,
   ).then((state) => state.kind);
+}
+
+/** Replaces the team's own partners on a plan. Code places each one; Qloo is not asked again. */
+export function setTeamPartners(outputId: string, names: string[]): Promise<PartnersState> {
+  return clientRequest(
+    `/outputs/${outputId}/partners`,
+    { method: 'PUT', body: { names } },
+    partnersStateSchema,
+  );
 }
 
 export function deleteProject(projectId: string): Promise<void> {

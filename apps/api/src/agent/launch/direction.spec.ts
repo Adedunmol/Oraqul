@@ -146,6 +146,7 @@ describe('partner tiers (D9)', () => {
       signed: [],
       band: 'micro',
       markets: ['Nigeria'],
+      category: 'film',
     });
     const names = partners.map((p) => p.name);
     expect(names).not.toContain('MTN');
@@ -161,6 +162,7 @@ describe('partner tiers (D9)', () => {
       signed: [],
       band: 'mid',
       markets: ['Nigeria'],
+      category: 'film',
     });
     const bolt = partners.find((p) => p.name === 'Bolt');
     expect(bolt?.fit).toEqual({ place: 1, of: 6, direction: 'okay' });
@@ -177,6 +179,7 @@ describe('partner tiers (D9)', () => {
       signed: ['Guinness'],
       band: 'micro',
       markets: ['Nigeria'],
+      category: 'film',
     });
     expect(partners.find((p) => p.name === 'Guinness')?.from).toBe('team');
     const call = calls.find((c) => c.name === 'Guinness');
@@ -198,14 +201,17 @@ describe('withSeeds', () => {
       'Guinness',
       'MTN',
       'Indomie',
-      'Verve',
-      'QuickTeller',
     ]);
     expect(mid.find((c) => c.city === 'London')?.names).toEqual(['EE', 'Monzo']);
   });
 
+  it('ranks flagship seeds for an independent budget too, since it is a stretch and not out', () => {
+    const indie = withSeeds(plan, 'independent', ['Lagos']).brandCandidates;
+    expect(indie[0]?.names).toContain('Guinness');
+  });
+
   it('leaves flagship seeds out for a micro budget', () => {
     const micro = withSeeds(plan, 'micro', ['Lagos']).brandCandidates;
-    expect(micro[0]?.names).toEqual(['Bolt', 'Verve', 'QuickTeller']);
+    expect(micro[0]?.names).toEqual(['Bolt']);
   });
 });

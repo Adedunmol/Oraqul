@@ -1325,25 +1325,29 @@
               "entityId": null,
               "name": "London",
               "affinity": 0.7112545158793041,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Houston",
               "affinity": 0.6258711326515466,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Atlanta",
               "affinity": 0.5296990624933269,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Lagos",
               "affinity": 0.49348782066476715,
-              "detail": null
+              "detail": null,
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1374,61 +1378,71 @@
               "entityId": null,
               "name": "Survival",
               "affinity": 0.6095425661830719,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Community",
               "affinity": 0.5822368461907771,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Loyalty",
               "affinity": 0.48017171564205513,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Ambition",
               "affinity": 0.4739719016494474,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Family",
               "affinity": 0.40444022348874875,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Power",
               "affinity": 0.36922839362389137,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "The Outsider",
               "affinity": 0.5283889622726452,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "The Fixer",
               "affinity": 0.5124290492802616,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "The Matriarch",
               "affinity": 0.4450732937808475,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "The Rival",
               "affinity": 0.20628822995496177,
-              "detail": null
+              "detail": null,
+              "popularity": null
             }
           ],
           "numbers": {},
@@ -1454,19 +1468,22 @@
               "entityId": "DEMO-FILM-0002",
               "name": "Midnight Harbor",
               "affinity": 0.7202289277269107,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-TV-0001",
               "name": "Harbor Precinct",
               "affinity": 0.6350618345511756,
-              "detail": null
+              "detail": null,
+              "popularity": 0.42
             },
             {
               "entityId": "DEMO-TV-0002",
               "name": "Eko Nights",
               "affinity": 0.6327180282521803,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             }
           ],
           "numbers": {
@@ -1494,19 +1511,22 @@
               "entityId": "DEMO-FILM-0002",
               "name": "Midnight Harbor",
               "affinity": 0.7202289277269107,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-TV-0001",
               "name": "Harbor Precinct",
               "affinity": 0.6350618345511756,
-              "detail": null
+              "detail": null,
+              "popularity": 0.42
             },
             {
               "entityId": "DEMO-TV-0002",
               "name": "Eko Nights",
               "affinity": 0.6327180282521803,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             }
           ],
           "numbers": {
@@ -1534,19 +1554,22 @@
               "entityId": "DEMO-FILM-0002",
               "name": "Midnight Harbor",
               "affinity": 0.7202289277269107,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-TV-0001",
               "name": "Harbor Precinct",
               "affinity": 0.6350618345511756,
-              "detail": null
+              "detail": null,
+              "popularity": 0.42
             },
             {
               "entityId": "DEMO-TV-0002",
               "name": "Eko Nights",
               "affinity": 0.6327180282521803,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             }
           ],
           "numbers": {
@@ -1574,19 +1597,22 @@
               "entityId": "DEMO-FILM-0002",
               "name": "Midnight Harbor",
               "affinity": 0.7202289277269107,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-TV-0001",
               "name": "Harbor Precinct",
               "affinity": 0.6350618345511756,
-              "detail": null
+              "detail": null,
+              "popularity": 0.42
             },
             {
               "entityId": "DEMO-TV-0002",
               "name": "Eko Nights",
               "affinity": 0.6327180282521803,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             }
           ],
           "numbers": {
@@ -1614,7 +1640,8 @@
               "entityId": "DEMO-PLACE-0005",
               "name": "Peachtree Pictures",
               "affinity": 0.6953276910342574,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1640,7 +1667,8 @@
               "entityId": "DEMO-PLACE-0004",
               "name": "Bayou Cinema",
               "affinity": 0.6961089598005892,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1666,13 +1694,15 @@
               "entityId": "DEMO-PLACE-0001",
               "name": "Marina Picturehouse",
               "affinity": 0.7047029162302387,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             },
             {
               "entityId": "DEMO-PLACE-0002",
               "name": "Lekki Screens",
               "affinity": 0.703921647463907,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1698,7 +1728,8 @@
               "entityId": "DEMO-PLACE-0003",
               "name": "Southbank Screen",
               "affinity": 0.7031403786975752,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1724,19 +1755,22 @@
               "entityId": "DEMO-MUSIC-0002",
               "name": "Ada Lux",
               "affinity": 0.8022248222730646,
-              "detail": null
+              "detail": null,
+              "popularity": 0.61
             },
             {
               "entityId": "DEMO-MUSIC-0003",
               "name": "Kola Wave",
               "affinity": 0.8014435535067328,
-              "detail": null
+              "detail": null,
+              "popularity": 0.48
             },
             {
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.800662284740401,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1764,19 +1798,22 @@
               "entityId": "DEMO-MUSIC-0002",
               "name": "Ada Lux",
               "affinity": 0.8022248222730646,
-              "detail": null
+              "detail": null,
+              "popularity": 0.61
             },
             {
               "entityId": "DEMO-MUSIC-0003",
               "name": "Kola Wave",
               "affinity": 0.8014435535067328,
-              "detail": null
+              "detail": null,
+              "popularity": 0.48
             },
             {
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.800662284740401,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1804,19 +1841,22 @@
               "entityId": "DEMO-MUSIC-0002",
               "name": "Ada Lux",
               "affinity": 0.8022248222730646,
-              "detail": null
+              "detail": null,
+              "popularity": 0.61
             },
             {
               "entityId": "DEMO-MUSIC-0003",
               "name": "Kola Wave",
               "affinity": 0.8014435535067328,
-              "detail": null
+              "detail": null,
+              "popularity": 0.48
             },
             {
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.800662284740401,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1844,19 +1884,22 @@
               "entityId": "DEMO-MUSIC-0002",
               "name": "Ada Lux",
               "affinity": 0.8022248222730646,
-              "detail": null
+              "detail": null,
+              "popularity": 0.61
             },
             {
               "entityId": "DEMO-MUSIC-0003",
               "name": "Kola Wave",
               "affinity": 0.8014435535067328,
-              "detail": null
+              "detail": null,
+              "popularity": 0.48
             },
             {
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.800662284740401,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1884,7 +1927,8 @@
               "entityId": "DEMO-BRAND-0004",
               "name": "Night Market Cola",
               "affinity": 0.5036564147574027,
-              "detail": null
+              "detail": null,
+              "popularity": 0.32
             }
           ],
           "numbers": {},
@@ -1910,7 +1954,8 @@
               "entityId": "DEMO-BRAND-0004",
               "name": "Night Market Cola",
               "affinity": 0.5036564147574027,
-              "detail": null
+              "detail": null,
+              "popularity": 0.32
             }
           ],
           "numbers": {},
@@ -1936,7 +1981,8 @@
               "entityId": "DEMO-BRAND-0006",
               "name": "Lagoon Mobile",
               "affinity": 0.5052189522900663,
-              "detail": null
+              "detail": null,
+              "popularity": 0.4
             }
           ],
           "numbers": {},
@@ -1962,7 +2008,8 @@
               "entityId": "DEMO-BRAND-0006",
               "name": "Lagoon Mobile",
               "affinity": 0.5052189522900663,
-              "detail": null
+              "detail": null,
+              "popularity": 0.4
             }
           ],
           "numbers": {},
@@ -1988,13 +2035,15 @@
               "entityId": "DEMO-FILM-0105",
               "name": "Harbor Lights",
               "affinity": 0.42928495498590286,
-              "detail": null
+              "detail": null,
+              "popularity": 0.41
             },
             {
               "entityId": "DEMO-FILM-0106",
               "name": "Third Mainland",
               "affinity": 0.428503686219571,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -2022,13 +2071,15 @@
               "entityId": "DEMO-POD-0003",
               "name": "Crime Junkie",
               "affinity": 0.5202728300402576,
-              "detail": null
+              "detail": null,
+              "popularity": 1
             },
             {
               "entityId": "DEMO-POD-0004",
               "name": "Serial",
               "affinity": 0.5132414111432715,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             }
           ],
           "numbers": {},
@@ -2054,7 +2105,8 @@
               "entityId": "DEMO-PLACE-0006",
               "name": "Grace Chapel Houston",
               "affinity": 0.6945464222679256,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2080,7 +2132,8 @@
               "entityId": "DEMO-PLACE-0007",
               "name": "Pentecost House",
               "affinity": 0.6937651535015938,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2106,7 +2159,8 @@
               "entityId": "DEMO-PLACE-0008",
               "name": "Gulf Coast University",
               "affinity": 0.6992340348659163,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2132,7 +2186,8 @@
               "entityId": "DEMO-PLACE-0009",
               "name": "Lagoon City University",
               "affinity": 0.6984527660995845,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2158,37 +2213,43 @@
               "entityId": "DEMO-GAME-0001",
               "name": "Ember Keep",
               "affinity": 0.6542193304640751,
-              "detail": null
+              "detail": null,
+              "popularity": 0.36
             },
             {
               "entityId": "DEMO-GAME-0003",
               "name": "Crown of Ash",
               "affinity": 0.6526567929314115,
-              "detail": null
+              "detail": null,
+              "popularity": 0.47
             },
             {
               "entityId": "DEMO-GAME-0002",
               "name": "Hollow Hills",
               "affinity": 0.6518755241650798,
-              "detail": null
+              "detail": null,
+              "popularity": 0.52
             },
             {
               "entityId": "DEMO-GAME-0005",
               "name": "Void Courier",
               "affinity": 0.6448441052680938,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             },
             {
               "entityId": "DEMO-GAME-0004",
               "name": "Tidewalker",
               "affinity": 0.644062836501762,
-              "detail": null
+              "detail": null,
+              "popularity": 0.31
             },
             {
               "entityId": "DEMO-GAME-0006",
               "name": "Lantern Row",
               "affinity": 0.6425002989690984,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             }
           ],
           "numbers": {},
@@ -2214,37 +2275,43 @@
               "entityId": "DEMO-GAME-0001",
               "name": "Ember Keep",
               "affinity": 0.6542193304640751,
-              "detail": null
+              "detail": null,
+              "popularity": 0.36
             },
             {
               "entityId": "DEMO-GAME-0003",
               "name": "Crown of Ash",
               "affinity": 0.6526567929314115,
-              "detail": null
+              "detail": null,
+              "popularity": 0.47
             },
             {
               "entityId": "DEMO-GAME-0002",
               "name": "Hollow Hills",
               "affinity": 0.6518755241650798,
-              "detail": null
+              "detail": null,
+              "popularity": 0.52
             },
             {
               "entityId": "DEMO-GAME-0005",
               "name": "Void Courier",
               "affinity": 0.6448441052680938,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             },
             {
               "entityId": "DEMO-GAME-0004",
               "name": "Tidewalker",
               "affinity": 0.644062836501762,
-              "detail": null
+              "detail": null,
+              "popularity": 0.31
             },
             {
               "entityId": "DEMO-GAME-0006",
               "name": "Lantern Row",
               "affinity": 0.6425002989690984,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             }
           ],
           "numbers": {},
@@ -2270,7 +2337,8 @@
               "entityId": "DEMO-PLACE-0010",
               "name": "Harbor Lounge",
               "affinity": 0.6757891222312555,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2296,7 +2364,8 @@
               "entityId": "DEMO-PLACE-0012",
               "name": "Soho Social",
               "affinity": 0.6773516597639191,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2322,7 +2391,8 @@
               "entityId": "DEMO-PLACE-0011",
               "name": "Eko Nights Club",
               "affinity": 0.6765703909975873,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2348,7 +2418,8 @@
               "entityId": "DEMO-PLACE-0013",
               "name": "Camden After Hours",
               "affinity": 0.6781329285302509,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -2446,7 +2517,12 @@
       },
       "rules": {
         "category": "film",
-        "version": "film@2026-10-22.1"
+        "version": "film@2026-10-22.1",
+        "parts": {
+          "shared": "shared@2026-10-23.1",
+          "partners": "partners@2026-10-23.1",
+          "calendar": "calendar@2026-10-23.1"
+        }
       },
       "band": {
         "band": "independent",
@@ -2638,7 +2714,14 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": [
+            {
+              "type": "content",
+              "why": "A drinks brand when the audience includes people under 25, some of whom are under the legal drinking age. Check the partner’s rules on who its marketing may reach."
+            }
+          ]
         },
         {
           "id": "partner-mtn",
@@ -2649,7 +2732,9 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-indomie",
@@ -2660,7 +2745,9 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-night-market-cola",
@@ -2671,7 +2758,9 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": ["f-brands-beverage-lagos"]
+          "findingIds": ["f-brands-beverage-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-lagoon-mobile",
@@ -2682,73 +2771,74 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": ["f-brands-telecom-lagos"]
+          "findingIds": ["f-brands-telecom-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
-          "id": "partner-verve",
-          "name": "Verve",
+          "id": "partner-bolt",
+          "name": "Bolt",
           "tier": "B",
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
-        },
-        {
-          "id": "partner-quickteller",
-          "name": "QuickTeller",
-          "tier": "B",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "fits",
-          "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-ee",
           "name": "EE",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United Kingdom",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-monzo",
           "name": "Monzo",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United Kingdom",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-lyft",
           "name": "Lyft",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United States",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-cash-app",
           "name": "Cash App",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United States",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-c-nigeria-cinemas",
@@ -2759,7 +2849,9 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
         },
         {
           "id": "partner-c-nigeria-creators",
@@ -2770,7 +2862,22 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        },
+        {
+          "id": "partner-c-nigeria-community-groups",
+          "name": "Community groups",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
         },
         {
           "id": "partner-c-nigeria-diaspora-businesses",
@@ -2781,7 +2888,21 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        }
+      ],
+      "partnerNotes": [
+        {
+          "id": "partner-note-band",
+          "ruleId": "partners.lead-time",
+          "text": "An independent release usually has no franchise behind it, so lead with tier B and tier C partners."
+        },
+        {
+          "id": "partner-note-barter",
+          "ruleId": "partners.lead-time",
+          "text": "Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship."
         }
       ]
     },
@@ -4351,7 +4472,7 @@
         "callId": "00000000-0000-4000-8000-000000005072",
         "endpoint": "/search",
         "input": {
-          "query": "Verve",
+          "query": "Guinness",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -4365,7 +4486,7 @@
         "callId": "00000000-0000-4000-8000-000000005073",
         "endpoint": "/search",
         "input": {
-          "query": "QuickTeller",
+          "query": "MTN",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -4379,7 +4500,7 @@
         "callId": "00000000-0000-4000-8000-000000005074",
         "endpoint": "/search",
         "input": {
-          "query": "EE",
+          "query": "Indomie",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -4393,7 +4514,7 @@
         "callId": "00000000-0000-4000-8000-000000005075",
         "endpoint": "/search",
         "input": {
-          "query": "Monzo",
+          "query": "Bolt",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -4407,7 +4528,7 @@
         "callId": "00000000-0000-4000-8000-000000005076",
         "endpoint": "/search",
         "input": {
-          "query": "Lyft",
+          "query": "EE",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -4421,7 +4542,7 @@
         "callId": "00000000-0000-4000-8000-000000005077",
         "endpoint": "/search",
         "input": {
-          "query": "Cash App",
+          "query": "Monzo",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -4461,6 +4582,34 @@
       },
       {
         "callId": "00000000-0000-4000-8000-000000005080",
+        "endpoint": "/search",
+        "input": {
+          "query": "Lyft",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005081",
+        "endpoint": "/search",
+        "input": {
+          "query": "Cash App",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005082",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -4477,7 +4626,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005081",
+        "callId": "00000000-0000-4000-8000-000000005083",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -4494,7 +4643,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005082",
+        "callId": "00000000-0000-4000-8000-000000005084",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -4511,7 +4660,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005083",
+        "callId": "00000000-0000-4000-8000-000000005085",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -4528,7 +4677,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005084",
+        "callId": "00000000-0000-4000-8000-000000005086",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -4545,7 +4694,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005085",
+        "callId": "00000000-0000-4000-8000-000000005087",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -4562,7 +4711,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005086",
+        "callId": "00000000-0000-4000-8000-000000005088",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -4579,7 +4728,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005087",
+        "callId": "00000000-0000-4000-8000-000000005089",
         "endpoint": "/search",
         "input": {
           "query": "Harbor Lights",
@@ -4593,7 +4742,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005088",
+        "callId": "00000000-0000-4000-8000-000000005090",
         "endpoint": "/search",
         "input": {
           "query": "Third Mainland",
@@ -4607,7 +4756,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005089",
+        "callId": "00000000-0000-4000-8000-000000005091",
         "endpoint": "/v2/insights",
         "input": {
           "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
@@ -4622,7 +4771,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005090",
+        "callId": "00000000-0000-4000-8000-000000005092",
         "endpoint": "/v2/insights",
         "input": {
           "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
@@ -4637,7 +4786,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005091",
+        "callId": "00000000-0000-4000-8000-000000005093",
         "endpoint": "/v2/insights",
         "input": {
           "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",

@@ -410,7 +410,7 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
               query: key,
               text: `${label}: nothing came back as asked, so this asks ${alt.says}: ${names}.`,
               entities: again.out.candidates.map((c) =>
-                entity(c.name, c.affinity, c.detail, c.entityId),
+                entity(c.name, c.affinity, c.detail, c.entityId, c.popularity),
               ),
               verdict: null,
               // A retried read is a lead, never above medium.
@@ -438,7 +438,9 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
         text: widened
           ? `${label}: nothing came back with ${list(dropped)} applied, so this is the wider read of what that audience likes: ${names}.`
           : sentence(names),
-        entities: out.candidates.map((c) => entity(c.name, c.affinity, c.detail, c.entityId)),
+        entities: out.candidates.map((c) =>
+          entity(c.name, c.affinity, c.detail, c.entityId, c.popularity),
+        ),
         verdict: null,
         // A wider read is a lead, never above medium.
         confidence: widened && rank[out.confidence] > rank.medium ? 'medium' : out.confidence,
@@ -781,8 +783,9 @@ export function entity(
   affinity: number | null,
   detail: string | null,
   entityId: string | null = null,
+  popularity: number | null = null,
 ): FindingEntity {
-  return { entityId, name, affinity, detail };
+  return { entityId, name, affinity, detail, popularity };
 }
 
 // Every number written in a finding's text, so a line may quote any of them.
@@ -826,7 +829,9 @@ export async function regionSeeds<R extends LaunchRead, P extends QueryPlanCore>
           id: `f-region-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${noun}`,
           query: 'region',
           text: `With no comps to go on, here is what people ${age} in ${city} like, from the place and age band alone: the ${noun} ${names}. This is taste for the place, not for your comps.`,
-          entities: out.candidates.map((c) => entity(c.name, c.affinity, c.detail, c.entityId)),
+          entities: out.candidates.map((c) =>
+            entity(c.name, c.affinity, c.detail, c.entityId, c.popularity),
+          ),
           verdict: null,
           confidence: 'lower',
           why: 'lower: a thin brief, so this rests on the place and age band alone',

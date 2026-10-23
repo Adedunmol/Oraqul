@@ -9,6 +9,8 @@ export const findingEntitySchema = z.object({
   affinity: z.number().nullable(),
   /** A tell-apart such as a year and country, or a city for a place. */
   detail: z.string().nullable(),
+  /** Qloo's popularity, 0 to 1, where it gave one. Older findings have none. */
+  popularity: z.number().nullable().optional(),
 });
 export type FindingEntity = z.infer<typeof findingEntitySchema>;
 

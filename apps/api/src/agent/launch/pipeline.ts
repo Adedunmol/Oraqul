@@ -10,8 +10,9 @@ import {
   tools,
   toReceipt,
 } from '@oraqul/engine';
-import { BAND_LABEL, FLAGSHIPS, rules } from '@oraqul/packs';
+import { BAND_LABEL, CALENDAR_RULES, PARTNER_RULES, rules, SHARED_RULES } from '@oraqul/packs';
 import {
+  type Category,
   type Claim,
   type CompUsed,
   type Confidence,
@@ -57,7 +58,15 @@ import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
 import type { Change } from './follow-up.js';
 import { withSharedModules } from './modules.js';
-import { marketsOf, partnerOptions, withSeeds } from './partners.js';
+import {
+  flagshipNames,
+  marketsOf,
+  partnerNotes,
+  partnerOptions,
+  toneOf,
+  withPartnerIds,
+  withSeeds,
+} from './partners.js';
 import type { QueryPlanCore } from './planner.js';
 import {
   marketOf,
@@ -801,7 +810,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       allowed: order,
       rules: deps.config.rules,
       band: band?.band ?? null,
-      flagships: FLAGSHIPS,
+      flagships: flagshipNames(grounded.findings),
       teamPartners: read.partners,
     };
     const writerSections = written.sections.filter(
@@ -948,7 +957,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     read,
     band,
     territories,
-    markets: marketsOf(queryPlan.country, read.places),
+    markets: marketsOf(
+      null,
+      territories.map((t) => t.name),
+    ),
+    home: queryPlan.country,
+    category: deps.config.category,
+    text: [text, extra].join('\n'),
+    today,
     release: releaseDate(read.window),
   });
   const plan: LaunchPlan = {
@@ -968,12 +984,14 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     rules: {
       category: deps.config.category,
       version: rules[deps.config.category].version,
+      parts: ruleParts,
     },
     band,
     signal,
     territories: withLines(finished.territories, sections),
     calls: finished.calls,
     partners: finished.partners,
+    partnerNotes: finished.partnerNotes,
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];
@@ -1439,6 +1457,20 @@ export function briefText(
   return [first, ...earlier, now && now !== first ? now : ''].filter(Boolean).join('\n\n');
 }
 
+/** The shared libraries a plan used, by version, saved beside the category's own. */
+const ruleParts = {
+  shared: SHARED_RULES.version,
+  partners: PARTNER_RULES.version,
+  calendar: CALENDAR_RULES.version,
+};
+
+/** The content rating a reading carries, for the categories that read one (Film). */
+function ratingOf(read: LaunchRead): 'family' | 'adult' | null {
+  return 'rating' in read && (read.rating === 'family' || read.rating === 'adult')
+    ? read.rating
+    : null;
+}
+
 // The calls on dates, territories and partners, and the partners with their tiers. All computed
 // from what Qloo returned; the model sets none of it (hard rule 1).
 function decisionsOf(input: {
@@ -1447,6 +1479,10 @@ function decisionsOf(input: {
   band: PlanBand | null;
   territories: Territory[];
   markets: string[];
+  home: string | null;
+  category: Category;
+  text: string;
+  today: string;
   release: string | null;
 }) {
   const { asked, read, band, markets } = input;
@@ -1462,16 +1498,20 @@ function decisionsOf(input: {
     signed: read.partners,
     band: band?.band ?? 'independent',
     markets,
+    home: input.home,
+    category: input.category,
+    tone: toneOf(input.text, ratingOf(read)),
+    ages: read.ages,
   });
-  const partnered = placed.territories.map((t) => ({
-    ...t,
-    partnerIds: partnerCalls
-      .filter((c) => c.territory && c.territory.toLowerCase() === t.name.toLowerCase())
-      .map((c) => `partner-${c.id.replace(/^call-partner-/, '')}`),
-  }));
+  const partnered = withPartnerIds(placed.territories, partnerCalls);
   return {
     territories: partnered,
     partners,
+    partnerNotes: partnerNotes({
+      release: input.release,
+      today: input.today,
+      band: band?.band ?? 'independent',
+    }),
     calls: [...dateCalls(asked.clash, input.release), ...placed.calls, ...partnerCalls],
   };
 }

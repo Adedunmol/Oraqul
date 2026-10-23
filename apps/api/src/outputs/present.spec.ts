@@ -284,7 +284,9 @@ describe('exports of the launch rules', () => {
     expect(md).toContain('Rules film@2026-10-22.1');
     expect(md).toContain('**Lagos, home market: Okay**');
     expect(md).toContain('Lead on WhatsApp, Instagram.');
-    expect(md).toContain('Bolt. Qloo fit: 1 of 6 (okay). Budget: fits the budget. Price: unknown.');
+    expect(md).toContain(
+      'Bolt (Nigeria). Qloo fit: 1 of 6 (okay). Budget: fits the budget. Price: unknown.',
+    );
     expect(md).toContain('Tier B, category and integration');
   });
 });

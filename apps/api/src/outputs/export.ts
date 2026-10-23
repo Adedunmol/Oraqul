@@ -1,4 +1,11 @@
-import type { AuditReport, LaunchLine, LaunchPlan, Output, Verdict } from '@oraqul/schema';
+import {
+  type AuditReport,
+  type LaunchLine,
+  type LaunchPlan,
+  type Output,
+  TIER_LABEL,
+  type Verdict,
+} from '@oraqul/schema';
 import { Document, FootnoteReferenceRun, HeadingLevel, Packer, Paragraph, TextRun } from 'docx';
 import PDFDocument from 'pdfkit';
 
@@ -91,7 +98,7 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
 }
 
 const DIRECTION_WORD = { okay: 'Okay', risky: 'Risky', avoid: 'Avoid' } as const;
-const TIER_WORD = { A: 'Flagship', B: 'Category and integration', C: 'Local' } as const;
+const FLAG_WORD = { content: 'Content check', backlash: 'Backlash risk' } as const;
 const BAND_WORD = {
   fits: 'fits the budget',
   stretch: 'a stretch for the budget',
@@ -140,17 +147,27 @@ function decisionSections(plan: LaunchPlan, refsOf: (ids: string[]) => number[])
   if (plan.partners.length > 0) {
     out.push({
       title: 'Partners by tier',
-      groups: (['A', 'B', 'C'] as const).flatMap((tier) => {
-        const rows = plan.partners.filter((p) => p.tier === tier);
-        return rows.length
+      groups: [
+        ...(plan.partnerNotes.length
           ? [
               {
-                name: `Tier ${tier}, ${TIER_WORD[tier].toLowerCase()}`,
-                lines: rows.map((p) => ({ text: partnerText(p), refs: refsOf(p.findingIds) })),
+                name: 'Lead time and terms',
+                lines: plan.partnerNotes.map((n) => ({ text: n.text, refs: [] })),
               },
             ]
-          : [];
-      }),
+          : []),
+        ...(['A', 'B', 'C'] as const).flatMap((tier) => {
+          const rows = plan.partners.filter((p) => p.tier === tier);
+          return rows.length
+            ? [
+                {
+                  name: `Tier ${tier}, ${TIER_LABEL[tier].name.toLowerCase()}`,
+                  lines: rows.map((p) => ({ text: partnerText(p), refs: refsOf(p.findingIds) })),
+                },
+              ]
+            : [];
+        }),
+      ],
     });
   }
   return out;
@@ -160,7 +177,9 @@ function partnerText(p: LaunchPlan['partners'][number]): string {
   const fit = p.fit
     ? `Qloo fit: ${p.fit.place} of ${p.fit.of} (${DIRECTION_WORD[p.fit.direction].toLowerCase()})`
     : 'Qloo fit: not ranked';
-  return `${p.name}. ${fit}. Budget: ${BAND_WORD[p.budgetFit]}. Price: unknown.`;
+  const flags = p.flags.map((f) => ` ${FLAG_WORD[f.type]}: ${f.why}`).join('');
+  const kind = p.kind === 'kind' ? ' A kind of partner, not a brand yet.' : '';
+  return `${p.name} (${p.market}).${kind} ${fit}. Budget: ${BAND_WORD[p.budgetFit]}. Price: unknown.${flags}`;
 }
 
 const VERDICT_WORD: Record<Verdict, string> = {

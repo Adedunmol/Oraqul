@@ -1,5 +1,5 @@
 import { citiesNear, cityCountry, cityNames } from '@oraqul/engine';
-import { podcastsPlan } from '@oraqul/packs';
+import { brandCategoriesFor, podcastsPlan } from '@oraqul/packs';
 import type { LaunchModuleKey } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
@@ -20,8 +20,7 @@ import { formatOf, kindOf, platformsOf } from './launch-kind.js';
 import type { PodcastsRead } from './read.js';
 import { regionCities } from './regions.js';
 
-const { PODCASTS_QUERIES, MAX_CITIES_PER_QUERY, PODCASTS_BRAND_CATEGORIES, KIND_PROFILES } =
-  podcastsPlan;
+const { PODCASTS_QUERIES, MAX_CITIES_PER_QUERY, KIND_PROFILES } = podcastsPlan;
 type PodcastsQueryKey = podcastsPlan.PodcastsQueryKey;
 
 /**
@@ -106,7 +105,7 @@ export function defaultPlan(input: QueryPlanInput): PodcastsQueryPlan {
     genre,
     genreFallback: podcastsPlan.genreFallback(genre),
     showCity: away[0] ?? askCities[0] ?? null,
-    brandCategories: PODCASTS_BRAND_CATEGORIES,
+    brandCategories: brandCategoriesFor('podcasts'),
     brandCities: (cities.length ? [home[0] ?? cities[0], away[0]] : askCities.slice(0, 2))
       .filter((c): c is string => !!c)
       .filter((c, i, all) => all.indexOf(c) === i),

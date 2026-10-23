@@ -126,7 +126,6 @@ export const TAG_SPACES = {
 // Defaults the scripted planner uses with no model, and the model's starting point. Phrases are
 // resolved to tags in Qloo, never sent as they are.
 export {
-  BRAND_CATEGORIES,
   MAX_CITIES_PER_QUERY,
   MUSIC_SCENES,
   PODCAST_GENRES,

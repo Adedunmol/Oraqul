@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { answerSchema } from './agent';
 import { roleSchema } from './categories';
 import { outputSchema } from './output';
+import { directionCallSchema, partnerOptionSchema, territorySchema } from './plan';
 import { attachmentSchema, projectSchema, workspaceProjectSchema } from './project';
 import { threadItemSchema, threadSchema } from './thread';
 
@@ -155,3 +156,17 @@ export const overviewSchema = z.object({
   threads: z.array(recentThreadSchema),
 });
 export type Overview = z.infer<typeof overviewSchema>;
+
+/** Body of `PUT /outputs/:outputId/partners`: the team's own partners, replacing the earlier list. */
+export const setPartnersSchema = z.object({
+  names: z.array(z.string().trim().min(1).max(80)).max(12),
+});
+export type SetPartners = z.infer<typeof setPartnersSchema>;
+
+/** What the partners, their calls and the territories look like after the team's list changes. */
+export const partnersStateSchema = z.object({
+  partners: z.array(partnerOptionSchema),
+  calls: z.array(directionCallSchema),
+  territories: z.array(territorySchema),
+});
+export type PartnersState = z.infer<typeof partnersStateSchema>;
