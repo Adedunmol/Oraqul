@@ -77,8 +77,8 @@ import {
   platformLine,
   platformQuestion,
   platformQuestionId,
+  platformsChosen,
   platformsFromAnswer,
-  platformsNamed,
 } from './platforms.js';
 import type { LaunchRead } from './read-core.js';
 import {
@@ -674,7 +674,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     // The third question a full build may ask: which platforms to plan on. A brief that names them
     // has answered it. Asked before the research so the plan is written for the ones chosen.
     platforms =
-      platforms ?? (platformsNamed(input.text).length ? platformsNamed(input.text) : null);
+      platforms ?? (platformsChosen(input.text).length ? platformsChosen(input.text) : null);
     if (!platforms && read.scope === 'full' && !resume?.state.askedPlatforms) {
       const question = platformQuestion(deps.config.category, marketOf(read));
       deps.emit({ type: 'question', agent: deps.config.category, ...question });

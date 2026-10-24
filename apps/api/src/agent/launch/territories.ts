@@ -64,7 +64,11 @@ export function territoriesOf(input: {
           : 'other',
       order,
       callId: null,
-      channels: channels.map((channel, i) => ({ name: channel, lead: i < LEAD })),
+      // WhatsApp passes a launch between people who know each other, so it never leads (D7).
+      channels: channels.map((channel, i) => ({
+        name: channel,
+        lead: i < LEAD && platformOf(channel) !== 'WhatsApp',
+      })),
       partnerIds: [],
       lineIds: [],
     };
@@ -84,13 +88,19 @@ export function channelsSection(title: string, territories: Territory[]): Launch
     lines: territories.map((t) => {
       const lead = t.channels.filter((c) => c.lead).map((c) => c.name);
       const rest = t.channels.filter((c) => !c.lead).map((c) => c.name);
+      const sharing = rest.filter((c) => platformOf(c) === 'WhatsApp');
+      const others = rest.filter((c) => platformOf(c) !== 'WhatsApp');
       const role =
         t.role === 'home' ? 'Home market. ' : t.role === 'diaspora' ? 'Diaspora city. ' : '';
-      return codeLine(
-        `channels-${slug(t.name)}`,
-        `${role}Lead on ${join(lead)}${rest.length ? `, then add ${join(rest)}` : ''}.`,
-        t.name,
-      );
+      const first = lead.length
+        ? `Lead on ${join(lead)}${others.length ? `, then add ${join(others)}` : ''}`
+        : others.length
+          ? `Add ${join(others)}`
+          : 'Add a public platform to find people who do not know you yet';
+      const share = sharing.length
+        ? `. Use ${join(sharing)} as a sharing layer: it passes a launch between people who know each other, and does not reach strangers`
+        : '';
+      return codeLine(`channels-${slug(t.name)}`, `${role}${first}${share}.`, t.name);
     }),
   };
 }

@@ -51,6 +51,34 @@ describe('territoriesOf (D4)', () => {
   });
 });
 
+describe('WhatsApp never leads (D7)', () => {
+  const build = (platforms: string[]) =>
+    territoriesOf({
+      category: 'film',
+      cities: ['Lagos'],
+      country: 'Nigeria',
+      ranked: [],
+      platforms,
+    })[0];
+
+  it('keeps WhatsApp out of the lead channels even when the team picked only two platforms', () => {
+    const lagos = build(['WhatsApp', 'Instagram']);
+    expect(lagos?.channels.find((c) => c.name === 'WhatsApp')?.lead).toBe(false);
+    expect(lagos?.channels.find((c) => c.name === 'Instagram')?.lead).toBe(true);
+    const line = channelsSection('Channels', lagos ? [lagos] : []).lines[0]?.text ?? '';
+    expect(line).toContain('Lead on Instagram');
+    expect(line).toContain('WhatsApp as a sharing layer');
+  });
+
+  it('says so when WhatsApp is the only platform chosen', () => {
+    const lagos = build(['WhatsApp']);
+    expect(lagos?.channels.every((c) => !c.lead)).toBe(true);
+    const line = channelsSection('Channels', lagos ? [lagos] : []).lines[0]?.text ?? '';
+    expect(line).not.toContain('Lead on');
+    expect(line).toContain('Add a public platform');
+  });
+});
+
 describe('channelsSection', () => {
   it('writes one playbook line per territory that the line check accepts', () => {
     const territories = territoriesOf({

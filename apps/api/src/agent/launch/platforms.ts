@@ -5,6 +5,26 @@ import type { LaunchRead } from './read-core.js';
 
 export { platformsNamed };
 
+// Lines that only say where a thing is published ("Where it is published: Spotify, Apple, YouTube")
+// are not the campaign's platforms, whatever they name.
+const PUBLISH_LINE = /^[ \t>*-]*where it is published\b.*$/gim;
+
+/** The platforms the Guide's "Channels we already use:" line names. */
+export function channelsFrom(text: string): string[] {
+  const line = text.match(/\bchannels we already use\s*:\s*([^\n]+)/i)?.[1];
+  return line ? platformsNamed(line) : [];
+}
+
+/**
+ * The platforms a brief picks for the campaign: the "Channels we already use:" line when there is
+ * one, else any platform it names outside a "where it is published" line. Empty when it names
+ * none, and then the platform card is asked.
+ */
+export function platformsChosen(text: string): string[] {
+  const own = channelsFrom(text);
+  return own.length ? own : platformsNamed(text.replace(PUBLISH_LINE, ''));
+}
+
 /** The id of the question that asks which platforms to plan the campaign on. */
 export const platformQuestionId = (category: string) => `${category}.platforms`;
 

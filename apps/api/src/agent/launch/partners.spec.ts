@@ -1,6 +1,7 @@
 import type { Finding, LaunchPlan } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
 import {
+  brandsFrom,
   flagshipNames,
   flagsOf,
   marketsOf,
@@ -9,8 +10,10 @@ import {
   partnerOptions,
   tierOf,
   toneOf,
+  withTeamBrands,
   withTeamPartners,
 } from './partners.js';
+import type { QueryPlanCore } from './planner.js';
 
 const brands = (city: string, names: string[], popularity: number | null = null): Finding => ({
   id: `f-brands-${city}`,
@@ -256,5 +259,26 @@ describe('the partner pitch kit (T3, T4)', () => {
     for (const t of [...k.gets, k.ask, ...k.timeline, ...k.ideas, k.room]) {
       expect(/\b(fans?|loves?|likes?|affinity|taste)\b/i.test(t), t).toBe(false);
     }
+  });
+});
+
+describe('the brands the team already knows', () => {
+  it('reads the labelled line, de-duplicated and capped', () => {
+    expect(brandsFrom('Brands to consider: Guinness, Indomie and Guinness.')).toEqual([
+      'Guinness',
+      'Indomie',
+    ]);
+    expect(brandsFrom('Nothing here.')).toEqual([]);
+  });
+
+  it('puts them first among the candidates Qloo ranks in every city', () => {
+    const plan = {
+      cities: ['Lagos', 'London'],
+      brandCandidates: [{ city: 'Lagos', names: ['Bolt', 'Guinness'] }],
+    } as unknown as QueryPlanCore;
+    const next = withTeamBrands(plan, ['Guinness', 'Verve']).brandCandidates;
+    expect(next.find((c) => c.city === 'Lagos')?.names).toEqual(['Guinness', 'Verve', 'Bolt']);
+    expect(next.find((c) => c.city === 'London')?.names).toEqual(['Guinness', 'Verve']);
+    expect(withTeamBrands(plan, [])).toBe(plan);
   });
 });

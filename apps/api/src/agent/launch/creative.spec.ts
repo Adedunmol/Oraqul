@@ -3,7 +3,7 @@ import type { Finding, LaunchPlan, Territory } from '@oraqul/schema';
 import { launchPlanSchema } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
 import { checkLine } from './check.js';
-import { buildKit, KIT_SECTIONS, kitTarget } from './creative.js';
+import { buildKit, KIT_SECTIONS, kitTarget, kitTargets } from './creative.js';
 import { askedCreative } from './follow-up.js';
 import type { WrittenLine } from './writer.js';
 
@@ -68,6 +68,43 @@ describe('kitTarget', () => {
 
   it('has no target when the plan has no territory', () => {
     expect(kitTarget('creative kit', { ...plan, territories: [] })).toBeNull();
+  });
+});
+
+describe('kitTargets: the kit for every territory', () => {
+  it('is one target unless the message asks for every territory', () => {
+    expect(
+      kitTargets('Make the creative kit for London', plan).map((t) => t.territory.name),
+    ).toEqual(['London']);
+  });
+
+  it('covers each territory on its own lead channel when asked for all of them', () => {
+    for (const text of [
+      'Make the creative kit for every territory',
+      'creative kit for all territories',
+      'creative kit for each city',
+      'make the creative kit for all my markets',
+    ]) {
+      const all = kitTargets(text, plan);
+      expect(
+        all.map((t) => [t.territory.name, t.channel]),
+        text,
+      ).toEqual([
+        ['Lagos', 'WhatsApp'],
+        ['London', 'YouTube'],
+      ]);
+    }
+  });
+
+  it('uses the channel the message names where a territory has it', () => {
+    const all = kitTargets('creative kit for every territory on Instagram', plan);
+    expect(all.map((t) => t.channel)).toEqual(['Instagram', 'YouTube']);
+  });
+
+  it('has no target when the plan has no territory', () => {
+    expect(kitTargets('creative kit for every territory', { ...plan, territories: [] })).toEqual(
+      [],
+    );
   });
 });
 
