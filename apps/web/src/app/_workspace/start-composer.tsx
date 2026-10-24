@@ -47,7 +47,7 @@ export const START_CHOICES: {
 ];
 
 const OPENING =
-  'Tell me about your film, series, album, book, podcast or game, and what you need. A title and a line is enough. Paste or attach a plan or results if you have them, and I will work out the rest.';
+  'Tell me about your film, series, album, book, podcast, game or live show, and what you need. A title and a line is enough. Paste or attach a plan or results if you have them, and I will work out the rest.';
 
 /**
  * The one way to start: the first message creates the project and its first thread. `category` and
