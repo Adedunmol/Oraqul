@@ -174,7 +174,11 @@ export const PLACES: Record<Category, Record<string, PlaceRow>> = {
       note: 'Steady, not a standout.',
     },
   },
+  shows: {},
 };
+
+// A show is staged in the cities a music audience is placed in, so the demo reuses those rows.
+PLACES.shows = { ...PLACES.music };
 
 export function placeRow(category: Category, name: string, id: string): DPlace | undefined {
   const row = PLACES[category][name];

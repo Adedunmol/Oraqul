@@ -81,6 +81,7 @@
       "route": "0/2",
       "channels": "0/4",
       "creative": "0/4",
+      "calendar": "0/28",
       "timeline": "0/9",
       "budget": "0/7",
       "measure": "0/4",
@@ -89,8 +90,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-music-atlanta"],
     "grounding": {
-      "lines": 68,
-      "backed": 62,
+      "lines": 96,
+      "backed": 44,
       "rankKept": 100,
       "findingsUsed": 28,
       "cities": {
@@ -130,8 +131,8 @@
       ],
       "partners": {
         "A": 3,
-        "B": 8,
-        "C": 3
+        "B": 7,
+        "C": 4
       }
     }
   }

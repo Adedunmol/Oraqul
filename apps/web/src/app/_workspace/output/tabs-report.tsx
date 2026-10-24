@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ChartCard, VerdictBar, verdictTable } from '../charts';
 import { useOutputView } from './context';
 import { Line, Mark, Stack, TabTitle } from './line';
-import { ReportItems, ReportLines, ReportResults } from './report-document';
+import { ReportItems, ReportLines, ReportResults, RuleChecks } from './report-document';
 import { PlanTab } from './tabs-core';
 
 type Filter = Verdict | 'all';
@@ -47,6 +47,9 @@ export function ReportAssumptionsTab() {
           only={filter === 'all' ? undefined : filter}
           onSource={(id) => openReceipt(id)}
         />
+      </div>
+      <div className="max-w-[720px]">
+        <RuleChecks checks={report.ruleChecks} />
       </div>
     </>
   );

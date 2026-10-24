@@ -1,6 +1,6 @@
 'use client';
 
-import type { Verdict } from '@oraqul/schema';
+import type { PartnerKit, Verdict } from '@oraqul/schema';
 import { Button, ChipButton, Confidence, Kbd, ReceiptChip, VerdictPill } from '@oraqul/ui';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -211,8 +211,8 @@ function PartnerDraft() {
   const p = output.brief.partners.find((x) => x.id === output.focusIds[0]);
   if (!p) return null;
   return (
-    <Section title="Draft">
-      <Draft text={p.draft} />
+    <Section title={p.kit ? 'Pitch kit' : 'Draft'}>
+      {p.kit ? <PitchKit kit={p.kit} /> : <Draft text={p.draft} />}
       <div className="flex flex-wrap items-center gap-3">
         <Button size="small" icon="copy" onClick={() => copyText(p.draft, 'Draft copied')}>
           Copy draft
@@ -220,6 +220,33 @@ function PartnerDraft() {
         <span className="text-xs text-muted">Oraqul never sends this.</span>
       </div>
     </Section>
+  );
+}
+
+/** The partner pitch kit, in text: every part but the first is a guide, and none of it is sent. */
+function PitchKit({ kit }: { kit: PartnerKit }) {
+  const part = (title: string, items: string[]) => (
+    <div className="flex flex-col gap-1">
+      <h5 className="text-[13px] font-semibold">{title}</h5>
+      <ul className="flex flex-col gap-1 text-[13px]">
+        {items.map((t) => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+    </div>
+  );
+  return (
+    <div className="flex flex-col gap-3">
+      {part('Why this audience fits', [kit.why.text])}
+      {part('What the partner gets', kit.gets)}
+      {part('The ask', [kit.ask])}
+      {part('A proposed timeline', kit.timeline)}
+      {part('Ideas to start from', [...kit.ideas, kit.room])}
+      <div className="flex flex-col gap-1">
+        <h5 className="text-[13px] font-semibold">A short pitch script</h5>
+        <Draft text={kit.script} />
+      </div>
+    </div>
   );
 }
 
@@ -512,7 +539,7 @@ export function PartnersTab() {
               </div>
               {shown ? (
                 <>
-                  <Draft text={p.draft} />
+                  {p.kit ? <PitchKit kit={p.kit} /> : <Draft text={p.draft} />}
                   <div>
                     <Button
                       size="small"

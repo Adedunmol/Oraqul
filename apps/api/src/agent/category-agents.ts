@@ -157,5 +157,5 @@ export type CategoryAgents = Record<Category, CategoryAgent>;
 
 export function placeholderAgents(): CategoryAgents {
   const agent = new PlaceholderAgent();
-  return { film: agent, music: agent, books: agent, podcasts: agent, games: agent };
+  return { film: agent, music: agent, books: agent, podcasts: agent, games: agent, shows: agent };
 }

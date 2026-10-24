@@ -28,7 +28,7 @@ export const music: DemoPack = {
       'Support acts compared across the route cities',
     ],
     thin: [
-      'Venues and promoters, matched to the audience once you name them',
+      'Venues, which Qloo lists thinly outside the largest cities',
       'New artists, planned from sound alike artists and tags',
     ],
     none: ['Streams, ticket sales and pricing. You supply them for a fix.'],

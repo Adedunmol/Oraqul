@@ -108,7 +108,13 @@ export interface WriterKit<R extends LaunchRead = LaunchRead> {
  * Sections code writes itself: Gaps from what was not tested, Budget split from the convention,
  * and What to measure from the category's signal rule and the team's own target.
  */
-export const CODE_SECTIONS: LaunchSectionKey[] = ['gaps', 'budget', 'measure', 'channels'];
+export const CODE_SECTIONS: LaunchSectionKey[] = [
+  'gaps',
+  'budget',
+  'measure',
+  'channels',
+  'calendar',
+];
 
 /** Short creative briefs for a template plan: guides for a person to make the creative from. */
 function creativeLines<R extends LaunchRead>(input: WriteInput<R>): WrittenLine[] {

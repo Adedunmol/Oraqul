@@ -55,12 +55,38 @@ export function kindLabel(pack: DemoPack, kind: Job): string {
   return KIND_LABEL[kind];
 }
 
+/** The pitch kit as the demo shows it: the same parts the product writes, from the demo's own draft. */
+function demoKit(p: { name: string; ev: string; draft: string }) {
+  return {
+    why: { text: p.ev, findingIds: [] },
+    gets: [
+      'A mention in the release materials and on the release’s own channels',
+      'A moment with its name on it, such as an event or a launch evening',
+      'Content it can run on its own channels',
+    ],
+    ask: `Ask ${p.name} for a call to talk through what a partnership could be, and say whether you are hoping for cash, product, a venue or reach. Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship.`,
+    timeline: [
+      'Now: send the pitch and ask for a call.',
+      'Before the campaign starts: agree the idea, and what each side makes and pays for.',
+      'Release: announce together on both sides’ channels.',
+      'After release: share what happened with the partner.',
+    ],
+    ideas: [
+      'A limited product or a themed activation tied to the release',
+      'A launch evening hosted with the partner',
+    ],
+    script: p.draft,
+    room: 'These are starting ideas. Ask the partner what they would build, and leave the creative open to them.',
+  };
+}
+
 const VERB: Record<Project['category'], string> = {
   film: 'Open on',
   music: 'Release on',
   books: 'Publish on',
   podcasts: 'Launch on',
   games: 'Launch on',
+  shows: 'Open on',
 };
 
 const ENDPOINT: Record<Exclude<EndpointKind, 'none'>, string> = {
@@ -342,6 +368,7 @@ function toBrief(b: DBrief, category: Project['category']): Brief {
       fits: p.fits,
       evidence: p.ev,
       draft: p.draft,
+      kit: demoKit(p),
     })),
     risks: b.risks.map((r) => ({ ...r })),
     cannot: b.cannot.map((c) => ({ ...c })),

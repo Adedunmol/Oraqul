@@ -334,6 +334,7 @@ export const gamesLaunch: LaunchConfig<GamesRead, GamesQueryPlan> = {
   },
   measures: (read) => KIND_PROFILES[kindOf(read).kind].measures,
   codeSections: { budget: budgetSection, gaps: gapsSection, timeline: timelineSection },
+  calendarBeats: (read) => gamesPlan.beatsFor(kindOf(read).kind, platformsOf(read)),
   applyChange: (read, change) => ({
     ...read,
     collabs: [...new Set([...read.collabs, ...change.addCollabs])],

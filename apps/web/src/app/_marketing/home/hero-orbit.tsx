@@ -2,7 +2,7 @@ import type { Category } from '@oraqul/schema';
 import { Icon } from '@oraqul/ui';
 import type { CSSProperties } from 'react';
 
-const cats: Category[] = ['film', 'music', 'books', 'podcasts', 'games'];
+const cats: Category[] = ['film', 'music', 'books', 'podcasts', 'games', 'shows'];
 const RADIUS = 36;
 
 /**
@@ -11,7 +11,7 @@ const RADIUS = 36;
  */
 export function HeroOrbit() {
   const nodes = cats.map((cat, i) => {
-    const angle = ((-90 + i * 72) * Math.PI) / 180;
+    const angle = ((-90 + i * (360 / cats.length)) * Math.PI) / 180;
     return { cat, x: 50 + RADIUS * Math.cos(angle), y: 50 + RADIUS * Math.sin(angle) };
   });
   return (

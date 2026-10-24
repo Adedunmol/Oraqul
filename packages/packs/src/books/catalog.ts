@@ -131,9 +131,6 @@ export function genrePhrase(words: string): string | null {
   return GENRE_PHRASES.find((g) => g.match.test(words))?.phrase ?? null;
 }
 
-/** Brand categories asked for a book: the verified ones that give brands that operate in a city. */
-export const BOOKS_BRAND_CATEGORIES = ['beverage', 'telecom'];
-
 /**
  * Well known books to describe an audience with when the brief names none and the model proposes
  * none, so a short description is enough to plan from. The first rule whose words match the brief

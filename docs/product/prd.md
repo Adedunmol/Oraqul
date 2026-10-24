@@ -53,7 +53,7 @@ Non goals
 
 ## 5. Product structure
 
-Media and entertainment is the one industry Oraqul serves. Its five categories are Film and series, Music, Books, Podcasts and Games.
+Media and entertainment is the one industry Oraqul serves. Its six categories are Film and series, Music, Books, Podcasts, Games and Live shows.
 
 Hierarchy: Team, Category, Project, Job, Output.
 
@@ -79,7 +79,7 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | C4 | A project holds several threads, shown as chats beside the project's current chat. A new chat asks whether to use the project's memory or stand alone. One that uses memory starts on the current plan and the project's notes; a standalone chat sees none of it. | P0 |
 | C5 | The agent refuses forecasts and sending, and says why. | P0 |
 | C6 | Each category changes the questions, suggested next steps and results format. | P0 |
-| C7 | After each output the agent suggests up to three next steps built from it and the project (a scenario not yet tried, results if none are in, a brief or a date check). Each also works typed. | P0 |
+| C7 | After each output the agent suggests up to three next steps built from it and the project (a scenario not yet tried, a partner brief, a date check or the creative kit). Suggesting that results be added is not built. Each also works typed. | P0 |
 | C8 | Memory in two layers. In a chat the agent knows the whole chat. A project remembers key points, decisions and its plans, and keeps them up to date as plans, reports and fixes change; a new plan from the same chat replaces the old one and a plan from another chat sits beside it. | P0 |
 | C9 | A new chat asks whether to use the project's memory or stand alone. A standalone chat knows only the category and the project's name and writes nothing to the project's memory. | P0 |
 | C10 | The project has a memory list where every note can be rewritten or forgotten. The agent never offers a card to save a fact; it keeps the list itself. | P0 |
@@ -175,7 +175,7 @@ The craft around the data is a versioned rule library per category, each rule wi
 | R4 | One plan per territory, home first, then the diaspora cities. The team's cities are never dropped. | P0 |
 | R5 | Okay, risky or avoid on each opening date, territory and partner, set by code with the confidence of its finding. A call on a team choice keeps the choice. | P0 |
 | R6 | A full plan with no budget or band asks for a band first, once. It proposes only what the band can carry. | P0 |
-| R7 | Channels by audience: music and books lead on short video, film and podcasts on YouTube, Nigeria on Instagram and TikTok, with WhatsApp only as a sharing layer. The team picks the platforms from a suggested list. | P0 |
+| R7 | Channels by audience: music and books lead on short video, film and podcasts on YouTube, games on YouTube, TikTok and Discord, live shows on Instagram, TikTok and X, Nigeria on Instagram and TikTok, with WhatsApp only as a sharing layer and never a lead channel. The team picks the platforms from a suggested list. | P0 |
 | R8 | Guides and scripts only. Every full plan has short creative briefs; a creative kit gives hooks, a script outline, a shot list, a key art brief and a caption pack for a territory and channel. Requests to generate an ad, trailer, image or video are refused. | P0 |
 | R9 | Partners come in tiers A, B and C with their Qloo fit and budget fit, and price unknown. | P0 |
 
@@ -208,4 +208,4 @@ Oraqul is a global product. Titles and artists from any market are normal entiti
 | Call quota (reported near 10,000 a month) | Set a call budget per run. Cache within a run. Rerun only what changed. |
 | Scores from separate calls are not comparable | Rival overlap, city ranking and scenario diffs come from one call. |
 | The product is hard to understand at first | One message box to start, few questions, the answer shown in the chat, tab notes, fewer tabs, plain words, an example answer on the sign in page. Test wording with real marketers before polishing visuals. |
-| Five categories is a lot of surface | One engine, one toolbox, five packs. A new category is a new pack, not new code. |
+| Six categories is a lot of surface | One engine, one toolbox, six packs. A new category is a new pack, not new code. |

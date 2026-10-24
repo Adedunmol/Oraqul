@@ -26,12 +26,15 @@ import {
   type MemoryItem,
   type OutputDetail,
   type Overview,
+  type PartnersState,
   type Project,
   type ProjectDetail,
   postMessageSchema,
   type ReactionState,
+  type SetPartners,
   type SetReaction,
   type ShareState,
+  setPartnersSchema,
   setReactionSchema,
   setShareSchema,
   type ThreadDetail,
@@ -48,6 +51,7 @@ import { type Membership, Roles, RolesGuard } from '../auth/roles.guard.js';
 import { SessionGuard, type SessionUser } from '../auth/session.guard.js';
 import { exportFormats, fileName, toDocx, toMarkdown, toPdf } from '../outputs/export.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
+import { PartnersService } from './partners.service.js';
 import { ProjectsService } from './projects.service.js';
 import { ReactionsService } from './reactions.service.js';
 import { SharesService } from './shares.service.js';
@@ -66,6 +70,7 @@ export class ProjectsController {
     private readonly projects: ProjectsService,
     private readonly runs: RunService,
     private readonly shares: SharesService,
+    private readonly partners: PartnersService,
     private readonly reactions: ReactionsService,
   ) {}
 
@@ -172,6 +177,16 @@ export class ProjectsController {
     @Body(new ZodPipe(setShareSchema)) body: z.output<typeof setShareSchema>,
   ): Promise<ShareState> {
     return this.shares.set(outputId, body.enabled);
+  }
+
+  /** Replaces the team's own partners on the plan. Owners and editors only: it changes the plan. */
+  @Put('outputs/:outputId/partners')
+  @Roles('owner', 'editor')
+  setPartners(
+    @Param('outputId') outputId: string,
+    @Body(new ZodPipe(setPartnersSchema)) body: SetPartners,
+  ): Promise<PartnersState> {
+    return this.partners.set(outputId, body.names);
   }
 
   /** Rates the plan useful or wrong, or takes the rating back. Any member may: it changes no data of the team's. */

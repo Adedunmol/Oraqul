@@ -10,6 +10,10 @@ export const ruleSourceSchema = z.object({
   url: z.string().optional(),
   /** `YYYY-MM-DD`. */
   date: z.string(),
+  /** How far to lean on the rule. Older rules are the team's own craft. */
+  grade: z.enum(['team', 'directional', 'not-researched']).default('team'),
+  /** What a reader should know before relying on it. */
+  caveat: z.string().optional(),
 });
 
 const ruleOf = <T extends z.ZodType>(value: T) =>
@@ -43,11 +47,73 @@ export const ruleLibrarySchema = z.object({
 });
 export type RuleLibraryView = z.infer<typeof ruleLibrarySchema>;
 
+const calendarRowSchema = z.object({
+  key: z.string(),
+  at: z.number().int(),
+  until: z.number().int().optional(),
+  asset: z.string().nullable(),
+  post: z.string(),
+  count: z.number().int().nullable(),
+  per: z.enum(['week', 'day', 'span']).nullable(),
+});
+export type CalendarRowView = z.infer<typeof calendarRowSchema>;
+
+const partnerKindsSchema = z.object({
+  brandCategories: z.array(z.object({ phrase: z.string(), verified: z.boolean() })),
+  bKinds: z.array(z.string()),
+  cKinds: z.array(z.string()),
+  gets: z.array(z.string()),
+  ideas: z.array(z.string()),
+});
+
 export const rulesResponseSchema = z.object({
   libraries: z.array(ruleLibrarySchema),
   bands: z.array(z.object({ id: z.string(), label: z.string(), description: z.string() })),
   tiers: z.array(z.object({ tier: z.enum(['A', 'B', 'C']), name: z.string(), what: z.string() })),
   /** Channels that lead in a market whatever the category, by country. */
   countryChannels: z.record(z.string(), z.array(z.string())),
+  /** The conventions every category shares, versioned. */
+  shared: z.object({
+    version: z.string(),
+    bandEdges: ruleOf(z.record(z.string(), z.array(z.number()))),
+    diaspora: ruleOf(z.record(z.string(), z.array(z.string()))),
+    countryChannels: ruleOf(z.record(z.string(), z.array(z.string()))),
+    platformsByCategory: ruleOf(z.record(z.string(), z.array(z.string()))),
+    platformsByMarket: ruleOf(z.record(z.string(), z.array(z.string()))),
+  }),
+  partners: z.object({
+    version: z.string(),
+    categories: z.record(z.string(), ruleOf(partnerKindsSchema)),
+    seeds: ruleOf(
+      z.record(
+        z.string(),
+        z.record(z.string(), z.object({ names: z.array(z.string()), kinds: z.array(z.string()) })),
+      ),
+    ),
+    tier: ruleOf(z.object({ flagshipPopularity: z.number() })),
+    slots: ruleOf(z.record(z.string(), z.number().int())),
+    leadTime: ruleOf(
+      z.object({
+        months: z.number().int(),
+        why: z.string(),
+        independent: z.string(),
+        barter: z.string(),
+      }),
+    ),
+    pitch: ruleOf(z.object({ parts: z.array(z.string()), room: z.string() })),
+  }),
+  /** The live show rules E1 to E8, each with its source. Their values vary, so they are free-form. */
+  shows: z.object({
+    version: z.string(),
+    rules: z.record(z.string(), ruleOf(z.unknown())),
+  }),
+  calendar: z.object({
+    version: z.string(),
+    categories: z.record(
+      z.string(),
+      ruleOf(z.object({ fromBeats: z.boolean(), rows: z.array(calendarRowSchema) })),
+    ),
+    ads: ruleOf(z.object({ lines: z.array(z.string()) })),
+  }),
 });
 export type RulesResponse = z.infer<typeof rulesResponseSchema>;

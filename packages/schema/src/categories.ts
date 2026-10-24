@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const categories = ['film', 'music', 'books', 'podcasts', 'games'] as const;
+export const categories = ['film', 'music', 'books', 'podcasts', 'games', 'shows'] as const;
 export const categorySchema = z.enum(categories);
 export type Category = z.infer<typeof categorySchema>;
 

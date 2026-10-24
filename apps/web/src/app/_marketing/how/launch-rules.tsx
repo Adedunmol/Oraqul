@@ -101,7 +101,7 @@ const calendar = [
 ] as const;
 
 const tiers = [
-  ['A', 'Flagship', 'Only for releases with scale.', 'Out of an independent budget'],
+  ['A', 'Flagship', 'Only for releases with scale.', 'A stretch for independent, out for micro'],
   [
     'B',
     'Category and integration',
@@ -177,8 +177,8 @@ export function Craft() {
               </span>
             </div>
             <p className="text-[13px] text-muted">
-              Hooks, scripts, shot lists, key art briefs and caption packs, for each territory and
-              channel.
+              Hooks, scripts, shot lists, key art briefs and caption packs, for one territory and
+              channel, or for every territory when you ask for all of them.
             </p>
           </article>
 
@@ -187,8 +187,9 @@ export function Craft() {
               Partners that fit the budget
             </h3>
             <p className="text-[15px] leading-[1.55] text-ink/75">
-              Each partner shows its Qloo fit and a budget fit. Price is always unknown. A budget
-              band that cannot carry a flagship does not see one.
+              Each partner shows its Qloo fit and a budget fit. Price is always unknown. A flagship
+              is a stretch for an independent budget, out of reach for a micro one, and never
+              written into the plan's moves unless you named it.
             </p>
             <ul className="flex flex-col gap-2">
               {tiers.map(([tier, name, what, fit]) => (

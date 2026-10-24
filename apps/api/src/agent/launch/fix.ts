@@ -9,8 +9,12 @@ import {
   type LaunchAuditInputs,
   reviewPlan,
 } from './audit.js';
+import { bandFromBrief } from './band.js';
+import { rivalsFrom } from './clash.js';
+import { brandsFrom } from './partners.js';
 import { askQloo, briefText, type PlanRun, type RunCtx, runCtx, writePlan } from './pipeline.js';
 import type { QueryPlanCore } from './planner.js';
+import { platformsChosen } from './platforms.js';
 import type { LaunchRead } from './read-core.js';
 import { bandsOfLabel } from './results.js';
 import { checkResults } from './results-read.js';
@@ -106,8 +110,22 @@ export async function runFix<R extends LaunchRead, P extends QueryPlanCore>(
   // New cities or ages from the results are asked about too; otherwise the audit's findings stand.
   const newPlaces = fixed.places.some((p) => !read.places.some((q) => same(q, p)));
   const newAges = fixed.ages.join() !== read.ages.join();
+  // The fix keeps what the brief set (D3, D6, D10): the rivals and their days, the band and the
+  // platforms. The audit asked none of them, so a rival is asked again for the plan it writes.
+  const rivals = rivalsFrom(review.text);
+  const band = bandFromBrief(fixed, review.text);
+  const platforms = platformsChosen(review.text);
   const planAsked =
-    newPlaces || newAges ? await askQloo(deps, ctx, { title, read: fixed, comps }) : asked;
+    newPlaces || newAges || rivals.length > 0
+      ? await askQloo(deps, ctx, {
+          title,
+          read: fixed,
+          comps,
+          rivals,
+          band,
+          brands: brandsFrom(review.text),
+        })
+      : asked;
 
   const earlier: NewOutput[] = from ? [] : [{ ...audited.output, callIds: audited.callIds }];
   return writePlan(deps, ctx, {
@@ -118,6 +136,8 @@ export async function runFix<R extends LaunchRead, P extends QueryPlanCore>(
     asked: planAsked,
     extra: [review.extra, fixNotes(report)].filter(Boolean).join('\n\n'),
     kind: 'fix',
+    band,
+    platforms: platforms.length ? platforms : null,
     intro: `Here is the fixed plan for “${title}”.`,
     chars: PLAN_CHARS,
     earlier,

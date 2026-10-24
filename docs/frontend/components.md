@@ -27,7 +27,7 @@ Adding a token: add it in all three places in `globals.css`, then map it in `@th
 - One component per file, named export, re-exported from `src/index.ts`.
 - Components that show a verdict or confidence take the **data value** and draw the glyph and word themselves, so no screen can show colour alone. `VerdictPill` is the pattern.
 - No literal colours. Category colour only on icon tiles and strokes, and on project cards through `.cat-card`.
-- `apps/web/globals.css` has an `@source` line so Tailwind scans this package. Keep it if the folder moves.
+- `apps/web/src/app/globals.css` has an `@source` line so Tailwind scans this package. Keep it if the folder moves.
 
 ## Inventory
 

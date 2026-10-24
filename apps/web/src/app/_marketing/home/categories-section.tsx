@@ -63,7 +63,7 @@ function CategoryVisual({ info }: { info: CategoryInfo }) {
   );
 }
 
-/** Cards on a phone, where five pinned panels would stack into a very long scroll. */
+/** Cards on a phone, where six pinned panels would stack into a very long scroll. */
 function CategoryCards({ infos }: { infos: CategoryInfo[] }) {
   return (
     <ul className="grid gap-3 min-[560px]:grid-cols-2 min-[1000px]:hidden">
@@ -94,7 +94,7 @@ export function CategoriesSection() {
       <div className={`${wrap} flex flex-col gap-14 min-[1000px]:gap-4`}>
         <div className="grid gap-5 min-[900px]:grid-cols-[1.3fr_1fr] min-[900px]:items-end">
           <h2 id="cats-title" className={h2Class}>
-            Made for five kinds of launch.
+            Made for six kinds of launch.
           </h2>
           <p className={`${leadClass} min-[900px]:justify-self-end`}>
             Each has its own questions, its own calendar and its own way to read the results.
@@ -103,7 +103,7 @@ export function CategoriesSection() {
         <CategoryCards infos={infos} />
         <div className="max-[999px]:hidden">
           <StickySteps
-            label="Five categories"
+            label="Six categories"
             steps={infos.map((info) => ({
               id: info.id,
               text: <CategoryText info={info} />,

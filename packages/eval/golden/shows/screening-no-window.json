@@ -1,0 +1,86 @@
+{
+  "title": "Midnight Harbor Premiere",
+  "brief": "Launch plan for the one night premiere \"Midnight Harbor Premiere\", a screening for 18 to 34 year olds, playing Lagos and London on 2099-03-12. Comps: \"Salt Road\" and \"The Glass Lantern\".",
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    {
+      "text": "you choose"
+    }
+  ],
+  "expect": {
+    "headline": "Start in London, then Lagos: that is where the act's audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "breaks",
+      "a-place-london": "holds",
+      "a-comps": "cant"
+    },
+    "cities": ["London", "Lagos"],
+    "comps": [
+      {
+        "name": "Salt Road",
+        "source": "you"
+      },
+      {
+        "name": "The Glass Lantern",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["London", "Lagos"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
+      "f-venues-movie-theater-lagos": ["Marina Picturehouse", "Lekki Screens"],
+      "f-venues-movie-theater-london": ["Southbank Screen"],
+      "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-london-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
+      "f-region-london-brands": ["Coca-Cola", "Nike", "McDonald's"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "1/0",
+      "markets": "2/0",
+      "onsale": "0/7",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "venues": "2/0",
+      "finalpush": "0/5",
+      "channels": "0/2",
+      "creative": "0/4",
+      "calendar": "0/8",
+      "timeline": "0/2",
+      "budget": "0/4",
+      "measure": "0/6",
+      "risks": "1/1",
+      "gaps": "0/5"
+    },
+    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "grounding": {
+      "lines": 50,
+      "backed": 24,
+      "rankKept": 100,
+      "findingsUsed": 9,
+      "cities": {
+        "London": 3,
+        "Lagos": 7
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "The act and its comparable acts describe one audience",
+      "Ticket sales and revenue",
+      "The release window (2099-03-12)",
+      "Acts that audience plays"
+    ]
+  }
+}

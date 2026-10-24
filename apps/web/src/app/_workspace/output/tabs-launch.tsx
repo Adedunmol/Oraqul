@@ -1,30 +1,22 @@
 'use client';
 
-import type {
-  DirectionCall,
-  LaunchLine,
-  LaunchPlan,
-  PartnerOption,
-  PartnerTier,
-  Territory,
+import {
+  type DirectionCall,
+  type LaunchLine,
+  type LaunchPlan,
+  type PartnerNote,
+  type PartnerOption,
+  type Territory,
+  TIER_LABEL,
 } from '@oraqul/schema';
-import { Button, Confidence, DirectionPill, ReceiptChip } from '@oraqul/ui';
-import { copyText } from '../toast';
+import { Button, Confidence, DirectionPill, Input, ReceiptChip } from '@oraqul/ui';
+import { useRouter } from 'next/navigation';
+import { useId, useState } from 'react';
+import { setTeamPartners } from '@/lib/api/projects';
+import { copyText, toast } from '../toast';
 import { useOutputView } from './context';
 import { Mark, Stack, TabTitle } from './line';
 import { footnotes, LineText } from './plan-document';
-
-const TIER: Record<PartnerTier, { name: string; what: string }> = {
-  A: { name: 'Flagship', what: 'Big national brands. Only for releases with scale.' },
-  B: {
-    name: 'Category and integration',
-    what: 'Banks and payment brands, food and drink, hospitality, telecom bundles.',
-  },
-  C: {
-    name: 'Local',
-    what: 'Cinemas, creators, diaspora businesses and community groups. Most realistic for an independent release.',
-  },
-};
 
 const BUDGET: Record<PartnerOption['budgetFit'], string> = {
   fits: 'Fits the budget',
@@ -38,52 +30,171 @@ const ROLE: Record<Territory['role'], string> = {
   other: 'Market',
 };
 
-function PartnerRow({ partner }: { partner: PartnerOption }) {
+const FLAG_WORD: Record<PartnerOption['flags'][number]['type'], string> = {
+  content: 'Content check',
+  backlash: 'Backlash risk',
+};
+
+function PartnerRow({
+  partner,
+  onRemove,
+}: {
+  partner: PartnerOption;
+  onRemove?: (name: string) => void;
+}) {
   const { openReceipt } = useOutputView();
   const finding = partner.findingIds[0];
+  const named = partner.kind === 'brand';
   return (
     <li className="flex flex-col gap-1 rounded-xl bg-card px-4 py-3">
       <div className="flex flex-wrap items-center gap-2">
         <b className="text-sm">{partner.name}</b>
+        <span className="text-[12.5px] text-muted">{partner.market}</span>
         {partner.from === 'team' ? <Mark>Your partner</Mark> : null}
         {partner.fit ? <DirectionPill direction={partner.fit.direction} /> : null}
         {finding ? (
           <ReceiptChip onClick={() => openReceipt(finding)} aria-label="Open receipt" />
         ) : null}
+        {partner.from === 'team' && onRemove ? (
+          <Button size="small" onClick={() => onRemove(partner.name)}>
+            Remove {partner.name}
+          </Button>
+        ) : null}
       </div>
       <p className="text-[13px] text-muted">
-        {partner.fit
-          ? `Qloo fit: ${partner.fit.place} of ${partner.fit.of} brands ranked for this audience.`
-          : 'Qloo fit: not ranked.'}{' '}
+        {named
+          ? `${
+              partner.fit
+                ? `Qloo fit: ${partner.fit.place} of ${partner.fit.of} brands ranked for this audience.`
+                : partner.from === 'team'
+                  ? 'Qloo fit: not ranked. Ask for a partner brief to score it.'
+                  : 'Qloo fit: not ranked.'
+            } `
+          : 'A kind of partner, not a brand yet. '}
         {BUDGET[partner.budgetFit]}. Price: unknown.
       </p>
+      {partner.flags.map((f) => (
+        <p key={f.type + f.why} className="text-[13px] text-warn">
+          <span aria-hidden="true">! </span>
+          <b>{FLAG_WORD[f.type]}.</b> {f.why}
+        </p>
+      ))}
     </li>
   );
 }
 
-/** Partners grouped by tier, flagship first. A tier with none is left out. */
-export function PartnerTiers({ partners }: { partners: PartnerOption[] }) {
-  if (partners.length === 0) return null;
+/** Add and remove the team's own partners. Saving recomputes the rows from the plan's findings. */
+function TeamPartners({ partners }: { partners: PartnerOption[] }) {
+  const { output, canEdit } = useOutputView();
+  const router = useRouter();
+  const field = useId();
+  const [name, setName] = useState('');
+  const [saving, setSaving] = useState(false);
+  const mine = partners.filter((p) => p.from === 'team').map((p) => p.name);
+  if (!canEdit) return null;
+
+  async function save(names: string[]) {
+    setSaving(true);
+    try {
+      await setTeamPartners(output.id, names);
+      setName('');
+      router.refresh();
+    } catch {
+      toast('Could not save your partners. Try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const add = () => {
+    const next = name.trim();
+    if (!next || mine.some((m) => m.toLowerCase() === next.toLowerCase())) return;
+    void save([...mine, next]);
+  };
+
+  return (
+    <form
+      className="flex flex-col gap-2 rounded-xl bg-card px-4 py-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+        add();
+      }}
+    >
+      <Input
+        id={field}
+        label="Add a partner you already have or know"
+        placeholder="A brand, venue or creator"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        maxLength={80}
+        disabled={saving}
+        trailing={
+          <Button size="small" type="submit" disabled={saving || !name.trim()}>
+            Add
+          </Button>
+        }
+      />
+      <p className="text-[13px] text-muted">
+        Your partners stay in the plan whatever the budget. A name Qloo did not rank shows as not
+        ranked until you ask for a partner brief.
+      </p>
+    </form>
+  );
+}
+
+/** Partners grouped by tier, flagship first, with the lead time notes. A tier with none is left out. */
+export function PartnerTiers({
+  partners,
+  notes = [],
+}: {
+  partners: PartnerOption[];
+  notes?: PartnerNote[];
+}) {
+  const { output, canEdit } = useOutputView();
+  const router = useRouter();
+  const mine = partners.filter((p) => p.from === 'team').map((p) => p.name);
+
+  async function remove(name: string) {
+    try {
+      await setTeamPartners(
+        output.id,
+        mine.filter((m) => m !== name),
+      );
+      router.refresh();
+    } catch {
+      toast('Could not remove that partner. Try again.');
+    }
+  }
+
+  if (partners.length === 0 && !canEdit) return null;
   return (
     <section aria-label="Partners by tier" className="flex flex-col gap-3">
       <h3 className="font-display text-base font-semibold tracking-[-0.02em]">Partners by tier</h3>
+      {notes.length > 0 ? (
+        <ul className="flex flex-col gap-1 text-[13px] text-muted">
+          {notes.map((n) => (
+            <li key={n.id}>{n.text}</li>
+          ))}
+        </ul>
+      ) : null}
       {(['A', 'B', 'C'] as const).map((tier) => {
         const rows = partners.filter((p) => p.tier === tier);
         if (rows.length === 0) return null;
         return (
           <div key={tier} className="flex flex-col gap-2">
             <h4 className="text-[13px] font-semibold">
-              Tier {tier}, {TIER[tier].name}
-              <span className="ml-2 font-normal text-muted">{TIER[tier].what}</span>
+              Tier {tier}, {TIER_LABEL[tier].name}
+              <span className="ml-2 font-normal text-muted">{TIER_LABEL[tier].what}</span>
             </h4>
             <ul className="flex flex-col gap-2">
               {rows.map((p) => (
-                <PartnerRow key={p.id} partner={p} />
+                <PartnerRow key={p.id} partner={p} onRemove={canEdit ? remove : undefined} />
               ))}
             </ul>
           </div>
         );
       })}
+      <TeamPartners partners={partners} />
     </section>
   );
 }
@@ -169,7 +280,7 @@ export function StructuredTerritories() {
           );
         })}
       </Stack>
-      <PartnerTiers partners={plan.partners} />
+      <PartnerTiers partners={plan.partners} notes={plan.partnerNotes} />
     </>
   );
 }

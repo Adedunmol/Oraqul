@@ -383,6 +383,7 @@ export const booksLaunch: LaunchConfig<BooksRead, BooksQueryPlan> = {
   },
   measures: (read) => KIND_PROFILES[kindOf(read).kind].measures,
   codeSections: { budget: budgetSection, gaps: gapsSection, timeline: timelineSection },
+  calendarBeats: (read) => booksPlan.beatsFor(kindOf(read).kind, beatTagsOf(read)),
   // A screen title the person adds is one more to score for the bridge.
   applyChange: (read, change) => ({
     ...read,

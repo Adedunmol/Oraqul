@@ -7,7 +7,7 @@ Next.js App Router in `apps/web`. The look is defined in [design-system.md](desi
 ## Rules
 
 - Server components by default. Add `"use client"` only for state, effects, browser APIs or event handlers, and keep those components small and low in the tree.
-- The web app talks to the API only, through the fetchers in `src/lib/api/` (they send the session cookie). It never imports `engine` or `packs`.
+- The web app talks to the API only, through the fetchers in `src/lib/api/` (they send the session cookie). It never imports `engine`. Only the Guide and the marketing pages import `packs`, read only, for the launch rules they show; the plan screens never do.
 - Types come from `@oraqul/schema`. Parse API responses with its schemas inside the fetcher, see [typescript.md](../typescript.md).
 - Reads happen in server components, writes in client components through typed helpers. Every data route has loading, error and empty states. Full rules in [data.md](data.md).
 - Agent runs stream over server sent events. Render question cards, trace steps and messages from the event, and post answers back as messages.

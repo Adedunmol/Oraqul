@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { TASTE_CLAIM } from '../launch';
 import {
+  ASSET_OFFER,
   bandCarries,
   bandOf,
+  brandCategoriesFor,
+  CALENDAR_ADS,
+  CALENDAR_RULES,
+  CATEGORY_PARTNERS,
+  FLAGSHIPS,
   leadChannels,
+  PARTNER_RULES,
   platformsNamed,
   rules,
+  SHARED_RULES,
+  SHOWS_PLAN_RULES,
   suggestPlatforms,
 } from './index';
 
@@ -107,5 +116,78 @@ describe('platform suggestions (D7)', () => {
     ]);
     expect(platformsNamed('a launch on Twitter')).toEqual(['X']);
     expect(platformsNamed('an expert on the x factor')).toEqual([]);
+  });
+});
+
+describe('shared, partner and calendar rules', () => {
+  const sources = [
+    ...Object.values(SHARED_RULES).filter((r) => typeof r === 'object' && 'source' in r),
+    ...Object.values(CATEGORY_PARTNERS),
+    PARTNER_RULES.seeds,
+    PARTNER_RULES.tier,
+    PARTNER_RULES.slots,
+    PARTNER_RULES.leadTime,
+    PARTNER_RULES.pitch,
+    ...Object.values(CALENDAR_RULES.categories),
+    CALENDAR_RULES.ads,
+    ...Object.values(SHOWS_PLAN_RULES).flatMap((r) => (typeof r === 'string' ? [] : [r])),
+  ];
+
+  it('gives every rule a source, a grade and a date', () => {
+    for (const r of sources) {
+      expect(r.source.label, r.id).toBeTruthy();
+      expect(r.source.date, r.id).toMatch(ISO);
+      expect(['team', 'directional', 'not-researched'], r.id).toContain(r.source.grade);
+    }
+  });
+
+  it('has unique rule ids', () => {
+    const ids = sources.map((r) => r.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('keeps calendar rows and partner wording free of taste claims and asset offers', () => {
+    const texts = [
+      ...Object.values(CALENDAR_RULES.categories).flatMap((r) =>
+        r.value.rows.flatMap((x) => [x.post, x.asset ?? '']),
+      ),
+      ...CALENDAR_ADS.value.lines,
+      ...Object.values(CATEGORY_PARTNERS).flatMap((r) => [...r.value.gets, ...r.value.ideas]),
+    ];
+    for (const t of texts) {
+      expect(TASTE_CLAIM.test(t), t).toBe(false);
+      expect(ASSET_OFFER.test(t), t).toBe(false);
+    }
+  });
+
+  it('holds no post counts for categories nobody researched', () => {
+    for (const c of ['books', 'podcasts', 'games'] as const) {
+      const r = CALENDAR_RULES.categories[c];
+      expect(r.source.grade).toBe('not-researched');
+      expect(r.value.rows).toEqual([]);
+      expect(r.value.fromBeats).toBe(true);
+    }
+  });
+
+  it('marks film and music directional and the ads note directional', () => {
+    expect(CALENDAR_RULES.categories.film.source.grade).toBe('directional');
+    expect(CALENDAR_RULES.categories.music.source.grade).toBe('directional');
+    expect(CALENDAR_RULES.ads.source.grade).toBe('directional');
+  });
+
+  it('asks Qloo only for brand categories a probe verified, and explains the rest', () => {
+    for (const r of Object.values(CATEGORY_PARTNERS)) {
+      for (const c of r.value.brandCategories) {
+        if (c.verified) expect(['beverage', 'telecom', 'food', 'beauty']).toContain(c.phrase);
+        else expect(c.note, c.phrase).toBeTruthy();
+      }
+    }
+    expect(brandCategoriesFor('games')).toEqual(['beverage', 'telecom']);
+    expect(brandCategoriesFor('film')).toEqual(['telecom', 'beverage', 'food', 'beauty']);
+  });
+
+  it('reserves slots for every tier and names flagships only in the seeds', () => {
+    expect(PARTNER_RULES.slots.value.C).toBeGreaterThan(0);
+    expect(FLAGSHIPS).toEqual(expect.arrayContaining(['Guinness', 'MTN', 'Indomie']));
   });
 });

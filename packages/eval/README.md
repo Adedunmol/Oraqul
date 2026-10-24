@@ -2,7 +2,7 @@
 
 Evals are the proof the product works ([docs/testing.md](../../docs/testing.md)).
 
-- `golden/<category>/*.json` (film, music, books, podcasts, games): build inputs, the replies to each card the run asks, and the expected
+- `golden/<category>/*.json` (film, music, books, podcasts, games, shows): build inputs, the replies to each card the run asks, and the expected
   result (verdicts, top cities, section picks, which lines the moves cite). They run in
   `apps/api/src/agent/<category>/golden.spec.ts` on the demo Qloo data, which is committed, so they run
   on every commit. `UPDATE_GOLDEN=1 pnpm --filter @oraqul/api test golden` re-records `expect`.

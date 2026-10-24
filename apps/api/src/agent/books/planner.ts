@@ -1,5 +1,5 @@
 import { citiesNear, cityCountry, cityNames } from '@oraqul/engine';
-import { booksPlan } from '@oraqul/packs';
+import { booksPlan, brandCategoriesFor } from '@oraqul/packs';
 import type { LaunchModuleKey } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
@@ -20,7 +20,7 @@ import { kindOf, readershipOf, routeOf } from './launch-kind.js';
 import type { BooksRead } from './read.js';
 import { regionCities } from './regions.js';
 
-const { BOOKS_QUERIES, MAX_CITIES_PER_QUERY, BOOKS_BRAND_CATEGORIES, KIND_PROFILES } = booksPlan;
+const { BOOKS_QUERIES, MAX_CITIES_PER_QUERY, KIND_PROFILES } = booksPlan;
 type BooksQueryKey = booksPlan.BooksQueryKey;
 
 /**
@@ -109,7 +109,7 @@ export function defaultPlan(input: QueryPlanInput): BooksQueryPlan {
     screenSeries: screen.series,
     screenFilms: screen.films,
     bookshopCities: askCities.slice(0, 3),
-    brandCategories: BOOKS_BRAND_CATEGORIES,
+    brandCategories: brandCategoriesFor('books'),
     brandCities: (cities.length ? [home[0] ?? cities[0], cities[1]] : askCities.slice(0, 2))
       .filter((c): c is string => !!c)
       .filter((c, i, all) => all.indexOf(c) === i),

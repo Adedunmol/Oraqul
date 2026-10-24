@@ -1,0 +1,86 @@
+{
+  "title": "Night Laughs",
+  "brief": "Launch plan for the comedy night \"Night Laughs\", a stand-up show by comedian \"Kola Wave\" for 25 to 34 year olds, playing Lagos and London on 2099-03-12. Venue capacity: 500. Ticket price band: under $30. Target 80 percent. Sound-alikes: \"Ada Lux\" and \"Sade Rhythm\".\nRivals: Neon Tide on 2099-03-12; Ada Lux on 2099-05-02",
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    {
+      "text": "you choose"
+    }
+  ],
+  "expect": {
+    "headline": "Start in Lagos, then London: that is where the act's audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "weak",
+      "a-place-lagos": "weak",
+      "a-place-london": "breaks",
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos", "London"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Sade Rhythm",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["Lagos", "London"],
+      "f-worth-a-look": ["Manchester"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
+      "f-region-lagos-artists": ["Neon Tide"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-london-artists": ["Neon Tide"],
+      "f-region-london-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-clash": ["Neon Tide", "Ada Lux"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "1/1",
+      "audience": "1/0",
+      "markets": "3/0",
+      "onsale": "0/8",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "finalpush": "0/5",
+      "channels": "0/2",
+      "creative": "0/4",
+      "calendar": "0/14",
+      "timeline": "0/5",
+      "budget": "0/4",
+      "measure": "0/6",
+      "risks": "2/1",
+      "gaps": "0/0"
+    },
+    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "grounding": {
+      "lines": 60,
+      "backed": 22,
+      "rankKept": 100,
+      "findingsUsed": 9,
+      "cities": {
+        "Lagos": 6,
+        "London": 4
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Ticket sales and revenue",
+      "The release window (2099-03-12)",
+      "Acts that audience plays",
+      "Comedy clubs in Lagos",
+      "Comedy clubs in London"
+    ]
+  }
+}

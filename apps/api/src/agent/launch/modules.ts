@@ -20,6 +20,7 @@ export function withSharedModules(
   const shared: LaunchModuleKey[] = [
     ...(read.places.length > 0 ? (['channels'] as const) : []),
     'creative',
+    'calendar',
   ];
   const wanted = shared.filter((key) => !pick.modules.includes(key));
   if (wanted.length === 0) return pick;

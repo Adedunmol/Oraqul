@@ -42,4 +42,11 @@ export const demoProjects: Record<Category, ProjectInput> = {
     lead: 'Ember Keep',
     comps: [],
   },
+  shows: {
+    category: 'shows',
+    name: 'Neon Tide live in Lagos',
+    places: ['Lagos'],
+    lead: 'Neon Tide',
+    comps: [],
+  },
 };

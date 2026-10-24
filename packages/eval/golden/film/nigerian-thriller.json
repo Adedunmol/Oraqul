@@ -67,6 +67,7 @@
       "route": "0/2",
       "channels": "0/2",
       "creative": "0/4",
+      "calendar": "0/16",
       "timeline": "0/9",
       "budget": "0/7",
       "measure": "0/4",
@@ -75,8 +76,8 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 44,
-      "backed": 45,
+      "lines": 60,
+      "backed": 33,
       "rankKept": 100,
       "findingsUsed": 13,
       "cities": {
@@ -100,8 +101,8 @@
       "calls": ["territory:London:okay:lower", "territory:Lagos:avoid:lower"],
       "partners": {
         "A": 3,
-        "B": 6,
-        "C": 5
+        "B": 7,
+        "C": 4
       }
     }
   }

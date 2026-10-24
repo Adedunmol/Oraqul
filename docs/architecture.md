@@ -18,7 +18,7 @@ Next.js (Vercel)  ->  NestJS API (VPS)  ->  agent runtime (module in the API)
 
 | Path | Role | May import |
 |---|---|---|
-| `apps/web` | Next.js front end | `schema`, `ui` |
+| `apps/web` | Next.js front end | `schema`, `ui`. The Guide and marketing pages also read `packs`, for the rules they show |
 | `apps/api` | NestJS API and agent runtime | `schema`, `engine`, `packs` |
 | `packages/schema` | Zod schemas and shared types | `zod` only |
 | `packages/engine` | Qloo client, tools, receipts, scoring | `schema` |

@@ -54,7 +54,7 @@ const ledger: { what: string; goes: string; kept: string }[] = [
   {
     what: 'Results you upload',
     goes: 'Parsed into totals by place and age band',
-    kept: 'Totals only. Personal columns are dropped and the raw file is deleted',
+    kept: 'Totals only. The numbers kept are totals by place and age band; the text of the file stays on your project, so leave personal columns out',
   },
   {
     what: 'Your name and email',

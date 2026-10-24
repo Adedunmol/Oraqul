@@ -58,7 +58,7 @@ const traits = [
   ],
   [
     'Checks its own draft',
-    'It compares the plan with what you asked for and rewrites it until it fits, up to three times.',
+    'It compares the plan with what you asked for and rewrites it until it fits, in up to three drafts.',
   ],
   ['Shows its receipts', 'Each claim links to the exact data behind it, so you can check it.'],
 ];

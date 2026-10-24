@@ -8,10 +8,19 @@ import { personText, type Reader, type ReaderInput } from './reader.js';
 
 const CATEGORY_WORDS: [Category, RegExp][] = [
   ['film', /\b(films?|movies?|series|documentar(?:y|ies)|tv shows?|miniseries|feature)\b/i],
-  ['music', /\b(songs?|singles?|albums?|eps?|mixtapes?|tours?|tracks?|concerts?)\b/i],
+  [
+    'music',
+    /\b(songs?|singles?|albums?|eps?|mixtapes?|tours?|tracks?|concerts?|gigs?|live shows?)\b/i,
+  ],
   ['books', /\b(books?|novels?|memoirs?|audiobooks?|poetry|publish(?:ing|er)?)\b/i],
   ['podcasts', /\bpodcasts?\b/i],
   ['games', /\b(games?|gaming|dlc)\b/i],
+  // A concert or a gig can be a music release or a single live show, so both match and the router
+  // asks which. Stand-up, club nights and stage plays are plainly a live show.
+  [
+    'shows',
+    /\b(live shows?|gigs?|concerts?|stand-?up|comedy nights?|club nights?|stage plays?|one[- ]night)\b/i,
+  ],
 ];
 
 // Checked in this order: "fix the release" is a fix even though it says release.

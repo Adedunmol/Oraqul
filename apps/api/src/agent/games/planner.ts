@@ -1,5 +1,5 @@
 import { citiesNear, cityCountry, cityNames } from '@oraqul/engine';
-import { gamesPlan } from '@oraqul/packs';
+import { brandCategoriesFor, gamesPlan } from '@oraqul/packs';
 import type { FanMedium, LaunchModuleKey } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
@@ -20,8 +20,7 @@ import { kindOf, platformsOf } from './launch-kind.js';
 import type { GamesRead } from './read.js';
 import { regionCities } from './regions.js';
 
-const { GAMES_QUERIES, MAX_CITIES_PER_QUERY, FAN_MEDIA, GAMES_BRAND_CATEGORIES, KIND_PROFILES } =
-  gamesPlan;
+const { GAMES_QUERIES, MAX_CITIES_PER_QUERY, FAN_MEDIA, KIND_PROFILES } = gamesPlan;
 type GamesQueryKey = gamesPlan.GamesQueryKey;
 
 /**
@@ -96,7 +95,7 @@ export function defaultPlan(input: QueryPlanInput): GamesQueryPlan {
     fanMedia: FAN_MEDIA.map((m) => m.medium),
     podcastGenre: gamesPlan.FAN_MEDIA.find((m) => m.medium === 'podcast')?.phrase ?? null,
     podcastCity: away[0] ?? askCities[0] ?? null,
-    brandCategories: GAMES_BRAND_CATEGORIES,
+    brandCategories: brandCategoriesFor('games'),
     brandCities: (cities.length ? [home[0] ?? cities[0], away[0]] : askCities.slice(0, 2))
       .filter((c): c is string => !!c)
       .filter((c, i, all) => all.indexOf(c) === i),

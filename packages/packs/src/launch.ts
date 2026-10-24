@@ -41,6 +41,10 @@ export const SECTION_TITLES = {
   schools: 'Schools and libraries',
   channels: 'Channels',
   creative: 'Creative briefs',
+  calendar: 'Content calendar',
+  onsale: 'On sale and pacing',
+  finalpush: 'Final push',
+  venues: 'Where the audience goes out',
   hooks: 'Hook options',
   scripts: 'Scripts',
   shots: 'Shot lists',
@@ -74,9 +78,6 @@ export const PODCAST_GENRES: { match: RegExp; phrase: string }[] = [
   { match: /horror/i, phrase: 'horror' },
   { match: /documentar/i, phrase: 'documentary' },
 ];
-
-/** Brand categories verified to give brands that operate in a city. Fashion gave luxury names. */
-export const BRAND_CATEGORIES = ['telecom', 'beverage'];
 
 /**
  * Mass-market names a named partner is scored against, as a confidence aid. Each name resolves to

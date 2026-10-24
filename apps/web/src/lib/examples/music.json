@@ -730,6 +730,156 @@
           ]
         },
         {
+          "key": "calendar",
+          "title": "Content calendar",
+          "lines": [
+            {
+              "id": "calendar-source",
+              "kind": "playbook",
+              "text": "This calendar follows blog-level guidance, one source for each point. Treat it as direction, not a measured result.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-lagos-presave",
+              "kind": "playbook",
+              "text": "T-3: Open the pre-save at least three weeks before release and put the link in every post. Asset: pre-save link. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-teasers",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Post short teasers of 10 to 30 seconds, at least three a week. Asset: teaser, 10 to 30 seconds. Lead on Instagram. Posts: at least 3 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-release-day",
+              "kind": "playbook",
+              "text": "Launch week: Post on release day: the song, the link and the story behind it. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-lagos-after",
+              "kind": "playbook",
+              "text": "T+1 to T+3: Keep posting for two to three weeks after release, with a new angle each time. Lead on Instagram. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Lagos"
+            },
+            {
+              "id": "calendar-london-presave",
+              "kind": "playbook",
+              "text": "T-3: Open the pre-save at least three weeks before release and put the link in every post. Asset: pre-save link. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-teasers",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Post short teasers of 10 to 30 seconds, at least three a week. Asset: teaser, 10 to 30 seconds. Lead on TikTok. Posts: at least 3 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-release-day",
+              "kind": "playbook",
+              "text": "Launch week: Post on release day: the song, the link and the story behind it. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-london-after",
+              "kind": "playbook",
+              "text": "T+1 to T+3: Keep posting for two to three weeks after release, with a new angle each time. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "London"
+            },
+            {
+              "id": "calendar-houston-presave",
+              "kind": "playbook",
+              "text": "T-3: Open the pre-save at least three weeks before release and put the link in every post. Asset: pre-save link. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-teasers",
+              "kind": "playbook",
+              "text": "T-3 to T-1: Post short teasers of 10 to 30 seconds, at least three a week. Asset: teaser, 10 to 30 seconds. Lead on TikTok. Posts: at least 3 a week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-release-day",
+              "kind": "playbook",
+              "text": "Launch week: Post on release day: the song, the link and the story behind it. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-houston-after",
+              "kind": "playbook",
+              "text": "T+1 to T+3: Keep posting for two to three weeks after release, with a new angle each time. Lead on TikTok. Posts: the source gives no number.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Houston"
+            },
+            {
+              "id": "calendar-ads-1",
+              "kind": "playbook",
+              "text": "Put about 80 percent of paid spend behind creative that has already worked, and about 20 percent into testing new creative.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-2",
+              "kind": "playbook",
+              "text": "Run three to five ads in each ad group.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-3",
+              "kind": "playbook",
+              "text": "Judge a winner by its conversion count, not by how many days it has run.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            }
+          ]
+        },
+        {
           "key": "timeline",
           "title": "Timeline",
           "lines": [
@@ -1126,19 +1276,22 @@
               "entityId": null,
               "name": "Lagos",
               "affinity": 0.6066079321882237,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "London",
               "affinity": 0.5398138502758184,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Houston",
               "affinity": 0.47397911006048776,
-              "detail": null
+              "detail": null,
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1167,19 +1320,22 @@
               "entityId": null,
               "name": "Lagos",
               "affinity": 0.6066079321882237,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "London",
               "affinity": 0.5398138502758184,
-              "detail": null
+              "detail": null,
+              "popularity": null
             },
             {
               "entityId": null,
               "name": "Houston",
               "affinity": 0.47397911006048776,
-              "detail": null
+              "detail": null,
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1209,7 +1365,8 @@
               "entityId": null,
               "name": "Manchester",
               "affinity": 0.7190638612237288,
-              "detail": null
+              "detail": null,
+              "popularity": null
             }
           ],
           "numbers": {
@@ -1237,7 +1394,8 @@
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.6231808757696256,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1265,7 +1423,8 @@
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.6231808757696256,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1293,7 +1452,8 @@
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.6231808757696256,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1321,7 +1481,8 @@
               "entityId": "DEMO-BRAND-0004",
               "name": "Night Market Cola",
               "affinity": 0.47346292537950513,
-              "detail": null
+              "detail": null,
+              "popularity": 0.32
             }
           ],
           "numbers": {},
@@ -1347,7 +1508,8 @@
               "entityId": "DEMO-BRAND-0006",
               "name": "Lagoon Mobile",
               "affinity": 0.47502546291216863,
-              "detail": null
+              "detail": null,
+              "popularity": 0.4
             }
           ],
           "numbers": {},
@@ -1373,31 +1535,36 @@
               "entityId": "DEMO-POD-0001",
               "name": "Late Signal",
               "affinity": 0.7267781520324708,
-              "detail": null
+              "detail": null,
+              "popularity": 0.12
             },
             {
               "entityId": "DEMO-POD-0003",
               "name": "Crime Junkie",
               "affinity": 0.7252156144998072,
-              "detail": null
+              "detail": null,
+              "popularity": 1
             },
             {
               "entityId": "DEMO-POD-0002",
               "name": "The Joe Rogan Experience",
               "affinity": 0.7244343457334754,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-POD-0005",
               "name": "Lagos After Dark",
               "affinity": 0.7236530769671436,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-POD-0004",
               "name": "Serial",
               "affinity": 0.7228718082008119,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             }
           ],
           "numbers": {},
@@ -1423,19 +1590,22 @@
               "entityId": "DEMO-FILM-0002",
               "name": "Midnight Harbor",
               "affinity": 0.7517125902817847,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-TV-0002",
               "name": "Eko Nights",
               "affinity": 0.7194554366216658,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             },
             {
               "entityId": "DEMO-TV-0001",
               "name": "Harbor Precinct",
               "affinity": 0.7171116303226704,
-              "detail": null
+              "detail": null,
+              "popularity": 0.42
             }
           ],
           "numbers": {
@@ -1463,19 +1633,22 @@
               "entityId": "DEMO-FILM-0002",
               "name": "Midnight Harbor",
               "affinity": 0.7517125902817847,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-TV-0002",
               "name": "Eko Nights",
               "affinity": 0.7194554366216658,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             },
             {
               "entityId": "DEMO-TV-0001",
               "name": "Harbor Precinct",
               "affinity": 0.7171116303226704,
-              "detail": null
+              "detail": null,
+              "popularity": 0.42
             }
           ],
           "numbers": {
@@ -1503,19 +1676,22 @@
               "entityId": "DEMO-FILM-0002",
               "name": "Midnight Harbor",
               "affinity": 0.7517125902817847,
-              "detail": null
+              "detail": null,
+              "popularity": 0.22
             },
             {
               "entityId": "DEMO-TV-0002",
               "name": "Eko Nights",
               "affinity": 0.7194554366216658,
-              "detail": null
+              "detail": null,
+              "popularity": 0.28
             },
             {
               "entityId": "DEMO-TV-0001",
               "name": "Harbor Precinct",
               "affinity": 0.7171116303226704,
-              "detail": null
+              "detail": null,
+              "popularity": 0.42
             }
           ],
           "numbers": {
@@ -1543,7 +1719,8 @@
               "entityId": "DEMO-PLACE-0008",
               "name": "Gulf Coast University",
               "affinity": 0.6268567424562892,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1569,7 +1746,8 @@
               "entityId": "DEMO-PLACE-0009",
               "name": "Lagoon City University",
               "affinity": 0.627638011222621,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1595,7 +1773,8 @@
               "entityId": "DEMO-PLACE-0014",
               "name": "Harbor Hall",
               "affinity": 0.62842612963366,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1621,7 +1800,8 @@
               "entityId": "DEMO-PLACE-0015",
               "name": "Southbank Hall",
               "affinity": 0.6276448608673282,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1647,7 +1827,8 @@
               "entityId": "DEMO-PLACE-0011",
               "name": "Eko Nights Club",
               "affinity": 0.6245197858020011,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1673,7 +1854,8 @@
               "entityId": "DEMO-PLACE-0013",
               "name": "Camden After Hours",
               "affinity": 0.6260823233346646,
-              "detail": null
+              "detail": null,
+              "popularity": 0.5
             }
           ],
           "numbers": {},
@@ -1699,7 +1881,8 @@
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1727,25 +1910,29 @@
               "entityId": "DEMO-BRAND-0001",
               "name": "Coca-Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0002",
               "name": "Nike",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0003",
               "name": "McDonald's",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.98
             },
             {
               "entityId": "DEMO-BRAND-0004",
               "name": "Night Market Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.32
             }
           ],
           "numbers": {
@@ -1773,7 +1960,8 @@
               "entityId": "DEMO-MUSIC-0004",
               "name": "Sade Rhythm",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.35
             }
           ],
           "numbers": {
@@ -1801,25 +1989,29 @@
               "entityId": "DEMO-BRAND-0001",
               "name": "Coca-Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0002",
               "name": "Nike",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.99
             },
             {
               "entityId": "DEMO-BRAND-0003",
               "name": "McDonald's",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.98
             },
             {
               "entityId": "DEMO-BRAND-0004",
               "name": "Night Market Cola",
               "affinity": 0.3,
-              "detail": null
+              "detail": null,
+              "popularity": 0.32
             }
           ],
           "numbers": {
@@ -1884,7 +2076,12 @@
       },
       "rules": {
         "category": "music",
-        "version": "music@2026-10-22.1"
+        "version": "music@2026-10-22.1",
+        "parts": {
+          "shared": "shared@2026-10-23.1",
+          "partners": "partners@2026-10-23.1",
+          "calendar": "calendar@2026-10-23.1"
+        }
       },
       "band": {
         "band": "independent",
@@ -1925,7 +2122,11 @@
             "markets-1",
             "community-2",
             "support-2",
-            "channels-lagos"
+            "channels-lagos",
+            "calendar-lagos-presave",
+            "calendar-lagos-teasers",
+            "calendar-lagos-release-day",
+            "calendar-lagos-after"
           ]
         },
         {
@@ -1949,7 +2150,17 @@
             }
           ],
           "partnerIds": [],
-          "lineIds": ["audience-4", "audience-7", "markets-2", "support-3", "channels-london"]
+          "lineIds": [
+            "audience-4",
+            "audience-7",
+            "markets-2",
+            "support-3",
+            "channels-london",
+            "calendar-london-presave",
+            "calendar-london-teasers",
+            "calendar-london-release-day",
+            "calendar-london-after"
+          ]
         },
         {
           "id": "territory-houston",
@@ -1978,7 +2189,11 @@
             "markets-3",
             "community-1",
             "support-1",
-            "channels-houston"
+            "channels-houston",
+            "calendar-houston-presave",
+            "calendar-houston-teasers",
+            "calendar-houston-release-day",
+            "calendar-houston-after"
           ]
         }
       ],
@@ -2027,7 +2242,14 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": [
+            {
+              "type": "content",
+              "why": "A drinks brand when the audience includes people under 25, some of whom are under the legal drinking age. Check the partner’s rules on who its marketing may reach."
+            }
+          ]
         },
         {
           "id": "partner-mtn",
@@ -2038,7 +2260,9 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-indomie",
@@ -2049,7 +2273,9 @@
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-night-market-cola",
@@ -2060,7 +2286,9 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": ["f-brands-beverage-lagos"]
+          "findingIds": ["f-brands-beverage-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-lagoon-mobile",
@@ -2071,84 +2299,87 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": ["f-brands-telecom-lagos"]
+          "findingIds": ["f-brands-telecom-lagos"],
+          "kind": "brand",
+          "flags": []
         },
         {
-          "id": "partner-verve",
-          "name": "Verve",
+          "id": "partner-bolt",
+          "name": "Bolt",
           "tier": "B",
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
-        },
-        {
-          "id": "partner-quickteller",
-          "name": "QuickTeller",
-          "tier": "B",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "fits",
-          "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-ee",
           "name": "EE",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United Kingdom",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-monzo",
           "name": "Monzo",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United Kingdom",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-lyft",
           "name": "Lyft",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United States",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
           "id": "partner-cash-app",
           "name": "Cash App",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United States",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "brand",
+          "flags": []
         },
         {
-          "id": "partner-c-nigeria-cinemas",
-          "name": "Cinemas",
+          "id": "partner-c-nigeria-venues",
+          "name": "Venues",
           "tier": "C",
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
         },
         {
           "id": "partner-c-nigeria-creators",
@@ -2159,18 +2390,235 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
         },
         {
-          "id": "partner-c-nigeria-diaspora-businesses",
-          "name": "Diaspora businesses",
+          "id": "partner-c-nigeria-community-groups",
+          "name": "Community groups",
           "tier": "C",
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": []
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        },
+        {
+          "id": "partner-c-nigeria-cinemas",
+          "name": "Cinemas",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": []
+        }
+      ],
+      "partnerNotes": [
+        {
+          "id": "partner-note-band",
+          "ruleId": "partners.lead-time",
+          "text": "An independent release usually has no franchise behind it, so lead with tier B and tier C partners."
+        },
+        {
+          "id": "partner-note-barter",
+          "ruleId": "partners.lead-time",
+          "text": "Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship."
+        }
+      ],
+      "calendar": [
+        {
+          "id": "calendar-lagos-presave",
+          "territory": "Lagos",
+          "key": "presave",
+          "at": -3,
+          "from": null,
+          "to": null,
+          "asset": "pre-save link",
+          "post": "Open the pre-save at least three weeks before release and put the link in every post.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-teasers",
+          "territory": "Lagos",
+          "key": "teasers",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "teaser, 10 to 30 seconds",
+          "post": "Post short teasers of 10 to 30 seconds, at least three a week.",
+          "channel": "Instagram",
+          "count": 3,
+          "per": "week",
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-release-day",
+          "territory": "Lagos",
+          "key": "release-day",
+          "at": 0,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Post on release day: the song, the link and the story behind it.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-lagos-after",
+          "territory": "Lagos",
+          "key": "after",
+          "at": 1,
+          "until": 3,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Keep posting for two to three weeks after release, with a new angle each time.",
+          "channel": "Instagram",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-presave",
+          "territory": "London",
+          "key": "presave",
+          "at": -3,
+          "from": null,
+          "to": null,
+          "asset": "pre-save link",
+          "post": "Open the pre-save at least three weeks before release and put the link in every post.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-teasers",
+          "territory": "London",
+          "key": "teasers",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "teaser, 10 to 30 seconds",
+          "post": "Post short teasers of 10 to 30 seconds, at least three a week.",
+          "channel": "TikTok",
+          "count": 3,
+          "per": "week",
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-release-day",
+          "territory": "London",
+          "key": "release-day",
+          "at": 0,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Post on release day: the song, the link and the story behind it.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-london-after",
+          "territory": "London",
+          "key": "after",
+          "at": 1,
+          "until": 3,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Keep posting for two to three weeks after release, with a new angle each time.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-presave",
+          "territory": "Houston",
+          "key": "presave",
+          "at": -3,
+          "from": null,
+          "to": null,
+          "asset": "pre-save link",
+          "post": "Open the pre-save at least three weeks before release and put the link in every post.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-teasers",
+          "territory": "Houston",
+          "key": "teasers",
+          "at": -3,
+          "until": -1,
+          "from": null,
+          "to": null,
+          "asset": "teaser, 10 to 30 seconds",
+          "post": "Post short teasers of 10 to 30 seconds, at least three a week.",
+          "channel": "TikTok",
+          "count": 3,
+          "per": "week",
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-release-day",
+          "territory": "Houston",
+          "key": "release-day",
+          "at": 0,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Post on release day: the song, the link and the story behind it.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
+        },
+        {
+          "id": "calendar-houston-after",
+          "territory": "Houston",
+          "key": "after",
+          "at": 1,
+          "until": 3,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Keep posting for two to three weeks after release, with a new angle each time.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "music.calendar",
+          "grade": "directional"
         }
       ]
     },
@@ -3385,7 +3833,7 @@
         "callId": "00000000-0000-4000-8000-000000005056",
         "endpoint": "/search",
         "input": {
-          "query": "Verve",
+          "query": "Guinness",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3399,7 +3847,7 @@
         "callId": "00000000-0000-4000-8000-000000005057",
         "endpoint": "/search",
         "input": {
-          "query": "QuickTeller",
+          "query": "MTN",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3413,7 +3861,7 @@
         "callId": "00000000-0000-4000-8000-000000005058",
         "endpoint": "/search",
         "input": {
-          "query": "EE",
+          "query": "Indomie",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3427,7 +3875,7 @@
         "callId": "00000000-0000-4000-8000-000000005059",
         "endpoint": "/search",
         "input": {
-          "query": "Monzo",
+          "query": "Bolt",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3441,7 +3889,7 @@
         "callId": "00000000-0000-4000-8000-000000005060",
         "endpoint": "/search",
         "input": {
-          "query": "Lyft",
+          "query": "EE",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3455,7 +3903,7 @@
         "callId": "00000000-0000-4000-8000-000000005061",
         "endpoint": "/search",
         "input": {
-          "query": "Cash App",
+          "query": "Monzo",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3467,6 +3915,34 @@
       },
       {
         "callId": "00000000-0000-4000-8000-000000005062",
+        "endpoint": "/search",
+        "input": {
+          "query": "Lyft",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005063",
+        "endpoint": "/search",
+        "input": {
+          "query": "Cash App",
+          "take": "5",
+          "types": "urn:entity:brand"
+        },
+        "returned": {},
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005064",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -3483,7 +3959,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005063",
+        "callId": "00000000-0000-4000-8000-000000005065",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -3500,7 +3976,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005064",
+        "callId": "00000000-0000-4000-8000-000000005066",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -3517,7 +3993,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005065",
+        "callId": "00000000-0000-4000-8000-000000005067",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -3534,7 +4010,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005066",
+        "callId": "00000000-0000-4000-8000-000000005068",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",

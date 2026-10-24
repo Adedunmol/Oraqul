@@ -32,15 +32,15 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'Does it ask about my budget?',
-    a: 'Once, if your brief does not say. It asks for a band (micro, independent, mid-size or major), or you can skip it and it plans for an independent release and says so. The band decides which partners and moves it may propose: a flagship brand is not offered to a budget that cannot carry it.',
+    a: 'Once, if your brief does not say. It asks for a band (micro, independent, mid-size or major), or you can skip it and it plans for an independent release and says so. The band decides which partners and moves it may propose: a flagship brand is a stretch for an independent budget, out of reach for a micro one, and never written into the plan’s moves unless you named it.',
   },
   {
     q: 'Can I set a target?',
-    a: 'Yes. Every plan is judged on one signal for its category, such as advance screenings and presales for a film or wishlists for a game. Give your own number, or where Oraqul has a sourced benchmark it shows it. A target is a goal you set, never a prediction.',
+    a: 'Yes. Every plan is judged on one signal for its category, such as advance screenings and presales for a film or wishlists for a game. Give your own number, or where Oraqul has a benchmark of its own it shows it, marked as a target to aim for. A target is a goal you set, never a prediction.',
   },
   {
     q: 'What is a plan for each market?',
-    a: 'One plan for each place you open, called a territory: the home market first, then the diaspora cities, such as Lagos, then London, Houston and Atlanta. Each has its own call (okay, risky or avoid), lead channels and partners. Your own cities are never dropped.',
+    a: 'One plan for each place you open, called a territory: the home market first, then the diaspora cities, such as Lagos, then London, Houston and Atlanta. Each has its own call (okay, risky or avoid), lead channels, and the partners Qloo ranked there. WhatsApp is a sharing layer and never a lead channel. Your own cities are never dropped.',
   },
   {
     q: 'Can it check my release date against rivals?',
@@ -48,7 +48,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'Does it make trailers or ads?',
-    a: 'No. It writes the scripts, shot lists, key art briefs, caption packs and hook options a team needs to make them, for each territory and channel. A person makes the final creative.',
+    a: 'No. It writes the scripts, shot lists, key art briefs, caption packs and hook options a team needs to make them, for one territory and channel, or for every territory at once when you ask for all of them. A person makes the final creative.',
   },
   {
     home: 'No. It shows who likes what and where, and gives a direction, not a forecast. When you add your own results, it compares them with what the plan expected.',
@@ -61,7 +61,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'What kinds of launch does it cover?',
-    a: 'Film and series releases, music releases and tours, book launches, podcast seasons and game launches. Each category has its own checks, its own calendar worked back from your date, and its own signal.',
+    a: 'Film and series releases, music releases and tours, book launches, podcast seasons, game launches and single live shows or short runs. Each category has its own checks, its own calendar worked back from your date, and its own signal.',
   },
   {
     q: 'Does it work outside the US and UK?',

@@ -133,9 +133,6 @@ export function genreFallback(phrase: string | null): string | null {
 /** Fewest shows a narrow genre must list before the broader one is asked instead. */
 export const MIN_GENRE_SHOWS = 3;
 
-/** Brand categories asked for a show: the verified ones that give brands that operate in a city. */
-export const PODCASTS_BRAND_CATEGORIES = ['beverage', 'telecom'];
-
 /**
  * Well known shows to describe an audience with when the brief names none and the model proposes
  * none, so a short description is enough to plan from. The first rule whose words match the brief

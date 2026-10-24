@@ -70,6 +70,7 @@
       "partnerships": "2/0",
       "community": "0/1",
       "creative": "0/3",
+      "calendar": "0/14",
       "timeline": "0/10",
       "budget": "0/7",
       "measure": "0/10",
@@ -78,8 +79,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-fan-collab-pixel-choir"],
     "grounding": {
-      "lines": 56,
-      "backed": 41,
+      "lines": 70,
+      "backed": 33,
       "rankKept": 92,
       "findingsUsed": 16,
       "cities": {

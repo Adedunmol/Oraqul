@@ -6,7 +6,7 @@ import { PageHero } from '../../_marketing/page-hero';
 export const metadata: Metadata = {
   title: 'Categories · Oraqul',
   description:
-    'Film and series, music, books, podcasts and games: what Oraqul checks in each, what else it handles, and what your team brings.',
+    'Film and series, music, books, podcasts, games and live shows: what Oraqul checks in each, what else it handles, and what your team brings.',
 };
 
 export default function Categories() {

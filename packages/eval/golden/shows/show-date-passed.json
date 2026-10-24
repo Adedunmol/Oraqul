@@ -1,0 +1,77 @@
+{
+  "title": "Old Night",
+  "brief": "Launch plan for the concert \"Old Night\", an afrobeats show from artist \"Neon Tide\", playing Lagos on 2020-03-12. Sound-alikes: \"Ada Lux\" and \"Kola Wave\".",
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    {
+      "text": "you choose"
+    }
+  ],
+  "expect": {
+    "headline": "Start in Lagos: that is where the act's audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "weak",
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-lagos": [],
+      "f-markets": ["Lagos"],
+      "f-similar-lagos": ["Sade Rhythm"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"],
+      "f-venues-concert-hall-lagos": ["Harbor Hall"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"],
+      "f-region-lagos-artists": ["Sade Rhythm"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "2/0",
+      "markets": "1/0",
+      "onsale": "0/7",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "venues": "2/0",
+      "finalpush": "0/5",
+      "channels": "0/1",
+      "creative": "0/4",
+      "calendar": "0/1",
+      "timeline": "0/1",
+      "budget": "0/4",
+      "measure": "0/6",
+      "risks": "1/1",
+      "gaps": "0/4"
+    },
+    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "grounding": {
+      "lines": 41,
+      "backed": 29,
+      "rankKept": 100,
+      "findingsUsed": 9,
+      "cities": {
+        "Lagos": 9
+      }
+    },
+    "dropped": 0,
+    "cannot": ["Ticket sales and revenue", "The release window (2020-03-12)"]
+  }
+}

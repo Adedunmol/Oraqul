@@ -77,6 +77,7 @@
       "community": "0/1",
       "channels": "0/2",
       "creative": "0/4",
+      "calendar": "0/26",
       "timeline": "0/11",
       "budget": "0/8",
       "measure": "0/8",
@@ -85,8 +86,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 57,
-      "backed": 44,
+      "lines": 83,
+      "backed": 30,
       "rankKept": 100,
       "findingsUsed": 15,
       "cities": {

@@ -40,6 +40,31 @@ export function kitTarget(
   return { territory, channel };
 }
 
+// "make the creative kit for every territory": one kit that covers each territory on its own
+// lead channel, or on the channel the message names where that territory has it.
+const ALL_TERRITORIES =
+  /\b(?:every|each|all)\s+(?:of\s+)?(?:the\s+|my\s+|our\s+)?(?:territor(?:y|ies)|cit(?:y|ies)|markets?)\b/i;
+
+/** Every territory and channel a message asks the kit for. One unless it asks for them all. */
+export function kitTargets(
+  text: string,
+  plan: LaunchPlan,
+): { territory: Territory; channel: string }[] {
+  if (!ALL_TERRITORIES.test(text)) {
+    const one = kitTarget(text, plan);
+    return one ? [one] : [];
+  }
+  const lower = text.toLowerCase();
+  return plan.territories.map((territory) => ({
+    territory,
+    channel:
+      territory.channels.find((c) => lower.includes(c.name.toLowerCase()))?.name ??
+      territory.channels.find((c) => c.lead)?.name ??
+      territory.channels[0]?.name ??
+      'the lead channel',
+  }));
+}
+
 const grounded = (id: string, text: string, finding: Finding, group: string): LaunchLine => ({
   id,
   kind: 'grounded',
@@ -190,8 +215,9 @@ export async function runCreativeKit<R extends LaunchRead>(
 ): Promise<PlanRun> {
   const source = plan.plan;
   const config: LaunchConfig<R> = deps.config;
-  const target = source ? kitTarget(text, source) : null;
-  if (!source || !target) {
+  const targets = source ? kitTargets(text, source) : [];
+  const first = targets[0];
+  if (!source || !first) {
     deps.emit({
       type: 'message',
       body: 'The creative kit is written per territory, and this plan has none yet. Plan with at least one city and ask again.',
@@ -204,15 +230,28 @@ export async function runCreativeKit<R extends LaunchRead>(
     agent: config.category,
     step: 1,
     of: 2,
-    text: `Writing the guides for ${target.territory.name} on ${target.channel}`,
+    text:
+      targets.length === 1
+        ? `Writing the guides for ${first.territory.name} on ${first.channel}`
+        : `Writing the guides for ${names(targets.map((t) => t.territory.name))}`,
   });
-  const sections = buildKit({
-    category: config.category,
-    title,
-    plan: source,
-    territory: target.territory,
-    channel: target.channel,
-    release: releaseDate(inputs.read.window),
+  // One kit for every territory asked for: the same sections, with each territory's lines grouped.
+  const sections = KIT_SECTIONS.map((key) => {
+    const built = targets.flatMap((t) =>
+      buildKit({
+        category: config.category,
+        title,
+        plan: source,
+        territory: t.territory,
+        channel: t.channel,
+        release: releaseDate(inputs.read.window),
+      }).filter((s) => s.key === key),
+    );
+    return {
+      key,
+      title: built[0]?.title ?? KIT_TITLE[key],
+      lines: built.flatMap((s) => s.lines),
+    };
   });
 
   // The same line check as a plan: a kit line that fails is dropped and recorded.
@@ -262,7 +301,11 @@ export async function runCreativeKit<R extends LaunchRead>(
     calls: [],
     partners: [],
   };
-  const headline = `Creative kit for ${target.territory.name} on ${target.channel}: guides for the team that makes the final creative.`;
+  const where =
+    targets.length === 1
+      ? `${first.territory.name} on ${first.channel}`
+      : `every territory (${names(targets.map((t) => t.territory.name))}), each on its own channel`;
+  const headline = `Creative kit for ${where}: guides for the team that makes the final creative.`;
   const moves: Move[] = [
     { text: 'Pick one hook and test it against the other two.', lineId: null },
     {
@@ -285,7 +328,10 @@ export async function runCreativeKit<R extends LaunchRead>(
     receipts,
     output: {
       kind: 'creative',
-      title: `Creative kit: ${target.territory.name} · ${target.channel}`,
+      title:
+        targets.length === 1
+          ? `Creative kit: ${first.territory.name} · ${first.channel}`
+          : 'Creative kit: every territory',
       brief: plan.brief,
       plan: kit,
       report: null,

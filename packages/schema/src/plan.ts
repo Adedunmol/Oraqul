@@ -26,6 +26,8 @@ export const launchModuleKeys = [
   // Every full plan: channels written by code, and short creative briefs (guides, never assets).
   'channels',
   'creative',
+  // The social content calendar: written by code from the release date, like the timeline.
+  'calendar',
   // A creative kit's sections.
   'hooks',
   'scripts',
@@ -49,6 +51,10 @@ export const launchModuleKeys = [
   'guests',
   'live',
   'video',
+  // Live shows only. Code writes the first two from the show date and the on-sale rules.
+  'onsale',
+  'finalpush',
+  'venues',
   // Books only. Which of these a plan gets depends on the launch kind, the route and the readership.
   'comps',
   'adaptation',
@@ -273,6 +279,26 @@ export const partnerTiers = ['A', 'B', 'C'] as const;
 export const partnerTierSchema = z.enum(partnerTiers);
 export type PartnerTier = z.infer<typeof partnerTierSchema>;
 
+/** What each tier means, in one place so the rules, the plan screen and the exports say the same. */
+export const TIER_LABEL: Record<PartnerTier, { name: string; what: string }> = {
+  A: { name: 'Flagship', what: 'Big national brands. Only for releases with scale.' },
+  B: {
+    name: 'Category and integration',
+    what: 'Brands that fit the category, such as banks and payment brands, food and drink, hospitality and telecom bundles.',
+  },
+  C: {
+    name: 'Local',
+    what: 'Local businesses, creators, venues and community groups. Most realistic for an independent release.',
+  },
+};
+
+/** A content fit or fan backlash flag on a partner (T2). */
+export const partnerFlagSchema = z.object({
+  type: z.enum(['content', 'backlash']),
+  why: z.string(),
+});
+export type PartnerFlag = z.infer<typeof partnerFlagSchema>;
+
 /** A partner the plan can approach, with its tier, Qloo fit and budget fit. Price is never known. */
 export const partnerOptionSchema = z.object({
   id: z.string().min(1),
@@ -287,8 +313,46 @@ export const partnerOptionSchema = z.object({
   budgetFit: z.enum(['fits', 'stretch', 'out']),
   price: z.literal('unknown'),
   findingIds: z.array(z.string()),
+  /** A named brand, or a kind of partner with no name yet, such as "bookshops". */
+  kind: z.enum(['brand', 'kind']).default('brand'),
+  /** Mismatches between the work and this partner, set by code. Direction only: never a drop. */
+  flags: z.array(partnerFlagSchema).default([]),
 });
 export type PartnerOption = z.infer<typeof partnerOptionSchema>;
+
+/** A note on lead time, band or barter, written by code from the partner rules (T1). */
+export const partnerNoteSchema = z.object({
+  id: z.string().min(1),
+  /** The rule behind it, such as `partners.lead-time`. */
+  ruleId: z.string(),
+  text: z.string().min(1),
+});
+export type PartnerNote = z.infer<typeof partnerNoteSchema>;
+
+/** One row of the content calendar, for one territory on its lead channel. Written by code. */
+export const calendarRowSchema = z.object({
+  id: z.string().min(1),
+  /** The territory the row is for. Null when the plan has none. */
+  territory: z.string().nullable(),
+  key: z.string(),
+  /** Weeks from the release. Negative is before it. */
+  at: z.number().int(),
+  until: z.number().int().optional(),
+  /** `YYYY-MM-DD`, or null when the release date is not known. */
+  from: z.string().nullable(),
+  to: z.string().nullable(),
+  /** The kind of asset to post. Null where the rule names none. */
+  asset: z.string().nullable(),
+  post: z.string(),
+  channel: z.string(),
+  /** Posts, as the source states it. Null where there is no number. */
+  count: z.number().int().nullable(),
+  per: z.enum(['week', 'day', 'span']).nullable(),
+  /** The rule behind the row, and how far to lean on it. */
+  ruleId: z.string(),
+  grade: z.enum(['team', 'directional', 'not-researched']),
+});
+export type CalendarRow = z.infer<typeof calendarRowSchema>;
 
 export const launchPlanSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question. */
@@ -308,11 +372,22 @@ export const launchPlanSchema = z.object({
   /** What the research and the line check did on the way. Plans saved before it have none. */
   process: planProcessSchema.nullable().default(null),
   /** The rule library version the plan was written with. Plans saved before it have none. */
-  rules: z.object({ category: z.string(), version: z.string() }).nullable().default(null),
+  rules: z
+    .object({
+      category: z.string(),
+      version: z.string(),
+      /** The shared libraries the plan also used, by version. Older plans have none. */
+      parts: z.record(z.string(), z.string()).default({}),
+    })
+    .nullable()
+    .default(null),
   band: planBandSchema.nullable().default(null),
   signal: signalSchema.nullable().default(null),
   territories: z.array(territorySchema).default([]),
   calls: z.array(directionCallSchema).default([]),
   partners: z.array(partnerOptionSchema).default([]),
+  partnerNotes: z.array(partnerNoteSchema).default([]),
+  /** The content calendar rows, for the table on the plan page. Plans saved before it have none. */
+  calendar: z.array(calendarRowSchema).default([]),
 });
 export type LaunchPlan = z.infer<typeof launchPlanSchema>;

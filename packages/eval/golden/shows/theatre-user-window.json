@@ -1,0 +1,74 @@
+{
+  "title": "The Long Table",
+  "brief": "Launch plan for the stage play \"The Long Table\", a theatre show by artist \"Neon Tide\", playing London on 2099-03-12. On sale: 8 weeks before the show. Venue capacity: 300. Sound-alikes: \"Ada Lux\" and \"Kola Wave\".",
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    {
+      "text": "you choose"
+    }
+  ],
+  "expect": {
+    "headline": "Start in London: that is where the act's audience is strongest among your cities.",
+    "assumptions": {
+      "a-place-london": "breaks",
+      "a-comps": "holds"
+    },
+    "cities": ["London"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-london": [],
+      "f-markets": ["London"],
+      "f-brands-beverage-london": ["Night Market Cola"],
+      "f-brands-telecom-london": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "1/0",
+      "markets": "1/0",
+      "onsale": "0/7",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "finalpush": "0/5",
+      "channels": "0/1",
+      "creative": "0/4",
+      "calendar": "0/9",
+      "timeline": "0/5",
+      "budget": "0/4",
+      "measure": "0/6",
+      "risks": "1/1",
+      "gaps": "0/4"
+    },
+    "moves": ["f-markets", "f-audience", "f-brands-beverage-london"],
+    "grounding": {
+      "lines": 50,
+      "backed": 18,
+      "rankKept": 100,
+      "findingsUsed": 6,
+      "cities": {
+        "London": 6
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Ticket sales and revenue",
+      "The release window (2099-03-12)",
+      "Acts that audience plays",
+      "Theaters in London"
+    ]
+  }
+}

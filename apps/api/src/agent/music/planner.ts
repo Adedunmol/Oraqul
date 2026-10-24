@@ -1,5 +1,5 @@
 import { citiesNear, cityCountry, cityNames } from '@oraqul/engine';
-import { musicPlan } from '@oraqul/packs';
+import { brandCategoriesFor, musicPlan } from '@oraqul/packs';
 import type { LaunchModuleKey } from '@oraqul/schema';
 import { generateText, type LanguageModel, Output } from 'ai';
 import { z } from 'zod';
@@ -78,7 +78,7 @@ export function defaultPlan(input: QueryPlanInput): MusicQueryPlan {
     // Every city the team chose gets the same questions, so none is left with less than another.
     supportCities: cities,
     showCities: cities,
-    brandCategories: musicPlan.BRAND_CATEGORIES,
+    brandCategories: brandCategoriesFor('music'),
     brandCities: [home[0] ?? cities[0], away[0]]
       .filter((c): c is string => !!c)
       .filter((c, i, all) => all.indexOf(c) === i),

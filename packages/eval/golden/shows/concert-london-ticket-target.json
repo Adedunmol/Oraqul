@@ -1,0 +1,95 @@
+{
+  "title": "Night Songs Live",
+  "brief": "Launch plan for the concert \"Night Songs Live\", an afrobeats show from artist \"Neon Tide\" for 18 to 34 year olds, playing Lagos, London and Houston on 2099-03-12. Venue capacity: 500. Target 400 tickets. Sound-alikes: \"Ada Lux\" and \"Kola Wave\".",
+  "replies": [
+    {
+      "optionIds": ["skip"]
+    },
+    {
+      "text": "you choose"
+    }
+  ],
+  "expect": {
+    "headline": "Start in Lagos, then London and Houston: that is where the act's audience is strongest among your cities.",
+    "assumptions": {
+      "a-age": "holds",
+      "a-place-lagos": "weak",
+      "a-place-london": "breaks",
+      "a-place-houston": "breaks",
+      "a-comps": "weak"
+    },
+    "cities": ["Lagos", "London", "Houston"],
+    "comps": [
+      {
+        "name": "Ada Lux",
+        "source": "you"
+      },
+      {
+        "name": "Kola Wave",
+        "source": "you"
+      }
+    ],
+    "findings": {
+      "f-a-age": [],
+      "f-a-comps": [],
+      "f-audience": [],
+      "f-a-place-houston": [],
+      "f-a-place-lagos": [],
+      "f-a-place-london": [],
+      "f-markets": ["Lagos", "London", "Houston"],
+      "f-worth-a-look": ["Manchester"],
+      "f-similar-houston": ["Sade Rhythm"],
+      "f-similar-lagos": ["Sade Rhythm"],
+      "f-similar-london": ["Sade Rhythm"],
+      "f-brands-beverage-lagos": ["Night Market Cola"],
+      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-podcasts": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"],
+      "f-venues-concert-hall-lagos": ["Harbor Hall"],
+      "f-venues-concert-hall-london": ["Southbank Hall"],
+      "f-venues-night-club-lagos": ["Eko Nights Club"],
+      "f-venues-night-club-london": ["Camden After Hours"],
+      "f-region-lagos-artists": ["Sade Rhythm"],
+      "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
+      "f-region-london-artists": ["Sade Rhythm"],
+      "f-region-london-brands": ["Coca-Cola", "Nike", "McDonald's"]
+    },
+    "sections": {
+      "bottom-line": "3/0",
+      "positioning": "0/2",
+      "audience": "4/0",
+      "markets": "4/0",
+      "onsale": "0/7",
+      "partnerships": "2/0",
+      "publicity": "1/1",
+      "venues": "4/0",
+      "finalpush": "0/5",
+      "channels": "0/3",
+      "creative": "0/4",
+      "calendar": "0/19",
+      "timeline": "0/5",
+      "budget": "0/4",
+      "measure": "0/6",
+      "risks": "3/1",
+      "gaps": "0/3"
+    },
+    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "grounding": {
+      "lines": 74,
+      "backed": 28,
+      "rankKept": 100,
+      "findingsUsed": 16,
+      "cities": {
+        "Lagos": 9,
+        "London": 6,
+        "Houston": 5
+      }
+    },
+    "dropped": 0,
+    "cannot": [
+      "Ticket sales and revenue",
+      "The release window (2099-03-12)",
+      "Concert halls in Houston",
+      "Night clubs in Houston"
+    ]
+  }
+}

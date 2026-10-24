@@ -136,8 +136,8 @@ export function MethodBody() {
 
         <Block id="fit" title="Fit">
           <p className={prose}>
-            A score from 0 to 100 for each line of a plan. 75 and above is recommended, 50 to 74 is
-            usable, and below 50 is not recommended.
+            A score from 0 to 100 for a partner Qloo scored against mass-market names in one call.
+            75 and above is recommended, 50 to 74 is usable, and below 50 is not recommended.
           </p>
           <div className="rounded-2xl bg-card p-[clamp(18px,3vw,28px)]">
             <Scale
@@ -156,8 +156,8 @@ export function MethodBody() {
 
         <Block id="overlap" title="Rival overlap">
           <p className={prose}>
-            The shared audience between your title and a rival, from one comparison call. Lower is
-            better: below 70 is low, 70 to 85 is moderate, and above 85 is risky.
+            The shared audience between your title and a rival, from one scoring call. Lower is
+            better: below 70 is low, 70 to 85 is moderate, and above 85 is high overlap.
           </p>
           <div className="rounded-2xl bg-card p-[clamp(18px,3vw,28px)]">
             <Scale
@@ -189,7 +189,10 @@ export function MethodBody() {
                   'risky',
                   'Overlap 70 to 85, a place from 1.0 to 1.2, a partner in the middle third.',
                 ],
-                ['avoid', 'Overlap above 85, a place below 1.0, a partner in the bottom third.'],
+                [
+                  'avoid',
+                  'Overlap above 85 (high overlap), a place below 1.0, a partner in the bottom third. For a live show, a rival on the same night or week is at least risky.',
+                ],
               ] as const
             ).map(([direction, rule]) => (
               <li
@@ -215,8 +218,8 @@ export function MethodBody() {
             The craft around the data is written down per category and versioned: how a calendar is
             worked back from the release date, the one signal a plan is judged on, the channels that
             lead, and the partner tiers. Each rule carries its source and the date it was set, and
-            each plan records the version it used. A target is the goal you set, or a sourced
-            benchmark where there is one, and it is never a forecast. The rules are on the{' '}
+            each plan records the version it used. A target is the goal you set, or a benchmark of
+            Oraqul's own where there is one, and it is never a forecast. The rules are on the{' '}
             <a href="/guide#rules" className="text-accent underline">
               guide
             </a>
@@ -265,8 +268,8 @@ export function MethodBody() {
         <Block id="held" title="Held back">
           <p className={prose}>
             Some signals stay out of the bottom line until they are validated: the values signal and
-            the early adopter score. Premium tolerance is used only as a taste proxy, never as a
-            price.
+            the early adopter score and premium tolerance. None of them is used in a plan today, and
+            nothing here is ever a price.
           </p>
         </Block>
 

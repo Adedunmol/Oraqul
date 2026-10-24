@@ -130,9 +130,6 @@ export const TAG_SPACES = {
   community: { prefix: 'urn:tag:category:place', parent: null },
 } as const;
 
-/** Brand categories asked for a game: what its audience buys around play. */
-export const GAMES_BRAND_CATEGORIES = ['beverage', 'telecom'];
-
 /** Universities are where a games audience gathers that Qloo can place. */
 export const GAMES_COMMUNITY_PLACES = ['university'];
 
