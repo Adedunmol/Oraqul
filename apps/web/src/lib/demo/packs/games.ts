@@ -12,8 +12,8 @@ export const games: DemoPack = {
   tools: ['Fan base bridge', 'Region ranker', 'Collab brief'],
   cov: {
     tests: [
-      'Player audience by age, platform habit and region',
-      'Fan base bridge to anime, music and film audiences',
+      'Player audience by age and region',
+      'Fan base bridge to music, series and film audiences',
       'Region ranking, as lift over a neutral audience',
     ],
     thin: [

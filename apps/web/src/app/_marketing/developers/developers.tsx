@@ -17,6 +17,10 @@ const TOOLS: { name: string; does: string }[] = [
     name: 'findTaste',
     does: 'What an audience likes in one kind of entity, shaped by place and age.',
   },
+  {
+    name: 'partnerFit',
+    does: 'Brands, podcasts and series a film or title audience also likes, ranked by Qloo for one signal.',
+  },
   { name: 'topicMap', does: 'The topics an audience carries that rival shows’ audiences do not.' },
   { name: 'resolveTags', does: 'Turns a phrase into a Qloo tag, or null. Never a guess.' },
   { name: 'themeTags', does: 'The theme and archetype tags that best describe a set of titles.' },

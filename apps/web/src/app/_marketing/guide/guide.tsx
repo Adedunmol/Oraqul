@@ -1,4 +1,4 @@
-import { rules, TIER_LABEL } from '@oraqul/packs';
+import { CALENDAR_RULES, PARTNER_RULES, rules, SHOWS_PLAN_RULES, TIER_LABEL } from '@oraqul/packs';
 import { categories } from '@oraqul/schema';
 import { DirectionPill, VerdictPill } from '@oraqul/ui';
 import type { ReactNode } from 'react';
@@ -276,14 +276,18 @@ export function GuideBody() {
             </li>
             <li>
               <b>Check a rival date.</b> Name a rival and the day it opens. You supplied the date;
-              Qloo says how much audience you share.
+              Qloo says how much audience you share. For a live show, a rival on your night or in
+              your week is flagged.
             </li>
             <li>
-              <b>Brief a partner.</b> A draft you review and send yourself. Oraqul never sends.
+              <b>Brief a partner.</b> A pitch kit in text: why the audience fits, what the partner
+              gets, the ask, a timeline, one or two ideas that leave the partner room, and a short
+              script. You review it and send it yourself. Oraqul never sends.
             </li>
             <li>
               <b>Make the creative kit.</b> “Make the creative kit for Lagos on Instagram” gives
-              hooks, a script outline, a shot list, a key art brief and a caption pack.
+              hooks, a script outline, a shot list, a key art brief and a caption pack. Ask for
+              “every territory” and you get one kit that covers each on its lead channel.
             </li>
             <li>
               <b>Add results.</b> After launch, give totals by city and the next plan is built
@@ -344,6 +348,64 @@ export function GuideBody() {
               );
             })}
           </div>
+          <h3 className="font-display text-[20px] font-semibold tracking-[-0.02em]">Live shows</h3>
+          <div className="flex flex-col gap-2 rounded-2xl bg-card p-5">
+            <p className="text-[14.5px] text-ink/80">
+              A single show or a short run is planned from the show date back. These are editable
+              defaults, not facts, and none of them is specific to Nigeria.
+            </p>
+            <ul className="flex flex-col gap-2 text-[14.5px] text-ink/80">
+              <li>
+                <b>On sale.</b> General on sale opens about 4 to 6 weeks out for a comedy night, 6
+                to 10 for an independent concert and 2 to 4 for a club night. Theatre and screenings
+                were not researched, so you give the window and the plan marks it as yours.
+              </li>
+              <li>
+                <b>Pacing.</b> Sales are back loaded: about{' '}
+                {SHOWS_PLAN_RULES.pacing.value.comedyFirstWeek} percent of a comedy night sells in
+                the first week and about {SHOWS_PLAN_RULES.pacing.value.comedyLastWeek} percent in
+                the last, and across events about{' '}
+                {SHOWS_PLAN_RULES.pacing.value.lastWeekAcrossEvents} percent sell in the final week.
+                The target is always yours.
+              </li>
+              <li>
+                <b>Presale.</b> It opens 3 to 7 days before general on sale behind an access code,
+                registration stays open 4 to 7 days, and it always has an end date.
+              </li>
+              <li>
+                <b>Budget.</b> 40, 20 and 40 percent across announce, middle and final push; 50, 10
+                and 40 for comedy and last-minute shows. The final push is always held back.
+              </li>
+              <li>
+                <b>Final push.</b> People who clicked a purchase link and did not buy, then people
+                who opened earlier messages or registered, then the core audience. Ticket holders
+                get show information, not sales messages.
+              </li>
+            </ul>
+            <span className="block text-[12.5px] text-muted">
+              {SHOWS_PLAN_RULES.onSale.source.label}; {SHOWS_PLAN_RULES.pacing.source.label}.{' '}
+              {SHOWS_PLAN_RULES.pacing.source.caveat}
+            </span>
+          </div>
+          <h3 className="font-display text-[20px] font-semibold tracking-[-0.02em]">
+            Content calendar
+          </h3>
+          <div className="flex flex-col gap-2 rounded-2xl bg-card p-5">
+            <p className="text-[14.5px] text-ink/80">
+              Every full plan has a content calendar, worked back from the date on each territory’s
+              lead channel. Film and music follow blog-level guidance, one source for each point, so
+              treat them as direction. Books, podcasts and games were not researched: their rows
+              follow the launch beats and state no post counts.
+            </p>
+            {CALENDAR_RULES.ads.value.lines.map((line) => (
+              <p key={line} className="text-[14.5px] text-ink/80">
+                {line}
+              </p>
+            ))}
+            <span className="block text-[12.5px] text-muted">
+              {CALENDAR_RULES.ads.source.caveat}
+            </span>
+          </div>
           <h3 className="font-display text-[20px] font-semibold tracking-[-0.02em]">
             Partner tiers
           </h3>
@@ -356,6 +418,20 @@ export function GuideBody() {
                 <span className="text-[14px] text-ink/80">{TIER_LABEL[t].what}</span>
               </div>
             ))}
+          </div>
+          <div className="flex flex-col gap-2 rounded-2xl bg-card p-5">
+            <p className="text-[14.5px] text-ink/80">{PARTNER_RULES.leadTime.value.why}</p>
+            <p className="text-[14.5px] text-ink/80">{PARTNER_RULES.leadTime.value.independent}</p>
+            <p className="text-[14.5px] text-ink/80">{PARTNER_RULES.leadTime.value.barter}</p>
+            <p className="text-[14.5px] text-ink/80">
+              A tier is set by what Qloo says about a brand: a flagship name or a brand ranked at
+              the top of its popularity is tier A. A partner that does not fit the content, or that
+              could draw fan backlash, is flagged beside the name. The pitch leaves the partner room
+              to shape the idea.
+            </p>
+            <span className="block text-[12.5px] text-muted">
+              {PARTNER_RULES.leadTime.source.label}, {PARTNER_RULES.leadTime.source.date}
+            </span>
           </div>
         </Block>
       </div>

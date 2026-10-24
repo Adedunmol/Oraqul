@@ -9,12 +9,12 @@ export const podcasts: DemoPack = {
   blurb: 'Shows, guests and sponsors, planned around the listener.',
   noun: 'show',
   fallback: 'hosts and comp shows',
-  tools: ['Topic map', 'Guest ranker', 'Sponsor brief'],
+  tools: ['Topic map', 'Cross promotion shows', 'Sponsor brief'],
   cov: {
     tests: [
       'Listener audience by age and place',
       'Topic map, as tags rival shows do not own',
-      'Guests and sponsors ranked by listener overlap',
+      'Shows to swap with and sponsors ranked by listener overlap',
     ],
     thin: [
       'New shows, planned from the hosts and comp shows',

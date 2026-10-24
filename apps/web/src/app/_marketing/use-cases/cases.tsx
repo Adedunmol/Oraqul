@@ -383,6 +383,11 @@ export function WhatIfCase() {
             You get the overlap for each option, lower is better, and what changes in the plan. Give
             real rivals with the day each opens: “Rivals: Harbor Lights on 2027-03-12”.
           </p>
+          <p className="text-[15px] leading-[1.55] text-ink/75">
+            For a single live show, a rival on your night or in your week is flagged as okay, risky
+            or avoid, and the on-sale plan, the presale and the final push are worked back from your
+            show date.
+          </p>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 # Oraqul
 
-A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like. Plan a launch, audit a plan, or fix one, before or after launch, across film, music, books, podcasts and games. Every claim about taste, audience or place cites a finding from Qloo taste data.
+A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like. Plan a launch, audit a plan, or fix one, before or after launch, across film, music, books, podcasts, games and live shows. Every claim about taste, audience or place cites a finding from Qloo taste data.
 
 Product background: [docs/product/overview.md](docs/product/overview.md).
 
@@ -75,7 +75,7 @@ packages/
     src/qloo/       Client, lookup, insights, analysis
     scripts/        Live smoke script
     fixtures/       Recorded responses (local)
-  packs/          One config per category: film, music, books, podcasts, games
+  packs/          One config per category: film, music, books, podcasts, games, shows
   ui/             Design system components, tokens only
   mcp/            MCP server over the engine tools (stdio)
   eval/           Golden runs for every category

@@ -5,7 +5,7 @@ import { wrap } from '../section';
 const terms = [
   {
     title: 'What Oraqul is',
-    body: 'Oraqul builds, checks and repairs launch plans for films, series, music, books, podcasts and games. It gives direction, not forecasts, and writes guides and scripts, not finished ads, trailers, images or video.',
+    body: 'Oraqul builds, checks and repairs launch plans for films, series, music, books, podcasts, games and live shows. It gives direction, not forecasts, and writes guides and scripts, not finished ads, trailers, images or video.',
   },
   {
     title: 'Your account and your team',

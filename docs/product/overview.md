@@ -14,13 +14,14 @@ Every reply has two stages. First, findings: the model reads the brief and shape
 
 ## Who it is for
 
-Launch and marketing teams in five categories. Each category is its own section of the product, with its own agent, inputs, charts and scenarios:
+Launch and marketing teams in six categories. Each category is its own section of the product, with its own agent, inputs, charts and scenarios:
 
 * Film and series: distributors, sales agents, studios and producers.
 * Music: labels, managers and promoters.
 * Books: publishers and publicists.
 * Podcasts: networks and independent studios, meaning business teams, not solo hosts.
 * Games: publishers and indie studios.
+* Live shows: promoters, venues and managers staging a single show or a short run.
 
 The problem is the same everywhere. Launch plans rest on audience assumptions that nobody writes down, borrowed from a few comparable titles and instinct. When a launch underperforms, the team can see what happened but not which assumption was wrong. Oraqul makes the assumptions explicit and checks each one.
 
@@ -36,9 +37,9 @@ The three jobs are also the three start modes, called `build`, `audit` and `fix`
 
 **Scenario testing** works inside all three. Change one assumption, such as an older opening audience or a different lead city, and Oraqul shows what changes, as a clear before and after.
 
-## The five categories
+## The six categories
 
-All five run on one engine. Each has its own questions, output tabs, scenario presets and results format for a launch that is out. A generic template handles anything else and says plainly that it is less certain.
+All six run on one engine. Each has its own questions, output tabs, scenario presets and results format for a launch that is out. Anything else is outside what Oraqul does, and it says so.
 
 * **Film and series distribution.** Audience by age and territory, comparable titles, partner brands, and overlap with rival titles the user names. A launch that is out brings opening results by territory.
 * **Music releases and tours.** Support acts, tour cities, partner brands, and home and fan markets for the artist. A launch that is out brings streams and ticket sales by city.
@@ -83,7 +84,7 @@ The output is always a direction: holds, weak, breaks, or could not test.
 ## How the agent behaves
 
 * There is one category agent per category: Film and series, Music, Books, Podcasts and Games. A thin router reads the title, category and job from the first message and hands the project to that agent. The router speaks only to ask what it could not read, or to decline an off-topic request.
-* The five agents share one toolbox: the Qloo client, the verdict engine, and the receipt writer. They differ in instructions, assumption checklist, scenarios and output schema.
+* The six agents share one toolbox: the Qloo client, the verdict engine, and the receipt writer. They differ in instructions, assumption checklist, scenarios and output schema.
 * Category agents do not call each other. There are two bounded exceptions. A book with a screen title the team named asks the Film side who watches that title and where. And the research check may pick, from offers code makes, a question the other side can answer about a name the team gave (a film's soundtrack artists, a game's collabs, a podcast's guests). Each answer is cited as findings with receipts.
 * Plans, reports and the briefs on them run a fixed pipeline, so the same input always runs the same tests. The model reads the request, picks queries from the category's catalog, and writes from findings already computed; code asks Qloo and computes every number. Only conversation (follow-up answers and standalone chats) lets the model choose the next tool call. Every Qloo call and every scoring function is a tool either way.
 * It tries to find a better plan, not only score the one it was given.
@@ -95,7 +96,7 @@ The output is always a direction: holds, weak, breaks, or could not test.
 
 ## Product structure
 
-Media and entertainment is the one industry Oraqul serves today. Film and series, Music, Books, Podcasts and Games are its five categories. The hierarchy is Team, Category, Project, Job, Output.
+Media and entertainment is the one industry Oraqul serves today. Film and series, Music, Books, Podcasts, Games and Live shows are its six categories. The hierarchy is Team, Category, Project, Job, Output.
 
 * A team has members with owner, editor and viewer roles.
 * A project belongs to exactly one category, because most people will not need several categories in one project. The agent reads the category from the first message, so people do not pick it first: categories are a filter on the project list, and a category's list has a help button that opens what Oraqul tests there, what else it handles, what the team brings, and the tools it has.

@@ -23,7 +23,7 @@ Next.js web app  ->  API (NestJS, Node, VPS)  ->  Agent runtime  ->  Qloo client
 apps/web            Next.js front end
 apps/api            NestJS API and agent runtime
 packages/engine     Qloo client, scoring, verdicts, receipts (pure TypeScript, no framework)
-packages/packs      One folder per category: film, music, books, podcasts, games
+packages/packs      One folder per category: film, music, books, podcasts, games, shows
 packages/schema     Zod schemas and shared types: brief, output, receipt, events
 packages/mcp        MCP server over the engine
 packages/eval       Golden cases and expected results
@@ -35,7 +35,7 @@ Rules: `engine` and `packs` never import from `apps`. `schema` has no dependenci
 
 ### 3.1 Router
 
-Input: the first message (text and the words of any small text file) and the `/start` hints. Output: the project's title, its category, the start mode (build, audit, fix), and so the category agent to run. It does not call tools and it never guesses: a value counts only when the person's own words say it, which code checks by finding the model's quote in what they wrote. When the category or the mode is unclear it asks one `single` card, worded from what it read, with two to four close options that each settle the category, the mode or both, and the person may type their own answer instead. When only the title is missing it asks a `text` card. A message that is not about launching a film, series, music, book, podcast or game gets a fixed refusal. Once all three are known it states the job in its first reply and hands the project to the category agent. The model is configured, not fixed (backend/llm.md); with no model key a scripted router takes only what is plainly written and asks about the rest.
+Input: the first message (text and the words of any small text file) and the `/start` hints. Output: the project's title, its category, the start mode (build, audit, fix), and so the category agent to run. It does not call tools and it never guesses: a value counts only when the person's own words say it, which code checks by finding the model's quote in what they wrote. When the category or the mode is unclear it asks one `single` card, worded from what it read, with two to four close options that each settle the category, the mode or both, and the person may type their own answer instead. When only the title is missing it asks a `text` card. A message that is not about launching a film, series, music, book, podcast, game or live show gets a fixed refusal. A concert, a gig or a live show can be a music release or a single live show, so the router asks which with one `single` card; stand-up, a club night or a stage play goes straight to Live shows. Once all three are known it states the job in its first reply and hands the project to the category agent. The model is configured, not fixed (backend/llm.md); with no model key a scripted router takes only what is plainly written and asks about the rest.
 
 **Front door for an active project.** Once the project is saved, every later message passes a check before the category agent sees it. A message with nothing to do with launching or marketing a film, series, music, book, podcast or game gets the same fixed refusal as at the start. A message that may be about this project, or may be a new idea, gets one `single` card of two or three close readings, such as "Check how this plays in Lagos" or "Start a different project", and the person may type their own. A message that plainly follows the conversation goes through. With no model key the check passes everything. The refusal wording is fixed in code. The model may word the card's options, but never decides which agent runs: the project's category does.
 
@@ -56,7 +56,7 @@ One per category. Each is a configuration of the same runtime:
 
 A what-if is not a preset: the launch runtime changes places, comps, age or gender on the plan's saved inputs and reruns it. Results are read by the launch runtime (`results-read.ts`), and the launch plan and audit report shapes are in `packages/schema` (§6.1, §6.3).
 
-The runtime is shared by all five and has two paths:
+The runtime is shared by all six and has two paths:
 
 * **Plans, reports and the briefs on them (build, audit, fix, and scenario, date, partner) run a fixed pipeline.** Code sets the steps and their order, so the same input always runs the same tests: read the input into assumptions and anchors, choose a test for each assumption from the pack, run the tests, compute verdicts and scores (§5), write the brief, check it. The model only reads the input and writes the brief from results already computed. Before anything is searched, an analyst step reads what the request needs: what was asked, the goals and constraints, a few checks a good answer must pass, and what the person left unsaid but the request makes clear (a home market from a country, a genre from a logline). Those inferences fill only empty fields, are limited to values code can use (a city in the city table, a Qloo age band), steer the queries, and show on the plan as assumptions. They are never evidence and never override anything the person wrote. After the first round of queries, a research check judges what the findings cover and may add up to three queries from the category's catalog for a thin check; code validates the picks and the call budget, and the plan stores each check's coverage and the findings behind it. A build asks a question only when there is nothing at all to plan from. Repeatable runs are what make a plan trustworthy and what golden runs (§11) test.
 * **Conversation runs a tool loop.** Follow up questions, suggestions and other answers (§3.6), and clarifying questions let the model choose the next tool call, because their route cannot be fixed in advance. Code still runs each call, makes the receipts and computes every number.
@@ -242,6 +242,21 @@ Not in the catalog: sales, pre-orders, chart positions and ratings (not in Qloo)
 
 **Overlap.** Qloo scores one entity type per call, and scores from separate calls are never compared (qloo.md). So a screen title is ranked only against the others of its own medium, in the call that scored them, and the bridge groups its rows by medium. A title the team named is scored in that same call, so it shows as a ranked row. It does not move a bar: a what-if that adds a title reruns the plan and adds the row.
 
+### 4.6 Live shows query catalog
+
+`audience` and `markets` run for every plan. The others run when their module is in it.
+
+| Key | For | Asks |
+|---|---|---|
+| `audience` | core | `audienceBySegment` on the act and its comps |
+| `markets` | core | `rankPlaces` over the cities the team named |
+| `similar` | publicity | `findTaste` artists with the music scene tag, per city. Skipped for a comedy night, a play or a screening, which have no music scene |
+| `brands` | partnerships | The model names candidate sponsors, Qloo ranks only those per city (`filter.results.entities`); else a brand category per city |
+| `podcasts` | publicity | `findTaste` podcasts with a genre tag |
+| `venues` | venues | `findTaste` places with the place category for the show type: concert hall and night club, night club, comedy club, theater, movie theater. A city where the category lists nothing is a gap |
+
+Qloo holds no ticket price, venue capacity or event calendar. The team supplies them, and a plan shows "not available" for a missing one. Details: [shows-agent.md](shows-agent.md).
+
 ## 5. Scoring layer
 
 Computed in code, from values Qloo returned in the same run. The model explains and never sets a score.
@@ -251,9 +266,9 @@ Computed in code, from values Qloo returned in the same run. The model explains 
 * **Fit.** 0 to 100 for plan lines: lift on a 0 to 100 scale, `fit = 50 + (lift − 1.2) × 250 / 3`, rounded and kept between 0 and 100. Lift 1.2 is fit 50 and lift 1.5 is fit 75, so the fit bands line up with the lift bands. 75 and above recommended, 50 to 74 usable, below 50 not recommended.
 * **Confidence.** High, medium or lower, on every line. Rule in §5.1.
 * **Route score (music).** Weighted mean of lift over stops, weights `1, 0.9, 0.8, 0.7, ...` by position (`routeScore`), plus the best order by lift for comparison (`bestRoute`). The verdict on a tour order is in §5.4.
-* **Rival overlap.** How much your audience also likes a rival: each rival is scored against your comps in one scoring call (the call `lift` uses), and `overlap = affinity × 100`, rounded. Above 85 risky, 70 to 85 moderate, below 70 low. The edges come from one live film brief ([qloo.md](../backend/qloo.md)); the edges are absolute, so a rival set Qloo scores on a different scale would shift them.
+* **Rival overlap.** How much your audience also likes a rival: each rival is scored against your comps in one scoring call (the call `lift` uses), and `overlap = affinity × 100`, rounded. Above 85 high overlap, 70 to 85 moderate, below 70 low (the direction for high overlap is avoid, §5.12). The edges come from one live film brief ([qloo.md](../backend/qloo.md)); the edges are absolute, so a rival set Qloo scores on a different scale would shift them.
 * **Topic ownership (podcasts).** From one comparison of your audience with the rival shows' audiences (§4.4): a topic only your side lists is yours, one on both sides is shared. The weight (count against a typical rival topic) orders topics and sizes them on screen; it does not decide ownership. Never two separate calls, since their scores are not comparable.
-* **Held back.** Values signal and early adopter score stay out of the headline until validated. Premium tolerance is a taste proxy only.
+* **Held back.** Values signal, early adopter score and premium tolerance stay out of the plan until validated. None is used today.
 
 ### 5.1 Confidence
 
@@ -422,11 +437,30 @@ A direction is the call on what to do about a decision: **okay**, **risky** or *
 | An opening day against the rivals the team named (the riskiest rival decides) | overlap below 70 | 70 to 85 | above 85 |
 | A territory as a place to open | place lift 1.2 or above | 1.0 to 1.2 | below 1.0 |
 | A partner among the brands Qloo ranked | top third | middle third | bottom third |
+| A rival show date against a live show's date (E6) | more than a week from the show | the same night with little shared audience, or unscored and near | high overlap on the same night or in the same week |
 
 * **No call** for a place Qloo could not rank, a partner Qloo did not rank, or fewer than 3 ranked: not being in a list is not a score.
 * **A team choice is a constraint** (§5.2): a call on a city, date or partner the team chose says how to handle it ("Keep it, and open it after Lagos") and never says to drop it.
 * **Rival dates are the team's.** `Rivals: Title on YYYY-MM-DD` in the brief is read by form, each rival is scored against the comps in one `scoreRivals` call during the build, and the result is the finding `f-clash` and the Date tab. Qloo holds no release calendar.
 * **Conventions.** The edges are the overlap, lift and thirds rules of §5, tuned on the golden runs. Change them here first.
+
+### 5.13 Live shows assumption tests (build)
+
+The age, gender, place and anchors tests are exactly §5.2, run on the act and its comparable acts. A support act the team named is tested like a Music support act (§5.4). Everything dated is code, not a test: the on-sale window, the presale, the pacing, the budget phases and the final push are computed from the team's inputs and the rules E1 to E5 ([shows-agent.md](shows-agent.md)). The target for the one signal, tickets sold against capacity, is the team's, and the benchmark is null.
+
+* **A rival show date (E6).** Each date the team gives is called okay, risky or avoid from its distance to the show's date and, where Qloo scored the rival, the audience overlap (§5.12). A rival Qloo cannot score is still flagged when it is on the same night or in the same week, at the lowest confidence.
+* **Not tested, said plainly.** Ticket sales, venue capacity and price: Qloo holds none. A comedian or a stage play is a thin anchor (§4.6).
+
+### 5.14 Live shows audit tests (audit and fix)
+
+An audit runs §5.13's tests on the plan's beliefs, then sets the plan's own dates and shares beside the rules. The result is the report's `ruleChecks`: each check is `follows`, `outside`, `not-stated` or `no-rule`, with the rule id and the figures in words. It is not a Qloo verdict and has no confidence.
+
+| Check | Rule | Follows when |
+|---|---|---|
+| On-sale window | E1 | The weeks the plan opens general on sale are inside the range for the show type. `no-rule` for theatre and screenings |
+| Presale | E3 | It opens 3 to 7 days before general on sale and has an end date. A presale with no end date is outside |
+| Final push reserve | E4 | The plan holds back at least the default share (40 percent) for the final push |
+| Rival dates | E6 | No named rival plays on the same night or in the same week as the show |
 
 ## 6. Data model
 
@@ -471,7 +505,9 @@ Privacy: only public entity names, place names and age bands go to Qloo. Uploade
   * **Podcasts** (`PODCASTS_MODULES`): Cross promotion shows (`crosspromo`), Guests (`guests`), Sponsors (`partnerships`), Press and newsletters (`publicity`), Video and clips (`video`), Live shows (`live`), Community, Episode cadence (`cadence`), Launch beats (`timeline`), Budget split, What to measure, Risks. Which a plan gets, and in what order, depends on the **launch kind** (a new show or a new season, `KIND_PROFILES` in `packages/packs/src/podcasts/modules.ts`) and the **format** (audio, video or both). With no kind stated the plan is for a new show, and with no format it is audio; Gaps says so. Video and clips need a filmed show, and Guests are dropped for a narrative show unless guests are named. Markets is titled Markets. Each kind has its own calendar of beats in weeks from the release, its own measures and its own budget split.
   * **Books** (`BOOKS_MODULES`): Comp titles (`comps`), Screen and audio angles (`adaptation`), Retail and pre-orders (`retail`), Press and reviews (`publicity`), Events and festivals (`events`), BookTok and creators (`creators`), Brand partners (`partnerships`), Book clubs and community (`community`), Audiobook (`audio`), Schools and libraries (`schools`), Series and backlist (`cadence`), Launch beats (`timeline`), Budget split, What to measure, Risks. Which a plan gets, and in what order, depends on the **launch kind** the brief describes (a debut, a new book by an author, the next book in a series, a reissue or new edition, `KIND_PROFILES` in `packages/packs/src/books/modules.ts`), the **route** (a publisher's, or self-published), the **readership** (adult, young adult, children) and the **formats**. With no kind stated the plan is a debut, with no route a publisher's and with no readership adult; Gaps says so. Retail sell-in is for a publisher's book, Schools and libraries are for young readers, and Audiobook needs an audiobook. Series and backlist is for a new book by an author, the next book in a series and a reissue. Markets is titled Markets. Each kind has its own calendar of beats in weeks from publication, its own measures and, for each route, its own budget split.
 * **Lines:** `{ id, kind, text, findingIds, sourceIds, names, group }`. `grounded` lines cite findings; `playbook` lines cite no finding. Either may cite web sources (`sourceIds`), which is the only way a line may state a date, a rival release or a market figure.
-* **Shared modules.** Every full plan also carries Channels (`channels`, when it names a city) and Creative briefs (`creative`), added beside the category's own list just before the timeline or the budget, so Film's frozen list stays as it is. A narrow ask gets neither.
+* **Live shows** (`SHOWS_MODULES`): On sale and pacing (`onsale`, by code), Sponsors and partners (`partnerships`), Press and promoters (`publicity`), Where the audience goes out (`venues`), Final push (`finalpush`, by code), Show calendar (`timeline`), Budget split by phase, What to measure, Risks. Rules E1 to E8: [shows-agent.md](shows-agent.md).
+* **Plan fields.** Besides the sections, a plan carries `rules` (the category version and the shared libraries it used, `parts`), `band`, `signal`, `territories`, `calls`, `partners` (each with a tier, a market, a kind and content flags), `partnerNotes` (lead time, band and barter, T1) and `calendar` (the rows behind the Content calendar section).
+* **Shared modules.** Every full plan also carries Channels (`channels`, when it names a city), Creative briefs (`creative`) and the Content calendar (`calendar`), added beside the category's own list just before the timeline or the budget, so Film's frozen list stays as it is. A narrow ask gets neither.
 * **The launch rules.** Timeline, What to measure and Channels are written by code from the rule library, and a plan records the rules version it used, its budget band, its signal and target, one territory per city, its direction calls and its partners by tier. Their rules, fields and thresholds are in [launch-rules.md](launch-rules.md); the checks are in §5.12 and §6.2.
 * **Written by code:** "To sharpen this plan" (advice about the plan, not part of it: the web shows it beneath the plan with the review, and the exports and the shared link leave it out; the section key stays `gaps`: only inputs the team could add and what each would change; what could not be asked goes to the Assumptions tab) and Budget split (the pack's fixed convention table as shares, with amounts computed when a budget is given, labelled a starting split). Every plan's Timeline is also written by code (Film and Music from the rule library, the others from their launch kind, platforms or route), and so are What to measure (one primary signal, the team's target or a sourced benchmark labelled a target and not a forecast, when to read it, and the rest beside it) and Channels (per territory, from the rule library). A plan's calendar is worked back from the release date and today: each beat has dates when a day is known and weeks when not, and a beat already over is dropped. Festival, sale and showcase dates are never in it; they come from web facts (below) in the Festivals section.
 * **Guaranteed by code:** the bottom line names every city the team chose and anchors the premiere in the home market (the city in the film's country of origin), with the rest following within days; Markets has a line for each city; every comp the team named has a line in Positioning. Code writes any of these the model missed (`decisions.ts`).
@@ -549,11 +585,12 @@ POST   /threads/:threadId/messages    typed text or a card answer; 202, the repl
 POST   /threads/:threadId/cancel      stops the run on the thread (owner, editor); 204, 409 when nothing is running. The run ends at its next step, saves nothing, says it stopped, and the stream sends `run.stopped` with the reason `stopped`
 POST   /threads/:threadId/read    marks what is stored so far as read
 GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
-GET    /rules                 the launch rule library with each rule's source and date. Public, static, the same for every team
+GET    /rules                 the launch rule library with each rule's source, grade and date: the categories, the shared conventions, the partner, calendar and live show rules. Public, static, the same for every team
 GET    /outputs/:id
 GET    /outputs/:id/export/:format    md, docx or pdf, built from the stored plan (§6.1)
 GET    /projects/:id/compare?a=&b=
 PUT    /outputs/:id/reaction  body `{ kind }` with `useful`, `wrong` or `edited`, or `null` to take it back; one per person per output. Any member of the team. `GET /outputs/:id` carries the caller's own as `reaction`
+PUT    /outputs/:id/partners  body `{ names }`; replaces the team's own partners on a saved plan. Code places each from the brands the plan already ranked, with no Qloo call. Owners and editors
 PUT    /outputs/:id/share     body `{ enabled }`; turns the read only link on or off, makes the token the first time. Owners and editors
 GET    /s/:token              read only view, no session. 404 for a wrong or turned off token. Receipts keep their endpoint, rule and confidence and lose what was sent to Qloo and what came back; the creator, chat and other outputs are left out
 POST   /uploads               a PDF or Word (.docx) file as multipart `file`; answers `{name, text}`. Text only, nothing stored, 20 MB at most, text cut at 200,000 characters. A scanned PDF with no text layer is refused with a plain reason

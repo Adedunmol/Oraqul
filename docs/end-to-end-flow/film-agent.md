@@ -22,7 +22,8 @@ Film runs on the shared launch runtime in `apps/api/src/agent/launch/`. Film, Mu
 | Answer | message only | A question about the plan, answered from its saved findings and checked like a plan line. |
 | What-if | plan (`scenario`) | Reruns the plan with changed cities, comps, age or gender and shows what changed. |
 | Rival date check | small brief | Scores rival releases against the plan's audience. |
-| Partner brief | small brief | A drafted pitch scored against the plan's findings. Nothing is ever sent. |
+| Partner brief | small brief | A pitch kit scored against the plan's findings: why the audience fits, what the partner gets, the ask, a timeline, ideas and a short script. Nothing is ever sent. |
+| Creative kit | creative output | Hooks, a script outline, a shot list, a key art brief and a caption pack for one territory and channel, or for every territory. Guides only. |
 
 ## Rules held in code
 
