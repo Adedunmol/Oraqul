@@ -477,12 +477,39 @@
               "group": "Houston"
             },
             {
-              "id": "markets-4",
+              "id": "opp-market-manchester-why",
               "kind": "grounded",
-              "text": "Manchester has a stronger audience for this artist than Houston.",
+              "text": "Manchester ranks above Houston for this audience. Weigh it beside your cities, not instead of them.",
               "findingIds": ["f-worth-a-look"],
               "sourceIds": [],
               "names": ["Manchester", "Houston"],
+              "group": "Worth a look"
+            },
+            {
+              "id": "opp-market-manchester-limit",
+              "kind": "playbook",
+              "text": "The audience data says people like this are there. It does not say the market will sell, so check how you would reach them in Manchester before you move any of your plan.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": ["Manchester"],
+              "group": "Worth a look"
+            },
+            {
+              "id": "opp-market-manchester-test",
+              "kind": "playbook",
+              "text": "Run one small test in Manchester: the creative you already have, on your lead channel, with a fixed budget, before you change anything else.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": ["Manchester"],
+              "group": "Worth a look"
+            },
+            {
+              "id": "opp-market-manchester-measure",
+              "kind": "playbook",
+              "text": "Judge it on Save rate and stream completion in Manchester, against Houston.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": ["Manchester"],
               "group": "Worth a look"
             }
           ]
@@ -2614,6 +2641,21 @@
           "per": null,
           "ruleId": "music.calendar",
           "grade": "directional"
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "opp-market-manchester",
+          "kind": "market",
+          "name": "Manchester",
+          "city": null,
+          "findingIds": ["f-worth-a-look"],
+          "lines": {
+            "why": "opp-market-manchester-why",
+            "limit": "opp-market-manchester-limit",
+            "test": "opp-market-manchester-test",
+            "measure": "opp-market-manchester-measure"
+          }
         }
       ]
     },

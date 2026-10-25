@@ -194,6 +194,7 @@ describe('the team’s own partners on a saved plan', () => {
       partners: built.partners,
       partnerNotes: [],
       calendar: [],
+      opportunities: [],
     };
   };
 

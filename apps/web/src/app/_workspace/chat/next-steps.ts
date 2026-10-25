@@ -19,6 +19,7 @@ export interface StepSource {
   plan: {
     findings: { query: string; entities: { name: string }[] }[];
     territories?: { name: string }[];
+    opportunities?: { kind: string; name: string }[];
   } | null;
 }
 
@@ -58,6 +59,14 @@ export function nextStepsFor(outputs: StepSource[]): NextStep[] {
       id: `scn:lead:${key(lead.name)}`,
       label: `What if we open in ${lead.name} first?`,
       message: `What if we open in ${lead.name} first?`,
+    });
+  }
+  const market = base.plan.opportunities?.find((o) => o.kind === 'market' && !tried(o.name));
+  if (market) {
+    steps.push({
+      id: `scn:opp:${key(market.name)}`,
+      label: `What if we add ${market.name}?`,
+      message: `What if we add ${market.name}?`,
     });
   }
   const home = base.plan.territories?.[0]?.name;

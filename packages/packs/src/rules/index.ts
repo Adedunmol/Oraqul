@@ -12,6 +12,7 @@ import type { RuleLibrary } from './types';
 export { type Beat, type DatedBeat, datedBeats } from '../launch';
 export * from './calendar';
 export * from './creative';
+export * from './opportunities';
 export * from './partners';
 export * from './platforms';
 export * from './shared';

@@ -3576,7 +3576,8 @@
           "ruleId": "film.calendar",
           "grade": "directional"
         }
-      ]
+      ],
+      "opportunities": []
     },
     "report": null,
     "evidence": [

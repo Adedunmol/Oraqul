@@ -1,6 +1,6 @@
 import { briefSchema, launchPlanSchema } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
-import { processOf, supportActsOf, territoriesOf } from './plan-views';
+import { entriesOf, processOf, supportActsOf, territoriesOf } from './plan-views';
 
 const callId = '00000000-0000-4000-8000-000000000001';
 
@@ -184,5 +184,37 @@ describe('processOf', () => {
     ]);
     expect(view?.dropped).toHaveLength(1);
     expect(view?.drafts).toBe(2);
+  });
+});
+
+describe('entriesOf', () => {
+  const l = (id: string) => ({
+    id,
+    kind: 'playbook' as const,
+    text: id,
+    findingIds: [],
+    sourceIds: [],
+    names: [],
+    group: 'Worth a look',
+  });
+
+  it('gathers an opportunity’s four lines and passes other lines through', () => {
+    const entries = entriesOf([
+      l('plain'),
+      l('opp-market-accra-why'),
+      l('opp-market-accra-limit'),
+      l('opp-market-accra-test'),
+      l('opp-market-accra-measure'),
+      l('opp-area-lagos-surulere-why'),
+    ]);
+    expect(entries.map((e) => e.type)).toEqual(['line', 'opportunity', 'opportunity']);
+    const [, market, area] = entries;
+    expect(market).toMatchObject({ market: true, limit: { id: 'opp-market-accra-limit' } });
+    expect(market).toMatchObject({ test: { id: 'opp-market-accra-test' } });
+    expect(area).toMatchObject({ market: false, limit: null });
+  });
+
+  it('keeps a stray opportunity part as a plain line', () => {
+    expect(entriesOf([l('opp-market-accra-test')]).map((e) => e.type)).toEqual(['line']);
   });
 });

@@ -60,6 +60,7 @@ import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
 import type { Change } from './follow-up.js';
 import { withSharedModules } from './modules.js';
+import { opportunitiesOf, withOpportunities } from './opportunities.js';
 import {
   brandsFrom,
   flagshipNames,
@@ -1007,7 +1008,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     current = await draft(feedback);
   }
 
-  const { sections } = current;
+  const found = opportunitiesOf({
+    findings: grounded.findings,
+    worth: grounded.brief.worth,
+    teamOrder: grounded.brief.teamOrder,
+    signal,
+  });
+  const sections = withOpportunities(current.sections, found);
   const finished = decisionsOf({
     asked,
     read,
@@ -1050,6 +1057,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     partners: finished.partners,
     partnerNotes: finished.partnerNotes,
     calendar: modules.includes('calendar') ? calendar : [],
+    opportunities: found.opportunities,
   };
 
   const bottom = sections.find((s) => s.key === 'bottom-line')?.lines ?? [];

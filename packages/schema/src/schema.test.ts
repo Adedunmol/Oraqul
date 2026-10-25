@@ -6,7 +6,7 @@ import { claimSchema } from './claim';
 import { threadEventSchema } from './events';
 import { outputNature } from './output';
 import { pinnedProjectsSchema } from './pin';
-import { launchPlanSchema } from './plan';
+import { launchPlanSchema, opportunitySchema } from './plan';
 import { auditReportSchema, launchResultsSchema } from './report';
 import { questionCardSchema, threadItemSchema } from './thread';
 
@@ -341,5 +341,17 @@ describe('launchPlanSchema, older saved plans', () => {
 describe('outputNature', () => {
   it('treats a creative kit as a plan', () => {
     expect(outputNature('creative')).toBe('plan');
+  });
+});
+
+describe('opportunitySchema', () => {
+  const lines = { why: 'a', limit: 'b', test: 'c', measure: 'd' };
+
+  it('needs a finding behind every opportunity', () => {
+    const ok = { id: 'opp-market-accra', kind: 'market', name: 'Accra', city: null, lines };
+    expect(opportunitySchema.safeParse({ ...ok, findingIds: ['f-worth-a-look'] }).success).toBe(
+      true,
+    );
+    expect(opportunitySchema.safeParse({ ...ok, findingIds: [] }).success).toBe(false);
   });
 });

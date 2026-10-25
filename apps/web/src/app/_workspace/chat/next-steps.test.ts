@@ -85,4 +85,23 @@ describe('the creative kit step', () => {
     expect(nextStepsFor([withTerritories, kit]).map((s) => s.id)).not.toContain('creative');
     expect(nextStepsFor([plan()]).map((s) => s.id)).not.toContain('creative');
   });
+
+  it('offers the top market opportunity as a what-if, once, and never an area', () => {
+    const withOpp = (opportunities: { kind: string; name: string }[]) =>
+      plan({ plan: { findings: [], territories: [{ name: 'Lagos' }], opportunities } });
+    const ids = nextStepsFor([withOpp([{ kind: 'market', name: 'Accra' }])]).map((s) => s.id);
+    expect(ids).toContain('scn:opp:accra');
+    expect(
+      nextStepsFor([withOpp([{ kind: 'area', name: 'Surulere' }])]).map((s) => s.id),
+    ).not.toContain('scn:opp:surulere');
+    const tried = plan({
+      kind: 'scenario',
+      title: 'What if we add Accra?',
+      createdAt: '2026-10-02T10:00:00.000Z',
+      plan: { findings: [], opportunities: [{ kind: 'market', name: 'Accra' }] },
+    });
+    expect(
+      nextStepsFor([withOpp([{ kind: 'market', name: 'Accra' }]), tried]).map((s) => s.id),
+    ).not.toContain('scn:opp:accra');
+  });
 });

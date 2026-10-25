@@ -261,6 +261,7 @@ function reportDoc(output: Output, report: AuditReport): PlanDoc {
     assumptions,
     ...results,
     { title: 'Risks', groups: lists(report.risks) },
+    { title: 'Worth a look', groups: lists(report.alternatives) },
   ].filter((s) => s.groups.length > 0);
   return {
     title: output.title,

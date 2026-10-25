@@ -1,6 +1,12 @@
 import { z } from 'zod';
 import { findingSchema } from './finding';
-import { compUsedSchema, droppedLineSchema, launchLineSchema, planSourceSchema } from './plan';
+import {
+  compUsedSchema,
+  droppedLineSchema,
+  launchLineSchema,
+  opportunitySchema,
+  planSourceSchema,
+} from './plan';
 import { confidenceSchema, verdictSchema } from './verdict';
 
 // The audit report (spec §6.3): a plan someone else wrote, tested one belief at a time. Verdicts,
@@ -115,6 +121,8 @@ export const auditReportSchema = z.object({
   risks: z.array(launchLineSchema),
   /** Stronger options Qloo's data points to ("Worth a look"). Every line cites a finding. */
   alternatives: z.array(launchLineSchema),
+  /** The alternatives as opportunities, with their limit, first test and measure. Older reports have none. */
+  opportunities: z.array(opportunitySchema).default([]),
   results: resultsComparisonSchema.nullable(),
   comps: z.array(compUsedSchema),
   findings: z.array(findingSchema),
