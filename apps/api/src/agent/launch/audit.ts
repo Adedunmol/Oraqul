@@ -21,6 +21,7 @@ import { type DraftItem, testPlan } from './audit-verdicts.js';
 import { capital, slug } from './brief.js';
 import { type CheckContext, checkSections } from './check.js';
 import type { LaunchDeps } from './config.js';
+import { isWorthLine, opportunitiesOf } from './opportunities.js';
 import {
   type Anchors,
   type Asked,
@@ -304,18 +305,32 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     'risk',
     dropped,
   );
-  const alternatives = keptLines(
+  const checked = keptLines(
     checkSections([{ key: 'markets', lines: written.alternatives }], checkCtx),
     'markets',
     'alt',
     dropped,
   );
 
+  const found = opportunitiesOf({
+    findings: grounded.findings,
+    worth: grounded.brief.worth,
+    teamOrder: grounded.brief.teamOrder,
+    signal: null,
+  });
+  const alternatives = [
+    ...(found.opportunities.some((o) => o.kind === 'market')
+      ? checked.filter((l) => !isWorthLine(l))
+      : checked),
+    ...found.lines,
+  ];
+
   const report: AuditReport = {
     phase: review.launched ? 'post' : 'pre',
     items,
     risks,
     alternatives,
+    opportunities: found.opportunities,
     results: comparison,
     comps: comps.used,
     findings: grounded.findings,

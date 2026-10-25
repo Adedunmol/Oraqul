@@ -45,12 +45,12 @@ export function TasteMap() {
           </h2>
           <p className="max-w-[46ch] text-[18px] leading-[1.6] text-ink/75">
             Oraqul checks every plan against audience taste data: what people like across film and
-            TV, music, books, podcasts, games, brands and places. Then it works out the answer with
-            a fixed rule, not a guess.
+            TV, music, books, podcasts, games, brands and places. Then code works out the answer
+            with a fixed rule, and the model only writes it up.
           </p>
           <ul className="flex flex-col gap-4 border-t border-line pt-6">
             {[
-              ['Real taste, not a guess', 'Every number comes from the data, never from the AI.'],
+              ['Measured taste', 'Every number comes from the data, never from the AI.'],
               [
                 'Across culture, not one shelf',
                 'Who your readers listen to, what your fans watch, where they live.',

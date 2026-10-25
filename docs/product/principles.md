@@ -19,6 +19,7 @@ Claims about taste, audience and place come from measured data, not the model's 
   - **Taste and place:** measured in Qloo, cited to a finding.
   - **Time-sensitive facts** (rivals, windows, distributors, figures): from web search, cited to a page.
   - **Launch practice:** the model's craft, labelled and barred from claiming taste or stating figures with no source.
+- **In plain words for a reader:** taste and place are *measured* (Qloo), market facts are *sourced* (a page), every number, verdict and check is *computed* (code), and the plan is *written* (the model). Public copy uses these four words and says which one a claim rests on.
 - **Every chosen place gets the same questions.** A place with fewer Qloo-backed lines is a flaw in our query plan, not in Qloo.
 
 ## Against a normal chatbot

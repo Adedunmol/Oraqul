@@ -15,8 +15,8 @@ for (const route of [
     expect(text).not.toContain('fetch failed');
   });
 
-  test(`${route.path} error has no horizontal scroll at 400px`, async ({ page }) => {
-    await page.setViewportSize({ width: 400, height: 800 });
+  test(`${route.path} error has no horizontal scroll at 375px`, async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
     await page.goto(route.path);
     await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
     const overflow = await page.evaluate(

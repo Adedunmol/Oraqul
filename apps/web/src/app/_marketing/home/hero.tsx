@@ -25,17 +25,17 @@ export function Hero() {
           className="max-w-[13ch] font-display text-[clamp(40px,5.8vw,84px)] font-semibold leading-[0.98] tracking-[-0.05em] text-balance"
         >
           <span className="mk-word" style={at(0)}>
-            Plan your launch for the
+            Plan the launch. Fix what
           </span>{' '}
           <span className="mk-word text-accent" style={at(90)}>
-            right audience.
+            misses.
           </span>
         </h1>
 
         <div className="mk-word mt-[clamp(20px,2.4vw,32px)]" style={at(300)}>
           <p className="max-w-[44ch] text-balance text-[clamp(17px,1.5vw,20px)] leading-[1.5] text-ink/75">
-            An AI agent that works out who your launch is for and where, grounded in real audience
-            taste data.
+            An AI agent that builds your launch plan, audits the one you have, and revises it from
+            your results, grounded in real audience taste data.
           </p>
         </div>
 

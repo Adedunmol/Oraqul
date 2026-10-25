@@ -25,6 +25,7 @@ import {
   runStandalone,
   StandalonePlanner,
 } from './follow-ups.js';
+import { withoutOpportunities } from './opportunities.js';
 import { type LaunchInputs, type PlanRun, runBuild } from './pipeline.js';
 import type { QueryPlanCore, QueryPlanner } from './planner.js';
 import type { LaunchRead } from './read-core.js';
@@ -189,7 +190,8 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
         }
         return withTokens(await runFix(handoff, audit));
       }
-      const planText = toMarkdown(output);
+      // What the evidence pointed to beyond the brief is not the team's choice, so it is not read back as one.
+      const planText = toMarkdown(withoutOpportunities(output));
       return withTokens(
         job.job === 'audit'
           ? await runAudit(handoff, audit, undefined, { planText })

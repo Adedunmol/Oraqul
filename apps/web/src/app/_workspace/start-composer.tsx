@@ -39,7 +39,7 @@ export const START_CHOICES: {
   {
     mode: 'fix',
     title: 'Fix my plan',
-    say: 'Paste your plan or attach it. If the launch is out, add how it did, such as sales, streams, wishlists or downloads, and I will find what went wrong and fix the plan.',
+    say: 'Paste your plan or attach it. If the launch is out, add how it did, such as sales, streams, wishlists or downloads, and I will find what went wrong and write a revised plan.',
     placeholder:
       'Paste your plan, and the results if it is out: Chicago and Austin sold under half',
     brings: 'You bring: your plan, and results if it is out',

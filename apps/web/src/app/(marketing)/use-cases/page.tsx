@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: 'Use cases · Oraqul',
   description:
-    'Make a plan, check the plan you have, fix one that missed, then keep going with rival dates, what ifs and the creative kit. Each is grounded in real audience taste data.',
+    'Make a plan, check the plan you have, fix one that missed and revise it from your results, then keep going with rival dates, what ifs and the creative kit. Each is grounded in real audience taste data.',
 };
 
 export default function UseCases() {

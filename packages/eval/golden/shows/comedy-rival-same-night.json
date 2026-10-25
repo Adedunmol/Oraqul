@@ -49,7 +49,7 @@
       "bottom-line": "3/0",
       "positioning": "1/1",
       "audience": "1/0",
-      "markets": "3/0",
+      "markets": "3/3",
       "onsale": "0/8",
       "partnerships": "2/0",
       "publicity": "1/1",
@@ -65,8 +65,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
     "grounding": {
-      "lines": 60,
-      "backed": 22,
+      "lines": 63,
+      "backed": 21,
       "rankKept": 100,
       "findingsUsed": 9,
       "cities": {

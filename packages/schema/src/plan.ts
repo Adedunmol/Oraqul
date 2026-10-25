@@ -354,6 +354,24 @@ export const calendarRowSchema = z.object({
 });
 export type CalendarRow = z.infer<typeof calendarRowSchema>;
 
+/**
+ * Something the team did not choose that the evidence points to: a nearby market, or an area of a
+ * city it did choose. It sits beside the plan and is never a commitment until the team adopts it.
+ * The four lines are ordinary lines of the markets section, in the group "Worth a look".
+ */
+export const opportunitySchema = z.object({
+  id: z.string().min(1),
+  kind: z.enum(['market', 'area']),
+  name: z.string(),
+  /** The team city an area sits in. Null for a market. */
+  city: z.string().nullable(),
+  /** The findings behind the `why` line. Always at least one: no finding, no opportunity. */
+  findingIds: z.array(z.string()).min(1),
+  /** Line ids: why it fits (grounded), then its limit, first test and measure (playbook). */
+  lines: z.object({ why: z.string(), limit: z.string(), test: z.string(), measure: z.string() }),
+});
+export type Opportunity = z.infer<typeof opportunitySchema>;
+
 export const launchPlanSchema = z.object({
   /** `full` for a launch plan or an unclear ask, `narrow` for one question. */
   scope: z.enum(['full', 'narrow']),
@@ -389,5 +407,7 @@ export const launchPlanSchema = z.object({
   partnerNotes: z.array(partnerNoteSchema).default([]),
   /** The content calendar rows, for the table on the plan page. Plans saved before it have none. */
   calendar: z.array(calendarRowSchema).default([]),
+  /** What the evidence points to beyond the brief. Plans saved before it have none. */
+  opportunities: z.array(opportunitySchema).default([]),
 });
 export type LaunchPlan = z.infer<typeof launchPlanSchema>;

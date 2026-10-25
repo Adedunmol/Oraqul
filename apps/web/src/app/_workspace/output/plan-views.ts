@@ -149,3 +149,61 @@ export function processOf(plan: Pick<LaunchPlan, 'process' | 'review'>): Process
   if (research.length === 0 && rounds.length === 0 && dropped.length === 0) return null;
   return { research, review: rounds, dropped, drafts: process?.drafts ?? rounds.length };
 }
+
+/** One thing the evidence points to beyond the brief, as its four lines. */
+export interface OpportunityView {
+  id: string;
+  why: LaunchLine;
+  limit: LaunchLine | null;
+  test: LaunchLine | null;
+  measure: LaunchLine | null;
+  /** True for a market, which the team can try as a what-if. An area is a lead, not a city. */
+  market: boolean;
+}
+
+export type LineEntry =
+  | { type: 'line'; line: LaunchLine }
+  | ({ type: 'opportunity' } & OpportunityView);
+
+const OPPORTUNITY_LINE = /^(opp-(market|area)-.+)-(why|limit|test|measure)$/;
+
+/**
+ * Gathers the lines of each opportunity (`opp-<kind>-<key>-why|limit|test|measure`) into one
+ * entry, in the place its first line stood. Other lines pass through, so a plan saved before
+ * opportunities reads as it always did.
+ */
+export function entriesOf(lines: LaunchLine[]): LineEntry[] {
+  const out: LineEntry[] = [];
+  const open = new Map<string, OpportunityView>();
+  for (const line of lines) {
+    const match = OPPORTUNITY_LINE.exec(line.id);
+    const base = match?.[1];
+    const part = match?.[3];
+    if (!base || !part) {
+      out.push({ type: 'line', line });
+      continue;
+    }
+    let view = open.get(base);
+    if (!view) {
+      if (part !== 'why') {
+        out.push({ type: 'line', line });
+        continue;
+      }
+      view = {
+        id: base,
+        why: line,
+        limit: null,
+        test: null,
+        measure: null,
+        market: match?.[2] === 'market',
+      };
+      open.set(base, view);
+      out.push({ type: 'opportunity', ...view });
+      continue;
+    }
+    if (part === 'limit' || part === 'test' || part === 'measure') view[part] = line;
+    const entry = out.find((e) => e.type === 'opportunity' && e.id === base);
+    if (entry && entry.type === 'opportunity') Object.assign(entry, view);
+  }
+  return out;
+}

@@ -4,6 +4,7 @@ import type { LaunchLine, LaunchPlan, LineChange, PlanSource } from '@oraqul/sch
 import type { ReactNode } from 'react';
 import { CalendarTable } from './calendar-table';
 import { PlanFrame } from './plan-frame';
+import { entriesOf, type OpportunityView } from './plan-views';
 
 /** Finding ids in the order the plan first cites them, numbered from 1, as in the exports. */
 export function footnotes(plan: LaunchPlan): Map<string, number> {
@@ -235,20 +236,26 @@ export function Groups({
         <div key={i} className="flex flex-col gap-2">
           {g.name ? <h3 className="text-[14.5px] font-semibold">{g.name}</h3> : null}
           <ul className="flex flex-col gap-2.5">
-            {g.lines.map((line) => (
-              <li
-                key={line.id}
-                className="relative pl-4 text-[16px] leading-[1.7] before:absolute before:top-[0.9em] before:left-0 before:size-1 before:rounded-full before:bg-muted"
-              >
-                <LineText
-                  line={line}
-                  notes={notes}
-                  sources={sources}
-                  changes={changes}
-                  onSource={onSource}
-                />
-              </li>
-            ))}
+            {entriesOf(g.lines).map((entry) =>
+              entry.type === 'opportunity' ? (
+                <li key={entry.id}>
+                  <Opportunity entry={entry} notes={notes} sources={sources} onSource={onSource} />
+                </li>
+              ) : (
+                <li
+                  key={entry.line.id}
+                  className="relative pl-4 text-[16px] leading-[1.7] before:absolute before:top-[0.9em] before:left-0 before:size-1 before:rounded-full before:bg-muted"
+                >
+                  <LineText
+                    line={entry.line}
+                    notes={notes}
+                    sources={sources}
+                    changes={changes}
+                    onSource={onSource}
+                  />
+                </li>
+              ),
+            )}
           </ul>
         </div>
       ))}
@@ -323,3 +330,50 @@ function Comps({ plan }: { plan: LaunchPlan }) {
     </p>
   );
 }
+
+/**
+ * Something the evidence points to beyond the brief, with what it does not show, the first thing to
+ * try and what to read afterwards. It sits beside the plan: nothing here is the team's choice.
+ */
+function Opportunity({
+  entry,
+  notes,
+  sources,
+  onSource,
+}: {
+  entry: OpportunityView;
+  notes: Map<string, number>;
+  sources: PlanSource[];
+  onSource: (findingId: string) => void;
+}) {
+  const rows: [string, LaunchLine | null][] = [
+    ['Limit', entry.limit],
+    ['First test', entry.test],
+    ['Measure', entry.measure],
+  ];
+  return (
+    <div className="flex flex-col gap-2 rounded-lg bg-bg px-4 py-3">
+      <p className="text-[16px] leading-[1.6] font-medium">
+        <LineText line={entry.why} notes={notes} sources={sources} onSource={onSource} />
+      </p>
+      <dl className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[14.5px] leading-[1.55]">
+        {rows.map(([label, line]) =>
+          line ? (
+            <div key={label} className="contents">
+              <dt className="text-muted">{label}</dt>
+              <dd>{line.text}</dd>
+            </div>
+          ) : null,
+        )}
+      </dl>
+      {entry.market ? (
+        <p className="text-[13.5px] text-muted">
+          To try it in the plan, ask “What if we add {nameOf(entry.why)}?”
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** The place an opportunity line names first. */
+const nameOf = (line: LaunchLine) => line.names[0] ?? 'it';

@@ -39,6 +39,8 @@ describe('rulesView', () => {
     expect(Object.keys(view.partners.categories)).toHaveLength(6);
     expect(view.calendar.categories.books?.source.grade).toBe('not-researched');
     expect(view.calendar.categories.film?.source.grade).toBe('directional');
+    expect(view.opportunities.version).toMatch(/^opportunities@/);
+    expect(Object.keys(view.opportunities.kinds).sort()).toEqual(['area', 'market']);
     for (const r of Object.values(view.shows.rules)) {
       expect(r.source.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(['team', 'directional', 'not-researched']).toContain(r.source.grade);

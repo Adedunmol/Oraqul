@@ -27,7 +27,7 @@ const jobs: {
     id: 'fix',
     icon: 'retry',
     title: 'Fix my plan',
-    gets: 'Who actually came, which assumption missed, and a new plan built around them.',
+    gets: 'Who actually came, which assumption missed, and a revised plan built around them, before the launch or after it.',
     message: 'It missed. Here are our results by age band.',
   },
 ];

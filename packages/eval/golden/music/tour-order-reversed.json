@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Start in Lagos, then London and Houston: that is where the artist's audience is strongest among your cities.",
@@ -62,7 +64,7 @@
       "bottom-line": "3/0",
       "positioning": "0/2",
       "audience": "8/0",
-      "markets": "4/0",
+      "markets": "4/3",
       "partnerships": "2/0",
       "publicity": "1/1",
       "community": "2/1",
@@ -80,8 +82,8 @@
     },
     "moves": ["f-markets", "f-audience", "f-support-houston"],
     "grounding": {
-      "lines": 69,
-      "backed": 43,
+      "lines": 72,
+      "backed": 42,
       "rankKept": 100,
       "findingsUsed": 18,
       "cities": {

@@ -30,8 +30,8 @@ export function AuthAside() {
             <span className="text-accent">Plans</span> you can check, line by line.
           </p>
           <p className={`${leadClass} max-w-[38ch]`}>
-            Every claim is tested against Qloo’s cultural taste data and comes with a receipt you
-            can open.
+            Taste is measured in Qloo’s cultural data, market facts are sourced to a page, and code
+            computes every number. Each claim comes with a receipt you can open.
           </p>
         </div>
         <section

@@ -11,9 +11,9 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
     a: 'An agent. You tell it what you are working on in plain words. It plans its own steps, looks things up in the taste data, tests what it finds, reviews its own draft against your request, and comes back with a plan. You keep talking to it in the same chat.',
   },
   {
-    home: 'From Qloo, which holds audience taste data across film and TV, music, books, podcasts, games, brands and places. Every claim links to the data behind it.',
+    home: 'Taste and place come from Qloo, which holds audience taste data across film and TV, music, books, podcasts, games, brands and places. Dated market facts such as rivals and release windows come from web research, each linked to its page. Code computes every number.',
     q: 'Where does the data come from?',
-    a: 'From Qloo, cultural data on what real audiences like across film and TV, music, books, podcasts, games, brands and places. Every claim in an answer links to the data behind it.',
+    a: 'Three places. Taste and place are measured in Qloo, cultural data on what real audiences like across film and TV, music, books, podcasts, games, brands and places. Dated market facts, such as rivals and release windows, are sourced from web research and link to their page. Every number and verdict is computed by code. The model writes the plan, and launch craft is labelled as such.',
   },
   {
     home: 'No. Code works out every score and verdict from the data. The AI only writes the words around them, and an answer that names something outside the data is rejected and rerun.',

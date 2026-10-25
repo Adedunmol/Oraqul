@@ -24,7 +24,7 @@ export function SignUpForm() {
   return (
     <AuthCard
       title="Create your account"
-      lead="Plan, check and fix launches, grounded in what audiences actually like."
+      lead="Build, audit and fix launch plans, then revise them from your results."
       links={[{ href: form.href('/sign-in'), label: 'Already have an account? Sign in' }]}
     >
       <GoogleButton href={form.googleHref} />

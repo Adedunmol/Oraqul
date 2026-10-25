@@ -115,5 +115,13 @@ export const rulesResponseSchema = z.object({
     ),
     ads: ruleOf(z.object({ lines: z.array(z.string()) })),
   }),
+  /** What a team does with an opportunity beyond its brief: the limit, first test and measure. */
+  opportunities: z.object({
+    version: z.string(),
+    kinds: z.record(
+      z.string(),
+      ruleOf(z.object({ limit: z.string(), test: z.string(), measure: z.string() })),
+    ),
+  }),
 });
 export type RulesResponse = z.infer<typeof rulesResponseSchema>;

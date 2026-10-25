@@ -9,7 +9,7 @@ export function Closing({
     <>
       Start anywhere.
       <br />
-      <span className="text-accent">Leave with a plan to defend.</span>
+      <span className="text-accent">Leave with a plan you can revise.</span>
     </>
   ),
 }: {

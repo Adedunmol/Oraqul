@@ -7,6 +7,7 @@ import {
   CATEGORY_PARTNERS,
   COUNTRY_CHANNELS,
   MARKET_EXTRAS,
+  OPPORTUNITY_RULES,
   PARTNER_RULES,
   rules,
   SHARED_RULES,
@@ -64,6 +65,10 @@ export function rulesView(): RulesResponse {
       version: CALENDAR_RULES.version,
       categories: CALENDAR_RULES.categories,
       ads: CALENDAR_RULES.ads,
+    },
+    opportunities: {
+      version: OPPORTUNITY_RULES.version,
+      kinds: OPPORTUNITY_RULES.kinds,
     },
   };
 }
