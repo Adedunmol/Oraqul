@@ -6,6 +6,7 @@ import {
   HttpCode,
   type MessageEvent,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -15,6 +16,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  type CampaignAction,
+  type CampaignState,
+  type CampaignTest,
   type Category,
   type CompareResponse,
   type CreateProjectResult,
@@ -38,7 +42,9 @@ import {
   setReactionSchema,
   setShareSchema,
   type ThreadDetail,
+  type UpdateCampaignAction,
   type UpdateMemoryInput,
+  updateCampaignActionSchema,
   updateMemoryInputSchema,
 } from '@oraqul/schema';
 import type { Response } from 'express';
@@ -51,6 +57,7 @@ import { type Membership, Roles, RolesGuard } from '../auth/roles.guard.js';
 import { SessionGuard, type SessionUser } from '../auth/session.guard.js';
 import { exportFormats, fileName, toDocx, toMarkdown, toPdf } from '../outputs/export.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
+import { CampaignService } from './campaign.service.js';
 import { PartnersService } from './partners.service.js';
 import { ProjectsService } from './projects.service.js';
 import { ReactionsService } from './reactions.service.js';
@@ -72,6 +79,7 @@ export class ProjectsController {
     private readonly shares: SharesService,
     private readonly partners: PartnersService,
     private readonly reactions: ReactionsService,
+    private readonly campaign: CampaignService,
   ) {}
 
   @Get('teams/:teamId/projects')
@@ -198,6 +206,49 @@ export class ProjectsController {
     @Body(new ZodPipe(setReactionSchema)) body: SetReaction,
   ): Promise<ReactionState> {
     return this.reactions.set(outputId, user.id, body.kind);
+  }
+
+  /** The plan's campaign: its calendar as actions, and the tests set up on them. */
+  @Get('outputs/:outputId/campaign')
+  @Roles('owner', 'editor', 'viewer')
+  campaignState(@Param('outputId') outputId: string): Promise<CampaignState> {
+    return this.campaign.state(outputId);
+  }
+
+  /** Makes the action set for this plan version. Asking again returns the set that exists. */
+  @Post('outputs/:outputId/campaign')
+  @Roles('owner', 'editor')
+  setUpCampaign(@Param('outputId') outputId: string): Promise<CampaignState> {
+    return this.campaign.setUp(outputId);
+  }
+
+  @Patch('outputs/:outputId/campaign/actions/:actionId')
+  @Roles('owner', 'editor')
+  updateAction(
+    @Param('outputId') outputId: string,
+    @Param('actionId', new ZodPipe(z.uuid())) actionId: string,
+    @Body(new ZodPipe(updateCampaignActionSchema)) body: UpdateCampaignAction,
+  ): Promise<CampaignAction> {
+    return this.campaign.update(outputId, actionId, body);
+  }
+
+  @Put('outputs/:outputId/campaign/actions/:actionId/test')
+  @Roles('owner', 'editor')
+  addTest(
+    @Param('outputId') outputId: string,
+    @Param('actionId', new ZodPipe(z.uuid())) actionId: string,
+  ): Promise<CampaignTest> {
+    return this.campaign.addTest(outputId, actionId);
+  }
+
+  @Delete('outputs/:outputId/campaign/actions/:actionId/test')
+  @Roles('owner', 'editor')
+  @HttpCode(204)
+  removeTest(
+    @Param('outputId') outputId: string,
+    @Param('actionId', new ZodPipe(z.uuid())) actionId: string,
+  ): Promise<void> {
+    return this.campaign.removeTest(outputId, actionId);
   }
 
   /** The plan as a file to send or paste (PRD O3). */

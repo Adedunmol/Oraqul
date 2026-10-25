@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AgentModule } from '../agent/agent.module.js';
 import { AuthModule } from '../auth/auth.module.js';
+import { CampaignService } from './campaign.service.js';
 import { PartnersService } from './partners.service.js';
 import { PinsController } from './pins.controller.js';
 import { ProjectsController } from './projects.controller.js';
@@ -12,6 +13,6 @@ import { SharesService } from './shares.service.js';
 @Module({
   imports: [AuthModule, AgentModule],
   controllers: [ProjectsController, PinsController, SharesController],
-  providers: [ProjectsService, SharesService, ReactionsService, PartnersService],
+  providers: [ProjectsService, SharesService, ReactionsService, PartnersService, CampaignService],
 })
 export class ProjectsModule {}

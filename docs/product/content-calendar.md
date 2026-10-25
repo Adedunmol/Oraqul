@@ -23,6 +23,10 @@ Directional means one blog-level source for each point; the plan says so above t
 
 Every calendar ends with one note, from an ad tool vendor, so it is directional too: about 80 percent of paid spend behind creative that has already worked and about 20 percent into testing, three to five ads in each ad group, and judge a winner by its conversion count, not by how many days it has run.
 
+## From rows to actions
+
+A saved plan's rows can be set up as a campaign: one action for each row, with a guide from the creative kit, that the team edits and ticks off, and optionally a two-angle test. The set belongs to that plan version, and a revised plan has its own ([spec §5.15](spec.md)). The ad conventions above are the source for the test's measure.
+
 ## Changing it
 
 Change the rows and the version in `rules/calendar.ts`, say why in the commit, and update this file. Goldens count the calendar's lines, so read the diff before re-recording.

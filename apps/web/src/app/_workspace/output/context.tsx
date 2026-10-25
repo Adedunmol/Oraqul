@@ -1,6 +1,6 @@
 'use client';
 
-import type { LineChange, Output, ReactionKind, Receipt } from '@oraqul/schema';
+import type { CampaignState, LineChange, Output, ReactionKind, Receipt } from '@oraqul/schema';
 import { createContext, use } from 'react';
 
 export interface OutputView {
@@ -15,6 +15,8 @@ export interface OutputView {
   builtOn: { id: string; label: string } | undefined;
   /** The caller's own rating of the plan. Null when there is none, and on a shared link. */
   reaction: ReactionKind | null;
+  /** The plan's campaign. Null when the output has none, and on a shared link. */
+  campaign: CampaignState | null;
   /** False for viewers and on a shared link. */
   canEdit: boolean;
   shared: boolean;

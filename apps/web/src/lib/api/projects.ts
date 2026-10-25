@@ -1,7 +1,13 @@
 import {
+  type CampaignAction,
+  type CampaignState,
+  type CampaignTest,
   type CompareResponse,
   type CreateProjectInput,
   type CreateProjectResult,
+  campaignActionSchema,
+  campaignStateSchema,
+  campaignTestSchema,
   compareResponseSchema,
   createProjectResultSchema,
   createThreadResultSchema,
@@ -17,6 +23,7 @@ import {
   reactionStateSchema,
   type ShareState,
   shareStateSchema,
+  type UpdateCampaignAction,
 } from '@oraqul/schema';
 import { clientFile, clientGet, clientRequest } from './client';
 
@@ -127,4 +134,37 @@ export function comparePlans(projectId: string, a: string, b: string): Promise<C
 /** A launch plan as Markdown, Word or PDF, built by the API from the stored plan. */
 export function exportOutput(outputId: string, format: 'md' | 'docx' | 'pdf'): Promise<Blob> {
   return clientFile(`/outputs/${outputId}/export/${format}`);
+}
+
+/** Makes the action set for this plan version. A second call returns the set that exists. */
+export function setUpCampaign(outputId: string): Promise<CampaignState> {
+  return clientRequest(`/outputs/${outputId}/campaign`, { method: 'POST' }, campaignStateSchema);
+}
+
+export function updateCampaignAction(
+  outputId: string,
+  actionId: string,
+  patch: UpdateCampaignAction,
+): Promise<CampaignAction> {
+  return clientRequest(
+    `/outputs/${outputId}/campaign/actions/${actionId}`,
+    { method: 'PATCH', body: patch },
+    campaignActionSchema,
+  );
+}
+
+export function addCampaignTest(outputId: string, actionId: string): Promise<CampaignTest> {
+  return clientRequest(
+    `/outputs/${outputId}/campaign/actions/${actionId}/test`,
+    { method: 'PUT' },
+    campaignTestSchema,
+  );
+}
+
+export function removeCampaignTest(outputId: string, actionId: string): Promise<void> {
+  return clientRequest(
+    `/outputs/${outputId}/campaign/actions/${actionId}/test`,
+    { method: 'DELETE' },
+    emptyResponseSchema,
+  );
 }

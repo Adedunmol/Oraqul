@@ -1,4 +1,6 @@
 import {
+  type CampaignState,
+  campaignStateSchema,
   type OutputDetail,
   type Overview,
   outputDetailSchema,
@@ -43,6 +45,10 @@ export function getProjectDetail(projectId: string, returnTo: string): Promise<P
 
 export function getThreadDetail(threadId: string, returnTo: string): Promise<ThreadDetail> {
   return orNotFound(serverGet(`/threads/${threadId}`, threadDetailSchema, { returnTo }));
+}
+
+export function getCampaign(outputId: string, returnTo: string): Promise<CampaignState> {
+  return orNotFound(serverGet(`/outputs/${outputId}/campaign`, campaignStateSchema, { returnTo }));
 }
 
 export function getOutputDetail(outputId: string, returnTo: string): Promise<OutputDetail> {

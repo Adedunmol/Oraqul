@@ -379,3 +379,52 @@ describe('export of the content calendar', () => {
     expect(md).toContain('**Paid ads**');
   });
 });
+
+describe('the Campaign tab', () => {
+  const brief = briefSchema.parse({ ...emptyBrief, places: [place('Lagos', 1.6)] });
+  const planWith = (calendar: unknown[]) =>
+    launchPlanSchema.parse({
+      scope: 'full',
+      sections: [],
+      comps: [],
+      findings: [],
+      dropped: [],
+      writer: 'template',
+      calendar,
+    });
+  const present = (value: ReturnType<typeof planWith>) =>
+    presentOutput({
+      row: row(brief, value),
+      receipts: [],
+      category: 'film',
+      createdBy: 'Ada',
+      version: 1,
+      parentBrief: null,
+    });
+  const rowOf = {
+    id: 'calendar-lagos-teaser',
+    territory: 'Lagos',
+    key: 'teaser',
+    at: -2,
+    from: '2099-02-26',
+    to: '2099-02-26',
+    asset: 'teaser',
+    post: 'Post a teaser.',
+    channel: 'Instagram',
+    count: null,
+    per: null,
+    ruleId: 'film.calendar',
+    grade: 'directional',
+  };
+
+  it('appears on a plan that has a calendar, and not on one that has none', () => {
+    expect(present(planWith([rowOf])).tabs.map((t) => t.key)).toContain('campaign');
+    expect(present(planWith([])).tabs.map((t) => t.key)).not.toContain('campaign');
+  });
+
+  it('says the actions are guides to adapt', () => {
+    const tab = present(planWith([rowOf])).tabs.find((t) => t.key === 'campaign');
+    expect(tab?.label).toBe('Campaign');
+    expect(tab?.note).toMatch(/no final asset/i);
+  });
+});

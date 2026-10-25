@@ -35,6 +35,7 @@ export const outputTabKeys = [
   'calls',
   'kit',
   'fixes',
+  'campaign',
 ] as const;
 export const outputTabKeySchema = z.enum(outputTabKeys);
 

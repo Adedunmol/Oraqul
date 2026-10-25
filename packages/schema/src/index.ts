@@ -1,6 +1,7 @@
 export * from './agent';
 export * from './auth';
 export * from './brief';
+export * from './campaign';
 export * from './categories';
 export * from './claim';
 export * from './events';

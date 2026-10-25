@@ -1,6 +1,6 @@
 'use client';
 
-import type { OutputDetail, OutputTabKey } from '@oraqul/schema';
+import type { CampaignState, OutputDetail, OutputTabKey } from '@oraqul/schema';
 import { Button, buttonClassName, Icon, TabNote, Tabs } from '@oraqul/ui';
 import Link from 'next/link';
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
@@ -14,6 +14,7 @@ import { makeView, OutputContext, useOutputView } from './context';
 import { ExportMenu } from './export-menu';
 import { ExportModal, ShareModal } from './modals';
 import { ReceiptDrawer } from './receipt-drawer';
+import { CampaignTab } from './tabs-campaign';
 import {
   AssumptionsTab,
   AudienceTab,
@@ -74,6 +75,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   territories: TerritoriesTab,
   calls: CallsTab,
   kit: KitTab,
+  campaign: CampaignTab,
   route: RouteTab,
   supportacts: SupportActsTab,
   // Kept only because old stored URLs can still parse this schema key; the tab is filtered below.
@@ -101,10 +103,13 @@ export function OutputView({
   teamName,
   share,
   dock,
+  campaign = null,
   shared = false,
   publicExample = false,
 }: {
   detail: OutputDetail;
+  /** The plan's campaign, fetched by the page. */
+  campaign?: CampaignState | null;
   initialTab: OutputTabKey | undefined;
   canEdit: boolean;
   teamName: string | null;
@@ -120,7 +125,8 @@ export function OutputView({
   const { output, project, thread, builtOn } = detail;
   // `contrast` remains a schema key for old responses, but product positioning does not belong in
   // a user's working plan. Hide it even if an older API instance still sends it.
-  const all = output.tabs.filter((t) => t.key !== 'contrast');
+  // A shared link is read only and carries no campaign, so that tab stays out of it.
+  const all = output.tabs.filter((t) => t.key !== 'contrast' && !(shared && t.key === 'campaign'));
   const keys = all.map((t) => t.key);
   // The API lists the tabs in order: a launch plan opens on Plan, the older outputs on Summary.
   const first = keys[0] ?? 'summary';
@@ -155,10 +161,11 @@ export function OutputView({
         goToTab,
         builtOn: builtOn ? { id: builtOn.id, label: builtOn.label } : undefined,
         reaction: detail.reaction,
+        campaign: shared ? null : campaign,
         canEdit: canEdit && !shared,
         shared,
       }),
-    [output, builtOn, detail.reaction, canEdit, shared, goToTab],
+    [output, builtOn, detail.reaction, campaign, canEdit, shared, goToTab],
   );
 
   // Territories is the heart of a plan that has them, so it stays beside the plan.

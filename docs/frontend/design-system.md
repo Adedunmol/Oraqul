@@ -271,7 +271,7 @@ Use plain words. Short sentences. No jargon without a one line explanation next 
 | Use | Avoid |
 |---|---|
 | Make a plan, Check my plan, Fix my plan | Generate, Analyse, Run audit |
-| Project, the one name for what the first message creates, whatever the job | Launch, Campaign, Release, as a name for it |
+| Project, the one name for what the first message creates, whatever the job | Launch, Campaign, Release, as a name for it. Campaign is the name of the plan page tab that holds the actions |
 | Chat (in the UI; "thread" in code and the API) | Thread, Conversation, Session, Run |
 | Launch for the discipline and the plan: launch planning, launch plan, launch team, the week after launch | Release, go to market or rollout as the umbrella word |
 | Plan, for what Oraqul builds, checks and repairs. Strategy is not a name for the product or its output | Strategy, strategist, strategy agent |

@@ -66,6 +66,8 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
     'One plan per territory: the home market first, then the diaspora cities, each with its call, its lead channels and its partners.',
   calls:
     'Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned.',
+  campaign:
+    'The content calendar as actions your team can run, edit and tick off. Each comes with a guide to adapt: Oraqul makes no final asset.',
   kit: 'Guides for the team that makes the creative: hooks, a script, a shot list, a key art brief and captions. Oraqul does not make the asset.',
   route: 'The tour stops in your order, scored against the strongest order.',
   supportacts: 'The acts Qloo ranks highest with your audience in each tour city.',
@@ -88,6 +90,7 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   territories: 'Territories',
   calls: 'Direction calls',
   kit: 'Creative kit',
+  campaign: 'Campaign',
   route: 'Tour route',
   supportacts: 'Support acts',
   fanbase: 'Fan base bridge',
@@ -236,6 +239,8 @@ export function presentOutput({
         ...territories,
         // The calls on dates, territories and partners, set by code.
         ...(plan.calls.length > 0 ? (['calls'] as const) : []),
+        // The calendar as actions the team runs and ticks off.
+        ...(plan.calendar.length > 0 ? (['campaign'] as const) : []),
         // Rivals the team named in the brief were checked inside the build.
         ...(brief.dates.length > 0 ? (['date'] as const) : []),
         ...(category === 'music'

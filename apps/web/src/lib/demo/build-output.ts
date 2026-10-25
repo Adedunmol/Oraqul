@@ -125,6 +125,7 @@ const TAB_NOTE: Record<OutputTabKey, string> = {
   fixes: 'What the audit found weak or broken, and what the new plan does about it.',
   calls: 'Okay, risky or avoid for each date, territory and partner.',
   kit: 'Guides for the team that makes the creative.',
+  campaign: 'The content calendar as actions to run and tick off. Needs a signed in project.',
 };
 
 const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
