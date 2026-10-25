@@ -1,4 +1,5 @@
 import {
+  actionStatuses,
   categories,
   codePurposes,
   confidences,
@@ -442,3 +443,55 @@ export const categoryPacks = pgTable('category_packs', {
   version: text('version').notNull(),
   createdAt: createdAt(),
 });
+
+/**
+ * One step of a saved plan's campaign: a row of its content calendar, with a guide from the
+ * creative kit. It belongs to one plan version (`output_id`), so a revised plan gets its own set and
+ * this one, with the team's edits, stays as it was. Nothing here is sent to Qloo or a model.
+ */
+export const campaignActions = pgTable(
+  'campaign_actions',
+  {
+    id: id(),
+    outputId: uuid('output_id')
+      .notNull()
+      .references(() => outputs.id, { onDelete: 'cascade' }),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    /** The calendar row it came from. Null for an action the team added. */
+    rowId: text('row_id'),
+    territory: text('territory'),
+    channel: text('channel').notNull(),
+    title: text('title').notNull(),
+    asset: text('asset'),
+    startsOn: text('starts_on'),
+    endsOn: text('ends_on'),
+    week: integer('week'),
+    guide: jsonb('guide'),
+    findingIds: text('finding_ids').array().notNull().default(sql`'{}'::text[]`),
+    status: text('status', { enum: actionStatuses }).notNull().default('todo'),
+    note: text('note').notNull().default(''),
+    edited: boolean('edited').notNull().default(false),
+    position: integer('position').notNull().default(0),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [index('campaign_actions_output_idx').on(table.outputId, table.position)],
+);
+
+/** Two creative angles for one action and the one thing to measure. There is no winner column. */
+export const campaignTests = pgTable(
+  'campaign_tests',
+  {
+    id: id(),
+    actionId: uuid('action_id')
+      .notNull()
+      .references(() => campaignActions.id, { onDelete: 'cascade' }),
+    angles: jsonb('angles').notNull(),
+    measure: text('measure').notNull(),
+    conventions: text('conventions').array().notNull().default(sql`'{}'::text[]`),
+    createdAt: createdAt(),
+  },
+  (table) => [unique('campaign_tests_action_unique').on(table.actionId)],
+);

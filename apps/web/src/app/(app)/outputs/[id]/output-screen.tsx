@@ -1,6 +1,6 @@
 'use client';
 
-import type { OutputDetail, OutputTabKey, ThreadDetail } from '@oraqul/schema';
+import type { CampaignState, OutputDetail, OutputTabKey, ThreadDetail } from '@oraqul/schema';
 import { useRouter } from 'next/navigation';
 import { LiveChat } from '@/app/_workspace/chat/live-chat';
 import { OutputView } from '@/app/_workspace/output/output-view';
@@ -10,11 +10,13 @@ import type { Viewer } from '@/lib/api/viewer';
 export function OutputScreen({
   detail,
   chat,
+  campaign,
   initialTab,
   viewer,
 }: {
   detail: OutputDetail;
   chat: ThreadDetail;
+  campaign: CampaignState | null;
   initialTab: OutputTabKey | undefined;
   viewer: Viewer;
 }) {
@@ -24,6 +26,7 @@ export function OutputScreen({
     <div className="flex flex-col gap-5" data-wide data-cat={detail.project.category}>
       <OutputView
         detail={detail}
+        campaign={campaign}
         initialTab={initialTab}
         canEdit={canEdit}
         teamName={viewer.teamName}

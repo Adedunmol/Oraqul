@@ -78,6 +78,11 @@
         "note": "Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned."
       },
       {
+        "key": "campaign",
+        "label": "Campaign",
+        "note": "The content calendar as actions your team can run, edit and tick off. Each comes with a guide to adapt: Oraqul makes no final asset."
+      },
+      {
         "key": "date",
         "label": "Rival date check",
         "note": "How each date overlaps with rival releases. Lower overlap is better."

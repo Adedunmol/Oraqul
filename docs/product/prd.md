@@ -6,7 +6,7 @@ Owners: Wahab and Adedunmola.
 
 Oraqul is a culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like.
 
-Oraqul is built to stop launches failing and to make them pay. It builds a launch plan, audits the plan a team already has, fixes the weak decisions in it, and, once the launch is out, reads the results the team supplies and revises the plan around the audience that showed up. That covers films, series, music, books, podcasts, games and live shows. The journey is research, plan, then revision from results; a plan is a document, an audit is a report, a fix is a revised plan backed by an audit, and an answer is a short reply in the chat.
+Oraqul is built to stop launches failing and to make them pay. It builds a launch plan, audits the plan a team already has, fixes the weak decisions in it, and, once the launch is out, reads the results the team supplies and revises the plan around the audience that showed up. That covers films, series, music, books, podcasts, games and live shows. The journey is research, plan, campaign, then revision from results; a plan is a document, an audit is a report, a fix is a revised plan backed by an audit, and an answer is a short reply in the chat.
 
 Every reply has two stages. First code asks Qloo, the taste data API, the questions the launch needs and turns each answer into a finding. Then the model writes the plan from those findings and its launch knowledge. Every claim about taste, audience or place cites a finding; launch practice is labelled as playbook. Evidence serves the plan, not the other way round.
 
@@ -98,6 +98,7 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | J5 | Rival date check: the user supplies rivals and dates, in the brief or later in the chat. Qloo has no release calendar. Oraqul measures shared audience with each rival from one ranking call, and in a build calls each date okay, risky or avoid (R5). | P1 |
 | J6 | Partner brief: a draft message that cites its findings. Never sent. | P1 |
 | J7 | Answer: a question about the plan is answered from its findings, with the same line kinds and check. If the answer would change a decision, the agent offers it as a scenario. | P0 |
+| J8 | Campaign: a plan with a content calendar can be set up as actions in the project, one for each calendar row, each with a guide from the creative kit that the team adapts. The team edits an action and ticks it off. A revised plan gets its own set and the earlier set is never changed; the page says which version a set belongs to. An action can carry a two-angle test: each angle with its reasoning, one thing to measure, and no predicted winner. Nothing is published or scheduled. | P1 |
 
 ### 6.3 Category packs
 
