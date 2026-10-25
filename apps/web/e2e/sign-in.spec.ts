@@ -43,10 +43,10 @@ test('a return path survives the move between auth pages', async ({ page }) => {
   await expect(page).toHaveURL('/sign-up?next=%2Fteam');
 });
 
-test('sign in shows an error and no horizontal scroll at 400px when the API is down', async ({
+test('sign in shows an error and no horizontal scroll at 375px when the API is down', async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 400, height: 800 });
+  await page.setViewportSize({ width: 375, height: 800 });
   await page.goto('/sign-in');
   await page.getByLabel('Email').fill('ada@example.com');
   await page.getByLabel('Password', { exact: true }).fill('password123');

@@ -6,15 +6,17 @@ Owners: Wahab and Adedunmola.
 
 Oraqul is a culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like.
 
-Oraqul builds, checks and repairs launch plans. Plan a launch, audit the plan you already have, or fix one, before the launch or after it, across films, series, music, books, podcasts and games. Every reply has two stages. First code asks Qloo, the taste data API, the questions the launch needs and turns each answer into a finding. Then the model writes the plan from those findings and its launch knowledge. Every claim about taste, audience or place cites a finding; launch practice is labelled as playbook. Evidence serves the plan, not the other way round.
+Oraqul is built to stop launches failing and to make them pay. It builds a launch plan, audits the plan a team already has, fixes the weak decisions in it, and, once the launch is out, reads the results the team supplies and revises the plan around the audience that showed up. That covers films, series, music, books, podcasts, games and live shows. The journey is research, plan, then revision from results; a plan is a document, an audit is a report, a fix is a revised plan backed by an audit, and an answer is a short reply in the chat.
+
+Every reply has two stages. First code asks Qloo, the taste data API, the questions the launch needs and turns each answer into a finding. Then the model writes the plan from those findings and its launch knowledge. Every claim about taste, audience or place cites a finding; launch practice is labelled as playbook. Evidence serves the plan, not the other way round.
 
 This document says what to build and why. The spec says how. The design system file says how it looks and reads.
 
 ## 2. Problem
 
-Launch plans in media rest on audience assumptions nobody writes down. They come from a few comparable titles and instinct. When a launch underperforms, the team can see what happened but not which assumption was wrong, so the relaunch repeats the same guess.
+Launch plans in media rest on audience assumptions nobody writes down. They come from a few comparable titles and instinct. When a launch underperforms, the team can see what happened but not which assumption was wrong, so the relaunch repeats the same assumption.
 
-Existing tools either produce a generic plan with no evidence, or report audience data without saying what to do with it. A chat assistant gives a usable plan in which every cultural claim is a guess. Oraqul gives a plan whose cultural claims are measured: which artists, series, cinemas, brands and communities the launch's audience actually likes, in the team's own cities.
+Existing tools either produce a generic plan with no evidence, or report audience data without saying what to do with it. A chat assistant gives a usable plan, but its cultural claims come from memory and nothing checks them. Oraqul gives a plan whose cultural claims are measured: which artists, series, cinemas, brands and communities the launch's audience actually likes, in the team's own cities.
 
 ## 3. Users
 
@@ -27,6 +29,7 @@ Launch and marketing teams. One team can work in several categories.
 | Books | Publishers, publicists | Which comps should we pitch against, and is there a screen angle? |
 | Podcasts | Networks, independent studios | Which topics do rival shows not own? |
 | Games | Publishers, indie studios | Which fan bases and regions should we go after? |
+| Live shows | Promoters, venues, managers | Which cities hold the audience for this show, and what should the final push say? |
 
 Roles inside a team: owner, editor, viewer.
 

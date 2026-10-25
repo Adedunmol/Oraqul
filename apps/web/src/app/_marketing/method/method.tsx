@@ -77,31 +77,36 @@ export function MethodBody() {
       <SectionNav sections={sections} />
 
       <div className="flex flex-col gap-14">
-        <Block id="who" title="Code sets every number. The model writes the words.">
+        <Block id="who" title="Measured, sourced, computed, written.">
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="flex flex-col gap-3 rounded-2xl bg-ink p-6 text-bg">
-              <p className="font-display text-[20px] font-semibold">Code</p>
-              <ul className="flex flex-col gap-2 text-[15px] opacity-90">
-                <li>Every score, lift and fit</li>
-                <li>Every verdict and its rule</li>
-                <li>Confidence for each line</li>
-                <li>Rankings of places and dates</li>
-              </ul>
-            </div>
-            <div className="flex flex-col gap-3 rounded-2xl bg-card p-6">
-              <p className="font-display text-[20px] font-semibold">The model</p>
-              <ul className="flex flex-col gap-2 text-[15px] text-ink/80">
-                <li>Reads what you wrote</li>
-                <li>Chooses which questions to ask Qloo</li>
-                <li>Explains the results in plain words</li>
-                <li>Drafts the plan around them</li>
-              </ul>
-            </div>
+            {[
+              [
+                'Measured',
+                'Taste and place come from Qloo: who the audience is, what they like and where they gather, ranked for each city.',
+              ],
+              [
+                'Sourced',
+                'Dated market facts, such as rivals, release windows and distributors, come from web research and link to their page.',
+              ],
+              [
+                'Computed',
+                'Code works out every score, verdict, ranking and confidence, and checks every line of the plan against them.',
+              ],
+              [
+                'Written',
+                'The model reads your brief, chooses which questions to ask, and writes the plan. Launch craft is labelled and cites nothing.',
+              ],
+            ].map(([title, text]) => (
+              <div key={title} className="flex flex-col gap-2 rounded-2xl bg-card p-6">
+                <p className="font-display text-[20px] font-semibold">{title}</p>
+                <p className="text-[15px] leading-[1.6] text-ink/80">{text}</p>
+              </div>
+            ))}
           </div>
           <p className={prose}>
             Numbers come only from values Qloo returned in the same run. If the model names a title
             or place that is not in that run’s Qloo data, the output is rejected and the step runs
-            again.
+            again. A fact with no page behind it is not stated.
           </p>
         </Block>
 

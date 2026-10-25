@@ -9,9 +9,9 @@ import { ProductPreview } from '../_marketing/home/product-preview';
 import { TasteMap } from '../_marketing/home/taste-map';
 
 export const metadata: Metadata = {
-  title: 'Oraqul: launch plans grounded in what audiences actually like',
+  title: 'Oraqul: build, audit and fix launch plans grounded in what audiences like',
   description:
-    'Oraqul is an AI agent that plans, checks and fixes launches for film and series, music, books, podcasts, games and live shows, with every claim about your audience backed by real taste data.',
+    'Oraqul is an AI agent that builds, audits and fixes launch plans, then revises them from your results, for film and series, music, books, podcasts, games and live shows. Taste is measured, market facts are sourced and every number is computed by code.',
 };
 
 export default function Home() {

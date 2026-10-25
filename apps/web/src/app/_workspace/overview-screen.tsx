@@ -103,7 +103,7 @@ function NeedRow({ item }: { item: NeedsYouItem }) {
     detail = item.prompt;
   } else if (item.reason === 'results') {
     title = `${item.project.name} is out`;
-    detail = 'Add its results to see who really came.';
+    detail = 'Add its results to see who really came and revise the plan.';
   } else if (item.reason === 'ready') {
     title = `Something new in ${item.thread.name}`;
     detail = item.project.name;

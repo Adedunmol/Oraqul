@@ -15,13 +15,13 @@ test('the landing page shows the pitch, the example and the ways in', async ({ p
   for (const name of ['How it works', 'Guide', 'Categories']) {
     await expect(page.getByRole('link', { name, exact: true }).first()).toBeAttached();
   }
-  await expect(page.locator('[aria-label="Five categories"]')).toBeAttached();
+  await expect(page.locator('[aria-label="Six categories"]')).toBeAttached();
   expect(text).not.toContain('undefined');
   expect(text).not.toContain('NaN');
 });
 
-test('no horizontal scroll at 400px', async ({ page }) => {
-  await page.setViewportSize({ width: 400, height: 800 });
+test('no horizontal scroll at 375px', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
   await page.goto('/');
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - window.innerWidth,

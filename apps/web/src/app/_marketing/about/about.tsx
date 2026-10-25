@@ -19,8 +19,8 @@ export function Problem() {
           <p>
             A launch team bets real money on assumptions: this audience, these cities, this date.
             The data that could settle those assumptions exists, but it sits in dashboards that
-            answer one question at a time, or behind chatbots that answer confidently with nothing
-            behind them.
+            answer one question at a time, or in chat answers that cannot show where a claim came
+            from.
           </p>
           <p>
             Oraqul sits between the two. It talks like a colleague and works like an analyst who

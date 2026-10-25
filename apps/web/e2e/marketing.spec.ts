@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-// Every public page: no broken values in the text, no horizontal scroll at 400px, and the same
+// Every public page: no broken values in the text, no horizontal scroll at 375px, and the same
 // pages in the dark scheme. The marketing pages pin their own light and dark bands, so the scheme
 // must not break them either.
 const pages = [
@@ -20,7 +20,7 @@ const pages = [
 
 for (const path of pages) {
   test(`${path} has no broken values and fits a phone`, async ({ page }) => {
-    await page.setViewportSize({ width: 400, height: 900 });
+    await page.setViewportSize({ width: 375, height: 900 });
     await page.goto(path);
     const text = await page.locator('body').innerText();
     expect(text).not.toContain('undefined');

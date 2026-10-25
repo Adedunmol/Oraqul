@@ -4,11 +4,11 @@
 
 Launch plans grounded in what audiences actually like.
 
-Oraqul is a culturally grounded launch agent for media and entertainment. It builds, checks and repairs launch plans across films, series, music, books, podcasts and games. Its cultural claims (which artists, series, cinemas, brands and communities the audience likes, in which cities) are measured in Qloo taste data, so the plan is better than a chat assistant's, not just better documented.
+Oraqul is a culturally grounded launch agent for the teams that launch films, series, music, books, podcasts, games and live shows. It is built to stop launches failing and to make them pay: it builds a plan, audits one the team already has, fixes weak decisions, and, once the launch is out, reads the results the team supplies and revises the plan around them. Its cultural claims (which artists, series, cinemas, brands and communities the audience likes, in which cities) are measured in Qloo taste data, so a plan says which of its claims are measured, which are sourced and which are launch craft.
 
 ## What it is
 
-Oraqul is a culturally grounded agent that builds, checks and repairs launch plans in media and entertainment. Oraqul is an agent for the teams that launch cultural products. It does three jobs: it plans a launch, audits a launch plan, and fixes one, before the launch or after it. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
+Oraqul is an agent for the teams, and the people on them, that launch cultural products in media and entertainment. It does three jobs: it plans a launch, audits a launch plan, and fixes one, before the launch or after it. After the launch the same loop carries on: the team supplies results, Oraqul compares them with the plan and writes a revised plan. The journey is research, plan, then revision from results. There is one entry point. The user describes what they are launching, where, and what they already have, and the agent works out both the category and the job.
 
 Every reply has two stages. First, findings: the model reads the brief and shapes the questions, code asks Qloo and turns each answer into a sentence, and the findings stream into the chat while they land. Then the reply: the model writes the plan from the findings and its launch knowledge, and code checks every line. It gives direction, never forecasts.
 
@@ -37,6 +37,15 @@ The three jobs are also the three start modes, called `build`, `audit` and `fix`
 
 **Scenario testing** works inside all three. Change one assumption, such as an older opening audience or a different lead city, and Oraqul shows what changes, as a clear before and after.
 
+## Where the evidence comes from
+
+Four kinds of work, each with its own standard:
+
+* **Measured.** Taste, audience and place come from Qloo, through code, and cite a finding.
+* **Sourced.** Dated market facts (rivals, windows, distributors, figures) come from web research and cite a page.
+* **Computed.** Every score, verdict and confidence is worked out by code from what Qloo returned, and code checks every line.
+* **Written.** The model reads the brief, shapes the questions and writes the plan. Launch craft is labelled playbook and cites nothing.
+
 ## The six categories
 
 All six run on one engine. Each has its own questions, output tabs, scenario presets and results format for a launch that is out. Anything else is outside what Oraqul does, and it says so.
@@ -46,6 +55,7 @@ All six run on one engine. Each has its own questions, output tabs, scenario pre
 * **Book publishing.** Comparable books, audience by age and place, adaptation and cross media angles, and retail or event partners. A launch that is out brings pre orders, sales by region and review aggregates.
 * **Podcasts.** Audience and topic tags, sponsor brands, and guest fit. A launch that is out brings downloads by region and age band from the host dashboard.
 * **Games.** Comparable games, fan bases to collaborate with across music and film, and which regions to prioritise. A launch that is out brings wishlists and player counts by region.
+* **Live shows.** A single show or a short run: the audience in each city, the lead channels, a sell-through target the team sets, and a final push by intent ([shows-agent.md](shows-agent.md)). A show that has run brings tickets sold by city.
 
 ## How Oraqul uses Qloo, and what it adds
 
@@ -123,13 +133,13 @@ Oraqul is a global product. A title from any market is a normal entity, and citi
 
 ## What makes it different
 
-* The plan's cultural claims are measured, not guessed: the model shapes the questions with cultural context (a music scene, a release country, a city, an age band), which is what makes Qloo's answers sharp.
+* The plan's cultural claims are measured: the model shapes the questions with cultural context (a music scene, a release country, a city, an age band), which is what makes Qloo's answers sharp.
 * The team's decisions are respected: Oraqul plans for their cities and audience, and says what it found about them.
 * Every claim about taste cites a finding; launch practice is labelled, so a reader can tell the two apart.
 * Plans export to the formats teams send: PDF, Word and Markdown.
-* Honest gaps instead of confident guesses.
+* Honest gaps: what was not found, thin or not supported is said plainly.
 
-The demo leads with the plan side by side with a chat assistant's answer to the same brief.
+The demo leads with a plan and the receipts behind its claims.
 
 ## Stack
 

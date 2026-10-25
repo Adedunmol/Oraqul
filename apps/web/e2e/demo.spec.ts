@@ -15,8 +15,8 @@ test('a share link says so plainly when the shared brief cannot load', async ({ 
   expect(text).not.toContain('NaN');
 });
 
-test('the shared view has no horizontal scroll at 400px', async ({ page }) => {
-  await page.setViewportSize({ width: 400, height: 800 });
+test('the shared view has no horizontal scroll at 375px', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
   await page.goto('/s/not-a-real-token');
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - window.innerWidth,

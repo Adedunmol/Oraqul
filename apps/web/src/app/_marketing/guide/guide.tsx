@@ -99,6 +99,10 @@ const READING = [
     body: 'Launch practice: timing, channels, how to brief a creative. It cites nothing and never claims what an audience likes.',
   },
   {
+    term: 'Sourced fact',
+    body: 'A dated market fact, such as a rival release or a window. It links to the page it came from and uses only that page’s numbers.',
+  },
+  {
     term: 'Confidence',
     body: 'High, medium or lower, set by code from how much the line rests on. It says how much the line rests on, not how good the result is.',
   },
@@ -290,8 +294,9 @@ export function GuideBody() {
               “every territory” and you get one kit that covers each on its lead channel.
             </li>
             <li>
-              <b>Add results.</b> After launch, give totals by city and the next plan is built
-              around who showed up.
+              <b>Add results.</b> After launch, give totals by city or age band. Oraqul sets them
+              against where the plan put each place, and a fix writes a revised plan around who
+              showed up.
             </li>
           </ul>
         </Block>

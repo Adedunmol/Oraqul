@@ -17,7 +17,7 @@ Next.js App Router in `apps/web`. The look is defined in [design-system.md](desi
 ## Required for every screen
 
 - Works in light and dark.
-- Works at 400px wide with no horizontal scroll. Mobile keeps chat, outputs and their details only (PRD A3).
+- Works at 375px wide with no horizontal scroll. Mobile keeps chat, outputs and their details only (PRD A3).
 - Colour never carries meaning alone. Verdicts show glyph and word.
 - Visible focus, real buttons, labelled dialogs.
 - Motion respects `prefers-reduced-motion` ([design-system §8](design-system.md)).

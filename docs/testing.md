@@ -48,7 +48,7 @@ The Playwright run reuses a dev server already on :3000. Stop your own `pnpm dev
 
 ## UI checks every page must pass
 
-No "undefined" or "NaN" in the text, no horizontal scroll at 400px, correct in light and dark. `apps/web/e2e/smoke.spec.ts` shows the pattern, and `apps/web/e2e/marketing.spec.ts` runs it over every public page and walks the guide's brief builder.
+No "undefined" or "NaN" in the text, no horizontal scroll at 375px, correct in light and dark. `apps/web/e2e/smoke.spec.ts` shows the pattern, and `apps/web/e2e/marketing.spec.ts` runs it over every public page and walks the guide's brief builder.
 
 ## Rules
 
