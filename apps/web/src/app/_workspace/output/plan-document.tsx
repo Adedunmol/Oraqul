@@ -33,7 +33,7 @@ export function planOutline(plan: LaunchPlan): { id: string; label: string }[] {
   ];
 }
 
-const sectionTitle = 'font-display text-[20px] font-semibold tracking-[-0.02em]';
+const sectionTitle = 'font-display text-[20px] font-semibold tracking-[-0.015em]';
 
 /**
  * The launch plan as a document, used in the chat and on the plan page. What a line rests on is a
@@ -54,7 +54,7 @@ export function PlanDocument({
   const inBrief = plan.sections.find((s) => s.key === 'bottom-line');
   const rest = plan.sections.filter((s) => s.key !== 'bottom-line' && s.key !== 'gaps');
   return (
-    <div className="font-read flex flex-col gap-10">
+    <div className="font-read flex flex-col gap-10 text-[16px] leading-[1.72]">
       {inBrief ? (
         <section aria-labelledby="in-brief" className="flex scroll-mt-48 flex-col gap-4">
           <h2 id="in-brief" className={sectionTitle}>
@@ -63,11 +63,8 @@ export function PlanDocument({
           <ol className="flex flex-col gap-4">
             {inBrief.lines.map((line, i) => (
               <li key={line.id} className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4">
-                <span
-                  aria-hidden="true"
-                  className="mt-px grid size-7 place-items-center rounded-lg bg-accent-soft text-[13px] font-semibold text-accent tabular-nums"
-                >
-                  {i + 1}
+                <span aria-hidden="true" className="pt-0.5 text-[13px] font-semibold text-muted">
+                  {String(i + 1).padStart(2, '0')}
                 </span>
                 <p className="text-[18px] leading-[1.55] font-medium">
                   <LineText
@@ -89,7 +86,7 @@ export function PlanDocument({
         <section
           key={section.key}
           id={`plan-${section.key}`}
-          className="flex scroll-mt-48 flex-col gap-4"
+          className="flex scroll-mt-48 flex-col gap-4 border-t border-line pt-8"
         >
           <h2 className={sectionTitle}>{section.title}</h2>
           {section.key === 'calendar' && plan.calendar.length > 0 ? (

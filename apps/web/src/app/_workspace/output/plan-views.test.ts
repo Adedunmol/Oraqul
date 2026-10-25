@@ -1,6 +1,6 @@
 import { briefSchema, launchPlanSchema } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
-import { contrastOf, processOf, supportActsOf, territoriesOf } from './plan-views';
+import { processOf, supportActsOf, territoriesOf } from './plan-views';
 
 const callId = '00000000-0000-4000-8000-000000000001';
 
@@ -126,59 +126,6 @@ const emptyBrief = {
   results: null,
   course: null,
 };
-
-describe('contrastOf', () => {
-  const brief = briefSchema.parse({
-    ...emptyBrief,
-    places: [place('Lagos', 1.6), place('London', 0.8)],
-    assumptions: [
-      {
-        id: 'a-place-london',
-        text: 'London is a strong market for this film',
-        verdict: 'breaks',
-        why: '',
-        fix: '',
-        unstated: false,
-      },
-      {
-        id: 'a-place-lagos',
-        text: 'Lagos is a strong market for this film',
-        verdict: 'holds',
-        why: '',
-        fix: '',
-        unstated: false,
-      },
-    ],
-  });
-  const output = {
-    plan,
-    brief,
-    counts: { holds: 3, weak: 1, breaks: 1, cant: 2 },
-    receipts: ['r1', 'r2', 'r3'],
-  };
-
-  it('sets the order the team gave beside the order Qloo found', () => {
-    const c = contrastOf(output);
-    expect(c?.order?.yours.map((p) => p.name)).toEqual(['London', 'Lagos']);
-    expect(c?.order?.ranked.map((p) => [p.name, p.verdict])).toEqual([
-      ['Lagos', 'holds'],
-      ['London', 'breaks'],
-    ]);
-    expect(c?.order?.moved).toBe(2);
-  });
-
-  it('counts the lines that cite Qloo, the playbook lines and the beliefs overturned', () => {
-    const c = contrastOf(output);
-    expect(c?.basis).toEqual({ grounded: 3, playbook: 1, findings: 4, receipts: 3 });
-    expect(c?.beliefs.overturned).toBe(2);
-    expect(c?.added.comps).toEqual(['Midnight Harbor']);
-    expect(c?.added.named).toBe(5);
-  });
-
-  it('is null for an output with no plan', () => {
-    expect(contrastOf({ ...output, plan: null })).toBeNull();
-  });
-});
 
 describe('processOf', () => {
   it('has nothing to show for a plan that kept no record', () => {

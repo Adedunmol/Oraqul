@@ -114,8 +114,8 @@ const TAB_NOTE: Record<OutputTabKey, string> = {
   territories: 'Where to open first, ranked by how strongly each territory fits.',
   route: 'The tour stops in your order, scored against the strongest order.',
   supportacts: 'The acts Qloo ranks highest with your audience in each tour city.',
-  contrast:
-    'What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it.',
+  // Legacy schema key only. No demo pack emits this tab.
+  contrast: 'Legacy comparison view.',
   shelf: 'The comparable titles whose readers are closest to yours.',
   bridge: 'Screen and audio titles your readers also love.',
   topics: 'Topics your listeners like that rival shows do not own.',

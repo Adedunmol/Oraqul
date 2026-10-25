@@ -18,7 +18,15 @@ import {
   ReceiptChip,
 } from '@oraqul/ui';
 import Link from 'next/link';
-import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type ReactNode,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { Modal } from '@/app/(app)/_components/modal';
 import { answerQuestion, markThreadRead, runNextStep, sendMessage } from '@/lib/demo/actions';
@@ -127,6 +135,9 @@ export function ChatView({
   // typing in the box does not cut a word reveal short.
   const [from, setFrom] = useState(() => seen.get(threadId) ?? items.length);
   const scroller = useRef<HTMLDivElement>(null);
+  const lastScrollTop = useRef(0);
+  const [scrollEdges, setScrollEdges] = useState({ up: false, down: false });
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
   const [receipt, setReceipt] = useState<{ output: Output; lineId: string } | null>(null);
   const [quote, setQuote] = useState<string | null>(null);
   const reply = useReplySelection(scroller, canEdit && !busy);
@@ -142,14 +153,63 @@ export function ChatView({
   const answerRef = useRef(onAnswer);
   answerRef.current = onAnswer;
 
+  const updateScrollEdges = useCallback(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const next = {
+      up: el.scrollTop > 8,
+      down: el.scrollTop + el.clientHeight < el.scrollHeight - 8,
+    };
+    setScrollEdges((current) =>
+      current.up === next.up && current.down === next.down ? current : next,
+    );
+  }, []);
+
+  const scrollToEdge = (edge: 'top' | 'bottom') => {
+    const el = scroller.current;
+    if (!el) return;
+    el.scrollTo({
+      top: edge === 'top' ? 0 : el.scrollHeight,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
+  };
+
+  const onTranscriptScroll = useCallback(() => {
+    const top = scroller.current?.scrollTop ?? 0;
+    const change = top - lastScrollTop.current;
+    if (Math.abs(change) > 2) setScrollDirection(change < 0 ? 'up' : 'down');
+    lastScrollTop.current = top;
+    updateScrollEdges();
+  }, [updateScrollEdges]);
+
   useEffect(() => {
     seen.set(threadId, items.length);
     if (visible) seenCallback.current?.();
     const el = scroller.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+      lastScrollTop.current = el.scrollTop;
+      setScrollDirection(null);
+      updateScrollEdges();
+    }
     const settle = setTimeout(() => setFrom(items.length), 2000);
     return () => clearTimeout(settle);
-  }, [threadId, items.length, visible]);
+  }, [threadId, items.length, visible, updateScrollEdges]);
+
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const content = el.firstElementChild;
+    const observer = new ResizeObserver(updateScrollEdges);
+    observer.observe(el);
+    if (content) observer.observe(content);
+    el.addEventListener('scroll', onTranscriptScroll, { passive: true });
+    updateScrollEdges();
+    return () => {
+      observer.disconnect();
+      el.removeEventListener('scroll', onTranscriptScroll);
+    };
+  }, [onTranscriptScroll, updateScrollEdges]);
 
   // Number keys pick an option on the open card while no text field has focus. design-system §2.6
   useEffect(() => {
@@ -183,25 +243,49 @@ export function ChatView({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
-        <div className="mx-auto flex w-full max-w-[880px] flex-col gap-4">
-          {items.map((item, i) => (
-            <Item
-              key={item.id}
-              item={item}
-              isNew={i >= from}
-              canEdit={canEdit}
-              onAnswer={onAnswer}
-              output={item.role === 'output' ? outputs.get(item.outputId) : undefined}
-              onReceipt={(output, lineId) => setReceipt({ output, lineId })}
-              onFix={
-                canEdit && idle && item.role === 'output' && item.outputId === lastOutputId
-                  ? () => send('Fix this plan', [])
-                  : undefined
-              }
-            />
-          ))}
+      <div className="relative min-h-0 flex-1">
+        <div ref={scroller} className="h-full overflow-y-auto px-4 py-5">
+          <div data-chat-transcript className="mx-auto flex w-full max-w-[880px] flex-col gap-5">
+            {items.map((item, i) => (
+              <Item
+                key={item.id}
+                item={item}
+                isNew={i >= from}
+                canEdit={canEdit}
+                onAnswer={onAnswer}
+                output={item.role === 'output' ? outputs.get(item.outputId) : undefined}
+                onReceipt={(output, lineId) => setReceipt({ output, lineId })}
+                onFix={
+                  canEdit && idle && item.role === 'output' && item.outputId === lastOutputId
+                    ? () => send('Fix this plan', [])
+                    : undefined
+                }
+              />
+            ))}
+          </div>
         </div>
+        {scrollDirection === 'up' && scrollEdges.up ? (
+          <button
+            type="button"
+            onClick={() => scrollToEdge('top')}
+            aria-label="Scroll to the top of the chat"
+            data-tip="Scroll to top"
+            className="absolute bottom-3 left-1/2 z-20 grid size-10 -translate-x-1/2 place-items-center rounded-full bg-ink text-bg shadow-md transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
+          >
+            <Icon name="arrowUp" className="size-[18px]" />
+          </button>
+        ) : null}
+        {scrollDirection === 'down' && scrollEdges.down ? (
+          <button
+            type="button"
+            onClick={() => scrollToEdge('bottom')}
+            aria-label="Scroll to the bottom of the chat"
+            data-tip="Scroll to bottom"
+            className="absolute bottom-3 left-1/2 z-20 grid size-10 -translate-x-1/2 place-items-center rounded-full bg-ink text-bg shadow-md transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
+          >
+            <Icon name="arrowUp" className="size-[18px] rotate-180" />
+          </button>
+        ) : null}
       </div>
       {reply.pick
         ? createPortal(
@@ -222,7 +306,10 @@ export function ChatView({
             document.body,
           )
         : null}
-      <div className="mx-auto flex w-full max-w-[912px] flex-col gap-2 px-4 pt-1 pb-4">
+      <div
+        data-chat-composer
+        className="mx-auto flex w-full max-w-[912px] flex-col gap-2 px-4 pt-1 pb-4"
+      >
         {canEdit && idle && steps.length ? (
           <div className="flex flex-col gap-1.5">
             <p className="flex items-center gap-1.5 text-[12px] font-semibold text-muted">
@@ -347,7 +434,7 @@ function Item({
       const { quote, body } = splitQuote(item.text);
       return (
         <div
-          className={`flex max-w-[92%] flex-col gap-2 self-end whitespace-pre-wrap rounded-[12px_12px_4px_12px] bg-inset px-3.5 py-2.5 ${isNew ? 'item-new' : ''}`}
+          className={`flex max-w-[84%] flex-col gap-2 self-end whitespace-pre-wrap rounded-xl bg-inset px-3.5 py-2.5 text-[15px] leading-[1.55] ${isNew ? 'item-new' : ''}`}
         >
           {quote ? (
             <p className="line-clamp-3 rounded-lg bg-surface2 px-2.5 py-1.5 text-[13px] text-muted">
@@ -411,10 +498,13 @@ function Item({
 }
 
 function AgentText({ text, isNew }: { text: string; isNew: boolean }) {
-  if (!isNew) return <div className="whitespace-pre-wrap text-[15.5px] leading-[1.6]">{text}</div>;
+  if (!isNew)
+    return (
+      <div className="max-w-[70ch] whitespace-pre-wrap text-[15.5px] leading-[1.7]">{text}</div>
+    );
   let n = 0;
   return (
-    <div className="item-new text-[15.5px] leading-[1.6]">
+    <div className="item-new max-w-[70ch] text-[15.5px] leading-[1.7]">
       {text.split(/(\s+)/).map((part, i) =>
         /^\s*$/.test(part) ? (
           part.includes('\n') ? (
@@ -550,7 +640,7 @@ function PlanCard({
   const changes = new Map(output.changes.map((c) => [c.lineId, c]));
   return (
     <div className={`flex flex-col gap-4 ${isNew ? 'item-new' : ''}`}>
-      <article className="flex flex-col gap-8 rounded-2xl bg-card px-5 py-6 min-[640px]:px-9 min-[640px]:py-8">
+      <article className="flex flex-col gap-8 rounded-2xl bg-card px-5 py-6 shadow-none! min-[640px]:px-10 min-[640px]:py-9">
         <OutputHeader output={output}>
           <ExportMenu output={output} />
           <Link
@@ -585,7 +675,7 @@ function ReportCard({
 }) {
   return (
     <div className={`flex flex-col gap-4 ${isNew ? 'item-new' : ''}`}>
-      <article className="flex flex-col gap-8 rounded-2xl bg-card px-5 py-6 min-[640px]:px-9 min-[640px]:py-8">
+      <article className="flex flex-col gap-8 rounded-2xl bg-card px-5 py-6 shadow-none! min-[640px]:px-10 min-[640px]:py-9">
         <OutputHeader output={output}>
           <ExportMenu output={output} />
           <Link
@@ -624,17 +714,17 @@ function ReportCard({
 // the side. A rule below keeps the document from running into it.
 function OutputHeader({ output, children }: { output: Output; children: ReactNode }) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-b border-line pb-6">
-      <div className="flex min-w-0 flex-col items-start gap-2">
-        <KindTag kind={output.kind} label={output.kindLabel} />
-        <h3 className="font-display text-[clamp(21px,2.2vw,26px)] leading-[1.2] font-semibold tracking-[-0.025em] text-balance">
+    <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-4 border-b border-line pb-5">
+      <div className="flex min-w-0 flex-col items-start gap-1.5">
+        <p className="text-[12px] font-semibold text-muted">{output.kindLabel}</p>
+        <h3 className="font-display text-[clamp(20px,2vw,24px)] leading-[1.25] font-semibold tracking-[-0.015em] text-balance">
           {output.label}
         </h3>
         <p className="text-[13px] text-muted">
           {output.createdBy}, {formatDay(output.createdAt)}
         </p>
       </div>
-      <div className="flex flex-wrap items-center gap-2">{children}</div>
+      <div className="flex flex-wrap items-center gap-1.5">{children}</div>
     </header>
   );
 }

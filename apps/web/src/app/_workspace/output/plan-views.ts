@@ -1,4 +1,4 @@
-import type { Finding, LaunchLine, LaunchPlan, Output, Place, Verdict } from '@oraqul/schema';
+import type { Finding, LaunchLine, LaunchPlan, Place } from '@oraqul/schema';
 
 const key = (text: string) => text.trim().toLowerCase();
 
@@ -95,79 +95,6 @@ export function supportActsOf(plan: LaunchPlan): SupportGridView | null {
     .slice(0, MAX_ACTS)
     .map(({ count: _count, ...row }) => row);
   return { cities, rows };
-}
-
-export interface Contrast {
-  /** Null when the plan ranked fewer than two of the team's cities. */
-  order: {
-    yours: { name: string }[];
-    ranked: { name: string; lift: number; verdict: Verdict | null }[];
-    moved: number;
-  } | null;
-  basis: { grounded: number; playbook: number; findings: number; receipts: number };
-  beliefs: { holds: number; weak: number; breaks: number; cant: number; overturned: number };
-  added: { comps: string[]; named: number };
-}
-
-const placeAssumption = /^(.+?) is a strong market for this /;
-
-/**
- * Oraqul's plan beside what the team had before the data: the order of cities it typed, the
- * beliefs it held, and how much of the plan cites Qloo. All of it counted from what is saved, so
- * it needs no second plan and no model.
- */
-export function contrastOf(
-  output: Pick<Output, 'plan' | 'brief' | 'counts'> & { receipts: readonly unknown[] },
-): Contrast | null {
-  const { plan, brief } = output;
-  if (!plan) return null;
-  const verdictOf = new Map(
-    brief.assumptions.flatMap((a) => {
-      const m = a.id.startsWith('a-place-') ? placeAssumption.exec(a.text) : null;
-      return m?.[1] ? [[key(m[1]), a.verdict] as const] : [];
-    }),
-  );
-  const yoursAll = brief.assumptions.flatMap((a) => {
-    const m = a.id.startsWith('a-place-') ? placeAssumption.exec(a.text) : null;
-    return m?.[1] ? [m[1]] : [];
-  });
-  const rankedPlaces = [...brief.places].sort((a, b) => b.lift - a.lift);
-  const yours = yoursAll.filter((n) => rankedPlaces.some((p) => key(p.name) === key(n)));
-  const order =
-    yours.length >= 2
-      ? {
-          yours: yours.map((name) => ({ name })),
-          ranked: rankedPlaces
-            .filter((p) => yours.some((n) => key(n) === key(p.name)))
-            .map((p) => ({
-              name: p.name,
-              lift: p.lift,
-              verdict: verdictOf.get(key(p.name)) ?? null,
-            })),
-          moved: 0,
-        }
-      : null;
-  if (order) {
-    order.moved = order.ranked.filter(
-      (p, i) => key(p.name) !== key(order.yours[i]?.name ?? ''),
-    ).length;
-  }
-  const lines = plan.sections.flatMap((s) => s.lines);
-  const counts = output.counts;
-  return {
-    order,
-    basis: {
-      grounded: lines.filter((l) => l.kind === 'grounded').length,
-      playbook: lines.filter((l) => l.kind === 'playbook').length,
-      findings: plan.findings.length,
-      receipts: output.receipts.length,
-    },
-    beliefs: { ...counts, overturned: counts.weak + counts.breaks },
-    added: {
-      comps: plan.comps.filter((c) => c.source === 'added').map((c) => c.name),
-      named: new Set(plan.findings.flatMap((f) => f.entities.map((e) => key(e.name)))).size,
-    },
-  };
 }
 
 export interface ProcessView {

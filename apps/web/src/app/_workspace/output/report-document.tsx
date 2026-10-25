@@ -49,7 +49,7 @@ export function ReportDocument({
   onSource: (findingId: string) => void;
 }) {
   return (
-    <div className="font-read flex flex-col gap-10">
+    <div className="font-read flex flex-col gap-10 text-[16px] leading-[1.72]">
       <ReportItems report={report} onSource={onSource} />
       {report.results ? <ReportResults results={report.results} /> : null}
       <RuleChecks checks={report.ruleChecks} />
@@ -151,7 +151,7 @@ function Item({
   const row = report.results?.rows.find((r) => item.id === `a-place-${slug(r.place)}`);
   const first = item.findingIds[0];
   return (
-    <div className="flex flex-col gap-1.5 rounded-xl bg-surface2 px-4 py-3.5">
+    <div className="flex flex-col gap-2 border-t border-line py-4">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-[15.5px] font-semibold">{item.claim}</h3>
         {item.unstated ? <Mark>Unstated</Mark> : null}

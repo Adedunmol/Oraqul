@@ -95,14 +95,13 @@ const tabsOf = (category: 'film' | 'music' | 'books', value: OutputRow) =>
 describe('presentOutput tabs for a plan', () => {
   const cities = [place('Lagos', 1.6), place('London', 0.9)];
 
-  it('gives a Film plan with two cities Territories, and every plan With and without Qloo', () => {
+  it('gives a Film plan with two cities Territories', () => {
     const brief = briefSchema.parse({ ...emptyBrief, places: cities });
     expect(tabsOf('film', row(brief, plan()))).toEqual([
       'plan',
       'territories',
       'audience',
       'assumptions',
-      'contrast',
       'evidence',
     ]);
   });
@@ -128,17 +127,11 @@ describe('presentOutput tabs for a plan', () => {
       'supportacts',
       'audience',
       'assumptions',
-      'contrast',
       'evidence',
     ]);
     const bare = briefSchema.parse({ ...emptyBrief, places: cities });
     expect(tabsOf('music', row(bare, plan()))).not.toContain('route');
     expect(tabsOf('music', row(bare, plan()))).not.toContain('supportacts');
-  });
-
-  it('does not add plan tabs to an output with no plan', () => {
-    const brief = briefSchema.parse({ ...emptyBrief, places: cities });
-    expect(tabsOf('film', row(brief, null))).not.toContain('contrast');
   });
 });
 

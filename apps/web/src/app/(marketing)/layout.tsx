@@ -8,7 +8,7 @@ import { Tooltip } from '../_workspace/tooltip';
 // light and dark bands opt in with .scheme-dark. design-system §6 "Marketing pages".
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="scheme-light bg-canvas">
+    <div className="marketing-shell scheme-light bg-canvas">
       <SiteHeader />
       <main>{children}</main>
       <SiteFooter />

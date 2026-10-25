@@ -102,11 +102,6 @@
         "note": "Every belief your plan rests on. Holds means Qloo data supports it. Breaks means it does not. Each one has a receipt: the exact Qloo call behind it. What could not be tested is at the end."
       },
       {
-        "key": "contrast",
-        "label": "With and without Qloo",
-        "note": "What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it."
-      },
-      {
         "key": "evidence",
         "label": "Evidence",
         "note": "Every claim with its receipt. Use this to check any number."

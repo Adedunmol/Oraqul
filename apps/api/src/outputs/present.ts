@@ -67,8 +67,6 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
   calls:
     'Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned.',
   kit: 'Guides for the team that makes the creative: hooks, a script, a shot list, a key art brief and captions. Oraqul does not make the asset.',
-  contrast:
-    'What Qloo changed: your own order and beliefs beside what the data found, and how much of the plan rests on it.',
   route: 'The tour stops in your order, scored against the strongest order.',
   supportacts: 'The acts Qloo ranks highest with your audience in each tour city.',
   fanbase: 'Which fan bases to collab with, ranked within each medium.',
@@ -90,7 +88,6 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   territories: 'Territories',
   calls: 'Direction calls',
   kit: 'Creative kit',
-  contrast: 'With and without Qloo',
   route: 'Tour route',
   supportacts: 'Support acts',
   fanbase: 'Fan base bridge',
@@ -233,7 +230,7 @@ export function presentOutput({
           ]
         : [];
   // Film: one plan per territory, regrouped from the plan's own lines. Music: the tour route and the
-  // support acts, from the route score and the support findings. Every plan: what Qloo changed.
+  // support acts, from the route score and the support findings.
   const planTabs: OutputTabKey[] = plan
     ? [
         ...territories,
@@ -266,36 +263,10 @@ export function presentOutput({
           ]
         : plan
           ? row.kind === 'scenario'
-            ? [
-                'plan',
-                'changes',
-                ...gameTabs,
-                ...planTabs,
-                'audience',
-                'assumptions',
-                'contrast',
-                'evidence',
-              ]
+            ? ['plan', 'changes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
             : row.kind === 'fix' && report
-              ? [
-                  'plan',
-                  'fixes',
-                  ...gameTabs,
-                  ...planTabs,
-                  'audience',
-                  'assumptions',
-                  'contrast',
-                  'evidence',
-                ]
-              : [
-                  'plan',
-                  ...gameTabs,
-                  ...planTabs,
-                  'audience',
-                  'assumptions',
-                  'contrast',
-                  'evidence',
-                ]
+              ? ['plan', 'fixes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
+              : ['plan', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
           : row.kind === 'date'
             ? ['summary', 'date', 'evidence']
             : row.kind === 'partner'
