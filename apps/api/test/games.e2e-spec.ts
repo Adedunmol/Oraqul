@@ -122,7 +122,6 @@ describe('Games build end to end (real agents, demo Qloo, scripted reader)', () 
       'calls',
       'audience',
       'assumptions',
-      'contrast',
       'evidence',
     ]);
     if (!output.plan) throw new Error('Expected a launch plan');
@@ -233,7 +232,6 @@ describe('Games build end to end (real agents, demo Qloo, scripted reader)', () 
       'calls',
       'audience',
       'assumptions',
-      'contrast',
       'evidence',
     ]);
     expect(plan.receipts.every((r) => r.source === 'demo')).toBe(true);

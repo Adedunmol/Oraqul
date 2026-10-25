@@ -18,7 +18,7 @@ How [design-system.md](design-system.md) becomes code. Do not repeat token value
 | `bg-holds-bg text-holds` (and weak, breaks, cant) | verdict tokens |
 | `text-cat`, `bg-cat`, `.cat-card` | `--cat`, set by `data-cat`. Icon tiles and strokes, and `.cat-card` (in `globals.css`), the project card tint |
 | `bg-good`, `bg-warn`, `bg-crit`, `bg-na`, `bg-s1`, `bg-s2` | chart and status tokens, for chart marks only |
-| `font-display`, `font-sans`, `font-mono` | Space Grotesk, Geist, Geist Mono |
+| `font-display`, `font-sans`, `font-read`, `font-mono` | Geist, Geist, Geist, Geist Mono in the product. The marketing shell remaps `font-display` to Space Grotesk |
 
 Adding a token: add it in all three places in `globals.css`, then map it in `@theme inline`.
 

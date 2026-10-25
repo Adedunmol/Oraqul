@@ -63,11 +63,12 @@
   --elev-1: 0 1px 2px rgba(17, 17, 20, 0.05), 0 2px 6px rgba(17, 17, 20, 0.04);
   --elev-primary: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(17, 17, 20, 0.12);
   --elev-2: 0 2px 4px -2px rgba(17, 17, 20, 0.06), 0 12px 24px -4px rgba(17, 17, 20, 0.1);
-  --f-display:
+  --f-brand:
     var(--font-space-grotesk), var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-display: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-body: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: var(--font-geist-mono), ui-monospace, Menlo, Consolas, monospace;
-  --f-read: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-read: var(--font-geist), system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
 }
 
@@ -186,6 +187,12 @@
   color: var(--ink);
 }
 
+/* Marketing keeps the more distinctive brand face. Internal product screens use the quieter
+   display token above, so headings and long-form output share Geist. */
+.marketing-shell {
+  --f-display: var(--f-brand);
+}
+
 /* Category colour: icon tiles and strokes, and the tint of a project card (.cat-card). */
 [data-cat="film"] {
   --cat: var(--cat-film);
@@ -286,6 +293,32 @@ body {
   font-family: var(--f-body);
   font-size: 14.5px;
   line-height: 1.5;
+}
+
+/* Scrollbars stay quiet against every tokenised surface, but gain contrast on hover. The wider
+   transparent edge keeps the thumb easy to acquire without drawing a heavy track. */
+* {
+  scrollbar-color: color-mix(in srgb, var(--muted) 52%, transparent) transparent;
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
+  background-color: color-mix(in srgb, var(--muted) 52%, transparent);
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--muted) 78%, transparent);
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 @keyframes preview-rise {
@@ -455,6 +488,13 @@ body {
     grid-template-columns: 232px minmax(0, 1fr);
     transition: grid-template-columns 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  /* The sidebar and the page are independent desktop panes. Every ordinary app page scrolls here;
+     the chat workspace opts out below because its chat and rail own their scrolling. */
+  [data-app-main] {
+    height: calc(100dvh - 16px);
+    min-height: 0;
+    overflow-y: auto;
+  }
   [data-sidebar="collapsed"] .app-shell {
     grid-template-columns: 68px minmax(0, 1fr);
   }
@@ -470,11 +510,25 @@ body {
 @media (min-width: 900px) {
   [data-app-main]:has([data-workspace]) {
     --page-x: 12px;
+    overflow: hidden;
+  }
+  [data-app-main]:has([data-workspace]) > div {
+    height: 100%;
+    min-height: 0;
   }
 }
 /* These screens use the whole panel instead of a centred 1280px column. */
 [data-app-main]:has([data-workspace], [data-wide]) > div {
   max-width: none;
+}
+
+/* Fullscreen gives documents and structured outputs more room without stretching ordinary reply
+   text, which keeps its own 70ch measure in the transcript. */
+[data-chat-frame]:fullscreen [data-chat-transcript] {
+  max-width: 1080px;
+}
+[data-chat-frame]:fullscreen [data-chat-composer] {
+  max-width: 1112px;
 }
 
 /* One scrim for every dialog: the modal, the search palette and the receipt drawer. A plain dim,

@@ -6,20 +6,22 @@ import { DirectionPill } from '@oraqul/ui';
 /** The budget band and the one signal a plan is judged on, under its In brief. */
 export function PlanFrame({ plan }: { plan: LaunchPlan }) {
   const { band, signal } = plan;
-  if (!band && !signal) return null;
+  if (!band && !signal && plan.calls.length === 0) return null;
   const calls = (['okay', 'risky', 'avoid'] as const).map((direction) => ({
     direction,
     count: plan.calls.filter((c) => c.direction === direction).length,
   }));
+  const columnCount =
+    Number(Boolean(signal)) + Number(plan.calls.length > 0) + Number(Boolean(band));
   return (
     <section
       aria-label="What the plan is sized for"
-      className="flex flex-wrap items-stretch gap-3 font-sans"
+      className={`grid grid-cols-1 border-y border-line font-sans [&>*+*]:border-t [&>*]:px-4 [&>*]:py-4 min-[680px]:[&>*+*]:border-t-0 min-[680px]:[&>*+*]:border-l min-[680px]:[&>*]:px-5 ${columnCount === 3 ? 'min-[680px]:grid-cols-3' : columnCount === 2 ? 'min-[680px]:grid-cols-2' : ''}`}
     >
       {signal ? (
-        <div className="flex min-w-[220px] flex-1 flex-col gap-1 rounded-xl bg-card px-4 py-3.5">
+        <div className="flex min-w-0 flex-col gap-1">
           <span className="text-xs font-semibold text-muted">Judged on</span>
-          <b className="font-display text-[17px] tracking-[-0.02em]">{signal.primary}</b>
+          <b className="text-[15px] font-semibold">{signal.primary}</b>
           <span className="text-[13px] text-muted">
             {signal.target
               ? `Target ${signal.target.value.toLocaleString('en-US')} ${signal.target.unit}${signal.target.floor === null ? '' : `, floor ${signal.target.floor.toLocaleString('en-US')}`}. A target, not a forecast.`
@@ -28,7 +30,7 @@ export function PlanFrame({ plan }: { plan: LaunchPlan }) {
         </div>
       ) : null}
       {plan.calls.length > 0 ? (
-        <div className="flex min-w-[160px] flex-col gap-1.5 rounded-xl bg-card px-4 py-3.5">
+        <div className="flex min-w-0 flex-col gap-1.5">
           <span className="text-xs font-semibold text-muted">Calls</span>
           <span className="flex flex-wrap gap-1.5">
             {calls
@@ -44,9 +46,9 @@ export function PlanFrame({ plan }: { plan: LaunchPlan }) {
         </div>
       ) : null}
       {band ? (
-        <div className="flex min-w-[160px] flex-col gap-1 rounded-xl bg-card px-4 py-3.5">
+        <div className="flex min-w-0 flex-col gap-1">
           <span className="text-xs font-semibold text-muted">Sized for</span>
-          <b className="font-display text-[17px] capitalize tracking-[-0.02em]">
+          <b className="text-[15px] font-semibold capitalize">
             {band.band === 'mid' ? 'Mid-size' : band.band} budget
           </b>
           <span className="text-[13px] text-muted">

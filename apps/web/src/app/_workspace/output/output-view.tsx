@@ -14,7 +14,6 @@ import { makeView, OutputContext, useOutputView } from './context';
 import { ExportMenu } from './export-menu';
 import { ExportModal, ShareModal } from './modals';
 import { ReceiptDrawer } from './receipt-drawer';
-import { ContrastTab } from './tabs-contrast';
 import {
   AssumptionsTab,
   AudienceTab,
@@ -77,7 +76,8 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   kit: KitTab,
   route: RouteTab,
   supportacts: SupportActsTab,
-  contrast: ContrastTab,
+  // Kept only because old stored URLs can still parse this schema key; the tab is filtered below.
+  contrast: () => null,
   shelf: ShelfTab,
   bridge: BridgeTab,
   topics: TopicsTab,
@@ -118,7 +118,10 @@ export function OutputView({
   publicExample?: boolean;
 }) {
   const { output, project, thread, builtOn } = detail;
-  const keys = output.tabs.map((t) => t.key);
+  // `contrast` remains a schema key for old responses, but product positioning does not belong in
+  // a user's working plan. Hide it even if an older API instance still sends it.
+  const all = output.tabs.filter((t) => t.key !== 'contrast');
+  const keys = all.map((t) => t.key);
   // The API lists the tabs in order: a launch plan opens on Plan, the older outputs on Summary.
   const first = keys[0] ?? 'summary';
   const asked =
@@ -158,7 +161,6 @@ export function OutputView({
     [output, builtOn, detail.reaction, canEdit, shared, goToTab],
   );
 
-  const all = output.tabs;
   // Territories is the heart of a plan that has them, so it stays beside the plan.
   const primary: OutputTabKey[] = output.plan?.territories.length
     ? [...PRIMARY, 'territories']

@@ -128,7 +128,6 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       'calls',
       'audience',
       'assumptions',
-      'contrast',
       'evidence',
     ]);
     if (!output.plan) throw new Error('Expected a launch plan');
@@ -506,7 +505,6 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       'calls',
       'audience',
       'assumptions',
-      'contrast',
       'evidence',
     ]);
     expect(fixed.thread.baseOutputId).toBe(plan.id);

@@ -11,6 +11,9 @@ import { PlanTab } from './tabs-core';
 
 type Filter = Verdict | 'all';
 
+const reportPaper =
+  'max-w-[780px] rounded-2xl bg-card px-5 py-7 shadow-none! min-[640px]:px-10 min-[640px]:py-10 min-[900px]:px-14';
+
 /** The audit's assumptions: every belief the plan rests on, with its verdict and where it says so. */
 export function ReportAssumptionsTab() {
   const { output, openReceipt } = useOutputView();
@@ -41,16 +44,16 @@ export function ReportAssumptionsTab() {
           </ChipButton>
         ))}
       </div>
-      <div className="max-w-[720px]">
+      <article className={reportPaper}>
         <ReportItems
           report={report}
           only={filter === 'all' ? undefined : filter}
           onSource={(id) => openReceipt(id)}
         />
-      </div>
-      <div className="max-w-[720px]">
-        <RuleChecks checks={report.ruleChecks} />
-      </div>
+        <div className="mt-10">
+          <RuleChecks checks={report.ruleChecks} />
+        </div>
+      </article>
     </>
   );
 }
@@ -60,7 +63,7 @@ export function RisksTab() {
   const { output, openReceipt } = useOutputView();
   if (!output.report) return <PlanTab />;
   return (
-    <div className="max-w-[720px]">
+    <article className={reportPaper}>
       <ReportLines
         title="Risks"
         lines={output.report.risks}
@@ -70,7 +73,7 @@ export function RisksTab() {
       {output.report.risks.length === 0 ? (
         <p className="text-muted">No risks were found to write up.</p>
       ) : null}
-    </div>
+    </article>
   );
 }
 
@@ -80,7 +83,7 @@ export function AlternativesTab() {
   const report = output.report;
   if (!report) return null;
   return (
-    <div className="max-w-[720px]">
+    <article className={reportPaper}>
       <ReportLines
         title="Worth a look"
         lines={report.alternatives}
@@ -92,7 +95,7 @@ export function AlternativesTab() {
           Nothing in the data pointed to a stronger option than the ones in your plan.
         </p>
       ) : null}
-    </div>
+    </article>
   );
 }
 
@@ -100,9 +103,9 @@ export function ReportResultsTab() {
   const { output } = useOutputView();
   if (!output.report?.results) return null;
   return (
-    <div className="max-w-[720px]">
+    <article className={reportPaper}>
       <ReportResults results={output.report.results} />
-    </div>
+    </article>
   );
 }
 
@@ -121,47 +124,49 @@ export function FixesTab() {
         title="What was fixed"
         note="What the audit found weak or broken in your plan, and what the new plan does about it. Your own choices stay in it."
       />
-      <Stack>
-        {items.length ? (
-          items.map((i) => (
-            <Line
-              key={i.id}
-              title={i.claim}
-              tags={i.unstated ? <Mark>Unstated</Mark> : null}
-              side={
-                <>
-                  <VerdictPill verdict={i.verdict} />
-                  <Confidence level={i.confidence} />
-                  {i.findingIds[0] ? (
-                    <ReceiptChip
-                      onClick={() => openReceipt(i.findingIds[0] ?? '')}
-                      aria-label="Open receipt"
-                    />
-                  ) : null}
-                </>
-              }
-            >
-              <p>{i.why}</p>
-              <p className="text-ink">
-                <b>What changed:</b> {i.fix?.text ?? 'Nothing to change in the plan for this.'}
-              </p>
-            </Line>
-          ))
-        ) : (
-          <p className="text-muted">
-            Every assumption that could be tested held, so nothing broke.
-          </p>
-        )}
-      </Stack>
-      <div>
-        <button
-          type="button"
-          onClick={() => goToTab('plan')}
-          className="text-[13.5px] font-semibold text-accent underline underline-offset-2"
-        >
-          Back to the plan
-        </button>
-      </div>
+      <article className={reportPaper}>
+        <Stack>
+          {items.length ? (
+            items.map((i) => (
+              <Line
+                key={i.id}
+                title={i.claim}
+                tags={i.unstated ? <Mark>Unstated</Mark> : null}
+                side={
+                  <>
+                    <VerdictPill verdict={i.verdict} />
+                    <Confidence level={i.confidence} />
+                    {i.findingIds[0] ? (
+                      <ReceiptChip
+                        onClick={() => openReceipt(i.findingIds[0] ?? '')}
+                        aria-label="Open receipt"
+                      />
+                    ) : null}
+                  </>
+                }
+              >
+                <p>{i.why}</p>
+                <p className="text-ink">
+                  <b>What changed:</b> {i.fix?.text ?? 'Nothing to change in the plan for this.'}
+                </p>
+              </Line>
+            ))
+          ) : (
+            <p className="text-muted">
+              Every assumption that could be tested held, so nothing broke.
+            </p>
+          )}
+        </Stack>
+        <div>
+          <button
+            type="button"
+            onClick={() => goToTab('plan')}
+            className="text-[13.5px] font-semibold text-accent underline underline-offset-2"
+          >
+            Back to the plan
+          </button>
+        </div>
+      </article>
     </>
   );
 }

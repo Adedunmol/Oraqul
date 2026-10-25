@@ -14,7 +14,7 @@ import {
 import { Button, buttonClassName, ChipButton, Icon, Input } from '@oraqul/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Dropdown } from '@/app/_components/dropdown';
 import { ChartCard, StackedColumns } from '@/app/_workspace/charts';
 import { KindTag } from '@/app/_workspace/chat/chat-panel';
@@ -63,6 +63,8 @@ export function ProjectWorkspace({
   const [choosing, setChoosing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [panelOpen, setPanelOpen] = useState(true);
+  const [chatFullscreen, setChatFullscreen] = useState(false);
+  const chatFrame = useRef<HTMLElement>(null);
   const canEdit = detail.myRole !== 'viewer';
   const onProjectUpdated = useCallback((event: ProjectUpdate) => setUpdate(event), []);
 
@@ -85,6 +87,23 @@ export function ProjectWorkspace({
       // Storage can be refused; the panel then starts open.
     }
   }, []);
+
+  useEffect(() => {
+    const sync = () => setChatFullscreen(document.fullscreenElement === chatFrame.current);
+    document.addEventListener('fullscreenchange', sync);
+    return () => {
+      document.removeEventListener('fullscreenchange', sync);
+    };
+  }, []);
+
+  async function toggleChatFullscreen() {
+    try {
+      if (document.fullscreenElement === chatFrame.current) await document.exitFullscreen();
+      else await chatFrame.current?.requestFullscreen();
+    } catch {
+      toast('Could not open the chat full screen. Try again.');
+    }
+  }
   function togglePanel() {
     const next = !panelOpen;
     setPanelOpen(next);
@@ -104,8 +123,11 @@ export function ProjectWorkspace({
   }
 
   return (
-    <div className="view-enter flex flex-col gap-5" data-cat={category ?? undefined}>
-      <header className="sticky-head flex flex-col gap-2.5">
+    <div
+      className="view-enter flex flex-col gap-5 min-[900px]:h-full min-[900px]:min-h-0"
+      data-cat={category ?? undefined}
+    >
+      <header className="sticky-head flex shrink-0 flex-col gap-2.5">
         <Crumbs
           items={[
             { label: 'Projects', href: projectsPath() },
@@ -166,9 +188,12 @@ export function ProjectWorkspace({
 
       <div
         data-workspace
-        className={`grid grid-cols-1 gap-3 min-[900px]:transition-[grid-template-columns] min-[900px]:duration-200 motion-reduce:transition-none ${panelOpen ? 'min-[900px]:grid-cols-[232px_minmax(0,1fr)]' : 'min-[900px]:grid-cols-[44px_minmax(0,1fr)]'}`}
+        className={`grid grid-cols-1 gap-3 min-[900px]:min-h-0 min-[900px]:flex-1 min-[900px]:transition-[grid-template-columns] min-[900px]:duration-200 motion-reduce:transition-none ${panelOpen ? 'min-[900px]:grid-cols-[232px_minmax(0,1fr)]' : 'min-[900px]:grid-cols-[44px_minmax(0,1fr)]'}`}
       >
-        <aside aria-label="Chats" className="hidden min-w-0 min-[900px]:block">
+        <aside
+          aria-label="Chats"
+          className="hidden min-w-0 min-[900px]:block min-[900px]:overflow-y-auto"
+        >
           {panelOpen ? (
             <div className="flex flex-col gap-4">
               {current ? <CurrentPlan output={current} /> : null}
@@ -211,8 +236,10 @@ export function ProjectWorkspace({
         </details>
         {chat ? (
           <section
+            ref={chatFrame}
+            data-chat-frame
             aria-label={`Chat: ${chatName(chat.thread.id, chat.thread.name)}`}
-            className="flex h-[calc(100dvh-24px)] min-h-[480px] min-w-0 flex-col overflow-hidden rounded-2xl bg-card min-[900px]:h-[calc(100dvh-168px)] min-[900px]:min-h-[520px]"
+            className={`flex min-w-0 flex-col overflow-hidden bg-card ${chatFullscreen ? 'h-dvh min-h-0 rounded-none' : 'h-[calc(100dvh-24px)] min-h-[480px] rounded-2xl min-[900px]:h-full min-[900px]:min-h-0'}`}
           >
             <div className="flex items-center justify-between gap-3 px-4 pt-3 pb-1">
               <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5">
@@ -225,6 +252,16 @@ export function ProjectWorkspace({
                 )}
                 <p className="text-[12.5px] text-muted">{builtOnText(chat.thread, labels)}</p>
               </div>
+              <button
+                type="button"
+                onClick={() => void toggleChatFullscreen()}
+                aria-label={chatFullscreen ? 'Exit full screen' : 'Show chat full screen'}
+                aria-pressed={chatFullscreen}
+                data-tip={chatFullscreen ? 'Exit full screen (Esc)' : 'Show chat full screen'}
+                className="grid size-9 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
+              >
+                <Icon name={chatFullscreen ? 'exitFullscreen' : 'fullscreen'} />
+              </button>
             </div>
             <LiveChat
               key={chat.thread.id}

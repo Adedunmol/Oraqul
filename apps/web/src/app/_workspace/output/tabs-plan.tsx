@@ -1,7 +1,7 @@
 'use client';
 
 import type { LaunchPlan } from '@oraqul/schema';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useOutputView } from './context';
 import { PlanDocument, PlanFollowUp, planOutline } from './plan-document';
 import { PlanFeedback } from './plan-feedback';
@@ -14,12 +14,12 @@ export function LaunchPlanTab({ plan }: { plan: LaunchPlan }) {
     [output.changes],
   );
   return (
-    <div className="grid grid-cols-1 gap-x-14 min-[1200px]:grid-cols-[minmax(0,720px)_220px]">
-      <div className="flex flex-col gap-10">
+    <div className="mx-auto grid w-full max-w-[1320px] grid-cols-1 items-start gap-x-12 min-[1200px]:grid-cols-[minmax(0,1fr)_220px]">
+      <article className="flex min-w-0 flex-col gap-10 rounded-2xl bg-card px-5 py-7 shadow-none! min-[640px]:px-10 min-[640px]:py-10 min-[900px]:px-16">
         <PlanDocument plan={plan} changes={changes} onSource={(id) => openReceipt(id)} />
         {shared ? null : <PlanFollowUp plan={plan} />}
         {shared ? null : <PlanFeedback outputId={output.id} initial={reaction} />}
-      </div>
+      </article>
       <Outline items={planOutline(plan)} />
     </div>
   );
@@ -32,12 +32,16 @@ const HEAD_OFFSET = 192;
 /** The jump list. Lights the section being read, and the one just clicked until the scroll lands. */
 function Outline({ items }: { items: { id: string; label: string }[] }) {
   const [active, setActive] = useState<string | undefined>(items[0]?.id);
+  const nav = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const ids = items.map((i) => i.id);
+    const panel = nav.current?.closest<HTMLElement>('[data-app-main]');
     const read = () => {
-      const atEnd =
-        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      const panelScrolls = panel && getComputedStyle(panel).overflowY === 'auto';
+      const atEnd = panelScrolls
+        ? panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 4
+        : window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
       if (atEnd) return setActive(ids.at(-1));
       // The last section whose top has passed under the head; the first one before any has.
       let current = ids[0];
@@ -48,9 +52,11 @@ function Outline({ items }: { items: { id: string; label: string }[] }) {
       setActive(current);
     };
     read();
+    panel?.addEventListener('scroll', read, { passive: true });
     window.addEventListener('scroll', read, { passive: true });
     window.addEventListener('resize', read);
     return () => {
+      panel?.removeEventListener('scroll', read);
       window.removeEventListener('scroll', read);
       window.removeEventListener('resize', read);
     };
@@ -58,6 +64,7 @@ function Outline({ items }: { items: { id: string; label: string }[] }) {
 
   return (
     <nav
+      ref={nav}
       aria-label="On this page"
       className="sticky top-48 hidden h-fit flex-col gap-1 min-[1200px]:flex"
     >

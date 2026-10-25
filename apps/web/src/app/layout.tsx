@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Inter, Space_Grotesk } from 'next/font/google';
+import { Geist, Geist_Mono, Space_Grotesk } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
-// Every title (page, card, section, dialog) and the bottom line: a wide geometric grotesque with a
-// distinctive y and g that stays easy to read. Geist carries all running text and numbers. The
-// landing page has its own face (_marketing).
+// Space Grotesk is the public brand face. The signed-in product uses Geist for both headings and
+// reading text, so dense work does not switch typefaces as the reader moves through a plan.
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
   subsets: ['latin'],
@@ -15,13 +14,6 @@ const spaceGrotesk = Space_Grotesk({
 
 const geist = Geist({
   variable: '--font-geist',
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-// The body of a plan or report: a sans built for reading text on screens, with open, even letters.
-const inter = Inter({
-  variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -48,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${geist.variable} ${inter.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

@@ -23,6 +23,7 @@ export function FormulaCard() {
 
 export const sections = [
   { id: 'who', title: 'Who sets the numbers' },
+  { id: 'difference', title: 'What the taste data changes' },
   { id: 'verdicts', title: 'Verdicts' },
   { id: 'lift', title: 'Lift' },
   { id: 'fit', title: 'Fit' },
@@ -102,6 +103,35 @@ export function MethodBody() {
             or place that is not in that run’s Qloo data, the output is rejected and the step runs
             again.
           </p>
+        </Block>
+
+        <Block id="difference" title="The taste data changes the decision, not just the wording.">
+          <p className={prose}>
+            Qloo is part of the planning loop. Oraqul uses its audience taste data to test the
+            brief, rank real options and decide which recommendations can be stated. The model
+            cannot add a taste claim after the fact or set the result itself.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              [
+                'Tests the brief',
+                'Audience, market and partner assumptions receive a verdict from published rules.',
+              ],
+              [
+                'Changes the order',
+                'Places, dates and partners are ranked from the returned data before the plan is written.',
+              ],
+              [
+                'Leaves a receipt',
+                'Every grounded recommendation links back to the finding and Qloo call behind it.',
+              ],
+            ].map(([title, text]) => (
+              <div key={title} className="flex flex-col gap-2 rounded-2xl bg-card p-5">
+                <h3 className="font-display text-[17px] font-semibold">{title}</h3>
+                <p className="text-[14.5px] leading-[1.6] text-ink/75">{text}</p>
+              </div>
+            ))}
+          </div>
         </Block>
 
         <Block id="verdicts" title="Verdicts">
