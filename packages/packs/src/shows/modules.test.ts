@@ -88,6 +88,17 @@ describe('the calendar (E1, E3, E5)', () => {
     expect(presale?.text).toContain('3 to 7 days');
   });
 
+  it('ends the presale before general on sale opens, whatever window the team gave', () => {
+    for (const weeks of [null, 6, 8]) {
+      const beats = beatsFor('comedy', onSaleFor('comedy', weeks));
+      const presale = beats.find((b) => b.key === 'presale');
+      const onSale = beats.find((b) => b.key === 'on-sale');
+      if (!presale || !onSale) throw new Error('Expected a presale and an on sale beat');
+      expect(presale.until).toBeUndefined();
+      expect(presale.at).toBeLessThan(onSale.at);
+    }
+  });
+
   it('holds the final push by intent and tells ticket holders show information', () => {
     const final = beatsFor('concert', onSaleFor('concert', null)).find(
       (b) => b.key === 'final-push',

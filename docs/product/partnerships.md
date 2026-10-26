@@ -12,7 +12,7 @@ A brand found this way is a taste fit, not a promise: Qloo says the audience lik
 
 ## Who is launching
 
-The budget band says what a release can spend; who is launching says who a brand will take a call from. Code reads it from the brief's own words, never from the model: a `Who is launching:` line the Guide writes (solo, small team, established company, major), else plain words such as "self-published", "independent studio" or "major label". A brief that says nothing leaves it unknown, and only the band decides. A flagship that is not a clear fit (out or a stretch) is never in the plan's partners, lines or calls. It is listed apart as "Later, as the launch grows", unranked, as a goal to grow toward, because big brands plan years ahead and rarely back a launch like this. A flagship the team named stays in the main list.
+The budget band says what a release can spend; who is launching says who a brand will take a call from. Code reads it from the brief's own words, never from the model: a `Who is launching:` line the Guide writes (solo, small team, established company, major), else plain words such as "self-published", "independent studio" or "major label". A brief that says nothing leaves it unknown, and only the band decides. A flagship that is not a clear fit (out or a stretch) is never in the plan's partners, lines or calls. It is listed apart as "Later, as the launch grows", unranked, as a goal to grow toward, because big brands plan years ahead and rarely back a launch like this. A flagship the team named stays in the main list. The plan page and the exported document both keep the "Later, as the launch grows" group apart from tier A. A brand Qloo lists for the audience, but in a list too short to judge (fewer than three brands), reads as listed and not judged, and keeps its citation; only a brand Qloo never listed reads as not ranked.
 
 | Tier | Solo | Small team | Established | Major |
 |---|---|---|---|---|
@@ -56,7 +56,7 @@ Each category has its own brand categories, kinds of partner and ideas (`rules/p
 
 ## The team's own partners
 
-The plan page lets an owner or an editor add and remove the partners the team already has or knows. `PUT /outputs/:outputId/partners { names }` replaces the team's list. Code places each name from the brands the plan already ranked, with no new Qloo call; a name Qloo did not rank shows as not ranked until a partner brief scores it. Partners Oraqul suggested are not changed. The Guide's `Partners already signed:` line is read as partners the team has, and `Brands to consider:` is asked of Qloo beside the model's own candidates and never signed.
+The plan page lets an owner or an editor add and remove the partners the team already has or knows. `PUT /outputs/:outputId/partners { names }` replaces the team's list. Code places each name from the brands the plan already ranked, with no new Qloo call; a name Qloo did not rank shows as not ranked until a partner brief scores it. Partners Oraqul suggested are not changed. The Guide's `Partners already signed:` line is read as partners the team has, and `Brands to consider:` is asked of Qloo beside the model's own candidates and never signed. A brand to consider is placed before brands nobody asked about, by the name given or a fuller one that starts with it ("MTN" for "MTN Group"), is not dropped by the popular-everywhere check, and shows as not ranked when Qloo ranked none by that name.
 
 ## What is not verified
 

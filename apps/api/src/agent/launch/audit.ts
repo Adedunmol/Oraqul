@@ -41,7 +41,7 @@ import type { QueryPlanCore } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import type { ReportWriter } from './report-writer.js';
 import { compareResults } from './results.js';
-import { checkResults, type ResultsReader } from './results-read.js';
+import { checkResults, type ResultsReader, type ResultsReading } from './results-read.js';
 import type { AuditState, FixState } from './state.js';
 import { list } from './text.js';
 
@@ -103,15 +103,18 @@ export async function reviewPlan<R extends LaunchRead, P extends QueryPlanCore>(
     : '';
   ctx.trace('Reading your plan');
   const text = [planText ?? briefText(handoff, PLAN_CHARS), extra].filter(Boolean).join('\n\n');
-  const input = { title: handoff.title, text };
-  const parsed = await deps.read(input);
-  ctx.tokens += parsed.tokens;
-  const checked = parsed.read;
-  // The plan's order is the order it names its cities in, which a gap in the results is read against.
-  const read = { ...checked, places: inOrderOfMention(checked.places, text) };
   const found = await deps.results.read({ text });
   ctx.tokens += found.tokens;
   const said = checkResults(found.reading, text);
+  // The results rows list cities too, in the order the person typed them, which is not the order
+  // the plan put them in. The plan is read without them, so a message that holds only results
+  // asks for the plan instead of comparing the results with their own order.
+  const planPart = withoutRows(text, found.reading);
+  const parsed = await deps.read({ title: handoff.title, text: planPart });
+  ctx.tokens += parsed.tokens;
+  const checked = parsed.read;
+  // The plan's order is the order it names its cities in, which a gap in the results is read against.
+  const read = { ...checked, places: inOrderOfMention(checked.places, planPart) };
 
   const stop = (question: Question, fields: Partial<FixState> = {}): { stop: PlanRun } => {
     deps.emit({ type: 'question', agent: deps.config.category, ...question });
@@ -167,6 +170,12 @@ export async function reviewPlan<R extends LaunchRead, P extends QueryPlanCore>(
     );
   }
   return { text, extra, read, launched: said.launched, results: said.results };
+}
+
+/** The text without the lines the person's results were read from. */
+function withoutRows(text: string, reading: ResultsReading): string {
+  const rows = [...reading.byPlace, ...(reading.byAge ?? [])].map((r) => r.quote.trim());
+  return rows.reduce((rest, quote) => (quote ? rest.split(quote).join(' ') : rest), text);
 }
 
 function inOrderOfMention(places: string[], text: string): string[] {
@@ -291,7 +300,7 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     title,
     request: review.text,
     read,
-    comps: comps.used,
+    comps: comps.used.filter((c) => !c.anchor),
     items,
     findings: grounded.findings,
     sources,
@@ -333,7 +342,7 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     alternatives,
     opportunities: found.opportunities,
     results: comparison,
-    comps: comps.used,
+    comps: comps.used.filter((c) => !c.anchor),
     findings: grounded.findings,
     sources: sources.filter((src) =>
       [...risks, ...alternatives, ...items.flatMap((i) => (i.fix ? [i.fix] : []))].some((l) =>
@@ -391,7 +400,7 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     confidence,
     inputs: {
       read,
-      comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+      comps: comps.used.filter((c) => c.source === 'you' && !c.anchor).map((c) => c.name),
       resolved: comps.resolved,
       dropped: comps.dropped,
       used: comps.used,

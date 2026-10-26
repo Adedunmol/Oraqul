@@ -36,6 +36,10 @@ export type RouterDecision =
 
 const MIN_OPTIONS = 2;
 
+// Words that can only mean a single live show. A concert or a gig is not here: it may be a music release.
+const PLAIN_LIVE_SHOW = /\b(stand-?up|comedy nights?|club nights?|stage plays?)\b/i;
+const MUSIC_WORDS = /\b(songs?|singles?|albums?|eps?|mixtapes?|tours?|tracks?|concerts?|gigs?)\b/i;
+
 /** Lower case, one space, straight quotes: so a quote matches however the model spaced it. */
 export function normalise(text: string): string {
   return text
@@ -63,6 +67,9 @@ export function applyReading(known: Known, reading: RouterReading, said: string)
   }
   if (category && quoted(category.quote, said)) next.category = category.value;
   if (mode && quoted(mode.quote, said)) next.mode = mode.value;
+  // The model sometimes asks music or live shows for stand-up too, so code settles the plain cases.
+  const plain = said.match(PLAIN_LIVE_SHOW);
+  if (next.category === null && plain && !MUSIC_WORDS.test(said)) next.category = 'shows';
   return next;
 }
 

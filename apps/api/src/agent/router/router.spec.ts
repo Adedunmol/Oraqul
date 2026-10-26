@@ -33,6 +33,16 @@ function fixed(...readings: RouterReading[]): Reader & { calls: number } {
 }
 
 describe('applyReading', () => {
+  it('settles stand-up as a live show when the model left the category open', () => {
+    const next = applyReading(unknown, reading({}), 'A stand-up night in London');
+    expect(next.category).toBe('shows');
+  });
+
+  it('still leaves a stand-up album open between music and live shows', () => {
+    const next = applyReading(unknown, reading({}), 'a stand-up album and a gig');
+    expect(next.category).toBeNull();
+  });
+
   it('drops a value the person never said', () => {
     const said = 'i want to launch my song';
     const next = applyReading(

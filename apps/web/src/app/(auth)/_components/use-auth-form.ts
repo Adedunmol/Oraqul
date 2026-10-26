@@ -12,7 +12,11 @@ export type AuthStep = 'signin' | 'verify' | 'reset';
 
 function messageFor(error: unknown, step: AuthStep): string {
   if (error instanceof ApiError) {
-    if (error.status === 429) return 'Too many tries. Ask for a new code in a few minutes.';
+    if (error.status === 429) {
+      return step === 'signin'
+        ? 'Too many tries. Wait a few minutes, then try your password again.'
+        : 'Too many tries. Ask for a new code in a few minutes.';
+    }
     if (step === 'signin' && error.status === 401) return 'Wrong email or password.';
     if ((step === 'verify' || step === 'reset') && error.status === 400) {
       return 'That code is invalid or has expired.';

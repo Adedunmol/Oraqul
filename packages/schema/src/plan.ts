@@ -117,6 +117,11 @@ export const compUsedSchema = z.object({
   match: z.string().nullable(),
   /** Why code picked this match from several, said plainly. Null for a single match. */
   choice: z.string().nullable(),
+  /**
+   * True for a title the launch names beside its comps, such as an earlier show or a featured
+   * artist. It anchors the audience question but is never listed or written about as a comp.
+   */
+  anchor: z.boolean().optional(),
 });
 export type CompUsed = z.infer<typeof compUsedSchema>;
 
@@ -337,6 +342,16 @@ export const partnerOptionSchema = z.object({
 });
 export type PartnerOption = z.infer<typeof partnerOptionSchema>;
 
+/** A flagship the launch cannot clearly reach is a goal to grow toward, not part of the plan. */
+export const isLaterPartner = (p: Pick<PartnerOption, 'tier' | 'budgetFit' | 'from'>): boolean =>
+  p.tier === 'A' && p.budgetFit !== 'fits' && p.from !== 'team';
+
+/** What a partner's Qloo fit reads as: a place, a list too short to judge, or not ranked at all. */
+export function partnerFitText(p: Pick<PartnerOption, 'fit' | 'findingIds'>): string {
+  if (p.fit) return `${p.fit.place} of ${p.fit.of}`;
+  return p.findingIds.length > 0 ? 'listed, too few brands to judge' : 'not ranked';
+}
+
 /** A note on lead time, band or barter, written by code from the partner rules (T1). */
 export const partnerNoteSchema = z.object({
   id: z.string().min(1),
@@ -394,6 +409,8 @@ export const launchPlanSchema = z.object({
   scope: z.enum(['full', 'narrow']),
   sections: z.array(launchSectionSchema),
   comps: z.array(compUsedSchema),
+  /** Comps the team named that Qloo had nothing close to, and so the plan leaves out. */
+  compsNotFound: z.array(z.object({ name: z.string(), why: z.string() })).default([]),
   findings: z.array(findingSchema),
   /** What was found on the web for this plan. Older plans have none. */
   sources: z.array(planSourceSchema).default([]),

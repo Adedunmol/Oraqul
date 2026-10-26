@@ -141,6 +141,16 @@ describe('Music build pipeline on demo data', { timeout: 20_000 }, () => {
     expect(run.output?.brief.cannot.some((c) => c.item === 'Zanzibar Quill Ensemble')).toBe(true);
   });
 
+  it('says in Gaps that Qloo does not know the artist, and what the plan rests on', async () => {
+    const withAlikes = setup(
+      'Launch plan for "Night Songs", an afrobeats album from artist "Zanzibar Quill Ensemble", touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave".',
+    );
+    const run = await runMusicBuild(withAlikes.handoff, withAlikes.deps());
+    const gaps = run.output?.plan?.sections.find((s) => s.key === 'gaps');
+    expect(gaps?.lines[0]?.text).toContain('Qloo does not know Zanzibar Quill Ensemble by name');
+    expect(gaps?.lines[0]?.text).toContain('rests on the comps you named');
+  });
+
   it('uses an act featured on the release as an audience anchor, not as a sound-alike', async () => {
     const { handoff, deps } = setup(
       'Launch plan for "Night Songs", an afrobeats album from artist "Neon Tide" featuring "Sade Rhythm", touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave".',

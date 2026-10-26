@@ -101,7 +101,7 @@ describe('Live shows build pipeline on demo data', { timeout: 20_000 }, () => {
     // Ticket targets come from the team: 80 percent of 500 is 400 tickets, and nothing is invented.
     expect(text('onsale')).toContain('Venue capacity: 500');
     expect(text('onsale')).toContain('Ticket price band: under $30');
-    expect(text('onsale')).toContain('of 400 tickets sold');
+    expect(text('onsale')).toContain('percent of your 400 ticket target sold');
     expect(text('onsale')).toContain('never plan a presale with no end date');
     expect(text('finalpush')).toContain('People who already hold tickets get show information');
     expect(text('budget')).toContain('Announce and on sale: 40%');

@@ -322,6 +322,8 @@ export function partnerOptions(input: {
   ages?: string[];
   /** Who is launching, when the brief says. */
   launcher?: LauncherKind | null;
+  /** Brands the team asked to be considered. They come first and are always listed. */
+  considered?: string[];
 }): { partners: PartnerOption[]; calls: DirectionCall[] } {
   const { findings, signed, band, markets, category } = input;
   const launcher = input.launcher ?? null;
@@ -332,11 +334,24 @@ export function partnerOptions(input: {
   const best = (name: string): Row | undefined =>
     rows.filter((r) => same(r.name, name)).sort((a, b) => a.place / a.of - b.place / b.of)[0];
 
+  // A brand the team asked about, by the name it gave or a fuller one that starts with it ("MTN"
+  // for "MTN Group"), so it is placed before brands nobody asked about.
+  const considered = input.considered ?? [];
+  const asked = (name: string) =>
+    considered.some((c) => same(c, name) || normalise(name).startsWith(`${normalise(c)} `));
+  const ranked = rows
+    .map((r) => r.name)
+    .filter((n, i, all) => all.findIndex((x) => same(x, n)) === i);
   const names: { name: string; from: PartnerOption['from']; market: string | null }[] = [
     ...signed.map((name) => ({ name, from: 'team' as const, market: null })),
-    ...rows
-      .map((r) => r.name)
-      .filter((n, i, all) => all.findIndex((x) => same(x, n)) === i)
+    ...[...ranked.filter(asked), ...ranked.filter((n) => !asked(n))].map((name) => ({
+      name,
+      from: 'qloo' as const,
+      market: null,
+    })),
+    // Asked of Qloo, which ranked none by that name: listed as not ranked, so none goes unanswered.
+    ...considered
+      .filter((c) => !ranked.some((n) => same(n, c) || normalise(n).startsWith(`${normalise(c)} `)))
       .map((name) => ({ name, from: 'qloo' as const, market: null })),
     ...markets.flatMap((m) =>
       (['A', 'B'] as const).flatMap((t) =>
@@ -361,6 +376,7 @@ export function partnerOptions(input: {
       tier === 'A' &&
       from === 'qloo' &&
       !seeded(name) &&
+      !asked(name) &&
       row.place / row.of > local.place / local.of
     ) {
       return [];

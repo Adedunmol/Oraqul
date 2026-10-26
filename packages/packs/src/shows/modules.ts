@@ -196,8 +196,9 @@ export function beatsFor(type: ShowType, onSale: OnSale): Beat[] {
   if (!w) return [final, night];
   const beats: Beat[] = [
     {
+      // The presale runs in the days before general on sale and ends before it opens, so it
+      // is one week, not a range that reaches into the on-sale week.
       at: -(w.max + 1),
-      until: -w.max,
       key: 'presale',
       text: 'Open the presale registration for 4 to 7 days, behind an access code, with an end date. Send the code 3 to 7 days before general on sale.',
     },

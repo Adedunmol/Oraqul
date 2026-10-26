@@ -3,8 +3,8 @@
 import type { Category, StartMode } from '@oraqul/schema';
 import { ChipButton } from '@oraqul/ui';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { createProject } from '@/lib/api/projects';
 import { getCategory } from '@/lib/demo/catalog';
 import { chatPath } from '@/lib/routes';
@@ -72,6 +72,13 @@ export function StartComposer({
   const router = useRouter();
   const [mode, setMode] = useState<StartMode | null>(initialMode ?? null);
   const [sending, setSending] = useState(false);
+  const pathname = usePathname();
+  // The box stays locked while the new chat opens. If this page is shown again (the person came
+  // back to start another project), it must not still be locked.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the path changing is the trigger
+  useEffect(() => {
+    setSending(false);
+  }, [pathname]);
   const choice = START_CHOICES.find((c) => c.mode === mode);
   const info = category ? getCategory(category) : undefined;
 

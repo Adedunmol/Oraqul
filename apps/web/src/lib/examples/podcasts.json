@@ -1211,6 +1211,15 @@
           "title": "To sharpen this plan",
           "lines": [
             {
+              "id": "gaps-lead-cold-case-lagos",
+              "kind": "playbook",
+              "text": "Qloo does not know Cold Case Lagos by name, which is normal before a debut. The plan rests on the comps you named.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
               "id": "gaps-1",
               "kind": "playbook",
               "text": "Planned as a new show launch. Say if it is a new season of a show that is already out, and the calendar changes.",
@@ -1266,6 +1275,7 @@
           "choice": null
         }
       ],
+      "compsNotFound": [],
       "findings": [
         {
           "id": "f-a-age",
@@ -2174,7 +2184,7 @@
           "name": "London",
           "direction": "risky",
           "confidence": "lower",
-          "why": "Audience strength 1.1, where 1.0 is an average city in the same ranking. A smaller audience than the rest: lead with the local angle.",
+          "why": "Audience strength 1.07, where 1.0 is an average city in the same ranking. About an average city for this audience: lead with the local angle.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "London"
@@ -2185,7 +2195,7 @@
           "name": "Lagos",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after London.",
+          "why": "Audience strength 0.87, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after London.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Lagos"

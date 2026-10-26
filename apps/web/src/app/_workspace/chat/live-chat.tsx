@@ -135,8 +135,9 @@ export function LiveChat({
   async function stop() {
     try {
       await cancelRun(threadId);
-    } catch {
+    } catch (err) {
       toast('The run could not be stopped. Try again.');
+      throw err;
     }
   }
 

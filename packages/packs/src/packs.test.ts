@@ -57,6 +57,8 @@ describe('refusals (spec §10)', () => {
     'How much will it make at the box office?',
     'Can you forecast our opening weekend?',
     'Predict the first weekend numbers',
+    'How many downloads will we get?',
+    'How many tickets will London sell?',
     'What ticket price should we set?',
     'How much should we charge for the premiere?',
     'Send the brief to Nike',
@@ -70,6 +72,7 @@ describe('refusals (spec §10)', () => {
     'What if we open in Accra?',
     'Draft a partner brief for Nike',
     'Which age group responds best?',
+    'How many tickets does the venue hold?',
   ])('lets through: %s', (text) => {
     expect(refusalFor(text)).toBeNull();
   });

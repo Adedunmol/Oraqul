@@ -142,6 +142,27 @@ describe('Podcasts audit on demo data', { timeout: 30_000 }, () => {
     expect(report.results.rows.map((r) => r.place).sort()).toEqual(['Lagos', 'London']);
   });
 
+  it('reads the plan order from the plan, not from the order the results were typed in', async () => {
+    const { handoff, deps } = setup(`${PLAN}\nIt came out last month.`, 'audit');
+    const state = auditState(await runPodcastsAudit(handoff, deps()));
+    const done = await runPodcastsAudit(handoff, deps(), {
+      state,
+      reply: typed('Lagos: 4,200\nLondon: 300'),
+    });
+    const rows = done.output?.report?.results?.rows ?? [];
+    expect(rows.find((r) => r.place === 'London')?.plannedRank).toBe(1);
+    expect(rows.find((r) => r.place === 'Lagos')?.plannedRank).toBe(2);
+  });
+
+  it('asks for the plan when the message holds only results', async () => {
+    const { handoff, deps } = setup(
+      'Fix my plan. The launch is out.\nLagos: 4,200\nLondon: 300',
+      'fix',
+    );
+    const state = auditState(await runPodcastsAudit(handoff, deps()));
+    expect(state.pending?.id).toBe('audit.plan');
+  });
+
   it('stops without saving when the Qloo call budget is spent', async () => {
     const { handoff, deps } = setup(PLAN, 'audit', 1);
     const run = await runPodcastsAudit(handoff, deps());

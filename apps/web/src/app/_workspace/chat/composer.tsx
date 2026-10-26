@@ -72,7 +72,7 @@ export function Composer({
   onClearQuote?: () => void;
   onSend: (text: string, files: Attachment[]) => void;
   /** Set while the agent is working: Send becomes Stop, which ends the run. */
-  onStop?: () => void;
+  onStop?: () => void | Promise<void>;
 }) {
   const id = useId();
   const picker = useRef<HTMLInputElement>(null);
@@ -80,6 +80,12 @@ export function Composer({
   const [draft, setDraft] = useState(initialText ?? '');
   const [files, setFiles] = useState<Attachment[]>([]);
   const [problem, setProblem] = useState('');
+  const [stopping, setStopping] = useState(false);
+  const stoppable = Boolean(onStop);
+  // The box frees up when the run ends; the next run starts with a Stop button that works.
+  useEffect(() => {
+    if (!stoppable) setStopping(false);
+  }, [stoppable]);
   const [dragging, setDragging] = useState(false);
   const ready = !disabled && (draft.trim() !== '' || files.length > 0);
 
@@ -246,8 +252,22 @@ export function Composer({
             Shift Enter for a new line
           </span>
           {onStop ? (
-            <Button type="button" variant="primary" size="small" icon="close" onClick={onStop}>
-              Stop
+            <Button
+              type="button"
+              variant="primary"
+              size="small"
+              icon="close"
+              disabled={stopping}
+              onClick={async () => {
+                setStopping(true);
+                try {
+                  await onStop();
+                } catch {
+                  setStopping(false);
+                }
+              }}
+            >
+              {stopping ? 'Stopping' : 'Stop'}
             </Button>
           ) : (
             <Button type="submit" variant="primary" size="small" icon="arrowUp" disabled={!ready}>

@@ -442,6 +442,14 @@ describe('the rival date check inside a build', () => {
     expect(done.receipts.some((r) => r.endpoint.includes('insights'))).toBe(true);
   });
 
+  it('says so when Qloo cannot find a rival, and still scores the rest', async () => {
+    const { handoff, deps } = setup(`${withRivals}; Zzyzx Unknown Feature opens 2099-03-26`);
+    const done = await runFilmBuild(handoff, deps());
+    const gaps = done.output?.brief.cannot.map((c) => c.item) ?? [];
+    expect(gaps).toContain('Rival date: Zzyzx Unknown Feature');
+    expect(gaps).not.toContain('Rival date: Harbor Lights');
+  });
+
   it('makes no rival call when the brief names none', async () => {
     const { handoff, deps } = setup(
       'Launch plan for "Night Ferry", a thriller opening in Lagos. Comps: "Salt Road", "The Glass Lantern", "Midnight Harbor".',

@@ -54,7 +54,7 @@ import {
   bandQuestionId,
   withLauncher,
 } from './band.js';
-import { capital } from './brief.js';
+import { capital, slug } from './brief.js';
 import { calendarRows, calendarSection } from './calendar.js';
 import { type CheckContext, checkSections } from './check.js';
 import { type Clash, clashFinding, type Rival, rivalsFrom, scoreClash } from './clash.js';
@@ -98,7 +98,7 @@ import {
   ScriptedResearchPlanner,
 } from './research-loop.js';
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
-import { measureSection, signalOf } from './signal.js';
+import { codeLine, measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
 import { channelsSection, territoriesOf, withLines } from './territories.js';
 import { list, releaseDate } from './text.js';
@@ -508,6 +508,19 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
         grounded = { ...grounded, findings: [...grounded.findings, finding] };
         deps.emit({ type: 'finding', finding });
       }
+      // A rival Qloo could not find or score is said, not left out of the date check in silence.
+      if (clash.missing.length > 0) {
+        grounded = {
+          ...grounded,
+          gaps: [
+            ...grounded.gaps,
+            ...clash.missing.map((title) => ({
+              item: `Rival date: ${title}`,
+              why: 'Qloo did not find it by name, so its overlap with your audience was not scored and its date was not checked.',
+            })),
+          ],
+        };
+      }
     } catch (err) {
       // The check is optional: a failed or over-budget call leaves the plan without it.
       if (!(err instanceof QlooError || err instanceof QlooBudgetError)) throw err;
@@ -848,7 +861,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         .filter(Boolean)
         .join('\n\n'),
       read,
-      comps: comps.used,
+      comps: comps.used.filter((c) => !c.anchor),
       sections: order.filter(
         (key) =>
           !(
@@ -924,7 +937,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       ...(byCode && deps.config.codeSections.timeline
         ? [deps.config.codeSections.timeline(read, today)]
         : []),
-      deps.config.codeSections.gaps(read, comps),
+      withLeadNotFound(deps.config.codeSections.gaps(read, comps), deps.config.lead?.(read), comps),
     ];
     const sections = ensureDecisions(
       order.flatMap((key) => {
@@ -939,7 +952,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         ranked: grounded.brief.teamOrder.map((p) => p.place),
         findings: grounded.findings,
         home: homeMarket(read.places, queryPlan.country),
-        comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+        comps: comps.used.filter((c) => c.source === 'you' && !c.anchor).map((c) => c.name),
       },
       deps.config.decisions,
     );
@@ -1056,10 +1069,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     today,
     release: releaseDate(read.window),
   });
+  const lead = deps.config.lead?.(read)?.trim().toLowerCase();
   const plan: LaunchPlan = {
     scope: read.scope,
     sections,
     comps: comps.used,
+    // The lead is an anchor and never a comp, so it is not listed with the comps that were not found.
+    compsNotFound: comps.dropped.filter((d) => d.name.trim().toLowerCase() !== lead),
     findings: grounded.findings,
     // Only the pages a kept line cites travel with the plan.
     sources: sources.filter((src) =>
@@ -1166,7 +1182,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       confidence,
       inputs: {
         read,
-        comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+        comps: comps.used.filter((c) => c.source === 'you' && !c.anchor).map((c) => c.name),
         resolved: comps.resolved,
         dropped: comps.dropped,
         used: comps.used,
@@ -1235,6 +1251,8 @@ export async function findComps(
     ...(deps.config.teamAnchors?.(read) ?? []).filter((n) => !read.comps.some((c) => same(c, n))),
   ];
   const yours = named.filter((c) => !resolved.some((a) => same(a.name, c))).slice(0, MAX_COMPS);
+  // An earlier show or a featured artist anchors the audience but is never one of the comps.
+  const isAnchor = (name: string) => !read.comps.some((c) => same(c, name));
   const proposals =
     named.length >= MIN_COMPS
       ? []
@@ -1280,6 +1298,7 @@ export async function findComps(
         source: mine ? 'you' : 'added',
         match: match?.detail ?? null,
         choice: null,
+        ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
       });
     } else if (a.status === 'ambiguous' && a.candidates.length) {
       const pick = settle(a.candidates, read.country);
@@ -1289,6 +1308,7 @@ export async function findComps(
         source: mine ? 'you' : 'added',
         match: pick.detail,
         choice: `Qloo has ${a.candidates.length} ${deps.config.words.entity}s called “${a.name}”. I used the ${pick.detail ?? 'best known'} one, ${read.country && pick.detail?.includes(read.country) ? `from ${read.country} and ` : ''}the best known. Say which you mean if it is another.`,
+        ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
       });
     } else if (a.status === 'not_found' && a.candidates.length) {
       // No exact name, so the nearest title Qloo has stands in, and the plan says so.
@@ -1300,6 +1320,7 @@ export async function findComps(
         source: mine ? 'you' : 'added',
         match: pick.detail,
         choice: `Qloo has no ${deps.config.words.entity} called “${a.name}”. I used the closest one it has, “${pick.name}”${pick.detail ? ` (${pick.detail})` : ''}. Say which you mean if it is another.`,
+        ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
       });
     } else if (mine) {
       dropped.push({
@@ -1500,6 +1521,35 @@ export function applyChange<R extends LaunchRead>(
   };
 }
 
+/**
+ * Says so in Gaps when the work the launch is about (an artist) is not in Qloo by name. That is
+ * normal before a debut, and the plan then rests on the comps, or on the genre without them.
+ */
+function withLeadNotFound(
+  section: LaunchSection,
+  lead: string | null | undefined,
+  comps: Pick<Anchors, 'resolved' | 'dropped'>,
+): LaunchSection {
+  const missed = lead
+    ? comps.dropped.some((d) => d.name.trim().toLowerCase() === lead.trim().toLowerCase())
+    : false;
+  if (!lead || !missed) return section;
+  const rests =
+    comps.resolved.length > 0
+      ? 'The plan rests on the comps you named.'
+      : 'With no comps resolved, the plan rests on the genre’s audience, with lower confidence.';
+  return {
+    ...section,
+    lines: [
+      codeLine(
+        `gaps-lead-${slug(lead)}`,
+        `Qloo does not know ${lead} by name, which is normal before a debut. ${rests}`,
+      ),
+      ...section.lines,
+    ],
+  };
+}
+
 export function homeMarket(cities: string[], country: string | null): string | null {
   return country ? (cities.find((c) => cityCountry(c) === country) ?? null) : null;
 }
@@ -1606,6 +1656,7 @@ function decisionsOf(input: {
     tone: toneOf(input.text, ratingOf(read)),
     ages: read.ages,
     launcher: band?.launcher ?? null,
+    considered: asked.brands,
   });
   const partnered = withPartnerIds(placed.territories, partnerCalls);
   return {

@@ -2,6 +2,7 @@
 
 import {
   type DirectionCall,
+  isLaterPartner as isLater,
   type LaunchLine,
   type LaunchPlan,
   type PartnerNote,
@@ -23,9 +24,6 @@ const BUDGET: Record<PartnerOption['budgetFit'], string> = {
   stretch: 'A stretch for this launch',
   out: 'Not for this launch yet',
 };
-
-/** A flagship the launch cannot clearly reach is a goal to grow toward, not part of the plan. */
-const isLater = (p: PartnerOption) => p.tier === 'A' && p.budgetFit !== 'fits' && p.from !== 'team';
 
 const ROLE: Record<Territory['role'], string> = {
   home: 'Home market',
@@ -73,9 +71,11 @@ function PartnerRow({
                       ? `, and ${partner.fit.local.place} of ${partner.fit.local.of} for the city and age band alone`
                       : ''
                   }.`
-                : partner.from === 'team'
-                  ? 'Qloo fit: not ranked. Ask for a partner brief to score it.'
-                  : 'Qloo fit: not ranked.'
+                : partner.findingIds.length > 0
+                  ? 'Qloo lists it, but too few brands were ranked to judge the fit.'
+                  : partner.from === 'team'
+                    ? 'Qloo fit: not ranked. Ask for a partner brief to score it.'
+                    : 'Qloo fit: not ranked.'
             } `
           : 'A kind of partner, not a brand yet. '}
         {BUDGET[partner.budgetFit]}. Price: unknown.
@@ -266,7 +266,11 @@ export function StructuredTerritories() {
                   ) : null}
                 </div>
               </header>
-              {call ? <p className="text-[13px] text-muted">{call.why}</p> : null}
+              <p className="text-[13px] text-muted">
+                {call
+                  ? call.why
+                  : 'Qloo could not rank this city for this audience, so it has no call.'}
+              </p>
               <p className="text-[13px]">
                 <span className="font-semibold">Lead on </span>
                 {lead.map((c) => c.name).join(', ')}
