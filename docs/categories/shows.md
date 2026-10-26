@@ -1,6 +1,9 @@
-# Live shows agent
+# Live shows
 
 A single show or a short run: a concert, a comedy night, a club night, a stage play, or a one night premiere or screening. Not festivals, full tours, routing, venue logistics or booking a lineup. The category id is `shows`.
+
+
+Shared rules are in [principles.md](../product/principles.md); the runtime is in [launch-runtime.md](../backend/launch-runtime.md). What Live shows changes relative to Music and Podcasts is below.
 
 ## What the team supplies
 
@@ -24,7 +27,7 @@ Taste fit of the act, similar acts by city, the venues and places the audience g
 
 ## The live show rules
 
-Each is a default the team can edit, with its source in the [rule library](launch-rules.md). The comedy figures come from a 2019 Eventbrite article. The 57 percent figure is secondhand: the ticketing blog behind it (TickPick) attributes it to Eventbrite. No Nigerian live event data was found, so none of it is specific to Nigeria. Email and SMS are playbook lines, not platforms.
+Each is a default the team can edit, with its source in the [rule library](../product/launch-rules.md). The comedy figures come from a 2019 Eventbrite article. The 57 percent figure is secondhand: the ticketing blog behind it (TickPick) attributes it to Eventbrite. No Nigerian live event data was found, so none of it is specific to Nigeria. Email and SMS are playbook lines, not platforms.
 
 | | Rule | Enforced in |
 |---|---|---|
@@ -51,3 +54,50 @@ An audit tests the beliefs Qloo can test (age, cities, comparable acts, sponsors
 ## Out of scope
 
 Festivals, full tours and routing, venue logistics and lineup booking. Ticket sales forecasts. Ticket pricing advice.
+
+## How it works in code
+
+### Pack
+
+`packages/packs/src/shows/`:
+
+- `index.ts`: the `CategoryPack`.
+- `catalog.ts`: `SHOWS_QUERIES` (`audience`, `markets` core; `similar`, `brands`, `podcasts`, `venues` by module), `TAG_SPACES`, and `SHOWS_VENUE_PLACES` by show type.
+- `modules.ts`: the show types and their parser (`showTypeMatch`), `pickModules`, and the pure maths: `onSaleFor`, `onSaleDates`, `weeksLeft`, `isLastMinute`, `phasesFor`, `pacingFor`, `ticketTarget` and `beatsFor`. All of it is tested in `modules.test.ts`.
+- The rules are in `packages/packs/src/rules/shows.ts` (`SHOWS_PLAN_RULES`, E1 to E8, and the `SHOWS_RULES` library for the signal and channels).
+
+Schema: the module keys `onsale`, `finalpush` and `venues`, and the audit report's `ruleChecks`.
+
+### API agent
+
+`apps/api/src/agent/shows/`, the same file set as Music:
+
+| File | What is its own |
+|---|---|
+| `read.ts` | The reading adds the act, show type, capacity, price band, on-sale weeks and rival dates. `labelled()` reads the Guide's labelled lines by form, so a model reader cannot lose them |
+| `planner.ts` | Venue places by show type, a music scene only for concerts and club nights |
+| `findings.ts` | `similar`, `brands`, `podcasts` and `venues` queries |
+| `config.ts` | The code sections `onsale` and `finalpush` (via `codeSections.extra` and `codeKeys`), the budget by phase, the show calendar, the gaps, and `ruleChecks` for an audit |
+| `writer.ts`, `report-writer.ts`, `research.ts` | Prompts and templates for a promoter's plan |
+
+Shared code that changed for it:
+
+- `launch/config.ts`: `codeKeys`, `codeSections.extra`, `clashByProximity`, `ruleChecks`, `calendarBeats`.
+- `launch/direction.ts`: `showDateCalls`, a call per rival date set by its distance from the show and by Qloo's overlap where a rival was scored.
+- `launch/audit.ts`: puts `ruleChecks` on the report.
+- The router: a concert, a gig or a live show matches both Music and Live shows, so it asks which.
+
+### Qloo
+
+Anchors are artists, films and people. Rivals are scored as artists, so a comedian rival is not scored; the call is made from the date alone, at the lowest confidence. Venue categories: night club (all four test cities), concert hall (London, New York, thin in Lagos), comedy club and theater (London and New York only), movie theater (all four). Probe: `pnpm --filter @oraqul/engine qloo:shows-probes`.
+
+### Tests
+
+`pipeline.spec.ts`, `audit.spec.ts` (rule checks and reading the Guide's brief), `golden.spec.ts` with six cases in `packages/eval/golden/shows/`, `modules.test.ts` in the pack. The goldens run on demo data; no live Qloo run is recorded for Live shows.
+
+## Limits
+
+- Qloo holds no ticket price, capacity or calendar data, so the team supplies them.
+- Qloo scores artists only, so a comedian or play as a rival is called from its date alone.
+- Theatre and screening on-sale windows were not researched.
+- No live Qloo run is recorded for the goldens.

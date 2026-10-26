@@ -1,44 +1,19 @@
-# How Film planning works
+# The launch runtime
 
-A technical overview, from the first message to a saved plan and its follow ups. Product rules are in the [spec](../product/spec.md): §4.1 the query catalog, §5 the numbers, §6.1 the launch plan, §6.2 the line check. This page is the map.
+How a plan is made and followed up, for every category. Film, Music, Books, Podcasts, Games and Live shows are configurations of one runtime (`apps/api/src/agent/launch/`); a category's own reading, queries, writer and rules are in [categories/](../categories/). How a message reaches an agent (router, gate, handoff, memory) is in [agent.md](agent.md). Product rules are in the [spec](../product/spec.md): §4 the query catalogs, §5 the numbers, §6.1 the launch plan, §6.2 the line check.
 
 ## The one idea
 
-The film being launched is usually not in Qloo yet. So the agent describes it by its **comps** (comparable titles the audience already watches) and asks Qloo what their audience likes. On its own a comp signal drifts toward what is popular overall. With context (a music scene, a release country, a city, an age band, a year) it gets sharp. So every reply has two stages:
+The title being launched is usually not in Qloo yet (Film is the model; each category says how it differs). So the agent describes it by its **comps** (comparable titles the audience already watches) and asks Qloo what their audience likes. On its own a comp signal drifts toward what is popular overall. With context (a music scene, a release country, a city, an age band, a year) it gets sharp. So every reply has two stages:
 
 1. **Findings (code).** The model reads the brief and shapes the queries. Code runs them and turns each result into a finding: a sentence built from one call, streamed into the chat as it lands.
 2. **The reply (model).** The model writes the plan, or an answer, from the findings and its launch knowledge. Code checks every line: a grounded line must cite findings and match their names and numbers; a playbook line is launch practice and may not claim what an audience likes.
 
 The team's decisions (cities, age band, window) are constraints. The plan is for them; it tests them and reports what it finds, and alternatives go under Worth a look.
 
-## The path of a first message
-
-```
-Web composer ──POST /teams/:id/projects──▶ RunService.createProject
-                                              │ saves project (status intake) + first chat
-                                              │ saves the first message + file text as projects.inputs
-                                              ▼
-                                         Router (agent/router)        model or scripted
-                                              │ reads title, category, mode; asks a card if unsure
-                                              ▼
-                                         Handoff  ──▶  FilmAgent.run (agent/launch/agent.ts)
-                                                          │ no plan in this chat yet
-                                                          ▼
-                                                   runFilmBuild → runBuild (agent/launch/pipeline.ts)
-                                                          │ read → comps → pick → ground → write → check
-                                                          ▼
-                                         RunService saves receipts + output (OutputStore)
-                                                          │ emits output.created
-                                                          ▼
-Web chat (SSE /threads/:id/events) shows the trace with its findings, the message, the output line
-Output page reads GET /outputs/:id and opens on the Plan tab
-```
-
-The request returns at once; the run goes on in the background and streams events. One run at a time per chat (409 otherwise).
-
 ## The pieces
 
-Film is a configuration of the shared launch runtime in `apps/api/src/agent/launch/` (spec §3.2). `agent/launch/` holds what every category does the same way; `agent/film/` holds what is Film's own: its reading, its queries and their wording, its prompts and its templates, wired together in `film/config.ts` (`filmLaunch`). The Music agent is the second configuration. The `film/*.ts` files that share a name with a runtime file (`pipeline.ts`, `audit.ts`, `fix.ts`) are thin wrappers that keep Film's signatures.
+`agent/launch/` holds what every category does the same way; `agent/<category>/` holds what is that category's own: its reading, its queries and their wording, its prompts and its templates, wired together in `<category>/config.ts` (`filmLaunch`, `musicLaunch`, …). The files in a category folder that share a name with a runtime file (`pipeline.ts`, `audit.ts`, `fix.ts`) are thin wrappers that keep that category's signatures. The rows below use Film's paths.
 
 | Piece | File | Job |
 |---|---|---|
@@ -168,6 +143,41 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 | `AGENT_MAX_STEPS` | 12 | Tool loop steps for an answer on an older plan |
 | `LLM_API_KEY`, `LLM_MODEL` | empty | No key → scripted reader, default queries and the template writer |
 | Qloo client | 2 in flight, 1 retry, 2 on a 429 | `packages/engine/src/qloo/client.ts` |
+
+## Rules held in code
+
+- Verdicts, scores and confidence come from Qloo values, never from the model.
+- A line that claims something about taste, audience or place cites a finding. Launch practice is labelled playbook and cites nothing.
+- Code checks every line and drops failures, logging them in `dropped`.
+- Forecasts, pricing advice and sending are refused with fixed words before any model or Qloo call.
+- Only public entity names, place names and age bands go to Qloo. Results the person adds are aggregates and never leave the API.
+- Nothing in an audit or fix tells a team to drop a city, a comp or a partner it chose. A fix reorders them or adds a stronger option beside them.
+- With no model key, scripted readers and template writers still produce a complete run.
+
+## Output kinds
+
+- **Plan** (`build`, `scenario`, `fix`): a launch plan with findings, receipts and the brief behind it.
+- **Report** (`audit`): an audit report. A fix saves the report first and then the plan, whose parent is the report.
+- **Small briefs** (`date`, `partner`, `creative`): saved outputs on a plan.
+- **Answer**: a message in the chat with cited claims and no saved output.
+- All outputs export to Markdown, Word and PDF, with grounded lines footnoted to findings. PDF and Word files can be uploaded as input.
+
+## How we judge a plan
+
+Run the same brief through Oraqul and plain models, then score 1 to 5 on: answers the ask; uses what was given (cities, age band, comps, without replacing them); specific and actionable; true (real names and facts only; spot-check them); knows the audience (credible, per city, not generic); knows the market (window, rivals, with sources); readable.
+
+Qloo can lift only "true" and "knows the audience". If we score lower on the rest, the cause is the model, prompt or rules, and is fixable. If we do not win those two, Qloo is not helping.
+
+The **grounding report** (`apps/api/src/agent/launch/grounding-report.ts`) is also tracked in code: lines that cite Qloo or a page, findings used, lines dropped, a floor of 3 Qloo-backed lines for every chosen city in the live golden run, and **rank kept**: of the pairs of names a line takes from one Qloo list, the share written in Qloo's order (100 means the plan never put a lower-ranked pick ahead of a higher one). It counts citations, not whether they are right: a person still reads the plan.
+
+## Known gaps
+
+- The scripted reader takes a partner only when a capitalised name sits next to "partner" or "sponsor", so without a model key other phrasings are not tested. A lone partner with no other brand candidates shows as "could not test".
+- Window, budget and forecasts are always "could not test" in an audit. Cast, director and media placements are not extracted as claims.
+- Auditing an Oraqul plan reads it back as exported Markdown, which works but is rough.
+- Missing engine tools: `crossTaste`, `tagWeights`, `momentum`, `explain`, `applyScenario` and `compareResults`. A what-if reruns every query.
+- Results come in through a text card ("Lagos: 4,200") or the model reader; there is no form or file column mapping.
+- Contract tests against recorded Qloo responses are not started ([testing.md](../testing.md)); the cut-offs for partner and artist verdicts and for results gaps (spec §5.3) are starting values.
 
 ## Where to change things
 

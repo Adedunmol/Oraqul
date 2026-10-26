@@ -1,6 +1,6 @@
 # Principles for every category agent
 
-Each category agent follows these; what "good" means for one category is in its own file, starting with [film-agent.md](film-agent.md). Behaviour and numbers live in [spec](spec.md) and [PRD](prd.md).
+Each category agent follows these; what "good" means for one category is in its own file, starting with [categories/film.md](../categories/film.md). Behaviour and numbers live in [spec](spec.md) and [PRD](prd.md).
 
 ## The one idea
 
@@ -49,7 +49,7 @@ The model may curate (skip a poor fit) but must not re-rank Qloo's lists or prom
 
 ## Using Qloo the way it is meant to be used
 
-1. **Qloo ranks, the model talks.** The model parses intent and explains. Qloo owns candidate generation and ordering. LLM recommenders suffer from position bias (they reward whatever is listed first) and lack co-consumption data, so the model must not re-rank a list Qloo ranked. It may skip a poor fit. We measure this (the *rank kept* score in [film-agent.md](film-agent.md#how-we-judge-a-plan)) and tell the writer to keep Qloo's order.
+1. **Qloo ranks, the model talks.** The model parses intent and explains. Qloo owns candidate generation and ordering. LLM recommenders suffer from position bias (they reward whatever is listed first) and lack co-consumption data, so the model must not re-rank a list Qloo ranked. It may skip a poor fit. We measure this (the *rank kept* score in [launch-runtime.md](../backend/launch-runtime.md#how-we-judge-a-plan)) and tell the writer to keep Qloo's order.
 2. **Rank a candidate list instead of taking the open list.** Qloo can rank a list we supply (`filter.results.entities`). Open lists return the biggest names, which is how Coca-Cola and a luxury car brand became partner suggestions: Qloo says who the audience likes, not who will say yes. So for partner brands the model names brands that could realistically say yes in each city, code resolves them in Qloo, and Qloo ranks only those. Verified live: MTN Group and Bolt for Lagos, EE and Monzo for London, Lyft and Cash App for the US cities.
 3. **Neighbourhoods come from the heatmap we already pull.** Qloo's location product is built for hyper-local targeting. The cells of the city heatmap give the audience's strength by neighbourhood with no extra call: the model names neighbourhoods and their centres, code reads the nearest cells and ranks them. Verified live on Third Bridge: Stonecrest and Lithonia first in Atlanta, Alief then Sugar Land in Houston, Thamesmead then Croydon in London, Surulere and Lekki in Lagos. These match what Claude named from memory, now measured and ranked. A few cells near each centre is a lead to confirm on the ground, never above medium confidence.
 4. **Push logic into Qloo, not after it.** Constraints go in as filters (tags, exclusions, location, the candidate list), so Qloo ranks inside the constrained set, rather than us pruning afterwards.
@@ -72,4 +72,4 @@ The model may curate (skip a poor fit) but must not re-rank Qloo's lists or prom
 
 ## A new category
 
-Copy the shape of [film-agent.md](film-agent.md): the decisions its plan settles, requirements, what grounded means there, the scoring rubric, and known gaps. Write it when the category is built, not before.
+Copy the shape of [categories/film.md](../categories/film.md): the decisions its plan settles, requirements, what grounded means there, the scoring rubric, and known gaps. Write it when the category is built, not before.
