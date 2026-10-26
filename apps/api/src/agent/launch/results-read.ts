@@ -12,6 +12,11 @@ export const resultsReadingSchema = z.object({
   launched: z.object({ value: z.boolean(), quote }).nullable(),
   measure: z.object({ value: z.string().min(1), quote }).nullable(),
   asOf: z.object({ value: z.string().min(1), quote }).nullable(),
+  /** Where the figures come from, as the person wrote it. */
+  source: z
+    .object({ value: z.string().min(1), quote })
+    .nullable()
+    .optional(),
   byPlace: z.array(z.object({ place: z.string().min(1), value: z.number().min(0), quote })).max(30),
   byAge: z
     .array(z.object({ band: z.string().min(1), value: z.number().min(0), quote }))
@@ -81,6 +86,7 @@ export function checkResults(reading: ResultsReading, text: string): ReadResults
     launched: launched || byPlace.length > 0,
     results: {
       asOf: reading.asOf && inWords(reading.asOf.quote, text) ? reading.asOf.value : null,
+      source: reading.source && inWords(reading.source.quote, text) ? reading.source.value : null,
       measure:
         reading.measure && inWords(reading.measure.quote, text) ? reading.measure.value : 'results',
       byPlace,
@@ -98,6 +104,7 @@ Rules:
 - byAge: one row per age group that has a figure, with the group as they wrote it.
 - measure: what the numbers count, in their words ("tickets sold", "streams").
 - asOf: the date or period the results cover, as written.
+- source: where the figures come from, as written ("Instagram insights", "the box office report"). Leave it null when they do not say.
 - Never include a person's name or any personal detail.`;
 
 export class ModelResultsReader implements ResultsReader {
@@ -127,6 +134,8 @@ const NOT_YET =
   /\b(?:not|never|no)\s+(?:yet\s+)?(?:been\s+)?(?:launched|released|opened|premiered|out|live)\b|\b(?:haven['’]t|hasn['’]t|isn['’]t|wasn['’]t|aren['’]t)\s+(?:yet\s+)?(?:been\s+)?(?:launched|released|opened|premiered|out|live)\b/gi;
 const MEASURE =
   /\b(tickets?|streams?|downloads?|wishlists?|admissions|views|sales|box office|pre ?orders?|plays|listens)\b/i;
+// An explicit label, such as “Source: Instagram insights”, so a source is never guessed.
+const SOURCE = /\bsource\s*[:=]\s*([^\n;.]{2,60})/i;
 const ROW =
   /^\s*[-*•]?\s*([\p{L}][\p{L} .'’-]{1,40}?)\s*[:=–-]\s*([\d][\d,]*(?:\.\d+)?)\s*(k|m|million|thousand)?\b/iu;
 const AGE_ROW =
@@ -162,11 +171,13 @@ export class ScriptedResultsReader implements ResultsReader {
       }
     }
     const measure = text.match(MEASURE)?.[0];
+    const source = text.match(SOURCE)?.[1]?.trim();
     const launched = text.replace(NOT_YET, ' ').match(LAUNCHED)?.[0];
     const reading: ResultsReading = {
       launched: launched ? { value: true, quote: launched } : null,
       measure: measure ? { value: measure.toLowerCase(), quote: measure } : null,
       asOf: null,
+      source: source ? { value: source, quote: source } : null,
       byPlace,
       byAge: byAge.length ? byAge : null,
     };

@@ -23,6 +23,7 @@ import {
   reactionStateSchema,
   type ShareState,
   shareStateSchema,
+  type TestResults,
   type UpdateCampaignAction,
 } from '@oraqul/schema';
 import { clientFile, clientGet, clientRequest } from './client';
@@ -157,6 +158,19 @@ export function addCampaignTest(outputId: string, actionId: string): Promise<Cam
   return clientRequest(
     `/outputs/${outputId}/campaign/actions/${actionId}/test`,
     { method: 'PUT' },
+    campaignTestSchema,
+  );
+}
+
+/** The team's figures for each angle of a test. Code compares them and returns the comparison. */
+export function setCampaignTestResults(
+  outputId: string,
+  actionId: string,
+  results: TestResults,
+): Promise<CampaignTest> {
+  return clientRequest(
+    `/outputs/${outputId}/campaign/actions/${actionId}/test/results`,
+    { method: 'PUT', body: results },
     campaignTestSchema,
   );
 }

@@ -21,6 +21,7 @@ import {
   overallConfidenceSchema,
   type Receipt,
   receiptSchema,
+  refreshReportSchema,
   type Verdict,
   type VerdictCounts,
 } from '@oraqul/schema';
@@ -38,6 +39,7 @@ const KIND_LABEL: Record<Job, string> = {
   date: 'Rival date check',
   partner: 'Partner brief',
   creative: 'Creative kit',
+  refresh: 'What changed',
 };
 const PREFIX: Record<Job, string> = {
   build: 'v',
@@ -47,6 +49,7 @@ const PREFIX: Record<Job, string> = {
   date: 'D',
   partner: 'B',
   creative: 'K',
+  refresh: 'R',
 };
 
 // Product copy for the tabs (spec §9.3). The web demo has the same words until it is removed.
@@ -66,6 +69,8 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
     'One plan per territory: the home market first, then the diaspora cities, each with its call, its lead channels and its partners.',
   calls:
     'Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned.',
+  refresh:
+    'What Qloo and the web say now, set beside what this plan saved. The plan itself is unchanged.',
   campaign:
     'The content calendar as actions your team can run, edit and tick off. Each comes with a guide to adapt: Oraqul makes no final asset.',
   kit: 'Guides for the team that makes the creative: hooks, a script, a shot list, a key art brief and captions. Oraqul does not make the asset.',
@@ -91,6 +96,7 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   calls: 'Direction calls',
   kit: 'Creative kit',
   campaign: 'Campaign',
+  refresh: 'What changed',
   route: 'Tour route',
   supportacts: 'Support acts',
   fanbase: 'Fan base bridge',
@@ -195,6 +201,7 @@ export function presentOutput({
   const brief = briefSchema.parse(row.brief);
   const plan = storedPlan(row.plan);
   const audit = storedReport(row.report);
+  const refresh = refreshReportSchema.safeParse(row.refresh).data ?? null;
   // A fixed plan carries the report it answers, so its screen can set each fix beside the plan.
   const report = audit ?? (row.kind === 'fix' ? parentReport : null);
   const moves = movesSchema.parse(row.moves ?? []);
@@ -257,28 +264,30 @@ export function presentOutput({
   const tabKeys: OutputTabKey[] =
     row.kind === 'creative'
       ? ['kit', 'evidence']
-      : audit
-        ? [
-            'summary',
-            'assumptions',
-            'risks',
-            'alternatives',
-            ...(audit.results ? (['results'] as const) : []),
-            'evidence',
-          ]
-        : plan
-          ? row.kind === 'scenario'
-            ? ['plan', 'changes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
-            : row.kind === 'fix' && report
-              ? ['plan', 'fixes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
-              : ['plan', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
-          : row.kind === 'date'
-            ? ['summary', 'date', 'evidence']
-            : row.kind === 'partner'
-              ? ['summary', 'partners', 'evidence']
-              : row.kind === 'scenario'
-                ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
-                : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
+      : row.kind === 'refresh'
+        ? ['refresh']
+        : audit
+          ? [
+              'summary',
+              'assumptions',
+              'risks',
+              'alternatives',
+              ...(audit.results ? (['results'] as const) : []),
+              'evidence',
+            ]
+          : plan
+            ? row.kind === 'scenario'
+              ? ['plan', 'changes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
+              : row.kind === 'fix' && report
+                ? ['plan', 'fixes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
+                : ['plan', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
+            : row.kind === 'date'
+              ? ['summary', 'date', 'evidence']
+              : row.kind === 'partner'
+                ? ['summary', 'partners', 'evidence']
+                : row.kind === 'scenario'
+                  ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
+                  : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
   const focusIds =
     row.kind === 'date'
       ? brief.dates.map((d) => d.id)
@@ -333,6 +342,7 @@ export function presentOutput({
     brief,
     plan,
     report,
+    refresh,
     evidence: [
       ...(plan ? findingRows(plan.findings, bottomLineFindings(plan), receipts) : []),
       ...(audit ? findingRows(audit.findings, reportDrivers(audit), receipts) : []),

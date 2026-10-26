@@ -29,6 +29,7 @@ import { withoutOpportunities } from './opportunities.js';
 import { type LaunchInputs, type PlanRun, runBuild } from './pipeline.js';
 import type { QueryPlanCore, QueryPlanner } from './planner.js';
 import type { LaunchRead } from './read-core.js';
+import { runRefresh } from './refresh.js';
 import type { ReportWriter } from './report-writer.js';
 import type { Researcher } from './research.js';
 import type { ResearchPlanner } from './research-loop.js';
@@ -242,6 +243,8 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
         return withTokens(
           await runDateCheck({ tools, emit, config: this.deps.config }, output, inputs, job.rivals),
         );
+      case 'refresh':
+        return withTokens(await runRefresh(handoff, build, output, inputs));
       case 'creative':
         return withTokens(
           await runCreativeKit(

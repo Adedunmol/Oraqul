@@ -68,6 +68,38 @@ export const testAngleSchema = z.object({
 export type TestAngle = z.infer<typeof testAngleSchema>;
 
 /**
+ * What the team measured for each angle of a test. These are the team's own figures, a separate
+ * kind of evidence from Qloo findings and web facts: they are never sent to Qloo, and a taste
+ * score never stands in for them.
+ */
+export const testResultsSchema = z.object({
+  /** What the figures count, in the team's words: "conversions", "ticket clicks". */
+  measure: z.string().trim().min(1).max(80),
+  a: z.number().min(0),
+  b: z.number().min(0),
+  /** The period the figures cover, as the team wrote it. */
+  period: z.string().trim().max(80).nullable(),
+  /** Where the figures come from, as the team wrote it: "Instagram insights", "the ad manager". */
+  source: z.string().trim().max(80).nullable(),
+});
+export type TestResults = z.infer<typeof testResultsSchema>;
+
+/** Body of `PUT .../test/results`. */
+export const setTestResultsSchema = testResultsSchema;
+
+export const comparisonVerdicts = ['a-ahead', 'b-ahead', 'inconclusive'] as const;
+export const comparisonVerdictSchema = z.enum(comparisonVerdicts);
+export type ComparisonVerdict = z.infer<typeof comparisonVerdictSchema>;
+
+/** The comparison of the two angles' figures, worked out by code from the numbers and nothing else. */
+export const testComparisonSchema = z.object({
+  verdict: comparisonVerdictSchema,
+  /** Why, in plain words. An explanation of the gap is a hypothesis, never stated as the cause. */
+  why: z.string(),
+});
+export type TestComparison = z.infer<typeof testComparisonSchema>;
+
+/**
  * Two creative angles for one action, each with its reasoning, and the one thing to measure. There
  * is no winner field: Oraqul never predicts one, and a result is compared in code once it exists.
  */
@@ -78,6 +110,10 @@ export const campaignTestSchema = z.object({
   measure: z.string(),
   /** The ad-test conventions the test follows, as the calendar rules state them. */
   conventions: z.array(z.string()),
+  /** What the team measured. Null until they add it. */
+  results: testResultsSchema.nullable().default(null),
+  /** Set by code once both angles have figures. */
+  comparison: testComparisonSchema.nullable().default(null),
   createdAt: z.string(),
 });
 export type CampaignTest = z.infer<typeof campaignTestSchema>;

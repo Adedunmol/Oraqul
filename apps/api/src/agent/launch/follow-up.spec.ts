@@ -63,3 +63,21 @@ describe('askedJob', () => {
     expect(askedJob('A roguelike on Steam for 18 to 34')).toBeNull();
   });
 });
+
+describe('decideFollowUp: checking what has changed', () => {
+  it.each([
+    'Check what has changed since this plan was made',
+    'check what’s changed',
+    'Can you see what has changed in the research?',
+    'Refresh the research',
+    'Has anything changed?',
+    'Has the release window changed?',
+  ])('%s is a refresh', (text) => expect(job(text)).toBe('refresh'));
+
+  it.each([
+    'What changed in the cast?',
+    'Fix this plan with what has changed',
+    'Why did the launch flop in Abuja',
+    'What if we open in Accra first?',
+  ])('%s is not a refresh', (text) => expect(job(text)).not.toBe('refresh'));
+});

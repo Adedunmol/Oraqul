@@ -130,6 +130,7 @@ function detailOf(category: 'film' | 'music' | 'podcasts', out: NewOutput, made:
       brief: out.brief,
       plan: out.plan,
       report: null,
+      refresh: null,
       inputs: null,
       versions: null,
       changedIds: [],

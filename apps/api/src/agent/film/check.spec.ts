@@ -500,3 +500,38 @@ describe('the budget band and the creative rule', () => {
     expect(checkLine('partnerships', brief, ctx)).toBeNull();
   });
 });
+
+describe('checkLine and the team’s results', () => {
+  const results = (text: string) =>
+    line({ kind: 'playbook', findingIds: [], names: [], text, group: 'Your results' });
+
+  it('drops a cause stated as fact', () => {
+    for (const text of [
+      'Houston finished first because the trailer ran there.',
+      'London fell behind due to the late release.',
+      'This is why Lagos did best.',
+    ]) {
+      expect(checkLine('route', results(text), ctx), text).toMatch(/states a cause/);
+    }
+  });
+
+  it('keeps what happened and a cause put as a hypothesis', () => {
+    for (const text of [
+      'Houston finished first in your results.',
+      'One reading is that the trailer ran there; that is a hypothesis to test.',
+    ]) {
+      expect(checkLine('route', results(text), ctx), text).toBeNull();
+    }
+  });
+
+  it('leaves the same words alone outside the results group', () => {
+    const other = line({
+      kind: 'playbook',
+      findingIds: [],
+      names: [],
+      text: 'Open early because the window is short.',
+      group: null,
+    });
+    expect(checkLine('route', other, ctx)).toBeNull();
+  });
+});

@@ -57,6 +57,10 @@ const has = (haystack: string, needle: string) => {
 // the person's own words or a page the line cites already contain it.
 const CONTACT = /\bhttps?:\/\/\S+|\bwww\.\S+|[\w.+-]+@[\w-]+\.[\w.-]+|\+\d[\d\s().-]{7,}\d/gi;
 
+// A cause stated as fact. A line about the team's results may say "may" or "one reading".
+const CAUSE =
+  /\b(?:because|caused by|was caused|due to|as a result of|the reason (?:is|was)|this (?:is|was) why|which is why)\b/i;
+
 // Words a marketing team would not use, and talk about the measurement instead of the move.
 const JARGON =
   /\b(lift|index(?:es)?|indexing|affinity|cells|qloo|findings?|could not be (?:tested|ranked|measured)|not enough data|limited (?:market )?(?:testing )?data|low confidence)\b/i;
@@ -268,6 +272,11 @@ export function checkLine(
     if (/%|\bper ?cent\b/i.test(line.text) && !found.some((f) => /%|\bper ?cent\b/i.test(f.text))) {
       return 'It turns an index or a lift into a percentage.';
     }
+  }
+
+  // The team's own results say what happened, never why (spec §5.15): a cause is a hypothesis.
+  if (line.group && /^your results$/i.test(line.group.trim()) && CAUSE.test(line.text)) {
+    return 'It states a cause for the results as fact. Say what happened, and put why as a hypothesis.';
   }
 
   // Worth a look is only for the cities ranked beside the team's (spec §5.2).

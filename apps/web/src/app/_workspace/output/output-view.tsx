@@ -27,6 +27,7 @@ import {
   SummaryTab,
 } from './tabs-core';
 import { CallsTab, KitTab } from './tabs-launch';
+import { RefreshTab } from './tabs-refresh';
 import {
   AlternativesTab,
   FixesTab,
@@ -76,6 +77,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   calls: CallsTab,
   kit: KitTab,
   campaign: CampaignTab,
+  refresh: RefreshTab,
   route: RouteTab,
   supportacts: SupportActsTab,
   // Kept only because old stored URLs can still parse this schema key; the tab is filtered below.

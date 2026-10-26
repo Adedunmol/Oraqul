@@ -262,6 +262,8 @@ export const outputs = pgTable('outputs', {
   plan: jsonb('plan'),
   /** The audit report (items, risks, alternatives, results) for an audit. Null for every other kind. */
   report: jsonb('report'),
+  /** What a check on a saved plan found changed, for a `refresh` output. Null for every other kind. */
+  refresh: jsonb('refresh'),
   /** What the plan was built from (the agent's reading and the comps it used), so a follow up can rerun it. */
   inputs: jsonb('inputs'),
   /** What the plan was made with (writer model, prompts, code, Qloo host). Null on plans saved before this. */
@@ -370,6 +372,8 @@ export const outcomes = pgTable(
     /** What the figures count, in the person's words, and the date they are as of. */
     measure: text('measure').notNull(),
     asOf: text('as_of'),
+    /** Where the figures came from, as the person wrote it. */
+    source: text('source'),
     createdAt: createdAt(),
   },
   (table) => [index('outcomes_output_idx').on(table.outputId)],
@@ -491,6 +495,8 @@ export const campaignTests = pgTable(
     angles: jsonb('angles').notNull(),
     measure: text('measure').notNull(),
     conventions: text('conventions').array().notNull().default(sql`'{}'::text[]`),
+    /** What the team measured for each angle. Null until they add it. */
+    results: jsonb('results'),
     createdAt: createdAt(),
   },
   (table) => [unique('campaign_tests_action_unique').on(table.actionId)],

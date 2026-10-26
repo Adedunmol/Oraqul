@@ -11,6 +11,7 @@ import {
   type Move,
   type OverallConfidence,
   type Receipt,
+  type RefreshReport,
   type StartMode,
   type StopReason,
   type ThreadEvent,
@@ -72,6 +73,8 @@ export interface NewOutput {
   plan: LaunchPlan | null;
   /** The audit report, for an audit. Null for every other kind. */
   report: AuditReport | null;
+  /** What a check on a saved plan found changed, for a `refresh`. Unset for every other kind. */
+  refresh?: RefreshReport | null;
   headline: string;
   moves: Move[];
   confidence: OverallConfidence;

@@ -196,4 +196,37 @@ describe('the campaign of a saved plan', () => {
     await service.removeTest(id, action?.id ?? '');
     expect((await service.state(id)).tests).toHaveLength(0);
   });
+
+  it('saves the team’s figures for a test and compares them in code', async () => {
+    const id = await save({ plan: planWith(rows) as never });
+    const [action] = (await service.setUp(id)).actions;
+    await expect(
+      service.setTestResults(id, action?.id ?? '', {
+        measure: 'conversions',
+        a: 120,
+        b: 80,
+        period: 'week one',
+        source: 'the ad manager',
+      }),
+    ).rejects.toThrow('Set up the test');
+    await service.addTest(id, action?.id ?? '');
+    const test = await service.setTestResults(id, action?.id ?? '', {
+      measure: 'conversions',
+      a: 120,
+      b: 80,
+      period: 'week one',
+      source: 'the ad manager',
+    });
+    expect(test.results).toMatchObject({ a: 120, b: 80, source: 'the ad manager' });
+    expect(test.comparison?.verdict).toBe('a-ahead');
+    const thin = await service.setTestResults(id, action?.id ?? '', {
+      measure: 'conversions',
+      a: 12,
+      b: 8,
+      period: null,
+      source: null,
+    });
+    expect(thin.comparison?.verdict).toBe('inconclusive');
+    expect((await service.state(id)).tests[0]?.comparison?.verdict).toBe('inconclusive');
+  });
 });

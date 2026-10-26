@@ -81,6 +81,8 @@ export const planSourceSchema = z.object({
   fact: z.string().min(1),
   title: z.string(),
   url: z.url(),
+  /** The day the fact was read from the page. Plans saved before it have none. */
+  retrievedAt: z.string().nullable().optional(),
 });
 export type PlanSource = z.infer<typeof planSourceSchema>;
 

@@ -47,6 +47,7 @@ export class OutputStore {
             brief: output.brief,
             plan: output.plan,
             report: output.report,
+            refresh: output.refresh ?? null,
             headline: output.headline,
             moves: output.moves,
             confidence: output.confidence,
@@ -108,6 +109,7 @@ export class OutputStore {
       category: project?.category ?? null,
       measure: results.measure,
       asOf: results.asOf,
+      source: results.source,
     };
     const rows: (typeof outcomes.$inferInsert)[] = [
       ...results.rows.map((r) => ({

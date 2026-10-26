@@ -99,6 +99,7 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | J6 | Partner brief: a draft message that cites its findings. Never sent. | P1 |
 | J7 | Answer: a question about the plan is answered from its findings, with the same line kinds and check. If the answer would change a decision, the agent offers it as a scenario. | P0 |
 | J8 | Campaign: a plan with a content calendar can be set up as actions in the project, one for each calendar row, each with a guide from the creative kit that the team adapts. The team edits an action and ticks it off. A revised plan gets its own set and the earlier set is never changed; the page says which version a set belongs to. An action can carry a two-angle test: each angle with its reasoning, one thing to measure, and no predicted winner. Nothing is published or scheduled. | P1 |
+| J9 | What changed: a saved plan can be checked against today's data on request, in the chat or as a suggested step on an older plan. Findings that moved, web pages that now say something different (each with the day it was read), what is newly found, the plan lines that rest on them and what the check could not do are shown. Something is called changed only when the plan saved an earlier finding or fact to compare. The plan is not changed; a revision is built only when the team asks. | P1 |
 
 ### 6.3 Category packs
 
