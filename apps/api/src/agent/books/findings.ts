@@ -345,6 +345,17 @@ async function profileOf(kit: Kit): Promise<Profile | null> {
 }
 
 /**
+ * Whether a Qloo title is the book the team named. Qloo lists many books under a longer title
+ * (“Zero to One: Notes on Startups, or How to Build the Future”), so the title also counts when
+ * it starts with the name and goes on after a break.
+ */
+export function namesBook(listed: string, named: string): boolean {
+  const have = normalise(listed);
+  const want = normalise(named);
+  return have === want || (have.startsWith(want) && /^[\s:(,–-]/.test(have.slice(want.length)));
+}
+
+/**
  * Spec §5.10: each comparable book the team named, against the year of the launch. The team's comp
  * stays in the plan; its fix names the recent books beside it.
  */
@@ -353,7 +364,7 @@ function compAges(kit: Kit, input: GroundInput, out: Profile, shelf: ShelfBook[]
   const call = out.call;
   const year = launchYear(read, kit.year);
   for (const name of read.comps) {
-    const anchor = input.anchors.find((a) => normalise(a.name) === normalise(name));
+    const anchor = input.anchors.find((a) => namesBook(a.name, name));
     if (!anchor) continue;
     const book = out.books.find((b) => b.entityId === anchor.entityId);
     const result = compAgeVerdict(book?.publicationYear ?? null, year);
