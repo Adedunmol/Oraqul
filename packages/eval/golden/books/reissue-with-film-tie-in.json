@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with London, then Johannesburg: that is where your book's readers are strongest.",
@@ -46,10 +48,8 @@
       "f-film-consult-places-where-the-crawdads-sing": ["London", "Johannesburg"],
       "f-screen-where-the-crawdads-sing": ["Where the Crawdads Sing"],
       "f-podcasts": ["The Book Club Hour", "Shelf Life", "Between the Covers"],
-      "f-brands-beverage-johannesburg": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-beverage-london": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-telecom-johannesburg": ["Spine Mobile"],
-      "f-brands-telecom-london": ["Spine Mobile"],
+      "f-brands-johannesburg": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
+      "f-brands-london": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-shops-london": ["Skoob Books", "Housmans Bookshop"]
     },
     "sections": {
@@ -65,7 +65,7 @@
       "cadence": "0/1",
       "community": "0/1",
       "events": "1/0",
-      "partnerships": "4/0",
+      "partnerships": "2/0",
       "channels": "0/2",
       "creative": "0/4",
       "calendar": "0/24",
@@ -77,13 +77,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 84,
-      "backed": 31,
+      "lines": 82,
+      "backed": 29,
       "rankKept": 100,
-      "findingsUsed": 16,
+      "findingsUsed": 14,
       "cities": {
-        "London": 7,
-        "Johannesburg": 5
+        "London": 6,
+        "Johannesburg": 4
       }
     },
     "dropped": 0,

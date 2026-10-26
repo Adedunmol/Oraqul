@@ -7,7 +7,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Open in London first, then Lagos: that is where your comps' audience is strongest among your cities.",
@@ -44,8 +46,8 @@
       "f-shows-london": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
       "f-cinemas-lagos": ["Marina Picturehouse", "Lekki Screens"],
       "f-cinemas-london": ["Southbank Screen"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
+      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Crime Junkie", "Serial"],
       "f-community-church-london": ["Pentecost House"],
       "f-community-university-lagos": ["Lagoon City University"],
@@ -81,8 +83,8 @@
       "rankKept": 100,
       "findingsUsed": 13,
       "cities": {
-        "London": 5,
-        "Lagos": 8
+        "London": 6,
+        "Lagos": 7
       }
     },
     "dropped": 0,

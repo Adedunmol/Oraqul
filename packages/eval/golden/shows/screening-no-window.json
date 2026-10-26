@@ -35,8 +35,8 @@
       "f-a-place-lagos": [],
       "f-a-place-london": [],
       "f-markets": ["London", "Lagos"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
+      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
       "f-venues-movie-theater-lagos": ["Marina Picturehouse", "Lekki Screens"],
       "f-venues-movie-theater-london": ["Southbank Screen"],
@@ -64,15 +64,15 @@
       "risks": "1/1",
       "gaps": "0/5"
     },
-    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "moves": ["f-markets", "f-audience", "f-brands-lagos"],
     "grounding": {
       "lines": 50,
       "backed": 24,
       "rankKept": 100,
       "findingsUsed": 9,
       "cities": {
-        "London": 3,
-        "Lagos": 7
+        "London": 4,
+        "Lagos": 6
       }
     },
     "dropped": 0,

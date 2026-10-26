@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with Accra, then Lagos: that is where your show's listeners are strongest.",
@@ -48,8 +50,8 @@
       "f-topics": ["Humour", "Storytelling", "Interviews"],
       "f-crosspromo": ["Armchair Expert", "Midnight Ledger", "Case Closed Weekly"],
       "f-promo-armchair-expert": ["Armchair Expert"],
-      "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"],
+      "f-brands-lagos": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
+      "f-brands-city-lagos": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
       "f-region-accra-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
       "f-region-accra-brands": ["Coca-Cola", "Nike", "McDonald's"],
       "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
@@ -62,7 +64,7 @@
       "markets": "2/0",
       "crosspromo": "2/1",
       "guests": "0/1",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
@@ -78,13 +80,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 63,
-      "backed": 25,
+      "lines": 62,
+      "backed": 24,
       "rankKept": 100,
-      "findingsUsed": 10,
+      "findingsUsed": 9,
       "cities": {
         "Accra": 4,
-        "Lagos": 5
+        "Lagos": 4
       }
     },
     "dropped": 0,

@@ -37,8 +37,7 @@
       "f-audience": [],
       "f-a-place-lagos": [],
       "f-markets": ["Lagos"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
       "f-shows-lagos": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
       "f-community-university-lagos": ["Lagoon City University"]
@@ -48,7 +47,7 @@
       "positioning": "0/2",
       "audience": "2/0",
       "markets": "1/0",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "publicity": "1/1",
       "community": "1/1",
       "sync": "1/0",
@@ -63,12 +62,12 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 40,
-      "backed": 28,
+      "lines": 39,
+      "backed": 26,
       "rankKept": 100,
-      "findingsUsed": 8,
+      "findingsUsed": 7,
       "cities": {
-        "Lagos": 8
+        "Lagos": 7
       }
     },
     "dropped": 0,

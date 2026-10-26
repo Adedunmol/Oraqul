@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with New York, then London: that is where your show's listeners are strongest.",
@@ -37,8 +39,8 @@
       "f-markets": ["New York", "London"],
       "f-topics": ["Diaspora life", "Politics", "Interviews"],
       "f-crosspromo": ["Midnight Ledger", "The Long Con", "Case Closed Weekly"],
-      "f-brands-beverage-new-york": ["Lumen Coffee", "Fizz Cola"],
-      "f-brands-telecom-new-york": ["Orbit Data", "Glide Mobile"]
+      "f-brands-london": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
+      "f-brands-new-york": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"]
     },
     "sections": {
       "bottom-line": "3/0",
@@ -67,8 +69,8 @@
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {
-        "New York": 6,
-        "London": 3
+        "New York": 5,
+        "London": 4
       }
     },
     "dropped": 0,

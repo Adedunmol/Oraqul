@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with New York, then Toronto: that is where your book's readers are strongest.",
@@ -53,11 +55,11 @@
       "f-bridge-film": ["It Ends with Us", "Pride & Prejudice", "Crazy Rich Asians"],
       "f-bridge-series": ["Bridgerton", "Virgin River", "Outlander"],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
-      "f-brands-beverage-new-york": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-beverage-toronto": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-telecom-new-york": ["Spine Mobile"],
-      "f-brands-telecom-toronto": ["Spine Mobile"],
+      "f-brands-new-york": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
+      "f-brands-toronto": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-shops-new-york": ["Books Are Magic"],
+      "f-brands-city-new-york": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
+      "f-brands-city-toronto": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-region-new-york-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
       "f-region-new-york-brands": ["Coca-Cola", "Nike", "McDonald's"],
       "f-region-toronto-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
@@ -73,7 +75,7 @@
       "publicity": "1/1",
       "events": "1/0",
       "creators": "0/1",
-      "partnerships": "4/0",
+      "partnerships": "2/0",
       "community": "0/1",
       "channels": "0/2",
       "creative": "0/4",
@@ -86,13 +88,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 83,
-      "backed": 30,
+      "lines": 81,
+      "backed": 28,
       "rankKept": 100,
-      "findingsUsed": 15,
+      "findingsUsed": 13,
       "cities": {
-        "New York": 6,
-        "Toronto": 5
+        "New York": 5,
+        "Toronto": 4
       }
     },
     "dropped": 0,

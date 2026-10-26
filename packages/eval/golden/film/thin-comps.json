@@ -4,11 +4,15 @@
   "brief": "We are releasing \"Blue Hour\", a slow-burn drama series. The only comp we have is \"Salt Road\".",
   "callBudget": 60,
   "replies": [
-    { "text": "It opens in Lagos and Accra." },
+    {
+      "text": "It opens in Lagos and Accra."
+    },
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Open in Accra first, then Lagos: that is where your comps' audience is strongest among your cities.",
@@ -34,8 +38,7 @@
       "f-shows-accra": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
       "f-shows-lagos": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
       "f-cinemas-lagos": ["Lekki Screens", "Marina Picturehouse"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["The Joe Rogan Experience", "Crime Junkie", "Late Signal"],
       "f-community-university-lagos": ["Lagoon City University"],
       "f-games-lagos": ["Ember Keep", "Crown of Ash", "Hollow Hills"],
@@ -47,7 +50,7 @@
       "positioning": "4/1",
       "audience": "3/0",
       "markets": "2/0",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "placement": "2/0",
       "publicity": "1/1",
       "community": "1/1",
@@ -64,13 +67,13 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 60,
-      "backed": 30,
+      "lines": 59,
+      "backed": 29,
       "rankKept": 100,
-      "findingsUsed": 12,
+      "findingsUsed": 11,
       "cities": {
         "Accra": 4,
-        "Lagos": 8
+        "Lagos": 7
       }
     },
     "dropped": 0,

@@ -19,10 +19,13 @@ import { Mark, Stack, TabTitle } from './line';
 import { footnotes, LineText } from './plan-document';
 
 const BUDGET: Record<PartnerOption['budgetFit'], string> = {
-  fits: 'Fits the budget',
-  stretch: 'A stretch for the budget',
-  out: 'Out of budget',
+  fits: 'Fits this launch',
+  stretch: 'A stretch for this launch',
+  out: 'Not for this launch yet',
 };
+
+/** A flagship the launch cannot clearly reach is a goal to grow toward, not part of the plan. */
+const isLater = (p: PartnerOption) => p.tier === 'A' && p.budgetFit !== 'fits' && p.from !== 'team';
 
 const ROLE: Record<Territory['role'], string> = {
   home: 'Home market',
@@ -65,7 +68,11 @@ function PartnerRow({
         {named
           ? `${
               partner.fit
-                ? `Qloo fit: ${partner.fit.place} of ${partner.fit.of} brands ranked for this audience.`
+                ? `Qloo fit: ${partner.fit.place} of ${partner.fit.of} brands ranked for this audience${
+                    partner.fit.local
+                      ? `, and ${partner.fit.local.place} of ${partner.fit.local.of} for the city and age band alone`
+                      : ''
+                  }.`
                 : partner.from === 'team'
                   ? 'Qloo fit: not ranked. Ask for a partner brief to score it.'
                   : 'Qloo fit: not ranked.'
@@ -178,7 +185,7 @@ export function PartnerTiers({
         </ul>
       ) : null}
       {(['A', 'B', 'C'] as const).map((tier) => {
-        const rows = partners.filter((p) => p.tier === tier);
+        const rows = partners.filter((p) => p.tier === tier && !isLater(p));
         if (rows.length === 0) return null;
         return (
           <div key={tier} className="flex flex-col gap-2">
@@ -194,6 +201,22 @@ export function PartnerTiers({
           </div>
         );
       })}
+      {partners.some(isLater) ? (
+        <div className="flex flex-col gap-2">
+          <h4 className="text-[13px] font-semibold">
+            Later, as the launch grows
+            <span className="ml-2 font-normal text-muted">
+              Big brands plan years ahead and rarely back a launch like this. Treat them as a goal,
+              not as part of this plan.
+            </span>
+          </h4>
+          <ul className="flex flex-col gap-2">
+            {partners.filter(isLater).map((p) => (
+              <PartnerRow key={p.id} partner={p} onRemove={canEdit ? remove : undefined} />
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <TeamPartners partners={partners} />
     </section>
   );

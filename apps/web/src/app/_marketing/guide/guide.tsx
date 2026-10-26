@@ -360,11 +360,14 @@ function RulesBody() {
         <p className="text-[14.5px] text-ink/80">{PARTNER_RULES.leadTime.value.why}</p>
         <p className="text-[14.5px] text-ink/80">{PARTNER_RULES.leadTime.value.independent}</p>
         <p className="text-[14.5px] text-ink/80">{PARTNER_RULES.leadTime.value.barter}</p>
+        <p className="text-[14.5px] text-ink/80">{PARTNER_RULES.reach.value.solo}</p>
         <p className="text-[14.5px] text-ink/80">
-          A tier is set by what Qloo says about a brand: a flagship name or a brand ranked at the
-          top of its popularity is tier A. A partner that does not fit the content, or that could
-          draw fan backlash, is flagged beside the name. The pitch leaves the partner room to shape
-          the idea.
+          Partners are found from what your audience likes in Qloo, then ranked beside what the city
+          likes on its own. A tier is set by what Qloo says about a brand: a flagship name or a
+          brand ranked at the top of its popularity is tier A, and only a launch with the budget and
+          the standing to approach one is offered it. A partner that does not fit the content, or
+          that could draw fan backlash, is flagged beside the name. The pitch leaves the partner
+          room to shape the idea.
         </p>
         <span className="block text-[12.5px] text-muted">
           {PARTNER_RULES.leadTime.source.label}, {PARTNER_RULES.leadTime.source.date}

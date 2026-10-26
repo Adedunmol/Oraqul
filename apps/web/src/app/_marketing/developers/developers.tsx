@@ -15,11 +15,11 @@ const TOOLS: { name: string; does: string }[] = [
   { name: 'scoreRivals', does: 'How much of an audience each rival release shares, in one call.' },
   {
     name: 'findTaste',
-    does: 'What an audience likes in one kind of entity, shaped by place and age.',
+    does: 'What an audience likes in one kind of entity, shaped by place and age. Brands are found by category and city, then ranked as one list.',
   },
   {
     name: 'partnerFit',
-    does: 'Brands, podcasts and series a film or title audience also likes, ranked by Qloo for one signal.',
+    does: 'Brands, podcasts and series a film or title audience also likes, ranked by Qloo for one signal. A plan finds brands with findTaste by category and city instead.',
   },
   { name: 'topicMap', does: 'The topics an audience carries that rival shows’ audiences do not.' },
   { name: 'resolveTags', does: 'Turns a phrase into a Qloo tag, or null. Never a guess.' },

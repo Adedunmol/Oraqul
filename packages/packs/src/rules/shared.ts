@@ -1,12 +1,13 @@
 import {
   type BudgetBand,
   budgetBands,
+  type LauncherKind,
   type PartnerTier as SchemaTier,
   TIER_LABEL,
 } from '@oraqul/schema';
 import type { Rule, RuleSource } from './types';
 
-export { type BudgetBand, budgetBands, TIER_LABEL };
+export { type BudgetBand, budgetBands, type LauncherKind, TIER_LABEL };
 
 /** Launch craft Oraqul's team set. Dated so a reader can tell how old a rule is. */
 export const TEAM_RULE: RuleSource = {
@@ -54,9 +55,35 @@ export function bandOf(amount: number, currency: string): BudgetBand {
 
 export type PartnerTier = SchemaTier;
 
-/** Flagship partners ask for scale, so only a mid-size or major release is offered them. */
-export function bandCarries(band: BudgetBand, tier: PartnerTier): boolean {
-  return tier !== 'A' || band === 'mid' || band === 'major';
+export type PartnerReach = 'fits' | 'stretch' | 'out';
+
+/**
+ * How realistic a tier is for who is launching and what they can spend; the lower of the two
+ * wins. A flagship is out for a solo launcher whatever the budget, and for anyone on a micro
+ * budget. On an independent budget only an established or major launcher can stretch to one. A
+ * launcher the brief does not describe is treated as unknown: only the band decides.
+ */
+export function partnerReach(
+  band: BudgetBand,
+  tier: PartnerTier,
+  launcher: LauncherKind | null = null,
+): PartnerReach {
+  if (tier === 'C') return 'fits';
+  if (tier === 'B') return band === 'micro' || launcher === 'solo' ? 'stretch' : 'fits';
+  if (launcher === 'solo' || band === 'micro') return 'out';
+  if (band === 'independent') {
+    return launcher === 'established' || launcher === 'major' ? 'stretch' : 'out';
+  }
+  return launcher === 'small' ? 'stretch' : 'fits';
+}
+
+/** Whether a line may propose a partner of this tier: only a clear fit, never a stretch. */
+export function bandCarries(
+  band: BudgetBand,
+  tier: PartnerTier,
+  launcher: LauncherKind | null = null,
+): boolean {
+  return tier !== 'A' || partnerReach(band, tier, launcher) === 'fits';
 }
 
 /** Diaspora hubs by country of origin, in the order a rollout reaches them. */

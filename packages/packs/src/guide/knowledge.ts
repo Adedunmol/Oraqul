@@ -67,6 +67,8 @@ function launchRulesText(): string {
     `- ${PARTNER_RULES.leadTime.value.why}`,
     `- ${PARTNER_RULES.leadTime.value.independent}`,
     `- ${PARTNER_RULES.leadTime.value.barter}`,
+    '- Partners are found from what your audience likes in Qloo, then sized to your budget and to who is launching, so a solo launch is not offered a national brand.',
+    ...Object.entries(PARTNER_RULES.reach.value).map(([who, text]) => `- ${who}: ${text}`),
   );
   return lines.join('\n');
 }

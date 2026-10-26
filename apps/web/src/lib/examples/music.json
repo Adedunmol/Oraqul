@@ -526,19 +526,19 @@
             {
               "id": "partnerships-1",
               "kind": "grounded",
-              "text": "Brands: Night Market Cola in Lagos.",
-              "findingIds": ["f-brands-beverage-lagos"],
+              "text": "Brands: Night Market Cola and Lagoon Mobile in Lagos.",
+              "findingIds": ["f-brands-lagos"],
               "sourceIds": [],
-              "names": ["Night Market Cola", "Lagos"],
+              "names": ["Night Market Cola", "Lagoon Mobile", "Lagos"],
               "group": "Brands"
             },
             {
               "id": "partnerships-2",
               "kind": "grounded",
-              "text": "Brands: Lagoon Mobile in Lagos.",
-              "findingIds": ["f-brands-telecom-lagos"],
+              "text": "Brands: Night Market Cola and Lagoon Mobile in London.",
+              "findingIds": ["f-brands-london"],
               "sourceIds": [],
-              "names": ["Lagoon Mobile", "Lagos"],
+              "names": ["Night Market Cola", "Lagoon Mobile", "London"],
               "group": "Brands"
             }
           ]
@@ -1500,9 +1500,9 @@
           "callIds": ["00000000-0000-4000-8000-000000005025"]
         },
         {
-          "id": "f-brands-beverage-lagos",
+          "id": "f-brands-lagos",
           "query": "brands",
-          "text": "In Lagos, the mid-size beverage brands that rank highest with the artist's audience are Night Market Cola.",
+          "text": "In Lagos, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best.",
           "entities": [
             {
               "entityId": "DEMO-BRAND-0004",
@@ -1510,27 +1510,7 @@
               "affinity": 0.47346292537950513,
               "detail": null,
               "popularity": 0.32
-            }
-          ],
-          "numbers": {},
-          "verdict": null,
-          "confidence": "high",
-          "why": "high: 3 anchors with data, 2 well known",
-          "context": {
-            "city": "Lagos",
-            "ages": [],
-            "tags": ["beverage"],
-            "country": null,
-            "yearFrom": null,
-            "audience": null
-          },
-          "callIds": ["00000000-0000-4000-8000-000000005028"]
-        },
-        {
-          "id": "f-brands-telecom-lagos",
-          "query": "brands",
-          "text": "In Lagos, the mid-size telecom brands that rank highest with the artist's audience are Lagoon Mobile.",
-          "entities": [
+            },
             {
               "entityId": "DEMO-BRAND-0006",
               "name": "Lagoon Mobile",
@@ -1546,12 +1526,46 @@
           "context": {
             "city": "Lagos",
             "ages": [],
-            "tags": ["telecom"],
+            "tags": [],
             "country": null,
             "yearFrom": null,
             "audience": null
           },
           "callIds": ["00000000-0000-4000-8000-000000005027"]
+        },
+        {
+          "id": "f-brands-london",
+          "query": "brands",
+          "text": "In London, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best.",
+          "entities": [
+            {
+              "entityId": "DEMO-BRAND-0004",
+              "name": "Night Market Cola",
+              "affinity": 0.47346292537950513,
+              "detail": null,
+              "popularity": 0.32
+            },
+            {
+              "entityId": "DEMO-BRAND-0006",
+              "name": "Lagoon Mobile",
+              "affinity": 0.47502546291216863,
+              "detail": null,
+              "popularity": 0.4
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "high",
+          "why": "high: 3 anchors with data, 2 well known",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00000000-0000-4000-8000-000000005028"]
         },
         {
           "id": "f-podcasts",
@@ -2267,7 +2281,7 @@
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
-          "budgetFit": "stretch",
+          "budgetFit": "out",
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
@@ -2285,7 +2299,7 @@
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
-          "budgetFit": "stretch",
+          "budgetFit": "out",
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
@@ -2298,7 +2312,7 @@
           "market": "Nigeria",
           "from": "seed",
           "fit": null,
-          "budgetFit": "stretch",
+          "budgetFit": "out",
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
@@ -2313,7 +2327,7 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": ["f-brands-beverage-lagos"],
+          "findingIds": ["f-brands-lagos"],
           "kind": "brand",
           "flags": []
         },
@@ -2326,7 +2340,7 @@
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
-          "findingIds": ["f-brands-telecom-lagos"],
+          "findingIds": ["f-brands-lagos"],
           "kind": "brand",
           "flags": []
         },
@@ -2758,17 +2772,17 @@
         "driver": false
       },
       {
-        "lineId": "f-brands-beverage-lagos",
-        "label": "In Lagos, the mid-size beverage brands that rank highest with the artist's audience are Night Market Cola.",
+        "lineId": "f-brands-lagos",
+        "label": "In Lagos, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best.",
         "group": "Findings",
-        "returned": "Night Market Cola",
+        "returned": "Night Market Cola, Lagoon Mobile",
         "driver": false
       },
       {
-        "lineId": "f-brands-telecom-lagos",
-        "label": "In Lagos, the mid-size telecom brands that rank highest with the artist's audience are Lagoon Mobile.",
+        "lineId": "f-brands-london",
+        "label": "In London, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best.",
         "group": "Findings",
-        "returned": "Lagoon Mobile",
+        "returned": "Night Market Cola, Lagoon Mobile",
         "driver": false
       },
       {
@@ -3407,40 +3421,36 @@
       },
       {
         "callId": "00000000-0000-4000-8000-000000005027",
-        "lineId": "f-brands-telecom-lagos",
+        "lineId": "f-brands-lagos",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
           "filter.type": "urn:entity:brand",
           "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
           "signal.location.query": "Lagos",
           "take": "9"
         },
         "returned": {},
-        "rule": "In Lagos, the mid-size telecom brands that rank highest with the artist's audience are Lagoon Mobile. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "rule": "In Lagos, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best. The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
         "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005028",
-        "lineId": "f-brands-beverage-lagos",
+        "lineId": "f-brands-london",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
           "filter.type": "urn:entity:brand",
           "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "signal.location.query": "Lagos",
+          "signal.location.query": "London",
           "take": "9"
         },
         "returned": {},
-        "rule": "In Lagos, the mid-size beverage brands that rank highest with the artist's audience are Night Market Cola. The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "rule": "In London, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best. The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
         "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
@@ -3876,7 +3886,7 @@
         "callId": "00000000-0000-4000-8000-000000005056",
         "endpoint": "/search",
         "input": {
-          "query": "Guinness",
+          "query": "Bolt",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3890,7 +3900,7 @@
         "callId": "00000000-0000-4000-8000-000000005057",
         "endpoint": "/search",
         "input": {
-          "query": "MTN",
+          "query": "EE",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3904,7 +3914,7 @@
         "callId": "00000000-0000-4000-8000-000000005058",
         "endpoint": "/search",
         "input": {
-          "query": "Indomie",
+          "query": "Monzo",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3918,7 +3928,7 @@
         "callId": "00000000-0000-4000-8000-000000005059",
         "endpoint": "/search",
         "input": {
-          "query": "Bolt",
+          "query": "Lyft",
           "take": "5",
           "types": "urn:entity:brand"
         },
@@ -3932,48 +3942,6 @@
         "callId": "00000000-0000-4000-8000-000000005060",
         "endpoint": "/search",
         "input": {
-          "query": "EE",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005061",
-        "endpoint": "/search",
-        "input": {
-          "query": "Monzo",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005062",
-        "endpoint": "/search",
-        "input": {
-          "query": "Lyft",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005063",
-        "endpoint": "/search",
-        "input": {
           "query": "Cash App",
           "take": "5",
           "types": "urn:entity:brand"
@@ -3985,7 +3953,115 @@
         "source": "demo"
       },
       {
+        "callId": "00000000-0000-4000-8000-000000005061",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005062",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005063",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "London",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
         "callId": "00000000-0000-4000-8000-000000005064",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "London",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005065",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
+          "filter.type": "urn:entity:brand",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "Lagos",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005066",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
+          "filter.type": "urn:entity:brand",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "London",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005067",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4002,7 +4078,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005065",
+        "callId": "00000000-0000-4000-8000-000000005068",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4019,7 +4095,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005066",
+        "callId": "00000000-0000-4000-8000-000000005069",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4036,7 +4112,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005067",
+        "callId": "00000000-0000-4000-8000-000000005070",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4053,7 +4129,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005068",
+        "callId": "00000000-0000-4000-8000-000000005071",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",

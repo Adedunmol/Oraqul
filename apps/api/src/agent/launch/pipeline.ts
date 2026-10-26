@@ -47,7 +47,13 @@ import {
 } from '../category-agents.js';
 import { ungroundedClaims } from '../grounding.js';
 import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
-import { bandFromAnswer, bandFromBrief, bandQuestion, bandQuestionId } from './band.js';
+import {
+  bandFromAnswer,
+  bandFromBrief,
+  bandQuestion,
+  bandQuestionId,
+  withLauncher,
+} from './band.js';
 import { capital } from './brief.js';
 import { calendarRows, calendarSection } from './calendar.js';
 import { type CheckContext, checkSections } from './check.js';
@@ -406,7 +412,9 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
   ctx.tokens += tokens;
   const adjusted = input.adjust ? input.adjust(planned) : planned;
   const queryPlan = withTeamBrands(
-    input.band ? withSeeds(adjusted, input.band.band, read.places) : adjusted,
+    input.band
+      ? withSeeds(adjusted, input.band.band, read.places, input.band.launcher ?? null)
+      : adjusted,
     input.brands ?? [],
   );
 
@@ -728,7 +736,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     comps,
     understanding,
     rivals,
-    band,
+    band: withLauncher(band, [briefText(handoff), extra].join('\n')),
     brands,
   });
   return writePlan(deps, ctx, {
@@ -777,10 +785,12 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
 ): Promise<PlanRun> {
   const { handoff, title, read, comps, asked, extra, kind } = input;
   // A full plan is always sized for a band: stated, asked, or assumed to be independent.
-  const band: PlanBand | null =
+  const band: PlanBand | null = withLauncher(
     input.band ??
-    bandFromBrief(read, [briefText(handoff), extra].join('\n')) ??
-    (read.scope === 'full' ? { band: 'independent', source: 'assumed' } : null);
+      bandFromBrief(read, [briefText(handoff), extra].join('\n')) ??
+      (read.scope === 'full' ? { band: 'independent', source: 'assumed' } : null),
+    [briefText(handoff), extra].join('\n'),
+  );
   const { modules, queryPlan, sources } = asked;
   const text = briefText(handoff, input.chars, kind !== 'fix');
   const order = sectionOrder(modules);
@@ -863,6 +873,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       allowed: order,
       rules: deps.config.rules,
       band: band?.band ?? null,
+      launcher: band?.launcher ?? null,
       flagships: flagshipNames(grounded.findings),
       teamPartners: read.partners,
     };
@@ -1576,6 +1587,7 @@ function decisionsOf(input: {
     category: input.category,
     tone: toneOf(input.text, ratingOf(read)),
     ages: read.ages,
+    launcher: band?.launcher ?? null,
   });
   const partnered = withPartnerIds(placed.territories, partnerCalls);
   return {
@@ -1585,6 +1597,7 @@ function decisionsOf(input: {
       release: input.release,
       today: input.today,
       band: band?.band ?? 'independent',
+      launcher: band?.launcher ?? null,
     }),
     calls: [
       ...(input.byProximity
@@ -1598,7 +1611,10 @@ function decisionsOf(input: {
 
 /** The writer is told what the band can carry; the line check enforces it for flagship partners. */
 function bandLine(band: PlanBand): string {
-  return `Budget band: ${BAND_LABEL[band.band].toLowerCase()}. Propose only what this budget can carry, and no flagship partner (a national brand that sells at scale) unless the team named it or the band is mid-size or major.`;
+  const who = band.launcher
+    ? ` Who is launching: ${band.launcher === 'solo' ? 'a solo launcher' : `a ${band.launcher} launcher`}, so propose only partners that kind of launch can realistically land.`
+    : '';
+  return `Budget band: ${BAND_LABEL[band.band].toLowerCase()}. Propose only what this budget can carry, and no flagship partner (a national brand that sells at scale) unless the team named it or the band is mid-size or major.${who}`;
 }
 
 // A band the person did not state shows under the bottom line with the other assumptions.

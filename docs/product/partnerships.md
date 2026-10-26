@@ -1,6 +1,26 @@
 # Partnerships
 
-Brand partnerships are part of every launch, in every category. They are not a category of their own. This page says how a plan finds partners, how it tiers and flags them, and what a partner pitch kit holds. The tiers and the seeds are in [launch rules](launch-rules.md#partner-tiers); the code is `apps/api/src/agent/launch/partners.ts` and `packages/packs/src/rules/partners.ts`.
+Brand partnerships are part of every launch, in every category. They are not a category of their own. This page says how a plan finds partners, who it offers them to, how it tiers and flags them, and what a partner pitch kit holds. The tiers and the seeds are in [launch rules](launch-rules.md#partner-tiers); the code is `apps/api/src/agent/launch/brands.ts` (finding brands), `partners.ts` (tiers, flags, notes) and `launcher.ts` (who is launching), and `packages/packs/src/rules/partners.ts`.
+
+## How a plan finds partners
+
+Partners come from what the comps' audience likes, not from a list someone guessed. For each of the first two cities and each verified brand category (below), Qloo is asked for the brands that audience likes in that city, in a mid-size popularity band. When the launch can realistically approach a national brand (see [who is launching](#who-is-launching)), the home city is also asked without the band, which is where a soft drink the audience likes, such as Fanta, can surface. Every brand found joins a pool with the names the team and the model gave and the seeds the launch can reach, and one call ranks the whole pool for the audience (a list we choose is ranked, never an open one; [qloo.md](../backend/qloo.md)).
+
+Qloo's top brands are the ones everyone likes, so each ranked brand is also checked against the same pool for the city and age band alone, with no comps behind it. A national brand that the city likes as much as this audience does is popular everywhere, which says nothing about this audience, so it is not offered. A seed, a brand the team gave and a team partner are never dropped by this check. The place a brand holds in that second ranking shows beside its fit.
+
+A brand found this way is a taste fit, not a promise: Qloo says the audience likes it, not that it operates in the market or would say yes. The plan never says more than the finding does.
+
+## Who is launching
+
+The budget band says what a release can spend; who is launching says who a brand will take a call from. Code reads it from the brief's own words, never from the model: a `Who is launching:` line the Guide writes (solo, small team, established company, major), else plain words such as "self-published", "independent studio" or "major label". A brief that says nothing leaves it unknown, and only the band decides. A flagship that is not a clear fit (out or a stretch) is never in the plan's partners, lines or calls. It is listed apart as "Later, as the launch grows", unranked, as a goal to grow toward, because big brands plan years ahead and rarely back a launch like this. A flagship the team named stays in the main list.
+
+| Tier | Solo | Small team | Established | Major |
+|---|---|---|---|---|
+| A, flagship | Later | Later (a stretch on mid-size or major) | Later on independent (a stretch), fits on mid-size or major | Same as established |
+| B, category | A stretch | Fits | Fits | Fits |
+| C, local | Fits | Fits | Fits | Fits |
+
+A micro budget puts tier A out for everyone and makes tier B a stretch. An unknown launcher is treated by the band alone: tier A is out on micro and independent, and fits on mid-size and major. The plan says who it sized for under the bottom line, and a note in the partner list says what that kind of launch can realistically approach.
 
 ## What the plan shows
 
@@ -9,12 +29,13 @@ Brand partnerships are part of every launch, in every category. They are not a c
 - **Market.** A partner Qloo ranked in a city takes that city's country. A seed takes its own market. A partner the team named, or one Qloo placed in no city, takes the release country.
 - **Markets reached.** Seeds are listed only for the markets of the plan's territories.
 - **Tier.** Set by what Qloo says about the brand (see launch rules), not by default.
+- **City place.** A brand shows its place among the pool for the audience, and its place for the city and age band alone.
 - **Slots.** 3 flagship, 7 category and 4 local, so ranked brands cannot push the local partners out. A partner the team named is never cut.
-- **Notes.** `plan.partnerNotes` holds the lead time, band and barter notes (T1).
+- **Notes.** `plan.partnerNotes` holds the lead time, band, launcher and barter notes (T1).
 
 ## Per category
 
-Each category has its own brand categories, kinds of partner and ideas (`rules/partners.ts`). Qloo is asked only for brand categories a live probe showed give brands that operate in a city; the rest are kinds of partner with no Qloo call.
+Each category has its own brand categories, kinds of partner and ideas (`rules/partners.ts`). Qloo is asked only for brand categories a live probe showed give brands that operate in a city; the rest are kinds of partner with no Qloo call. A category is a place to look for brands the audience likes: the model's candidates and the seeds are still ranked beside what it finds.
 
 | Category | Qloo is asked | Kinds of partner |
 |---|---|---|
@@ -39,4 +60,4 @@ The plan page lets an owner or an editor add and remove the partners the team al
 
 ## What is not verified
 
-Qloo has no brand category for apparel, hardware, ticketing, payments or banks, and the coffee, energy drink and snack categories were thin. The per-brand results are in [qloo.md](../backend/qloo.md).
+Qloo has no brand category for apparel, hardware, ticketing, payments or banks, and the coffee, energy drink and snack categories were thin. Telecom found by category in a mid-size band was weak in Lagos (virtual and foreign operators, not the Nigerian ones), so telecom partners rest on the seeds and the model's names. Brands found by category can be global (a bottled water, a coffee brand) where no local one fits the audience, and a drinks brand found this way is not flagged for alcohol, because the flag reads the name and Qloo's tags are not passed through. The per-brand results are in [qloo.md](../backend/qloo.md).

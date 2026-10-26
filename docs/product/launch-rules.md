@@ -66,19 +66,28 @@ Asked once, as a single card with a Skip option, in a full build with no budget 
 
 These thresholds are chosen conventions, not measured. Change them in `rules/shared.ts` and here.
 
-A band that cannot carry a flagship drops any line that proposes one, unless the team named the partner. A symbol in a written budget stands for its main currency (`$` for USD).
+A band that cannot carry a flagship drops any line that proposes one, unless the team named the partner. Who is launching (a `Who is launching:` line or plain words in the brief: solo, small team, established company or major) narrows it further. The lower of the two wins (`partnerReach` in `rules/shared.ts`):
+
+| Launcher | Tier A | Tier B |
+|---|---|---|
+| Not said | Band decides: out on micro and independent, fits on mid-size and major | Band decides |
+| Solo | Out at any band | A stretch |
+| Small team | Out on independent, a stretch on mid-size and major | Fits (a stretch on micro) |
+| Established or major | A stretch on independent, fits on mid-size and major | Fits (a stretch on micro) |
+
+Tier A is out on a micro budget for everyone. A flagship that is out or a stretch is listed apart as "Later, as the launch grows", with no Qloo call and no territory, and is never written into the plan's lines; only one that fits may be. A flagship the team named is kept in the main list. A symbol in a written budget stands for its main currency (`$` for USD).
 
 ## Partner tiers
 
 | Tier | What | Budget fit |
 |---|---|---|
-| A, flagship | Guinness, MTN, Indomie in Nigeria, and any ranked brand at or above the flagship popularity (0.85). Only for releases with scale | Fits a mid-size or major band, a stretch for independent, out for micro |
-| B, category and integration | Brands that fit the category: banks and payment brands, food and drink, hospitality, telecom bundles. EE and Monzo in London, Lyft and Cash App in the US, Bolt in Lagos | Fits, a stretch for micro |
-| C, local | Cinemas, creators, venues, diaspora businesses, community groups. Most realistic for an independent release | Fits every band |
+| A, flagship | Guinness, MTN, Indomie in Nigeria, and any ranked brand at or above the flagship popularity (0.85). Only for releases with scale | Fits a mid-size or major band, out for micro and independent, and out for a solo launcher at any band. Who is launching can lift independent to a stretch, below |
+| B, category and integration | Brands that fit the category: banks and payment brands, food and drink, hospitality, telecom bundles. EE and Monzo in London, Lyft and Cash App in the US, Bolt in Lagos | Fits, a stretch for micro or a solo launcher |
+| C, local | Cinemas, creators, venues, diaspora businesses, community groups. Most realistic for a solo or independent release | Fits every band and every launcher |
 
 A tier is set by what Qloo says about a brand, not by default: a flagship seed, or a ranked brand at or above the flagship popularity, is tier A; any other ranked brand is tier B; kinds of local partner are tier C. A plan keeps reserved slots per tier (3 flagship, 7 category, 4 local) so many ranked brands cannot push the local ones out.
 
-Seeded names are asked of Qloo only for the markets of the plan's territories, joined to the brands Qloo is asked to rank for those cities, so a seed gets a measured fit. A seed Qloo does not rank shows as not ranked and gets no call, never a weak one. Each option carries its own market.
+Seeded names are asked of Qloo only for the markets of the plan's territories, joined to the brands Qloo is asked to rank for those cities, so a seed gets a measured fit. A flagship seed is left out of the pool when the launch cannot reach one. Qloo also finds brands for the comps' audience by category and city, and a ranked brand's place for the city and age band alone is checked ([partnerships](partnerships.md#how-a-plan-finds-partners)). A seed Qloo does not rank shows as not ranked and gets no call, never a weak one. Each option carries its own market.
 
 **Verification.** Checked on the development host ([qloo.md](../backend/qloo.md#what-is-verified)): Guinness, Indomie, EE, Monzo, Lyft, Cash App and Bolt match by exact name, and MTN matches as "MTN Group". "Verve" and "QuickTeller" did not resolve to the Nigerian payment brands, so they are not seeds; banks and payment brands are a kind of partner. Brand categories that give brands that operate in a city: beverage, telecom, food and beauty. Coffee, energy drink and snack were thin and are not asked; Qloo has no brand category for apparel, hardware, ticketing or payments.
 

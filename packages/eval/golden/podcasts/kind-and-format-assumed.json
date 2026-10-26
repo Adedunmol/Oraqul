@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with Lagos, then Abuja: that is where your show's listeners are strongest.",
@@ -37,10 +39,8 @@
       "f-markets": ["Lagos", "Abuja"],
       "f-topics": ["Politics", "Interviews", "Humour"],
       "f-crosspromo": ["Dead Air", "Second Draft", "Case Closed Weekly"],
-      "f-brands-beverage-abuja": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-abuja": ["Orbit Data", "Glide Mobile"],
-      "f-brands-telecom-lagos": ["Orbit Data", "Glide Mobile"]
+      "f-brands-abuja": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
+      "f-brands-lagos": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"]
     },
     "sections": {
       "bottom-line": "3/0",
@@ -49,7 +49,7 @@
       "markets": "1/0",
       "crosspromo": "1/1",
       "guests": "0/1",
-      "partnerships": "4/0",
+      "partnerships": "2/0",
       "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
@@ -64,13 +64,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 51,
-      "backed": 25,
+      "lines": 49,
+      "backed": 22,
       "rankKept": 100,
-      "findingsUsed": 8,
+      "findingsUsed": 6,
       "cities": {
-        "Lagos": 5,
-        "Abuja": 4
+        "Lagos": 4,
+        "Abuja": 3
       }
     },
     "dropped": 0,

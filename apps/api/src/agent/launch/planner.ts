@@ -24,6 +24,11 @@ export interface QueryPlanCore {
    * these, so a giant that would never say yes cannot be the answer.
    */
   brandCandidates: { city: string; names: string[] }[];
+  /**
+   * What the budget and who is launching can reach, set by code. A flagship is looked for among
+   * the brands Qloo finds only when one is realistic for this launch.
+   */
+  reach?: { flagship: boolean };
 }
 
 export interface QueryPlanInput<R extends LaunchRead = LaunchRead> {

@@ -18,6 +18,29 @@ export const bands = [
 ] as const;
 export type BandId = (typeof bands)[number]['id'];
 
+export const launchers = [
+  { id: 'solo', label: 'Solo', words: 'Who is launching: a solo launch.', hint: 'One person' },
+  {
+    id: 'small',
+    label: 'Small team',
+    words: 'Who is launching: a small team.',
+    hint: 'An independent studio, label or press',
+  },
+  {
+    id: 'established',
+    label: 'Established',
+    words: 'Who is launching: an established company.',
+    hint: 'A company with a track record',
+  },
+  {
+    id: 'major',
+    label: 'Major',
+    words: 'Who is launching: a major studio, label or publisher.',
+    hint: 'A major studio, label or publisher',
+  },
+] as const;
+export type LauncherId = (typeof launchers)[number]['id'];
+
 export interface Extra {
   id: string;
   label: string;
@@ -152,6 +175,7 @@ export interface Values {
   ages: string;
   comps: string;
   band: BandId | '';
+  launcher: LauncherId | '';
   target: string;
   rivals: Rival[];
   partners: string;
@@ -176,6 +200,7 @@ export const emptyValues = (category: Category = 'film'): Values => ({
   ages: '',
   comps: '',
   band: '',
+  launcher: '',
   target: '',
   rivals: [{ title: '', date: '' }],
   partners: '',
@@ -212,6 +237,7 @@ export function filled(v: Values): Record<DetailId, boolean> {
     cities: words(v.cities).length > 0,
     comps: words(v.comps).length > 0,
     band: v.band !== '',
+    launcher: v.launcher !== '',
     rivals: validRivals(v.rivals).length > 0,
     target: /\d/.test(v.target),
     ages: v.ages.trim() !== '',
@@ -229,6 +255,7 @@ export function buildBrief(v: Values): string {
   const cities = words(v.cities);
   const comps = words(v.comps).slice(0, 5);
   const band = bands.find((b) => b.id === v.band);
+  const launcher = launchers.find((l) => l.id === v.launcher);
   const lead = v.mode === 'build' ? 'Launch plan for' : 'Our plan for';
   const what = `${guide.noun}${title ? ` "${title.replaceAll('"', '')}"` : ''}`;
   const about = v.about.trim() ? `, ${v.about.trim().replace(/[.]+$/, '')}` : '';
@@ -244,6 +271,7 @@ export function buildBrief(v: Values): string {
     if (value) out.push(`${extra.label}: ${value}.`);
   }
   if (band) out.push(band.words);
+  if (launcher) out.push(launcher.words);
   const target = v.target.trim();
   if (/\d/.test(target)) {
     out.push(
