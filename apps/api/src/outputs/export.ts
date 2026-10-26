@@ -1,8 +1,10 @@
 import {
   type AuditReport,
+  isLaterPartner,
   type LaunchLine,
   type LaunchPlan,
   type Output,
+  partnerFitText,
   TIER_LABEL,
   type Verdict,
 } from '@oraqul/schema';
@@ -157,7 +159,7 @@ function decisionSections(plan: LaunchPlan, refsOf: (ids: string[]) => number[])
             ]
           : []),
         ...(['A', 'B', 'C'] as const).flatMap((tier) => {
-          const rows = plan.partners.filter((p) => p.tier === tier);
+          const rows = plan.partners.filter((p) => p.tier === tier && !isLaterPartner(p));
           return rows.length
             ? [
                 {
@@ -167,6 +169,16 @@ function decisionSections(plan: LaunchPlan, refsOf: (ids: string[]) => number[])
               ]
             : [];
         }),
+        ...(plan.partners.some(isLaterPartner)
+          ? [
+              {
+                name: 'Later, as the launch grows',
+                lines: plan.partners
+                  .filter(isLaterPartner)
+                  .map((p) => ({ text: partnerText(p), refs: refsOf(p.findingIds) })),
+              },
+            ]
+          : []),
       ],
     });
   }
@@ -176,7 +188,7 @@ function decisionSections(plan: LaunchPlan, refsOf: (ids: string[]) => number[])
 function partnerText(p: LaunchPlan['partners'][number]): string {
   const fit = p.fit
     ? `Qloo fit: ${p.fit.place} of ${p.fit.of} (${DIRECTION_WORD[p.fit.direction].toLowerCase()})`
-    : 'Qloo fit: not ranked';
+    : `Qloo fit: ${partnerFitText(p)}`;
   const flags = p.flags.map((f) => ` ${FLAG_WORD[f.type]}: ${f.why}`).join('');
   const kind = p.kind === 'kind' ? ' A kind of partner, not a brand yet.' : '';
   return `${p.name} (${p.market}).${kind} ${fit}. Budget: ${BAND_WORD[p.budgetFit]}. Price: unknown.${flags}`;

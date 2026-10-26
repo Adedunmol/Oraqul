@@ -6,7 +6,13 @@ import { claimSchema } from './claim';
 import { threadEventSchema } from './events';
 import { outputNature } from './output';
 import { pinnedProjectsSchema } from './pin';
-import { launchPlanSchema, opportunitySchema } from './plan';
+import {
+  isLaterPartner,
+  launchPlanSchema,
+  opportunitySchema,
+  type PartnerOption,
+  partnerFitText,
+} from './plan';
 import { auditReportSchema, launchResultsSchema } from './report';
 import { questionCardSchema, threadItemSchema } from './thread';
 
@@ -353,5 +359,29 @@ describe('opportunitySchema', () => {
       true,
     );
     expect(opportunitySchema.safeParse({ ...ok, findingIds: [] }).success).toBe(false);
+  });
+});
+
+describe('partner helpers', () => {
+  const base: Pick<PartnerOption, 'tier' | 'budgetFit' | 'from' | 'fit' | 'findingIds'> = {
+    tier: 'A',
+    budgetFit: 'out',
+    from: 'seed',
+    fit: null,
+    findingIds: [],
+  };
+
+  it('keeps a flagship the budget cannot carry in the later group, unless the team named it', () => {
+    expect(isLaterPartner(base)).toBe(true);
+    expect(isLaterPartner({ ...base, from: 'team' })).toBe(false);
+    expect(isLaterPartner({ ...base, budgetFit: 'fits' })).toBe(false);
+    expect(isLaterPartner({ ...base, tier: 'B' })).toBe(false);
+  });
+
+  it('says a brand in a too short list is listed, not that it is unranked', () => {
+    expect(partnerFitText(base)).toBe('not ranked');
+    expect(partnerFitText({ ...base, findingIds: ['f-1'] })).toBe(
+      'listed, too few brands to judge',
+    );
   });
 });
