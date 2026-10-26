@@ -1167,6 +1167,7 @@
           "choice": null
         }
       ],
+      "compsNotFound": [],
       "findings": [
         {
           "id": "f-a-age",

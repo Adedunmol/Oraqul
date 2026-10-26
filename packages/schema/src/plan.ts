@@ -404,6 +404,8 @@ export const launchPlanSchema = z.object({
   understanding: understandingSchema.nullable().default(null),
   /** The red team's verdict on the saved draft. Plans saved before it have none. */
   review: planReviewSchema.nullable().default(null),
+  /** Comps the team named that Qloo had nothing close to, and so the plan leaves out. */
+  compsNotFound: z.array(z.object({ name: z.string(), why: z.string() })).default([]),
   /** What the research and the line check did on the way. Plans saved before it have none. */
   process: planProcessSchema.nullable().default(null),
   /** The rule library version the plan was written with. Plans saved before it have none. */

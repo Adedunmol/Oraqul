@@ -1056,10 +1056,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     today,
     release: releaseDate(read.window),
   });
+  const lead = deps.config.lead?.(read)?.trim().toLowerCase();
   const plan: LaunchPlan = {
     scope: read.scope,
     sections,
     comps: comps.used,
+    // The lead is an anchor and never a comp, so it is not listed with the comps that were not found.
+    compsNotFound: comps.dropped.filter((d) => d.name.trim().toLowerCase() !== lead),
     findings: grounded.findings,
     // Only the pages a kept line cites travel with the plan.
     sources: sources.filter((src) =>

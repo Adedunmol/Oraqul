@@ -168,6 +168,7 @@ describe('the team’s own partners on a saved plan', () => {
       scope: 'full',
       sections: [],
       comps: [],
+      compsNotFound: [],
       findings,
       sources: [],
       dropped: [],

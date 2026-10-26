@@ -322,12 +322,26 @@ export function LineText({
 
 function Comps({ plan }: { plan: LaunchPlan }) {
   const added = plan.comps.filter((c) => c.source === 'added');
-  if (added.length === 0) return null;
+  const yours = plan.comps.filter((c) => c.source === 'you');
+  const exact = yours.filter((c) => !c.choice);
+  const settled = yours.filter((c) => c.choice);
+  if (added.length + yours.length + plan.compsNotFound.length === 0) return null;
   return (
-    <p className="text-[13px] text-muted">
-      Planned against {added.map((c) => c.name).join(', ')}. Name your own comparable titles in the
-      chat to swap them.
-    </p>
+    <div className="flex flex-col gap-1 text-[13px] text-muted">
+      {exact.length > 0 ? <p>Matched in Qloo: {exact.map((c) => c.name).join(', ')}.</p> : null}
+      {settled.map((c) => (
+        <p key={c.name}>{c.choice}</p>
+      ))}
+      {plan.compsNotFound.length > 0 ? (
+        <p>Not found in Qloo, so left out: {plan.compsNotFound.map((c) => c.name).join(', ')}.</p>
+      ) : null}
+      {added.length > 0 ? (
+        <p>
+          Planned against {added.map((c) => c.name).join(', ')}. Name your own comparable titles in
+          the chat to swap them.
+        </p>
+      ) : null}
+    </div>
   );
 }
 
