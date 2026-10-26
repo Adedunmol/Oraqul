@@ -1,3 +1,4 @@
+import { BAND_OPTIONS } from '@oraqul/packs';
 import type { Verdict } from '@oraqul/schema';
 import { Confidence, Icon, type IconName, VerdictPill } from '@oraqul/ui';
 import type { CSSProperties, ReactNode } from 'react';
@@ -53,7 +54,7 @@ const stagger = (i: number) => ({ '--i': i }) as CSSProperties;
 export function TraceCard() {
   const steps = [
     'Reading the message: series, crime drama',
-    'Finding Night Ferry and its comparable titles',
+    'Finding the comparable titles, Grey Tide and The Ferry Office',
     'Looking up who else your audience loves',
     'Ranking the UK, Canada and the US',
     'Testing 9 assumptions in the plan',
@@ -153,9 +154,9 @@ export function Asks() {
         <StepHead n={2} icon="help" title="It states its assumptions and asks only when it must.">
           <p>
             Oraqul says what it read and what it assumed, with an example of how to correct it. It
-            asks a question only when a wrong assumption would waste the run: the category, the
-            title, which match in the data is yours, and, for a full plan, the budget band, which
-            decides what it may propose.
+            asks a question only when a wrong assumption would waste the run: the title, the
+            category or the job when they cannot be read, and, for a full plan, the budget band and
+            the platforms, which decide what it may propose.
           </p>
           <p>Type a correction any time. Only what it changes runs again.</p>
         </StepHead>
@@ -169,11 +170,15 @@ export function Asks() {
             . Say “only the UK and US” to change it.
           </p>
           <div className="mk-in flex flex-col gap-3 rounded-2xl bg-inset p-4" style={stagger(1)}>
-            <p className="text-[15.5px] font-semibold">Which of these is your series?</p>
+            <p className="text-[15.5px] font-semibold">
+              What is the budget band? I will only propose what it can carry.
+            </p>
             {[
-              ['Night Ferry', 'Series, 2026, crime drama', true],
-              ['Night Ferry', 'Film, 2019, documentary', false],
-              ['None of these', 'Use comparable titles instead', false],
+              [BAND_OPTIONS.micro, '', false],
+              [BAND_OPTIONS.independent, '', true],
+              [BAND_OPTIONS.mid, '', false],
+              [BAND_OPTIONS.major, '', false],
+              ['Skip, assume independent', '', false],
             ].map(([label, note, on]) => (
               <span
                 key={`${label}${note}`}

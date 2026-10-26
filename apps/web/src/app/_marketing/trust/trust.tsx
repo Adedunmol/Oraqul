@@ -42,7 +42,7 @@ export function Flow() {
 
 const ledger: { what: string; goes: string; kept: string }[] = [
   {
-    what: 'Titles, place names and age bands',
+    what: 'Comparable titles, place names and age bands',
     goes: 'Qloo, to look up audience taste',
     kept: 'With the claim it supports, as its receipt',
   },

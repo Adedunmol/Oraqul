@@ -17,10 +17,10 @@ interface Node {
 
 // Invented examples. The page says so; nothing here is real data.
 const nodes: Node[] = [
-  { name: 'Grey Tide', kind: 'Series', cat: 'film', angle: 0, ring: 1 },
+  { name: 'Harbor Lights', kind: 'Series', cat: 'film', angle: 0, ring: 1 },
   { name: 'Nia Okoro', kind: 'Artist', cat: 'music', angle: 45, ring: 0 },
-  { name: 'Mexico City', kind: 'Place', angle: 90, ring: 1 },
-  { name: 'The Salt Road', kind: 'Book', cat: 'books', angle: 135, ring: 0 },
+  { name: 'Houston', kind: 'Place', angle: 90, ring: 1 },
+  { name: 'The Long Quay', kind: 'Book', cat: 'books', angle: 135, ring: 0 },
   { name: 'Night Shift', kind: 'Podcast', cat: 'podcasts', angle: 180, ring: 1 },
   { name: 'London', kind: 'Place', angle: 225, ring: 0 },
   { name: 'Ember Run', kind: 'Game', cat: 'games', angle: 270, ring: 1 },
@@ -39,7 +39,7 @@ const points: [string, string][] = [
   ['Measured taste', 'Every number comes from the data, never from the AI.'],
   [
     'Across culture, not one shelf',
-    'Who your readers listen to, what your fans watch, where they live.',
+    'Your comparable titles go in. What that audience also loves comes out, across series, music, books, podcasts, games, brands and places.',
   ],
   ['Check any claim', 'Each one comes with a receipt: the exact data behind it.'],
 ];
@@ -63,9 +63,10 @@ export function TasteMap() {
             Built on what real audiences love.
           </h2>
           <p className="max-w-[58ch] text-[clamp(16px,1.4vw,18px)] leading-[1.6] text-ink/75">
-            Oraqul checks every plan against audience taste data: what people like across film and
-            TV, music, books, podcasts, games, brands and places. Then code works out the answer
-            with a fixed rule, and the model only writes it up.
+            Oraqul gives Qloo what surrounds your launch: comparable titles, places and an age band.
+            Qloo returns what that audience likes across film and TV, music, books, podcasts, games,
+            brands and places. Then code works out the answer with a fixed rule, and the model only
+            writes it up.
           </p>
         </div>
 
@@ -77,8 +78,9 @@ export function TasteMap() {
 
           <figure className="flex flex-col gap-3 max-[639px]:px-9">
             <figcaption className="sr-only">
-              An example taste map: a series in the centre, linked to the films, artists, books,
-              podcasts, games, brands and places its audience also likes.
+              An example taste map: two comparable titles in the centre, and around them the series,
+              artists, books, podcasts, games, brands and places their audience also likes, as Qloo
+              ranks them.
             </figcaption>
             <Reveal className="relative mx-auto aspect-square w-full max-w-[640px]">
               <span
@@ -146,10 +148,15 @@ export function TasteMap() {
                 className="mk-ring absolute top-1/2 left-1/2 h-[16%] w-[26%] -translate-1/2 rounded-2xl border border-primary"
               />
               <span className="absolute top-1/2 left-1/2 flex -translate-1/2 flex-col items-center gap-0.5 rounded-2xl bg-primary px-3 py-2 text-center min-[640px]:px-5 min-[640px]:py-3 text-primary-ink shadow-md">
-                <span className="font-display text-[clamp(14px,2vw,22px)] font-semibold tracking-[-0.02em]">
-                  Night Ferry
+                <span className="font-display text-[clamp(13px,1.7vw,19px)] leading-[1.15] font-semibold tracking-[-0.02em]">
+                  Salt Road
                 </span>
-                <span className="text-[11px] opacity-80">Your series</span>
+                <span className="font-display text-[clamp(13px,1.7vw,19px)] leading-[1.15] font-semibold tracking-[-0.02em]">
+                  The Glass Lantern
+                </span>
+                <span className="pt-0.5 text-[10px] opacity-80 min-[640px]:text-[11px]">
+                  Your comparable titles
+                </span>
               </span>
               {nodes.map((n, i) => {
                 const p = pos(n);
@@ -183,8 +190,8 @@ export function TasteMap() {
             </Reveal>
             <p aria-live="polite" className="min-h-[1.4em] text-center text-[13px] text-muted">
               {on
-                ? `${on.name}, a ${on.kind.toLowerCase()}: part of what this audience loves.`
-                : 'Example taste map. Names are invented. Hover or tap a name.'}
+                ? `${on.name}, ${/^[aeiou]/i.test(on.kind) ? 'an' : 'a'} ${on.kind.toLowerCase()}: ranked by Qloo for the audience of those titles.`
+                : 'Example: titles go in, what their audience loves comes out. Names are invented. Hover or tap a name.'}
             </p>
           </figure>
 

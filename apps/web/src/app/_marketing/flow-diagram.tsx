@@ -2,14 +2,14 @@ import { Logo } from '@oraqul/ui';
 import type { CSSProperties } from 'react';
 
 const inYourTeam: [string, boolean][] = [
-  ['Night Ferry', true],
+  ['Comparable titles', true],
   ['Mexico City, London', true],
   ['Ages 25 to 34', true],
+  ['Your title and your plan', false],
   ['Customer emails', false],
-  ['Names of people', false],
 ];
 
-const sent = ['Night Ferry', 'Mexico City', '25 to 34'];
+const sent = ['Salt Road', 'Mexico City', '25 to 34'];
 
 function Lane() {
   return (
@@ -63,8 +63,8 @@ export function FlowDiagram() {
       <div className="flex flex-col items-center gap-3 rounded-2xl bg-ink p-6 text-center text-bg">
         <Logo />
         <p className="text-[13.5px] leading-[1.5] opacity-80">
-          Keeps titles, places and age bands. Drops personal columns from uploads and deletes the
-          raw file.
+          Keeps the public names of comparable titles, places and age bands. Drops personal columns
+          from uploads and deletes the raw file.
         </p>
       </div>
       <Lane />
