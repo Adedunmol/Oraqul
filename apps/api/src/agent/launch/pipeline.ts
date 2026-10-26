@@ -508,6 +508,19 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
         grounded = { ...grounded, findings: [...grounded.findings, finding] };
         deps.emit({ type: 'finding', finding });
       }
+      // A rival Qloo could not find or score is said, not left out of the date check in silence.
+      if (clash.missing.length > 0) {
+        grounded = {
+          ...grounded,
+          gaps: [
+            ...grounded.gaps,
+            ...clash.missing.map((title) => ({
+              item: `Rival date: ${title}`,
+              why: 'Qloo did not find it by name, so its overlap with your audience was not scored and its date was not checked.',
+            })),
+          ],
+        };
+      }
     } catch (err) {
       // The check is optional: a failed or over-budget call leaves the plan without it.
       if (!(err instanceof QlooError || err instanceof QlooBudgetError)) throw err;
