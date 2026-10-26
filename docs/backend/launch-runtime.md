@@ -138,8 +138,9 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `QLOO_MODE` | `demo` | `live` for real Qloo. Demo data is made up and every receipt says so |
+| `QLOO_MODE` | `demo` | `live` for real Qloo. Demo data is made up and every receipt says so. The API refuses to start with `NODE_ENV=production` unless it is `live` |
 | `QLOO_CALL_BUDGET` | 80 | Qloo calls per run. A live Third Bridge plan uses about 45 to 65 |
+| `QLOO_MAX_CONCURRENT` | 2 | Qloo requests in flight across all runs together, so people planning at once queue instead of drawing 429s |
 | `AGENT_MAX_STEPS` | 12 | Tool loop steps for an answer on an older plan |
 | `LLM_API_KEY`, `LLM_MODEL` | empty | No key → scripted reader, default queries and the template writer |
 | Qloo client | 2 in flight, 1 retry, 2 on a 429 | `packages/engine/src/qloo/client.ts` |

@@ -29,7 +29,6 @@ export function OutputScreen({
         campaign={campaign}
         initialTab={initialTab}
         canEdit={canEdit}
-        teamName={viewer.teamName}
         share={detail.share ?? { token: null, enabled: false }}
         dock={{
           unread: false,

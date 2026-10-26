@@ -97,9 +97,11 @@ export interface QlooClientOptions {
   retryDelayMs?: number;
   /**
    * Most requests in flight at once. Default 2: the development host answers 429 to a plan's
-   * parallel calls, so the rest wait their turn.
+   * parallel calls, so the rest wait their turn. Ignored when `slots` is given.
    */
   maxConcurrent?: number;
+  /** Shared by every run's client, so many runs at once still keep the host under its limit. */
+  slots?: RequestSlots;
   /** Name lookups kept across runs. Without one, every run asks again. */
   lookupCache?: LookupCache;
   /** Replaces the global `fetch`. Demo mode and tests pass one so no request leaves the process. */
@@ -112,7 +114,28 @@ const MAX_RETRY_AFTER_MS = 10_000;
 const DEFAULT_MAX_CONCURRENT = 2;
 // A 429 with no Retry-After needs longer than a network blip before the one retry: 2 s by default.
 const RATE_LIMIT_FACTOR = 4;
-const RATE_LIMIT_RETRIES = 2;
+// Several runs at once can keep the host busy for a while, so a rate limit outlasts a blip.
+const RATE_LIMIT_RETRIES = 4;
+
+/** Caps requests in flight. A finished request hands its slot to the next one waiting. */
+export class RequestSlots {
+  private inFlight = 0;
+  private readonly waiting: (() => void)[] = [];
+
+  constructor(private readonly max: number = DEFAULT_MAX_CONCURRENT) {}
+
+  async run<T>(work: () => Promise<T>): Promise<T> {
+    if (this.inFlight < this.max) this.inFlight += 1;
+    else await new Promise<void>((resolve) => this.waiting.push(resolve));
+    try {
+      return await work();
+    } finally {
+      const next = this.waiting.shift();
+      if (next) next();
+      else this.inFlight -= 1;
+    }
+  }
+}
 
 interface Fetched {
   returned: Receipt['returned'];
@@ -141,9 +164,7 @@ export class QlooClient {
   private readonly lookupCache: LookupCache | undefined;
   private readonly answers = new Map<string, Promise<Fetched>>();
   private networkCalls = 0;
-  private readonly maxConcurrent: number;
-  private inFlight = 0;
-  private readonly waiting: (() => void)[] = [];
+  private readonly slots: RequestSlots;
 
   constructor(options: QlooClientOptions) {
     this.baseUrl = options.baseUrl;
@@ -151,7 +172,7 @@ export class QlooClient {
     this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.retryDelayMs = options.retryDelayMs ?? DEFAULT_RETRY_DELAY_MS;
     this.callBudget = options.callBudget;
-    this.maxConcurrent = options.maxConcurrent ?? DEFAULT_MAX_CONCURRENT;
+    this.slots = options.slots ?? new RequestSlots(options.maxConcurrent);
     this.fetchImpl = options.fetch ?? fetch;
     this.lookupCache = options.lookupCache;
   }
@@ -240,13 +261,13 @@ export class QlooClient {
 
     const calledAt = now();
     const started = Date.now();
-    let attempt = await this.slot(() => this.attempt(url));
-    // One retry for a failure; a rate limit gets a second one, after a longer wait.
+    let attempt = await this.slots.run(() => this.attempt(url));
+    // One retry for a failure; a rate limit gets more, each after a longer wait.
     for (let retry = 1; attempt.retryAfterMs !== undefined; retry++) {
       const limited = attempt.status === 429;
       if (retry > (limited ? RATE_LIMIT_RETRIES : 1)) break;
-      await sleep(attempt.retryAfterMs * (limited ? retry : 1));
-      attempt = await this.slot(() => this.attempt(url));
+      await sleep(Math.min(attempt.retryAfterMs * (limited ? retry : 1), MAX_RETRY_AFTER_MS));
+      attempt = await this.slots.run(() => this.attempt(url));
     }
 
     const call: QlooCall = {
@@ -271,33 +292,22 @@ export class QlooClient {
     return { returned: attempt.returned, call };
   }
 
-  // Runs one request when a slot is free. A finished request hands its slot to the next one.
-  private async slot<T>(work: () => Promise<T>): Promise<T> {
-    if (this.inFlight < this.maxConcurrent) this.inFlight += 1;
-    else await new Promise<void>((resolve) => this.waiting.push(resolve));
-    try {
-      return await work();
-    } finally {
-      const next = this.waiting.shift();
-      if (next) next();
-      else this.inFlight -= 1;
-    }
-  }
-
   private async attempt(url: URL): Promise<Attempt> {
     let response: Response;
+    let returned: Receipt['returned'];
     try {
       response = await this.fetchImpl(url, {
         headers: { 'X-Api-Key': this.apiKey, Accept: 'application/json' },
         signal: AbortSignal.timeout(this.timeoutMs),
       });
+      // The timeout also covers reading the body, so a slow body fails here as a timeout too.
+      returned = await readBody(response);
     } catch (err) {
       const failure =
         err instanceof DOMException && err.name === 'TimeoutError' ? 'timeout' : 'network';
       return { status: null, returned: null, failure, retryAfterMs: this.retryDelayMs };
     }
 
-    const returned = await readBody(response);
     const retryable = response.status === 429 || response.status >= 500;
     return {
       status: response.status,

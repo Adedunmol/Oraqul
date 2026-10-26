@@ -19,6 +19,7 @@ const columns = [
       { href: '/method', label: 'Method' },
       { href: '/trust', label: 'Trust' },
       { href: '/developers', label: 'Developers' },
+      { href: 'https://github.com/Adedunmol/Oraqul', label: 'Source code' },
     ],
   },
   { title: 'Company', links: [{ href: '/about', label: 'About' }] },
@@ -41,7 +42,7 @@ export function SiteFooter() {
           <Logo />
           <p className="text-[13.5px] text-muted">
             An AI agent that plans launches for media and entertainment, grounded in what audiences
-            actually like. Taste data from Qloo.
+            actually like. Taste data from Qloo. Built for the Qloo Hackathon 2026.
           </p>
         </div>
         {columns.map((column) => (
@@ -60,7 +61,10 @@ export function SiteFooter() {
         ))}
       </div>
       <div className={`${wrap} pb-8 text-[12.5px] text-muted`}>
-        <p>Examples on this site use invented data. Nothing on it comes from Qloo.</p>
+        <p>
+          Examples on this site use invented titles. Plans in the app are built on live Qloo taste
+          data.
+        </p>
       </div>
     </footer>
   );

@@ -54,6 +54,11 @@ Web and API run on subdomains of one parent domain, for example `app.<domain>` a
 
 Vercel for web. Docker Compose on a VPS for API and Postgres. Nightly Postgres backups. Details in [spec §12](product/spec.md).
 
+- On the VPS, `.env` filled in for production, then `CODE_VERSION=$(git rev-parse --short HEAD) docker compose --profile deploy up -d --build`. The `api` service builds `apps/api/Dockerfile`, runs the migrations on start and serves port 4000. `pnpm db:up` still starts Postgres only.
+- The image sets `NODE_ENV=production`, so the API refuses to start unless `QLOO_MODE=live`.
+- Production values: `WEB_ORIGIN` and `API_ORIGIN` on subdomains of one domain (see Sessions and domains), `COOKIE_DOMAIN=.<domain>`, `TRUST_PROXY_HOPS=1` behind one reverse proxy, and the Google redirect URI `<API_ORIGIN>/auth/google/callback` in the Google console. On Vercel, `NEXT_PUBLIC_API_URL` is the API origin.
+- Runs live in the API process, so run one instance. A restart stops the runs in progress.
+
 ## Backend
 
 NestJS in `apps/api`. Endpoints are in [spec §7](product/spec.md), tables in [spec §6](product/spec.md), failure behaviour in [spec §10](product/spec.md). The agent runtime is in [backend/agent.md](backend/agent.md), and the plan pipeline every category shares is in [backend/launch-runtime.md](backend/launch-runtime.md).

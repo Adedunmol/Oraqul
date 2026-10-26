@@ -27,6 +27,12 @@ describe('envSchema agent settings', () => {
     expect(envSchema.safeParse({ ...valid, QLOO_MODE: 'live' }).success).toBe(false);
   });
 
+  it('refuses demo mode in production', () => {
+    const live = { QLOO_MODE: 'live', QLOO_API_KEY: 'k', QLOO_BASE_URL: 'https://qloo.test' };
+    expect(envSchema.safeParse({ ...valid, NODE_ENV: 'production' }).success).toBe(false);
+    expect(envSchema.safeParse({ ...valid, NODE_ENV: 'production', ...live }).success).toBe(true);
+  });
+
   it('rejects a model key with no model', () => {
     expect(envSchema.safeParse({ ...valid, LLM_API_KEY: 'sk-x' }).success).toBe(false);
   });

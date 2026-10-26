@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { demoFetch, LookupCache, QlooClient, type ToolContext } from '@oraqul/engine';
+import { demoFetch, LookupCache, QlooClient, RequestSlots, type ToolContext } from '@oraqul/engine';
 import type { Output } from '@oraqul/schema';
 import type { Env } from '../config/env.js';
 import { LLM, type Llm } from '../llm/llm.js';
@@ -274,9 +274,10 @@ const lookups = new LookupCache();
                 (err) => logger.warn(`Web research failed, writing without it: ${err}`),
               )
             : new NoResearch();
-        const tools = (): ToolContext => toolContext(config);
+        const slots = new RequestSlots(config.get('QLOO_MAX_CONCURRENT', { infer: true }));
+        const tools = (): ToolContext => toolContext(config, slots);
         const planFor = (plan: Output) =>
-          llm ? new ModelPlanner(llm.model('agent')) : new PlanSummaryPlanner(plan);
+          llm ? new ModelPlanner(llm.model('agent'), llm.timeoutMs) : new PlanSummaryPlanner(plan);
         const maxSteps = config.get('AGENT_MAX_STEPS', { infer: true });
         // One analyst for every category: it reads the request, not the category's fields.
         const analyst = llm
@@ -294,7 +295,9 @@ const lookups = new LookupCache();
                 logger.warn(`Model research check failed, skipping the second round: ${err}`),
             )
           : new ScriptedResearchPlanner();
-        const standalone = llm ? new ModelPlanner(llm.model('agent')) : new StandalonePlanner();
+        const standalone = llm
+          ? new ModelPlanner(llm.model('agent'), llm.timeoutMs)
+          : new StandalonePlanner();
         const reviewer = llm
           ? new FallbackReviewer(
               new ModelReviewer(llm.model('writer'), llm.writerTimeoutMs),
@@ -711,8 +714,9 @@ const lookups = new LookupCache();
 })
 export class AgentModule {}
 
-// One Qloo client per run, so the call budget and the cache are the run's (spec §3.5).
-function toolContext(config: ConfigService<Env, true>): ToolContext {
+// One Qloo client per run, so the call budget and the cache are the run's (spec §3.5). The slots
+// are shared, so runs at once stay under the host's rate limit together.
+function toolContext(config: ConfigService<Env, true>, slots: RequestSlots): ToolContext {
   const callBudget = config.get('QLOO_CALL_BUDGET', { infer: true });
   if (config.get('QLOO_MODE', { infer: true }) === 'demo') {
     const qloo = new QlooClient({
@@ -729,6 +733,7 @@ function toolContext(config: ConfigService<Env, true>): ToolContext {
     timeoutMs: config.get('QLOO_TIMEOUT_MS', { infer: true }),
     callBudget,
     lookupCache: lookups,
+    slots,
   });
   return { qloo, source: 'qloo', entities: new Map() };
 }

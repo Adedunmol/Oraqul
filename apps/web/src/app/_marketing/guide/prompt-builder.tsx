@@ -169,7 +169,7 @@ export function PromptBuilder() {
             label={`${guide.compsLabel}, separated by commas`}
             value={v.comps}
             onChange={(e) => set('comps', e.target.value)}
-            placeholder="Salt Road, The Glass Lantern, Midnight Harbor"
+            placeholder={guide.compsExample}
           />
         </Group>
 

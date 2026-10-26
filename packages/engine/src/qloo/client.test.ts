@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { LookupCache, QlooBudgetError, QlooError } from './client';
+import { LookupCache, QlooBudgetError, QlooError, RequestSlots } from './client';
 import {
   entityInsightsBody,
   entityListBody,
@@ -132,15 +132,32 @@ describe('QlooClient.get', () => {
       expect(fetch).toHaveBeenCalledTimes(2);
     });
 
-    it('gives a rate limit a second retry, then stops', async () => {
+    it('gives a rate limit four retries, then stops', async () => {
       const limited = () => jsonResponse({}, { status: 429 });
-      const twice = stubFetch(limited(), limited(), jsonResponse(entityListBody));
+      const fourTimes = stubFetch(
+        limited(),
+        limited(),
+        limited(),
+        limited(),
+        jsonResponse(entityListBody),
+      );
       await get();
-      expect(twice).toHaveBeenCalledTimes(3);
+      expect(fourTimes).toHaveBeenCalledTimes(5);
 
-      const always = stubFetch(limited(), limited(), limited());
+      const always = stubFetch(limited(), limited(), limited(), limited(), limited());
       await expect(get()).rejects.toMatchObject({ kind: 'http', call: { status: 429 } });
-      expect(always).toHaveBeenCalledTimes(3);
+      expect(always).toHaveBeenCalledTimes(5);
+    });
+
+    it('reports a body that times out as a timeout', async () => {
+      const slowBody = () =>
+        new Response(
+          new ReadableStream({
+            pull: (controller) => controller.error(new DOMException('timed out', 'TimeoutError')),
+          }),
+        );
+      stubFetch(slowBody(), slowBody());
+      await expect(get()).rejects.toMatchObject({ kind: 'timeout' });
     });
 
     it('retries once after a network error', async () => {
@@ -211,6 +228,24 @@ describe('QlooClient.get', () => {
       };
       const client = testClient({ fetch: slow, maxConcurrent: 2 });
       await Promise.all(['a', 'b', 'c', 'd', 'e'].map((query) => lookup.search(client, { query })));
+      expect(most).toBe(2);
+    });
+
+    it('keeps the cap across clients that share slots', async () => {
+      let inFlight = 0;
+      let most = 0;
+      const slow: typeof fetch = async () => {
+        inFlight += 1;
+        most = Math.max(most, inFlight);
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        inFlight -= 1;
+        return new Response(JSON.stringify({ success: true, results: [] }), { status: 200 });
+      };
+      const slots = new RequestSlots(2);
+      const runs = [testClient({ fetch: slow, slots }), testClient({ fetch: slow, slots })];
+      await Promise.all(
+        runs.flatMap((client) => ['a', 'b', 'c'].map((query) => lookup.search(client, { query }))),
+      );
       expect(most).toBe(2);
     });
   });

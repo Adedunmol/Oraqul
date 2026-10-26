@@ -161,7 +161,9 @@ export function ReceiptDrawer({
           </dl>
           {publicExample || !showIds ? null : (
             <>
-              <p className="text-[12px] font-semibold text-muted">Example response shape</p>
+              <p className="text-[12px] font-semibold text-muted">
+                The call and what Qloo returned
+              </p>
               <pre className="whitespace-pre-wrap break-words rounded-lg bg-surface2 px-3 py-2.5 font-mono text-xs">
                 {JSON.stringify(
                   {

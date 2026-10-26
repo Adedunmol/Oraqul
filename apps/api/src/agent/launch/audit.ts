@@ -228,14 +228,15 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);
   } else {
     ctx.trace('Finding the comps in Qloo');
+    let qlooFailed: boolean;
     try {
-      comps = await findComps(deps, ctx.keep, read, [], [], []);
+      ({ searchFailed: qlooFailed, ...comps } = await findComps(deps, ctx.keep, read, [], [], []));
     } catch (err) {
       if (err instanceof QlooBudgetError) return { stop: budgetStop(deps, ctx) };
       throw err;
     }
     if (comps.resolved.length === 0) {
-      noCompsStop(deps, ctx, read);
+      noCompsStop(deps, ctx, read, qlooFailed);
       return { stop: ctx.stop('finished') };
     }
     for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);

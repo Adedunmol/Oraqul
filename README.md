@@ -1,8 +1,32 @@
 # Oraqul
 
+Built for the **Qloo Hackathon 2026**.
+
 A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like. Plan a launch, audit a plan, or fix one, before or after launch, across film, music, books, podcasts, games and live shows. Every claim about taste, audience or place cites a finding from Qloo taste data.
 
-Product background: [docs/product/overview.md](docs/product/overview.md).
+<!-- Before submitting: add the live app URL, the demo video link and one screenshot here. -->
+
+## The problem
+
+Launch plans rest on audience assumptions nobody writes down, borrowed from a few comparable titles and instinct. When a launch underperforms, the team can see what happened but not which assumption was wrong. Oraqul makes each assumption explicit and tests it against Qloo: a plan says which lines are measured, which are sourced from the web and which are launch craft, and every measured line opens the Qloo call behind it.
+
+It is for the teams that launch cultural products: distributors and studios, labels and managers, publishers, podcast networks, game publishers, and live show promoters. More in [docs/product/overview.md](docs/product/overview.md).
+
+## How Oraqul uses Qloo
+
+The model reads the brief and shapes the questions. Code asks Qloo, turns each answer into a finding, and computes every score from what Qloo returned. The model writes the plan from the findings, and code checks that every grounded line cites one.
+
+| Qloo endpoint | What Oraqul does with it |
+|---|---|
+| `/search`, `/entities` | Finds the comps, sound-alikes and partner brands the team names, settles same-name matches by country and popularity, and looks up cities |
+| `/v2/tags` | Turns genre and theme words into Qloo tags, so a debut with no comps can still be planned from its genre |
+| `/v2/insights` (entities) | The audience's taste across films, series, artists, books, podcasts, games, brands and places, by age band, gender and city; lift for each candidate; rival releases scored against the comps; partner brand fit |
+| `/v2/insights` (tags) | The themes and moods the audience shares, for positioning and creative |
+| `/v2/insights` (demographics) | Which age bands and genders lean in, for the audience section |
+| `/v2/insights` (heatmap) | Ranks the team's cities, and the areas inside them, by where the audience is strongest |
+| `/v2/analysis/compare` | Topic ownership: which topics only your audience carries, which it shares with rival shows, and which the rivals own |
+
+Each call returns `{ data, call }`. The call becomes a receipt with what was sent and what came back, and the plan's Evidence tab lists every one. Every endpoint and parameter we rely on was probed live and is recorded in [docs/backend/qloo.md](docs/backend/qloo.md).
 
 ## Run it locally
 
@@ -19,7 +43,7 @@ pnpm dev
 - Web: http://localhost:3000
 - API health: http://localhost:4000/health
 
-The Qloo and OpenAI keys in `.env` are optional until you work on the agent. Env vars are validated once at boot in [apps/api/src/config/env.ts](apps/api/src/config/env.ts).
+Without a `QLOO_API_KEY` the API runs in demo mode (`QLOO_MODE=demo`): hand-written stand-in data, labelled as demo on every receipt. Set `QLOO_MODE=live` with a key to plan on real Qloo data. Without an `LLM_API_KEY` (Gemini by default, see `.env.example`) scripted steps and template writers stand in for the model. Env vars are validated once at boot in [apps/api/src/config/env.ts](apps/api/src/config/env.ts), and in production the API refuses to start unless `QLOO_MODE=live`.
 
 ## Commands
 
@@ -50,7 +74,7 @@ Run from the repo root.
 
 ### Qloo fixtures
 
-Contract tests parse recorded Qloo responses so they run offline and never spend quota. Each teammate records their own set once:
+The smoke script checks every endpoint Oraqul relies on against live Qloo and records one response per endpoint and type, so shape changes show up before they reach a plan. Unit tests use a fake `fetch` and the demo data, so they run offline and never spend quota. Each teammate records their own set once:
 
 ```bash
 # QLOO_API_KEY and QLOO_BASE_URL set in .env
@@ -68,7 +92,7 @@ apps/
     src/db/         Drizzle schema, migrations are in drizzle/
     src/config/     Env parsing and validation
     src/auth/       Session and role guards
-    src/agent/      Agent runtime (in progress)
+    src/agent/      Agent runtime: router, one agent per category, the plan pipeline
 packages/
   schema/         Zod schemas and types shared by web, api and engine
   engine/         Qloo client, receipts, scoring. No imports from apps

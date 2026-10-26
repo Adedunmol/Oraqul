@@ -50,7 +50,7 @@ import {
   updateMemoryInputSchema,
 } from '@oraqul/schema';
 import type { Response } from 'express';
-import { map, type Observable } from 'rxjs';
+import { interval, map, merge, type Observable } from 'rxjs';
 import { z } from 'zod';
 import { RunService } from '../agent/run.service.js';
 import { CurrentMembership } from '../auth/current-membership.decorator.js';
@@ -70,6 +70,7 @@ const scopeSchema = z
   .optional()
   .transform((scope) => (scope === 'all' ? undefined : scope));
 const afterSchema = z.coerce.number().int().min(0).default(0);
+const KEEPALIVE_MS = 20_000;
 
 // Roles per action: docs/product/spec.md section 7. Owners and editors write, viewers read.
 @Controller()
@@ -331,12 +332,16 @@ export class ProjectsController {
     @Param('threadId') threadId: string,
     @Query('after', new ZodPipe(afterSchema)) after: number,
   ): Observable<MessageEvent> {
-    return this.runs
+    const events = this.runs
       .events(threadId, after)
       .pipe(
         map(({ seq, event }) =>
           seq === undefined ? { data: event } : { id: String(seq), data: event },
         ),
       );
+    // The writer can be silent for minutes, and proxies close an idle stream after about a minute.
+    // A named event never reaches the client's onmessage, so it only keeps the line open.
+    const ping = interval(KEEPALIVE_MS).pipe(map(() => ({ type: 'ping', data: '' })));
+    return merge(events, ping);
   }
 }

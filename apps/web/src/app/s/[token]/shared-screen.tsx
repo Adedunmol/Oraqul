@@ -19,14 +19,7 @@ export function SharedScreen({ detail }: { detail: OutputDetail | null }) {
         <p className="text-[13px] text-muted">Shared link · read only</p>
       </div>
       {detail ? (
-        <OutputView
-          detail={detail}
-          initialTab={undefined}
-          canEdit={false}
-          teamName={null}
-          shared
-          publicExample
-        />
+        <OutputView detail={detail} initialTab={undefined} canEdit={false} shared publicExample />
       ) : (
         <Card className="flex max-w-xl flex-col items-start gap-3 p-6">
           <h1 className="font-display text-2xl font-semibold">This link does not work.</h1>

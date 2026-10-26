@@ -75,7 +75,8 @@ export function ExamplesView({
           <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
             Example
           </span>
-          Invented data for a made up {current.noun}. Nothing on this page comes from Qloo.
+          Invented data for a made up {current.noun}, so you can see the shape of a plan. Plans you
+          make in the app use live Qloo data.
         </p>
         <div className="product-face bg-canvas px-[clamp(16px,3vw,32px)] pt-7">
           {detail ? (
@@ -84,7 +85,6 @@ export function ExamplesView({
               detail={detail}
               initialTab={tab}
               canEdit={false}
-              teamName={null}
               shared
               publicExample
             />
