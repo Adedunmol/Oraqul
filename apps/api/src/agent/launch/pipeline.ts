@@ -861,7 +861,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         .filter(Boolean)
         .join('\n\n'),
       read,
-      comps: comps.used,
+      comps: comps.used.filter((c) => !c.anchor),
       sections: order.filter(
         (key) =>
           !(
@@ -952,7 +952,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         ranked: grounded.brief.teamOrder.map((p) => p.place),
         findings: grounded.findings,
         home: homeMarket(read.places, queryPlan.country),
-        comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+        comps: comps.used.filter((c) => c.source === 'you' && !c.anchor).map((c) => c.name),
       },
       deps.config.decisions,
     );
@@ -1182,7 +1182,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       confidence,
       inputs: {
         read,
-        comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+        comps: comps.used.filter((c) => c.source === 'you' && !c.anchor).map((c) => c.name),
         resolved: comps.resolved,
         dropped: comps.dropped,
         used: comps.used,
@@ -1251,6 +1251,8 @@ export async function findComps(
     ...(deps.config.teamAnchors?.(read) ?? []).filter((n) => !read.comps.some((c) => same(c, n))),
   ];
   const yours = named.filter((c) => !resolved.some((a) => same(a.name, c))).slice(0, MAX_COMPS);
+  // An earlier show or a featured artist anchors the audience but is never one of the comps.
+  const isAnchor = (name: string) => !read.comps.some((c) => same(c, name));
   const proposals =
     named.length >= MIN_COMPS
       ? []
@@ -1296,6 +1298,7 @@ export async function findComps(
         source: mine ? 'you' : 'added',
         match: match?.detail ?? null,
         choice: null,
+        ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
       });
     } else if (a.status === 'ambiguous' && a.candidates.length) {
       const pick = settle(a.candidates, read.country);
@@ -1305,6 +1308,7 @@ export async function findComps(
         source: mine ? 'you' : 'added',
         match: pick.detail,
         choice: `Qloo has ${a.candidates.length} ${deps.config.words.entity}s called “${a.name}”. I used the ${pick.detail ?? 'best known'} one, ${read.country && pick.detail?.includes(read.country) ? `from ${read.country} and ` : ''}the best known. Say which you mean if it is another.`,
+        ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
       });
     } else if (a.status === 'not_found' && a.candidates.length) {
       // No exact name, so the nearest title Qloo has stands in, and the plan says so.
@@ -1316,6 +1320,7 @@ export async function findComps(
         source: mine ? 'you' : 'added',
         match: pick.detail,
         choice: `Qloo has no ${deps.config.words.entity} called “${a.name}”. I used the closest one it has, “${pick.name}”${pick.detail ? ` (${pick.detail})` : ''}. Say which you mean if it is another.`,
+        ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
       });
     } else if (mine) {
       dropped.push({

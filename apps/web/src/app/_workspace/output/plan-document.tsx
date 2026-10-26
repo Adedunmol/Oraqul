@@ -322,7 +322,7 @@ export function LineText({
 
 function Comps({ plan }: { plan: LaunchPlan }) {
   const added = plan.comps.filter((c) => c.source === 'added');
-  const yours = plan.comps.filter((c) => c.source === 'you');
+  const yours = plan.comps.filter((c) => c.source === 'you' && !c.anchor);
   const exact = yours.filter((c) => !c.choice);
   const settled = yours.filter((c) => c.choice);
   if (added.length + yours.length + plan.compsNotFound.length === 0) return null;

@@ -146,6 +146,21 @@ describe('Podcasts build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(timeline?.lines.some((l) => /back-catalogue|earlier seasons/i.test(l.text))).toBe(true);
   });
 
+  it('anchors on an earlier show but never lists it or reruns with it as a comp', async () => {
+    const { handoff, deps } = setup(
+      'Launch plan for the podcast "Cold Case Lagos", a true crime show from the makers of "Casefile", launching 2099-03-01. Comparable shows: "Crime Junkie" and "Serial".',
+    );
+    const run = await runPodcastsBuild(handoff, deps());
+    expect(run.reason).toBe('finished');
+    const earlier = run.output?.plan?.comps.find((c) => /casefile/i.test(c.name));
+    expect(earlier?.anchor).toBe(true);
+    const named = run.output?.plan?.comps.filter((c) => !c.anchor).map((c) => c.name) ?? [];
+    expect(named).toEqual(expect.arrayContaining(['Crime Junkie', 'Serial']));
+    expect(named.some((n) => /casefile/i.test(n))).toBe(false);
+    const inputs = podcastsInputsSchema.parse(run.output?.inputs);
+    expect(inputs.comps.some((n) => /casefile/i.test(n))).toBe(false);
+  });
+
   it('plans with no market named, ranking the usual markets and saying what it assumed', async () => {
     const { handoff, deps } = setup(
       'Launch plan for the podcast "Cold Case Files", a true crime show. Comparable shows: "Crime Junkie" and "Serial".',

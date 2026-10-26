@@ -117,6 +117,11 @@ export const compUsedSchema = z.object({
   match: z.string().nullable(),
   /** Why code picked this match from several, said plainly. Null for a single match. */
   choice: z.string().nullable(),
+  /**
+   * True for a title the launch names beside its comps, such as an earlier show or a featured
+   * artist. It anchors the audience question but is never listed or written about as a comp.
+   */
+  anchor: z.boolean().optional(),
 });
 export type CompUsed = z.infer<typeof compUsedSchema>;
 

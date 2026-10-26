@@ -291,7 +291,7 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     title,
     request: review.text,
     read,
-    comps: comps.used,
+    comps: comps.used.filter((c) => !c.anchor),
     items,
     findings: grounded.findings,
     sources,
@@ -333,7 +333,7 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     alternatives,
     opportunities: found.opportunities,
     results: comparison,
-    comps: comps.used,
+    comps: comps.used.filter((c) => !c.anchor),
     findings: grounded.findings,
     sources: sources.filter((src) =>
       [...risks, ...alternatives, ...items.flatMap((i) => (i.fix ? [i.fix] : []))].some((l) =>
@@ -391,7 +391,7 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     confidence,
     inputs: {
       read,
-      comps: comps.used.filter((c) => c.source === 'you').map((c) => c.name),
+      comps: comps.used.filter((c) => c.source === 'you' && !c.anchor).map((c) => c.name),
       resolved: comps.resolved,
       dropped: comps.dropped,
       used: comps.used,
