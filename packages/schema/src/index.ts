@@ -6,6 +6,7 @@ export * from './categories';
 export * from './claim';
 export * from './events';
 export * from './finding';
+export * from './guide';
 export * from './output';
 export * from './pin';
 export * from './plan';

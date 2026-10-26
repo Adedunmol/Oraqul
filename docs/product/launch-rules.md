@@ -17,7 +17,7 @@ A rule is launch practice, so a line that states one is a **playbook** line (spe
 | Platform extras | The platforms a category or a market adds to the suggestions | `rules/platforms.ts` |
 | Partners | Tiers, seeded names per market, brand categories and kinds of partner per category, lead time, content fit, the pitch kit | `rules/partners.ts` (`partners@<date>.<n>`), see [partnerships](partnerships.md) |
 | Content calendar | The rows a calendar is built from, and the paid ads note | `rules/calendar.ts` (`calendar@<date>.<n>`), see [content calendar](content-calendar.md) |
-| Live shows | E1 to E8 for a single show or a short run | `rules/shows.ts` (`shows@<date>.<n>`), see [shows agent](shows-agent.md) |
+| Live shows | E1 to E8 for a single show or a short run | `rules/shows.ts` (`shows@<date>.<n>`), see [shows agent](../categories/shows.md) |
 | Creative | What a creative kit is built from, per category | `rules/creative.ts` |
 
 `GET /rules` serves all of it. A plan records the category's version in `plan.rules` and the shared libraries it also used in `plan.rules.parts`. The platform suggestion mechanics (`CATALOGUE`, the number suggested, which markets get WhatsApp) stay in code: they are interface, not launch craft.
@@ -80,7 +80,7 @@ A tier is set by what Qloo says about a brand, not by default: a flagship seed, 
 
 Seeded names are asked of Qloo only for the markets of the plan's territories, joined to the brands Qloo is asked to rank for those cities, so a seed gets a measured fit. A seed Qloo does not rank shows as not ranked and gets no call, never a weak one. Each option carries its own market.
 
-**Verification.** Checked on the development host on 2026-10-23 ([qloo.md](../backend/qloo.md#what-is-verified)): Guinness, Indomie, EE, Monzo, Lyft, Cash App and Bolt match by exact name, and MTN matches as "MTN Group". "Verve" and "QuickTeller" did not resolve to the Nigerian payment brands, so they are not seeds; banks and payment brands are a kind of partner. Brand categories that give brands that operate in a city: beverage, telecom, food and beauty. Coffee, energy drink and snack were thin and are not asked; Qloo has no brand category for apparel, hardware, ticketing or payments.
+**Verification.** Checked on the development host ([qloo.md](../backend/qloo.md#what-is-verified)): Guinness, Indomie, EE, Monzo, Lyft, Cash App and Bolt match by exact name, and MTN matches as "MTN Group". "Verve" and "QuickTeller" did not resolve to the Nigerian payment brands, so they are not seeds; banks and payment brands are a kind of partner. Brand categories that give brands that operate in a city: beverage, telecom, food and beauty. Coffee, energy drink and snack were thin and are not asked; Qloo has no brand category for apparel, hardware, ticketing or payments.
 
 Price is always **unknown**. Oraqul gives no pricing advice. Details, the lead time rule (T1), content fit (T2), the pitch kit (T3, T4) and the team's own partners are in [partnerships](partnerships.md).
 

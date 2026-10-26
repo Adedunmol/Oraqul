@@ -24,7 +24,7 @@ export function Closing({
       >
         <h2
           id="closing-title"
-          className="font-display text-[clamp(44px,8vw,112px)] leading-[0.95] font-semibold tracking-[-0.05em]"
+          className="font-display text-[clamp(44px,8vw,112px)] leading-[1] font-medium tracking-[-0.03em]"
         >
           {title}
         </h2>

@@ -86,7 +86,7 @@ Import rules: `engine` and `packs` never import from `apps`, and `web` never imp
 
 ## Docs
 
-Start at [docs/README.md](docs/README.md). Handy ones: [frontend](docs/frontend/README.md), [backend](docs/backend/README.md), [Qloo](docs/backend/qloo.md), [testing](docs/testing.md), [git workflow](docs/git.md).
+Start at [docs/README.md](docs/README.md). Handy ones: [architecture](docs/architecture.md), [design system](docs/frontend/design-system.md), [Qloo](docs/backend/qloo.md), [testing](docs/testing.md), [git workflow](docs/git.md).
 
 ## Licence
 

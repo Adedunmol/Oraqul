@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Closing } from '../../_marketing/closing';
 import { PageHero } from '../../_marketing/page-hero';
 import {
+  CampaignCase,
   CaseIndex,
   CheckCase,
   FixCase,
@@ -12,21 +13,22 @@ import {
 export const metadata: Metadata = {
   title: 'Use cases · Oraqul',
   description:
-    'Make a plan, check the plan you have, fix one that missed and revise it from your results, then keep going with rival dates, what ifs and the creative kit. Each is grounded in real audience taste data.',
+    'Make a plan, check the plan you have, fix one that missed and revise it from your results, run the campaign, then keep going with rival dates, what ifs and the creative kit. Each is grounded in real audience taste data.',
 };
 
 export default function UseCases() {
   return (
     <>
       <PageHero
-        title="Four ways teams use Oraqul."
-        lead="Before a launch, while you weigh it, and after it is out. Start from whatever you have, and every claim about taste is checked against real data."
+        title="Five ways teams use Oraqul."
+        lead="Before a launch, while you run it, and after it is out. Start from whatever you have, and every claim about taste is checked against real data."
       >
         <CaseIndex />
       </PageHero>
       <PlanCase />
       <CheckCase />
       <FixCase />
+      <CampaignCase />
       <WhatIfCase />
       <Closing />
     </>

@@ -15,7 +15,7 @@ A post count appears only where a source gave one. Otherwise the row says "the s
 | Film | About four weeks of campaign: something new every week, something daily in the final week, the trailer as an exclusive to one big outlet first, podcasts pitched one to two weeks out, print about two months out, an online screener for reviewers who hold reviews until a few days before release | directional |
 | Music | Pre-saves open at least three weeks out, teasers of 10 to 30 seconds at least three a week, content for two to three weeks either side of release day | directional |
 | Books, Podcasts, Games | Not researched. The rows follow the category's launch beats (`KIND_PROFILES`) and state no counts | not-researched |
-| Live shows | Derived from the show rules E1 to E5 ([shows agent](shows-agent.md)) | directional |
+| Live shows | Derived from the show rules E1 to E5 ([shows agent](../categories/shows.md)) | directional |
 
 Directional means one blog-level source for each point; the plan says so above the rows. The page behind each point is not recorded.
 

@@ -1,7 +1,7 @@
 import { Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { band, h2Class, wrap } from '../section';
+import { band, fitBand, h2Class, wrap } from '../section';
 
 // Answers say only what the product does today (spec §3 to §5, §9.5).
 const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
@@ -25,6 +25,27 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
         outside that data is rejected and rerun. <Link href="/method">Read the method</Link>.
       </>
     ),
+  },
+  {
+    home: 'Add your results as totals by city or age band, with the period and where they came from. Oraqul sets them against the plan and writes a revised plan beside the old one. It says what happened, never why: a cause is a hypothesis to test.',
+    q: 'What happens after the launch?',
+    a: 'Add your results as totals by city or age band, with the period they cover and where they came from. Oraqul sets each place against where the plan put it, in code, and a fix writes a revised plan around who showed up. The old plan is kept beside the new one. Your figures are your own evidence, kept apart from the taste data: they show what happened, and Oraqul never states why as fact.',
+  },
+  {
+    q: 'Can it tell me what has changed since my plan was made?',
+    a: 'Yes, when you ask. It asks Qloo and the web again with your plan’s own brief and sets the answers beside what the plan saved: findings that moved, pages that now say something different, each with the day it was read, and the lines of your plan that rest on them. Something is called changed only when the plan had an earlier finding or fact to compare. Your plan is untouched until you ask for a revision.',
+  },
+  {
+    q: 'Does it find markets I had not thought of?',
+    a: 'Yes, and it keeps them beside your plan. Nearby cities that rank above your weakest, and the strongest area of each of your cities, appear under Worth a look with why, what the data does not show, a first test and what to measure. Nothing joins your plan until you add it: ask “What if we add Accra?”. If the evidence is thin, it says so rather than filling a list.',
+  },
+  {
+    q: 'Can it help me run the campaign?',
+    a: 'It turns the plan’s content calendar into actions in the project, each with a guide from the creative kit that you adapt. Edit an action, tick it off, and set up a two-angle test for any of them. Add your own figures and Oraqul compares them, saying inconclusive when they are thin or close. A revised plan gets its own set, and nothing is posted or scheduled for you.',
+  },
+  {
+    q: 'How does it use the places I name?',
+    a: 'Every city is read, not just listed. Oraqul asks Qloo what the audience for your comparable titles looks like there, ranks all your cities in one call so their scores compare, and gives each a verdict and its own plan. For film and music plans it also reads neighbourhoods near the strongest cells, as leads to confirm on the ground. Nearby cities that rank above your weakest appear under Worth a look. A place with too little data to rank is marked as such, with lower confidence, and your own cities are never dropped.',
   },
   {
     q: 'What is a receipt?',
@@ -91,7 +112,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
 export function Faq({ short = false }: { short?: boolean }) {
   const items = short ? faqs.filter((f) => f.home) : faqs;
   return (
-    <section aria-labelledby="faq-title" className={`bg-bg ${band}`}>
+    <section aria-labelledby="faq-title" className={`bg-bg ${short ? fitBand : band}`}>
       <div className={`${wrap} grid gap-12 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}>
         <div className="flex flex-col gap-5 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
           <h2 id="faq-title" className={h2Class}>

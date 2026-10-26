@@ -218,7 +218,7 @@ Stage 1 of every Podcasts reply, in the same two stages as Film (§4.1): the mod
 
 Not in the catalog: chart positions, downloads and ratings (not in Qloo), and live-show venues (no place category for them has been verified). Live shows are placed in the markets ranking. A rival's overlap is the rival date check, with `scoreRivals` of type podcast. The planner is the same as Music's: with no key the pack's defaults run, and code keeps only the team's cities, table cities for Worth a look, and short phrases.
 
-**Topic map.** One comparison call, never two (qloo.md: scores from separate calls are not comparable). Qloo lists, for each group, every tag its shows carry with the number of its shows that carry it. Only subject tags count (`theme`, `keyword`, `subgenre`, `genre`; not a show's style, host, audience or content type), and topics are told apart by name, since one topic appears under several namespaces. A topic only your side lists is yours, one on both sides is shared, and one only the rivals' side lists is theirs. The weight of a yours topic is the share of your shows that carry it against the mean share of a rival topic among the rival shows, for ordering and for the size of the tag on screen; it never decides who owns a topic. Verified live on a true crime brief (2026-10-20); other subjects are not probed one by one.
+**Topic map.** One comparison call, never two (qloo.md: scores from separate calls are not comparable). Qloo lists, for each group, every tag its shows carry with the number of its shows that carry it. Only subject tags count (`theme`, `keyword`, `subgenre`, `genre`; not a show's style, host, audience or content type), and topics are told apart by name, since one topic appears under several namespaces. A topic only your side lists is yours, one on both sides is shared, and one only the rivals' side lists is theirs. The weight of a yours topic is the share of your shows that carry it against the mean share of a rival topic among the rival shows, for ordering and for the size of the tag on screen; it never decides who owns a topic. Verified live on a true crime brief; other subjects are not probed one by one.
 
 ### 4.5 Books query catalog
 
@@ -255,7 +255,7 @@ Not in the catalog: sales, pre-orders, chart positions and ratings (not in Qloo)
 | `podcasts` | publicity | `findTaste` podcasts with a genre tag |
 | `venues` | venues | `findTaste` places with the place category for the show type: concert hall and night club, night club, comedy club, theater, movie theater. A city where the category lists nothing is a gap |
 
-Qloo holds no ticket price, venue capacity or event calendar. The team supplies them, and a plan shows "not available" for a missing one. Details: [shows-agent.md](shows-agent.md).
+Qloo holds no ticket price, venue capacity or event calendar. The team supplies them, and a plan shows "not available" for a missing one. Details: [shows-agent.md](../categories/shows.md).
 
 ## 5. Scoring layer
 
@@ -387,7 +387,7 @@ The age, gender, place and anchors tests are exactly §5.2, run on the show, its
 * **The team's decisions are constraints.** A topic that is shared or the rivals' keeps its place in the plan; its fix names the topics that are yours beside it, and the writer is told to take an angle on it that the rival shows do not. A topic is matched by its words (whole phrase, either way round), not by a guess.
 * **Rivals.** The shows the team named. With none, the shows `findTaste` lists in the genre, which are the shows the audience hears: the plan says the comparison was against shows in the same genre.
 * **No weight decides.** The weight in the topic map orders and sizes topics. Ownership is where Qloo listed the topic.
-* **Starting values.** The rule is checked on one live true crime brief (2026-10-20). Other subjects are not probed one by one. Change it here first.
+* **Starting values.** The rule is checked on one live true crime brief. Other subjects are not probed one by one. Change it here first.
 
 ### 5.9 Podcasts audit tests (audit and fix)
 
@@ -447,7 +447,7 @@ A direction is the call on what to do about a decision: **okay**, **risky** or *
 
 ### 5.13 Live shows assumption tests (build)
 
-The age, gender, place and anchors tests are exactly §5.2, run on the act and its comparable acts. A support act the team named is tested like a Music support act (§5.4). Everything dated is code, not a test: the on-sale window, the presale, the pacing, the budget phases and the final push are computed from the team's inputs and the rules E1 to E5 ([shows-agent.md](shows-agent.md)). The target for the one signal, tickets sold against capacity, is the team's, and the benchmark is null.
+The age, gender, place and anchors tests are exactly §5.2, run on the act and its comparable acts. A support act the team named is tested like a Music support act (§5.4). Everything dated is code, not a test: the on-sale window, the presale, the pacing, the budget phases and the final push are computed from the team's inputs and the rules E1 to E5 ([shows-agent.md](../categories/shows.md)). The target for the one signal, tickets sold against capacity, is the team's, and the benchmark is null.
 
 * **A rival show date (E6).** Each date the team gives is called okay, risky or avoid from its distance to the show's date and, where Qloo scored the rival, the audience overlap (§5.12). A rival Qloo cannot score is still flagged when it is on the same night or in the same week, at the lowest confidence.
 * **Not tested, said plainly.** Ticket sales, venue capacity and price: Qloo holds none. A comedian or a stage play is a thin anchor (§4.6).
@@ -543,7 +543,7 @@ Privacy: only public entity names, place names and age bands go to Qloo. Uploade
   * **Podcasts** (`PODCASTS_MODULES`): Cross promotion shows (`crosspromo`), Guests (`guests`), Sponsors (`partnerships`), Press and newsletters (`publicity`), Video and clips (`video`), Live shows (`live`), Community, Episode cadence (`cadence`), Launch beats (`timeline`), Budget split, What to measure, Risks. Which a plan gets, and in what order, depends on the **launch kind** (a new show or a new season, `KIND_PROFILES` in `packages/packs/src/podcasts/modules.ts`) and the **format** (audio, video or both). With no kind stated the plan is for a new show, and with no format it is audio; Gaps says so. Video and clips need a filmed show, and Guests are dropped for a narrative show unless guests are named. Markets is titled Markets. Each kind has its own calendar of beats in weeks from the release, its own measures and its own budget split.
   * **Books** (`BOOKS_MODULES`): Comp titles (`comps`), Screen and audio angles (`adaptation`), Retail and pre-orders (`retail`), Press and reviews (`publicity`), Events and festivals (`events`), BookTok and creators (`creators`), Brand partners (`partnerships`), Book clubs and community (`community`), Audiobook (`audio`), Schools and libraries (`schools`), Series and backlist (`cadence`), Launch beats (`timeline`), Budget split, What to measure, Risks. Which a plan gets, and in what order, depends on the **launch kind** the brief describes (a debut, a new book by an author, the next book in a series, a reissue or new edition, `KIND_PROFILES` in `packages/packs/src/books/modules.ts`), the **route** (a publisher's, or self-published), the **readership** (adult, young adult, children) and the **formats**. With no kind stated the plan is a debut, with no route a publisher's and with no readership adult; Gaps says so. Retail sell-in is for a publisher's book, Schools and libraries are for young readers, and Audiobook needs an audiobook. Series and backlist is for a new book by an author, the next book in a series and a reissue. Markets is titled Markets. Each kind has its own calendar of beats in weeks from publication, its own measures and, for each route, its own budget split.
 * **Lines:** `{ id, kind, text, findingIds, sourceIds, names, group }`. `grounded` lines cite findings; `playbook` lines cite no finding. Either may cite web sources (`sourceIds`), which is the only way a line may state a date, a rival release or a market figure.
-* **Live shows** (`SHOWS_MODULES`): On sale and pacing (`onsale`, by code), Sponsors and partners (`partnerships`), Press and promoters (`publicity`), Where the audience goes out (`venues`), Final push (`finalpush`, by code), Show calendar (`timeline`), Budget split by phase, What to measure, Risks. Rules E1 to E8: [shows-agent.md](shows-agent.md).
+* **Live shows** (`SHOWS_MODULES`): On sale and pacing (`onsale`, by code), Sponsors and partners (`partnerships`), Press and promoters (`publicity`), Where the audience goes out (`venues`), Final push (`finalpush`, by code), Show calendar (`timeline`), Budget split by phase, What to measure, Risks. Rules E1 to E8: [shows-agent.md](../categories/shows.md).
 * **Plan fields.** Besides the sections, a plan carries `rules` (the category version and the shared libraries it used, `parts`), `band`, `signal`, `territories`, `calls`, `partners` (each with a tier, a market, a kind and content flags), `partnerNotes` (lead time, band and barter, T1) and `calendar` (the rows behind the Content calendar section).
 * **Shared modules.** Every full plan also carries Channels (`channels`, when it names a city), Creative briefs (`creative`) and the Content calendar (`calendar`), added beside the category's own list just before the timeline or the budget, so Film's frozen list stays as it is. A narrow ask gets neither.
 * **The launch rules.** Timeline, What to measure and Channels are written by code from the rule library, and a plan records the rules version it used, its budget band, its signal and target, one territory per city, its direction calls and its partners by tier. Their rules, fields and thresholds are in [launch-rules.md](launch-rules.md); the checks are in §5.12 and §6.2.
@@ -624,6 +624,7 @@ POST   /threads/:threadId/cancel      stops the run on the thread (owner, editor
 POST   /threads/:threadId/read    marks what is stored so far as read
 GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
 GET    /rules                 the launch rule library with each rule's source, grade and date: the categories, the shared conventions, the partner, calendar and live show rules. Public, static, the same for every team
+POST   /guide/ask            a visitor's question about using Oraqul, answered by a model from the Guide's own pages, with the pages it drew on. Public, no sign in. Question at most 400 characters and six earlier turns. 429 past the visitor's hourly limit, 503 when the daily cap is spent, the bot has no key or the model fails
 GET    /outputs/:id
 GET    /outputs/:id/export/:format    md, docx or pdf, built from the stored plan (§6.1)
 GET    /projects/:id/compare?a=&b=
@@ -677,7 +678,7 @@ Charts are inline SVG or CSS, each with a table toggle, a legend, and hover text
 The look is defined in the design system file. In code:
 
 * Tokens live in `globals.css` as CSS variables, light on bare `:root`, dark in a guarded media query and again under `[data-theme="dark"]`, each with `color-scheme`. No component uses a literal colour.
-* Fonts come from `next/font/google`: Geist for headings, running text and document reading in the signed-in product, Geist Mono for ids and keycaps, and Space Grotesk for the public brand and marketing headlines.
+* Fonts come from `next/font/google`: Geist for headings, running text and document reading in the signed-in product, Geist Mono for ids and keycaps, and Mona Sans for the public brand and marketing headlines.
 * Category colour is set by a `data-cat` attribute and a `--cat` variable. It is used for icon tiles and strokes, and to tint project cards (design-system §3.3).
 * A small component set lives in `packages/ui`: Button, Input, Chip, VerdictPill, Confidence, ReceiptChip, Card, Line, Tabs, TabNote, StartComposer, ProjectCard, SummaryCard, QuestionCard, Trace, Chart, ReceiptDrawer, Palette, Modal, Toast, Icon. VerdictPill and Confidence take the data value and draw the glyph and word, so colour cannot appear alone.
 
@@ -721,7 +722,7 @@ The marketing and trust pages a signed out visitor sees.
 
 **Navigation.** A short header: Product (How it works, Examples, Method), Use cases, Categories, Guide, Sign in, Create account. Developers and Terms are in the footer. The footer carries the rest in four columns: Product, Resources, Company, Legal. Product is a small menu (Escape or a click outside closes it and returns focus to it); below 900px one Menu button opens a panel with every link; below 600px Sign in moves into that panel so the bar stays on one row.
 
-**Rules.** Marketing pages use the app's tokens and Space Grotesk headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 375px. Words follow design-system §10: launch is the umbrella word (launch planning, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
+**Rules.** Marketing pages use the app's tokens and Mona Sans headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 375px. Words follow design-system §10: launch is the umbrella word (launch planning, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
 
 ## 10. Failure handling
 

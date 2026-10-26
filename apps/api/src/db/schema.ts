@@ -87,6 +87,20 @@ export const emailCodes = pgTable(
   (table) => [index('email_codes_email_purpose_idx').on(table.email, table.purpose)],
 );
 
+/**
+ * One row per question put to the Guide's help bot, with a keyed hash of the asker's address and
+ * no text. It is what the hourly and daily limits count.
+ */
+export const guideQuestions = pgTable(
+  'guide_questions',
+  {
+    id: id(),
+    visitor: text('visitor').notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [index('guide_questions_visitor_idx').on(table.visitor, table.createdAt)],
+);
+
 export const loginFailures = pgTable(
   'login_failures',
   {

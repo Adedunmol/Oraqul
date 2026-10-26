@@ -34,7 +34,12 @@ const sections: { id: string; title: string; body: ReactNode }[] = [
         </li>
         <li>
           <b>Results you upload.</b> We parse them into totals by place and age band, drop any
-          personal columns, and delete the raw file.
+          personal columns, and delete the raw file. We also keep the period and the source you
+          wrote beside them.
+        </li>
+        <li>
+          <b>Your campaign.</b> The actions made from a plan’s calendar, your edits and notes, and
+          the figures you add for a test. None of it is sent to Qloo or a model.
         </li>
         <li>
           <b>Your team.</b> Which teams you belong to, your role in each, and invites you send or
@@ -68,6 +73,12 @@ const sections: { id: string; title: string; body: ReactNode }[] = [
           <b>Google (Gemini)</b>, the language model we use today, receives your messages and the
           text of small files you attach, so it can read the title, category and job and write the
           answer.
+        </li>
+        <li>
+          <b>The web search</b> built into that same provider looks up release timing and market
+          facts. It never receives the title or story of your work, and a question you ask it is
+          sent with the title taken out. Pages and facts are kept on the plan with the day they were
+          read.
         </li>
         <li>
           <b>Brevo</b> sends our emails, so it receives your email address and the message: a sign

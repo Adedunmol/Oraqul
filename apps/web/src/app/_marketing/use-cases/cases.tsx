@@ -23,6 +23,11 @@ export const cases = [
     line: 'It is out and the numbers are not what you hoped.',
   },
   {
+    id: 'campaign',
+    title: 'Run the campaign',
+    line: 'You have a plan and a date, and a team to run it.',
+  },
+  {
     id: 'whatif',
     title: 'Keep going',
     line: 'You are weighing a date, a city, a partner or the creative.',
@@ -39,7 +44,7 @@ export function CaseIndex() {
             className="group flex items-baseline gap-5 border-b border-line py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <span className="font-display text-[clamp(22px,2.4vw,30px)] font-semibold tracking-[-0.03em] transition-colors duration-150 group-hover:text-accent">
+              <span className="font-display text-[clamp(22px,2.4vw,30px)] font-medium tracking-[-0.03em] transition-colors duration-150 group-hover:text-accent">
                 {c.title}
               </span>
               <span className="text-[14.5px] text-ink/70">{c.line}</span>
@@ -389,6 +394,119 @@ export function WhatIfCase() {
             show date.
           </p>
         </div>
+      </div>
+    </section>
+  );
+}
+
+const actions: { when: string; what: string; channel: string; state: 'todo' | 'doing' | 'done' }[] =
+  [
+    {
+      when: 'T-4 weeks',
+      what: 'Offer the trailer to one outlet first',
+      channel: 'Instagram',
+      state: 'done',
+    },
+    { when: 'T-3 weeks', what: 'Teaser, 10 to 30 seconds', channel: 'Instagram', state: 'doing' },
+    { when: 'T-2 weeks', what: 'Pitch podcasts', channel: 'Email', state: 'todo' },
+    { when: 'Launch week', what: 'Something new every day', channel: 'Instagram', state: 'todo' },
+  ];
+
+const STATES = [
+  ['todo', 'To do'],
+  ['doing', 'Doing'],
+  ['done', 'Done'],
+] as const;
+
+/**
+ * Run the campaign, drawn the way the product draws it: the Campaign tab's action rows with their
+ * status buttons, and a two-angle test that can say it cannot tell.
+ */
+export function CampaignCase() {
+  return (
+    <section
+      id="campaign"
+      aria-label="Run the campaign"
+      className={`scheme-dark bg-bg ${band} scroll-mt-16`}
+    >
+      <div className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}>
+        <div className="flex flex-col gap-6 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
+          <h2 className={h2Class}>Run the campaign</h2>
+          <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
+            The plan’s content calendar becomes actions in the project. Edit them, tick them off,
+            and set up a test of two creative angles. Each action comes with a guide to adapt.
+            Oraqul makes no final asset and posts nothing.
+          </p>
+          <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
+            Add your own figures for the two angles and Oraqul compares them. When they are thin or
+            close it says inconclusive, and it never names a cause as fact.
+          </p>
+        </div>
+        <Reveal className="product-face flex flex-col gap-3">
+          <p className="mk-in text-[13.5px] text-muted" style={stagger(0)}>
+            These actions belong to v2 · Night Ferry. A revised plan gets its own set, and this one
+            stays as you left it. Example.
+          </p>
+          <ul className="flex flex-col gap-2.5">
+            {actions.map((a, i) => (
+              <li
+                key={a.what}
+                className="mk-in flex flex-wrap items-start justify-between gap-x-4 gap-y-2 rounded-xl bg-card px-4 py-3.5"
+                style={stagger(i + 1)}
+              >
+                <div className="min-w-0">
+                  <p className="text-[13px] text-muted">
+                    {a.when} · {a.channel}
+                  </p>
+                  <p
+                    className={`text-[15px] font-medium ${a.state === 'done' ? 'text-muted line-through' : ''}`}
+                  >
+                    {a.what}
+                  </p>
+                  <p className="mt-0.5 text-[12.5px] text-muted">Playbook</p>
+                </div>
+                <div className="flex gap-1" aria-hidden="true">
+                  {STATES.map(([value, label]) => (
+                    <span
+                      key={value}
+                      className={`inline-flex h-8 items-center rounded-md px-3 text-[13px] font-medium ${a.state === value ? 'bg-accent text-primary-ink' : 'bg-surface2 text-ink'}`}
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div
+            className="mk-in flex flex-col gap-2.5 rounded-xl bg-card px-4 py-3.5"
+            style={stagger(actions.length + 1)}
+          >
+            <div className="flex flex-col gap-2.5 rounded-lg bg-bg px-4 py-3">
+              <p className="text-[13.5px] font-medium">Two-angle test</p>
+              <p className="text-[14.5px] leading-[1.55]">
+                <span className="font-medium">Angle A: the audience’s tone.</span> Take the tone
+                from noir and road trip.{' '}
+                <span className="text-[12.5px] text-muted">Grounded in your audience’s taste</span>
+              </p>
+              <p className="text-[14.5px] leading-[1.55]">
+                <span className="font-medium">Angle B: Lagos itself.</span> Open on Lagos itself,
+                with the name on screen. <span className="text-[12.5px] text-muted">Playbook</span>
+              </p>
+              <p className="text-[14.5px] leading-[1.55]">
+                <span className="font-medium">Your figures.</span> Angle A 120, angle B 104
+                conversions, week one. Source: the ad manager.
+              </p>
+              <p className="text-[14.5px] leading-[1.55]">
+                <span className="font-medium">Inconclusive.</span> The two are within 20% of each
+                other (120 and 104 conversions), too close to call.
+              </p>
+              <p className="text-[13.5px] text-muted">
+                Oraqul does not predict which angle will win.
+              </p>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

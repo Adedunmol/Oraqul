@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module.js';
 import { envSchema } from './config/env.js';
 import { DbModule } from './db/db.module.js';
+import { GuideModule } from './guide/guide.module.js';
 import { HealthModule } from './health/health.module.js';
 import { LlmModule } from './llm/llm.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
@@ -21,6 +22,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     LlmModule,
     AuthModule,
     HealthModule,
+    GuideModule,
     RulesModule,
     ProjectsModule,
     UploadsModule,

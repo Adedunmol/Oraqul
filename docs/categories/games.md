@@ -1,6 +1,6 @@
-# The Games launch agent
+# Games
 
-What "good" means for a Games plan, and the first place to look when one disappoints. Shared rules (sources, how to use Qloo, lessons) are in [principles.md](principles.md). Behaviour and numbers are in [spec](spec.md) and [PRD](prd.md); the technical map is [games-overview](../backend/games-overview.md). Film and Music are the models for this one: where a rule is the same, [film-agent.md](film-agent.md) and [music-agent.md](music-agent.md) have the reasoning.
+What "good" means for a Games plan, and what is Games' own in code. Shared rules are in [principles.md](../product/principles.md); the runtime every category shares is in [launch-runtime.md](../backend/launch-runtime.md). Film and Music are the models for this one. Behaviour and numbers are in the [spec](../product/spec.md): the query catalog (§4.4), the tests and §6.1 the modules.
 
 ## What a launch plan has to settle
 
@@ -30,7 +30,7 @@ A game is launched in one of four ways, and each has its own calendar, its own s
 
 The platforms shape the calendar inside a kind. Festivals and showcases need a PC or console release. A soft launch is for iOS and Android. Console certification and an age rating appear only for a console release, and the Steam rules (the Coming Soon page, the date lock, the festival rules and the discount cooldown) only for PC. Every plan also has Regions, Launch beats, Budget split and What to measure.
 
-## Requirements (what "done" means)
+## Requirements 
 
 1. **Plan for the team's decisions.** Their regions, platforms, launch kind, age band, comparable games, store tags, collabs and window are constraints. Test them and say what Qloo found, never replace them. A platform the comparable games are not on, or tags the store will not match, are said plainly, and the team's choice stays beside the stronger one. Every named region, comparable game and collab gets an answer.
 2. **Work with thin input.** A one-line description, such as "a Nigerian mobile shooter", is enough. Ask for nothing beyond what the game is, and never ask for comparable games. With no region named, plan for the usual markets of this launch kind; a nationality ("built for Nigerians") names the region. With no platform named, assume the kind's usual platforms. End with what would sharpen the plan. The one thing it needs is something about the game beyond its name (its kind, platform or audience): a name alone would give the default launch, so the agent asks, and asks again if the answer says nothing.
@@ -52,20 +52,6 @@ The platforms shape the calendar inside a kind. Festivals and showcases need a P
 
 The plan text never uses the word "overlap" (the writer is told never to use it); the Fan base bridge tab does, because there it is the measure on the bar.
 
-## How we judge a plan
-
-Run the same brief through Oraqul and plain models, then score 1 to 5 on:
-
-1. Answers the ask (where to lead, which collabs, what to do first)
-2. Uses what was given (regions, platforms, kind, age band, comparable games, tags, collabs, without replacing them)
-3. Specific and actionable
-4. True (real names and facts only; spot-check them)
-5. Knows the audience (credible, by kind of media, not generic)
-6. Knows the calendar (the right beats for the kind and the platforms, with sources for dates)
-7. Readable
-
-Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the model, prompt or rules, and is fixable. If we do not win 4 and 5, Qloo is not helping. The grounding report (lines that cite Qloo or a page, findings used, lines dropped, rank kept) counts citations, not whether they are right: a person still reads the plan.
-
 ## Known limits
 
 - **Game signals are mostly verified.** A game works as a signal for music, series, films, brands, podcasts, games, people and regions (`qloo:games-probes`, recorded in [qloo.md](../backend/qloo.md)). Anime and the genre-only fallback are not yet, and the plan is not claimed to beat a chatbot on them.
@@ -78,12 +64,82 @@ Qloo can lift only 4 and 5. If we score lower on the rest, the cause is the mode
 - **Overlap is not a share of players.** It is how close another audience is to the players, scored by Qloo, on a scale of 0 to 100.
 - **Ambiguous names** are settled in code and the plan says which was chosen. Game and franchise names collide often. A wrong match is possible.
 
-
 ## Launch rules
 
-Rules and thresholds: [launch-rules.md](launch-rules.md). For Games:
+Thresholds and bands are in [launch-rules.md](../product/launch-rules.md). For Games:
 
 * **Calendar.** About 85 percent of wishlists are collected at least four months before release, so the store page and the wishlist drive start by 16 weeks out at the latest. The beats are the launch kind's (`games/modules.ts`).
 * **Signal.** Wishlists, with a benchmark target of 7,000 and a floor of 5,000 where the team gives none. Followers, views and demo plays are secondary.
 * **Channels.** YouTube leads, then TikTok and Discord.
 * **Territories.** One plan per named region, home first, beside the regions ranking.
+
+## How it works in code
+
+### The one idea
+
+A game is described by the **game** itself when Qloo knows it by name, by its **franchise** (earlier games, or by the same studio), and by up to four **comparable games**. The agent asks Qloo what that audience likes, kind of media by kind of media, because the question a games team asks is which fan bases to collaborate with and which regions to lead with. The game is an anchor but never a comp. A debut that Qloo does not know is planned from the comparable games, and the plan says so.
+
+The two stages are Film's: code runs the queries and turns each result into a finding, then the model writes the plan from the findings and code checks every line. Games adds one thing the other two do not have: a **launch kind** (premium, early access, free to play, mobile) that decides the sections, the calendar, the measures and the budget split.
+
+### What is shared and what is Games'
+
+`apps/api/src/agent/launch/` is the runtime; `apps/api/src/agent/games/` is what Games adds, wired together in `games/config.ts` (`gamesLaunch`, a `LaunchConfig`).
+
+| Piece | File | Games' part |
+|---|---|---|
+| Config | `games/config.ts` | Anchor and rival types (video game), the one question a build may ask (what the game is), the module choice, the budget split by kind, the "To sharpen" texts, the calendar built in code (`timeline`), the collab part of a what-if (`applyChange`), `lead`, `teamAnchors` (franchise), `beliefs` |
+| Agent | `games/agent.ts` | `GamesAgent`, a `LaunchAgent` with `gamesLaunch` |
+| Reader | `games/read.ts` | Game, launch kind, platforms, franchise, collabs, store tags, regions, creators, genre, studio country, budget, partners, comparable games, cities, age bands, gender, window. Every value is kept only if its quote is in the person's words; a name must also be in its own quote |
+| Kind and platforms | `games/launch-kind.ts` | The kind a plan is for (the one read, or premium with `assumed` set) and its platforms (the ones named, or the kind's usual) |
+| Query planner | `games/planner.ts` | The pack's defaults, or the model's choices checked by code (podcast genre, brand categories and candidates, cities, Worth a look) |
+| Findings | `games/findings.ts` | The Games queries (spec §4.3): the profile and its two tests, the fan base bridge, theme tags, brands, podcasts, creators, campuses |
+| Profile maths | `games/profile.ts` | Platform shares, shared tags and the matches, from what Qloo lists for the comparable games |
+| Writer | `games/writer.ts` | The prompts, the brief block and the template lines for no key |
+| Report writer | `games/report-writer.ts` | The audit's risks and alternatives, and the risks for the platforms and the store tags |
+| Researcher | `games/research.ts` | The web search prompts: festival, sale and showcase dates, rivals, platform rules. Never the game's name |
+| Follow-up reader | `games/follow-up.ts` | The prompt that reads a later message, including a collab to add |
+| Run wrappers | `games/runs.ts` | `runGamesBuild`, `runGamesAudit`, `runGamesFix` with Games' dependencies, for the tests |
+| Pack | `packages/packs/src/games/` | Query catalog and fan bases (`catalog.ts`), launch kinds, platform rules, calendars, measures, budget splits and module rules (`modules.ts`), the pack (`index.ts`) |
+| Engine | `packages/engine/src/` | `gameProfiles` tool (`tools/game-profiles.ts`), `platformVerdict` and `storeTagVerdict` (`verdicts.ts`), `scoreRivals` with a rival type |
+
+### Where Games differs from Film and Music
+
+**Anchors.** `findComps` looks the game up with the comps (`config.lead`). The franchise joins the lookup through `config.teamAnchors`: it anchors the audience question like the comparable games, after the named ones so it never crowds one out, and counts toward the three a plan wants.
+
+**Thin briefs.** `checkReading` fills `suggestedComps` from `fallbackComps` (`packages/packs/src/games/catalog.ts`) when the person named fewer than three and the model proposed none, so `findComps` always has games to look up and the build does not stop to ask for comps. A nationality in the brief becomes a region, which `REGION_CITIES` turns into cities.
+
+**What Qloo cannot measure.** The reader keeps `audienceNote`, the language, culture or community the game is built for, in the person's words (quote-checked). It goes to the writer, the query planner and the web search, never to a Qloo call. The writer is told to cover it from its own knowledge as playbook lines, and the web step searches how players in the named regions get and pay for games. The planner may also name local brands for any ranked region (`askCities`), which Qloo then ranks for the audience.
+
+**The launch kind.** The reader takes it from the brief (a model's choice kept only with its quote, or code's rule over the words: early access first, then mobile, then free to play). With nothing said, `kindOf` returns premium with `assumed` true, and "To sharpen this plan" says what was assumed. The kind picks the modules in order (`KIND_PROFILES[kind].modules`), the beats, the measures and the budget split (`packages/packs/src/games/modules.ts`). The platforms then remove what does not apply: festivals need a PC or console, a soft launch needs iOS or Android.
+
+**The calendar is written by code.** `config.codeSections.timeline` builds Launch beats from the kind and the platforms with `beatsFor` and `datedBeats`. With a release date (a day in the window), each beat has dates; without one, weeks. A beat that is over on `today` is dropped, so no plan advises around a past date, and a release date in the past gives one line that says there is nothing left to plan. The writer is not asked for the timeline, and its other sections cite web sources for festival and sale dates. `WriteInput.today` carries the date.
+
+**Regions.** A region word (Europe, Southeast Asia) stands for table cities (`REGION_CITIES`). Those cities are ranked in the same heatmap call but never become the team's own assumptions: only a city the person named does. With no region named, the kind's usual markets are ranked and shown as the plan's regions (`standInPlaces`), and the text says they are the regions a launch like this usually checks. A region word the table has no cities for is a gap.
+
+**The fan base bridge** (`fanBases` in `games/findings.ts`). For each of the seven media (music, series, anime, film, brand, podcast, game) it asks `findTaste` for what the anchors' audience likes and ranks the top four by `affinity × 100`. Qloo gives the same affinity open as scored, so a medium with no collab costs one call. With a collab of that medium, one `scoreRivals` call of that type scores the collab with the rest, without leave one out, and its confidence is capped at medium. The rows go to `brief.fan` grouped by medium and carry a `medium`. Because Qloo scores one entity type per call, a row is compared with its own medium only. A collab is found by name across the media with `searchEntity` and belongs to the medium of its entity type; several exact matches are not guessed. Anime is asked first so the series list does not repeat it. `before` and `after` are equal: a collab is a ranked row, not a moved bar.
+
+**Two tests only Games has.** `gameProfiles` reads what Qloo lists for the comparable games (`/entities`). The platforms the team named are tested against how many of them list each (`platformVerdict`), and the store tags against the tags at least half of them share (`storeTagVerdict`). They are the assumptions `a-platform` and `a-store-tags` with findings of the same names.
+
+**Creators.** `CREATORS_GROUNDED` in `packages/packs/src/games/catalog.ts` is false until the creators probe says Qloo returns streamers for a game signal and [qloo.md](../backend/qloo.md) records it. While false, the Creators section is playbook, and the gap says creators were not measured.
+
+**Audit.** The shared tests (age, gender, place, comps, partner, window) plus the platforms, the store tags, each named collab (its rank among the partners scored in its medium, by thirds) and each named creator when creators are grounded. The results the person adds are by region, compared as in Film. A weak or broken platform, tag or collab keeps the team's choice and offers what to add beside it.
+
+### Where to change things
+
+| To change | Edit |
+|---|---|
+| A threshold or formula | spec §5 first, then `engine/verdicts.ts` or `scoring.ts` |
+| What the reader pulls from a brief | `GAMES_READ_SYSTEM` and `gamesReadingSchema` in `games/read.ts` |
+| Which queries exist, and their defaults | spec §4.3, then `packages/packs/src/games/catalog.ts` and `games/findings.ts` |
+| A launch kind's sections, calendar, measures or budget | spec §6.1, then `KIND_PROFILES` in `packages/packs/src/games/modules.ts` |
+| A store or platform rule | `PLATFORM_RULES` in `packages/packs/src/games/modules.ts` |
+| Which fan bases the bridge ranks | `FAN_MEDIA` in `packages/packs/src/games/catalog.ts` |
+| What a region word stands for | `REGION_CITIES` in `packages/packs/src/games/catalog.ts` and the city table in `packages/engine/src/places.ts` |
+| How the model shapes queries | `QUERY_PLAN_SYSTEM` and `checkPlan` in `games/planner.ts` |
+| What the writer is told | `PLAN_WRITER_SYSTEM`, `ANSWER_WRITER_SYSTEM`, `RULES` in `games/writer.ts` |
+
+## Also open
+
+- Only demo goldens are recorded; no live golden run exists.
+- The screens are the shared ones (Plan tab, receipts drawer, exports) plus this category's own tabs. They have not been compared with the prototype.
+- The gaps every category shares are in [launch-runtime.md](../backend/launch-runtime.md#known-gaps).

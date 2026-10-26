@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Space_Grotesk } from 'next/font/google';
+import { Geist, Geist_Mono, Mona_Sans } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
-// Space Grotesk is the public brand face. The signed-in product uses Geist for both headings and
-// reading text, so dense work does not switch typefaces as the reader moves through a plan.
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
+// Mona Sans is the public brand face: a neo-grotesk with a width axis, set a little wide at large
+// sizes so headlines have presence without looking like every other product page. The signed-in
+// product uses Geist for both headings and reading text, so dense work does not switch typefaces as
+// the reader moves through a plan.
+const monaSans = Mona_Sans({
+  variable: '--font-mona-sans',
   subsets: ['latin'],
-  weight: ['500', '600', '700'],
+  axes: ['wdth'],
   display: 'swap',
 });
 
@@ -40,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${monaSans.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

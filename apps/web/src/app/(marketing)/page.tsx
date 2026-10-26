@@ -5,7 +5,7 @@ import { CategoriesSection } from '../_marketing/home/categories-section';
 import { Faq } from '../_marketing/home/faq';
 import { Hero } from '../_marketing/home/hero';
 import { Jobs } from '../_marketing/home/jobs';
-import { ProductPreview } from '../_marketing/home/product-preview';
+import { Regions } from '../_marketing/home/regions';
 import { TasteMap } from '../_marketing/home/taste-map';
 
 export const metadata: Metadata = {
@@ -18,10 +18,10 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <ProductPreview />
       <Jobs />
       <AgentRun />
       <TasteMap />
+      <Regions />
       <CategoriesSection />
       <Faq short />
       <Closing />

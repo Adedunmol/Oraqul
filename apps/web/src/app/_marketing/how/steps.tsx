@@ -1,3 +1,4 @@
+import { BAND_OPTIONS } from '@oraqul/packs';
 import type { Verdict } from '@oraqul/schema';
 import { Confidence, Icon, type IconName, VerdictPill } from '@oraqul/ui';
 import type { CSSProperties, ReactNode } from 'react';
@@ -53,7 +54,7 @@ const stagger = (i: number) => ({ '--i': i }) as CSSProperties;
 export function TraceCard() {
   const steps = [
     'Reading the message: series, crime drama',
-    'Finding Night Ferry and its comparable titles',
+    'Finding the comparable titles, Grey Tide and The Ferry Office',
     'Looking up who else your audience loves',
     'Ranking the UK, Canada and the US',
     'Testing 9 assumptions in the plan',
@@ -153,9 +154,9 @@ export function Asks() {
         <StepHead n={2} icon="help" title="It states its assumptions and asks only when it must.">
           <p>
             Oraqul says what it read and what it assumed, with an example of how to correct it. It
-            asks a question only when a wrong assumption would waste the run: the category, the
-            title, which match in the data is yours, and, for a full plan, the budget band, which
-            decides what it may propose.
+            asks a question only when a wrong assumption would waste the run: the title, the
+            category or the job when they cannot be read, and, for a full plan, the budget band and
+            the platforms, which decide what it may propose.
           </p>
           <p>Type a correction any time. Only what it changes runs again.</p>
         </StepHead>
@@ -169,11 +170,15 @@ export function Asks() {
             . Say “only the UK and US” to change it.
           </p>
           <div className="mk-in flex flex-col gap-3 rounded-2xl bg-inset p-4" style={stagger(1)}>
-            <p className="text-[15.5px] font-semibold">Which of these is your series?</p>
+            <p className="text-[15.5px] font-semibold">
+              What is the budget band? I will only propose what it can carry.
+            </p>
             {[
-              ['Night Ferry', 'Series, 2026, crime drama', true],
-              ['Night Ferry', 'Film, 2019, documentary', false],
-              ['None of these', 'Use comparable titles instead', false],
+              [BAND_OPTIONS.micro, '', false],
+              [BAND_OPTIONS.independent, '', true],
+              [BAND_OPTIONS.mid, '', false],
+              [BAND_OPTIONS.major, '', false],
+              ['Skip, assume independent', '', false],
             ].map(([label, note, on]) => (
               <span
                 key={`${label}${note}`}
@@ -305,7 +310,7 @@ export function KeepGoing() {
     <section aria-labelledby="keep-title" className={`scheme-dark bg-bg ${band}`}>
       <div className={`${wrap} flex flex-col gap-12`}>
         <h2 id="keep-title" className={`${h2Class} max-w-[18ch]`}>
-          Then keep going in the chat.
+          Then keep going, in the same project.
         </h2>
         <div className="grid gap-4 min-[900px]:grid-cols-3">
           {[
@@ -314,16 +319,28 @@ export function KeepGoing() {
               'Check rival dates, draft a partner brief, test a what if or make the creative kit, from the chips under the message box.',
             ],
             [
+              'Look at what you missed',
+              'Nearby markets and areas of your own cities appear under Worth a look, each with why, what the data does not show, a first test and what to measure. They stay beside your plan until you add one.',
+            ],
+            [
+              'Run the campaign',
+              'The plan’s calendar becomes actions you edit and tick off, each with a guide to adapt. Set up a two-angle test, add your own figures, and Oraqul compares them, or says inconclusive.',
+            ],
+            [
               'Correct it in words',
               '“Check my plan instead” runs a check. Naming new places plans again with them.',
             ],
             [
               'Bring your results',
-              'After it is out, add results by region or age band and Oraqul finds what missed.',
+              'After it is out, add results by place or age band, with the period and where they came from. Oraqul finds what missed and writes a revised plan beside the old one. It says what happened, never why.',
+            ],
+            [
+              'Check what changed',
+              'Ask again weeks later. Qloo and the web are asked again, and you see what moved, which pages say something different and which lines of your plan rest on them. The plan stays as it is.',
             ],
           ].map(([title, text]) => (
             <div key={title} className="flex flex-col gap-3 rounded-2xl bg-card p-6">
-              <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">
+              <h3 className="font-display text-[24px] leading-[1.15] font-medium tracking-[-0.03em]">
                 {title}
               </h3>
               <p className="text-[15px] leading-[1.55] text-muted">{text}</p>

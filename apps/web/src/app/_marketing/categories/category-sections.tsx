@@ -54,7 +54,7 @@ function CategorySection({ id, index }: { id: Category; index: number }) {
           <div className="flex flex-col gap-4">
             <h2
               id={`${id}-title`}
-              className="font-display text-[clamp(34px,4.4vw,56px)] leading-[1] font-semibold tracking-[-0.045em]"
+              className="font-display text-[clamp(34px,4.4vw,56px)] leading-[1.03] font-medium tracking-[-0.03em]"
             >
               {info.name}
             </h2>
