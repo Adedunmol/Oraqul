@@ -28,6 +28,7 @@ import type {
 } from '@oraqul/schema';
 import type { Handoff, NewOutput } from '../category-agents.js';
 import { ungroundedClaims, ungroundedLines } from '../grounding.js';
+import { normalise } from '../router/decide.js';
 import { advance, newRunState } from '../runtime.js';
 import { type Planner, STANDALONE_CONTEXT } from '../types.js';
 import { baselineFor } from './baseline.js';
@@ -441,6 +442,23 @@ export async function runDateCheck<R extends LaunchRead>(
   }
 }
 
+/** A brand the plan ranked, by the name asked or a fuller one that starts with it. */
+export function rankedBrand(
+  plan: { plan?: { findings: Finding[] } | null },
+  asked: string,
+): { name: string; entityId: string } | null {
+  const want = normalise(asked);
+  const brands = (plan.plan?.findings ?? [])
+    .filter((f) => f.query.startsWith('brands'))
+    .flatMap((f) => f.entities)
+    .flatMap((e) => (e.entityId ? [{ name: e.name, entityId: e.entityId }] : []));
+  return (
+    brands.find((b) => normalise(b.name) === want) ??
+    brands.find((b) => normalise(b.name).startsWith(`${want} `)) ??
+    null
+  );
+}
+
 /** A partner brief: the partner is scored against the baseline, then a draft is written. */
 export async function runPartnerBrief<R extends LaunchRead>(
   handoff: Handoff,
@@ -452,7 +470,11 @@ export async function runPartnerBrief<R extends LaunchRead>(
   const { receipts, keep, done } = collector(deps);
   const trace = (step: number, text: string) =>
     deps.emit({ type: 'trace.step', agent: deps.config.category, step, of: 3, text });
-  const name = named ?? suggestedPartner(plan);
+  const asked = named ?? suggestedPartner(plan);
+  // The plan may have ranked this brand under its fuller name ("MTN" for "MTN Group"). That brand,
+  // already found in Qloo, is the one asked about, so it is not searched for again by exact name.
+  const ranked = asked ? rankedBrand(plan, asked) : null;
+  const name = ranked?.name ?? asked;
   if (!name) {
     say(
       deps,
@@ -473,8 +495,8 @@ export async function runPartnerBrief<R extends LaunchRead>(
   try {
     trace(1, `Finding ${name} in Qloo`);
     let type: 'urn:entity:brand' | 'urn:entity:podcast' = 'urn:entity:brand';
-    let entityId: string | null = null;
-    for (const t of ['urn:entity:brand', 'urn:entity:podcast'] as const) {
+    let entityId: string | null = ranked?.entityId ?? null;
+    for (const t of entityId ? [] : (['urn:entity:brand', 'urn:entity:podcast'] as const)) {
       const found = await tools.resolveBundle.run(deps.tools, { names: [name], types: [t] });
       keep(found.receipts);
       const [a] = resolveBundleOutputSchema.parse(found.data).anchors;
