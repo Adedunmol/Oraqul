@@ -266,7 +266,11 @@ export function StructuredTerritories() {
                   ) : null}
                 </div>
               </header>
-              {call ? <p className="text-[13px] text-muted">{call.why}</p> : null}
+              <p className="text-[13px] text-muted">
+                {call
+                  ? call.why
+                  : 'Qloo could not rank this city for this audience, so it has no call.'}
+              </p>
               <p className="text-[13px]">
                 <span className="font-semibold">Lead on </span>
                 {lead.map((c) => c.name).join(', ')}

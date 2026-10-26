@@ -123,7 +123,12 @@ function decisionSections(plan: LaunchPlan, refsOf: (ids: string[]) => number[])
         return {
           name: `${t.name}, ${t.role === 'home' ? 'home market' : t.role === 'diaspora' ? 'diaspora city' : 'market'}${call ? `: ${DIRECTION_WORD[call.direction]}` : ''}`,
           lines: [
-            ...(call ? [{ text: call.why, refs: refsOf(call.findingIds) }] : []),
+            call
+              ? { text: call.why, refs: refsOf(call.findingIds) }
+              : {
+                  text: 'Qloo could not rank this city for this audience, so it has no call.',
+                  refs: [],
+                },
             ...(lead.length ? [{ text: `Lead on ${lead.join(', ')}.`, refs: [] }] : []),
             ...partners.map((p) => ({ text: partnerText(p), refs: refsOf(p.findingIds) })),
           ],

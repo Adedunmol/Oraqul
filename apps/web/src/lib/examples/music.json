@@ -2246,7 +2246,7 @@
           "name": "Lagos",
           "direction": "risky",
           "confidence": "lower",
-          "why": "Audience strength 1.0, where 1.0 is an average city in the same ranking. A smaller audience than the rest: lead with the local angle.",
+          "why": "Audience strength 1.02, where 1.0 is an average city in the same ranking. About an average city for this audience: lead with the local angle.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Lagos"
@@ -2257,7 +2257,7 @@
           "name": "London",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after Lagos.",
+          "why": "Audience strength 0.91, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after Lagos.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "London"
@@ -2268,7 +2268,7 @@
           "name": "Houston",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.8, where 1.0 is an average city in the same ranking. Keep it, and open it after Lagos.",
+          "why": "Audience strength 0.80, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after Lagos.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Houston"

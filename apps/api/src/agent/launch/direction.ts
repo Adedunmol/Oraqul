@@ -140,12 +140,12 @@ export function territoryCalls(
     const direction = directionOf(placeVerdict(row).verdict);
     if (!direction || row.lift === null) return t;
     const id = `call-territory-${slug(t.name)}`;
-    const strength = row.lift.toFixed(1);
+    const strength = row.lift.toFixed(2);
     const say =
       direction === 'avoid'
-        ? ` Keep it, and open it after ${strongest && strongest !== t.name ? strongest : 'the stronger cities'}.`
+        ? ` Thinner than an average city. Keep it, and open it after ${strongest && strongest !== t.name ? strongest : 'the stronger cities'}.`
         : direction === 'risky'
-          ? ' A smaller audience than the rest: lead with the local angle.'
+          ? ' About an average city for this audience: lead with the local angle.'
           : '';
     calls.push({
       id,

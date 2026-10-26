@@ -2175,7 +2175,7 @@
           "name": "London",
           "direction": "risky",
           "confidence": "lower",
-          "why": "Audience strength 1.1, where 1.0 is an average city in the same ranking. A smaller audience than the rest: lead with the local angle.",
+          "why": "Audience strength 1.07, where 1.0 is an average city in the same ranking. About an average city for this audience: lead with the local angle.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "London"
@@ -2186,7 +2186,7 @@
           "name": "Lagos",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after London.",
+          "why": "Audience strength 0.87, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after London.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Lagos"

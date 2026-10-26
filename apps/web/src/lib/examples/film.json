@@ -2907,7 +2907,7 @@
           "name": "Lagos",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after London.",
+          "why": "Audience strength 0.85, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after London.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Lagos"
@@ -2918,7 +2918,7 @@
           "name": "London",
           "direction": "okay",
           "confidence": "lower",
-          "why": "Audience strength 1.2, where 1.0 is an average city in the same ranking.",
+          "why": "Audience strength 1.23, where 1.0 is an average city in the same ranking.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "London"
@@ -2929,7 +2929,7 @@
           "name": "Houston",
           "direction": "risky",
           "confidence": "lower",
-          "why": "Audience strength 1.1, where 1.0 is an average city in the same ranking. A smaller audience than the rest: lead with the local angle.",
+          "why": "Audience strength 1.08, where 1.0 is an average city in the same ranking. About an average city for this audience: lead with the local angle.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Houston"
@@ -2940,7 +2940,7 @@
           "name": "Atlanta",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.9, where 1.0 is an average city in the same ranking. Keep it, and open it after London.",
+          "why": "Audience strength 0.92, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after London.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Atlanta"
