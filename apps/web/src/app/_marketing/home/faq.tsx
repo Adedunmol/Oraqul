@@ -1,7 +1,7 @@
 import { Icon } from '@oraqul/ui';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { band, h2Class, wrap } from '../section';
+import { band, fitBand, h2Class, wrap } from '../section';
 
 // Answers say only what the product does today (spec §3 to §5, §9.5).
 const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
@@ -112,7 +112,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
 export function Faq({ short = false }: { short?: boolean }) {
   const items = short ? faqs.filter((f) => f.home) : faqs;
   return (
-    <section aria-labelledby="faq-title" className={`bg-bg ${band}`}>
+    <section aria-labelledby="faq-title" className={`bg-bg ${short ? fitBand : band}`}>
       <div className={`${wrap} grid gap-12 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}>
         <div className="flex flex-col gap-5 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
           <h2 id="faq-title" className={h2Class}>

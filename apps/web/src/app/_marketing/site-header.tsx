@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { serverGetIfSignedIn } from '@/lib/api/server';
 import { overviewPath } from '@/lib/routes';
+import { HeaderShell } from './header-shell';
 import { NavMenu } from './nav-menu';
 import { wrap } from './section';
 
@@ -50,7 +51,7 @@ async function MobileExtra() {
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 bg-canvas/95 backdrop-blur">
+    <HeaderShell>
       <div className={`${wrap} relative flex items-center gap-4 py-3`}>
         <Link
           href="/"
@@ -72,6 +73,6 @@ export function SiteHeader() {
           </Suspense>
         </div>
       </div>
-    </header>
+    </HeaderShell>
   );
 }

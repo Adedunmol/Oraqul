@@ -4,7 +4,7 @@ import type { Category } from '@oraqul/schema';
 import { Icon } from '@oraqul/ui';
 import { type CSSProperties, useState } from 'react';
 import { Reveal } from '../reveal';
-import { band, h2Class, wrap } from '../section';
+import { fitBand, fitH2, wrap } from '../section';
 
 interface Node {
   name: string;
@@ -56,10 +56,10 @@ export function TasteMap() {
   const on = active === null ? null : nodes[active];
   const toggle = (i: number) => setActive((cur) => (cur === i ? null : i));
   return (
-    <section aria-labelledby="taste-title" className={`${band} bg-bg relative overflow-x-clip`}>
+    <section aria-labelledby="taste-title" className={`${fitBand} bg-bg relative overflow-x-clip`}>
       <div className={`${wrap} flex flex-col items-center gap-[clamp(32px,5vw,64px)]`}>
         <div className="flex flex-col items-center gap-5 text-center">
-          <h2 id="taste-title" className={h2Class}>
+          <h2 id="taste-title" className={fitH2}>
             Built on what real audiences love.
           </h2>
           <p className="max-w-[58ch] text-[clamp(16px,1.4vw,18px)] leading-[1.6] text-ink/75">
@@ -82,7 +82,7 @@ export function TasteMap() {
               artists, books, podcasts, games, brands and places their audience also likes, as Qloo
               ranks them.
             </figcaption>
-            <Reveal className="relative mx-auto aspect-square w-full max-w-[640px]">
+            <Reveal className="relative mx-auto aspect-square w-full max-w-[640px] min-[1000px]:max-w-[clamp(340px,calc(100svh-470px),640px)]">
               <span
                 aria-hidden="true"
                 className="absolute -inset-[12%] rounded-full bg-[radial-gradient(closest-side,var(--accent-soft),transparent)]"

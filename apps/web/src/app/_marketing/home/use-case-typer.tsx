@@ -88,11 +88,17 @@ export function UseCaseTyper() {
         aria-hidden="true"
         className="min-h-[3.96em] text-[clamp(18px,2.1vw,27px)] min-[640px]:min-h-[2.7em] leading-[1.32] font-medium tracking-[-0.02em] text-ink"
       >
-        “{head}
-        <span className="whitespace-nowrap">
-          {tail}
-          <span className="mk-caret" />”
-        </span>
+        {typed ? (
+          <>
+            “{head}
+            <span className="whitespace-nowrap">
+              {tail}
+              <span className="mk-caret" />”
+            </span>
+          </>
+        ) : (
+          <span className="mk-caret" />
+        )}
       </p>
     </div>
   );

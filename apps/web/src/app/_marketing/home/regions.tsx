@@ -4,7 +4,7 @@ import type { Verdict } from '@oraqul/schema';
 import { VerdictPill } from '@oraqul/ui';
 import { type CSSProperties, useId, useMemo, useState } from 'react';
 import { Reveal } from '../reveal';
-import { band, h2Class, wrap } from '../section';
+import { fitBand, fitH2, wrap } from '../section';
 
 // One invented read of three cities, drawn the way the product reads a place: the audience for the
 // comparable titles, measured against an average city in the same comparison, and the
@@ -135,13 +135,13 @@ export function Regions() {
   const grid = grids[active] ?? [];
   const main = city.peaks[0];
   return (
-    <section aria-labelledby="regions-title" className={`scheme-dark mk-glow bg-bg ${band}`}>
-      <div className={`${wrap} flex flex-col gap-[clamp(32px,5vw,64px)]`}>
-        <div className="grid gap-6 min-[1000px]:grid-cols-[1.1fr_0.9fr] min-[1000px]:items-end">
-          <h2 id="regions-title" className={h2Class}>
+    <section aria-labelledby="regions-title" className={`scheme-dark mk-glow bg-bg ${fitBand}`}>
+      <div className={`${wrap} flex flex-col gap-[clamp(20px,3.6svh,48px)]`}>
+        <div className="flex flex-col items-start gap-[clamp(10px,2svh,20px)]">
+          <h2 id="regions-title" className={fitH2}>
             Every place you name gets its own read.
           </h2>
-          <p className="max-w-[52ch] text-[clamp(16px,1.4vw,18px)] leading-[1.6] text-ink/75">
+          <p className="max-w-[72ch] text-[clamp(15px,1.3vw,17px)] leading-[1.55] text-ink/75">
             Name Lagos and Oraqul asks Qloo what the audience for your comparable titles looks like
             there, ranks it against your other cities, and says whether the place fits. Then it goes
             down to the neighbourhoods.
@@ -149,10 +149,10 @@ export function Regions() {
         </div>
 
         <div className="grid gap-4 min-[1000px]:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
-          <Reveal className="relative overflow-hidden rounded-2xl bg-card p-[clamp(14px,2.4vw,28px)] shadow-lg">
+          <Reveal className="relative overflow-hidden rounded-2xl bg-card p-[clamp(12px,1.6vw,20px)] shadow-lg">
             <div
               aria-hidden="true"
-              className="relative mx-auto w-full max-w-[760px]"
+              className="relative mx-auto w-full max-w-[760px] min-[1000px]:max-w-[clamp(400px,calc((100svh-560px)*1.625),760px)]"
               style={{ aspectRatio: `${COLS} / ${ROWS}` }}
             >
               <div
@@ -204,7 +204,7 @@ export function Regions() {
             </div>
             <div
               aria-hidden="true"
-              className="mx-auto mt-4 flex w-full max-w-[760px] items-center justify-between gap-4 text-[12px] text-muted"
+              className="mx-auto mt-3 flex w-full max-w-[760px] items-center justify-between gap-4 text-[12px] text-muted"
             >
               <span>Example. Invented figures, and the map is illustrative.</span>
               <span className="flex items-center gap-1.5">
@@ -247,7 +247,7 @@ export function Regions() {
               role="tabpanel"
               id={`${base}-panel`}
               aria-labelledby={`${base}-${city.id}`}
-              className="flex flex-1 flex-col gap-4 rounded-2xl bg-card p-5"
+              className="flex flex-1 flex-col gap-3 rounded-2xl bg-card p-4"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="font-display text-[clamp(26px,2.6vw,34px)] leading-none font-medium tracking-[-0.03em]">
@@ -276,9 +276,8 @@ export function Regions() {
               <p className="text-[15px] leading-[1.55]">{city.line}</p>
               <p className="text-[14.5px] leading-[1.55] text-ink/75">
                 <span className="font-medium text-ink">Strongest around</span>{' '}
-                {city.areas.join(' and ')}.
+                {city.areas.join(' and ')}. {city.taste}
               </p>
-              <p className="text-[14.5px] leading-[1.55] text-ink/75">{city.taste}</p>
               <div className="mt-auto flex flex-col gap-2 border-t border-line pt-4">
                 <p className="text-[13px] text-muted">Your cities, ranked together</p>
                 <ol className="flex flex-col gap-1.5">
@@ -307,13 +306,10 @@ export function Regions() {
           </div>
         </div>
 
-        <ul className="grid gap-x-10 gap-y-6 border-t border-line pt-6 min-[800px]:grid-cols-3">
+        <ul className="grid gap-x-10 gap-y-3 border-t border-line pt-[clamp(12px,2svh,20px)] min-[800px]:grid-cols-3">
           {facts.map(([title, text]) => (
-            <li key={title} className="flex flex-col gap-1.5">
-              <span className="font-display text-[20px] leading-[1.2] font-medium tracking-[-0.025em]">
-                {title}
-              </span>
-              <span className="text-[14.5px] leading-[1.55] text-ink/70">{text}</span>
+            <li key={title} className="text-[14px] leading-[1.5] text-ink/70">
+              <span className="font-medium text-ink">{title}.</span> {text}
             </li>
           ))}
         </ul>

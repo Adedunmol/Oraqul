@@ -63,3 +63,28 @@ test('the phone menu is a hamburger that closes from the dim or the close icon',
   await page.getByRole('button', { name: 'Close menu' }).click();
   await expect(menu).toBeHidden();
 });
+
+test('the header tucks away reading down and comes back on the way up', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  // The header says when its scroll listener is live, so the first scroll is never lost to hydration.
+  await page.locator('header[data-ready]').first().waitFor({ state: 'attached', timeout: 30000 });
+  // A dev server can reload the page once while it compiles, which ends a read in flight.
+  const top = () =>
+    page
+      .evaluate(() =>
+        Math.round(document.querySelector('header')?.getBoundingClientRect().top ?? 0),
+      )
+      .catch(() => Number.NaN);
+  await expect.poll(top, { timeout: 15000 }).toBe(0);
+  await page.mouse.wheel(0, 900);
+  await expect.poll(top, { timeout: 8000 }).toBeLessThan(0);
+  await page.mouse.wheel(0, -200);
+  await expect.poll(top, { timeout: 8000 }).toBe(0);
+  await page.mouse.wheel(0, 600);
+  await expect.poll(top, { timeout: 8000 }).toBeLessThan(0);
+  // Focus inside the header always brings it back, so a keyboard never loses it.
+  await page.keyboard.press('Tab');
+  await expect.poll(top, { timeout: 8000 }).toBe(0);
+});

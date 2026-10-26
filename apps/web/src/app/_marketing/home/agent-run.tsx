@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { band, h2Class, wrap } from '../section';
+import { fitBand, h2Class, wrap } from '../section';
 import { ProductChat } from './product-chat';
 
 const traits = [
@@ -24,7 +24,7 @@ const traits = [
 export function AgentRun() {
   const [runId, setRunId] = useState(0);
   return (
-    <section aria-labelledby="agent-title" className={`scheme-dark mk-glow bg-bg ${band}`}>
+    <section aria-labelledby="agent-title" className={`scheme-dark mk-glow bg-bg ${fitBand}`}>
       <div
         className={`${wrap} grid gap-[clamp(32px,5vw,64px)] min-[1000px]:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] min-[1000px]:items-center`}
       >
@@ -52,7 +52,7 @@ export function AgentRun() {
           <ProductChat
             live
             runId={runId}
-            className="h-[clamp(520px,60vw,640px)] border border-line"
+            className="h-[clamp(480px,min(60vw,calc(100svh-230px)),640px)] border border-line"
           />
           <p className="pt-3 text-[12.5px] text-muted">
             The product’s own chat, replaying a recorded example.
