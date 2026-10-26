@@ -100,7 +100,7 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
 
   it('plans a release: the artist is an anchor, the plan has a tour order and support acts', async () => {
     const { threadId } = await start(
-      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave". An independent budget.',
+      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave". Channels we already use: Instagram, TikTok, YouTube. An independent budget.',
       'build',
     );
     const done = await settled(threadId);
@@ -118,6 +118,7 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
       'plan',
       'territories',
       'calls',
+      'campaign',
       'route',
       'supportacts',
       'audience',
@@ -153,7 +154,7 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
 
   it('answers, reruns a what-if, checks rival dates and drafts a partner brief', async () => {
     const { threadId } = await start(
-      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave". An independent budget.',
+      'Launch plan for my album "Night Songs" by artist "Neon Tide", an afrobeats release for 18 to 34 year olds, touring Lagos and London. Sound-alikes: "Ada Lux" and "Kola Wave". Channels we already use: Instagram, TikTok, YouTube. An independent budget.',
       'build',
     );
     const planned = await settled(threadId);
@@ -232,6 +233,7 @@ describe('Music build end to end (real agents, demo Qloo, scripted reader)', () 
       'fixes',
       'territories',
       'calls',
+      'campaign',
       'route',
       'supportacts',
       'audience',
