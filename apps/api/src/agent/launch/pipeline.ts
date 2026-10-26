@@ -709,23 +709,32 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
 
   ctx.trace('Finding the comps in Qloo');
   let comps: Anchors;
+  let qlooFailed: boolean;
   try {
-    comps = await findComps(deps, ctx.keep, read, known, knownUsed, knownDropped);
+    ({ searchFailed: qlooFailed, ...comps } = await findComps(
+      deps,
+      ctx.keep,
+      read,
+      known,
+      knownUsed,
+      knownDropped,
+    ));
   } catch (err) {
     if (err instanceof QlooBudgetError) return budgetStop(deps, ctx);
     throw err;
   }
-  if (comps.resolved.length === 0) {
+  if (comps.resolved.length === 0 && !qlooFailed) {
     ctx.trace('No comp found, so reading the genre in Qloo');
     try {
       comps = { ...comps, ...(await findGenreComps(deps, ctx.keep, read)) };
     } catch (err) {
       if (err instanceof QlooBudgetError) return budgetStop(deps, ctx);
-      throw err;
+      if (!(err instanceof QlooError)) throw err;
+      qlooFailed = true;
     }
   }
   if (comps.resolved.length === 0) {
-    noCompsStop(deps, ctx, read);
+    noCompsStop(deps, ctx, read, qlooFailed);
     return ctx.stop('finished');
   }
   for (const a of comps.resolved) deps.tools.entities.set(a.entityId, a);
@@ -1179,18 +1188,24 @@ function draftText(sections: LaunchSection[]): string {
     .join('\n\n');
 }
 
-/** No comp was found in Qloo, so there is nothing to describe the audience with. */
+/**
+ * No comp was found in Qloo, so there is nothing to describe the audience with. When Qloo did not
+ * answer, the person is told to try again rather than that their comps were wrong.
+ */
 export function noCompsStop(
   deps: { emit(event: ThreadEvent): void; config: Pick<LaunchConfig, 'words'> },
   ctx: RunCtx,
   read: LaunchRead,
+  qlooFailed = false,
 ): void {
   const tried = [...read.comps, ...read.suggestedComps];
   deps.emit({
     type: 'message',
-    body: tried.length
-      ? `Qloo had nothing close to any of the comps (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`
-      : `I could not find comps for this launch, so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`,
+    body: qlooFailed
+      ? `Qloo did not answer just now, so I could not look up the ${deps.config.words.comps}${tried.length ? ` (${tried.join(', ')})` : ''}. Nothing is wrong with your brief. Send it again in a minute.`
+      : tried.length
+        ? `Qloo had nothing close to any of the comps (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`
+        : `I could not find comps for this launch, so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`,
     claims: ctx.receipts
       .slice(0, 1)
       .map((r) => ({ text: 'Searched Qloo.', receiptIds: [r.callId] })),
@@ -1209,7 +1224,7 @@ export async function findComps(
   known: Anchor[],
   knownUsed: CompUsed[],
   knownDropped: { name: string; why: string }[],
-): Promise<{ resolved: Anchor[]; used: CompUsed[]; dropped: { name: string; why: string }[] }> {
+): Promise<Anchors & { searchFailed: boolean }> {
   const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
   const resolved = [...known];
   const used = knownUsed.filter((u) => resolved.some((a) => same(a.name, u.name)));
@@ -1227,14 +1242,17 @@ export async function findComps(
   const lead = deps.config.lead?.(read) ?? null;
   const leadName = lead && !resolved.some((a) => same(a.name, lead)) ? lead : null;
   const names = [...(leadName ? [leadName] : []), ...yours, ...proposals].slice(0, MAX_SEARCH);
-  if (names.length === 0) return { resolved, used, dropped };
+  if (names.length === 0) return { resolved, used, dropped, searchFailed: false };
 
   const { data, receipts } = await tools.resolveBundle.run(deps.tools, {
     names,
     types: deps.config.anchorTypes,
   });
   keep(receipts);
-  for (const a of resolveBundleOutputSchema.parse(data).anchors) {
+  const anchors = resolveBundleOutputSchema.parse(data).anchors;
+  // Every search failing means Qloo did not answer, not that the names were wrong.
+  const searchFailed = anchors.length > 0 && anchors.every((a) => a.status === 'failed');
+  for (const a of anchors) {
     if (leadName && same(a.name, leadName)) {
       // The lead is an anchor and never a comp. A guess at who it is would describe the wrong
       // audience, so only an exact name, or a same-name pick settled by country, is used.
@@ -1294,7 +1312,7 @@ export async function findComps(
     }
   }
   used.sort((x, y) => (x.source === y.source ? 0 : x.source === 'you' ? -1 : 1));
-  return { resolved, used, dropped };
+  return { resolved, used, dropped, searchFailed };
 }
 
 const GENRE_COMPS = 4;

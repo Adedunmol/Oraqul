@@ -136,6 +136,26 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
     expect(run.output).toBeNull();
   });
 
+  it('says Qloo did not answer, not that the comps were wrong, when Qloo is down', async () => {
+    const { events, handoff, deps } = setup(BRIEF);
+    const down: typeof fetch = async () => new Response('{}', { status: 503 });
+    const tools: ToolContext = {
+      qloo: new QlooClient({
+        baseUrl: 'https://qloo.test',
+        apiKey: 'k',
+        fetch: down,
+        retryDelayMs: 0,
+      }),
+      source: 'qloo',
+      entities: new Map<string, SeenEntity>(),
+    };
+    const run = await runFilmBuild(handoff, { ...deps(), tools });
+    expect(run.output).toBeNull();
+    const said = events.flatMap((e) => (e.type === 'message' ? [e.body] : [])).join('\n');
+    expect(said).toContain('Qloo did not answer');
+    expect(said).not.toContain('nothing close');
+  });
+
   it('covers a thin check with a second round the research check asks for', async () => {
     const { handoff, deps } = setup(BRIEF);
     const base = deps();

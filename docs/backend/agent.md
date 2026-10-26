@@ -164,4 +164,4 @@ When notes were added or changed the chat gets a quiet "Remembered: …" line un
 
 ## MCP
 
-`packages/mcp` registers the same tool objects from `packages/engine`. `pnpm --filter @oraqul/mcp build` then `node packages/mcp/dist/stdio.js` (demo data unless `QLOO_MODE=live`). Results are `{ data, receipts }` as JSON text.
+`packages/mcp` registers the same tool objects from `packages/engine`. `pnpm --filter "@oraqul/mcp..." build` then `node packages/mcp/dist/stdio.js` (demo data unless `QLOO_MODE=live`). Results are `{ data, receipts }` as JSON text.

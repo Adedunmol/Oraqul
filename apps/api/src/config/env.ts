@@ -5,6 +5,7 @@ export const llmProviders = ['openai', 'google', 'openai-compatible'] as const;
 
 export const envSchema = z
   .object({
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     DATABASE_URL: z.string().url(),
     SESSION_SECRET: z.string().min(32),
     WEB_ORIGIN: z.string().url(),
@@ -26,6 +27,8 @@ export const envSchema = z
     QLOO_BASE_URL: z.string().default(''),
     QLOO_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
     QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(80),
+    /** Qloo requests in flight across all runs together. The development host 429s above about 2. */
+    QLOO_MAX_CONCURRENT: z.coerce.number().int().positive().default(2),
     QLOO_MODE: z.enum(['demo', 'live']).default('demo'),
     /** The commit the server was built from; saved on every plan. Empty in development. */
     CODE_VERSION: z.string().default(''),
@@ -67,6 +70,11 @@ export const envSchema = z
       path: ['QLOO_MODE'],
     },
   )
+  // Demo data is made up. A deploy that forgot QLOO_MODE would otherwise serve it as plans.
+  .refine((env) => env.NODE_ENV !== 'production' || env.QLOO_MODE === 'live', {
+    message: 'NODE_ENV=production needs QLOO_MODE=live',
+    path: ['QLOO_MODE'],
+  })
   .refine((env) => (env.GOOGLE_CLIENT_ID === '') === (env.GOOGLE_CLIENT_SECRET === ''), {
     message: 'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET go together',
     path: ['GOOGLE_CLIENT_SECRET'],

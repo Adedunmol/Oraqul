@@ -15,5 +15,24 @@ services:
       timeout: 3s
       retries: 10
 
+  # The API for a deployment: docker compose --profile deploy up -d --build
+  # Reads .env, with the database reached inside the compose network.
+  api:
+    profiles: ['deploy']
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        CODE_VERSION: ${CODE_VERSION:-}
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://oraqul:oraqul@db:5432/oraqul
+    ports:
+      - '4000:4000'
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   oraqul-db:

@@ -44,7 +44,7 @@ export function DevelopersBody() {
           <code className="font-mono text-[15px]">QLOO_MODE=live</code> and a Qloo key.
         </p>
         <pre className={code}>
-          {'pnpm --filter @oraqul/mcp build\nnode packages/mcp/dist/stdio.js'}
+          {'pnpm --filter "@oraqul/mcp..." build\nnode packages/mcp/dist/stdio.js'}
         </pre>
       </section>
 

@@ -26,7 +26,8 @@ export const START_CHOICES: {
     mode: 'build',
     title: 'Make a plan',
     say: 'Tell me what it is: the title and a line about it. Add where and when if you know, and I will find the rest.',
-    placeholder: 'Salt Road, a crime drama series opening in the UK and US in November',
+    placeholder:
+      'Salt Road, a crime drama series for fans of Line of Duty and Happy Valley, opening in the UK and US in November',
     brings: 'You bring: a title and a short description',
   },
   {

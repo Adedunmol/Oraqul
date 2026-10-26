@@ -48,7 +48,7 @@ export function Stats() {
 }
 
 function SummaryCard() {
-  const { output, receipt, openReceipt, goToTab, openExport } = useOutputView();
+  const { output, receipt, openReceipt, goToTab } = useOutputView();
   const partner =
     output.kind === 'partner'
       ? output.brief.partners.find((p) => p.id === output.focusIds[0])
@@ -70,9 +70,6 @@ function SummaryCard() {
             onClick={() => copyText(output.summary, 'Summary copied')}
           >
             Copy summary
-          </Button>
-          <Button size="small" icon="export" className="max-[899px]:hidden" onClick={openExport}>
-            Export brief
           </Button>
           {partner ? (
             <Button

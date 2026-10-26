@@ -12,7 +12,7 @@ import { formatDay } from '../format';
 import { copyText, toast } from '../toast';
 import { makeView, OutputContext, useOutputView } from './context';
 import { ExportMenu } from './export-menu';
-import { ExportModal, ShareModal } from './modals';
+import { ShareModal } from './modals';
 import { ReceiptDrawer } from './receipt-drawer';
 import { CampaignTab } from './tabs-campaign';
 import {
@@ -102,7 +102,6 @@ export function OutputView({
   detail,
   initialTab,
   canEdit,
-  teamName,
   share,
   dock,
   campaign = null,
@@ -114,7 +113,6 @@ export function OutputView({
   campaign?: CampaignState | null;
   initialTab: OutputTabKey | undefined;
   canEdit: boolean;
-  teamName: string | null;
   /** The output's share link, once it has been turned on. Without the prop there is no Share button. */
   share?: { token: string | null; enabled: boolean };
   /** The chat beside the output on desktop, and whether it has something new. */
@@ -139,7 +137,7 @@ export function OutputView({
   const [tab, setTab] = useState<OutputTabKey>(asked && keys.includes(asked) ? asked : first);
   const [more, setMore] = useState(false);
   const [receipt, setReceipt] = useState<{ lineId: string; ids: boolean } | null>(null);
-  const [modal, setModal] = useState<'share' | 'export' | null>(null);
+  const [modal, setModal] = useState<'share' | null>(null);
   const [dockOpen, setDockOpen] = useState(false);
 
   // The URL keeps the tab so a link opens it, without a server round trip for every click. Other
@@ -159,7 +157,6 @@ export function OutputView({
     () =>
       makeView(output, {
         openReceipt: (lineId, options) => setReceipt({ lineId, ids: options?.ids ?? false }),
-        openExport: () => setModal('export'),
         goToTab,
         builtOn: builtOn ? { id: builtOn.id, label: builtOn.label } : undefined,
         reaction: detail.reaction,
@@ -228,23 +225,16 @@ export function OutputView({
                     Share
                   </Button>
                 ) : null}
-                {output.plan ? (
+                {/* Exports need a team member's session, so a shared or public view has none. */}
+                {shared ? null : (
                   <div className="max-[899px]:hidden">
                     <ExportMenu output={output} />
                   </div>
-                ) : (
-                  <Button
-                    icon="export"
-                    className="max-[899px]:hidden"
-                    onClick={() => setModal('export')}
-                  >
-                    Export brief
-                  </Button>
                 )}
                 <Button
                   icon="copy"
                   onClick={() =>
-                    output.plan
+                    output.plan && !shared
                       ? void exportOutput(output.id, 'md').then(
                           async (file) => copyText(await file.text(), 'Plan copied'),
                           () => toast('Could not copy the plan. Try again.'),
@@ -252,7 +242,7 @@ export function OutputView({
                       : copyText(output.summary, 'Summary copied')
                   }
                 >
-                  {output.plan ? 'Copy plan' : 'Copy summary'}
+                  {output.plan && !shared ? 'Copy plan' : 'Copy summary'}
                 </Button>
                 {shared ? null : (
                   // On desktop the dock chat does this; below 900px the dock is hidden.
@@ -318,13 +308,6 @@ export function OutputView({
         ids={receipt?.ids ?? false}
         onClose={() => setReceipt(null)}
         publicExample={publicExample}
-      />
-      <ExportModal
-        open={modal === 'export'}
-        onClose={() => setModal(null)}
-        output={output}
-        project={project}
-        teamName={teamName}
       />
       {share ? (
         <ShareModal

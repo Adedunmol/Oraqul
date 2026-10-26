@@ -52,6 +52,8 @@ export interface CategoryGuide {
   /** "Launch plan for ___". */
   noun: string;
   compsLabel: string;
+  /** Real names Qloo knows, so a copied example still grounds. */
+  compsExample: string;
   /** What the one signal is, so the target field can say what its number counts. */
   signal: string;
   unit: string;
@@ -67,6 +69,7 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Film and series',
     noun: 'film',
     compsLabel: 'Comps',
+    compsExample: 'Line of Duty, Happy Valley, Top Boy',
     signal: 'Advance screenings and presales',
     unit: 'presales',
     extras: [
@@ -80,6 +83,7 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Music',
     noun: 'release',
     compsLabel: 'Sound-alikes',
+    compsExample: 'Burna Boy, Tems, Rema',
     signal: 'Save rate and stream completion',
     unit: 'saves',
     extras: [
@@ -92,6 +96,7 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Books',
     noun: 'book',
     compsLabel: 'Comparable books',
+    compsExample: 'Normal People, The Midnight Library, Circe',
     signal: 'Advance copy conversion and early reviews',
     unit: 'advance copies read',
     extras: [
@@ -110,6 +115,7 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Podcasts',
     noun: 'podcast',
     compsLabel: 'Comparable shows',
+    compsExample: 'Serial, Radiolab, This American Life',
     signal: 'Downloads per episode at day 30 and day 60',
     unit: 'downloads per episode',
     extras: [
@@ -123,6 +129,7 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Games',
     noun: 'game',
     compsLabel: 'Comparable games',
+    compsExample: 'Hades, Hollow Knight, Dead Cells',
     signal: 'Wishlists',
     unit: 'wishlists',
     extras: [
@@ -141,6 +148,7 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Live shows',
     noun: 'show',
     compsLabel: 'Comparable acts',
+    compsExample: 'Hamilton, Six, Hadestown',
     signal: 'Tickets sold against capacity',
     unit: 'percent of capacity',
     dateLabel: 'Show date',

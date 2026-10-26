@@ -9,6 +9,7 @@ export {
   QlooError,
   type QlooErrorKind,
   type QlooResult,
+  RequestSlots,
 } from './client';
 export { demoEntities, demoFetch } from './demo-fetch';
 export * as insights from './insights';

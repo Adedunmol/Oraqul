@@ -71,7 +71,7 @@ export async function runRefresh<R extends LaunchRead, P extends QueryPlanCore>(
   const same = applyChange(inputs, NO_CHANGE, handoff.title, deps.config.applyChange);
   for (const a of same.resolved) deps.tools.entities.set(a.entityId, a);
   try {
-    const comps = await findComps(
+    const { searchFailed: _, ...comps } = await findComps(
       deps,
       ctx.keep,
       same.read,

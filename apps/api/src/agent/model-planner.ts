@@ -15,11 +15,16 @@ const FREE_RULES = `This is a free conversation. Answer the person's question di
 
 /** Model-backed planner. The prompt names the pack's tools only, and the schema allows only them. */
 export class ModelPlanner implements Planner {
-  constructor(private readonly model: LanguageModel) {}
+  constructor(
+    private readonly model: LanguageModel,
+    private readonly timeoutMs: number,
+  ) {}
 
   async next(context: AgentContext): Promise<Step> {
     const { output } = await generateText({
       model: this.model,
+      // Without it a stalled call keeps the thread busy until the API restarts.
+      abortSignal: AbortSignal.timeout(this.timeoutMs),
       system: `${agentSystemPrompt(context.pack)}\n\n${RULES}${context.context?.startsWith(STANDALONE_CONTEXT) ? `\n\n${FREE_RULES}` : ''}`,
       prompt: JSON.stringify({
         contextNotEvidence: context.context,
