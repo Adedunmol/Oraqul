@@ -1,8 +1,10 @@
 import { Icon } from '@oraqul/ui';
 import type { CSSProperties } from 'react';
 import { wrap } from '../section';
+import { HeroArt } from './hero-art';
 import { HeroPrompt } from './hero-prompt';
 import { ProductChat } from './product-chat';
+import { UseCaseTyper } from './use-case-typer';
 
 const at = (ms: number): CSSProperties => ({ animationDelay: `${ms}ms` });
 
@@ -29,20 +31,17 @@ export function Hero() {
       >
         <h1
           id="hero-title"
-          className="max-w-[16ch] font-display text-[clamp(38px,6.4vw,96px)] leading-[1.01] font-medium tracking-[-0.045em] [font-stretch:110%] text-balance"
+          className="max-w-[17ch] font-display text-[clamp(36px,5.8vw,88px)] leading-[1.02] font-medium tracking-[-0.045em] [font-stretch:110%] text-balance"
         >
           <span className="mk-word" style={at(0)}>
-            The AI launch planning agent for{' '}
+            The AI agent for launch planning in{' '}
           </span>
           <span className="mk-word text-accent" style={at(110)}>
             media &amp; entertainment.
           </span>
         </h1>
-        <div className="mk-rise mt-[clamp(20px,2.4vw,32px)]" style={at(260)}>
-          <p className="mx-auto max-w-[52ch] text-[clamp(16px,1.4vw,19px)] leading-[1.55] text-ink/75">
-            Build the plan, audit the one you have, fix what misses and revise it from your results.
-            Every claim cites the audience data behind it.
-          </p>
+        <div className="mk-rise mt-[clamp(22px,2.8vw,36px)] w-full" style={at(260)}>
+          <UseCaseTyper />
         </div>
         <div
           className="mk-rise mt-[clamp(28px,3.4vw,44px)] flex w-full flex-col items-center gap-6"
@@ -59,9 +58,10 @@ export function Hero() {
           </ul>
         </div>
       </div>
-      <div className={`${wrap} relative mt-[clamp(40px,6vw,80px)]`}>
+      <div className={`${wrap} relative mt-[clamp(88px,12vw,190px)]`}>
+        <HeroArt />
         <div
-          className="mk-hero-rise mk-fade-out mx-auto h-[clamp(470px,52vw,640px)] w-full max-w-[1100px] overflow-hidden"
+          className="mk-hero-rise relative z-10 mk-fade-out mx-auto h-[clamp(470px,52vw,640px)] w-full max-w-[1100px] overflow-hidden"
           style={at(560)}
         >
           <ProductChat className="h-[clamp(640px,64vw,760px)] border border-line" />

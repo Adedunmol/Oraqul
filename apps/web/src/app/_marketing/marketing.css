@@ -327,3 +327,18 @@
 .product-demo button[aria-label^="Scroll to"] {
   display: none;
 }
+
+/* The hero's discs: category colours as translucent fields that mix where they overlap, then fade
+   out towards the edges so the art never ends in a line. */
+.mk-hero-art {
+  mask-image: radial-gradient(60% 75% at 50% 78%, black 35%, transparent 78%);
+}
+.mk-hero-disc {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--cat) 62%, transparent),
+    color-mix(in srgb, var(--cat) 14%, transparent) 62%,
+    transparent 71%
+  );
+  mix-blend-mode: screen;
+}
