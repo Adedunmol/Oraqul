@@ -27,6 +27,23 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
     ),
   },
   {
+    home: 'Add your results as totals by city or age band, with the period and where they came from. Oraqul sets them against the plan and writes a revised plan beside the old one. It says what happened, never why: a cause is a hypothesis to test.',
+    q: 'What happens after the launch?',
+    a: 'Add your results as totals by city or age band, with the period they cover and where they came from. Oraqul sets each place against where the plan put it, in code, and a fix writes a revised plan around who showed up. The old plan is kept beside the new one. Your figures are your own evidence, kept apart from the taste data: they show what happened, and Oraqul never states why as fact.',
+  },
+  {
+    q: 'Can it tell me what has changed since my plan was made?',
+    a: 'Yes, when you ask. It asks Qloo and the web again with your plan’s own brief and sets the answers beside what the plan saved: findings that moved, pages that now say something different, each with the day it was read, and the lines of your plan that rest on them. Something is called changed only when the plan had an earlier finding or fact to compare. Your plan is untouched until you ask for a revision.',
+  },
+  {
+    q: 'Does it find markets I had not thought of?',
+    a: 'Yes, and it keeps them beside your plan. Nearby cities that rank above your weakest, and the strongest area of each of your cities, appear under Worth a look with why, what the data does not show, a first test and what to measure. Nothing joins your plan until you add it: ask “What if we add Accra?”. If the evidence is thin, it says so rather than filling a list.',
+  },
+  {
+    q: 'Can it help me run the campaign?',
+    a: 'It turns the plan’s content calendar into actions in the project, each with a guide from the creative kit that you adapt. Edit an action, tick it off, and set up a two-angle test for any of them. Add your own figures and Oraqul compares them, saying inconclusive when they are thin or close. A revised plan gets its own set, and nothing is posted or scheduled for you.',
+  },
+  {
     q: 'What is a receipt?',
     a: 'The record behind one claim: what was asked, what came back, and the rule that turned it into a verdict. In a plan, a claim about taste carries a small number that opens its receipt, and the Evidence tab lists them all.',
   },

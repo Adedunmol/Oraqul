@@ -32,6 +32,23 @@ const jobs: {
   },
 ];
 
+// What a team does with a plan once it has one, each a thing the product really does.
+const after: [string, string][] = [
+  [
+    'Find what you missed',
+    'Nearby markets and areas the data points to, with a first test for each.',
+  ],
+  [
+    'Run the campaign',
+    'Your calendar as actions to edit and tick off, each with a guide to adapt.',
+  ],
+  ['Test two angles', 'Add your own figures and Oraqul compares them, or says inconclusive.'],
+  [
+    'Check what changed',
+    'Ask again later. Moved findings and dated pages, with your plan untouched.',
+  ],
+];
+
 /** The three jobs, each with the message that starts it. The depth lives on the use cases page. */
 export function Jobs() {
   return (
@@ -53,7 +70,7 @@ export function Jobs() {
                 <Icon name={job.icon} className="size-5" />
               </span>
               <div className="flex flex-col gap-2">
-                <h3 className="font-display text-[26px] leading-[1.1] font-semibold tracking-[-0.03em]">
+                <h3 className="font-display text-[28px] leading-[1.1] font-medium tracking-[-0.03em]">
                   {job.title}
                 </h3>
                 <p className="text-[16px] leading-[1.55] text-ink/75">{job.gets}</p>
@@ -64,6 +81,24 @@ export function Jobs() {
             </li>
           ))}
         </ul>
+        <div className="flex flex-col gap-5">
+          <h3 className="font-display text-[clamp(24px,2.6vw,32px)] leading-[1.1] font-medium tracking-[-0.03em]">
+            Then keep going, in the same project.
+          </h3>
+          <ul className="grid border-t border-line min-[700px]:grid-cols-2 min-[1000px]:grid-cols-4">
+            {after.map(([title, text]) => (
+              <li
+                key={title}
+                className="flex flex-col gap-1.5 border-b border-line py-5 min-[700px]:pr-6 min-[1000px]:border-b-0 min-[1000px]:py-6"
+              >
+                <span className="font-display text-[20px] leading-[1.2] tracking-[-0.01em]">
+                  {title}
+                </span>
+                <span className="text-[14.5px] leading-[1.55] text-ink/70">{text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
         <Link
           href="/use-cases"
           className="w-fit text-[15px] font-medium text-accent hover:underline"

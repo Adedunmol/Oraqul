@@ -17,11 +17,11 @@ export function HeroPrompt() {
   const id = useId();
   const [text, setText] = useState('');
   return (
-    <div className="flex w-full max-w-[760px] flex-col gap-5">
+    <div className="flex w-full max-w-[680px] flex-col items-center gap-4">
       <form
         action="/start"
         method="get"
-        className="flex items-center gap-2 rounded-2xl bg-card p-2 pl-5 shadow-lg focus-within:outline-2 focus-within:outline-accent"
+        className="flex w-full items-center gap-2 rounded-2xl bg-card p-2 pl-5 text-left shadow-lg focus-within:outline-2 focus-within:outline-accent"
       >
         <label htmlFor={id} className="sr-only">
           What are you launching?
@@ -44,7 +44,7 @@ export function HeroPrompt() {
           <Icon name="arrowUp" className="size-4" />
         </button>
       </form>
-      <ul aria-label="Examples" className="flex flex-wrap gap-2">
+      <ul aria-label="Examples" className="flex flex-wrap justify-center gap-2">
         {examples.map((example) => (
           <li key={example}>
             <button

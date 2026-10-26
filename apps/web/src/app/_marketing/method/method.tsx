@@ -29,6 +29,9 @@ export const sections = [
   { id: 'fit', title: 'Fit' },
   { id: 'overlap', title: 'Rival overlap' },
   { id: 'direction', title: 'Direction calls' },
+  { id: 'opportunities', title: 'Opportunities' },
+  { id: 'results', title: 'Your results' },
+  { id: 'changed', title: 'What changed' },
   { id: 'rules', title: 'Launch rules' },
   { id: 'more', title: 'Route and topics' },
   { id: 'confidence', title: 'Confidence' },
@@ -245,6 +248,45 @@ export function MethodBody() {
             A call on something you chose keeps your choice. An avoid on your own city says to open
             it after the stronger ones, and never to drop it. Something Qloo did not rank gets no
             call.
+          </p>
+        </Block>
+
+        <Block id="opportunities" title="Opportunities">
+          <p className={prose}>
+            A nearby city is shown under Worth a look only when it ranks above your weakest city in
+            the same Qloo call, and an area only when a city’s neighbourhood reading ranks it
+            strongest. Each comes with why it fits, which cites its finding, and three lines of
+            launch craft that claim nothing about taste: what the data does not show, a first test
+            and what to measure. Code writes all four, asks Qloo nothing more, and never changes
+            your plan: an opportunity is a lead beside it until you add it. If the evidence is thin
+            there are none, and the page does not fill a list. Qloo shows who likes what, not that a
+            market will sell.
+          </p>
+        </Block>
+
+        <Block id="results" title="Your results">
+          <p className={prose}>
+            Results are your own evidence, kept apart from Qloo’s findings and from web facts. You
+            say the period they cover and where they came from, and Oraqul keeps each only when your
+            own words contain it. Code works out each place’s share of the total and sets it against
+            the place the plan gave it. For a campaign test, code compares your figures for the two
+            angles: fewer than 30 of what you counted for either, or figures within 20% of each
+            other, are inconclusive, and otherwise it says which angle recorded more and by how
+            much. Those two thresholds are chosen conventions, not a significance test. Results show
+            what happened. A line about them never states a cause as fact, and a taste score never
+            stands in for a result.
+          </p>
+        </Block>
+
+        <Block id="changed" title="What changed">
+          <p className={prose}>
+            When you ask, Oraqul asks Qloo and the web again with your plan’s own brief and sets the
+            answers beside what the plan saved. A finding the plan had is moved when a number
+            differs by 10% or a name changes place, and otherwise unchanged. A page is changed only
+            when the plan saved a fact from the same page and it now says something different, and
+            each fresh fact carries the day it was read. A finding or page it does not return is not
+            a change, because the check asks the brief again and does not replay the exact calls.
+            Your plan stays as it is until you ask for a revision.
           </p>
         </Block>
 

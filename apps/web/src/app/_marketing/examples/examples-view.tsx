@@ -77,7 +77,7 @@ export function ExamplesView({
           </span>
           Invented data for a made up {current.noun}. Nothing on this page comes from Qloo.
         </p>
-        <div className="bg-canvas px-[clamp(16px,3vw,32px)] pt-7">
+        <div className="product-face bg-canvas px-[clamp(16px,3vw,32px)] pt-7">
           {detail ? (
             <OutputView
               key={current.id}

@@ -3,7 +3,12 @@ import { expect, test } from '@playwright/test';
 test('the landing page shows the pitch, the example and the ways in', async ({ page }) => {
   await page.goto('/');
   const text = await page.locator('body').innerText();
-  expect(text).toContain('Holds');
+  // The first thing a visitor reads says what the product is, and the real product is shown under it.
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(
+    'AI launch planning agent for media & entertainment',
+  );
+  expect(text).toContain('Night Ferry');
+  expect(text).toContain('Agent trace');
   await expect(page.getByRole('link', { name: 'Create account' }).first()).toHaveAttribute(
     'href',
     '/sign-up',

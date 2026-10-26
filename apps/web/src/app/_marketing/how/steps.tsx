@@ -305,7 +305,7 @@ export function KeepGoing() {
     <section aria-labelledby="keep-title" className={`scheme-dark bg-bg ${band}`}>
       <div className={`${wrap} flex flex-col gap-12`}>
         <h2 id="keep-title" className={`${h2Class} max-w-[18ch]`}>
-          Then keep going in the chat.
+          Then keep going, in the same project.
         </h2>
         <div className="grid gap-4 min-[900px]:grid-cols-3">
           {[
@@ -314,16 +314,28 @@ export function KeepGoing() {
               'Check rival dates, draft a partner brief, test a what if or make the creative kit, from the chips under the message box.',
             ],
             [
+              'Look at what you missed',
+              'Nearby markets and areas of your own cities appear under Worth a look, each with why, what the data does not show, a first test and what to measure. They stay beside your plan until you add one.',
+            ],
+            [
+              'Run the campaign',
+              'The plan’s calendar becomes actions you edit and tick off, each with a guide to adapt. Set up a two-angle test, add your own figures, and Oraqul compares them, or says inconclusive.',
+            ],
+            [
               'Correct it in words',
               '“Check my plan instead” runs a check. Naming new places plans again with them.',
             ],
             [
               'Bring your results',
-              'After it is out, add results by region or age band and Oraqul finds what missed.',
+              'After it is out, add results by place or age band, with the period and where they came from. Oraqul finds what missed and writes a revised plan beside the old one. It says what happened, never why.',
+            ],
+            [
+              'Check what changed',
+              'Ask again weeks later. Qloo and the web are asked again, and you see what moved, which pages say something different and which lines of your plan rest on them. The plan stays as it is.',
             ],
           ].map(([title, text]) => (
             <div key={title} className="flex flex-col gap-3 rounded-2xl bg-card p-6">
-              <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">
+              <h3 className="font-display text-[24px] leading-[1.15] font-medium tracking-[-0.03em]">
                 {title}
               </h3>
               <p className="text-[15px] leading-[1.55] text-muted">{text}</p>

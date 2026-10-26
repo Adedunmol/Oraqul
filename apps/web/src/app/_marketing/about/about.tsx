@@ -10,7 +10,7 @@ export function Problem() {
       >
         <h2
           id="problem-title"
-          className="font-display text-[clamp(34px,5.4vw,72px)] leading-[1] font-semibold tracking-[-0.045em] text-balance"
+          className="font-display text-[clamp(34px,5.4vw,72px)] leading-[1.03] font-medium tracking-[-0.03em] text-balance"
         >
           Launch plans are defended on instinct, and{' '}
           <span className="text-accent">instinct is hard to check.</span>
@@ -56,7 +56,7 @@ export function Idea() {
         <ol className="grid gap-px overflow-hidden rounded-2xl bg-line min-[900px]:grid-cols-3">
           {lines.map(([title, text], i) => (
             <li key={title} className="flex flex-col gap-4 bg-card p-[clamp(22px,3vw,36px)]">
-              <span className="font-display text-[clamp(40px,4vw,56px)] leading-none font-semibold tracking-[-0.05em] text-accent">
+              <span className="font-display text-[clamp(40px,4vw,56px)] leading-none font-medium tracking-[-0.03em] text-accent">
                 {i + 1}
               </span>
               <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">

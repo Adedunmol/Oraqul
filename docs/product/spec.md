@@ -677,7 +677,7 @@ Charts are inline SVG or CSS, each with a table toggle, a legend, and hover text
 The look is defined in the design system file. In code:
 
 * Tokens live in `globals.css` as CSS variables, light on bare `:root`, dark in a guarded media query and again under `[data-theme="dark"]`, each with `color-scheme`. No component uses a literal colour.
-* Fonts come from `next/font/google`: Geist for headings, running text and document reading in the signed-in product, Geist Mono for ids and keycaps, and Space Grotesk for the public brand and marketing headlines.
+* Fonts come from `next/font/google`: Geist for headings, running text and document reading in the signed-in product, Geist Mono for ids and keycaps, and Mona Sans for the public brand and marketing headlines.
 * Category colour is set by a `data-cat` attribute and a `--cat` variable. It is used for icon tiles and strokes, and to tint project cards (design-system §3.3).
 * A small component set lives in `packages/ui`: Button, Input, Chip, VerdictPill, Confidence, ReceiptChip, Card, Line, Tabs, TabNote, StartComposer, ProjectCard, SummaryCard, QuestionCard, Trace, Chart, ReceiptDrawer, Palette, Modal, Toast, Icon. VerdictPill and Confidence take the data value and draw the glyph and word, so colour cannot appear alone.
 
@@ -721,7 +721,7 @@ The marketing and trust pages a signed out visitor sees.
 
 **Navigation.** A short header: Product (How it works, Examples, Method), Use cases, Categories, Guide, Sign in, Create account. Developers and Terms are in the footer. The footer carries the rest in four columns: Product, Resources, Company, Legal. Product is a small menu (Escape or a click outside closes it and returns focus to it); below 900px one Menu button opens a panel with every link; below 600px Sign in moves into that panel so the bar stays on one row.
 
-**Rules.** Marketing pages use the app's tokens and Space Grotesk headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 375px. Words follow design-system §10: launch is the umbrella word (launch planning, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
+**Rules.** Marketing pages use the app's tokens and Mona Sans headlines, with art and motion the app does not use (design-system §6, Marketing pages). They are one designed rhythm of light and dark bands, pinned with `.scheme-light` and `.scheme-dark`, not the visitor's theme, and work at 375px. Words follow design-system §10: launch is the umbrella word (launch planning, launch plan), each category names its own event (a film release, a book launch, a podcast season), and Project is what a user creates. An example page never shows raw Qloo data (see the open point on Qloo's terms in the overview).
 
 ## 10. Failure handling
 

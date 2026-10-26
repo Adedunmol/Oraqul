@@ -166,7 +166,7 @@ The product has many new words and a deep structure, so it must explain itself b
 
 ### 6.9 Look and feel
 
-Calm and clear. The signed-in product uses Geist for headings, running text and the body of a plan, so dense work reads in one steady voice; Space Grotesk is reserved for the public brand and marketing headlines. Solid cards stand out from a neutral canvas by fill and a small lift, while full plans and reports use flat paper-like surfaces with no elevation, clear section rules, generous reading space and few icons, like enterprise software people trust with detail. Colour is used for verdicts and directions, for the category icons and the category tint of project cards, and indigo for actions. One soft gradient per marketing page and none in the app, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
+Calm and clear. The signed-in product uses Geist for headings, running text and the body of a plan, so dense work reads in one steady voice; Mona Sans is reserved for the public brand and marketing headlines. Solid cards stand out from a neutral canvas by fill and a small lift, while full plans and reports use flat paper-like surfaces with no elevation, clear section rules, generous reading space and few icons, like enterprise software people trust with detail. Colour is used for verdicts and directions, for the category icons and the category tint of project cards, and indigo for actions. One soft gradient per marketing page and none in the app, no coloured side stripes, no dots as status markers. Light and dark are both supported. The full rules, tokens and components are in the design system file.
 
 ### 6.10 Launch rules
 

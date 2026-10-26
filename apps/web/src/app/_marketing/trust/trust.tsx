@@ -52,9 +52,19 @@ const ledger: { what: string; goes: string; kept: string }[] = [
     kept: 'In your team’s project and its chats',
   },
   {
-    what: 'Results you upload',
-    goes: 'Parsed into totals by place and age band',
+    what: 'Results you supply',
+    goes: 'Parsed into totals by place and age band, with the period and the source you wrote. Never to Qloo',
     kept: 'Totals only. The numbers kept are totals by place and age band; the text of the file stays on your project, so leave personal columns out',
+  },
+  {
+    what: 'Web searches for release timing and the market',
+    goes: 'The language model provider’s own search. The title and story of your work are never sent, and a question you ask is sent with the title taken out',
+    kept: 'On the plan, as the page, the fact and the day it was read',
+  },
+  {
+    what: 'Campaign actions and the figures for a test',
+    goes: 'Nowhere. Code builds the actions from your plan, and your figures are compared in code, never sent to Qloo or a model',
+    kept: 'In your team’s project, with the plan version they belong to',
   },
   {
     what: 'Your name and email',

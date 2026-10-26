@@ -294,9 +294,27 @@ export function GuideBody() {
               “every territory” and you get one kit that covers each on its lead channel.
             </li>
             <li>
-              <b>Add results.</b> After launch, give totals by city or age band. Oraqul sets them
+              <b>Look at Worth a look.</b> Nearby markets and the strongest area of each of your
+              cities, each with why, what the data does not show, a first test and what to measure.
+              They stay beside your plan until you add one: “What if we add Accra?”.
+            </li>
+            <li>
+              <b>Run the campaign.</b> On the plan’s Campaign tab, set up its calendar as actions.
+              Edit them, tick them off, and set up a two-angle test for any of them. A revised plan
+              gets its own set and the old one stays as you left it.
+            </li>
+            <li>
+              <b>Add results.</b> After launch, give totals by city or age band, and say the period
+              they cover and where they came from: “Source: box office report”. Oraqul sets them
               against where the plan put each place, and a fix writes a revised plan around who
-              showed up.
+              showed up. Your figures show what happened, not why. For a test, add the figures for
+              each angle and Oraqul compares them, or says inconclusive when they are thin or close.
+            </li>
+            <li>
+              <b>Check what has changed.</b> “Check what has changed since this plan was made”, or a
+              question such as “Has the release window changed?”. It asks again and shows what
+              moved, which pages now say something different and the lines of your plan that rest on
+              them. Your plan is untouched until you ask to fix it.
             </li>
           </ul>
         </Block>

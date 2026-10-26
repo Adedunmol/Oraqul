@@ -14,7 +14,7 @@ function CategoryText({ info }: { info: CategoryInfo }) {
       <span className={`grid size-12 place-items-center rounded-xl ${field}`}>
         <Icon name={info.id} className="size-6" />
       </span>
-      <h3 className="font-display text-[clamp(30px,3.4vw,46px)] leading-[1.02] font-semibold tracking-[-0.04em]">
+      <h3 className="font-display text-[clamp(30px,3.4vw,46px)] leading-[1.05] font-medium tracking-[-0.03em]">
         {info.name}
       </h3>
       <p className="max-w-[38ch] text-[18px] leading-[1.55] text-ink/75">{info.blurb}</p>

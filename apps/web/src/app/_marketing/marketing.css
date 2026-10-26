@@ -7,12 +7,6 @@
     transform: translateY(18px);
   }
 }
-@keyframes mk-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-}
 @keyframes mk-bloom {
   from {
     opacity: 0;
@@ -66,44 +60,9 @@
   display: inline-block;
   animation: mk-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
-
-/* The hero's light: indigo from the top right, with a faint warm and a faint cool category glow,
-   so the canvas has depth without any colour under the headline's ink. */
-.mk-sky {
-  background-image:
-    radial-gradient(
-      60% 70% at 85% 20%,
-      color-mix(in srgb, var(--accent) 20%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      40% 50% at 100% 70%,
-      color-mix(in srgb, var(--cat-podcasts) 12%, transparent),
-      transparent 70%
-    );
-  mask-image: linear-gradient(to bottom, black 70%, transparent);
-}
-/* On a phone the art is centred above the headline, so the light moves behind it. */
-@media (max-width: 999px) {
-  .mk-sky {
-    background-image:
-      radial-gradient(60% 40% at 50% 62%, var(--bg), transparent 75%),
-      radial-gradient(
-        70% 40% at 55% 22%,
-        color-mix(in srgb, var(--cat-podcasts) 24%, transparent),
-        transparent 70%
-      ),
-      radial-gradient(
-        60% 36% at 35% 28%,
-        color-mix(in srgb, var(--accent) 20%, transparent),
-        transparent 70%
-      ),
-      radial-gradient(
-        50% 30% at 95% 55%,
-        color-mix(in srgb, var(--cat-music) 14%, transparent),
-        transparent 70%
-      );
-  }
+/* The same arrival for a block that has to keep its own layout. */
+.mk-rise {
+  animation: mk-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 /* The arrow between steps bobs down, a nudge to keep scrolling. */
@@ -114,49 +73,6 @@
 }
 .mk-nudge {
   animation: mk-nudge 2.4s ease-in-out infinite;
-}
-
-/* The orbit art: the tiles tint with their category and drift, the hub stays put. */
-.mk-orbit {
-  opacity: 0.6;
-}
-.mk-orbit-tile {
-  background: color-mix(in srgb, var(--cat) 10%, var(--surface));
-  animation:
-    mk-pop 700ms var(--delay, 0ms) cubic-bezier(0.3, 1.4, 0.5, 1) both,
-    mk-float var(--t, 16s) var(--delay, 0ms) ease-in-out infinite,
-    mk-unspin 120s linear infinite;
-}
-@keyframes mk-spin {
-  to {
-    rotate: 360deg;
-  }
-}
-@keyframes mk-unspin {
-  to {
-    rotate: -360deg;
-  }
-}
-@keyframes mk-ping {
-  from {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(3.4);
-  }
-}
-/* The ring turns slowly as one; each tile turns back so it and its icon stay upright. */
-.mk-orbit-spin {
-  animation: mk-spin 120s linear infinite;
-}
-.mk-orbit-ping {
-  border: 1px solid var(--accent);
-  animation: mk-ping 4.5s 1.2s ease-out infinite both;
-}
-.mk-orbit-hub {
-  animation: mk-pop 700ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
 }
 
 /* Taste circles: audiences drawn as overlapping discs, the thing Oraqul measures. */
@@ -337,10 +253,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mk-word,
+  .mk-rise,
   .mk-nudge,
-  .mk-orbit-spin,
-  .mk-orbit-tile,
-  .mk-orbit-hub,
   .mk-disc,
   .mk-tilt,
   .mk-token,
@@ -351,9 +265,6 @@
   }
   .mk-line {
     stroke-dashoffset: 0;
-  }
-  .mk-orbit-ping {
-    display: none;
   }
   .mk-token,
   .mk-token-y {
@@ -376,4 +287,43 @@
 .mk-sheet::backdrop {
   /* biome-ignore lint/complexity/noImportantStyles: see the note above */
   background: rgba(13, 14, 16, 0.5) !important;
+}
+
+/* The hero's light: indigo rising from behind the product, and a little from above, so the product
+   sits in a glow rather than on a flat canvas. Tokens only; the text above stays on plain ink. */
+.mk-hero-glow {
+  background-image:
+    radial-gradient(
+      60% 42% at 50% 92%,
+      color-mix(in srgb, var(--accent) 44%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      60% 40% at 50% 0%,
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 70%
+    );
+}
+/* The product dissolves into the page at its lower edge instead of ending in a hard line. */
+.mk-fade-out {
+  mask-image: linear-gradient(to bottom, black 62%, transparent 98%);
+}
+@keyframes mk-hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+}
+.mk-hero-rise {
+  animation: mk-hero-rise 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mk-hero-rise {
+    animation: none;
+  }
+}
+
+/* The chat's own scroll buttons have no place in a demo nobody can scroll. */
+.product-demo button[aria-label^="Scroll to"] {
+  display: none;
 }
