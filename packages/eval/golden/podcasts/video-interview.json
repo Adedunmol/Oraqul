@@ -74,7 +74,7 @@
       "budget": "0/7",
       "measure": "0/8",
       "risks": "2/1",
-      "gaps": "0/5"
+      "gaps": "0/6"
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {

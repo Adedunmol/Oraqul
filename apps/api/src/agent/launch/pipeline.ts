@@ -54,7 +54,7 @@ import {
   bandQuestionId,
   withLauncher,
 } from './band.js';
-import { capital } from './brief.js';
+import { capital, slug } from './brief.js';
 import { calendarRows, calendarSection } from './calendar.js';
 import { type CheckContext, checkSections } from './check.js';
 import { type Clash, clashFinding, type Rival, rivalsFrom, scoreClash } from './clash.js';
@@ -98,7 +98,7 @@ import {
   ScriptedResearchPlanner,
 } from './research-loop.js';
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
-import { measureSection, signalOf } from './signal.js';
+import { codeLine, measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
 import { channelsSection, territoriesOf, withLines } from './territories.js';
 import { list, releaseDate } from './text.js';
@@ -937,7 +937,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       ...(byCode && deps.config.codeSections.timeline
         ? [deps.config.codeSections.timeline(read, today)]
         : []),
-      deps.config.codeSections.gaps(read, comps),
+      withLeadNotFound(deps.config.codeSections.gaps(read, comps), deps.config.lead?.(read), comps),
     ];
     const sections = ensureDecisions(
       order.flatMap((key) => {
@@ -1518,6 +1518,35 @@ export function applyChange<R extends LaunchRead>(
     resolved: inputs.resolved.filter((a) => kept(a.name)),
     used: used.filter((u) => kept(u.name)),
     dropped: inputs.dropped.filter((d) => comps.some((k) => same(k, d.name))),
+  };
+}
+
+/**
+ * Says so in Gaps when the work the launch is about (an artist) is not in Qloo by name. That is
+ * normal before a debut, and the plan then rests on the comps, or on the genre without them.
+ */
+function withLeadNotFound(
+  section: LaunchSection,
+  lead: string | null | undefined,
+  comps: Pick<Anchors, 'resolved' | 'dropped'>,
+): LaunchSection {
+  const missed = lead
+    ? comps.dropped.some((d) => d.name.trim().toLowerCase() === lead.trim().toLowerCase())
+    : false;
+  if (!lead || !missed) return section;
+  const rests =
+    comps.resolved.length > 0
+      ? 'The plan rests on the comps you named.'
+      : 'With no comps resolved, the plan rests on the genre’s audience, with lower confidence.';
+  return {
+    ...section,
+    lines: [
+      codeLine(
+        `gaps-lead-${slug(lead)}`,
+        `Qloo does not know ${lead} by name, which is normal before a debut. ${rests}`,
+      ),
+      ...section.lines,
+    ],
   };
 }
 

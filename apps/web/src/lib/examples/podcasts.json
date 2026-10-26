@@ -1211,6 +1211,15 @@
           "title": "To sharpen this plan",
           "lines": [
             {
+              "id": "gaps-lead-cold-case-lagos",
+              "kind": "playbook",
+              "text": "Qloo does not know Cold Case Lagos by name, which is normal before a debut. The plan rests on the comps you named.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
               "id": "gaps-1",
               "kind": "playbook",
               "text": "Planned as a new show launch. Say if it is a new season of a show that is already out, and the calendar changes.",
