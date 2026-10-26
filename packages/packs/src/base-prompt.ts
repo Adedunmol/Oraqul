@@ -27,7 +27,7 @@ export const REFUSALS: {
   {
     kind: 'forecast',
     pattern:
-      /\b(forecast|predict(ion)?s?|projections?|how much (will|would|could) (it|we|this)|box office (will|would)|(will|would) (it|this) (make|earn|gross|sell)|gross(es)? on (the )?opening|first weekend numbers)\b/i,
+      /\b(forecast|predict(ion)?s?|projections?|how much (will|would|could) (it|we|this)|how many (downloads|tickets|streams|copies|sales|views|units|listeners|wishlists|followers|people|plays|pre-?orders|saves)\b[^.?!\n]{0,30}\b(will|would|could)\b|box office (will|would)|(will|would) (it|this) (make|earn|gross|sell)|gross(es)? on (the )?opening|first weekend numbers)\b/i,
     reply:
       "I can't forecast sales, box office or viewing numbers. Qloo has taste data, not sales, and a forecast could not carry a receipt. I can test who the plan reaches and where. If you have your own tracking numbers, add them and I will compare the plan with them.",
   },
