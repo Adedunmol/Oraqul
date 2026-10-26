@@ -44,6 +44,10 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
     a: 'It turns the plan’s content calendar into actions in the project, each with a guide from the creative kit that you adapt. Edit an action, tick it off, and set up a two-angle test for any of them. Add your own figures and Oraqul compares them, saying inconclusive when they are thin or close. A revised plan gets its own set, and nothing is posted or scheduled for you.',
   },
   {
+    q: 'How does it use the places I name?',
+    a: 'Every city is read, not just listed. Oraqul asks Qloo what the audience for your comparable titles looks like there, ranks all your cities in one call so their scores compare, and gives each a verdict and its own plan. For film and music plans it also reads neighbourhoods near the strongest cells, as leads to confirm on the ground. Nearby cities that rank above your weakest appear under Worth a look. A place with too little data to rank is marked as such, with lower confidence, and your own cities are never dropped.',
+  },
+  {
     q: 'What is a receipt?',
     a: 'The record behind one claim: what was asked, what came back, and the rule that turned it into a verdict. In a plan, a claim about taste carries a small number that opens its receipt, and the Evidence tab lists them all.',
   },

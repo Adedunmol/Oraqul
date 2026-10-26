@@ -380,3 +380,21 @@
   );
   mix-blend-mode: screen;
 }
+
+/* A city's cells arrive from its strongest point outwards, one ring after another, when the map
+   scrolls into view. Switching city only changes colour, so it never replays. */
+[data-reveal] .mk-cell {
+  opacity: 0;
+  transition:
+    opacity 500ms calc(var(--d, 0) * 38ms) ease,
+    background-color 500ms ease;
+}
+[data-reveal][data-shown] .mk-cell {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] .mk-cell {
+    opacity: 1;
+    transition: none;
+  }
+}
