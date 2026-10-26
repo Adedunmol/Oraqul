@@ -31,13 +31,27 @@ export function Hero() {
       >
         <h1
           id="hero-title"
-          className="max-w-[17ch] font-display text-[clamp(36px,5.8vw,88px)] leading-[1.02] font-medium tracking-[-0.045em] [font-stretch:110%] text-balance"
+          className="flex flex-col items-center font-display tracking-[-0.045em] text-balance"
         >
-          <span className="mk-word" style={at(0)}>
-            The AI agent for launch planning in{' '}
-          </span>
-          <span className="mk-word text-accent" style={at(110)}>
-            media &amp; entertainment.
+          <span
+            className="mk-word text-[clamp(18px,2.3vw,34px)] leading-none font-normal tracking-[-0.02em] text-ink/70 [font-stretch:100%]"
+            style={at(0)}
+          >
+            The AI agent for
+          </span>{' '}
+          <span
+            data-lock="a"
+            className="mk-word mt-[0.35em] text-[clamp(30px,9.2vw,56px)] min-[768px]:text-[clamp(56px,7.4vw,112px)] leading-[0.96] font-semibold [font-stretch:125%]"
+            style={at(90)}
+          >
+            launch planning
+          </span>{' '}
+          <span
+            data-lock="b"
+            className="mk-word text-[clamp(30px,9.2vw,56px)] min-[768px]:text-[clamp(56px,7.4vw,112px)] leading-[1.02] font-semibold text-accent [font-size:0.978em] [font-stretch:75%]"
+            style={at(180)}
+          >
+            in media &amp; entertainment.
           </span>
         </h1>
         <div className="mk-rise mt-[clamp(22px,2.8vw,36px)] w-full" style={at(260)}>

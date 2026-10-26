@@ -12,7 +12,7 @@ export function HeroPrompt() {
     <form
       action="/start"
       method="get"
-      className="flex w-full max-w-[680px] items-center gap-2 rounded-2xl bg-card p-2 pl-5 text-left shadow-lg focus-within:outline-2 focus-within:outline-accent"
+      className="flex w-full max-w-[680px] items-center gap-2 rounded-2xl bg-card p-2 pl-5 text-left opacity-45 transition-opacity duration-300 hover:opacity-100 focus-within:opacity-100 focus-within:outline-2 focus-within:outline-accent motion-reduce:transition-none"
     >
       <label htmlFor={id} className="sr-only">
         What are you launching?
