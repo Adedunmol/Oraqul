@@ -110,8 +110,14 @@ function onsaleSection(read: ShowsRead, today: string, target: Signal['target'])
   const lines: string[] = [];
 
   if (onSale.source === 'user' && onSale.weeks) {
+    const rule = SHOWS_PLAN_RULES.onSale.value[type];
+    const against = !rule
+      ? 'and the plan has no rule to check it against'
+      : onSale.weeks.max >= rule.min && onSale.weeks.max <= rule.max
+        ? `and it is inside the ${rule.min} to ${rule.max} weeks a ${label} usually runs`
+        : `and it is outside the ${rule.min} to ${rule.max} weeks a ${label} usually runs`;
     lines.push(
-      `General on sale opens ${onSale.weeks.max} weeks before the show${dates ? `, on ${dates.general.from}` : ''}. This window is user supplied: you gave it, and the plan has no rule to check it against.`,
+      `General on sale opens ${onSale.weeks.max} weeks before the show${dates ? `, on ${dates.general.from}` : ''}. This window is user supplied: you gave it, ${against}.`,
     );
   } else if (onSale.source === 'rule' && onSale.weeks) {
     lines.push(
@@ -140,14 +146,14 @@ function onsaleSection(read: ShowsRead, today: string, target: Signal['target'])
     show,
   };
   lines.push(
-    'Sales are back loaded: most tickets sell in the final week. The shares below are editable defaults, not a forecast, and the target is yours.',
+    `Sales are back loaded: most tickets sell in the final week. The shares below are directional defaults from ${SHOWS_PLAN_RULES.pacing.source.label}, not a forecast, and the target is yours.`,
   );
   for (const c of pacingFor(type)) {
     const at = when[c.key];
     const day = at ? ` (${at})` : '';
     lines.push(
       tickets
-        ? `${c.label}${day}: about ${Math.round((tickets * c.share) / 100).toLocaleString('en-US')} of ${tickets.toLocaleString('en-US')} tickets sold, ${c.share} percent of your target.`
+        ? `${c.label}${day}: about ${c.share} percent of your ${tickets.toLocaleString('en-US')} ticket target sold.`
         : `${c.label}${day}: about ${c.share} percent of your target sold. Give a target and a venue capacity, such as “target 80 percent” and “capacity 500”, and this turns into tickets.`,
     );
   }
@@ -374,7 +380,13 @@ export function ruleChecks(read: ShowsRead, planText: string, today: string): Ru
     )?.[1] ??
     planText.match(
       /(\d{1,3})\s?(?:%|percent)\s+(?:(?:for|on|in|to)\s+)?(?:the\s+)?(?:final push|final week|last week)/i,
-    )?.[1];
+    )?.[1] ??
+    // "Nothing held for the last week" says there is no reserve, which is a share of zero.
+    (/\b(?:nothing|none|no (?:budget|money|reserve))\b[^.\n]{0,40}\b(?:final push|final week|last week)\b/i.test(
+      planText,
+    )
+      ? '0'
+      : undefined);
   const reserve = ((): Pick<RuleCheck, 'status' | 'why'> => {
     if (share === undefined) {
       return {
@@ -446,6 +458,13 @@ export const showsLaunch: LaunchConfig<ShowsRead, ShowsQueryPlan> = {
   genreTagPrefix: showsPlan.TAG_SPACES.similar.prefix,
   artistQueries: ['similar'],
   lead: (read) => read.act,
+  fixed: (read) => {
+    const window = SHOWS_PLAN_RULES.onSale.value[typeOf(read)];
+    const given = read.onSaleWeeks;
+    return window && given !== null && (given < window.min || given > window.max)
+      ? { ...read, onSaleWeeks: null }
+      : read;
+  },
   words: {
     comps: 'acts',
     entity: 'act',

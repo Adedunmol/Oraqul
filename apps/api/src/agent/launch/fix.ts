@@ -102,11 +102,12 @@ export async function runFix<R extends LaunchRead, P extends QueryPlanCore>(
 
   const { report, read, comps, asked, review } = audited;
   const title = handoff.title;
-  const fixed = fixRead(
+  const ordered = fixRead(
     read,
     report,
     asked.grounded.brief.teamOrder.map((p) => p.place),
   );
+  const fixed = deps.config.fixed?.(ordered) ?? ordered;
   // New cities or ages from the results are asked about too; otherwise the audit's findings stand.
   const newPlaces = fixed.places.some((p) => !read.places.some((q) => same(q, p)));
   const newAges = fixed.ages.join() !== read.ages.join();

@@ -94,6 +94,13 @@ export interface LaunchConfig<
   teamAnchors?(read: R): string[];
 
   /**
+   * What a fix puts right in the reading before the plan is written, for a figure the team gave
+   * that the category's rules call outside (a live show's on-sale window). The audit has already
+   * said so; the fixed plan then carries the rule's own figure, not the one that failed.
+   */
+  fixed?(read: R): R;
+
+  /**
    * The one question a build may ask: there is nothing to plan from without these. `strict` asks
    * again when the answer still leaves something missing, instead of planning from nothing.
    */

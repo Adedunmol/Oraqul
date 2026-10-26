@@ -3,7 +3,7 @@ import { auditReportSchema, type RuleCheck, type ThreadEvent } from '@oraqul/sch
 import { describe, expect, it } from 'vitest';
 import type { Handoff } from '../category-agents.js';
 import { ScriptedResultsReader } from '../launch/results-read.js';
-import { ruleChecks } from './config.js';
+import { ruleChecks, showsLaunch } from './config.js';
 import { ScriptedQueryPlanner } from './planner.js';
 import { checkReading, ScriptedShowsReader, type ShowsRead } from './read.js';
 import { TemplateReportWriter } from './report-writer.js';
@@ -78,6 +78,15 @@ describe('ruleChecks: the plan set beside the live show rules', () => {
     expect(status('Budget: 50% announce, 10% middle, 40% final push.')?.status).toBe('follows');
     expect(status('Budget: 90% on sale, 10% for the final week.')?.status).toBe('outside');
     expect(status('Spend it all in the first month.')?.status).toBe('not-stated');
+    expect(
+      status('Budget: 70% at announce, 30% in the middle, nothing held for the last week.')?.status,
+    ).toBe('outside');
+  });
+
+  it('puts a window the plan gave outside the rule right in a fix, and leaves one inside', () => {
+    expect(showsLaunch.fixed?.(read({ onSaleWeeks: 10 })).onSaleWeeks).toBeNull();
+    expect(showsLaunch.fixed?.(read({ onSaleWeeks: 5 })).onSaleWeeks).toBe(5);
+    expect(showsLaunch.fixed?.(read({ showType: 'theatre', onSaleWeeks: 9 })).onSaleWeeks).toBe(9);
   });
 
   it('flags a rival within a week of the show, and not one further away', () => {
