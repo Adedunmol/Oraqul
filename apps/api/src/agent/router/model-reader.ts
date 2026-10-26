@@ -21,7 +21,7 @@ What they want to do (mode):
 Rules:
 - Never guess. Fill a field only when the person's own words say it, and put those exact words in "quote", copied character for character from their messages. If you are not sure, leave the field null.
 - If their words fit more than one category (for example they sing and also make a game), leave category null and ask which one, with one option per category they mentioned.
-- A concert, a gig or a live show can be a music release or tour, or a single live show with a date and tickets. Whenever the person says one of those words, leave category null and ask which, with the options "A music release or tour" and "A single live show".
+- A concert, a gig or a live show can be a music release or tour, or a single live show with a date and tickets. Whenever the person says one of those words, leave category null and ask which, with the options "A music release or tour" and "A single live show". Stand-up, comedy nights, club nights and stage plays are plainly a live show: set the category to shows and do not ask.
 - Set mode only when they say what they want to do with the work: release, launch or plan it (build), check a plan they have or ask why a launch did badly (audit), or ask for a plan to be fixed or improved (fix). Having, making or being good at something is not a mode.
 - The title is the name of their work, exactly as they wrote it. "A song" or "my game" is not a title.
 - A picked option is not the person's own words: never quote it. What it settled is already in "Known so far".
