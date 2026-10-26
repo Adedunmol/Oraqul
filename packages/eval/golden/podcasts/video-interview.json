@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with Manchester, then Lagos: that is where your show's listeners are strongest.",
@@ -43,8 +45,10 @@
       "f-markets": ["Manchester", "Lagos"],
       "f-topics": ["Diaspora life", "Faith", "Technology"],
       "f-crosspromo": ["Case Closed Weekly", "The Long Con", "Midnight Ledger"],
-      "f-brands-beverage-lagos": ["Fizz Cola", "Lumen Coffee"],
-      "f-brands-telecom-lagos": ["Glide Mobile", "Orbit Data"],
+      "f-brands-lagos": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
+      "f-brands-manchester": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
+      "f-brands-city-lagos": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
+      "f-brands-city-manchester": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
       "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
       "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
       "f-region-manchester-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
@@ -79,8 +83,8 @@
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {
-        "Manchester": 4,
-        "Lagos": 5
+        "Manchester": 5,
+        "Lagos": 4
       }
     },
     "dropped": 0,

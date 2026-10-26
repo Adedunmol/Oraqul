@@ -11,6 +11,7 @@ import {
   FLAGSHIPS,
   leadChannels,
   PARTNER_RULES,
+  partnerReach,
   platformsNamed,
   rules,
   SHARED_RULES,
@@ -77,6 +78,23 @@ describe('rule library', () => {
     expect(bandCarries('independent', 'A')).toBe(false);
     expect(bandCarries('mid', 'A')).toBe(true);
     expect(bandCarries('micro', 'C')).toBe(true);
+  });
+
+  it('sizes a partner tier to who is launching as well as the budget', () => {
+    expect(partnerReach('mid', 'A', 'solo')).toBe('out');
+    expect(partnerReach('major', 'A', 'solo')).toBe('out');
+    expect(partnerReach('independent', 'A', null)).toBe('out');
+    expect(partnerReach('independent', 'A', 'small')).toBe('out');
+    expect(partnerReach('independent', 'A', 'established')).toBe('stretch');
+    expect(partnerReach('mid', 'A', 'small')).toBe('stretch');
+    expect(partnerReach('mid', 'A', null)).toBe('fits');
+    expect(partnerReach('micro', 'A', 'major')).toBe('out');
+    expect(partnerReach('independent', 'B', 'solo')).toBe('stretch');
+    expect(partnerReach('independent', 'B', 'small')).toBe('fits');
+    expect(partnerReach('micro', 'C', 'solo')).toBe('fits');
+    expect(bandCarries('mid', 'A', 'solo')).toBe(false);
+    expect(bandCarries('mid', 'A', 'small')).toBe(false);
+    expect(bandCarries('major', 'A', 'major')).toBe(true);
   });
 
   it('leads Nigerian launches on public platforms and never on WhatsApp (D7)', () => {

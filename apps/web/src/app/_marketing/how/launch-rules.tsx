@@ -184,12 +184,14 @@ export function Craft() {
 
           <article className="flex flex-col gap-4 rounded-2xl bg-card p-6">
             <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">
-              Partners that fit the budget
+              Partners that fit the launch
             </h3>
             <p className="text-[15px] leading-[1.55] text-ink/75">
-              Each partner shows its Qloo fit and a budget fit. Price is always unknown. A flagship
-              is a stretch for an independent budget, out of reach for a micro one, and never
-              written into the plan's moves unless you named it.
+              Qloo finds the brands your audience likes in each category and city, and ranks them
+              next to the city's own taste. Each partner shows its Qloo fit and whether the budget
+              and who is launching can reach it. Price is always unknown. A flagship that the launch
+              cannot reach is listed apart as a goal for later, and never written into the plan's
+              moves unless you named it.
             </p>
             <ul className="flex flex-col gap-2">
               {tiers.map(([tier, name, what, fit]) => (

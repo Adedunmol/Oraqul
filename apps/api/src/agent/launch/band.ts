@@ -1,6 +1,7 @@
 import { BAND_LABEL, BAND_OPTIONS, type BudgetBand, bandOf, budgetBands } from '@oraqul/packs';
-import type { PlanBand, Question } from '@oraqul/schema';
+import type { LauncherKind, PlanBand, Question } from '@oraqul/schema';
 import { normalise } from '../router/decide.js';
+import { launcherOf } from './launcher.js';
 import type { Budget, LaunchRead } from './read-core.js';
 
 /** The id of the one extra question a full build may ask, before any research. */
@@ -35,6 +36,20 @@ export function bandFromBrief(read: Pick<LaunchRead, 'budget'>, text: string): P
   const named = bandNamed(text);
   return named ? { band: named, source: 'brief' } : null;
 }
+
+/** The band with who is launching added, when the brief says. A band that already has it is kept. */
+export function withLauncher(band: PlanBand | null, text: string): PlanBand | null {
+  if (!band || band.launcher) return band;
+  const launcher = launcherOf(text);
+  return launcher ? { ...band, launcher } : band;
+}
+
+const LAUNCHER_LABEL: Record<LauncherKind, string> = {
+  solo: 'a solo launch',
+  small: 'a small team',
+  established: 'an established company',
+  major: 'a major release',
+};
 
 /** Asked once, after the minimum question, when a full plan has no budget to size its moves by. */
 export function bandQuestion(category: string): Question {
@@ -83,9 +98,10 @@ export function bandFromAnswer(
 /** Said in the plan, under the bottom line, so a reader knows what the moves were sized for. */
 export function bandNote(band: PlanBand): string {
   const label = BAND_LABEL[band.band].toLowerCase();
+  const who = band.launcher ? ` for ${LAUNCHER_LABEL[band.launcher]}` : '';
   return band.source === 'brief'
-    ? `Sized for a ${label} budget.`
+    ? `Sized${who} for a ${label} budget.`
     : band.source === 'asked'
-      ? `Sized for a ${label} budget, as you said.`
-      : `Sized for a ${label} budget, which I assumed. Say a different band and I will replan.`;
+      ? `Sized${who} for a ${label} budget, as you said.`
+      : `Sized${who} for a ${label} budget, which I assumed. Say a different band and I will replan.`;
 }

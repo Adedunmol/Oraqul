@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with London, then Lagos: that is where your book's readers are strongest.",
@@ -54,12 +56,12 @@
       "f-film-consult-places-normal-people": ["London", "Lagos"],
       "f-screen-normal-people": ["Normal People"],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
-      "f-brands-beverage-lagos": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-beverage-london": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-telecom-lagos": ["Spine Mobile"],
-      "f-brands-telecom-london": ["Spine Mobile"],
+      "f-brands-lagos": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
+      "f-brands-london": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-shops-lagos": ["Terra Kulture", "The Jazzhole"],
       "f-shops-london": ["Housmans Bookshop", "Skoob Books"],
+      "f-brands-city-lagos": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
+      "f-brands-city-london": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
       "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
       "f-region-london-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
@@ -76,7 +78,7 @@
       "publicity": "1/1",
       "events": "3/0",
       "creators": "0/1",
-      "partnerships": "4/0",
+      "partnerships": "2/0",
       "community": "0/1",
       "audio": "0/1",
       "channels": "0/2",
@@ -90,13 +92,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 92,
-      "backed": 32,
+      "lines": 90,
+      "backed": 30,
       "rankKept": 100,
-      "findingsUsed": 18,
+      "findingsUsed": 16,
       "cities": {
-        "London": 6,
-        "Lagos": 7
+        "London": 5,
+        "Lagos": 6
       }
     },
     "dropped": 0,

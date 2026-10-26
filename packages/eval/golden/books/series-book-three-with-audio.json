@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with London, then New York: that is where your book's readers are strongest.",
@@ -53,10 +55,8 @@
       "f-screen-the-hunger-games": ["The Hunger Games"],
       "f-screen-the-witcher": ["The Witcher"],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
-      "f-brands-beverage-london": ["Lantern Tea", "Page Turner Coffee"],
-      "f-brands-beverage-new-york": ["Lantern Tea", "Page Turner Coffee"],
-      "f-brands-telecom-london": ["Spine Mobile"],
-      "f-brands-telecom-new-york": ["Spine Mobile"],
+      "f-brands-london": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
+      "f-brands-new-york": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-shops-london": ["Housmans Bookshop", "Skoob Books"],
       "f-shops-new-york": ["Books Are Magic"]
     },
@@ -74,7 +74,7 @@
       "events": "2/0",
       "adaptation": "5/1",
       "audio": "0/1",
-      "partnerships": "4/0",
+      "partnerships": "2/0",
       "channels": "0/2",
       "creative": "0/4",
       "calendar": "0/28",
@@ -86,13 +86,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 94,
-      "backed": 31,
+      "lines": 92,
+      "backed": 29,
       "rankKept": 100,
-      "findingsUsed": 18,
+      "findingsUsed": 16,
       "cities": {
-        "London": 7,
-        "New York": 7
+        "London": 6,
+        "New York": 6
       }
     },
     "dropped": 0,

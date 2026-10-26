@@ -118,7 +118,13 @@ describe('partner tiers (D9)', () => {
     id: `f-brands-${city.toLowerCase()}`,
     query: 'brands',
     text: '',
-    entities: names.map((name) => ({ entityId: null, name, affinity: 0.5, detail: null })),
+    entities: names.map((name) => ({
+      entityId: null,
+      name,
+      affinity: 0.5,
+      detail: null,
+      popularity: null as number | null,
+    })),
     numbers: {},
     verdict: null,
     confidence: 'medium' as const,
@@ -134,14 +140,16 @@ describe('partner tiers (D9)', () => {
 
   it('sizes the budget fit by band', () => {
     expect(budgetFitOf('micro', 'A')).toBe('out');
-    expect(budgetFitOf('independent', 'A')).toBe('stretch');
+    expect(budgetFitOf('independent', 'A')).toBe('out');
+    expect(budgetFitOf('independent', 'A', 'established')).toBe('stretch');
     expect(budgetFitOf('mid', 'A')).toBe('fits');
+    expect(budgetFitOf('mid', 'A', 'solo')).toBe('out');
     expect(budgetFitOf('micro', 'B')).toBe('stretch');
     expect(budgetFitOf('micro', 'C')).toBe('fits');
   });
 
-  it('leaves flagship partners out of a micro budget, keeps the local ones, and never prices one', () => {
-    const { partners } = partnerOptions({
+  it('keeps flagships for later on a micro budget, with no call, beside the local ones, and never prices one', () => {
+    const { partners, calls } = partnerOptions({
       findings: [brands('Lagos', ['MTN', 'Bolt', 'Verve', 'Ride Co'])],
       signed: [],
       band: 'micro',
@@ -149,7 +157,8 @@ describe('partner tiers (D9)', () => {
       category: 'film',
     });
     const names = partners.map((p) => p.name);
-    expect(names).not.toContain('MTN');
+    expect(partners.find((p) => p.name === 'MTN')?.budgetFit).toBe('out');
+    expect(calls.find((c) => c.name === 'MTN')).toBeUndefined();
     expect(names).toContain('Bolt');
     expect(names).toContain('Cinemas');
     expect(partners.every((p) => p.price === 'unknown')).toBe(true);
@@ -165,10 +174,47 @@ describe('partner tiers (D9)', () => {
       category: 'film',
     });
     const bolt = partners.find((p) => p.name === 'Bolt');
-    expect(bolt?.fit).toEqual({ place: 1, of: 6, direction: 'okay' });
+    expect(bolt?.fit).toEqual({ place: 1, of: 6, direction: 'okay', local: null });
     expect(calls.find((c) => c.name === 'Bolt')?.direction).toBe('okay');
     const guinness = partners.find((p) => p.name === 'Guinness');
     expect(guinness).toMatchObject({ tier: 'A', fit: null, budgetFit: 'fits', from: 'seed' });
+  });
+
+  it('keeps every flagship for later for a solo launcher, even on a mid-size budget', () => {
+    const { partners } = partnerOptions({
+      findings: [brands('Lagos', ['MTN', 'Bolt', 'Verve', 'Ride Co'])],
+      signed: [],
+      band: 'mid',
+      launcher: 'solo',
+      markets: ['Nigeria'],
+      category: 'books',
+    });
+    const later = partners.filter((p) => p.tier === 'A');
+    expect(later.length).toBeGreaterThan(0);
+    expect(later.every((p) => p.budgetFit === 'out')).toBe(true);
+    expect(partners.map((p) => p.name)).toContain('Bolt');
+    expect(partners.find((p) => p.name === 'Bolt')?.budgetFit).toBe('stretch');
+  });
+
+  it('puts the city place on a brand and drops a flagship the city likes as much as this audience', () => {
+    const city = {
+      ...brands('Lagos', ['Fanta', 'Peak', 'Bolt', 'Ride Co']),
+      id: 'f-brands-city-lagos',
+      query: 'brands-city',
+    };
+    const ranked = brands('Lagos', ['Peak', 'Bolt', 'Ride Co', 'Fanta']);
+    ranked.entities[3] = { ...ranked.entities[3]!, popularity: 0.95 };
+    const { partners } = partnerOptions({
+      findings: [ranked, city],
+      signed: [],
+      band: 'mid',
+      markets: ['Nigeria'],
+      category: 'film',
+    });
+    expect(partners.find((p) => p.name === 'Fanta')).toBeUndefined();
+    const peak = partners.find((p) => p.name === 'Peak');
+    expect(peak?.fit?.local).toEqual({ place: 2, of: 4 });
+    expect(peak?.findingIds).toEqual([ranked.id, 'f-brands-city-lagos']);
   });
 
   it('keeps a partner the team signed, whatever the band', () => {
@@ -205,9 +251,18 @@ describe('withSeeds', () => {
     expect(mid.find((c) => c.city === 'London')?.names).toEqual(['EE', 'Monzo']);
   });
 
-  it('ranks flagship seeds for an independent budget too, since it is a stretch and not out', () => {
-    const indie = withSeeds(plan, 'independent', ['Lagos']).brandCandidates;
-    expect(indie[0]?.names).toContain('Guinness');
+  it('ranks flagship seeds for an independent budget only when an established launcher can stretch to one', () => {
+    const indie = withSeeds(plan, 'independent', ['Lagos']);
+    expect(indie.brandCandidates[0]?.names).toEqual(['Bolt']);
+    expect(indie.reach).toEqual({ flagship: false });
+    const established = withSeeds(plan, 'independent', ['Lagos'], 'established');
+    expect(established.brandCandidates[0]?.names).toContain('Guinness');
+    expect(established.reach).toEqual({ flagship: true });
+  });
+
+  it('leaves flagship seeds out for a solo launcher whatever the budget', () => {
+    const solo = withSeeds(plan, 'major', ['Lagos'], 'solo');
+    expect(solo.brandCandidates[0]?.names).toEqual(['Bolt']);
   });
 
   it('leaves flagship seeds out for a micro budget', () => {

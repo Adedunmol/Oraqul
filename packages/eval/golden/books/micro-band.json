@@ -5,7 +5,9 @@
     {
       "optionIds": ["micro"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with Abuja, then Lagos: that is where your book's readers are strongest.",
@@ -45,10 +47,8 @@
         "Big Little Lies"
       ],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
-      "f-brands-beverage-abuja": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-beverage-lagos": ["Page Turner Coffee", "Lantern Tea"],
-      "f-brands-telecom-abuja": ["Spine Mobile"],
-      "f-brands-telecom-lagos": ["Spine Mobile"],
+      "f-brands-abuja": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
+      "f-brands-lagos": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-shops-lagos": ["Terra Kulture", "The Jazzhole"]
     },
     "sections": {
@@ -62,7 +62,7 @@
       "publicity": "1/1",
       "events": "1/0",
       "creators": "0/1",
-      "partnerships": "4/0",
+      "partnerships": "2/0",
       "community": "0/1",
       "creative": "2/1",
       "calendar": "0/15",
@@ -74,13 +74,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 67,
-      "backed": 33,
+      "lines": 65,
+      "backed": 31,
       "rankKept": 100,
-      "findingsUsed": 12,
+      "findingsUsed": 10,
       "cities": {
-        "Abuja": 4,
-        "Lagos": 8
+        "Abuja": 3,
+        "Lagos": 7
       }
     },
     "dropped": 0,

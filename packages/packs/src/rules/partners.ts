@@ -1,5 +1,5 @@
 import type { Category } from '@oraqul/schema';
-import { type PartnerTier, teamRule } from './shared';
+import { type LauncherKind, type PartnerTier, teamRule } from './shared';
 import type { Rule } from './types';
 
 // Brand partnerships (T1 to T4). Qloo ranks brands; code decides the tier, the budget fit and the
@@ -200,6 +200,18 @@ export const PARTNER_RULES = {
       'An independent release usually has no franchise behind it, so lead with tier B and tier C partners.',
     barter:
       'Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship.',
+  }),
+  /**
+   * Who is launching, beside the band: what each can realistically approach, said in the plan's
+   * notes. The reach itself is `partnerReach` in `shared.ts`.
+   */
+  reach: teamRule<Record<LauncherKind, string>>('partners.reach', {
+    solo: 'A solo launch has no company behind it, so brands do not take it on as a partner. Lead with local partners and in-kind help, and leave out national brands.',
+    small:
+      'A small team can land category brands and local businesses by offering reach or content in return. National brands are a stretch.',
+    established:
+      'An established company can approach category brands, and a flagship brand is a stretch worth one pitch.',
+    major: 'A major release can approach flagship brands as well as category and local partners.',
   }),
   /** T2. Words that mark a mismatch between the work and a partner, flagged by code and never a drop. */
   contentFit: teamRule('partners.content-fit', {

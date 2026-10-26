@@ -2,7 +2,11 @@
   "mode": "audit",
   "title": "Night Ferry",
   "text": "Night Ferry launch plan. A thriller film for women aged 25 to 34, opening in Lagos and London. Comps: \"Salt Road\", \"The Glass Lantern\" and \"Midnight Harbor\".\nIt opened last month.",
-  "replies": [{ "text": "It opened last month.\nLagos: 1,100\nLondon: 4,200" }],
+  "replies": [
+    {
+      "text": "It opened last month.\nLagos: 1,100\nLondon: 4,200"
+    }
+  ],
   "expect": {
     "outputs": ["audit"],
     "headline": "The launch fell short where the plan leaned on Lagos: it finished second, and the plan put it first. 2 of 5 assumptions in your plan hold, 1 is weak and 2 break.",
@@ -28,8 +32,7 @@
       "f-shows-london": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
       "f-cinemas-lagos": ["Marina Picturehouse", "Lekki Screens"],
       "f-cinemas-london": ["Southbank Screen"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Crime Junkie", "Serial"],
       "f-community-church-london": ["Pentecost House"],
       "f-community-university-lagos": ["Lagoon City University"],

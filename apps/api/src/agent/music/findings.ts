@@ -8,12 +8,12 @@ import {
 } from '@oraqul/engine';
 import { musicPlan } from '@oraqul/packs';
 import type { Confidence } from '@oraqul/schema';
+import { brandPools } from '../launch/brands.js';
 import type { BriefLabels } from '../launch/brief.js';
 import { round2, slug } from '../launch/brief.js';
 import {
   agesPhrase,
   BRAND_BAND,
-  brandPool,
   capitalise,
   entity,
   type GroundDeps,
@@ -113,14 +113,7 @@ async function runQueries(kit: GroundKit<MusicRead, MusicQueryPlan>): Promise<vo
   if (want('brands')) {
     // Brands Qloo likes best are the biggest names, which would never say yes to an independent
     // artist. So the model names brands that could, Qloo finds them, and Qloo ranks only those.
-    const pools = (
-      await Promise.all(
-        plan.brandCandidates.map(async ({ city, names }) => ({
-          city,
-          pool: await brandPool(deps, names),
-        })),
-      )
-    ).filter((p) => p.pool.length >= 2);
+    const pools = await brandPools(kit, tags.brands, plan.brandCities);
     if (pools.length > 0) {
       for (const { city, pool } of pools.slice(0, MAX_CITIES_PER_QUERY)) {
         jobs.push(

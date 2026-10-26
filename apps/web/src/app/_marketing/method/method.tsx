@@ -127,7 +127,7 @@ export function MethodBody() {
               ],
               [
                 'Changes the order',
-                'Places, dates and partners are ranked from the returned data before the plan is written.',
+                'Places, dates and partners are found and ranked from the returned data before the plan is written.',
               ],
               [
                 'Leaves a receipt',

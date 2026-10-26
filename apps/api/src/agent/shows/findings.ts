@@ -1,11 +1,11 @@
 import { resolveTagsOutputSchema, tools } from '@oraqul/engine';
 import { showsPlan } from '@oraqul/packs';
+import { brandPools } from '../launch/brands.js';
 import type { BriefLabels } from '../launch/brief.js';
 import { slug } from '../launch/brief.js';
 import {
   agesPhrase,
   BRAND_BAND,
-  brandPool,
   capitalise,
   type GroundDeps,
   type Grounded,
@@ -98,14 +98,7 @@ async function runQueries(kit: GroundKit<ShowsRead, ShowsQueryPlan>): Promise<vo
   if (want('brands')) {
     // The biggest brands would never sponsor a single show. So the model names brands that could,
     // Qloo finds them, and Qloo ranks only those.
-    const pools = (
-      await Promise.all(
-        plan.brandCandidates.map(async ({ city, names }) => ({
-          city,
-          pool: await brandPool(deps, names),
-        })),
-      )
-    ).filter((p) => p.pool.length >= 2);
+    const pools = await brandPools(kit, tags.brands, plan.brandCities);
     if (pools.length > 0) {
       for (const { city, pool } of pools.slice(0, MAX_CITIES_PER_QUERY)) {
         jobs.push(

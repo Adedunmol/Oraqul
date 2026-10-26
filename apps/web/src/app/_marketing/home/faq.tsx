@@ -53,7 +53,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'Does it ask about my budget?',
-    a: 'Once, if your brief does not say. It asks for a band (micro, independent, mid-size or major), or you can skip it and it plans for an independent release and says so. The band decides which partners and moves it may propose: a flagship brand is a stretch for an independent budget, out of reach for a micro one, and never written into the plan’s moves unless you named it.',
+    a: 'Once, if your brief does not say. It asks for a band (micro, independent, mid-size or major), or you can skip it and it plans for an independent release and says so. The band, and who is launching if your brief says (a solo author, a small team, an established company or a major studio), decide which partners and moves it may propose. A flagship brand is not part of the plan for a solo launch, a small team or a micro budget. It is listed apart as a goal for later, and never written into the plan’s moves unless you named it.',
   },
   {
     q: 'Can I set a target?',

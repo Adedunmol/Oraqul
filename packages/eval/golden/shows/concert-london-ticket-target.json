@@ -41,8 +41,8 @@
       "f-similar-houston": ["Sade Rhythm"],
       "f-similar-lagos": ["Sade Rhythm"],
       "f-similar-london": ["Sade Rhythm"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
+      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"],
       "f-venues-concert-hall-lagos": ["Harbor Hall"],
       "f-venues-concert-hall-london": ["Southbank Hall"],
@@ -72,15 +72,15 @@
       "risks": "3/1",
       "gaps": "0/3"
     },
-    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "moves": ["f-markets", "f-audience", "f-brands-lagos"],
     "grounding": {
       "lines": 77,
       "backed": 27,
       "rankKept": 100,
       "findingsUsed": 16,
       "cities": {
-        "Lagos": 9,
-        "London": 6,
+        "Lagos": 8,
+        "London": 7,
         "Houston": 5
       }
     },

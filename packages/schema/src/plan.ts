@@ -222,10 +222,19 @@ export const budgetBands = ['micro', 'independent', 'mid', 'major'] as const;
 export const budgetBandSchema = z.enum(budgetBands);
 export type BudgetBand = z.infer<typeof budgetBandSchema>;
 
-/** The budget band a plan was written for, and how it was learned. */
+/** Who is launching, as the brief says it. Decides which partners are realistic beside the band. */
+export const launcherKinds = ['solo', 'small', 'established', 'major'] as const;
+export const launcherKindSchema = z.enum(launcherKinds);
+export type LauncherKind = z.infer<typeof launcherKindSchema>;
+
+/**
+ * The budget band a plan was written for, and how it was learned. `launcher` is set only when the
+ * brief says who is launching: a plan never guesses it.
+ */
 export const planBandSchema = z.object({
   band: budgetBandSchema,
   source: z.enum(['brief', 'asked', 'assumed']),
+  launcher: launcherKindSchema.optional(),
 });
 export type PlanBand = z.infer<typeof planBandSchema>;
 
@@ -290,7 +299,7 @@ export const TIER_LABEL: Record<PartnerTier, { name: string; what: string }> = {
   },
   C: {
     name: 'Local',
-    what: 'Local businesses, creators, venues and community groups. Most realistic for an independent release.',
+    what: 'Local businesses, creators, venues and community groups. Most realistic for a solo or independent release.',
   },
 };
 
@@ -310,7 +319,13 @@ export const partnerOptionSchema = z.object({
   from: z.enum(['seed', 'qloo', 'team']),
   /** Place in the list Qloo ranked for this audience. Null when Qloo did not rank it. */
   fit: z
-    .object({ place: z.number().int(), of: z.number().int(), direction: directionSchema })
+    .object({
+      place: z.number().int(),
+      of: z.number().int(),
+      direction: directionSchema,
+      /** Its place among the same brands for the city and age band alone, with no comps. Null when not asked. */
+      local: z.object({ place: z.number().int(), of: z.number().int() }).nullable().optional(),
+    })
     .nullable(),
   budgetFit: z.enum(['fits', 'stretch', 'out']),
   price: z.literal('unknown'),

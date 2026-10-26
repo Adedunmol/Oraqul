@@ -36,8 +36,8 @@
       "f-a-place-london": [],
       "f-markets": ["Lagos", "London"],
       "f-worth-a-look": ["Manchester"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
+      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
       "f-region-lagos-artists": ["Neon Tide"],
       "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
@@ -63,15 +63,15 @@
       "risks": "2/1",
       "gaps": "0/0"
     },
-    "moves": ["f-markets", "f-audience", "f-brands-beverage-lagos"],
+    "moves": ["f-markets", "f-audience", "f-brands-lagos"],
     "grounding": {
       "lines": 63,
       "backed": 21,
       "rankKept": 100,
       "findingsUsed": 9,
       "cities": {
-        "Lagos": 6,
-        "London": 4
+        "Lagos": 5,
+        "London": 5
       }
     },
     "dropped": 0,

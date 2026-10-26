@@ -1,17 +1,18 @@
 import { cityCountry } from '@oraqul/engine';
 import {
   type BudgetBand,
-  bandCarries,
   CATEGORY_PARTNERS,
   FLAGSHIPS,
   PARTNER_RULES,
   PARTNER_SEEDS,
   type PartnerTier,
+  partnerReach,
 } from '@oraqul/packs';
 import type {
   Category,
   DirectionCall,
   Finding,
+  LauncherKind,
   LaunchPlan,
   PartnerFlag,
   PartnerKit,
@@ -61,10 +62,16 @@ export function flagshipNames(findings: Finding[]): string[] {
   return [...new Set([...FLAGSHIPS, ...ranked])];
 }
 
-/** Whether a budget band can carry a tier. A near miss is a stretch and a far one is out. */
-export function budgetFitOf(band: BudgetBand, tier: PartnerTier): PartnerOption['budgetFit'] {
-  if (bandCarries(band, tier)) return tier === 'B' && band === 'micro' ? 'stretch' : 'fits';
-  return band === 'independent' ? 'stretch' : 'out';
+/**
+ * Whether the budget band and who is launching can carry a tier. A near miss is a stretch and a
+ * far one is out; a launcher the brief does not describe leaves the band to decide.
+ */
+export function budgetFitOf(
+  band: BudgetBand,
+  tier: PartnerTier,
+  launcher: LauncherKind | null = null,
+): PartnerOption['budgetFit'] {
+  return partnerReach(band, tier, launcher);
 }
 
 /**
@@ -73,17 +80,24 @@ export function budgetFitOf(band: BudgetBand, tier: PartnerTier): PartnerOption[
  * a stretch still deserves a measured fit. The team's own candidates come first, and one call
  * still resolves them all.
  */
-export function withSeeds<P extends QueryPlanCore>(plan: P, band: BudgetBand, cities: string[]): P {
+export function withSeeds<P extends QueryPlanCore>(
+  plan: P,
+  band: BudgetBand,
+  cities: string[],
+  launcher: LauncherKind | null = null,
+): P {
+  const flagship = budgetFitOf(band, 'A', launcher) !== 'out';
   const seeded = (city: string): string[] => {
     const country = cityCountry(city);
     const seeds = country ? seedsFor(country) : undefined;
     if (!seeds) return [];
-    return [...(budgetFitOf(band, 'A') !== 'out' ? seeds.A.names : []), ...seeds.B.names];
+    return [...(flagship ? seeds.A.names : []), ...seeds.B.names];
   };
   const known = new Map(plan.brandCandidates.map((c) => [c.city, c.names]));
   const askCities = [...new Set([...plan.brandCandidates.map((c) => c.city), ...cities])];
   return {
     ...plan,
+    reach: { flagship },
     brandCandidates: askCities.flatMap((city) => {
       const names = [...new Set([...(known.get(city) ?? []), ...seeded(city)])].slice(0, 8);
       return names.length > 0 ? [{ city, names }] : [];
@@ -191,8 +205,9 @@ export function partnerNotes(input: {
   release: string | null;
   today: string;
   band: BudgetBand;
+  launcher?: LauncherKind | null;
 }): PartnerNote[] {
-  const { release, today, band } = input;
+  const { release, today, band, launcher } = input;
   const lead = PARTNER_RULES.leadTime.value;
   const notes: PartnerNote[] = [];
   if (release) {
@@ -211,6 +226,13 @@ export function partnerNotes(input: {
   }
   if (band === 'micro' || band === 'independent') {
     notes.push({ id: 'partner-note-band', ruleId: 'partners.lead-time', text: lead.independent });
+  }
+  if (launcher) {
+    notes.push({
+      id: 'partner-note-launcher',
+      ruleId: 'partners.reach',
+      text: PARTNER_RULES.reach.value[launcher],
+    });
   }
   notes.push({ id: 'partner-note-barter', ruleId: 'partners.lead-time', text: lead.barter });
   return notes;
@@ -240,6 +262,28 @@ function rankedBrands(findings: Finding[]): Row[] {
     );
 }
 
+/**
+ * A brand's place among the same brands for the city and age band alone, with no comps behind it.
+ * Null when that read was not made or did not rank the brand.
+ */
+function localPlace(
+  findings: Finding[],
+  name: string,
+  city: string | null,
+): { place: number; of: number; finding: Finding } | null {
+  for (const f of findings) {
+    if (f.query !== 'brands-city' || (f.context.city ?? null) !== city) continue;
+    const at = f.entities.findIndex((e) => same(e.name, name));
+    if (at >= 0) return { place: at + 1, of: f.entities.length, finding: f };
+  }
+  return null;
+}
+
+const seeded = (name: string): boolean =>
+  Object.values(PARTNER_SEEDS).some((tiers) =>
+    [...tiers.A.names, ...tiers.B.names].some((n) => same(n, name)),
+  );
+
 /** Keeps each tier's reserved slots, then fills what is left in tier order. */
 function reserve(options: PartnerOption[]): PartnerOption[] {
   const slots = PARTNER_RULES.slots.value;
@@ -261,7 +305,8 @@ function reserve(options: PartnerOption[]): PartnerOption[] {
 /**
  * The partners a plan can approach, each with its tier, the place Qloo gave it among the brands
  * ranked for this audience, and whether the budget band can carry it. Price is never known.
- * Flagship partners the band cannot carry are left out unless the team signed them. Each tier
+ * A flagship that is not a clear fit stays in the list for the "later" group and is never written
+ * into the plan's lines (`flagshipNames`, `bandCarries`). Each tier
  * keeps its reserved slots, so ranked brands cannot push the local partners out.
  */
 export function partnerOptions(input: {
@@ -275,8 +320,11 @@ export function partnerOptions(input: {
   category: Category;
   tone?: Tone | null;
   ages?: string[];
+  /** Who is launching, when the brief says. */
+  launcher?: LauncherKind | null;
 }): { partners: PartnerOption[]; calls: DirectionCall[] } {
   const { findings, signed, band, markets, category } = input;
+  const launcher = input.launcher ?? null;
   const home = input.home ?? markets[0] ?? 'the home market';
   const tone = input.tone ?? null;
   const ages = input.ages ?? [];
@@ -301,11 +349,27 @@ export function partnerOptions(input: {
   const options: PartnerOption[] = names.flatMap(({ name, from, market }) => {
     const row = best(name);
     const tier = tierOf(name, row?.popularity ?? null);
-    const budgetFit = budgetFitOf(band, tier);
-    if (budgetFit === 'out' && from !== 'team') return [];
+    const budgetFit = budgetFitOf(band, tier, launcher);
+    // A flagship this launch cannot reach is kept, unranked, for the "later" list: never a
+    // move in the plan, only a goal to grow toward.
+    const local = row ? localPlace(findings, name, row.city) : null;
+    // A big brand that the city likes as much as this audience does is popular everywhere, which
+    // says nothing about this audience. A seed or a partner the team named is kept either way.
+    if (
+      row &&
+      local &&
+      tier === 'A' &&
+      from === 'qloo' &&
+      !seeded(name) &&
+      row.place / row.of > local.place / local.of
+    ) {
+      return [];
+    }
     const direction = row ? directionOf(rankVerdict(row.place, row.of)) : null;
     const id = `partner-${slug(name)}`;
-    if (row && direction) {
+    // A goal for later gets no call, so no territory carries it as a move.
+    const later = tier === 'A' && budgetFit !== 'fits' && from !== 'team';
+    if (row && direction && !later) {
       const teamChoice = from === 'team';
       const say =
         direction === 'avoid'
@@ -333,10 +397,18 @@ export function partnerOptions(input: {
         // The market it was ranked in, else the seed's own, else the release country.
         market: (row?.city ? cityCountry(row.city) : null) ?? market ?? home,
         from,
-        fit: row && direction ? { place: row.place, of: row.of, direction } : null,
+        fit:
+          row && direction
+            ? {
+                place: row.place,
+                of: row.of,
+                direction,
+                local: local ? { place: local.place, of: local.of } : null,
+              }
+            : null,
         budgetFit,
         price: 'unknown' as const,
-        findingIds: row ? [row.finding.id] : [],
+        findingIds: row ? [row.finding.id, ...(local ? [local.finding.id] : [])] : [],
         kind: 'brand' as const,
         flags: flagsOf({ name, tier, kind: 'brand', tone, ages }),
       },
@@ -352,7 +424,7 @@ export function partnerOptions(input: {
       market,
       from: 'seed' as const,
       fit: null,
-      budgetFit: budgetFitOf(band, tier),
+      budgetFit: budgetFitOf(band, tier, launcher),
       price: 'unknown' as const,
       findingIds: [],
       kind: 'kind' as const,
@@ -416,6 +488,7 @@ export function withTeamPartners(
     findings: plan.findings,
     signed: fresh,
     band: plan.band?.band ?? 'independent',
+    launcher: plan.band?.launcher ?? null,
     markets: [],
     home: markets[0] ?? null,
     category,

@@ -19,7 +19,7 @@ A plan is a set of decisions, not a document:
 
 1. **Plan for the team's decisions.** Their cities, age band, comps and window are constraints. Test them and say what Qloo found, never replace them. Every named city and comp gets an answer.
 2. **Work with thin input.** Use everything given, ask for nothing beyond a description and one city, and end with what would sharpen the plan.
-3. **Be realistic about scale.** A small film gets in-kind support, not sponsorship cash. Brand fit (what the audience likes) and ability to partner (who will say yes) are different questions. Qloo answers only the first.
+3. **Be realistic about scale.** A small film gets in-kind support, not sponsorship cash. Brand fit (what the audience likes) and ability to partner (who will say yes) are different questions. Qloo answers only the first. Code answers the second from the budget and who is launching (a solo or small launch is not offered a national brand, and the brands Qloo finds for the audience are offered only when the launch can reach them), read from the brief and never guessed.
 4. **Be date-aware.** Never advise around a release that has already opened.
 5. **Be actionable.** Each line is the move, the reason and who does it. Readable in about five minutes, plain words, no data jargon.
 6. **Never invent the film.** Its plot, characters, themes and tone come only from the brief. The audience's themes are what to speak to, never what the film contains.
@@ -56,13 +56,13 @@ Thresholds and bands are in [launch-rules.md](../product/launch-rules.md). For F
 - **Signal.** Advance screenings and presales. Trailer views, followers and press mentions are secondary. There is no benchmark number: the target is the team's own.
 - **Territories.** One plan per city, the home market first, then the diaspora cities (Lagos, London, Houston, Atlanta), with a call on each.
 - **Channels.** YouTube leads, then Instagram and TikTok. Nigeria leads on Instagram and TikTok; WhatsApp is only a sharing layer.
-- **Partners.** Tier A flagship brands (Guinness, MTN, Indomie in Nigeria) only for a release with scale, tier B (banks and payment brands, food and drink, hospitality, telecom bundles), tier C local (cinemas, creators, diaspora businesses, community groups).
+- **Partners.** Found from what the comps' audience likes in each verified brand category and city, ranked as one pool with the model's names and the seeds, and checked against the city's own taste. Tier A flagship brands (Guinness, MTN, Indomie in Nigeria) only for a release with scale and a launcher who can reach one, tier B (banks and payment brands, food and drink, hospitality, telecom bundles), tier C local (cinemas, creators, diaspora businesses, community groups).
 
 ## Limits
 
 - **Neighbourhood readings are a lead.** The model names the centre, code checks it against the city's box, and the cells are coarse (about 3 to 7 km). Confirm on the ground.
 - **Web research can find nothing for a city**, especially US diaspora cinema, and what it finds can be stale. Check dates before acting on a rival or a window.
-- **Qloo's place lists carry poor fits** (a theology school among universities). Partner brands are ranked from a candidate list we choose; places are not.
+- **Qloo's place lists carry poor fits** (a theology school among universities). Partner brands are ranked from a pool we choose (the model's names, the seeds, and the brands Qloo finds by category and city); places are not.
 - **Ambiguous names** are settled in code (country, then popularity) and the plan says which was chosen. A wrong match is possible.
 - **Plans run long.** The writer aims for about 1,200 words.
 - **Cultural sensitivity.** Real traditions, institutions and neighbourhoods need care in anything the plan puts on screen.

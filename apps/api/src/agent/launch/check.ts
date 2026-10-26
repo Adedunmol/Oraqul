@@ -3,6 +3,7 @@ import { ASSET_OFFER, BAND_LABEL, type BudgetBand, bandCarries } from '@oraqul/p
 import type {
   DroppedLine,
   Finding,
+  LauncherKind,
   LaunchLine,
   LaunchSection,
   LaunchSectionKey,
@@ -41,6 +42,8 @@ export interface CheckContext {
   allowed: LaunchSectionKey[];
   /** The budget band the plan is sized for. A band that cannot carry flagship partners drops them. */
   band?: BudgetBand | null;
+  /** Who is launching, when the brief says. A solo launcher is never offered a flagship brand. */
+  launcher?: LauncherKind | null;
   /** Flagship brands for the plan's market, which only a mid-size or major budget can carry. */
   flagships?: string[];
   /** Partners the team already signed, which are never dropped for budget. */
@@ -192,9 +195,10 @@ export function checkLine(
   if (ASSET_OFFER.test(line.text)) {
     return 'It offers to make the ad, trailer, image or video; Oraqul writes the guide or script and a person makes it.';
   }
-  const flagship = ctx.band && !bandCarries(ctx.band, 'A') ? flagshipIn(line, ctx) : null;
+  const flagship =
+    ctx.band && !bandCarries(ctx.band, 'A', ctx.launcher ?? null) ? flagshipIn(line, ctx) : null;
   if (flagship) {
-    return `It proposes ${flagship}, a flagship partner that a ${BAND_LABEL[ctx.band as BudgetBand].toLowerCase()} budget cannot carry.`;
+    return `It proposes ${flagship}, a flagship partner that a ${BAND_LABEL[ctx.band as BudgetBand].toLowerCase()} budget${ctx.launcher ? ' and this kind of launch' : ''} cannot carry.`;
   }
   const dictionary = dictionaryOf(ctx.findings, ctx.rules.tagOnly);
   const webCited = line.sourceIds.map((id) => ctx.sources.find((src) => src.id === id));

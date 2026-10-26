@@ -1,7 +1,14 @@
 'use client';
 
-import type { LaunchPlan } from '@oraqul/schema';
+import type { LauncherKind, LaunchPlan } from '@oraqul/schema';
 import { DirectionPill } from '@oraqul/ui';
+
+const LAUNCHER: Record<LauncherKind, string> = {
+  solo: 'a solo launch',
+  small: 'a small team',
+  established: 'an established company',
+  major: 'a major release',
+};
 
 /** The budget band and the one signal a plan is judged on, under its In brief. */
 export function PlanFrame({ plan }: { plan: LaunchPlan }) {
@@ -52,6 +59,7 @@ export function PlanFrame({ plan }: { plan: LaunchPlan }) {
             {band.band === 'mid' ? 'Mid-size' : band.band} budget
           </b>
           <span className="text-[13px] text-muted">
+            {band.launcher ? `For ${LAUNCHER[band.launcher]}. ` : ''}
             {band.source === 'brief'
               ? 'From your brief.'
               : band.source === 'asked'

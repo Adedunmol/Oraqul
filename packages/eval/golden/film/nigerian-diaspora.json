@@ -3,7 +3,11 @@
   "title": "Night Ferry",
   "brief": "Launch plan for \"Night Ferry\", a Nigerian thriller film for 18 to 34 year olds, opening in Atlanta, London, Lagos and Houston on 2099-03-12. Comps: \"Salt Road\", \"The Glass Lantern\" and \"Midnight Harbor\". A mid-size budget.\nRivals: Harbor Lights on 2099-03-12; Third Mainland opens 2099-03-19",
   "callBudget": 200,
-  "replies": [{ "text": "you choose" }],
+  "replies": [
+    {
+      "text": "you choose"
+    }
+  ],
   "expect": {
     "headline": "Open in London first, then Houston, Atlanta and Lagos: that is where your comps' audience is strongest among your cities.",
     "assumptions": {
@@ -51,10 +55,8 @@
       "f-music-houston": ["Ada Lux", "Kola Wave", "Sade Rhythm"],
       "f-music-lagos": ["Ada Lux", "Kola Wave", "Sade Rhythm"],
       "f-music-london": ["Ada Lux", "Kola Wave", "Sade Rhythm"],
-      "f-brands-beverage-lagos": ["Night Market Cola"],
-      "f-brands-beverage-london": ["Night Market Cola"],
-      "f-brands-telecom-lagos": ["Lagoon Mobile"],
-      "f-brands-telecom-london": ["Lagoon Mobile"],
+      "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
+      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-films": ["Harbor Lights", "Third Mainland"],
       "f-podcasts": ["Crime Junkie", "Serial"],
       "f-community-church-houston": ["Grace Chapel Houston"],
@@ -74,7 +76,7 @@
       "positioning": "5/0",
       "audience": "9/0",
       "markets": "4/0",
-      "partnerships": "8/0",
+      "partnerships": "6/0",
       "placement": "5/0",
       "publicity": "1/1",
       "community": "4/1",
@@ -90,15 +92,15 @@
     },
     "moves": ["f-markets", "f-audience", "f-music-atlanta"],
     "grounding": {
-      "lines": 96,
-      "backed": 44,
+      "lines": 94,
+      "backed": 43,
       "rankKept": 100,
-      "findingsUsed": 28,
+      "findingsUsed": 26,
       "cities": {
-        "London": 9,
+        "London": 8,
         "Houston": 9,
         "Atlanta": 8,
-        "Lagos": 10
+        "Lagos": 9
       }
     },
     "dropped": 0,

@@ -45,6 +45,11 @@ export const GUIDE_DETAILS = [
   { id: 'comps', label: 'Comparable titles', why: 'They are how Qloo finds your audience.' },
   { id: 'band', label: 'Budget band', why: 'The plan proposes only what the budget can carry.' },
   {
+    id: 'launcher',
+    label: 'Who is launching',
+    why: 'A solo author and a major studio are offered different partners.',
+  },
+  {
     id: 'rivals',
     label: 'Rivals with their dates',
     why: 'Each date is checked against the audience it shares.',

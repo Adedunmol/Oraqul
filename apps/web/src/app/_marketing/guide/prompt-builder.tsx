@@ -12,6 +12,7 @@ import {
   DETAILS,
   emptyValues,
   filled,
+  launchers,
   type Values,
 } from './brief';
 
@@ -173,8 +174,8 @@ export function PromptBuilder() {
         </Group>
 
         <Group
-          title="Budget and target"
-          note={`The plan is judged on one signal: ${guide.signal.toLowerCase()}. Give your own number, or leave it and see the benchmark where there is one.`}
+          title="Budget, who is launching and target"
+          note={`Partners are sized to the budget and to who is launching. The plan is judged on one signal: ${guide.signal.toLowerCase()}. Give your own number, or leave it and see the benchmark where there is one.`}
         >
           <div
             role="radiogroup"
@@ -197,6 +198,29 @@ export function PromptBuilder() {
                 />
                 <b className="text-sm">{b.label}</b>
                 <span className="text-xs text-muted">{b.hint}</span>
+              </label>
+            ))}
+          </div>
+          <div
+            role="radiogroup"
+            aria-label="Who is launching"
+            className="grid gap-2 min-[560px]:grid-cols-2"
+          >
+            {launchers.map((l) => (
+              <label
+                key={l.id}
+                className="flex cursor-pointer flex-col items-start rounded-xl bg-surface2 px-3.5 py-2.5 text-left transition-colors duration-150 hover:bg-surface2-hover has-[:checked]:bg-accent-soft has-[:checked]:text-accent has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent motion-reduce:transition-none"
+              >
+                <input
+                  type="radio"
+                  name={`${uid}-launcher`}
+                  checked={v.launcher === l.id}
+                  onChange={() => set('launcher', l.id)}
+                  onClick={() => v.launcher === l.id && set('launcher', '')}
+                  className="sr-only"
+                />
+                <b className="text-sm">{l.label}</b>
+                <span className="text-xs text-muted">{l.hint}</span>
               </label>
             ))}
           </div>
@@ -255,7 +279,7 @@ export function PromptBuilder() {
 
         <Group
           title="Already in place"
-          note="Partners you have signed stay in the plan. Brands you know are asked of Qloo beside the ones Oraqul proposes. The platforms you name are the ones the plan runs on."
+          note="Partners you have signed stay in the plan. Brands you know are asked of Qloo beside the ones Oraqul finds and proposes. The platforms you name are the ones the plan runs on."
         >
           <Input
             id={`${uid}-partners`}
@@ -383,6 +407,7 @@ function pick(p: Values): Partial<Values> {
     ages: p.ages,
     comps: p.comps,
     band: p.band,
+    launcher: p.launcher,
     target: p.target,
     rivals: p.rivals,
     partners: p.partners,

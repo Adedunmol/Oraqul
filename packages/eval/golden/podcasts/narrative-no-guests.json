@@ -5,7 +5,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Lead with New York, then Toronto: that is where your show's listeners are strongest.",
@@ -41,8 +43,8 @@
       "f-markets": ["New York", "Toronto"],
       "f-topics": ["Faith", "Humour", "Diaspora life"],
       "f-crosspromo": ["Midnight Ledger", "The Long Con", "Case Closed Weekly"],
-      "f-brands-beverage-toronto": ["Lumen Coffee", "Fizz Cola"],
-      "f-brands-telecom-toronto": ["Orbit Data", "Glide Mobile"]
+      "f-brands-new-york": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
+      "f-brands-toronto": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"]
     },
     "sections": {
       "bottom-line": "3/0",
@@ -71,8 +73,8 @@
       "rankKept": 100,
       "findingsUsed": 8,
       "cities": {
-        "New York": 4,
-        "Toronto": 5
+        "New York": 5,
+        "Toronto": 4
       }
     },
     "dropped": 0,

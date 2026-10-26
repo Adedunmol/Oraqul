@@ -7,7 +7,9 @@
     {
       "optionIds": ["skip"]
     },
-    { "text": "you choose" }
+    {
+      "text": "you choose"
+    }
   ],
   "expect": {
     "headline": "Open in Nairobi first, then Atlanta and Houston: that is where your comps' audience is strongest among your cities.",
@@ -49,8 +51,8 @@
       "f-shows-nairobi": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
       "f-cinemas-atlanta": ["Peachtree Pictures"],
       "f-cinemas-houston": ["Bayou Cinema"],
-      "f-brands-beverage-nairobi": ["Night Market Cola"],
-      "f-brands-telecom-nairobi": ["Lagoon Mobile"],
+      "f-brands-atlanta": ["Night Market Cola", "Lagoon Mobile"],
+      "f-brands-houston": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["The Joe Rogan Experience", "Crime Junkie", "Late Signal"],
       "f-community-church-houston": ["Grace Chapel Houston"],
       "f-community-university-houston": ["Gulf Coast University"],
@@ -82,9 +84,9 @@
       "rankKept": 100,
       "findingsUsed": 16,
       "cities": {
-        "Nairobi": 6,
-        "Atlanta": 5,
-        "Houston": 7
+        "Nairobi": 4,
+        "Atlanta": 6,
+        "Houston": 8
       }
     },
     "dropped": 0,

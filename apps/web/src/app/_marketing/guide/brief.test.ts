@@ -11,6 +11,7 @@ const full = {
   ages: '18 to 34 year olds',
   comps: 'Salt Road, The Glass Lantern',
   band: 'mid' as const,
+  launcher: 'small' as const,
   target: '5000',
   rivals: [
     { title: 'Harbor Lights', date: '2099-03-12' },
@@ -24,6 +25,11 @@ const full = {
 };
 
 describe('buildBrief', () => {
+  it('says who is launching in the form Oraqul reads', () => {
+    expect(buildBrief(full)).toContain('Who is launching: a small team.');
+    expect(buildBrief({ ...full, launcher: '' })).not.toContain('Who is launching');
+  });
+
   it('writes the forms Oraqul reads without guessing', () => {
     const text = buildBrief(full);
     expect(text).toContain(

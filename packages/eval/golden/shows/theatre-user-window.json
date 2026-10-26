@@ -31,8 +31,7 @@
       "f-audience": [],
       "f-a-place-london": [],
       "f-markets": ["London"],
-      "f-brands-beverage-london": ["Night Market Cola"],
-      "f-brands-telecom-london": ["Lagoon Mobile"],
+      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"]
     },
     "sections": {
@@ -41,7 +40,7 @@
       "audience": "1/0",
       "markets": "1/0",
       "onsale": "0/7",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "publicity": "1/1",
       "finalpush": "0/5",
       "channels": "0/1",
@@ -53,14 +52,14 @@
       "risks": "1/1",
       "gaps": "0/4"
     },
-    "moves": ["f-markets", "f-audience", "f-brands-beverage-london"],
+    "moves": ["f-markets", "f-audience", "f-brands-london"],
     "grounding": {
-      "lines": 50,
-      "backed": 18,
+      "lines": 49,
+      "backed": 16,
       "rankKept": 100,
-      "findingsUsed": 6,
+      "findingsUsed": 5,
       "cities": {
-        "London": 6
+        "London": 5
       }
     },
     "dropped": 0,
