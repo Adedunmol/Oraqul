@@ -2,25 +2,28 @@
 
 import { useEffect, useState } from 'react';
 
-// What people actually come to ask, in their own words, across the six kinds of launch and the
-// jobs it does: plan, check, fix, revise, run and look again. Each is something Oraqul does today.
+// What people actually bring, in their own words, chosen to show an agent at work and not a chat
+// box: real cities and constraints, their own plan and results, jobs that run over time, and the
+// data behind every answer. Each is something Oraqul does today, and none asks for a forecast or
+// for anything it will not do. The strongest come first. Keep each under about 90 characters so
+// the longest still fits three lines on a phone.
 const CASES = [
-  'I want to launch my new movie. Should I start with Lagos?',
-  'I just wrote a book. How should I launch it, and where?',
-  'Here is my launch plan and our sales data. What went wrong?',
-  'Which city should open our album release run?',
-  'A rival series opens the same weekend. Should we move our date?',
-  'Is my podcast’s audience really in the US, or somewhere else?',
-  'We sold under half in Chicago. Fix the plan.',
-  'Which brands would actually say yes to partnering on our game?',
-  'Check my plan: we open in the UK, then Canada.',
-  'Is London a stronger first market than Houston for our crime drama?',
-  'What has changed since we made this plan three weeks ago?',
-  'Who should support our headline show in Berlin?',
-  'We are staging a comedy night in Manchester. Who comes, and where do we find them?',
-  'Turn my launch plan into a content calendar my team can run.',
-  'Find me markets we have not thought of for our film.',
-  'How should we launch an indie game on a small budget?',
+  'Plan my film for London, Houston, Atlanta and Lagos, with the data behind every call.',
+  'Here is our launch plan and first-week sales. Find the assumption that broke.',
+  'A rival series opens 12 March. How much of our audience do they share? Should we move?',
+  'Which of my four cities should open first, and what would change that call?',
+  'We sold under half in Chicago. Rebuild the plan around who actually showed up.',
+  'Check what has changed since we made this plan three weeks ago.',
+  'Find markets I have not thought of for my film, and how to test each one.',
+  'Audit my plan: UK first, then Canada. Where is it weakest?',
+  'Which brands fit our audience and could realistically partner with us in Lagos?',
+  'Turn this plan into a content calendar my team can run, with a guide for each post.',
+  'We tested two teaser angles. Compare our results, and say if it is inconclusive.',
+  'I am releasing an album in Berlin and London. Who should support us on the run?',
+  'I just wrote a book. Which cities and comparable titles should I launch against?',
+  'Which topics do the rival podcasts own, and which are open for us?',
+  'A comedy night in Manchester on a small budget. Who comes, and how should we promote it?',
+  'Why did we miss? Set where we planned to win against where the audience really was.',
 ];
 
 const TYPE_MS = 30;
