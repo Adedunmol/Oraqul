@@ -24,12 +24,14 @@ describe('decideFollowUp: fix and audit are asked for the whole plan', () => {
     'Improve it',
     'Write a better plan',
     'give me a fixed plan',
+    'fix my plan instead',
   ])('%s is a fix', (text) => expect(job(text)).toBe('fix'));
 
   it.each([
     'Check my plan: open in the UK, then Canada.',
     'audit my launch plan',
     'Review the plan',
+    'check my plan instead',
     'why did the launch flop in Abuja',
   ])('%s is an audit', (text) => expect(job(text)).toBe('audit'));
 

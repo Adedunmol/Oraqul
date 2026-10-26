@@ -70,7 +70,7 @@ function inWords(quoteText: string, text: string): boolean {
 // Asking for a fix or an audit is plain words, so code reads it and no model decides it (spec §3.1).
 // The plan has to be the whole object of the verb: "check how the plan plays in Lagos" or "fix the
 // budget in this plan" ask about a part, and a full audit or rewrite would answer the wrong thing.
-const THE_PLAN = String.raw`(?:(?:my|our|the|this|that)\s+)?(?:launch\s+)?plan\b(?!\s+(?:for|in|with|on|by|against|if|when|plays?|works?|fits?))`;
+const THE_PLAN = String.raw`(?:(?:my|our|the|this|that)\s+)?(?:launch\s+)?plan\b(?!\s+(?:for|in|with|on|by|against|if|when|plays?|works?|fits?)\b)`;
 const FIX_ASK = new RegExp(
   String.raw`\b(?:fix|improve|rebuild|redo|repair|relaunch)\s+(?:${THE_PLAN}|it\b|this\b(?!\s+\w))|\bnew (?:fixed|better) plan\b|\b(?:write|make|generate|give me) (?:a |the )?(?:fixed|better) plan\b`,
   'i',
