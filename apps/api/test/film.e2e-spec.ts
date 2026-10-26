@@ -98,7 +98,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Night Ferry", a thriller for 18 to 34 year olds opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor". An independent budget.',
+        text: 'Launch plan for my film "Night Ferry", a thriller for 18 to 34 year olds opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor". Channels we already use: Instagram, TikTok, YouTube. An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -126,6 +126,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       'plan',
       'territories',
       'calls',
+      'campaign',
       'audience',
       'assumptions',
       'evidence',
@@ -219,7 +220,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Dock Lights" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". An independent budget.',
+        text: 'Launch plan for my film "Dock Lights" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". Channels we already use: Instagram, TikTok, YouTube. An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -311,7 +312,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Quay Nine" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". An independent budget.',
+        text: 'Launch plan for my film "Quay Nine" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". Channels we already use: Instagram, TikTok, YouTube. An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -340,7 +341,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .post(`/teams/${teamId}/projects`)
       .set(as)
       .send({
-        text: 'Launch plan for my film "Night Ferry" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". An independent budget.',
+        text: 'Launch plan for my film "Night Ferry" for 18 to 34 year olds, opening in Lagos and London. Comps: "Salt Road", "The Glass Lantern" and "Harbor Lights". Channels we already use: Instagram, TikTok, YouTube. An independent budget.',
         mode: 'build',
         category: 'film',
       })
@@ -503,6 +504,7 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       'fixes',
       'territories',
       'calls',
+      'campaign',
       'audience',
       'assumptions',
       'evidence',
