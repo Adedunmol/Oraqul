@@ -13,6 +13,13 @@ const pages = [
   '/trust',
   '/about',
   '/guide',
+  '/guide/getting-started',
+  '/guide/write-a-brief',
+  '/guide/read-a-plan',
+  '/guide/categories',
+  '/guide/after-the-plan',
+  '/guide/launch-rules',
+  '/guide/limits',
   '/developers',
   '/privacy',
   '/terms',
@@ -48,7 +55,7 @@ test('the guide builds a brief from the fields and hands it to the app', async (
   await expect(brief).toContainText('Launch plan for the film "Night Ferry"');
   await expect(brief).toContainText('opening in Lagos and London on 2099-03-12');
   await expect(brief).toContainText('A mid-size budget.');
-  await expect(page.getByText(/\d of 9 details given/)).toBeVisible();
+  await expect(page.getByText(/\d of 11 details given/)).toBeVisible();
 
   const open = page.getByRole('link', { name: 'Open in Oraqul' });
   const href = (await open.getAttribute('href')) ?? '';
@@ -66,4 +73,35 @@ test('the guide switches category and keeps what is true of any launch', async (
   await expect(page.getByLabel('Title', { exact: true })).toHaveValue('Ember Keep');
   await expect(page.getByLabel(/Target/)).toBeVisible();
   await expect(page.getByLabel('Platforms', { exact: true })).toBeVisible();
+});
+
+test('the guide hub answers a question from the guide and names its source', async ({ page }) => {
+  await page.route('**/guide/ask', (route) =>
+    route.fulfill({
+      json: {
+        answer: 'Name the cities, home first.',
+        sources: [{ slug: 'write-a-brief', title: 'Write a brief' }],
+      },
+    }),
+  );
+  await page.goto('/guide');
+  await page.getByRole('button', { name: 'Ask the guide' }).click();
+  await page.getByLabel('Ask the guide a question').fill('How do I list cities?');
+  await page.getByRole('button', { name: 'Ask', exact: true }).click();
+  await expect(page.getByText('Name the cities, home first.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Write a brief' }).last()).toHaveAttribute(
+    'href',
+    '/guide/write-a-brief',
+  );
+});
+
+test('the guide assistant says plainly when it is unavailable', async ({ page }) => {
+  await page.route('**/guide/ask', (route) => route.fulfill({ status: 503, body: '{}' }));
+  await page.goto('/guide/limits');
+  await page.getByRole('button', { name: 'Ask the guide' }).click();
+  await page.getByLabel('Ask the guide a question').fill('What is sent to Qloo?');
+  await page.getByRole('button', { name: 'Ask', exact: true }).click();
+  await expect(
+    page.getByRole('alert').filter({ hasText: 'not available right now' }),
+  ).toBeVisible();
 });

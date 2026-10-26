@@ -188,7 +188,7 @@ The craft around the data is a versioned rule library per category, each rule wi
 
 | ID | Requirement | P |
 |---|---|---|
-| U8 | A public Guide explains what to put in a brief and why, builds one field by field in the forms Oraqul reads, shows which details are still missing, and opens the app with the text. It also lists the launch rules with their sources. | P1 |
+| U8 | A public Guide explains what to put in a brief and why, builds one field by field in the forms Oraqul reads, shows which details are still missing, and opens the app with the text. It also lists the launch rules with their sources, has a page for each part of using Oraqul, and a free help assistant on every Guide page that answers from those pages, with limits per visitor and per day. | P1 |
 
 ## 7. Every market
 

@@ -297,7 +297,7 @@ export function MethodBody() {
             lead, and the partner tiers. Each rule carries its source and the date it was set, and
             each plan records the version it used. A target is the goal you set, or a benchmark of
             Oraqul's own where there is one, and it is never a forecast. The rules are on the{' '}
-            <a href="/guide#rules" className="text-accent underline">
+            <a href="/guide/launch-rules" className="text-accent underline">
               guide
             </a>
             .

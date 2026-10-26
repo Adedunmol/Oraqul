@@ -30,6 +30,12 @@ export const envSchema = z
     /** The commit the server was built from; saved on every plan. Empty in development. */
     CODE_VERSION: z.string().default(''),
     AGENT_MAX_STEPS: z.coerce.number().int().positive().default(12),
+    // The Guide's help bot is public, so it has its own free Gemini key and its own limits, and
+    // never spends the key that runs plans (docs/backend/llm.md).
+    GUIDE_BOT_API_KEY: z.string().default(''),
+    GUIDE_BOT_MODEL: z.string().default('gemini-3.5-flash-lite'),
+    GUIDE_BOT_HOURLY_LIMIT: z.coerce.number().int().positive().default(12),
+    GUIDE_BOT_DAILY_CAP: z.coerce.number().int().positive().default(400),
     LLM_PROVIDER: z.enum(llmProviders).default('openai'),
     LLM_API_KEY: z.string().default(''),
     LLM_MODEL: z.string().default(''),

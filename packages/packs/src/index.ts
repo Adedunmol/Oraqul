@@ -15,6 +15,7 @@ export * as booksPlan from './books/plan';
 export { demoProjects } from './demo';
 export * as filmPlan from './film/plan';
 export * as gamesPlan from './games/plan';
+export * from './guide/index';
 export * as musicPlan from './music/plan';
 export * as podcastsPlan from './podcasts/plan';
 export * from './rules/index';

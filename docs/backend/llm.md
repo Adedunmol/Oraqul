@@ -29,6 +29,17 @@ Vercel AI SDK (v7), called from the API. The provider and model are configuratio
 
 Costs are rough and assume about 80% input tokens; check the provider's usage page. OpenAI's GPT-6 models are reasoning models: they ignore `temperature`, and `LLM_WRITER_REASONING` sets how hard they think (unset, a plan took 7 minutes and 130K tokens on Sol). Web research runs on the writer's model. It searches the industry by name ("Nollywood", not only "Nigeria"), runs one search per question and per diaspora city, and keeps only facts about that industry and those markets, so results vary a little between runs and a thin diaspora city can return nothing. Set the writer's key and model in `.env` ([.env.example](../../.env.example) has the block). A writer on another provider needs its own key, and the main key is never sent to it.
 
+**The Guide's help bot** (`apps/api/src/guide`) is public, so it never uses the keys above. It has its own free Gemini key and model:
+
+| Key | What it does |
+|---|---|
+| `GUIDE_BOT_API_KEY` | Empty turns the bot off; `POST /guide/ask` then answers 503 and the Guide pages stand on their own |
+| `GUIDE_BOT_MODEL` | Default `gemini-3.5-flash-lite` |
+| `GUIDE_BOT_HOURLY_LIMIT` | Questions per visitor per hour (default 12), then 429 |
+| `GUIDE_BOT_DAILY_CAP` | Questions for everyone per day (default 400), then 503, so the free quota cannot run out |
+
+It answers only from the Guide's text (`guideKnowledge()` in `packages/packs`, the same words the pages show) and names the pages it used; code keeps only slugs that exist. The visitor's words and the earlier turns reach the model as untrusted text after the rules, which say never to follow them, and off topic questions get one fixed reply. Output is capped at 600 tokens and 1,200 characters. A visitor is a keyed hash of the address (`guide_questions`, no text, rows older than a day dropped); a question the model fails to answer is given back. It sets no number and makes no Qloo call.
+
 ## Conventions
 
 - Structured output uses Zod schemas from `packages/schema`. Parse model output at the boundary like any other untrusted input ([typescript.md](../typescript.md)).

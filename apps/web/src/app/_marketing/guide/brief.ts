@@ -1,3 +1,4 @@
+import { GUIDE_DETAILS } from '@oraqul/packs';
 import type { Category, StartMode } from '@oraqul/schema';
 
 // The brief the guide builds is plain text in the forms Oraqul reads without guessing: a title in
@@ -201,44 +202,8 @@ const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const validRivals = (rivals: Rival[]) =>
   rivals.filter((r) => r.title.trim() && ISO.test(r.date) && !Number.isNaN(Date.parse(r.date)));
 
-/** What matters most, in order. Each is a detail the plan is better for, and why. */
-export const DETAILS = [
-  { id: 'release', label: 'Release date', why: 'Every calendar is worked back from it.' },
-  {
-    id: 'cities',
-    label: 'Home city and diaspora cities',
-    why: 'You get one plan per territory, home first.',
-  },
-  { id: 'comps', label: 'Comparable titles', why: 'They are how Qloo finds your audience.' },
-  { id: 'band', label: 'Budget band', why: 'The plan proposes only what the budget can carry.' },
-  {
-    id: 'rivals',
-    label: 'Rivals with their dates',
-    why: 'Each date is checked against the audience it shares.',
-  },
-  {
-    id: 'target',
-    label: 'A target for the one signal',
-    why: 'The plan is judged on a number you chose.',
-  },
-  { id: 'ages', label: 'Age band', why: 'It is tested against who Qloo says the audience is.' },
-  {
-    id: 'partners',
-    label: 'Partners already signed',
-    why: 'They stay in the plan and are never suggested back.',
-  },
-  {
-    id: 'brands',
-    label: 'Brands you already know',
-    why: 'They are asked of Qloo beside the ones Oraqul proposes, and never signed for you.',
-  },
-  {
-    id: 'tone',
-    label: 'Content rating or tone',
-    why: 'A partner that does not fit the content is flagged.',
-  },
-  { id: 'channels', label: 'Platforms to plan on', why: 'The plan runs on these platforms.' },
-] as const;
+/** What matters most, in order. The Guide's pages and its help bot read the same list. */
+export const DETAILS = GUIDE_DETAILS;
 export type DetailId = (typeof DETAILS)[number]['id'];
 
 export function filled(v: Values): Record<DetailId, boolean> {

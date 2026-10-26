@@ -624,6 +624,7 @@ POST   /threads/:threadId/cancel      stops the run on the thread (owner, editor
 POST   /threads/:threadId/read    marks what is stored so far as read
 GET    /threads/:threadId/events?after=    SSE: stored events after that seq, then live ones, then the run status
 GET    /rules                 the launch rule library with each rule's source, grade and date: the categories, the shared conventions, the partner, calendar and live show rules. Public, static, the same for every team
+POST   /guide/ask            a visitor's question about using Oraqul, answered by a model from the Guide's own pages, with the pages it drew on. Public, no sign in. Question at most 400 characters and six earlier turns. 429 past the visitor's hourly limit, 503 when the daily cap is spent, the bot has no key or the model fails
 GET    /outputs/:id
 GET    /outputs/:id/export/:format    md, docx or pdf, built from the stored plan (§6.1)
 GET    /projects/:id/compare?a=&b=
