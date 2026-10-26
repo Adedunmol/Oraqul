@@ -91,6 +91,22 @@ describe('reserved slots', () => {
     expect(partners.filter((p) => p.tier === 'B').length).toBeLessThanOrEqual(7);
   });
 
+  it('places the brands the team asked to consider first, by a fuller name too, and lists one Qloo did not rank', () => {
+    const many = Array.from({ length: 12 }, (_, i) => `Brand ${i}`);
+    const { partners } = partnerOptions({
+      ...base,
+      band: 'major',
+      findings: [brands('Lagos', [...many, 'MTN Group'], 0.9)],
+      markets: [],
+      considered: ['MTN', 'Spotify'],
+    });
+    const names = partners.map((p) => p.name);
+    expect(names).toContain('MTN Group');
+    const spotify = partners.find((p) => p.name === 'Spotify');
+    expect(spotify?.fit).toBeNull();
+    expect(spotify?.findingIds).toEqual([]);
+  });
+
   it('gives each category its own local kinds', () => {
     const kindsOf = (category: 'books' | 'games') =>
       partnerOptions({ ...base, category, findings: [], markets: ['United Kingdom'] })

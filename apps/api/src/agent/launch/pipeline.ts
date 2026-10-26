@@ -1627,6 +1627,7 @@ function decisionsOf(input: {
     tone: toneOf(input.text, ratingOf(read)),
     ages: read.ages,
     launcher: band?.launcher ?? null,
+    considered: asked.brands,
   });
   const partnered = withPartnerIds(placed.territories, partnerCalls);
   return {

@@ -56,7 +56,7 @@ Each category has its own brand categories, kinds of partner and ideas (`rules/p
 
 ## The team's own partners
 
-The plan page lets an owner or an editor add and remove the partners the team already has or knows. `PUT /outputs/:outputId/partners { names }` replaces the team's list. Code places each name from the brands the plan already ranked, with no new Qloo call; a name Qloo did not rank shows as not ranked until a partner brief scores it. Partners Oraqul suggested are not changed. The Guide's `Partners already signed:` line is read as partners the team has, and `Brands to consider:` is asked of Qloo beside the model's own candidates and never signed.
+The plan page lets an owner or an editor add and remove the partners the team already has or knows. `PUT /outputs/:outputId/partners { names }` replaces the team's list. Code places each name from the brands the plan already ranked, with no new Qloo call; a name Qloo did not rank shows as not ranked until a partner brief scores it. Partners Oraqul suggested are not changed. The Guide's `Partners already signed:` line is read as partners the team has, and `Brands to consider:` is asked of Qloo beside the model's own candidates and never signed. A brand to consider is placed before brands nobody asked about, by the name given or a fuller one that starts with it ("MTN" for "MTN Group"), is not dropped by the popular-everywhere check, and shows as not ranked when Qloo ranked none by that name.
 
 ## What is not verified
 
