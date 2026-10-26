@@ -77,6 +77,9 @@ export function RisksTab() {
   );
 }
 
+const ORDINAL = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'];
+const placeWord = (n: number | null) => (n === null ? 'nowhere' : (ORDINAL[n - 1] ?? `${n}th`));
+
 /** Stronger options the data points to, beside the team's own choices. */
 export function AlternativesTab() {
   const { output, openReceipt } = useOutputView();
@@ -118,6 +121,7 @@ export function FixesTab() {
   const report = output.report;
   if (!report) return null;
   const items = report.items.filter((i) => i.verdict === 'breaks' || i.verdict === 'weak');
+  const moved = report.results?.rows.filter((r) => r.gap !== 'as-planned') ?? [];
   return (
     <>
       <TabTitle
@@ -157,6 +161,28 @@ export function FixesTab() {
             </p>
           )}
         </Stack>
+        {moved.length > 0 ? (
+          <Stack>
+            <h3 className="font-display text-[17px] font-semibold tracking-[-0.02em]">
+              What your results changed
+            </h3>
+            <ul className="flex flex-col gap-1.5 text-[15px] leading-[1.6]">
+              {moved.map((r) => (
+                <li key={r.place}>
+                  <b>{r.place}:</b> the plan put it {placeWord(r.plannedRank)}; it finished{' '}
+                  {placeWord(r.actualRank)} in your results
+                  {report.results?.asOf ? ` (${report.results.asOf})` : ''}
+                  {report.results?.source ? `, source: ${report.results.source}` : ''}. The new plan
+                  orders it by your results.
+                </li>
+              ))}
+            </ul>
+            <p className="text-[13.5px] text-muted">
+              These are your figures, so they show what happened, not why. Why is a hypothesis to
+              test.
+            </p>
+          </Stack>
+        ) : null}
         <div>
           <button
             type="button"

@@ -389,6 +389,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     band?: PlanBand | null;
     /** Brands the team named to consider, asked beside the model's own candidates. */
     brands?: string[];
+    /** A specific thing to look up on the web as well, with the work's title already removed. */
+    question?: string;
   },
 ): Promise<Asked<P>> {
   const { title, read, comps } = input;
@@ -507,13 +509,16 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
   let sources: PlanSource[] = [];
   if (deps.research.enabled) {
     ctx.trace('Checking release timing and the market');
+    const today = new Date().toISOString().slice(0, 10);
     const found = await deps.research.research({
       read,
       country: queryPlan.country,
       cities: queryPlan.cities,
-      today: new Date().toISOString().slice(0, 10),
+      today,
+      ...(input.question ? { question: input.question } : {}),
     });
-    sources = found.sources;
+    // The day each fact was read, so a later check can say how old it is.
+    sources = found.sources.map((s) => ({ ...s, retrievedAt: today }));
     ctx.tokens += found.tokens;
   }
   const ran = [...new Set([...queryPlan.queries, ...extraKeys])];

@@ -9,7 +9,16 @@ export const startModes = ['build', 'audit', 'fix'] as const;
 export const startModeSchema = z.enum(startModes);
 export type StartMode = z.infer<typeof startModeSchema>;
 
-export const jobs = ['build', 'audit', 'fix', 'scenario', 'date', 'partner', 'creative'] as const;
+export const jobs = [
+  'build',
+  'audit',
+  'fix',
+  'scenario',
+  'date',
+  'partner',
+  'creative',
+  'refresh',
+] as const;
 export const jobSchema = z.enum(jobs);
 export type Job = z.infer<typeof jobSchema>;
 

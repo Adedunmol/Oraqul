@@ -19,9 +19,12 @@ const plan = (over: Partial<StepSource> = {}): StepSource => ({
   ...over,
 });
 
+const NOW = new Date('2026-10-02T10:00:00.000Z');
+const nextSteps = (outputs: StepSource[], now: Date = NOW) => nextStepsFor(outputs, now);
+
 describe('nextStepsFor', () => {
   it('suggests the strongest city as the lead when the team started elsewhere', () => {
-    const steps = nextStepsFor([plan()]);
+    const steps = nextSteps([plan()]);
     expect(steps.map((s) => s.id)).toEqual(['scn:lead:lagos', 'date', 'partner']);
     expect(steps[0]?.message).toBe('What if we open in Lagos first?');
     expect(steps[2]?.message).toBe('Draft a partner brief for Lagoon Mobile');
@@ -29,7 +32,7 @@ describe('nextStepsFor', () => {
 
   it('tries the runner-up when the team already leads with the strongest city', () => {
     const brief = plan().brief;
-    const steps = nextStepsFor([
+    const steps = nextSteps([
       plan({
         brief: {
           ...brief,
@@ -56,13 +59,13 @@ describe('nextStepsFor', () => {
         plan: null,
       }),
     ];
-    expect(nextStepsFor(outputs).map((s) => s.id)).toEqual(['partner', 'fix']);
+    expect(nextSteps(outputs).map((s) => s.id)).toEqual(['partner', 'fix']);
   });
 
   it('offers no partner when no brand was found, and nothing without a plan', () => {
     const noBrands = plan({ plan: { findings: [] } });
-    expect(nextStepsFor([noBrands]).map((s) => s.id)).not.toContain('partner');
-    expect(nextStepsFor([plan({ plan: null, kind: 'audit' })])).toEqual([]);
+    expect(nextSteps([noBrands]).map((s) => s.id)).not.toContain('partner');
+    expect(nextSteps([plan({ plan: null, kind: 'audit' })])).toEqual([]);
   });
 });
 
@@ -75,24 +78,24 @@ describe('the creative kit step', () => {
   });
 
   it('offers the kit for the home territory, after the what-if', () => {
-    const steps = nextStepsFor([withTerritories]);
+    const steps = nextSteps([withTerritories]);
     expect(steps.map((s) => s.id)).toEqual(['scn:lead:lagos', 'creative', 'date']);
     expect(steps[1]?.message).toBe('Make the creative kit for Lagos');
   });
 
   it('is left out once a kit exists, or when the plan has no territory', () => {
     const kit = plan({ kind: 'creative', title: 'Creative kit', plan: null });
-    expect(nextStepsFor([withTerritories, kit]).map((s) => s.id)).not.toContain('creative');
-    expect(nextStepsFor([plan()]).map((s) => s.id)).not.toContain('creative');
+    expect(nextSteps([withTerritories, kit]).map((s) => s.id)).not.toContain('creative');
+    expect(nextSteps([plan()]).map((s) => s.id)).not.toContain('creative');
   });
 
   it('offers the top market opportunity as a what-if, once, and never an area', () => {
     const withOpp = (opportunities: { kind: string; name: string }[]) =>
       plan({ plan: { findings: [], territories: [{ name: 'Lagos' }], opportunities } });
-    const ids = nextStepsFor([withOpp([{ kind: 'market', name: 'Accra' }])]).map((s) => s.id);
+    const ids = nextSteps([withOpp([{ kind: 'market', name: 'Accra' }])]).map((s) => s.id);
     expect(ids).toContain('scn:opp:accra');
     expect(
-      nextStepsFor([withOpp([{ kind: 'area', name: 'Surulere' }])]).map((s) => s.id),
+      nextSteps([withOpp([{ kind: 'area', name: 'Surulere' }])]).map((s) => s.id),
     ).not.toContain('scn:opp:surulere');
     const tried = plan({
       kind: 'scenario',
@@ -101,7 +104,18 @@ describe('the creative kit step', () => {
       plan: { findings: [], opportunities: [{ kind: 'market', name: 'Accra' }] },
     });
     expect(
-      nextStepsFor([withOpp([{ kind: 'market', name: 'Accra' }]), tried]).map((s) => s.id),
+      nextSteps([withOpp([{ kind: 'market', name: 'Accra' }]), tried]).map((s) => s.id),
     ).not.toContain('scn:opp:accra');
+  });
+
+  it('puts a check on what has changed first once a plan is two weeks old, and only until it is done', () => {
+    const later = new Date('2026-10-20T10:00:00.000Z');
+    expect(nextSteps([plan()], later)[0]).toMatchObject({
+      id: 'refresh',
+      message: 'Check what has changed since this plan was made',
+    });
+    expect(nextSteps([plan()], NOW).map((s) => s.id)).not.toContain('refresh');
+    const checked = plan({ kind: 'refresh', createdAt: '2026-10-19T10:00:00.000Z', plan: null });
+    expect(nextSteps([plan(), checked], later).map((s) => s.id)).not.toContain('refresh');
   });
 });

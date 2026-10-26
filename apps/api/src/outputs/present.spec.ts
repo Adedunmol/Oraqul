@@ -71,6 +71,7 @@ function row(brief: unknown, planValue: unknown, kind: OutputRow['kind'] = 'buil
     brief,
     plan: planValue,
     report: null,
+    refresh: null,
     inputs: null,
     versions: null,
     changedIds: [],

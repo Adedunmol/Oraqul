@@ -228,7 +228,9 @@ export function ReportResults({ results }: { results: ResultsComparison }) {
       <h2 className="font-display text-[20px] font-semibold tracking-[-0.02em]">Your results</h2>
       <p className="text-[13px] text-muted">
         Each city’s share of the total {results.measure}
-        {results.asOf ? `, ${results.asOf}` : ''}, in the order the cities finished.
+        {results.asOf ? `, ${results.asOf}` : ''}, in the order the cities finished.{' '}
+        {results.source ? `Source: ${results.source}, as you gave it. ` : ''}These are your own
+        figures: they show what happened, not why.
       </p>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[460px] border-collapse text-left text-[14px]">

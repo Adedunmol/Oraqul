@@ -90,6 +90,7 @@ export function compareResults(input: {
     )[0];
   return {
     asOf: results.asOf,
+    source: results.source,
     measure: results.measure,
     rows,
     ages,

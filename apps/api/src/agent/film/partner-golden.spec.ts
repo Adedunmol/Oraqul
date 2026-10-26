@@ -86,6 +86,7 @@ describe('a partner brief with its pitch kit', { timeout: 60_000 }, () => {
         brief: made.brief,
         plan: made.plan,
         report: null,
+        refresh: null,
         inputs: null,
         versions: null,
         changedIds: [],

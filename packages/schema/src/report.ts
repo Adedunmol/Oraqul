@@ -52,7 +52,10 @@ export type ReportItem = z.infer<typeof reportItemSchema>;
 
 /** Figures a launch produced, as aggregates only. No personal data (hard rule 7). */
 export const launchResultsSchema = z.object({
+  /** The date or period the figures cover, as the person wrote it. */
   asOf: z.string().nullable(),
+  /** Where the figures come from, as the person wrote it: "Instagram insights", "the box office report". */
+  source: z.string().nullable().optional(),
   /** What the numbers count, in the person's words: "tickets sold", "streams", "wishlists". */
   measure: z.string().min(1),
   byPlace: z.array(z.object({ place: z.string().min(1), value: z.number().min(0) })),
@@ -80,6 +83,7 @@ export type ResultRow = z.infer<typeof resultRowSchema>;
 
 export const resultsComparisonSchema = z.object({
   asOf: z.string().nullable(),
+  source: z.string().nullable().optional(),
   measure: z.string(),
   rows: z.array(resultRowSchema),
   ages: z

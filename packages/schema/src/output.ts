@@ -3,6 +3,7 @@ import { briefSchema, planSectionKeys } from './brief';
 import { type Job, jobSchema } from './categories';
 import { launchPlanSchema } from './plan';
 import { receiptSchema } from './receipt';
+import { refreshReportSchema } from './refresh';
 import { auditReportSchema } from './report';
 import { verdictSchema } from './verdict';
 
@@ -36,6 +37,7 @@ export const outputTabKeys = [
   'kit',
   'fixes',
   'campaign',
+  'refresh',
 ] as const;
 export const outputTabKeySchema = z.enum(outputTabKeys);
 
@@ -142,6 +144,8 @@ export const outputSchema = z.object({
    * "What was fixed" tab. Null for every other kind.
    */
   report: auditReportSchema.nullable(),
+  /** What a check on a saved plan found changed, for a `refresh` output. Null for every other kind. */
+  refresh: refreshReportSchema.nullable().optional(),
   evidence: z.array(evidenceRowSchema),
   receipts: z.array(receiptSchema),
   /** What the evidence cannot show for this category, for the note under the Evidence tab. */

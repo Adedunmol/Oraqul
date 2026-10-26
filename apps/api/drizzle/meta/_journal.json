@@ -99,6 +99,13 @@
       "when": 1792970649273,
       "tag": "0013_flimsy_multiple_man",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792973397580,
+      "tag": "0014_talented_gamma_corps",
+      "breakpoints": true
     }
   ]
 }

@@ -41,6 +41,8 @@ import {
   setPartnersSchema,
   setReactionSchema,
   setShareSchema,
+  setTestResultsSchema,
+  type TestResults,
   type ThreadDetail,
   type UpdateCampaignAction,
   type UpdateMemoryInput,
@@ -239,6 +241,17 @@ export class ProjectsController {
     @Param('actionId', new ZodPipe(z.uuid())) actionId: string,
   ): Promise<CampaignTest> {
     return this.campaign.addTest(outputId, actionId);
+  }
+
+  /** The team's own figures for the two angles. Code compares them; Oraqul names no winner by itself. */
+  @Put('outputs/:outputId/campaign/actions/:actionId/test/results')
+  @Roles('owner', 'editor')
+  setTestResults(
+    @Param('outputId') outputId: string,
+    @Param('actionId', new ZodPipe(z.uuid())) actionId: string,
+    @Body(new ZodPipe(setTestResultsSchema)) body: TestResults,
+  ): Promise<CampaignTest> {
+    return this.campaign.setTestResults(outputId, actionId, body);
   }
 
   @Delete('outputs/:outputId/campaign/actions/:actionId/test')

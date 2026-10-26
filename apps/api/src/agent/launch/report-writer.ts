@@ -205,7 +205,7 @@ export class TemplateReportWriter<R extends LaunchRead = LaunchRead> implements 
     for (const row of rows.filter((r) => r.gap === 'under' && r.plannedRank !== null)) {
       risks.push(
         line(
-          `${row.place} finished ${ordinal(row.actualRank)} in your results but the plan put it ${ordinal(row.plannedRank ?? 0)}, so the plan’s order for it was wrong.`,
+          `${row.place} finished ${ordinal(row.actualRank)} in your results but the plan put it ${ordinal(row.plannedRank ?? 0)}. The plan’s order for it did not match your results; why is a hypothesis to test, not a fact.`,
           'playbook',
           [],
           [row.place],

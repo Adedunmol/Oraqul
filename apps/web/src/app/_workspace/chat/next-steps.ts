@@ -25,13 +25,16 @@ export interface StepSource {
 
 const key = (text: string) => text.trim().toLowerCase();
 const MAX_STEPS = 3;
+const DAY_MS = 24 * 60 * 60 * 1000;
+/** A plan this old is worth checking against today's data. */
+const STALE_DAYS = 14;
 
 /**
  * Up to three things worth asking next, worked out from the project's latest plan and what the
  * project already has: a what-if on the lead city, a rival date check, a partner brief. Each is a
  * message the agent already answers, so a step runs the same way as typing it.
  */
-export function nextStepsFor(outputs: StepSource[]): NextStep[] {
+export function nextStepsFor(outputs: StepSource[], now: Date = new Date()): NextStep[] {
   const plans = outputs
     .filter((o) => o.plan && (o.kind === 'build' || o.kind === 'scenario' || o.kind === 'fix'))
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
@@ -39,6 +42,18 @@ export function nextStepsFor(outputs: StepSource[]): NextStep[] {
   if (!base?.plan) return [];
 
   const steps: NextStep[] = [];
+  // An older plan rests on data that may have moved, so checking it comes first.
+  const aged = (now.getTime() - Date.parse(base.createdAt)) / DAY_MS;
+  if (
+    aged >= STALE_DAYS &&
+    !outputs.some((o) => o.kind === 'refresh' && o.createdAt > base.createdAt)
+  ) {
+    steps.push({
+      id: 'refresh',
+      label: 'Check what has changed',
+      message: 'Check what has changed since this plan was made',
+    });
+  }
   const ranked = [...base.brief.places].sort((a, b) => b.lift - a.lift);
   // The team's own first city is the first place assumption, in the order they gave.
   const yours = base.brief.assumptions

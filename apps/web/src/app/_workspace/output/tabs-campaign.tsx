@@ -15,6 +15,7 @@ import { useId, useState } from 'react';
 import {
   addCampaignTest,
   removeCampaignTest,
+  setCampaignTestResults,
   setUpCampaign,
   updateCampaignAction,
 } from '@/lib/api/projects';
@@ -371,6 +372,7 @@ function TestCard({
           <li key={c}>{c}</li>
         ))}
       </ul>
+      <TestFigures actionId={actionId} test={test} canEdit={canEdit} />
       <p className="text-[13.5px] text-muted">Oraqul does not predict which angle will win.</p>
       {canEdit ? (
         <div>
@@ -392,6 +394,148 @@ function TestCard({
           >
             Remove the test
           </Button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const VERDICT_WORD = {
+  'a-ahead': 'Angle A is ahead',
+  'b-ahead': 'Angle B is ahead',
+  inconclusive: 'Inconclusive',
+} as const;
+
+/**
+ * The team's own figures for the two angles, and the comparison code makes from them. These are the
+ * team's numbers, not Qloo's: a taste score is never read as a result.
+ */
+function TestFigures({
+  actionId,
+  test,
+  canEdit,
+}: {
+  actionId: string;
+  test: CampaignTest;
+  canEdit: boolean;
+}) {
+  const { output } = useOutputView();
+  const router = useRouter();
+  const base = useId();
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [draft, setDraft] = useState({
+    measure: test.results?.measure ?? 'conversions',
+    a: String(test.results?.a ?? ''),
+    b: String(test.results?.b ?? ''),
+    period: test.results?.period ?? '',
+    source: test.results?.source ?? '',
+  });
+  const valid =
+    draft.measure.trim() !== '' &&
+    draft.a.trim() !== '' &&
+    draft.b.trim() !== '' &&
+    Number(draft.a) >= 0 &&
+    Number(draft.b) >= 0;
+
+  async function save() {
+    setBusy(true);
+    try {
+      await setCampaignTestResults(output.id, actionId, {
+        measure: draft.measure,
+        a: Number(draft.a),
+        b: Number(draft.b),
+        period: draft.period.trim() || null,
+        source: draft.source.trim() || null,
+      });
+      setOpen(false);
+      router.refresh();
+    } catch {
+      toast('Could not save those figures. Try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-2 border-t border-line pt-2.5">
+      {test.results ? (
+        <>
+          <p className="text-[14.5px] leading-[1.55]">
+            <span className="font-medium">Your figures.</span> Angle A {test.results.a}, angle B{' '}
+            {test.results.b} {test.results.measure}
+            {test.results.period ? `, ${test.results.period}` : ''}
+            {test.results.source ? `. Source: ${test.results.source}` : ''}.
+          </p>
+          {test.comparison ? (
+            <p className="text-[14.5px] leading-[1.55]">
+              <span className="font-medium">{VERDICT_WORD[test.comparison.verdict]}.</span>{' '}
+              {test.comparison.why}
+            </p>
+          ) : null}
+        </>
+      ) : (
+        <p className="text-[13.5px] text-muted">
+          Add the figures you measured for each angle and Oraqul compares them.
+        </p>
+      )}
+      {canEdit && !open ? (
+        <div>
+          <Button size="small" variant="ghost" onClick={() => setOpen(true)}>
+            {test.results ? 'Change the figures' : 'Add the figures'}
+          </Button>
+        </div>
+      ) : null}
+      {open ? (
+        <div className="flex flex-col gap-3">
+          <div className="grid gap-3 min-[600px]:grid-cols-3">
+            <Input
+              id={`${base}-measure`}
+              label="What you counted"
+              value={draft.measure}
+              onChange={(e) => setDraft({ ...draft, measure: e.target.value })}
+            />
+            <Input
+              id={`${base}-a`}
+              label="Angle A"
+              type="number"
+              min={0}
+              inputMode="numeric"
+              value={draft.a}
+              onChange={(e) => setDraft({ ...draft, a: e.target.value })}
+            />
+            <Input
+              id={`${base}-b`}
+              label="Angle B"
+              type="number"
+              min={0}
+              inputMode="numeric"
+              value={draft.b}
+              onChange={(e) => setDraft({ ...draft, b: e.target.value })}
+            />
+          </div>
+          <div className="grid gap-3 min-[600px]:grid-cols-2">
+            <Input
+              id={`${base}-period`}
+              label="Period (optional)"
+              value={draft.period}
+              onChange={(e) => setDraft({ ...draft, period: e.target.value })}
+            />
+            <Input
+              id={`${base}-source`}
+              label="Source (optional)"
+              value={draft.source}
+              onChange={(e) => setDraft({ ...draft, source: e.target.value })}
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button variant="primary" size="small" disabled={busy || !valid} onClick={save}>
+              Save
+            </Button>
+            <Button size="small" variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+          </div>
         </div>
       ) : null}
     </div>

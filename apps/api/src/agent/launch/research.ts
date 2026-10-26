@@ -12,6 +12,8 @@ export interface ResearchInput<R extends LaunchRead = LaunchRead> {
   cities: string[];
   /** Today, so "the next twelve months" means something. */
   today: string;
+  /** A specific thing the person wants checked, with the work's title already removed. */
+  question?: string;
 }
 
 export interface Researcher<R extends LaunchRead = LaunchRead> {
@@ -86,7 +88,9 @@ export class ModelResearcher<R extends LaunchRead = LaunchRead> implements Resea
   async research(input: ResearchInput<R>) {
     const found = await this.search({
       system: this.kit.searchSystem,
-      prompt: this.kit.prompt(input),
+      prompt: input.question
+        ? `${this.kit.prompt(input)}\n\nAlso find out, from dated sources: ${input.question}`
+        : this.kit.prompt(input),
       abortSignal: AbortSignal.timeout(this.timeoutMs),
     });
     const pages = [...new Map(found.sources.map((s) => [s.url, s])).values()];

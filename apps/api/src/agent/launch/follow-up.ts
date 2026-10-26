@@ -43,6 +43,7 @@ export interface Change {
 
 export type FollowUp =
   | { job: 'answer' }
+  | { job: 'refresh' }
   | { job: 'scenario'; change: Change }
   | { job: 'date'; rivals: { title: string; date: string }[] }
   | { job: 'partner'; partner: string | null }
@@ -98,6 +99,16 @@ export function askedCreative(text: string): boolean {
   return CREATIVE_ASK.test(text);
 }
 
+// Checking what has changed is plain words too, so code reads it and no model decides it. The ask
+// has to be about the plan, the research or the evidence: "what changed in the cast?" is a question.
+const REFRESH_ASK =
+  /\b(?:check|see|show|tell me|find out)\b[^.?!\n]{0,40}\bwhat(?:['’]s| has| have)?\s*changed\b|\b(?:refresh|re-?check|update)\b[^.?!\n]{0,30}\b(?:the\s+)?(?:research|evidence|plan|sources|findings)\b|\bhas anything (?:changed|moved)\b|\bhas the [^.?!\n]{3,40}\bchanged\b/i;
+
+/** Whether a message asks to check what has changed since the plan was made. */
+export function askedRefresh(text: string): boolean {
+  return REFRESH_ASK.test(text);
+}
+
 export function askedJob(text: string): 'audit' | 'fix' | null {
   if (FIX_ASK.test(text)) return 'fix';
   if (AUDIT_ASK.test(text)) return 'audit';
@@ -138,6 +149,7 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
 
   if (rivals.length) return { job: 'date', rivals };
   if (askedCreative(text)) return { job: 'creative' };
+  if (askedRefresh(text) && !askedJob(text)) return { job: 'refresh' };
   const asked = askedJob(text);
   if (asked) return { job: asked };
   if (/\bpartner|\boutreach\b|\bsponsor/i.test(text) && reading.job === 'partner') {

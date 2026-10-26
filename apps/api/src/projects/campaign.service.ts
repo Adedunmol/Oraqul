@@ -7,12 +7,15 @@ import {
   campaignGuideSchema,
   categorySchema,
   launchPlanSchema,
+  type TestResults,
   testAngleSchema,
+  testResultsSchema,
   type UpdateCampaignAction,
 } from '@oraqul/schema';
 import { and, asc, eq, ne, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { actionsFromPlan, testFor } from '../agent/launch/campaign.js';
+import { compareTest } from '../agent/launch/test-results.js';
 import { type Database, DB } from '../db/db.module.js';
 import { campaignActions, campaignTests, outputs, projects } from '../db/schema.js';
 
@@ -148,6 +151,28 @@ export class CampaignService {
     return parsed;
   }
 
+  /** Saves the team's figures for a test. A later call replaces them. The comparison is code's. */
+  async setTestResults(
+    outputId: string,
+    actionId: string,
+    results: TestResults,
+  ): Promise<CampaignTest> {
+    const [action] = await this.db
+      .select({ id: campaignActions.id })
+      .from(campaignActions)
+      .where(and(eq(campaignActions.id, actionId), eq(campaignActions.outputId, outputId)))
+      .limit(1);
+    if (!action) throw new NotFoundException('No such action');
+    const [saved] = await this.db
+      .update(campaignTests)
+      .set({ results })
+      .where(eq(campaignTests.actionId, actionId))
+      .returning();
+    const test = saved ? toTest(saved) : null;
+    if (!test) throw new NotFoundException('Set up the test before adding figures to it');
+    return test;
+  }
+
   async removeTest(outputId: string, actionId: string): Promise<void> {
     const [action] = await this.db
       .select({ id: campaignActions.id })
@@ -243,12 +268,15 @@ function toAction(row: typeof campaignActions.$inferSelect): CampaignAction {
 function toTest(row: typeof campaignTests.$inferSelect): CampaignTest | null {
   const angles = anglesSchema.safeParse(row.angles);
   if (!angles.success) return null;
+  const results = testResultsSchema.safeParse(row.results).data ?? null;
   return {
     id: row.id,
     actionId: row.actionId,
     angles: angles.data,
     measure: row.measure,
     conventions: row.conventions,
+    results,
+    comparison: results ? compareTest(results) : null,
     createdAt: row.createdAt.toISOString(),
   };
 }
