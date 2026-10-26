@@ -37,7 +37,7 @@ export function Hero() {
             className="mk-word text-[clamp(18px,2.3vw,34px)] leading-none font-normal tracking-[-0.02em] text-ink/70 [font-stretch:100%]"
             style={at(0)}
           >
-            The AI agent for
+            The <b className="font-medium text-ink">verifiable</b> AI agent for
           </span>{' '}
           <span
             data-lock="a"

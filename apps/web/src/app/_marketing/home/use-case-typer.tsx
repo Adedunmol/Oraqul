@@ -41,6 +41,12 @@ export function UseCaseTyper() {
   const [phase, setPhase] = useState<'type' | 'hold' | 'clear'>('type');
   const [reduced, setReduced] = useState(false);
   const text = CASES[index] ?? '';
+  // The last word, the caret and the closing quote never part, so a sentence that exactly fills the
+  // line cannot leave a quote on a line of its own.
+  const typed = text.slice(0, shown);
+  const cut = typed.lastIndexOf(' ') + 1;
+  const head = typed.slice(0, cut);
+  const tail = typed.slice(cut);
 
   useEffect(() => {
     setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -79,10 +85,11 @@ export function UseCaseTyper() {
         aria-hidden="true"
         className="min-h-[3.96em] text-[clamp(18px,2.1vw,27px)] min-[640px]:min-h-[2.7em] leading-[1.32] font-medium tracking-[-0.02em] text-ink"
       >
-        “{text.slice(0, shown)}
-        {'\u2060'}
-        <span className="mk-caret" />
-        {'\u2060'}”
+        “{head}
+        <span className="whitespace-nowrap">
+          {tail}
+          <span className="mk-caret" />”
+        </span>
       </p>
     </div>
   );
