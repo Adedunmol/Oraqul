@@ -115,6 +115,32 @@ export const rulesResponseSchema = z.object({
     ),
     ads: ruleOf(z.object({ lines: z.array(z.string()) })),
   }),
+  /** How the team's figures are read against a plan's signal. The curves are editable conventions. */
+  pace: z.object({
+    version: z.string(),
+    thresholds: z.object({
+      aheadAt: z.number(),
+      behindBelow: z.number(),
+      minEntries: z.number().int(),
+      minExpectedShare: z.number(),
+    }),
+    rules: z.record(
+      z.string(),
+      ruleOf(
+        z.object({
+          kind: z.enum(['cumulative', 'level']),
+          entry: z.enum(['daily', 'running-total']),
+          curve: z.array(z.object({ day: z.number().int(), share: z.number() })),
+          basis: z.string(),
+        }),
+      ),
+    ),
+  }),
+  /** What a launch watch looks for, in days. */
+  watch: z.object({
+    version: z.string(),
+    rules: z.record(z.string(), ruleOf(z.number())),
+  }),
   /** What a team does with an opportunity beyond its brief: the limit, first test and measure. */
   opportunities: z.object({
     version: z.string(),

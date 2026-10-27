@@ -21,4 +21,5 @@ export * from './team';
 export * from './thread';
 export * from './tools';
 export * from './verdict';
+export * from './watch';
 export * from './workspace';

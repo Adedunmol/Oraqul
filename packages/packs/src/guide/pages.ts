@@ -208,7 +208,7 @@ export const GUIDE_PAGES: GuidePage[] = [
     slug: 'after-the-plan',
     title: 'After the plan',
     summary:
-      'What to ask once you have a plan: what-ifs, rival dates, partner briefs, the creative kit, the campaign, results and a refresh.',
+      'What to ask once you have a plan: what-ifs, rival dates, partner briefs, the creative kit, the campaign, the watch, your figures, a rescue, results and a refresh.',
     sections: [
       {
         layout: 'list',
@@ -235,7 +235,23 @@ export const GUIDE_PAGES: GuidePage[] = [
           },
           {
             label: 'Run the campaign.',
-            text: 'On the plan’s Campaign tab, set up its calendar as actions. Edit them, tick them off, and set up a two-angle test for any of them. A revised plan gets its own set and the old one stays as you left it.',
+            text: 'On the plan’s Campaign tab, set up its calendar as a dated checklist. Edit it, tick it off, and set up a two-angle test for any action. Turn on Watch and Oraqul alerts the team when a date slips. A revised plan gets its own set and the old one stays as you left it.',
+          },
+          {
+            label: 'Put the dates in your calendar.',
+            text: 'Download the plan’s dates as a calendar file from Export, or make a calendar link on the Campaign tab for your calendar app to subscribe to. It carries titles and dates only. Anyone with the link can read it, so share it with your team, and make a new one to turn the old one off.',
+          },
+          {
+            label: 'Watch the launch.',
+            text: 'Turn on Watch on the plan. Oraqul re-checks it on a schedule for a rival release near your date (with the page and the day it was read), a campaign date that has slipped and a plan that has grown old, and emails the owners and editors. It never changes your plan and never asks Qloo by itself. A check that needs Qloo, or a rescue, runs only when an owner or editor approves it.',
+          },
+          {
+            label: 'Add your figures.',
+            text: 'On the Watch tab, paste a line a day (“2027-03-01, 120”, with a city and a channel if you have them) or upload a CSV. Oraqul says whether you are ahead, on pace or behind the plan’s pace, with the gap and how many entries it rests on, or that it is too early to tell. The pace is a convention you can edit, and the read is direction, not a forecast.',
+          },
+          {
+            label: 'Rescue a launch that is behind.',
+            text: '“Rescue this launch”, or Start a rescue on the Watch tab when the figures are behind. It names the territory and channel to put the next seven days into, from your plan’s own findings and your figures. It makes no new Qloo call and saves a short plan beside yours.',
           },
           {
             label: 'Add results.',
@@ -265,7 +281,9 @@ export const GUIDE_PAGES: GuidePage[] = [
           {
             text: 'No ads, trailers, images or video. It writes the script, shot list, key art brief, caption pack and hook options, and a person makes the final creative.',
           },
-          { text: 'No sending. Anything drafted is for you to review and send.' },
+          {
+            text: 'No sending or posting. Anything drafted is for you to review and send, and Oraqul posts nothing for you. A watch emails your team about the plan, and nothing else leaves Oraqul on its own.',
+          },
         ],
       },
       {

@@ -34,6 +34,8 @@ export const projectSchema = z.object({
   qlooMatch: z.string().nullable(),
   /** Answers to the category's extra question, keyed by its label, such as "Budget band". */
   extra: z.record(z.string(), z.string()),
+  /** Watch events this person has not read yet, across the project's plans. Zero when none. */
+  watchUnread: z.number().int().default(0),
 });
 export type Project = z.infer<typeof projectSchema>;
 

@@ -8,6 +8,7 @@ export {
   type QlooClientOptions,
   QlooError,
   type QlooErrorKind,
+  type QlooMeter,
   type QlooResult,
   RequestSlots,
 } from './client';

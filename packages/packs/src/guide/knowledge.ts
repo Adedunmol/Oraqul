@@ -60,6 +60,9 @@ function launchRulesText(): string {
     '### Content calendar',
     '- Every full plan has a content calendar, worked back from the date on each territory’s lead channel.',
     ...CALENDAR_RULES.ads.value.lines.map((l) => `- ${l}`),
+    '### Watch and pace',
+    '- Once a launch has figures, they are read against the plan’s one signal: ahead, on pace, behind or too early to tell. It is direction against a convention you can edit, never a forecast.',
+    '- A watch raises a rival release within 7 days of your date, a campaign action 3 days late and a plan 14 days old. Rival dates come from the web, each with its page and the day it was read.',
     '### Partner tiers',
     ...(['A', 'B', 'C'] as const).map(
       (t) => `- Tier ${t}, ${TIER_LABEL[t].name}: ${TIER_LABEL[t].what}`,
