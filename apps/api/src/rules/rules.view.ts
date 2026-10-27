@@ -8,11 +8,16 @@ import {
   COUNTRY_CHANNELS,
   MARKET_EXTRAS,
   OPPORTUNITY_RULES,
+  PACE_RULES,
+  PACE_THRESHOLDS,
+  PACE_VERSION,
   PARTNER_RULES,
   rules,
   SHARED_RULES,
   SHOWS_PLAN_RULES,
   TIER_LABEL,
+  WATCH_RULES,
+  WATCH_VERSION,
 } from '@oraqul/packs';
 import { categories, type RulesResponse } from '@oraqul/schema';
 
@@ -66,6 +71,8 @@ export function rulesView(): RulesResponse {
       categories: CALENDAR_RULES.categories,
       ads: CALENDAR_RULES.ads,
     },
+    pace: { version: PACE_VERSION, thresholds: PACE_THRESHOLDS, rules: PACE_RULES },
+    watch: { version: WATCH_VERSION, rules: WATCH_RULES },
     opportunities: {
       version: OPPORTUNITY_RULES.version,
       kinds: OPPORTUNITY_RULES.kinds,

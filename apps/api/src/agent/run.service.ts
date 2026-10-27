@@ -50,6 +50,8 @@ import {
   routerStateSchema,
   routeTurn,
 } from './router/router.js';
+import { capMessage, RunCapsService } from './run-caps.js';
+import { currentOrigin, type RunOrigin, runOrigin, WEB_ORIGIN_NONE } from './run-origin.js';
 import { CHAT_SUMMARIZER, type ChatSummarizer, toFold } from './summary/chat-summarizer.js';
 import { ThreadStore } from './thread-store.js';
 import { THREAD_TITLER, type Titler, UNNAMED_THREAD } from './titler.js';
@@ -96,6 +98,7 @@ export class RunService implements OnModuleInit {
     @Inject(MemoryStore) private readonly memory: MemoryStore,
     @Inject(MEMORY_WRITER) private readonly memoryWriter: MemoryWriter,
     @Inject(CHAT_SUMMARIZER) private readonly summarizer: ChatSummarizer,
+    @Inject(RunCapsService) private readonly caps: RunCapsService,
   ) {}
 
   /** A run that was going when the process stopped will never finish, so say so. */
@@ -143,15 +146,23 @@ export class RunService implements OnModuleInit {
     await this.store.appendUser(threadId, input.text, input.attachments);
     const state = newRouterState({ category: input.category, mode: input.mode });
     const turn: RouterTurn = { kind: 'message', text: forRouter(first) };
-    this.launch(threadId, async () => {
-      await this.nameThread(threadId, input.text, input.attachments);
-      await this.routerSegment(threadId, projectId, state, turn);
-    });
+    this.launch(
+      threadId,
+      async () => {
+        await this.nameThread(threadId, input.text, input.attachments);
+        await this.routerSegment(threadId, projectId, state, turn);
+      },
+      { userId, via: 'web' },
+    );
     return { projectId, threadId };
   }
 
   /** A message or a card answer. Starts the next run segment and returns before it finishes. */
-  async post(threadId: string, body: PostMessage): Promise<void> {
+  async post(
+    threadId: string,
+    body: PostMessage,
+    origin: RunOrigin = WEB_ORIGIN_NONE,
+  ): Promise<void> {
     if (this.active.has(threadId)) throw new ConflictException('The agent is still working');
     const project = await this.projectOf(threadId);
 
@@ -174,7 +185,7 @@ export class RunService implements OnModuleInit {
         if (state.pending) await this.store.answerOpenQuestion(threadId, body.text);
         turn = { kind: 'message', text: forRouter(said(body.text, body.attachments)) };
       }
-      this.launch(threadId, () => this.routerSegment(threadId, project.id, state, turn));
+      this.launch(threadId, () => this.routerSegment(threadId, project.id, state, turn), origin);
       return;
     }
 
@@ -206,11 +217,14 @@ export class RunService implements OnModuleInit {
       }
       if (body.kind === 'text') await this.store.appendUser(threadId, body.text, body.attachments);
       await this.store.answerOpenQuestion(threadId, label);
-      this.launch(threadId, async () =>
-        this.agentSegment(threadId, project.id, await handoff(said(label, [])), {
-          state: waiting.state,
-          reply,
-        }),
+      this.launch(
+        threadId,
+        async () =>
+          this.agentSegment(threadId, project.id, await handoff(said(label, [])), {
+            state: waiting.state,
+            reply,
+          }),
+        origin,
       );
       return;
     }
@@ -231,8 +245,10 @@ export class RunService implements OnModuleInit {
         throw new BadRequestException('That option is not on the card');
       }
       await this.store.answerOpenQuestion(threadId, label);
-      this.launch(threadId, async () =>
-        this.agentSegment(threadId, project.id, await handoff(said(label, []))),
+      this.launch(
+        threadId,
+        async () => this.agentSegment(threadId, project.id, await handoff(said(label, []))),
+        origin,
       );
       return;
     }
@@ -246,13 +262,17 @@ export class RunService implements OnModuleInit {
     await this.store.appendUser(threadId, text, attachments);
     if (pending) await this.store.answerOpenQuestion(threadId, text);
     const unnamed = project.threadName === UNNAMED_THREAD;
-    this.launch(threadId, async () => {
-      if (unnamed) await this.nameThread(threadId, text, attachments);
-      const ready = await handoff(said(text, attachments));
-      if (await this.gateSegment(threadId, ready)) {
-        await this.agentSegment(threadId, project.id, ready);
-      }
-    });
+    this.launch(
+      threadId,
+      async () => {
+        if (unnamed) await this.nameThread(threadId, text, attachments);
+        const ready = await handoff(said(text, attachments));
+        if (await this.gateSegment(threadId, ready)) {
+          await this.agentSegment(threadId, project.id, ready);
+        }
+      },
+      origin,
+    );
   }
 
   /**
@@ -406,7 +426,15 @@ export class RunService implements OnModuleInit {
     handoff: Handoff,
     resume?: { state: unknown; reply: Reply },
   ): Promise<void> {
+    // A card answer resumes a run already counted, so only a new run is held to the cap.
+    const { userId } = currentOrigin();
+    const over = !resume && userId ? await this.caps.exceeded(userId) : null;
     const runId = await this.newRun(threadId, handoff.category, handoff.mode, null);
+    if (over) {
+      await this.emit(threadId, { type: 'message', body: capMessage(over), claims: [] });
+      await this.stop(threadId, runId, 'budget', { state: null, steps: [], tokens: 0 });
+      return;
+    }
     const steps: string[] = [];
     const said: string[] = [];
     const signal = this.stops.get(threadId)?.signal;
@@ -552,11 +580,12 @@ export class RunService implements OnModuleInit {
     }
   }
 
-  private launch(threadId: string, work: () => Promise<void>): void {
+  private launch(threadId: string, work: () => Promise<void>, origin: RunOrigin): void {
     const stop = new AbortController();
     this.active.add(threadId);
     this.stops.set(threadId, stop);
-    void work()
+    void runOrigin
+      .run(origin, work)
       .catch((err: unknown) => this.logger.error(err))
       .finally(() => {
         this.active.delete(threadId);
@@ -608,7 +637,7 @@ export class RunService implements OnModuleInit {
   ): Promise<string> {
     const [run] = await this.db
       .insert(runs)
-      .values({ threadId, agent, job, state, status: 'running' })
+      .values({ threadId, agent, job, state, status: 'running', ...currentOrigin() })
       .returning({ id: runs.id });
     if (!run) throw new Error('Run insert returned no row');
     return run.id;

@@ -120,6 +120,34 @@
       "when": 1793099355629,
       "tag": "0016_email_verification",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1793122669520,
+      "tag": "0017_runs_origin_caps_usage",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1793122908564,
+      "tag": "0018_calendar_feeds",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1793123255231,
+      "tag": "0019_launch_watch",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1793123257154,
+      "tag": "0020_actuals_pace",
+      "breakpoints": true
     }
   ]
 }

@@ -10,6 +10,7 @@ import { ProjectsModule } from './projects/projects.module.js';
 import { RulesModule } from './rules/rules.module.js';
 import { TeamsModule } from './teams/teams.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
+import { WatchModule } from './watch/watch.module.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     ProjectsModule,
     UploadsModule,
     TeamsModule,
+    WatchModule,
   ],
 })
 export class AppModule {}

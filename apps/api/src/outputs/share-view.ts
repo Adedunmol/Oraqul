@@ -16,6 +16,8 @@ export function redactForShare(detail: OutputDetail): OutputDetail {
       plan: output.plan
         ? {
             ...output.plan,
+            // "To sharpen this plan" is advice to the team, not part of the plan (spec §6.1).
+            sections: output.plan.sections.filter((s) => s.key !== 'gaps'),
             dropped: [],
             process: output.plan.process ? { ...output.plan.process, dropped: [] } : null,
           }

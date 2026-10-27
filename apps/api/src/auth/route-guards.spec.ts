@@ -1,12 +1,17 @@
 import 'reflect-metadata';
 import type { Type } from '@nestjs/common';
+import { GuideController } from '../guide/guide.controller.js';
 import { HealthController } from '../health/health.controller.js';
+import { CalendarController, CalendarFeedController } from '../projects/calendar.controller.js';
 import { PinsController } from '../projects/pins.controller.js';
 import { ProjectsController } from '../projects/projects.controller.js';
 import { SharesController } from '../projects/shares.controller.js';
+import { RulesController } from '../rules/rules.controller.js';
 import { InvitesController } from '../teams/invites.controller.js';
 import { TeamsController } from '../teams/teams.controller.js';
 import { UploadsController } from '../uploads/uploads.controller.js';
+import { AllowanceController } from '../watch/allowance.controller.js';
+import { WatchController } from '../watch/watch.controller.js';
 import { AuthController } from './auth.controller.js';
 import { ROLES_KEY, RolesGuard } from './roles.guard.js';
 import { SessionGuard } from './session.guard.js';
@@ -23,12 +28,21 @@ const controllers: Type[] = [
   PinsController,
   ProjectsController,
   SharesController,
+  CalendarController,
+  CalendarFeedController,
+  GuideController,
+  RulesController,
+  WatchController,
+  AllowanceController,
 ];
 
 // Routes open to someone with no session, on purpose.
 const open = new Set([
   'GET health',
   'GET s/:token',
+  'GET cal/:token',
+  'POST guide/ask',
+  'GET rules',
   'POST auth/signup',
   'POST auth/code',
   'POST auth/code/verify',

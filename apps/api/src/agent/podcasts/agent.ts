@@ -1,5 +1,5 @@
 import type { ToolContext } from '@oraqul/engine';
-import type { Output } from '@oraqul/schema';
+import type { Output, PaceState } from '@oraqul/schema';
 import { LaunchAgent } from '../launch/agent.js';
 import type { Analyst } from '../launch/analyse.js';
 import type { FollowUpReader } from '../launch/follow-up.js';
@@ -40,6 +40,8 @@ export interface PodcastsAgentDeps {
   tools: () => ToolContext;
   /** The saved plan a follow up is about, and what it was built from. */
   plan: (outputId: string) => Promise<{ output: Output; inputs: unknown } | null>;
+  /** The team's own figures against a plan's pace, for a rescue. */
+  pace?: (outputId: string) => Promise<PaceState | null>;
   /** The planner for an answer: the model planner, or a scripted summary of the plan. */
   planner: (plan: Output) => Planner;
   maxSteps: number;

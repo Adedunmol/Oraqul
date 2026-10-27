@@ -48,6 +48,7 @@ export type FollowUp =
   | { job: 'date'; rivals: { title: string; date: string }[] }
   | { job: 'partner'; partner: string | null }
   | { job: 'creative' }
+  | { job: 'rescue' }
   | { job: 'audit' }
   | { job: 'fix' };
 
@@ -93,6 +94,15 @@ const QUESTION =
 // The creative kit is asked for in plain words, so code reads it and no model decides it.
 const CREATIVE_ASK =
   /\b(?:creative kit|caption packs?|shot lists?|key art briefs?|hook options?|(?:trailer|video|ad|reel|tiktok) scripts?|scripts? for (?:the|a|our|my))\b/i;
+
+// A rescue is asked for in plain words, so code reads it and no model decides it.
+const RESCUE_ASK =
+  /\b(?:rescue\s+(?:this|that|the|my|our|it)\b|turn (?:this|the|my|our) (?:launch|plan|campaign) around|get (?:us |this |it |the launch )?back on (?:pace|track))\b/i;
+
+/** Whether a message asks for a rescue of a launch that is behind its pace. */
+export function askedRescue(text: string): boolean {
+  return RESCUE_ASK.test(text);
+}
 
 /** Whether a message asks for the creative kit: the guides a team needs to make the creative. */
 export function askedCreative(text: string): boolean {
@@ -148,6 +158,7 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
       0 || change.gender !== null;
 
   if (rivals.length) return { job: 'date', rivals };
+  if (askedRescue(text)) return { job: 'rescue' };
   if (askedCreative(text)) return { job: 'creative' };
   if (askedRefresh(text) && !askedJob(text)) return { job: 'refresh' };
   const asked = askedJob(text);

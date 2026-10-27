@@ -3,13 +3,20 @@ import {
   categories,
   codePurposes,
   confidences,
+  entryModes,
   jobs,
   oauthProviders,
+  paceKinds,
   reactionKinds,
   receiptSources,
   roles,
   startModes,
   stopReasons,
+  watchCadences,
+  watchEventStatuses,
+  watchEventTypes,
+  watchSeverities,
+  watchStatuses,
 } from '@oraqul/schema';
 import { sql } from 'drizzle-orm';
 import {
@@ -39,6 +46,8 @@ export const users = pgTable('users', {
   name: text('name').notNull(),
   passwordHash: text('password_hash'),
   emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
+  /** Runs a month this person may start. Null means the server's default. */
+  runCap: integer('run_cap'),
   createdAt: createdAt(),
 });
 
@@ -394,6 +403,9 @@ export const outcomes = pgTable(
 
 export const runStatuses = ['running', 'waiting', 'done', 'error'] as const;
 
+/** Where a run was started: the web app, a connected agent, or a launch watch's approved action. */
+export const runVias = ['web', 'mcp', 'watch'] as const;
+
 /**
  * One run segment of a thread: from a message until the agent finishes, asks, or stops. `state`
  * holds what the next segment needs (the router's reading, the open question), so a waiting run
@@ -412,13 +424,26 @@ export const runs = pgTable(
     state: jsonb('state'),
     qlooCalls: integer('qloo_calls').notNull().default(0),
     tokens: integer('tokens').notNull().default(0),
+    /** Who the run counts against. Null on runs from before caps and for the router and gate. */
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    via: text('via', { enum: runVias }).notNull().default('web'),
     status: text('status', { enum: runStatuses }).notNull().default('running'),
     stopReason: text('stop_reason', { enum: stopReasons }),
     finishedAt: timestamp('finished_at', { withTimezone: true }),
     createdAt: createdAt(),
   },
-  (table) => [index('runs_thread_idx').on(table.threadId, table.createdAt)],
+  (table) => [
+    index('runs_thread_idx').on(table.threadId, table.createdAt),
+    index('runs_user_idx').on(table.userId, table.createdAt),
+  ],
 );
+
+/** Qloo network calls made this month by every run together, for the shared budget (qloo.md). */
+export const qlooUsage = pgTable('qloo_usage', {
+  /** `YYYY-MM`, in UTC. */
+  month: text('month').primaryKey(),
+  calls: integer('calls').notNull().default(0),
+});
 
 /** One person's pinned projects. Three at most, kept by the service, not the database. */
 export const pins = pgTable(
@@ -514,3 +539,169 @@ export const campaignTests = pgTable(
   },
   (table) => [unique('campaign_tests_action_unique').on(table.actionId)],
 );
+
+/**
+ * A subscribable calendar of a project's dates. Only the hash of the token is kept, so a database
+ * leak does not hand out working feeds. One live feed per project: a new one revokes the old.
+ */
+export const calendarFeeds = pgTable(
+  'calendar_feeds',
+  {
+    id: id(),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    tokenHash: text('token_hash').notNull().unique(),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (table) => [index('calendar_feeds_project_idx').on(table.projectId)],
+);
+
+/**
+ * A scheduled re-check of one saved plan. The scheduler claims a due row by setting `locked_until`
+ * inside a row lock, so a restart or a second tick never runs one watch twice, and a check lost to
+ * a crash is picked up when the lock expires. A watch only raises events; it never edits the plan.
+ */
+export const watches = pgTable(
+  'watches',
+  {
+    id: id(),
+    outputId: uuid('output_id')
+      .notNull()
+      .unique()
+      .references(() => outputs.id, { onDelete: 'cascade' }),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    teamId: uuid('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'cascade' }),
+    status: text('status', { enum: watchStatuses }).notNull().default('active'),
+    cadence: text('cadence', { enum: watchCadences }).notNull().default('daily'),
+    nextCheckAt: timestamp('next_check_at', { withTimezone: true }).notNull(),
+    lastCheckedAt: timestamp('last_checked_at', { withTimezone: true }),
+    /** Hash of what the last check found, so an unchanged result raises nothing new. */
+    lastResultHash: text('last_result_hash'),
+    lockedUntil: timestamp('locked_until', { withTimezone: true }),
+    minSeverity: text('min_severity', { enum: watchSeverities }).notNull().default('watch'),
+    /** What the last check could not do, such as "could not check rival dates". */
+    lastNotes: text('last_notes').array().notNull().default(sql`'{}'::text[]`),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [
+    index('watches_due_idx').on(table.status, table.nextCheckAt),
+    index('watches_project_idx').on(table.projectId),
+  ],
+);
+
+export const watchEvents = pgTable(
+  'watch_events',
+  {
+    id: id(),
+    watchId: uuid('watch_id')
+      .notNull()
+      .references(() => watches.id, { onDelete: 'cascade' }),
+    outputId: uuid('output_id')
+      .notNull()
+      .references(() => outputs.id, { onDelete: 'cascade' }),
+    type: text('type', { enum: watchEventTypes }).notNull(),
+    severity: text('severity', { enum: watchSeverities }).notNull(),
+    /** `{ title, reason, evidence[] }`, written by code from checked fields. */
+    detail: jsonb('detail').notNull(),
+    /** One event per cause: a check that finds the same thing again adds nothing. */
+    dedupeKey: text('dedupe_key').notNull(),
+    status: text('status', { enum: watchEventStatuses }).notNull().default('open'),
+    /** The output an approved event started, such as a refresh or a rescue. */
+    actionOutputId: uuid('action_output_id').references(() => outputs.id, { onDelete: 'set null' }),
+    emailedAt: timestamp('emailed_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    unique('watch_events_dedupe_unique').on(table.watchId, table.dedupeKey),
+    index('watch_events_watch_idx').on(table.watchId, table.createdAt),
+  ],
+);
+
+/** How far one person has read a watch's events: events at or before `seen_through` are seen. */
+export const watchReads = pgTable(
+  'watch_reads',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    watchId: uuid('watch_id')
+      .notNull()
+      .references(() => watches.id, { onDelete: 'cascade' }),
+    seenThrough: timestamp('seen_through', { withTimezone: true }).notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [unique('watch_reads_user_watch_unique').on(table.userId, table.watchId)],
+);
+
+/** A person who has turned the digest email off for one watch. Their events still show in the app. */
+export const watchMutes = pgTable(
+  'watch_mutes',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    watchId: uuid('watch_id')
+      .notNull()
+      .references(() => watches.id, { onDelete: 'cascade' }),
+    createdAt: createdAt(),
+  },
+  (table) => [unique('watch_mutes_user_watch_unique').on(table.userId, table.watchId)],
+);
+
+/**
+ * The team's own figures for a plan's primary signal, one row per day, city and channel. Aggregates
+ * only (hard rule 7): a pasted file's other columns are dropped before this. Never sent to Qloo or
+ * a model, and never a forecast.
+ */
+export const actuals = pgTable(
+  'actuals',
+  {
+    id: id(),
+    outputId: uuid('output_id')
+      .notNull()
+      .references(() => outputs.id, { onDelete: 'cascade' }),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    signalKey: text('signal_key').notNull(),
+    onDate: text('on_date').notNull(),
+    value: real('value').notNull(),
+    /** Empty, not null, so the unique key below treats "no city" as one value. */
+    city: text('city').notNull().default(''),
+    channel: text('channel').notNull().default(''),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    unique('actuals_day_unique').on(table.outputId, table.onDate, table.city, table.channel),
+    index('actuals_output_idx').on(table.outputId, table.onDate),
+  ],
+);
+
+/** What a plan's figures are read against: the target and the curve, with where each came from. */
+export const paceSettings = pgTable('pace_settings', {
+  id: id(),
+  outputId: uuid('output_id')
+    .notNull()
+    .unique()
+    .references(() => outputs.id, { onDelete: 'cascade' }),
+  target: real('target'),
+  unit: text('unit').notNull(),
+  kind: text('kind', { enum: paceKinds }).notNull(),
+  entry: text('entry', { enum: entryModes }).notNull(),
+  curve: jsonb('curve').notNull(),
+  curveFrom: text('curve_from', { enum: ['rule', 'team'] }).notNull(),
+  rulesVersion: text('rules_version').notNull(),
+  updatedAt: updatedAt(),
+});
