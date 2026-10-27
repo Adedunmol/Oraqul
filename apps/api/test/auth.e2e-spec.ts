@@ -50,6 +50,7 @@ describe('auth (e2e, services stubbed)', () => {
   const createUnverified = vi.fn(
     async (): Promise<typeof user> => ({ ...user, emailVerifiedAt: null }),
   );
+  const setPassword = vi.fn(async (): Promise<void> => undefined);
   const send = vi.fn(async (): Promise<void> => undefined);
 
   async function boot(db: object) {
@@ -83,7 +84,8 @@ describe('auth (e2e, services stubbed)', () => {
         findOrCreateVerified: async () => user,
         createUnverified,
         confirmSignupEmail: async () => user,
-        setPassword: async () => undefined,
+        updateName: async (_id: string, name: string) => ({ ...user, name }),
+        setPassword,
       })
       .compile();
     app = moduleRef.createNestApplication();
@@ -94,6 +96,7 @@ describe('auth (e2e, services stubbed)', () => {
   beforeEach(() => {
     issue.mockClear();
     send.mockClear();
+    setPassword.mockClear();
     createUnverified.mockClear();
     assertAllowed.mockReset().mockResolvedValue(undefined);
     recordFailure.mockClear();
@@ -283,5 +286,67 @@ describe('auth (e2e, services stubbed)', () => {
       .set('Cookie', login.headers['set-cookie'] ?? [])
       .expect(202);
     expect(send).not.toHaveBeenCalled();
+  });
+
+  describe('account settings', () => {
+    async function signedIn(row: object) {
+      await boot(fakeDb([{ user: row }]));
+      const login = await request(app.getHttpServer())
+        .post('/auth/code/verify')
+        .send({ email: 'ada@example.com', code: '123456' });
+      return login.headers['set-cookie'] ?? [];
+    }
+
+    it('renames the signed in person and rejects an empty name', async () => {
+      const cookie = await signedIn(user);
+      const http = app.getHttpServer();
+      const res = await request(http)
+        .patch('/auth/me')
+        .set('Cookie', cookie)
+        .send({ name: '  Ada L  ' });
+      expect(res.status).toBe(200);
+      expect(res.body.user.name).toBe('Ada L');
+      await request(http).patch('/auth/me').set('Cookie', cookie).send({ name: '  ' }).expect(400);
+      await request(http).patch('/auth/me').send({ name: 'Ada' }).expect(401);
+    });
+
+    it('changes a password only with the current one, and counts wrong guesses', async () => {
+      const cookie = await signedIn({ ...user, passwordHash: await hashPassword('rightpass1') });
+      const http = app.getHttpServer();
+      await request(http)
+        .post('/auth/password/change')
+        .set('Cookie', cookie)
+        .send({ currentPassword: 'wrongpass1', newPassword: 'brandnewpass1' })
+        .expect(400);
+      expect(recordFailure).toHaveBeenCalled();
+      expect(setPassword).not.toHaveBeenCalled();
+      const ok = await request(http)
+        .post('/auth/password/change')
+        .set('Cookie', cookie)
+        .send({ currentPassword: 'rightpass1', newPassword: 'brandnewpass1' })
+        .expect(200);
+      expect(setPassword).toHaveBeenCalledOnce();
+      expect(ok.body.user.hasPassword).toBe(true);
+      expect(String(ok.headers['set-cookie'])).toMatch(/oraqul_session=/);
+    });
+
+    it('lets an account with no password set its first one', async () => {
+      const cookie = await signedIn(user);
+      await request(app.getHttpServer())
+        .post('/auth/password/change')
+        .set('Cookie', cookie)
+        .send({ newPassword: 'brandnewpass1' })
+        .expect(200);
+      expect(setPassword).toHaveBeenCalledOnce();
+    });
+
+    it('refuses a short new password', async () => {
+      const cookie = await signedIn(user);
+      await request(app.getHttpServer())
+        .post('/auth/password/change')
+        .set('Cookie', cookie)
+        .send({ newPassword: 'short' })
+        .expect(400);
+    });
   });
 });

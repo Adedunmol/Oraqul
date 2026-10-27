@@ -23,6 +23,13 @@ export const resetConfirmSchema = z.object({
   password: passwordSchema,
 });
 
+export const updateProfileSchema = z.object({ name: z.string().trim().min(1).max(100) });
+/** `currentPassword` is required when the account already has a password, and ignored otherwise. */
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().max(200).optional(),
+  newPassword: passwordSchema,
+});
+
 /** Only same-site paths, so a sign-in redirect cannot leave the web app. */
 export const nextPathSchema = z
   .string()
@@ -36,10 +43,14 @@ export const meResponseSchema = z.object({
     name: z.string(),
     /** False until the person proves the address; unverified accounts can look around but not write. */
     emailVerified: z.boolean(),
+    /** False for an account made with Google or an emailed code, which has no password yet. */
+    hasPassword: z.boolean(),
   }),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type MeResponse = z.infer<typeof meResponseSchema>;
 

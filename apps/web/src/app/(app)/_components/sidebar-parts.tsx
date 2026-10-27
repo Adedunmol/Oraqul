@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getSidebarProjects } from '@/lib/api/projects-server';
 import { getShellData } from '@/lib/api/shell';
 import { MainNav } from './main-nav';
@@ -49,7 +50,10 @@ export async function SidebarUser() {
   const data = await getShellData();
   if (!data) return null;
   return (
-    <div className="flex min-w-0 items-center gap-2.5 px-1 rail:justify-center rail:px-0">
+    <Link
+      href="/settings"
+      className="flex min-w-0 items-center gap-2.5 rounded-lg px-1 py-1 hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent rail:justify-center rail:px-0"
+    >
       <span
         aria-hidden
         data-rail-tip={`${data.user.name}, ${data.user.email}`}
@@ -61,6 +65,6 @@ export async function SidebarUser() {
         <span className="truncate text-sm font-semibold">{data.user.name}</span>
         <span className="truncate text-[13px] text-muted">{data.user.email}</span>
       </div>
-    </div>
+    </Link>
   );
 }

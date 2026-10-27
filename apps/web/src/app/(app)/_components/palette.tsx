@@ -98,6 +98,7 @@ export function Palette({ projects }: { projects: Project[] }) {
       ),
       { group: 'Actions', label: 'New project', icon: 'plus', href: startPath() },
       { group: 'Actions', label: 'Team and roles', icon: 'team', href: '/team' },
+      { group: 'Actions', label: 'Account settings', icon: 'settings', href: '/settings' },
       { group: 'Actions', label: 'Open the guide', icon: 'help', href: '/guide' },
       { group: 'Actions', label: 'Build a brief', icon: 'help', href: '/guide#builder' },
     ];

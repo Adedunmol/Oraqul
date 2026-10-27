@@ -1,4 +1,5 @@
-import { Logo } from '@oraqul/ui';
+import { buttonClassName, Icon, Logo } from '@oraqul/ui';
+import Link from 'next/link';
 import { type ReactNode, Suspense } from 'react';
 import { SignOutButton } from '../_components/sign-out-button';
 import { Toaster } from '../_workspace/toast';
@@ -57,6 +58,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <NavLink href="/team" icon="team">
                 Team
               </NavLink>
+              <NavLink href="/settings" icon="settings">
+                Settings
+              </NavLink>
               <NavLink href="/guide" icon="help">
                 Guide
               </NavLink>
@@ -100,6 +104,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </Suspense>
           {children}
           <div className="flex flex-wrap gap-2 min-[900px]:hidden">
+            <Link href="/settings" className={buttonClassName('default', 'default', 'icon')}>
+              <Icon name="settings" className="size-4" />
+              Settings
+            </Link>
             <ThemeToggle />
             <SignOutButton />
           </div>
