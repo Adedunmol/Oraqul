@@ -36,3 +36,19 @@ export function inviteMember(teamId: string, input: CreateInviteInput): Promise<
     inviteSummarySchema,
   );
 }
+
+export function renameTeam(teamId: string, name: string): Promise<void> {
+  return clientRequest(
+    `/teams/${teamId}`,
+    { method: 'PATCH', body: { name } },
+    emptyResponseSchema,
+  );
+}
+
+export function revokeInvite(teamId: string, inviteId: string): Promise<void> {
+  return clientRequest(
+    `/teams/${teamId}/invites/${inviteId}`,
+    { method: 'DELETE' },
+    emptyResponseSchema,
+  );
+}

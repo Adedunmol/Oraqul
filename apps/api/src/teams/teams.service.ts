@@ -39,6 +39,7 @@ export class TeamsService {
         name: users.name,
         email: users.email,
         role: memberships.role,
+        joinedAt: memberships.createdAt,
       })
       .from(memberships)
       .innerJoin(users, eq(users.id, memberships.userId))
@@ -67,9 +68,20 @@ export class TeamsService {
     return {
       team: { id: team.id, name: team.name },
       myRole,
-      members,
+      members: members.map((member) => ({ ...member, joinedAt: member.joinedAt.toISOString() })),
       invites: pending.map((invite) => ({ ...invite, expiresAt: invite.expiresAt.toISOString() })),
     };
+  }
+
+  async rename(teamId: string, name: string): Promise<void> {
+    const renamed = await this.db
+      .update(teams)
+      .set({ name })
+      .where(eq(teams.id, teamId))
+      .returning({ id: teams.id });
+    if (renamed.length === 0) {
+      throw new NotFoundException();
+    }
   }
 
   async changeRole(teamId: string, userId: string, role: Role): Promise<void> {

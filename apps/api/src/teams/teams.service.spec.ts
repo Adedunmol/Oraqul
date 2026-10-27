@@ -47,6 +47,18 @@ describe('TeamsService', () => {
     expect(await service.list(bob.id)).toEqual([]);
   });
 
+  it('renames a team and shows when each member joined', async () => {
+    const ada = await newUser('Ada');
+    const team = await service.create(ada.id, 'Studio');
+    await service.rename(team.id, 'Studio Two');
+    const detail = await service.detail(team.id, 'owner');
+    expect(detail.team.name).toBe('Studio Two');
+    expect(Date.parse(detail.members[0]?.joinedAt ?? '')).not.toBeNaN();
+    await expect(
+      service.rename('00000000-0000-4000-8000-000000000000', 'Nope'),
+    ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
   describe('last owner rule', () => {
     it('refuses to demote the only owner', async () => {
       const ada = await newUser('Ada');

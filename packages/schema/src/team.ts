@@ -8,6 +8,7 @@ export const teamNameSchema = z.string().trim().min(1).max(80);
 export const inviteTokenSchema = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
 
 export const createTeamSchema = z.object({ name: teamNameSchema });
+export const renameTeamSchema = z.object({ name: teamNameSchema });
 export const changeRoleSchema = z.object({ role: roleSchema });
 export const createInviteSchema = z.object({ email: emailSchema, role: roleSchema });
 
@@ -23,6 +24,7 @@ export const memberSchema = z.object({
   name: z.string(),
   email: z.email(),
   role: roleSchema,
+  joinedAt: z.iso.datetime(),
 });
 
 export const inviteSummarySchema = z.object({

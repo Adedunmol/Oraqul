@@ -1,4 +1,5 @@
-import { Logo } from '@oraqul/ui';
+import { buttonClassName, Icon, Logo } from '@oraqul/ui';
+import Link from 'next/link';
 import { type ReactNode, Suspense } from 'react';
 import { SignOutButton } from '../_components/sign-out-button';
 import { Toaster } from '../_workspace/toast';
@@ -50,7 +51,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <SearchButton />
         {/* The nav reads the URL to light the current item, which is only known at request time. */}
         <Suspense fallback={navSkeleton}>
-          <nav aria-label="Main" className="flex flex-col gap-5">
+          <nav
+            aria-label="Main"
+            className="scroll-quiet flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto rail:overflow-visible"
+          >
             <SidebarNav />
             <div className="flex flex-col gap-1 rail:pt-3">
               <p className={groupLabel}>Manage</p>
@@ -63,7 +67,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </div>
           </nav>
         </Suspense>
-        <div className="mt-auto flex flex-col gap-3 border-t border-line pt-4">
+        <div className="mt-auto flex shrink-0 flex-col gap-3 border-t border-line pt-4">
           <Suspense
             fallback={
               <div className="flex flex-col gap-2 px-1">
@@ -74,10 +78,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           >
             <SidebarUser />
           </Suspense>
-          <div className="flex flex-wrap gap-2 rail:flex-col rail:items-center">
-            <ThemeToggle />
-            <SignOutButton />
-          </div>
         </div>
       </aside>
 
@@ -100,6 +100,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </Suspense>
           {children}
           <div className="flex flex-wrap gap-2 min-[900px]:hidden">
+            <Link href="/settings" className={buttonClassName('default', 'default', 'icon')}>
+              <Icon name="settings" className="size-4" />
+              Settings
+            </Link>
             <ThemeToggle />
             <SignOutButton />
           </div>

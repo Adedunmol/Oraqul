@@ -331,6 +331,19 @@ body {
   background: transparent;
 }
 
+/* The sidebar list scrolls only when it has to, so its bar stays out of sight until the pointer or
+   keyboard focus is in it. The standard properties win over the ::-webkit rules in current browsers. */
+.scroll-quiet {
+  scrollbar-color: transparent transparent;
+}
+.scroll-quiet:hover,
+.scroll-quiet:focus-within {
+  scrollbar-color: color-mix(in srgb, var(--muted) 45%, transparent) transparent;
+}
+.scroll-quiet:not(:hover):not(:focus-within)::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
 @keyframes preview-rise {
   from {
     opacity: 0;

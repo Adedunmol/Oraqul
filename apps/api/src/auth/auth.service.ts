@@ -7,7 +7,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { LoginInput, MeResponse, SignupInput } from '@oraqul/schema';
+import type {
+  ChangePasswordInput,
+  LoginInput,
+  MeResponse,
+  SignupInput,
+  UpdateProfileInput,
+} from '@oraqul/schema';
 import type { Response } from 'express';
 import type { Env } from '../config/env.js';
 import { CodesService } from './codes.service.js';
@@ -45,6 +51,7 @@ export class AuthService {
         email: user.email,
         name: user.name,
         emailVerified: user.emailVerifiedAt !== null,
+        hasPassword: user.passwordHash !== null,
       },
     };
   }
@@ -117,6 +124,39 @@ export class AuthService {
     await this.loginLimiter.clear(input.email, ip);
     await this.sessions.create(user.id, response);
     return AuthService.me(user);
+  }
+
+  async updateProfile(user: SessionUser, input: UpdateProfileInput): Promise<MeResponse> {
+    return AuthService.me(await this.users.updateName(user.id, input.name));
+  }
+
+  /**
+   * An account that has a password must prove it, so a stolen session cannot lock the owner out.
+   * Wrong guesses count against the same limit as sign in. Other devices are signed out, and this
+   * one gets a fresh session.
+   */
+  async changePassword(
+    user: SessionUser,
+    input: ChangePasswordInput,
+    ip: string,
+    response: Response,
+  ): Promise<MeResponse> {
+    if (user.passwordHash) {
+      await this.loginLimiter.assertAllowed(user.email, ip);
+      const matches =
+        input.currentPassword !== undefined &&
+        (await verifyPassword(input.currentPassword, user.passwordHash));
+      if (!matches) {
+        await this.loginLimiter.recordFailure(user.email, ip);
+        // 400, not 401: the web app treats a 401 as signed out.
+        throw new BadRequestException('Current password is wrong');
+      }
+      await this.loginLimiter.clear(user.email, ip);
+    }
+    await this.users.setPassword(user.id, await hashPassword(input.newPassword));
+    await this.sessions.destroyAllForUser(user.id);
+    await this.sessions.create(user.id, response);
+    return AuthService.me({ ...user, passwordHash: 'set' });
   }
 
   async requestReset(email: string): Promise<void> {

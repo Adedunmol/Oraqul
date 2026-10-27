@@ -14,6 +14,7 @@ import {
   createInviteSchema,
   createTeamSchema,
   type InviteSummary,
+  renameTeamSchema,
   type TeamDetail,
   type TeamSummary,
   type TeamsResponse,
@@ -57,6 +58,17 @@ export class TeamsController {
     return this.teams.detail(membership.teamId, membership.role);
   }
 
+  @Patch(':teamId')
+  @UseGuards(RolesGuard)
+  @Roles('owner')
+  @HttpCode(204)
+  rename(
+    @CurrentMembership() membership: Membership,
+    @Body(new ZodPipe(renameTeamSchema)) body: z.infer<typeof renameTeamSchema>,
+  ): Promise<void> {
+    return this.teams.rename(membership.teamId, body.name);
+  }
+
   @Patch(':teamId/members/:userId')
   @UseGuards(RolesGuard)
   @Roles('owner')
@@ -89,5 +101,16 @@ export class TeamsController {
     @Body(new ZodPipe(createInviteSchema)) body: z.infer<typeof createInviteSchema>,
   ): Promise<InviteSummary> {
     return this.invites.create(membership.teamId, user, body);
+  }
+
+  @Delete(':teamId/invites/:inviteId')
+  @UseGuards(RolesGuard)
+  @Roles('owner')
+  @HttpCode(204)
+  revokeInvite(
+    @CurrentMembership() membership: Membership,
+    @Param('inviteId', userIdPipe) inviteId: string,
+  ): Promise<void> {
+    return this.invites.revoke(membership.teamId, inviteId);
   }
 }
