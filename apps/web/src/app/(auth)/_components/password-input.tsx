@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@oraqul/ui';
+import { Icon, Input } from '@oraqul/ui';
 import { type ComponentProps, useState } from 'react';
 
 /**
@@ -18,9 +18,10 @@ export function PasswordInput(props: Omit<ComponentProps<typeof Input>, 'type' |
           type="button"
           onClick={() => setShown((value) => !value)}
           aria-label={shown ? 'Hide password' : 'Show password'}
-          className="rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
+          aria-pressed={shown}
+          className="grid size-8 place-items-center rounded-md text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
         >
-          {shown ? 'Hide' : 'Show'}
+          <Icon name={shown ? 'eyeOff' : 'eye'} />
         </button>
       }
     />

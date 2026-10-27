@@ -33,9 +33,19 @@ export class AuthController {
   ) {}
 
   @Post('signup')
+  @HttpCode(201)
+  signup(
+    @Body(new ZodPipe(signupSchema)) body: SignupInput,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<MeResponse> {
+    return this.auth.signup(body, response);
+  }
+
+  @Post('verification')
   @HttpCode(202)
-  signup(@Body(new ZodPipe(signupSchema)) body: SignupInput): Promise<void> {
-    return this.auth.signup(body);
+  @UseGuards(SessionGuard)
+  resendVerification(@CurrentUser() user: SessionUser): Promise<void> {
+    return this.auth.resendVerification(user);
   }
 
   @Post('code')

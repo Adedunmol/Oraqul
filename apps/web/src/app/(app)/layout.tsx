@@ -9,6 +9,7 @@ import { SearchButton } from './_components/palette';
 import { SidebarNav, SidebarPalette, SidebarTeam, SidebarUser } from './_components/sidebar-parts';
 import { SidebarToggle } from './_components/sidebar-toggle';
 import { ThemeToggle } from './_components/theme-toggle';
+import { VerifyBanner } from './_components/verify-banner';
 
 const groupLabel = 'px-3 text-[12px] font-semibold text-muted rail:sr-only';
 
@@ -94,6 +95,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         className="flex-1 border-t border-line bg-canvas [--page-x:clamp(16px,2.4vw,32px)] [--page-y:clamp(16px,2vw,28px)] px-(--page-x) py-(--page-y) min-[900px]:my-2 min-[900px]:mr-2 min-[900px]:rounded-2xl min-[900px]:border"
       >
         <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
+          <Suspense fallback={null}>
+            <VerifyBanner />
+          </Suspense>
           {children}
           <div className="flex flex-wrap gap-2 min-[900px]:hidden">
             <ThemeToggle />

@@ -6,6 +6,7 @@ import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { AuthModule } from '../src/auth/auth.module.js';
 import { CodesService } from '../src/auth/codes.service.js';
+import { EMAIL_SENDER } from '../src/auth/email/email-sender.js';
 import { LoginLimiterService } from '../src/auth/login-limiter.service.js';
 import { hashPassword } from '../src/auth/password.js';
 import { UsersService } from '../src/auth/users.service.js';
@@ -19,6 +20,7 @@ const user = {
   email: 'ada@example.com',
   name: 'Ada',
   passwordHash: null as string | null,
+  emailVerifiedAt: new Date() as Date | null,
   createdAt: new Date(),
 };
 
@@ -39,11 +41,16 @@ function fakeDb(rows: unknown[] = []) {
 describe('auth (e2e, services stubbed)', () => {
   let app: INestApplication<App>;
   const issue = vi.fn(async () => '123456');
-  const consume = vi.fn(async () => ({ purpose: 'signin', name: null, passwordHash: null }));
+  const consume = vi.fn(async () => ({ purpose: 'signin' }));
   const assertAllowed = vi.fn(async (): Promise<void> => undefined);
   const recordFailure = vi.fn(async (): Promise<void> => undefined);
   const clear = vi.fn(async (): Promise<void> => undefined);
   const findByEmail = vi.fn(async (): Promise<typeof user | undefined> => undefined);
+
+  const createUnverified = vi.fn(
+    async (): Promise<typeof user> => ({ ...user, emailVerifiedAt: null }),
+  );
+  const send = vi.fn(async (): Promise<void> => undefined);
 
   async function boot(db: object) {
     const moduleRef = await Test.createTestingModule({
@@ -66,13 +73,16 @@ describe('auth (e2e, services stubbed)', () => {
       .useValue(db)
       .overrideProvider(CodesService)
       .useValue({ issue, consume })
+      .overrideProvider(EMAIL_SENDER)
+      .useValue({ send })
       .overrideProvider(LoginLimiterService)
       .useValue({ assertAllowed, recordFailure, clear })
       .overrideProvider(UsersService)
       .useValue({
         findByEmail,
         findOrCreateVerified: async () => user,
-        setPasswordIfMissing: async () => undefined,
+        createUnverified,
+        confirmSignupEmail: async () => user,
         setPassword: async () => undefined,
       })
       .compile();
@@ -83,6 +93,8 @@ describe('auth (e2e, services stubbed)', () => {
 
   beforeEach(() => {
     issue.mockClear();
+    send.mockClear();
+    createUnverified.mockClear();
     assertAllowed.mockReset().mockResolvedValue(undefined);
     recordFailure.mockClear();
     clear.mockClear();
@@ -207,5 +219,69 @@ describe('auth (e2e, services stubbed)', () => {
   it('rejects a Google next path that leaves the site', async () => {
     await boot(fakeDb());
     await request(app.getHttpServer()).get('/auth/google?next=//evil.com').expect(400);
+  });
+
+  it('signup starts a session right away and emails a link and a code', async () => {
+    await boot(fakeDb());
+    const res = await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({ name: 'Ada', email: 'Ada@Example.com', password: 'longenough' })
+      .expect(201);
+    expect(res.body.user).toMatchObject({ email: 'ada@example.com', emailVerified: false });
+    expect(String(res.headers['set-cookie'])).toMatch(/oraqul_session=s%3A/);
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        text: expect.stringContaining(
+          'http://localhost:3000/verify?email=ada%40example.com&code=123456',
+        ),
+      }),
+    );
+  });
+
+  it('signup still succeeds when the email cannot be sent', async () => {
+    await boot(fakeDb());
+    send.mockRejectedValueOnce(new HttpException('provider down', 502));
+    await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({ name: 'Ada', email: 'ada@example.com', password: 'longenough' })
+      .expect(201);
+  });
+
+  it('signup answers 409 for an email that already has an account', async () => {
+    await boot(fakeDb());
+    createUnverified.mockRejectedValueOnce(new HttpException('taken', 409));
+    await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({ name: 'Ada', email: 'ada@example.com', password: 'longenough' })
+      .expect(409);
+  });
+
+  it('resends the confirmation only to an unverified signed in account', async () => {
+    await boot(fakeDb([{ user: { ...user, emailVerifiedAt: null } }]));
+    const http = app.getHttpServer();
+    const signup = await request(http)
+      .post('/auth/signup')
+      .send({ name: 'Ada', email: 'ada@example.com', password: 'longenough' });
+    send.mockClear();
+    await request(http)
+      .post('/auth/verification')
+      .set('Cookie', signup.headers['set-cookie'] ?? [])
+      .expect(202);
+    expect(send).toHaveBeenCalledOnce();
+    await request(http).post('/auth/verification').expect(401);
+  });
+
+  it('does not resend to an account that is already confirmed', async () => {
+    await boot(fakeDb([{ user }]));
+    const http = app.getHttpServer();
+    const login = await request(http)
+      .post('/auth/code/verify')
+      .send({ email: 'ada@example.com', code: '123456' });
+    send.mockClear();
+    await request(http)
+      .post('/auth/verification')
+      .set('Cookie', login.headers['set-cookie'] ?? [])
+      .expect(202);
+    expect(send).not.toHaveBeenCalled();
   });
 });

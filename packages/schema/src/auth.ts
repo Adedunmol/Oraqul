@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const codePurposes = ['signin', 'signup', 'reset'] as const;
+export const codePurposes = ['signin', 'verify', 'reset'] as const;
 export type CodePurpose = (typeof codePurposes)[number];
 export const oauthProviders = ['google'] as const;
 
@@ -30,7 +30,13 @@ export const nextPathSchema = z
   .refine((path) => path.startsWith('/') && !path.startsWith('//') && !path.includes('\\'));
 
 export const meResponseSchema = z.object({
-  user: z.object({ id: z.uuid(), email: z.email(), name: z.string() }),
+  user: z.object({
+    id: z.uuid(),
+    email: z.email(),
+    name: z.string(),
+    /** False until the person proves the address; unverified accounts can look around but not write. */
+    emailVerified: z.boolean(),
+  }),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
