@@ -118,6 +118,18 @@ export class UsersService {
     return user;
   }
 
+  async updateName(userId: string, name: string): Promise<SessionUser> {
+    const [user] = await this.db
+      .update(users)
+      .set({ name })
+      .where(eq(users.id, userId))
+      .returning();
+    if (!user) {
+      throw new Error(`User ${userId} vanished during a rename`);
+    }
+    return user;
+  }
+
   async setPassword(userId: string, passwordHash: string): Promise<void> {
     await this.db.update(users).set({ passwordHash }).where(eq(users.id, userId));
   }

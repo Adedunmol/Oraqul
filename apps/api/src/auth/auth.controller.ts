@@ -1,5 +1,18 @@
-import { Body, Controller, Get, HttpCode, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Patch,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  type ChangePasswordInput,
+  changePasswordSchema,
   codeRequestSchema,
   codeVerifySchema,
   type LoginInput,
@@ -10,6 +23,8 @@ import {
   resetRequestSchema,
   type SignupInput,
   signupSchema,
+  type UpdateProfileInput,
+  updateProfileSchema,
 } from '@oraqul/schema';
 import type { Request, Response } from 'express';
 import type { z } from 'zod';
@@ -121,5 +136,26 @@ export class AuthController {
   @UseGuards(SessionGuard)
   me(@CurrentUser() user: SessionUser): MeResponse {
     return AuthService.me(user);
+  }
+
+  @Patch('me')
+  @UseGuards(SessionGuard)
+  updateProfile(
+    @CurrentUser() user: SessionUser,
+    @Body(new ZodPipe(updateProfileSchema)) body: UpdateProfileInput,
+  ): Promise<MeResponse> {
+    return this.auth.updateProfile(user, body);
+  }
+
+  @Post('password/change')
+  @HttpCode(200)
+  @UseGuards(SessionGuard)
+  changePassword(
+    @CurrentUser() user: SessionUser,
+    @Body(new ZodPipe(changePasswordSchema)) body: ChangePasswordInput,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<MeResponse> {
+    return this.auth.changePassword(user, body, request.ip ?? 'unknown', response);
   }
 }

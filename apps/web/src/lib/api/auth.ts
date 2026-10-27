@@ -67,3 +67,23 @@ export function confirmReset(input: {
 export function logout(): Promise<void> {
   return clientRequest('/auth/logout', { method: 'POST' }, accepted);
 }
+
+export function updateProfile(name: string): Promise<MeResponse> {
+  return clientRequest(
+    '/auth/me',
+    { method: 'PATCH', body: { name }, redirectOn401: false },
+    meResponseSchema,
+  );
+}
+
+/** `currentPassword` is left out by an account that has no password yet. */
+export function changePassword(input: {
+  currentPassword?: string;
+  newPassword: string;
+}): Promise<MeResponse> {
+  return clientRequest(
+    '/auth/password/change',
+    { method: 'POST', body: input, redirectOn401: false },
+    meResponseSchema,
+  );
+}

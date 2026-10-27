@@ -89,6 +89,9 @@ export function MemberRow({
           </p>
           <p className="truncate text-[13px] text-muted">{member.email}</p>
         </div>
+        <p className="hidden text-[13px] text-muted min-[1200px]:block">
+          Joined {new Date(member.joinedAt).toLocaleDateString('en', { dateStyle: 'medium' })}
+        </p>
         {canManage ? (
           <div className="flex flex-wrap items-center gap-2">
             <Dropdown

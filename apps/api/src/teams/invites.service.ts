@@ -126,6 +126,17 @@ export class InvitesService {
     };
   }
 
+  /** Takes back a pending invite, so its link stops working. */
+  async revoke(teamId: string, inviteId: string): Promise<void> {
+    const removed = await this.db
+      .delete(invites)
+      .where(and(eq(invites.id, inviteId), eq(invites.teamId, teamId), isNull(invites.acceptedAt)))
+      .returning({ id: invites.id });
+    if (removed.length === 0) {
+      throw new NotFoundException();
+    }
+  }
+
   async preview(token: string, user: SessionUser): Promise<InvitePreview> {
     const [row] = await this.db
       .select({
