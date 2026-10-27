@@ -3,11 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module.js';
 import { envSchema } from './config/env.js';
 import { DbModule } from './db/db.module.js';
+import { FundingModule } from './funding/funding.module.js';
 import { GuideModule } from './guide/guide.module.js';
 import { HealthModule } from './health/health.module.js';
 import { LlmModule } from './llm/llm.module.js';
+import { McpModule } from './mcp-http/mcp.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
 import { RulesModule } from './rules/rules.module.js';
+import { TeamRulesModule } from './team-rules/team-rules.module.js';
 import { TeamsModule } from './teams/teams.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 import { WatchModule } from './watch/watch.module.js';
@@ -28,6 +31,9 @@ import { WatchModule } from './watch/watch.module.js';
     ProjectsModule,
     UploadsModule,
     TeamsModule,
+    TeamRulesModule,
+    FundingModule,
+    McpModule,
     WatchModule,
   ],
 })

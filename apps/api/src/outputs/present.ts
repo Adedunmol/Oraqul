@@ -41,6 +41,7 @@ const KIND_LABEL: Record<Job, string> = {
   creative: 'Creative kit',
   refresh: 'What changed',
   rescue: 'Rescue',
+  funding: 'Funding and sponsors',
 };
 const PREFIX: Record<Job, string> = {
   build: 'v',
@@ -52,6 +53,7 @@ const PREFIX: Record<Job, string> = {
   creative: 'K',
   refresh: 'R',
   rescue: 'X',
+  funding: 'M',
 };
 
 // Product copy for the tabs (spec §9.3). The web demo has the same words until it is removed.
@@ -75,6 +77,8 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
     'What Qloo and the web say now, set beside what this plan saved. The plan itself is unchanged.',
   campaign:
     'The content calendar as a dated checklist your team edits and ticks off. Each action comes with a guide to adapt, and Oraqul alerts the team when a date slips: it makes no final asset and posts nothing.',
+  funding:
+    'Sponsors that fit each territory and funds that are open now, each with its source and the day it was read. Terms change: confirm on the source page before applying. Oraqul sends nothing.',
   watch:
     'Oraqul re-checks this plan on a schedule and says what needs a look. Add your own figures to see whether the launch is ahead of, on or behind the plan’s pace. It never changes the plan.',
   kit: 'Guides for the team that makes the creative: hooks, a script, a shot list, a key art brief and captions. Oraqul does not make the asset.',
@@ -101,6 +105,7 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   kit: 'Creative kit',
   campaign: 'Campaign',
   watch: 'Watch',
+  funding: 'Funding and sponsors',
   refresh: 'What changed',
   route: 'Tour route',
   supportacts: 'Support acts',
@@ -264,14 +269,14 @@ export function presentOutput({
             ]
           : []),
         // Watching and pacing are for a whole launch plan, not a narrow answer.
-        ...(plan.scope === 'full' ? (['watch'] as const) : []),
+        ...(plan.scope === 'full' ? (['funding', 'watch'] as const) : []),
       ]
     : [];
   // A launch plan opens on the plan itself (PRD O1); the evidence sits behind it.
   const tabKeys: OutputTabKey[] =
     row.kind === 'creative'
       ? ['kit', 'evidence']
-      : row.kind === 'rescue'
+      : row.kind === 'rescue' || row.kind === 'funding'
         ? ['plan', 'evidence']
         : row.kind === 'refresh'
           ? ['refresh']

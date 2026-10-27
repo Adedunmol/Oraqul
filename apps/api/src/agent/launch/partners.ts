@@ -3,6 +3,7 @@ import {
   type BudgetBand,
   CATEGORY_PARTNERS,
   FLAGSHIPS,
+  moneyTypeOf,
   PARTNER_RULES,
   PARTNER_SEEDS,
   type PartnerTier,
@@ -324,6 +325,8 @@ export function partnerOptions(input: {
   launcher?: LauncherKind | null;
   /** Brands the team asked to be considered. They come first and are always listed. */
   considered?: string[];
+  /** Partners the team never proposes, taken out of every list here, whoever named them. */
+  blocked?: string[];
 }): { partners: PartnerOption[]; calls: DirectionCall[] } {
   const { findings, signed, band, markets, category } = input;
   const launcher = input.launcher ?? null;
@@ -358,7 +361,9 @@ export function partnerOptions(input: {
         (seedsFor(m)?.[t].names ?? []).map((name) => ({ name, from: 'seed' as const, market: m })),
       ),
     ),
-  ].filter((n, i, all) => all.findIndex((x) => same(x.name, n.name)) === i);
+  ]
+    .filter((n, i, all) => all.findIndex((x) => same(x.name, n.name)) === i)
+    .filter((n) => !(input.blocked ?? []).some((b) => same(b, n.name)));
 
   const calls: DirectionCall[] = [];
   const options: PartnerOption[] = names.flatMap(({ name, from, market }) => {
@@ -427,6 +432,7 @@ export function partnerOptions(input: {
         findingIds: row ? [row.finding.id, ...(local ? [local.finding.id] : [])] : [],
         kind: 'brand' as const,
         flags: flagsOf({ name, tier, kind: 'brand', tone, ages }),
+        moneyType: moneyTypeOf({ kind: 'brand', name }),
       },
     ];
   });
@@ -445,6 +451,7 @@ export function partnerOptions(input: {
       findingIds: [],
       kind: 'kind' as const,
       flags: flagsOf({ name: kind, tier, kind: 'kind', tone, ages }),
+      moneyType: moneyTypeOf({ kind: 'kind', name: kind }),
     }));
   const own = CATEGORY_PARTNERS[category].value;
   const kindsB = kinds(

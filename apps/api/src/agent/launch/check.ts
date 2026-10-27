@@ -9,6 +9,7 @@ import type {
   LaunchSectionKey,
   PlanSource,
 } from '@oraqul/schema';
+import { namesBlocked, statesMoreThan } from '../../team-rules/compile.js';
 import { normalise } from '../router/decide.js';
 import type { AgeBand } from './read-core.js';
 import type { WrittenLine, WrittenSection } from './writer.js';
@@ -48,6 +49,10 @@ export interface CheckContext {
   flagships?: string[];
   /** Partners the team already signed, which are never dropped for budget. */
   teamPartners?: string[];
+  /** The team's ceiling. A line that states more money in its currency is dropped. */
+  budgetMax?: { amount: number; currency: string } | null;
+  /** Partners the team never proposes. A line that names one is dropped. */
+  blockedPartners?: string[];
 }
 
 const has = (haystack: string, needle: string) => {
@@ -178,6 +183,13 @@ function flagshipIn(line: WrittenLine, ctx: CheckContext): string | null {
 }
 
 /** The line check (spec §6.2). Returns why a line fails, or null. */
+// Oraqul says which published criteria appear met, never that a team qualifies, and it quotes no
+// fee, price or loan terms (spec §5.20).
+const QUALIFIES =
+  /\b(?:you|we|the team|your (?:film|project|team|book|album|show|game|podcast))\s+(?:will|would|do|does|can|should|are going to)\s+qualify\b|\bqualif(?:y|ies|ied)\s+for\b|\byou(?:['’]re|\s+are)\s+(?:eligible|approved|guaranteed)\b/i;
+const FINANCE_TERMS =
+  /\b(?:interest rates?|apr|repayments?|\d+(?:\.\d+)?%\s+interest|sponsorship\s+(?:fees?|costs?|rates?)|(?:fee|cost|price)\s+of\s+(?:a\s+|the\s+)?sponsorship)\b/i;
+
 export function checkLine(
   section: LaunchSectionKey,
   line: WrittenLine,
@@ -191,6 +203,17 @@ export function checkLine(
   }
   if (JARGON.test(line.text)) {
     return 'It uses data jargon or talks about what was measured; the plan speaks plainly.';
+  }
+  if (QUALIFIES.test(line.text)) {
+    return 'It says the team qualifies; say which published criteria appear met and which are unknown.';
+  }
+  if (FINANCE_TERMS.test(line.text)) {
+    return 'It states a fee or financing terms; Oraqul never quotes those.';
+  }
+  const banned = ctx.blockedPartners?.length ? namesBlocked(line.text, ctx.blockedPartners) : null;
+  if (banned) return `The team’s defaults say never to propose ${banned}.`;
+  if (ctx.budgetMax && statesMoreThan(line.text, ctx.budgetMax)) {
+    return 'It proposes more than the team’s budget ceiling.';
   }
   if (ASSET_OFFER.test(line.text)) {
     return 'It offers to make the ad, trailer, image or video; Oraqul writes the guide or script and a person makes it.';

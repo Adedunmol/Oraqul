@@ -1,22 +1,27 @@
 import { packs } from '@oraqul/packs';
 import {
   type Answer,
+  type AppliedRule,
   type Attachment,
   type AuditReport,
   attachmentSchema,
   type Brief,
   type Category,
+  type FundData,
   type Job,
   type LaunchPlan,
   type Move,
   type OverallConfidence,
+  type ProjectFacts,
   type Receipt,
   type RefreshReport,
+  type SponsorData,
   type StartMode,
   type StopReason,
   type ThreadEvent,
 } from '@oraqul/schema';
 import { z } from 'zod';
+import type { ActiveRules } from '../team-rules/compile.js';
 import type { TranscriptLine } from './router/reader.js';
 
 // A file's text is kept whole, up to what an upload allows. Each reader cuts it to what its model
@@ -62,6 +67,12 @@ export interface Handoff {
   fresh?: boolean;
   /** What the project remembers, for a chat that uses it. Context, never evidence. */
   memory?: string[];
+  /** The team's confirmed defaults for this run. Hard ones are applied in code (spec §5.21). */
+  rules?: ActiveRules;
+  /** Logs that a person went ahead against these rules for this run. Set by the run service. */
+  onOverride?: (applied: AppliedRule[]) => Promise<void>;
+  /** What the project says about its stage and who is making it, for comparing funds. */
+  facts?: ProjectFacts;
 }
 
 /** A plan output ready to save. Every number in it was computed by code. */
@@ -85,6 +96,17 @@ export interface NewOutput {
    * shows each its own evidence. Unset means every call the run made.
    */
   callIds?: string[];
+  /** The sponsors and funds a funding run found, for the pipeline of the plan it was run on. */
+  funding?: { planId: string; items: FundingRunItem[] };
+}
+
+/** One sponsor or fund as a funding run found it. */
+export interface FundingRunItem {
+  kind: 'sponsor' | 'fund';
+  name: string;
+  /** Empty for a fund, which is not for one territory. */
+  territory: string;
+  data: SponsorData | FundData;
 }
 
 /** What the person sent to a card the agent left open: a card answer, or text typed instead. */

@@ -1,8 +1,8 @@
 import { Inject, Injectable, Optional } from '@nestjs/common';
-import type { Receipt, ResultsComparison } from '@oraqul/schema';
+import type { AppliedRule, Receipt, ResultsComparison } from '@oraqul/schema';
 import { eq } from 'drizzle-orm';
 import { type Database, DB } from '../db/db.module.js';
-import { outcomes, outputs, projects, receipts, threads } from '../db/schema.js';
+import { fundingItems, outcomes, outputs, projects, receipts, threads } from '../db/schema.js';
 import type { NewOutput } from './category-agents.js';
 import { VERSIONS, type Versions } from './versions.js';
 
@@ -26,6 +26,8 @@ export class OutputStore {
     runId: string;
     outputs: NewOutput[];
     receipts: Receipt[];
+    /** The team rules the run followed, with their versions, saved beside what the plan was made with. */
+    teamRules?: AppliedRule[];
   }): Promise<string[]> {
     const { threadId, projectId, runId } = input;
     return this.db.transaction(async (tx) => {
@@ -52,12 +54,13 @@ export class OutputStore {
             moves: output.moves,
             confidence: output.confidence,
             inputs: output.inputs,
-            versions: this.versions,
+            versions: { ...this.versions, teamRules: input.teamRules ?? [] },
             dataAsOf: new Date(),
           })
           .returning({ id: outputs.id });
         if (!row) throw new Error('Output insert returned no row');
         ids.push(row.id);
+        if (output.funding) await this.saveFunding(tx, projectId, output.funding);
         parentId = row.id;
         if (output.report?.results) {
           await this.recordOutcomes(tx, row.id, projectId, output.report.results);
@@ -87,6 +90,38 @@ export class OutputStore {
       if (rows.length) await tx.insert(receipts).values(rows);
       return ids;
     });
+  }
+
+  /**
+   * Puts what a funding run found on the plan's pipeline. A name already there keeps its status,
+   * follow up and note, and only what was found is refreshed, so the team's work survives a rerun.
+   */
+  private async saveFunding(
+    tx: Tx,
+    projectId: string,
+    funding: NonNullable<NewOutput['funding']>,
+  ): Promise<void> {
+    for (const item of funding.items) {
+      await tx
+        .insert(fundingItems)
+        .values({
+          planId: funding.planId,
+          projectId,
+          kind: item.kind,
+          name: item.name,
+          territory: item.territory,
+          data: item.data,
+        })
+        .onConflictDoUpdate({
+          target: [
+            fundingItems.planId,
+            fundingItems.kind,
+            fundingItems.name,
+            fundingItems.territory,
+          ],
+          set: { data: item.data, updatedAt: new Date() },
+        });
+    }
   }
 
   /**

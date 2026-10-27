@@ -25,6 +25,10 @@ export const buildStateSchema = z.object({
   askedPlatforms: z.boolean().default(false),
   /** The platforms the person chose, kept across the pause. Null until chosen. */
   platforms: z.array(z.string()).nullable().default(null),
+  /** Set once the card about the team's defaults was asked, so a build asks it only once. */
+  askedRules: z.boolean().default(false),
+  /** The person chose to go ahead against the team's defaults for this run. */
+  rulesOverride: z.boolean().default(false),
   pending: questionSchema.nullable(),
 });
 

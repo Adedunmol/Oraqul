@@ -3,8 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { demoFetch, LookupCache, QlooClient, RequestSlots, type ToolContext } from '@oraqul/engine';
 import type { Output } from '@oraqul/schema';
 import type { Env } from '../config/env.js';
+import { FUNDING_RESEARCHER, type FundingResearcher } from '../funding/fund-research.js';
+import { FundingModule } from '../funding/funding.module.js';
 import { LLM, type Llm } from '../llm/llm.js';
 import { OutputsService } from '../outputs/outputs.service.js';
+import { TeamRulesModule } from '../team-rules/team-rules.module.js';
 import { PaceService } from '../watch/pace.service.js';
 import { BooksAgent } from './books/agent.js';
 import { ModelFollowUpReader as ModelBooksFollowUpReader } from './books/follow-up.js';
@@ -184,6 +187,7 @@ const logger = new Logger('Router');
 const lookups = new LookupCache();
 
 @Module({
+  imports: [TeamRulesModule, FundingModule],
   providers: [
     ThreadStore,
     RunService,
@@ -226,13 +230,21 @@ const lookups = new LookupCache();
     },
     {
       provide: CATEGORY_AGENTS,
-      inject: [LLM, ConfigService, OutputsService, QlooMeterService, PaceService],
+      inject: [
+        LLM,
+        ConfigService,
+        OutputsService,
+        QlooMeterService,
+        PaceService,
+        FUNDING_RESEARCHER,
+      ],
       useFactory: (
         llm: Llm | null,
         config: ConfigService<Env, true>,
         outputs: OutputsService,
         meter: QlooMeterService,
         pace: PaceService,
+        funding: FundingResearcher,
       ) => {
         const scripted = new ScriptedFilmReader();
         const scriptedFollowUps = new ScriptedFollowUpReader();
@@ -329,6 +341,7 @@ const lookups = new LookupCache();
           tools,
           plan: (id) => outputs.plan(id),
           pace: (id) => pace.state(id),
+          funding,
           planner: planFor,
           maxSteps,
           analyst,
@@ -397,6 +410,7 @@ const lookups = new LookupCache();
           tools,
           plan: (id) => outputs.plan(id),
           pace: (id) => pace.state(id),
+          funding,
           planner: planFor,
           maxSteps,
           analyst,
@@ -465,6 +479,7 @@ const lookups = new LookupCache();
           tools,
           plan: (id) => outputs.plan(id),
           pace: (id) => pace.state(id),
+          funding,
           planner: planFor,
           maxSteps,
           analyst,
@@ -534,6 +549,7 @@ const lookups = new LookupCache();
           tools,
           plan: (id) => outputs.plan(id),
           pace: (id) => pace.state(id),
+          funding,
           planner: planFor,
           maxSteps,
           analyst,
@@ -603,6 +619,7 @@ const lookups = new LookupCache();
           tools,
           plan: (id) => outputs.plan(id),
           pace: (id) => pace.state(id),
+          funding,
           planner: planFor,
           maxSteps,
           analyst,
@@ -675,6 +692,7 @@ const lookups = new LookupCache();
           tools,
           plan: (id) => outputs.plan(id),
           pace: (id) => pace.state(id),
+          funding,
           planner: planFor,
           maxSteps,
           analyst,

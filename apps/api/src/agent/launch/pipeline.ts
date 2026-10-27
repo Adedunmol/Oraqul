@@ -39,6 +39,12 @@ import {
 } from '@oraqul/schema';
 import { z } from 'zod';
 import {
+  conflictsOf,
+  guidanceText,
+  NO_RULES,
+  withoutBlockedChannels,
+} from '../../team-rules/compile.js';
+import {
   ATTACHMENT_CHARS,
   cutFiles,
   type Handoff,
@@ -98,6 +104,13 @@ import {
   ScriptedResearchPlanner,
 } from './research-loop.js';
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
+import {
+  effectiveRules,
+  enforceRead,
+  rulesQuestion,
+  rulesQuestionId,
+  withoutBlockedPartners,
+} from './rules-gate.js';
 import { codeLine, measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
 import { channelsSection, territoriesOf, withLines } from './territories.js';
@@ -581,6 +594,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let platforms: string[] | null = null;
   let rivals: Rival[] = [];
   let brands: string[] = [];
+  let rulesOverride = false;
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -623,6 +637,14 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         typed ? (resume.reply as { text: string }).text : null,
         resume.state.pending,
       );
+      extra = resume.state.extra;
+      kind = resume.state.kind;
+      band = resume.state.band;
+    } else if (resume?.state.pending?.id === rulesQuestionId(deps.config.category)) {
+      // The card's answer is a choice about the team's defaults, not more of the brief.
+      const typed = resume.reply.kind === 'typed' || resume.reply.kind === 'text';
+      rulesOverride =
+        !typed && (resume.reply as { optionIds: string[] }).optionIds.includes('override');
       extra = resume.state.extra;
       kind = resume.state.kind;
       band = resume.state.band;
@@ -672,6 +694,8 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         band: null,
         askedPlatforms: false,
         platforms: null,
+        askedRules: false,
+        rulesOverride: false,
         pending: question,
       });
     }
@@ -694,6 +718,8 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         band: null,
         askedPlatforms: false,
         platforms: null,
+        askedRules: false,
+        rulesOverride: false,
         pending: question,
       });
     }
@@ -715,10 +741,80 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         band,
         askedPlatforms: true,
         platforms: null,
+        askedRules: false,
+        rulesOverride: false,
+        pending: question,
+      });
+    }
+
+    // The fourth question a build may ask: a brief that asks for what the team's defaults rule out
+    // gets one card. Asked once, before any research.
+    const defaults = handoff.rules ?? NO_RULES;
+    const clashes = defaults.applied.length
+      ? conflictsOf(defaults, {
+          places: read.places,
+          budget: read.budget,
+          brands: [...brands, ...read.partners],
+          platforms,
+        })
+      : [];
+    if (clashes.length && !resume?.state.askedRules) {
+      const question = rulesQuestion(deps.config.category, clashes);
+      deps.emit({ type: 'question', agent: deps.config.category, ...question });
+      return ctx.stop('waiting', {
+        job: 'build',
+        kind,
+        extra,
+        asked: true,
+        settle: false,
+        askedBand: true,
+        band,
+        askedPlatforms: true,
+        platforms,
+        askedRules: true,
+        rulesOverride: false,
         pending: question,
       });
     }
   }
+
+  // The team's defaults, applied in code. A person who chose to go ahead against a clash sets only
+  // that rule aside for this run, and it is logged against the rule.
+  let rules = handoff.rules ?? NO_RULES;
+  if (rulesOverride && rules.applied.length) {
+    const clashes = conflictsOf(rules, {
+      places: read.places,
+      budget: read.budget,
+      brands: [...brands, ...read.partners],
+      platforms,
+    });
+    const kinds = new Set(clashes.map((c) => c.kind));
+    await handoff.onOverride?.(
+      [...kinds]
+        .flatMap((k) => rules.byKind[k] ?? [])
+        .concat(kinds.has('territory_block') ? (rules.byKind.territory_allow ?? []) : []),
+    );
+    rules = effectiveRules(rules, clashes);
+  }
+  const enforced = enforceRead(read, rules);
+  read = enforced.read;
+  if (enforced.dropped.length) {
+    ctx.trace(`Leaving out ${enforced.dropped.join(', ')}: the team’s defaults rule it out`);
+  }
+  if (enforced.clamped) ctx.trace('Holding the budget to the team’s ceiling');
+  if (read.places.length === 0 && enforced.dropped.length) {
+    deps.emit({
+      type: 'message',
+      body: `Every city in this brief is ruled out by your team’s defaults (${enforced.dropped.join(', ')}), so there is nothing to plan. Change the defaults, or ask again and choose to go ahead against them.`,
+      claims: [],
+    });
+    return ctx.stop('finished');
+  }
+  brands = brands.filter(
+    (b) => !rules.blockedPartners.some((x) => x.trim().toLowerCase() === b.trim().toLowerCase()),
+  );
+  platforms = withoutBlockedChannels(platforms, rules);
+  handoff = { ...handoff, rules };
 
   ctx.trace('Finding the comps in Qloo');
   let comps: Anchors;
@@ -805,7 +901,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     earlier?: NewOutput[];
   },
 ): Promise<PlanRun> {
-  const { handoff, title, read, comps, asked, extra, kind } = input;
+  const { handoff, title, read, comps, extra, kind } = input;
+  const team = handoff.rules ?? NO_RULES;
+  // The team's partners ruled out are taken out before the writer sees the findings, and again by
+  // the line check, so a name cannot come back through the model.
+  const asked = withoutBlockedPartners(input.asked, team);
+  const platforms = withoutBlockedChannels(input.platforms ?? null, team);
+  const guidance = guidanceText(team);
   // A full plan is always sized for a band: stated, asked, or assumed to be independent.
   const band: PlanBand | null = withLauncher(
     input.band ??
@@ -823,7 +925,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     cities: read.places,
     country: queryPlan.country,
     ranked: asked.grounded.brief.teamOrder.map((p) => p.place),
-    platforms: input.platforms ?? null,
+    platforms,
+    blockedChannels: team.blockedChannels,
   });
   const today = new Date().toISOString().slice(0, 10);
   // The content calendar: rows worked back from the release date, on each territory's lead channel.
@@ -856,7 +959,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         text,
         extra,
         band ? bandLine(band) : '',
-        input.platforms?.length ? platformLine(input.platforms) : '',
+        platforms?.length ? platformLine(platforms) : '',
+        guidance,
       ]
         .filter(Boolean)
         .join('\n\n'),
@@ -898,6 +1002,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       launcher: band?.launcher ?? null,
       flagships: flagshipNames(grounded.findings),
       teamPartners: read.partners,
+      budgetMax: team.budgetMax,
+      blockedPartners: team.blockedPartners,
     };
     const writerSections = written.sections.filter(
       (s) =>
@@ -980,7 +1086,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     const out = await reviewer.review({
       category: deps.config.category,
       title,
-      request: [text, extra].filter(Boolean).join('\n\n'),
+      request: [text, extra, guidance].filter(Boolean).join('\n\n'),
       context: [
         ...(handoff.memory?.length
           ? ['Project notes:', ...handoff.memory.map((m) => `- ${m}`), '']
@@ -1068,6 +1174,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     text: [text, extra].join('\n'),
     today,
     release: releaseDate(read.window),
+    blocked: team.blockedPartners,
   });
   const lead = deps.config.lead?.(read)?.trim().toLowerCase();
   const plan: LaunchPlan = {
@@ -1159,6 +1266,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
           band,
           askedPlatforms: true,
           platforms: input.platforms ?? null,
+          askedRules: true,
+          rulesOverride: false,
           pending: settle,
         }
       : null,
@@ -1637,6 +1746,8 @@ function decisionsOf(input: {
   text: string;
   today: string;
   release: string | null;
+  /** Partners the team never proposes. */
+  blocked: string[];
 }) {
   const { asked, read, band, markets } = input;
   const ranked = asked.grounded.brief.teamOrder;
@@ -1657,6 +1768,7 @@ function decisionsOf(input: {
     ages: read.ages,
     launcher: band?.launcher ?? null,
     considered: asked.brands,
+    blocked: input.blocked,
   });
   const partnered = withPartnerIds(placed.territories, partnerCalls);
   return {

@@ -4,14 +4,20 @@ import {
   codePurposes,
   confidences,
   entryModes,
+  fundingKinds,
+  fundingStatuses,
   jobs,
   oauthProviders,
   paceKinds,
   reactionKinds,
   receiptSources,
   roles,
+  ruleEnforcements,
+  ruleScopes,
+  ruleStatuses,
   startModes,
   stopReasons,
+  teamRuleKinds,
   watchCadences,
   watchEventStatuses,
   watchEventTypes,
@@ -191,6 +197,8 @@ export const projects = pgTable(
     lead: text('lead'),
     comps: jsonb('comps'),
     inputs: jsonb('inputs'),
+    /** What funds are compared with beyond the plan: the work's stage and who is making it. */
+    facts: jsonb('facts'),
     status: text('status').notNull().default('intake'),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -705,3 +713,120 @@ export const paceSettings = pgTable('pace_settings', {
   rulesVersion: text('rules_version').notNull(),
   updatedAt: updatedAt(),
 });
+
+/**
+ * What a team has told Oraqul to follow, in its own words and as a rule code can enforce. Nothing is
+ * active until an owner confirms it. A replacement is a new row with the next version that
+ * `supersedes_id` points back from, so every plan can say which version it ran under.
+ */
+export const teamRules = pgTable(
+  'team_rules',
+  {
+    id: id(),
+    teamId: uuid('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'cascade' }),
+    scope: text('scope', { enum: ruleScopes }).notNull().default('team'),
+    projectId: uuid('project_id').references(() => projects.id, { onDelete: 'cascade' }),
+    kind: text('kind', { enum: teamRuleKinds }).notNull(),
+    field: text('field').notNull(),
+    operator: text('operator').notNull(),
+    value: jsonb('value').notNull(),
+    enforcement: text('enforcement', { enum: ruleEnforcements }).notNull(),
+    sourceText: text('source_text').notNull(),
+    status: text('status', { enum: ruleStatuses }).notNull().default('proposed'),
+    rejectionReason: text('rejection_reason'),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    confirmedBy: uuid('confirmed_by').references(() => users.id, { onDelete: 'set null' }),
+    confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
+    version: integer('version').notNull().default(1),
+    supersedesId: uuid('supersedes_id').references((): AnyPgColumn => teamRules.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: createdAt(),
+  },
+  (table) => [index('team_rules_team_status_idx').on(table.teamId, table.status)],
+);
+
+/** A run where a person kept going against a rule, logged so the override can be traced. */
+export const teamRuleOverrides = pgTable(
+  'team_rule_overrides',
+  {
+    id: id(),
+    ruleId: uuid('rule_id')
+      .notNull()
+      .references(() => teamRules.id, { onDelete: 'cascade' }),
+    ruleVersion: integer('rule_version').notNull(),
+    threadId: uuid('thread_id')
+      .notNull()
+      .references(() => threads.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+  },
+  (table) => [index('team_rule_overrides_rule_idx').on(table.ruleId)],
+);
+
+/**
+ * One sponsor or fund on a plan's pipeline, with its status, next follow up and note. A new funding
+ * run refreshes `data` and keeps the status and the note, so the team's work survives it. Nothing
+ * here is sent by Oraqul: a status reaches `sent_by_you` only when a person confirms they sent it.
+ */
+export const fundingItems = pgTable(
+  'funding_items',
+  {
+    id: id(),
+    planId: uuid('plan_id')
+      .notNull()
+      .references(() => outputs.id, { onDelete: 'cascade' }),
+    projectId: uuid('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    kind: text('kind', { enum: fundingKinds }).notNull(),
+    name: text('name').notNull(),
+    /** Empty, not null, so the unique key below treats "no territory" as one value. */
+    territory: text('territory').notNull().default(''),
+    status: text('status', { enum: fundingStatuses }).notNull().default('found'),
+    nextFollowUpOn: text('next_follow_up_on'),
+    note: text('note').notNull().default(''),
+    /** The sponsor or fund as found: its evidence, source, deadline and eligibility. */
+    data: jsonb('data').notNull(),
+    createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [
+    unique('funding_items_plan_name_unique').on(
+      table.planId,
+      table.kind,
+      table.name,
+      table.territory,
+    ),
+    index('funding_items_plan_idx').on(table.planId, table.status),
+  ],
+);
+
+/**
+ * A personal access token for the hosted MCP server. Only the hash is kept, so a database leak does
+ * not hand out working tokens. It is scoped to one team and takes the person's role in that team at
+ * every call, so removing the person or changing their role takes effect at once.
+ */
+export const apiTokens = pgTable(
+  'api_tokens',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    teamId: uuid('team_id')
+      .notNull()
+      .references(() => teams.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    prefix: text('prefix').notNull(),
+    tokenHash: text('token_hash').notNull().unique(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (table) => [index('api_tokens_user_team_idx').on(table.userId, table.teamId)],
+);

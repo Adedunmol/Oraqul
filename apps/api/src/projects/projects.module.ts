@@ -29,5 +29,6 @@ import { SharesService } from './shares.service.js';
     CampaignService,
     CalendarService,
   ],
+  exports: [ProjectsService],
 })
 export class ProjectsModule {}

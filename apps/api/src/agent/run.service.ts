@@ -8,19 +8,23 @@ import {
   type OnModuleInit,
 } from '@nestjs/common';
 import { packs } from '@oraqul/packs';
-import type {
-  Attachment,
-  CreateProjectResult,
-  createProjectInputSchema,
-  postMessageSchema,
-  StopReason,
-  ThreadEvent,
+import {
+  type Attachment,
+  type CreateProjectResult,
+  type createProjectInputSchema,
+  type ProjectFacts,
+  type postMessageSchema,
+  projectFactsSchema,
+  type StopReason,
+  type ThreadEvent,
 } from '@oraqul/schema';
 import { and, desc, eq } from 'drizzle-orm';
 import { Observable, Subject } from 'rxjs';
 import type { z } from 'zod';
 import { type Database, DB } from '../db/db.module.js';
 import { projects, runs, threads } from '../db/schema.js';
+import { NO_RULES } from '../team-rules/compile.js';
+import { TeamRulesService } from '../team-rules/team-rules.service.js';
 import {
   type AgentRun,
   ATTACHMENT_CHARS,
@@ -51,7 +55,13 @@ import {
   routeTurn,
 } from './router/router.js';
 import { capMessage, RunCapsService } from './run-caps.js';
-import { currentOrigin, type RunOrigin, runOrigin, WEB_ORIGIN_NONE } from './run-origin.js';
+import {
+  currentOrigin,
+  type RunOrigin,
+  type RunVia,
+  runOrigin,
+  WEB_ORIGIN_NONE,
+} from './run-origin.js';
 import { CHAT_SUMMARIZER, type ChatSummarizer, toFold } from './summary/chat-summarizer.js';
 import { ThreadStore } from './thread-store.js';
 import { THREAD_TITLER, type Titler, UNNAMED_THREAD } from './titler.js';
@@ -99,6 +109,7 @@ export class RunService implements OnModuleInit {
     @Inject(MEMORY_WRITER) private readonly memoryWriter: MemoryWriter,
     @Inject(CHAT_SUMMARIZER) private readonly summarizer: ChatSummarizer,
     @Inject(RunCapsService) private readonly caps: RunCapsService,
+    @Inject(TeamRulesService) private readonly teamRules: TeamRulesService,
   ) {}
 
   /** A run that was going when the process stopped will never finish, so say so. */
@@ -128,6 +139,7 @@ export class RunService implements OnModuleInit {
     teamId: string,
     userId: string,
     input: CreateProject,
+    via: RunVia = 'web',
   ): Promise<CreateProjectResult> {
     const first = said(input.text, input.attachments);
     const { projectId, threadId } = await this.db.transaction(async (tx) => {
@@ -152,7 +164,7 @@ export class RunService implements OnModuleInit {
         await this.nameThread(threadId, input.text, input.attachments);
         await this.routerSegment(threadId, projectId, state, turn);
       },
-      { userId, via: 'web' },
+      { userId, via },
     );
     return { projectId, threadId };
   }
@@ -438,6 +450,20 @@ export class RunService implements OnModuleInit {
     const steps: string[] = [];
     const said: string[] = [];
     const signal = this.stops.get(threadId)?.signal;
+    // The team's defaults for this run, loaded here so every way into the agent follows them.
+    const [owner] = await this.db
+      .select({ teamId: projects.teamId })
+      .from(projects)
+      .where(eq(projects.id, projectId));
+    const rules = owner ? await this.teamRules.forRun(owner.teamId, projectId) : NO_RULES;
+    const { userId: runUser } = currentOrigin();
+    const facts = await this.factsOf(projectId);
+    handoff = {
+      ...handoff,
+      rules,
+      facts,
+      onOverride: (applied) => this.teamRules.logOverride(threadId, runUser, applied),
+    };
     // The agent emits without waiting on the store, so events are chained to keep their order.
     let stored: Promise<void> = Promise.resolve();
     try {
@@ -460,6 +486,7 @@ export class RunService implements OnModuleInit {
         runId,
         outputs: [...(run.earlier ?? []), ...(run.output ? [run.output] : [])],
         receipts: run.receipts,
+        teamRules: rules.applied,
       });
       for (const outputId of outputIds) {
         await this.emit(threadId, { type: 'output.created', outputId });
@@ -679,6 +706,16 @@ export class RunService implements OnModuleInit {
       .orderBy(desc(runs.createdAt))
       .limit(1);
     return run?.state ? routerStateSchema.parse(run.state) : newRouterState({});
+  }
+
+  /** What the project says about its stage and who is making it, for comparing funds. */
+  private async factsOf(projectId: string): Promise<ProjectFacts> {
+    const [row] = await this.db
+      .select({ facts: projects.facts })
+      .from(projects)
+      .where(eq(projects.id, projectId));
+    const parsed = projectFactsSchema.safeParse(row?.facts ?? {});
+    return parsed.success ? parsed.data : { stage: null, nationality: null };
   }
 
   private async projectOf(threadId: string) {
