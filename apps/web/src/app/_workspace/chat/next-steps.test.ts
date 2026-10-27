@@ -119,3 +119,37 @@ describe('the creative kit step', () => {
     expect(nextSteps([plan(), checked], later).map((s) => s.id)).not.toContain('refresh');
   });
 });
+
+describe('the watch step', () => {
+  const id = '00000000-0000-4000-8000-000000000001';
+
+  it('opens the Watch tab of the latest plan, ahead of the what-ifs', () => {
+    const steps = nextSteps([plan({ id })]);
+    expect(steps[0]).toMatchObject({
+      id: 'watch',
+      label: 'Watch this launch',
+      href: `/outputs/${id}?tab=watch`,
+    });
+    expect(steps[0]?.message).toBeUndefined();
+    expect(steps).toHaveLength(3);
+  });
+
+  it('is left out once the plan is watched, and for a plan with no id', () => {
+    expect(nextSteps([plan({ id, watching: true })]).map((s) => s.id)).not.toContain('watch');
+    expect(nextSteps([plan()]).map((s) => s.id)).not.toContain('watch');
+  });
+
+  it('comes after the check on a plan that has grown old', () => {
+    const later = new Date('2026-11-01T10:00:00.000Z');
+    expect(
+      nextSteps([plan({ id })], later)
+        .map((s) => s.id)
+        .slice(0, 2),
+    ).toEqual(['refresh', 'watch']);
+  });
+
+  it('is never offered on a scenario', () => {
+    const scenario = plan({ id, kind: 'scenario' });
+    expect(nextSteps([scenario]).map((s) => s.id)).not.toContain('watch');
+  });
+});

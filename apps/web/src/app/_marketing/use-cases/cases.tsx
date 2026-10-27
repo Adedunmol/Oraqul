@@ -433,9 +433,9 @@ export function CampaignCase() {
         <div className="flex flex-col gap-6 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
           <h2 className={h2Class}>Run the campaign</h2>
           <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
-            The plan’s content calendar becomes actions in the project. Edit them, tick them off,
-            and set up a test of two creative angles. Each action comes with a guide to adapt.
-            Oraqul makes no final asset and posts nothing.
+            The plan’s content calendar becomes a dated checklist in the project. Edit it, tick it
+            off, and set up a test of two creative angles. Each action comes with a guide to adapt.
+            Oraqul watches the dates and alerts the team, makes no final asset and posts nothing.
           </p>
           <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
             Add your own figures for the two angles and Oraqul compares them. When they are thin or

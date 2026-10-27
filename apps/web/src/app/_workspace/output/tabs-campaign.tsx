@@ -8,10 +8,11 @@ import type {
   GuideLine,
   LaunchLine,
 } from '@oraqul/schema';
-import { Button, Input } from '@oraqul/ui';
+import { Button, buttonClassName, Input } from '@oraqul/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useId, useState } from 'react';
+import { apiUrl } from '@/lib/api/http';
 import {
   addCampaignTest,
   removeCampaignTest,
@@ -19,9 +20,10 @@ import {
   setUpCampaign,
   updateCampaignAction,
 } from '@/lib/api/projects';
+import { createCalendarFeed, revokeCalendarFeed } from '@/lib/api/watch';
 import { outputPath } from '@/lib/routes';
 import { formatDay, plural } from '../format';
-import { toast } from '../toast';
+import { copyText, toast } from '../toast';
 import { useOutputView } from './context';
 import { Stack, TabTitle } from './line';
 import { footnotesOf, LineText } from './plan-document';
@@ -75,7 +77,7 @@ export function CampaignTab() {
     <>
       <TabTitle
         title="Campaign"
-        note="The content calendar as actions your team can run, edit and tick off. Each comes with a guide to adapt: Oraqul makes no final asset."
+        note="The content calendar as a dated checklist your team edits and ticks off. Each action comes with a guide to adapt, and Oraqul alerts the team when a date slips: it makes no final asset and posts nothing."
       />
       <p className="text-[13.5px] text-muted">
         These actions belong to {output.label}. A revised plan gets its own set, and this one stays
@@ -103,6 +105,7 @@ export function CampaignTab() {
           <p className="text-[13.5px] text-muted" aria-live="polite">
             {done} of {plural(campaign.actions.length, 'action')} done
           </p>
+          {canEdit ? <CalendarFeed /> : null}
           {territories.map((territory) => (
             <Stack key={territory}>
               {territory ? (
@@ -127,6 +130,79 @@ export function CampaignTab() {
         </>
       )}
     </>
+  );
+}
+
+/**
+ * A feed of the project's dates for a calendar app: titles and dates only. The link is the access,
+ * so it is shown once when made, and making a new one turns the old one off.
+ */
+function CalendarFeed() {
+  const { output } = useOutputView();
+  const [link, setLink] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function make() {
+    setBusy(true);
+    try {
+      const token = await createCalendarFeed(output.projectId);
+      setLink(apiUrl(`/cal/${token}.ics`).toString());
+    } catch {
+      toast('Could not make the link. Try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function turnOff() {
+    setBusy(true);
+    try {
+      await revokeCalendarFeed(output.projectId);
+      setLink(null);
+      toast('The calendar link is off');
+    } catch {
+      toast('Could not turn it off. Try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-2 rounded-2xl bg-card px-5 py-4">
+      <p className="font-medium">Put these dates in your calendar</p>
+      <p className="max-w-[62ch] text-[13.5px] text-muted">
+        A link your calendar app can subscribe to. It carries titles and dates only, and follows the
+        project’s newest plan. Anyone with the link can read it, so share it only with your team.
+        Making a new link turns the old one off.
+      </p>
+      {link ? (
+        <div className="flex flex-col gap-2">
+          <code className="break-all rounded-lg bg-inset px-3 py-2 text-[12.5px]">{link}</code>
+          <p className="text-[12.5px] text-muted">
+            This is the only time the link is shown. Copy it now.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button size="small" onClick={() => copyText(link, 'Link copied')}>
+              Copy the link
+            </Button>
+            <a
+              className={buttonClassName('default', 'small')}
+              href={link.replace(/^https?:/, 'webcal:')}
+            >
+              Open in my calendar
+            </a>
+          </div>
+        </div>
+      ) : null}
+      <div className="flex flex-wrap gap-2">
+        <Button size="small" variant="primary" disabled={busy} onClick={make}>
+          {link ? 'Make a new link' : 'Make a calendar link'}
+        </Button>
+        <Button size="small" variant="ghost" disabled={busy} onClick={turnOff}>
+          Turn the link off
+        </Button>
+      </div>
+    </div>
   );
 }
 

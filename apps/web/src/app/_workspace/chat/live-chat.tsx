@@ -198,7 +198,8 @@ export function LiveChat({
       canEdit={canEdit}
       steps={steps}
       onStep={(step) => {
-        if (step.message) void send(step.message, []);
+        if (step.href) router.push(step.href);
+        else if (step.message) void send(step.message, []);
       }}
       onAnswer={answer}
       onSend={send}

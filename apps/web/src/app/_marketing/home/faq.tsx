@@ -6,9 +6,9 @@ import { band, fitBand, h2Class, wrap } from '../section';
 // Answers say only what the product does today (spec §3 to §5, §9.5).
 const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   {
-    home: 'An agent. You say what you are working on in plain words, and it decides what to look up, tests what it finds, checks its own draft and comes back with a plan. You keep talking to it in the same chat.',
+    home: 'An agent. You say what you are working on in plain words. It runs the same tested checks on every plan, looks up more when the evidence is thin, checks its own draft and comes back with a plan. You keep talking to it in the same chat.',
     q: 'Is Oraqul an AI agent or a dashboard?',
-    a: 'An agent. You tell it what you are working on in plain words. It plans its own steps, looks things up in the taste data, tests what it finds, reviews its own draft against your request, and comes back with a plan. You keep talking to it in the same chat.',
+    a: 'An agent. You tell it what you are working on in plain words. It runs the same tested checks on every plan, looks things up in the taste data and decides which extra lookups it needs when the evidence is thin, reviews its own draft against your request, and comes back with a plan. You keep talking to it in the same chat.',
   },
   {
     home: 'Taste and place come from Qloo, which holds audience taste data across film and TV, music, books, podcasts, games, brands and places. Dated market facts such as rivals and release windows come from web research, each linked to its page. Code computes every number.',
@@ -41,7 +41,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'Can it help me run the campaign?',
-    a: 'It turns the plan’s content calendar into actions in the project, each with a guide from the creative kit that you adapt. Edit an action, tick it off, and set up a two-angle test for any of them. Add your own figures and Oraqul compares them, saying inconclusive when they are thin or close. A revised plan gets its own set, and nothing is posted or scheduled for you.',
+    a: 'It turns the plan’s content calendar into actions in the project, each with a guide from the creative kit that you adapt. Edit an action, tick it off, and set up a two-angle test for any of them. Add your own figures and Oraqul compares them, saying inconclusive when they are thin or close. A revised plan gets its own set. Oraqul watches the dated actions and the launch and alerts the team when something slips, but it posts nothing and sends nothing itself.',
   },
   {
     q: 'How does it use the places I name?',

@@ -101,12 +101,17 @@ const calendar = [
 ] as const;
 
 const tiers = [
-  ['A', 'Flagship', 'Only for releases with scale.', 'A stretch for independent, out for micro'],
+  [
+    'A',
+    'Flagship',
+    'Only for releases with scale.',
+    'Out for micro and for a solo launcher. On an independent budget a stretch for an established or major launcher, otherwise out',
+  ],
   [
     'B',
     'Category and integration',
     'Banks and payments, food and drink, hospitality, telecom.',
-    'A stretch for micro',
+    'A stretch for micro or a solo launcher',
   ],
   ['C', 'Local', 'Cinemas, creators, diaspora businesses, community groups.', 'Fits every budget'],
 ] as const;

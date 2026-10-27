@@ -1,6 +1,12 @@
 'use client';
 
-import type { CampaignState, OutputDetail, OutputTabKey, ThreadDetail } from '@oraqul/schema';
+import type {
+  CampaignState,
+  OutputDetail,
+  OutputTabKey,
+  ThreadDetail,
+  WatchState,
+} from '@oraqul/schema';
 import { useRouter } from 'next/navigation';
 import { LiveChat } from '@/app/_workspace/chat/live-chat';
 import { OutputView } from '@/app/_workspace/output/output-view';
@@ -11,12 +17,14 @@ export function OutputScreen({
   detail,
   chat,
   campaign,
+  watch,
   initialTab,
   viewer,
 }: {
   detail: OutputDetail;
   chat: ThreadDetail;
   campaign: CampaignState | null;
+  watch: WatchState | null;
   initialTab: OutputTabKey | undefined;
   viewer: Viewer;
 }) {
@@ -27,6 +35,7 @@ export function OutputScreen({
       <OutputView
         detail={detail}
         campaign={campaign}
+        watch={watch}
         initialTab={initialTab}
         canEdit={canEdit}
         share={detail.share ?? { token: null, enabled: false }}

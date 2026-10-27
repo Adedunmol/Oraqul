@@ -1,7 +1,7 @@
 import { Card, Chip, PageHead } from '@oraqul/ui';
 import type { Metadata } from 'next';
 import { SignOutButton } from '@/app/_components/sign-out-button';
-import { getMe } from '@/lib/api/me';
+import { getMe, getRunAllowance } from '@/lib/api/me';
 import { PasswordForm } from './_components/password-form';
 import { ProfileForm } from './_components/profile-form';
 
@@ -32,7 +32,7 @@ function Section({
 }
 
 export default async function SettingsPage() {
-  const { user } = await getMe('/settings');
+  const [{ user }, runs] = await Promise.all([getMe('/settings'), getRunAllowance('/settings')]);
   return (
     <div className="flex max-w-2xl flex-col gap-8">
       <PageHead
@@ -71,6 +71,25 @@ export default async function SettingsPage() {
         }
       >
         <PasswordForm hasPassword={user.hasPassword} />
+      </Section>
+
+      <Section
+        id="runs-title"
+        title="Runs this month"
+        note="A run that asks Qloo counts once. At the limit, new messages to the agent wait until the count starts again."
+      >
+        <p className="text-sm">
+          <b className="font-mono tabular-nums">
+            {runs.used} of {runs.cap}
+          </b>{' '}
+          used. The count starts again on{' '}
+          {new Date(`${runs.resetsOn}T00:00:00Z`).toLocaleDateString('en', {
+            day: 'numeric',
+            month: 'long',
+            timeZone: 'UTC',
+          })}
+          .
+        </p>
       </Section>
 
       <Section id="account-title" title="Sign out" note="End this session on this device.">

@@ -40,7 +40,7 @@ const after: [string, string][] = [
   ],
   [
     'Run the campaign',
-    'Your calendar as actions to edit and tick off, each with a guide to adapt.',
+    'Your calendar as dated actions Oraqul watches and alerts on, each with a guide to adapt.',
   ],
   ['Test two angles', 'Add your own figures and Oraqul compares them, or says inconclusive.'],
   [

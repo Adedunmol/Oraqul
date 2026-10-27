@@ -324,7 +324,7 @@ export function KeepGoing() {
             ],
             [
               'Run the campaign',
-              'The plan’s calendar becomes actions you edit and tick off, each with a guide to adapt. Set up a two-angle test, add your own figures, and Oraqul compares them, or says inconclusive.',
+              'The plan’s calendar becomes a dated checklist you edit and tick off, each action with a guide to adapt. Oraqul watches it and alerts the team when a date slips. Set up a two-angle test, add your own figures, and Oraqul compares them, or says inconclusive.',
             ],
             [
               'Correct it in words',

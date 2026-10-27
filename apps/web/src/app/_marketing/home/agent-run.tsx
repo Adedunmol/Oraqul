@@ -6,8 +6,8 @@ import { ProductChat } from './product-chat';
 
 const traits = [
   [
-    'Plans its own steps',
-    'It reads your message, decides what to look up, and works one step at a time.',
+    'Tested checks first',
+    'Runs the same tested checks on every plan, then decides which extra lookups it needs when the evidence is thin.',
   ],
   [
     'Checks its own draft',
@@ -30,7 +30,8 @@ export function AgentRun() {
       >
         <div className="flex flex-col gap-8">
           <h2 id="agent-title" className={`${h2Class} text-[clamp(32px,3.8vw,54px)]!`}>
-            An agent that does the work, and shows it.
+            Does the research, checking, drafting and watching. Anything that leaves Oraqul goes out
+            only after you approve it.
           </h2>
           <ul className="flex flex-col gap-5">
             {traits.map(([title, text]) => (
