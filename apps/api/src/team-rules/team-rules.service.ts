@@ -8,11 +8,12 @@ import {
 } from '@nestjs/common';
 import {
   type AppliedRule,
-  type ExtractRulesInput,
   type Role,
   RULE_ENFORCEMENT,
   RULE_FIELD,
   ruleSentence,
+  type SavedDefaults,
+  type TeamDefaults,
   type TeamRule,
   type TeamRuleKind,
   type TeamRuleValue,
@@ -20,7 +21,7 @@ import {
 } from '@oraqul/schema';
 import { and, desc, eq, inArray, ne } from 'drizzle-orm';
 import { type Database, DB } from '../db/db.module.js';
-import { projects, teamRuleOverrides, teamRules, users } from '../db/schema.js';
+import { projects, teamRuleOverrides, teamRules, teams, users } from '../db/schema.js';
 import { type ActiveRules, compileRules, NO_RULES, same, territoryBlocked } from './compile.js';
 import { RULE_EXTRACTOR, type RuleExtractor } from './extract.js';
 import { REJECTIONS, screenText } from './screen.js';
@@ -30,13 +31,15 @@ type Row = typeof teamRules.$inferSelect;
 /** A rule replaces the one before it, as a new version, when a team can only have one of its kind. */
 export const OWNER_ONLY = 'Only an owner can set who must approve anything that leaves Oraqul.';
 
-const SINGLE: TeamRuleKind[] = ['budget_max', 'approval', 'tone', 'language'];
+/** A value as one string with its keys in order, so two equal values compare equal after a round trip through jsonb. */
+const stable = (v: unknown): string =>
+  JSON.stringify(v, (_k, x: unknown) =>
+    x && typeof x === 'object' && !Array.isArray(x)
+      ? Object.fromEntries(Object.entries(x).sort(([a], [b]) => a.localeCompare(b)))
+      : x,
+  );
 
-export interface Extracted {
-  rules: TeamRule[];
-  /** Lines nothing could be made of. */
-  unparsed: string[];
-}
+const SINGLE: TeamRuleKind[] = ['budget_max', 'approval', 'tone', 'language'];
 
 /**
  * The team's defaults (spec §5.21). Anyone who can run the agent may propose rules from pasted
@@ -166,61 +169,88 @@ export class TeamRulesService {
     return out;
   }
 
-  /** Reads pasted text and saves its rules, live at once. A rule that is not allowed is kept rejected, with why. */
-  async extract(
+  /** The team's defaults as written, and the rules in force, in plain sentences. */
+  async current(teamId: string): Promise<TeamDefaults> {
+    const [team] = await this.db
+      .select({ text: teams.defaultsText })
+      .from(teams)
+      .where(eq(teams.id, teamId));
+    const rules = (await this.list(teamId)).filter((r) => r.status === 'active');
+    return { text: team?.text ?? '', rules };
+  }
+
+  /**
+   * Saves what the team wrote and makes its rules the ones in force. The text is the source of
+   * truth: a rule it still says is kept as it is, a new one is added, and one it no longer says
+   * is removed, so editing the words is how a rule changes or goes. Anything not allowed is left
+   * out and reported with its reason. Only an owner can change who must approve.
+   */
+  async save(
     teamId: string,
     userId: string,
-    input: ExtractRulesInput,
+    text: string,
     role: Role = 'owner',
-  ): Promise<Extracted> {
-    const scope = input.scope ?? 'team';
-    const projectId = input.projectId ?? null;
-    if (scope === 'project') {
-      const [project] = projectId
-        ? await this.db
-            .select({ id: projects.id })
-            .from(projects)
-            .where(and(eq(projects.id, projectId), eq(projects.teamId, teamId)))
-        : [];
-      if (!project) throw new BadRequestException('A project rule needs a project of this team.');
-    }
-    const found = await this.extractor.extract(input.text);
-    const made: Row[] = [];
+  ): Promise<SavedDefaults> {
+    const found = text.trim()
+      ? await this.extractor.extract(text)
+      : { candidates: [], unparsed: [] };
+    const before = await this.db
+      .select()
+      .from(teamRules)
+      .where(
+        and(
+          eq(teamRules.teamId, teamId),
+          eq(teamRules.scope, 'team'),
+          eq(teamRules.status, 'active'),
+        ),
+      );
+    const keep = new Set<string>();
+    const notAccepted: SavedDefaults['notAccepted'] = [];
     for (const c of found.candidates) {
-      const base = {
-        teamId,
-        scope,
-        projectId: scope === 'project' ? projectId : null,
-        kind: c.value.kind,
-        ...RULE_FIELD[c.value.kind],
-        value: c.value,
-        enforcement: RULE_ENFORCEMENT[c.value.kind],
-        sourceText: c.sourceText,
-        createdBy: userId,
-      };
-      // Who must approve what leaves Oraqul is the control that constrains editors, so only an owner sets it.
-      if (!c.rejection && c.value.kind === 'approval' && role !== 'owner') {
-        const [row] = await this.db
-          .insert(teamRules)
-          .values({ ...base, status: 'rejected', rejectionReason: OWNER_ONLY })
-          .returning();
-        if (row) made.push(row);
-        continue;
-      }
       if (c.rejection) {
-        const [row] = await this.db
-          .insert(teamRules)
-          .values({ ...base, status: 'rejected', rejectionReason: REJECTIONS[c.rejection] })
-          .returning();
-        if (row) made.push(row);
+        notAccepted.push({ text: c.sourceText, reason: REJECTIONS[c.rejection] });
         continue;
       }
-      const row = await this.saveActive(base, userId);
-      if (row) made.push(row);
+      // Who must approve what leaves Oraqul is the control that constrains editors, so only an owner sets it.
+      if (c.value.kind === 'approval' && role !== 'owner') {
+        notAccepted.push({ text: c.sourceText, reason: OWNER_ONLY });
+        continue;
+      }
+      const same = before.find(
+        (r) => r.kind === c.value.kind && stable(r.value) === stable(c.value),
+      );
+      if (same) {
+        keep.add(same.id);
+        continue;
+      }
+      const row = await this.saveActive(
+        {
+          teamId,
+          scope: 'team',
+          projectId: null,
+          kind: c.value.kind,
+          ...RULE_FIELD[c.value.kind],
+          value: c.value,
+          enforcement: RULE_ENFORCEMENT[c.value.kind],
+          sourceText: c.sourceText,
+          createdBy: userId,
+        },
+        userId,
+      );
+      if (row) keep.add(row.id);
     }
-    const all = await this.list(teamId);
-    const ids = new Set(made.map((m) => m.id));
-    return { rules: all.filter((r) => ids.has(r.id)), unparsed: found.unparsed };
+    // A rule the text no longer says is removed. An editor cannot take away the approver.
+    const gone = before.filter(
+      (r) => !keep.has(r.id) && !(r.kind === 'approval' && role !== 'owner'),
+    );
+    for (const r of gone) {
+      await this.db
+        .update(teamRules)
+        .set({ status: 'archived' })
+        .where(and(eq(teamRules.id, r.id), eq(teamRules.status, 'active')));
+    }
+    await this.db.update(teams).set({ defaultsText: text.trim() }).where(eq(teams.id, teamId));
+    return { ...(await this.current(teamId)), notAccepted, unparsed: found.unparsed };
   }
 
   /**
@@ -267,18 +297,6 @@ export class TeamRulesService {
         .returning();
       return row;
     });
-  }
-
-  async archive(teamId: string, ruleId: string, role: Role = 'owner'): Promise<TeamRule[]> {
-    const [row] = await this.db
-      .select({ status: teamRules.status, kind: teamRules.kind })
-      .from(teamRules)
-      .where(and(eq(teamRules.id, ruleId), eq(teamRules.teamId, teamId)));
-    if (!row) throw new NotFoundException('No such rule');
-    if (row.status !== 'active') throw new ConflictException('Only an active rule can be removed');
-    if (row.kind === 'approval' && role !== 'owner') throw new ForbiddenException(OWNER_ONLY);
-    await this.db.update(teamRules).set({ status: 'archived' }).where(eq(teamRules.id, ruleId));
-    return this.list(teamId);
   }
 
   /** The active rules a run follows: the team's, and those of its project. */

@@ -168,11 +168,7 @@ describe('the funding pipeline', () => {
   });
 
   it('lets an editor approve unless the team says an owner must, and then only an owner may', async () => {
-    await rules.extract(seed.teamId, seed.userId, {
-      text: 'Who must approve: owner',
-      scope: 'team',
-      projectId: null,
-    });
+    await rules.save(seed.teamId, seed.userId, 'Who must approve: owner', 'owner');
     await expect(service.handoff(planId, sponsorId, who('editor'))).rejects.toThrow(
       'need an owner',
     );

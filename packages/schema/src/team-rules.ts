@@ -133,23 +133,26 @@ export const teamRuleSchema = z.object({
 });
 export type TeamRule = z.infer<typeof teamRuleSchema>;
 
-export const teamRulesResponseSchema = z.object({ rules: z.array(teamRuleSchema) });
-export type TeamRulesResponse = z.infer<typeof teamRulesResponseSchema>;
-
-export const extractRulesSchema = z.object({
-  text: z.string().min(1).max(8000),
-  scope: z.enum(ruleScopes).default('team'),
-  projectId: z.uuid().nullable().default(null),
+/** The team's defaults as the page shows them: the words as written and the rules in force, in plain sentences. */
+export const teamDefaultsSchema = z.object({
+  /** What the team wrote, exactly as saved, so the box always holds it. */
+  text: z.string(),
+  rules: z.array(teamRuleSchema),
 });
-export type ExtractRulesInput = z.input<typeof extractRulesSchema>;
+export type TeamDefaults = z.infer<typeof teamDefaultsSchema>;
+
+export const saveDefaultsSchema = z.object({ text: z.string().max(8000) });
+export type SaveDefaultsInput = z.input<typeof saveDefaultsSchema>;
+
+/** What saving gives back: the defaults now in force, and anything in the text that was not used. */
+export const savedDefaultsSchema = teamDefaultsSchema.extend({
+  /** Lines that were not accepted, each with the plain reason. */
+  notAccepted: z.array(z.object({ text: z.string(), reason: z.string() })),
+  /** Lines nothing could be made of. */
+  unparsed: z.array(z.string()),
+});
+export type SavedDefaults = z.infer<typeof savedDefaultsSchema>;
 
 /** A rule a run followed, saved on the plan so a reader knows which version it ran under. */
 export const appliedRuleSchema = z.object({ id: z.uuid(), version: z.number().int() });
 export type AppliedRule = z.infer<typeof appliedRuleSchema>;
-
-/** What pasting text gives back: the rules it was read into, and the lines nothing could be made of. */
-export const extractedRulesSchema = z.object({
-  rules: z.array(teamRuleSchema),
-  unparsed: z.array(z.string()),
-});
-export type ExtractedRules = z.infer<typeof extractedRulesSchema>;

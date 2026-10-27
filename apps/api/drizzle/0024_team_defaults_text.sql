@@ -1,0 +1,1 @@
+ALTER TABLE "teams" ADD COLUMN "defaults_text" text DEFAULT '' NOT NULL;

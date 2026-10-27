@@ -132,6 +132,8 @@ export const loginFailures = pgTable(
 export const teams = pgTable('teams', {
   id: id(),
   name: text('name').notNull(),
+  /** What the team wrote as its defaults, as saved, so the page always shows it back. */
+  defaultsText: text('defaults_text').notNull().default(''),
   createdAt: createdAt(),
 });
 

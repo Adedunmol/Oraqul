@@ -1,13 +1,13 @@
-import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
-import { type ExtractRulesInput, extractRulesSchema, type TeamRulesResponse } from '@oraqul/schema';
+import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { type SavedDefaults, saveDefaultsSchema, type TeamDefaults } from '@oraqul/schema';
 import type { z } from 'zod';
 import { CurrentMembership } from '../auth/current-membership.decorator.js';
 import { type Membership, Roles, RolesGuard } from '../auth/roles.guard.js';
 import { SessionGuard, VerifiedGuard } from '../auth/session.guard.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
-import { type Extracted, TeamRulesService } from './team-rules.service.js';
+import { TeamRulesService } from './team-rules.service.js';
 
-/** The team's defaults (spec §7). An owner or editor saves and removes rules; everyone reads them. */
+/** The team's defaults (spec §7). An owner or editor saves them; everyone reads them. */
 @Controller('teams/:teamId/rules')
 @UseGuards(SessionGuard, RolesGuard)
 export class TeamRulesController {
@@ -15,35 +15,19 @@ export class TeamRulesController {
 
   @Get()
   @Roles('owner', 'editor', 'viewer')
-  async list(@Param('teamId') teamId: string): Promise<TeamRulesResponse> {
-    return { rules: await this.rules.list(teamId) };
+  current(@Param('teamId') teamId: string): Promise<TeamDefaults> {
+    return this.rules.current(teamId);
   }
 
-  @Post('extract')
+  /** Saves the words and makes the rules they hold the ones in force. */
+  @Put()
   @Roles('owner', 'editor')
   @UseGuards(VerifiedGuard)
-  @HttpCode(200)
-  extract(
+  save(
     @Param('teamId') teamId: string,
-    @Body(new ZodPipe(extractRulesSchema)) body: z.output<typeof extractRulesSchema>,
+    @Body(new ZodPipe(saveDefaultsSchema)) body: z.output<typeof saveDefaultsSchema>,
     @CurrentMembership() membership: Membership,
-  ): Promise<Extracted> {
-    return this.rules.extract(
-      teamId,
-      membership.userId,
-      body as ExtractRulesInput,
-      membership.role,
-    );
-  }
-
-  @Post(':ruleId/archive')
-  @Roles('owner', 'editor')
-  @HttpCode(200)
-  async archive(
-    @Param('teamId') teamId: string,
-    @Param('ruleId') ruleId: string,
-    @CurrentMembership() membership: Membership,
-  ): Promise<TeamRulesResponse> {
-    return { rules: await this.rules.archive(teamId, ruleId, membership.role) };
+  ): Promise<SavedDefaults> {
+    return this.rules.save(teamId, membership.userId, body.text, membership.role);
   }
 }

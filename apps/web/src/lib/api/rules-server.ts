@@ -1,6 +1,6 @@
-import { type TeamRulesResponse, teamRulesResponseSchema } from '@oraqul/schema';
+import { type TeamDefaults, teamDefaultsSchema } from '@oraqul/schema';
 import { serverGet } from './server';
 
-export function getRules(teamId: string, returnTo: string): Promise<TeamRulesResponse> {
-  return serverGet(`/teams/${teamId}/rules`, teamRulesResponseSchema, { returnTo });
+export function getDefaults(teamId: string, returnTo: string): Promise<TeamDefaults> {
+  return serverGet(`/teams/${teamId}/rules`, teamDefaultsSchema, { returnTo });
 }

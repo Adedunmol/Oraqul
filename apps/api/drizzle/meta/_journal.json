@@ -169,6 +169,13 @@
       "when": 1793141579469,
       "tag": "0023_api_tokens",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793144596600,
+      "tag": "0024_team_defaults_text",
+      "breakpoints": true
     }
   ]
 }

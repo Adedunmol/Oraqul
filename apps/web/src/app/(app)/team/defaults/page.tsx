@@ -2,7 +2,7 @@ import { Card, PageHead } from '@oraqul/ui';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { getRules } from '@/lib/api/rules-server';
+import { getDefaults } from '@/lib/api/rules-server';
 import { getTeam, getTeams } from '@/lib/api/teams-server';
 import { CURRENT_TEAM_COOKIE, pickTeam } from '@/lib/current-team';
 import { DefaultsScreen } from './_components/defaults-screen';
@@ -26,18 +26,23 @@ export default async function DefaultsPage() {
       </div>
     );
   }
-  const [detail, { rules }] = await Promise.all([
+  const [detail, defaults] = await Promise.all([
     getTeam(current.id, '/team/defaults'),
-    getRules(current.id, '/team/defaults'),
+    getDefaults(current.id, '/team/defaults'),
   ]);
   return (
     <div className="flex max-w-5xl flex-col gap-6">
       <PageHead
         className="sticky-head"
         title="Team defaults"
-        description="What every plan for this team follows: your market, budget ceiling, tone, banned partners and who approves anything that leaves Oraqul."
+        description="Tell Oraqul how every plan for your team should be written, in your own words."
       />
-      <DefaultsScreen teamId={current.id} role={detail.myRole} rules={rules} />
+      <DefaultsScreen
+        teamId={current.id}
+        role={detail.myRole}
+        text={defaults.text}
+        rules={defaults.rules}
+      />
     </div>
   );
 }
