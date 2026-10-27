@@ -53,6 +53,25 @@ describe('demoProjects', () => {
 });
 
 describe('refusals (spec §10)', () => {
+  it('points a request to send at the handoff, not at sending', () => {
+    const reply = refusalFor('Send the brief to Nike') ?? '';
+    expect(reply).toContain('I never send anything');
+    expect(reply).toContain('open it in your own WhatsApp or email for you to send');
+  });
+
+  it('says the finance refusal in fixed words that never promise or quote anything', () => {
+    const reply = refusalFor('Do we qualify for the grant?') ?? '';
+    expect(reply).toContain("can't give financial advice");
+    expect(reply).toContain('Confirm everything on the source page');
+    expect(reply).not.toMatch(/you (?:will|do|would) qualify|\d/);
+  });
+
+  it('tells the model the handoff and the finance rules', () => {
+    expect(BASE_PROMPT).toContain('financial advice');
+    expect(BASE_PROMPT).toContain('own WhatsApp or email');
+    expect(BASE_PROMPT).toContain('never say a team qualifies');
+  });
+
   it.each([
     'How much will it make at the box office?',
     'Can you forecast our opening weekend?',
@@ -63,6 +82,10 @@ describe('refusals (spec §10)', () => {
     'How much should we charge for the premiere?',
     'Send the brief to Nike',
     'Please email it to them',
+    'Can you give us financial advice on the film?',
+    'Arrange a loan for the premiere',
+    'Do we qualify for the grant?',
+    'Broker financing with an investor',
   ])('refuses: %s', (text) => {
     expect(refusalFor(text)).not.toBeNull();
   });
@@ -73,6 +96,9 @@ describe('refusals (spec §10)', () => {
     'Draft a partner brief for Nike',
     'Which age group responds best?',
     'How many tickets does the venue hold?',
+    'Find funds and grants for our film',
+    'Which sponsors fit Lagos?',
+    'Which funding programmes are open now?',
   ])('lets through: %s', (text) => {
     expect(refusalFor(text)).toBeNull();
   });

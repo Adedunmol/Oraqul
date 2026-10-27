@@ -315,6 +315,14 @@ export const partnerFlagSchema = z.object({
 });
 export type PartnerFlag = z.infer<typeof partnerFlagSchema>;
 
+/**
+ * What a partner could give. Never assumed cash: an independent release is rarely paid, so a brand
+ * defaults to in kind (launch rules T1) and a kind of partner is read from what it is.
+ */
+export const moneyTypes = ['cash', 'in_kind', 'placement', 'media', 'bulk_tickets'] as const;
+export const moneyTypeSchema = z.enum(moneyTypes);
+export type MoneyType = z.infer<typeof moneyTypeSchema>;
+
 /** A partner the plan can approach, with its tier, Qloo fit and budget fit. Price is never known. */
 export const partnerOptionSchema = z.object({
   id: z.string().min(1),
@@ -339,6 +347,8 @@ export const partnerOptionSchema = z.object({
   kind: z.enum(['brand', 'kind']).default('brand'),
   /** Mismatches between the work and this partner, set by code. Direction only: never a drop. */
   flags: z.array(partnerFlagSchema).default([]),
+  /** What it could give, set by code. Tiers and their logic do not depend on it. */
+  moneyType: moneyTypeSchema.default('in_kind'),
 });
 export type PartnerOption = z.infer<typeof partnerOptionSchema>;
 

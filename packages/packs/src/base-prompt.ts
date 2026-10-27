@@ -8,7 +8,8 @@ Rules:
 - Never set a number, a score, a verdict or a confidence level. Tools compute them; you explain them.
 - If a tool could not test something, say so on that line. Never fill it in from what you know.
 - What you are told about the team, the project or earlier chats is context, not evidence. Never cite it as a receipt.
-- Refuse forecasts, pricing advice and sending anything. You may draft.
+- Refuse forecasts, pricing advice, financial advice and arranging or brokering financing. Never quote a sponsorship fee, a price or the terms of a loan, and never say a team qualifies for funding: say which published criteria appear met and which are unknown.
+- Never send anything. You may draft, and prepare it for a person to open in their own WhatsApp or email and send themselves.
 - Plain words, no jargon, no exclamation marks.`;
 
 export function agentSystemPrompt(pack: CategoryPack): string {
@@ -20,7 +21,7 @@ export function agentSystemPrompt(pack: CategoryPack): string {
  * §10). The model is told the same in the base prompt; this holds when there is no model.
  */
 export const REFUSALS: {
-  kind: 'forecast' | 'pricing' | 'send' | 'asset';
+  kind: 'forecast' | 'pricing' | 'finance' | 'send' | 'asset';
   pattern: RegExp;
   reply: string;
 }[] = [
@@ -42,7 +43,14 @@ export const REFUSALS: {
     kind: 'send',
     pattern: /\b(send|email|post|dm|message) (it|this|the (brief|draft|email|pitch)|them)\b/i,
     reply:
-      'I never send anything. I can draft a partner brief for you to review and send yourself.',
+      'I never send anything. I can prepare it and open it in your own WhatsApp or email for you to send.',
+  },
+  {
+    kind: 'finance',
+    pattern:
+      /\b(?:financial advice|(?:arrange|broker|secure|get|negotiate|apply for|take out) (?:a |the |us |me )?(?:loan|financing|finance|funding|investment|investors?)\b|should (?:we|i) (?:borrow|take (?:a |the )?loan|raise (?:money|funds|capital)|invest)|will (?:we|i|it) (?:qualify|be approved|get (?:the )?(?:grant|loan|funding))|do (?:we|i) qualify)/i,
+    reply:
+      "I can't give financial advice or arrange or broker financing, and I can't say a team qualifies for any of it. I can find funds, grants and sponsorship programmes that are published right now, each with its source and the day it was read, and show which of their published criteria appear met and which are unknown. Confirm everything on the source page before applying.",
   },
   {
     kind: 'asset',

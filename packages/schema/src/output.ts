@@ -38,6 +38,7 @@ export const outputTabKeys = [
   'fixes',
   'campaign',
   'watch',
+  'funding',
   'refresh',
 ] as const;
 export const outputTabKeySchema = z.enum(outputTabKeys);
@@ -175,7 +176,7 @@ export const compareResponseSchema = z.object({
 });
 
 /** Kinds whose output is a launch plan. A fix is a plan written from an audit. */
-export const planKinds = ['build', 'scenario', 'fix', 'creative', 'rescue'] as const;
+export const planKinds = ['build', 'scenario', 'fix', 'creative', 'rescue', 'funding'] as const;
 /** Kinds whose output is a findings report on a plan someone brought. */
 export const reportKinds = ['audit'] as const;
 

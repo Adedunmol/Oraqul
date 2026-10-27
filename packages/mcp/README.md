@@ -1,6 +1,6 @@
 # @oraqul/mcp
 
-MCP server over the engine tools, the same objects the agents call. Stdio transport.
+MCP server over the engine tools, the same objects the agents call. Stdio transport, the Qloo tools only: it has no accounts and is not hosted. The hosted server, which exposes the plan pipeline and never these raw tools, is in `apps/api/src/mcp-http` ([spec §5.22](../../docs/product/spec.md)).
 
 ```
 pnpm --filter "@oraqul/mcp..." build
