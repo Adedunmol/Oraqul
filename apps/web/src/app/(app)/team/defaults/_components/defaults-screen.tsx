@@ -41,7 +41,7 @@ const TEMPLATES: { label: string; line: string; note: string }[] = [
   {
     label: 'Channels never used',
     line: 'Channels never used: Facebook',
-    note: 'Taken out before the content calendar is built.',
+    note: 'Left out of the content calendar.',
   },
   {
     label: 'Who must approve',
@@ -163,22 +163,24 @@ export function DefaultsScreen({
             ) : null}
           </Card>
           <Card className="flex flex-col gap-3 p-5">
-            <h2 className="font-display text-[16px] font-semibold tracking-[-0.01em]">Templates</h2>
-            <ul className="flex flex-col gap-3">
+            <div className="flex flex-col gap-0.5">
+              <h2 className="font-display text-[16px] font-semibold tracking-[-0.01em]">
+                Templates
+              </h2>
+              <p className="text-[13px] text-muted">Tap one to add it.</p>
+            </div>
+            <ul className="flex flex-col gap-1.5">
               {TEMPLATES.map((t) => (
-                <li key={t.label} className="flex flex-col gap-1">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-[13.5px] font-medium">{t.label}</span>
-                    <button
-                      type="button"
-                      onClick={() => setText((v) => (v ? `${v}\n${t.line}` : t.line))}
-                      className="text-[12.5px] text-accent underline underline-offset-2"
-                    >
-                      Add the line
-                    </button>
-                  </div>
-                  <code className="rounded-md bg-inset px-2 py-1 text-[12.5px]">{t.line}</code>
-                  <p className="text-[12.5px] text-muted">{t.note}</p>
+                <li key={t.label}>
+                  <button
+                    type="button"
+                    title={t.note}
+                    onClick={() => setText((v) => (v ? `${v}\n${t.line}` : t.line))}
+                    className="flex w-full flex-col items-start gap-0.5 rounded-lg bg-inset px-3 py-2 text-left transition-colors hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent motion-reduce:transition-none"
+                  >
+                    <span className="text-[12.5px] text-muted">{t.label}</span>
+                    <code className="text-[13px]">{t.line}</code>
+                  </button>
                 </li>
               ))}
             </ul>
