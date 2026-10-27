@@ -45,6 +45,8 @@ A chatbot is better at fluency, speed, breadth and some local knowledge. We win 
 | The model | Reads the brief, shapes queries, writes the plan, launch craft | Sets a number, verdict or confidence; names a taste pick no finding returned |
 | Code | Numbers, verdicts, checks, guarantees (every city and comp answered) | |
 
+**The team's defaults sit above the message and below the refusals.** Refusals and safety rules come first, then the team's confirmed hard rules (a budget ceiling, places, banned partners, channels, who approves), then the project's settings, then the current message, then soft preferences. No rule can change a refusal, a verdict or a number, and none that hides results or treats people differently is accepted. Hard rules are applied in code; the writer is only told the soft ones.
+
 The model may curate (skip a poor fit) but must not re-rank Qloo's lists or promote a lower pick over a higher one. It is told so, and the rank-kept score measures it and is pinned in the golden runs. It is not a hard check, because dropping a good line over word order would cost more than it saves.
 
 ## Using Qloo the way it is meant to be used

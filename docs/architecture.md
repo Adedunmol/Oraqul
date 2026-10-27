@@ -24,7 +24,7 @@ Next.js (Vercel)  ->  NestJS API (VPS)  ->  agent runtime (module in the API)
 | `packages/engine` | Qloo client, tools, receipts, scoring | `schema` |
 | `packages/packs` | One config per category | `schema` |
 | `packages/ui` | Design system components | `schema` |
-| `packages/mcp` | MCP server over the engine tools | `engine`, `schema` |
+| `packages/mcp` | Local MCP server over the Qloo tools only (stdio). The hosted server for plans is in `apps/api/src/mcp-http` | `engine`, `schema` |
 | `packages/eval` | The golden cases and their expected results (the specs that run them are in `apps/api`) | `engine`, `packs`, `schema` |
 
 Rules:

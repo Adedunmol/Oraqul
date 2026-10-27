@@ -107,7 +107,7 @@ Seeded names are asked of Qloo only for the markets of the plan's territories, j
 
 **Verification.** Checked on the development host ([qloo.md](../backend/qloo.md#what-is-verified)): Guinness, Indomie, EE, Monzo, Lyft, Cash App and Bolt match by exact name, and MTN matches as "MTN Group". "Verve" and "QuickTeller" did not resolve to the Nigerian payment brands, so they are not seeds; banks and payment brands are a kind of partner. Brand categories that give brands that operate in a city: beverage, telecom, food and beauty. Coffee, energy drink and snack were thin and are not asked; Qloo has no brand category for apparel, hardware, ticketing or payments.
 
-Price is always **unknown**. Oraqul gives no pricing advice. Details, the lead time rule (T1), content fit (T2), the pitch kit (T3, T4) and the team's own partners are in [partnerships](partnerships.md).
+Price is always **unknown**. Oraqul gives no pricing advice, and no sponsorship fee or loan terms are ever quoted. Details, the lead time rule (T1), content fit (T2), the pitch kit (T3, T4) and the team's own partners are in [partnerships](partnerships.md).
 
 ## Direction calls
 
