@@ -29,6 +29,8 @@ Vercel AI SDK (v7), called from the API. The provider and model are configuratio
 
 Costs are rough and assume about 80% input tokens; check the provider's usage page. OpenAI's GPT-6 models are reasoning models: they ignore `temperature`, and `LLM_WRITER_REASONING` sets how hard they think (unset, a plan took 7 minutes and 130K tokens on Sol). Web research runs on the writer's model. It searches the industry by name ("Nollywood", not only "Nigeria"), runs one search per question and per diaspora city, and keeps only facts about that industry and those markets, so results vary a little between runs and a thin diaspora city can return nothing. Set the writer's key and model in `.env` ([.env.example](../../.env.example) has the block). A writer on another provider needs its own key, and the main key is never sent to it.
 
+**The launch watch's rival check** (`apps/api/src/watch/rival-dates.ts`) uses the writer's web search and the agent model, and only reads. The search prompt carries the kind of work, the genre, the cities and a date range, never the title. The extraction returns `{ title, isoDate, dateText, source }` for each release; code fetches the cited page itself and keeps a release only when the page holds both the title and `dateText` and the two agree with `isoDate`. With no model or no search the check says so on the watch and raises nothing; the scripted fallback is no check, never a guess. The model sets no severity: code does, from the date.
+
 **The Guide's help bot** (`apps/api/src/guide`) is public, so it never uses the keys above. It has its own free Gemini key and model:
 
 | Key | What it does |

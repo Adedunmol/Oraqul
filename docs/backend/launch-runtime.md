@@ -120,8 +120,15 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 | Audit | The plan is the whole ask: "audit my plan", "check my plan", "why did it fail". "Check how the plan plays in Lagos" is an answer | The audit of the plan the chat has: a saved audit is rerun with the new message (results, say); an Oraqul plan is read back as text | `audit` output |
 | Fix | The plan is the whole ask: "fix this plan", "write a better plan" (also the Fix this plan button on a report). "Fix the budget in this plan" is an answer | The fix; on a saved report only the plan is new | `fix` output (and an `audit` when there was none) |
 | Rival date check | rival titles with YYYY-MM-DD dates | `scoreRivals`: rivals scored against the comps | `date` output |
+| Rescue | "rescue this launch", "turn the plan around", "get us back on pace" (also what approving a pace event posts) | `runRescue` in `launch/rescue.ts`: only when the team's figures are behind the plan's pace (`PaceService.state`); it picks the territory and channel by code, builds three sections from the plan's own findings, and checks every line like a plan line. No new Qloo call | `rescue` output, a narrow plan whose parent is the plan; the chat's plan does not change |
 | Creative kit | "creative kit", "shot list", "caption pack" | Guides by code for one territory and channel, or every territory when asked for all of them | `creative` output |
 | Partner brief | "partner" + a name, or the first brand the plan names | An artist the plan's music findings ranked is backed by that finding; a brand or podcast is scored with `lift` against the baseline. The model drafts the pitch from findings, checked; the template is the fallback | `partner` output |
+
+## After the plan: watch, figures and where a run came from
+
+Every run records who it counts against and where it came from: `Handoff` carries nothing new, but `RunService` runs the whole run inside an `AsyncLocalStorage` holding `{ userId, via }` (`agent/run-origin.ts`), where `via` is `web`, `mcp` or `watch`. `newRun` writes it to `runs`, the cap reads the user, and `toolContext` reads `via` to pick the Qloo meter's limit, so none of the pipeline's signatures change.
+
+The watch module (`apps/api/src/watch`) holds the scheduler (`WatchScheduler`), one check of a plan (`WatchChecker`: milestones, an old plan, pace, and rival dates through `RivalFinder`), the pure event rules (`checks.ts`), the pace store (`PaceService`, in `AgentModule` because a rescue reads it) and the controllers. Approving an event calls `RunService.post` with `via: 'watch'`, the same entry as a typed message. The rival finder and funding checks read pages through `fetchPage` (`apps/api/src/web/page-fetch.ts`), the only place the API fetches a URL it was not configured with.
 
 ## Data and events
 
@@ -140,6 +147,9 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 |---|---|---|
 | `QLOO_MODE` | `demo` | `live` for real Qloo. Demo data is made up and every receipt says so. The API refuses to start with `NODE_ENV=production` unless it is `live` |
 | `QLOO_CALL_BUDGET` | 80 | Qloo calls per run. A live Third Bridge plan uses about 45 to 65 |
+| `QLOO_MONTHLY_BUDGET` | 10000 | Qloo calls a month across every run together, counted in Postgres (`qloo_usage`) so a restart does not reset it. Taken one call at a time through `QlooMeterService` before each network call; cache hits are free |
+| `QLOO_INTERACTIVE_RESERVE` | 3000 | Part of the month kept for people in the web app: a run started from a connected agent or approved on a watch stops short of it. The run ends with what is tested, the same as a spent run budget |
+| `RUN_CAP_PER_USER_MONTH` | 20 | Runs that ask Qloo a person may start in a calendar month, counted from `runs` (`user_id`, `qloo_calls`). A person's `users.run_cap` overrides it. Checked when an agent run starts, never on a card answer that resumes a counted run |
 | `QLOO_MAX_CONCURRENT` | 2 | Qloo requests in flight across all runs together, so people planning at once queue instead of drawing 429s |
 | `AGENT_MAX_STEPS` | 12 | Tool loop steps for an answer on an older plan |
 | `LLM_API_KEY`, `LLM_MODEL` | empty | No key → scripted reader, default queries and the template writer |
@@ -159,7 +169,7 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 
 - **Plan** (`build`, `scenario`, `fix`): a launch plan with findings, receipts and the brief behind it.
 - **Report** (`audit`): an audit report. A fix saves the report first and then the plan, whose parent is the report.
-- **Small briefs** (`date`, `partner`, `creative`): saved outputs on a plan.
+- **Small briefs** (`date`, `partner`, `creative`): saved outputs on a plan. A **rescue** (`rescue`) is a narrow plan of three sections, saved with the plan as its parent.
 - **Answer**: a message in the chat with cited claims and no saved output.
 - All outputs export to Markdown, Word and PDF, with grounded lines footnoted to findings. PDF and Word files can be uploaded as input.
 

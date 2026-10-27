@@ -28,6 +28,10 @@ The model reads the brief and shapes the questions. Code asks Qloo, turns each a
 
 Each call returns `{ data, call }`. The call becomes a receipt with what was sent and what came back, and the plan's Evidence tab lists every one. Every endpoint and parameter we rely on was probed live and is recorded in [docs/backend/qloo.md](docs/backend/qloo.md).
 
+## After the plan
+
+Oraqul keeps working once the plan is written. A **launch watch** re-checks a saved plan on a schedule (a rival release near its date, a campaign date that slipped, a plan that has grown old) and emails the team; the team can enter its own figures and Oraqul says whether the launch is ahead of, on or behind the plan's pace, and a **rescue** names where to put the next seven days. The plan's dates can go into a calendar app. A watch never changes the plan and never asks Qloo by itself, and anything that leaves Oraqul goes out only after a person approves it. The API shares one monthly Qloo budget and a per person run cap across every run (`QLOO_MONTHLY_BUDGET`, `RUN_CAP_PER_USER_MONTH`). See [spec §5.17 to §5.19](docs/product/spec.md).
+
 ## Run it locally
 
 Needs Node 22, pnpm 10 and Docker.

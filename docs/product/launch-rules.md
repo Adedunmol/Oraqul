@@ -17,6 +17,8 @@ A rule is launch practice, so a line that states one is a **playbook** line (spe
 | Platform extras | The platforms a category or a market adds to the suggestions | `rules/platforms.ts` |
 | Partners | Tiers, seeded names per market, brand categories and kinds of partner per category, lead time, content fit, the pitch kit | `rules/partners.ts` (`partners@<date>.<n>`), see [partnerships](partnerships.md) |
 | Content calendar | The rows a calendar is built from, and the paid ads note | `rules/calendar.ts` (`calendar@<date>.<n>`), see [content calendar](content-calendar.md) |
+| Pace | How the team's own figures are read against the plan's signal: the default curve for each category and the thresholds for ahead, on pace and behind | `rules/pace.ts` (`pace@<date>.<n>`), see [pace](#pace-and-watch) |
+| Watch | What a launch watch looks for, in days: when a plan is old, how near a rival is, when a late action is urgent | `rules/watch.ts` (`watch@<date>.<n>`) |
 | Live shows | E1 to E8 for a single show or a short run | `rules/shows.ts` (`shows@<date>.<n>`), see [shows agent](../categories/shows.md) |
 | Creative | What a creative kit is built from, per category | `rules/creative.ts` |
 
@@ -52,6 +54,20 @@ The Games, Books and Podcasts calendars still live in their `KIND_PROFILES` (bea
 ## Targets are not forecasts
 
 The target for the primary signal is the team's own number when the brief gives one (`target 10,000 wishlists`), else the library's benchmark where it has one (Games only today). It is labelled "a target, not a forecast". The refusal of forecasts, in `base-prompt.ts`, still holds: Oraqul never predicts what will happen.
+
+## Pace and watch
+
+Once a launch has figures, D2's signal is read against them. This is direction, never a forecast (D5): Oraqul says where the figures stand against a convention now and never says where they will end up.
+
+| Signal kind | Categories | Default | Read |
+|---|---|---|---|
+| Cumulative, back loaded | Film (screenings and presales), Live shows (sell-through) | A curve of the share of the target expected by each day from release: Film 10 percent at 8 weeks out, 30 at 4, 65 at 1, 100 on release; shows from the 57 percent last week figure ([live shows E2](../categories/shows.md)) | The target times the curve's share today, against what the figures add up to |
+| Cumulative, front loaded | Games (wishlists) | 85 percent of the target by four months out (D1), a straight line from a year out, 100 on release | The same |
+| Level | Music (save rate and completion), Podcasts (downloads per episode), Books (advance copy conversion) | None: no sourced curve exists | The latest reading against the target, from the signal's first checkpoint on |
+
+*Ahead* is at least 110 percent of the expected figure, *behind* is under 90 percent, and fewer than three dated entries, no target, no release date, an expected share under 10 percent or a level signal before its first checkpoint is *too early to tell*. The curves and thresholds are chosen conventions, not facts: the team can change a plan's target and curve, and the page says when it has. A convention with no source says so beside the verdict.
+
+A launch watch (`rules/watch.ts`) raises a rival release within 7 days of the release date as *watch* and within 2 days as *act*, a campaign action undone 3 days past its date as *act*, and a plan 14 days old with no newer check of what has changed as *act*. The dates for rivals come from the web, each with its page and the day it was read, never from Qloo ([spec §5.17](spec.md)).
 
 ## Budget band
 
