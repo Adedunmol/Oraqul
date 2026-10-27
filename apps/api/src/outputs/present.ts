@@ -40,6 +40,7 @@ const KIND_LABEL: Record<Job, string> = {
   partner: 'Partner brief',
   creative: 'Creative kit',
   refresh: 'What changed',
+  rescue: 'Rescue',
 };
 const PREFIX: Record<Job, string> = {
   build: 'v',
@@ -50,6 +51,7 @@ const PREFIX: Record<Job, string> = {
   partner: 'B',
   creative: 'K',
   refresh: 'R',
+  rescue: 'X',
 };
 
 // Product copy for the tabs (spec §9.3). The web demo has the same words until it is removed.
@@ -72,7 +74,9 @@ const TAB_NOTE: Partial<Record<OutputTabKey, string>> = {
   refresh:
     'What Qloo and the web say now, set beside what this plan saved. The plan itself is unchanged.',
   campaign:
-    'The content calendar as actions your team can run, edit and tick off. Each comes with a guide to adapt: Oraqul makes no final asset.',
+    'The content calendar as a dated checklist your team edits and ticks off. Each action comes with a guide to adapt, and Oraqul alerts the team when a date slips: it makes no final asset and posts nothing.',
+  watch:
+    'Oraqul re-checks this plan on a schedule and says what needs a look. Add your own figures to see whether the launch is ahead of, on or behind the plan’s pace. It never changes the plan.',
   kit: 'Guides for the team that makes the creative: hooks, a script, a shot list, a key art brief and captions. Oraqul does not make the asset.',
   route: 'The tour stops in your order, scored against the strongest order.',
   supportacts: 'The acts Qloo ranks highest with your audience in each tour city.',
@@ -96,6 +100,7 @@ const TAB_LABEL: Partial<Record<OutputTabKey, string>> = {
   calls: 'Direction calls',
   kit: 'Creative kit',
   campaign: 'Campaign',
+  watch: 'Watch',
   refresh: 'What changed',
   route: 'Tour route',
   supportacts: 'Support acts',
@@ -258,36 +263,56 @@ export function presentOutput({
                 : []),
             ]
           : []),
+        // Watching and pacing are for a whole launch plan, not a narrow answer.
+        ...(plan.scope === 'full' ? (['watch'] as const) : []),
       ]
     : [];
   // A launch plan opens on the plan itself (PRD O1); the evidence sits behind it.
   const tabKeys: OutputTabKey[] =
     row.kind === 'creative'
       ? ['kit', 'evidence']
-      : row.kind === 'refresh'
-        ? ['refresh']
-        : audit
-          ? [
-              'summary',
-              'assumptions',
-              'risks',
-              'alternatives',
-              ...(audit.results ? (['results'] as const) : []),
-              'evidence',
-            ]
-          : plan
-            ? row.kind === 'scenario'
-              ? ['plan', 'changes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
-              : row.kind === 'fix' && report
-                ? ['plan', 'fixes', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
-                : ['plan', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
-            : row.kind === 'date'
-              ? ['summary', 'date', 'evidence']
-              : row.kind === 'partner'
-                ? ['summary', 'partners', 'evidence']
-                : row.kind === 'scenario'
-                  ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
-                  : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
+      : row.kind === 'rescue'
+        ? ['plan', 'evidence']
+        : row.kind === 'refresh'
+          ? ['refresh']
+          : audit
+            ? [
+                'summary',
+                'assumptions',
+                'risks',
+                'alternatives',
+                ...(audit.results ? (['results'] as const) : []),
+                'evidence',
+              ]
+            : plan
+              ? row.kind === 'scenario'
+                ? [
+                    'plan',
+                    'changes',
+                    ...gameTabs,
+                    ...planTabs,
+                    'audience',
+                    'assumptions',
+                    'evidence',
+                  ]
+                : row.kind === 'fix' && report
+                  ? [
+                      'plan',
+                      'fixes',
+                      ...gameTabs,
+                      ...planTabs,
+                      'audience',
+                      'assumptions',
+                      'evidence',
+                    ]
+                  : ['plan', ...gameTabs, ...planTabs, 'audience', 'assumptions', 'evidence']
+              : row.kind === 'date'
+                ? ['summary', 'date', 'evidence']
+                : row.kind === 'partner'
+                  ? ['summary', 'partners', 'evidence']
+                  : row.kind === 'scenario'
+                    ? ['summary', 'changes', 'assumptions', 'plan', ...territories, 'evidence']
+                    : ['summary', 'audience', 'assumptions', 'plan', ...territories, 'evidence'];
   const focusIds =
     row.kind === 'date'
       ? brief.dates.map((d) => d.id)

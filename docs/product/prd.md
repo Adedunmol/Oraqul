@@ -52,7 +52,7 @@ Non goals
 * Pricing advice and audience headcounts.
 * Release calendars from Qloo. Users supply their own dates and rivals.
 * Social media metrics.
-* Sending, booking or buying anything. Oraqul drafts only.
+* Sending, booking or buying anything. Oraqul drafts only, and anything that leaves Oraqul goes out only after a person approves it.
 
 ## 5. Product structure
 
@@ -98,8 +98,11 @@ Priority: P0 must ship for the submission, P1 should, P2 later.
 | J5 | Rival date check: the user supplies rivals and dates, in the brief or later in the chat. Qloo has no release calendar. Oraqul measures shared audience with each rival from one ranking call, and in a build calls each date okay, risky or avoid (R5). | P1 |
 | J6 | Partner brief: a draft message that cites its findings. Never sent. | P1 |
 | J7 | Answer: a question about the plan is answered from its findings, with the same line kinds and check. If the answer would change a decision, the agent offers it as a scenario. | P0 |
-| J8 | Campaign: a plan with a content calendar can be set up as actions in the project, one for each calendar row, each with a guide from the creative kit that the team adapts. The team edits an action and ticks it off. A revised plan gets its own set and the earlier set is never changed; the page says which version a set belongs to. An action can carry a two-angle test: each angle with its reasoning, one thing to measure, and no predicted winner. Nothing is published or scheduled. | P1 |
+| J8 | Campaign: a plan with a content calendar can be set up as actions in the project, one for each calendar row, each with a guide from the creative kit that the team adapts. The team edits an action and ticks it off. A revised plan gets its own set and the earlier set is never changed; the page says which version a set belongs to. An action can carry a two-angle test: each angle with its reasoning, one thing to measure, and no predicted winner. The checklist is dated, and a launch watch alerts the team when an action slips (J10). The plan's dates can be downloaded as a calendar file or subscribed to as a feed of titles and dates. Nothing is published or posted for the team. | P1 |
 | J9 | What changed: a saved plan can be checked against today's data on request, in the chat or as a suggested step on an older plan. Findings that moved, web pages that now say something different (each with the day it was read), what is newly found, the plan lines that rest on them and what the check could not do are shown. Something is called changed only when the plan saved an earlier finding or fact to compare. The plan is not changed; a revision is built only when the team asks. | P1 |
+| J10 | Launch Watch: a saved launch plan can be watched. On a schedule that survives a restart, Oraqul re-checks rival release dates near the plan's (from the web, each with its page and the day it was read), campaign actions past their date, a plan that has grown old, and the team's own figures. It raises events with a severity and a reason, emails the team's owners and editors one digest, and shows the events on the plan's Watch tab with an unread count on the project. A watch never changes the plan and never asks Qloo. An owner or editor approves an event to start a normal check or rescue. | P1 |
+| J11 | Actuals and pace: the team enters real figures for the plan's one signal as pasted lines or a CSV. Code says whether they are ahead, on pace, behind or too early to tell, with the gap and how much it rests on, against a pace convention the team can edit. Direction only, never a forecast. | P1 |
+| J12 | Rescue: when the figures are behind, a person asks for or approves a rescue. It names the territory and channel to put the next seven days into, from the plan's own findings and the figures, and is saved as an output of the plan. | P1 |
 
 ### 6.3 Category packs
 
@@ -140,7 +143,7 @@ Each category supplies its own inputs, query catalog, modules, assumption checkl
 | ID | Requirement | P |
 |---|---|---|
 | A1 | Sign in, teams, roles. Owners invite and remove. Editors run the agent. Viewers read and open receipts. People sign in with email and password, Google, or a one-time email code, and can reset a forgotten password. | P0 |
-| A2 | Signed out visitors see sign in and an example of an answer with its receipts. Recorded walkthroughs follow. There is no signup free team, because a demo that cannot make live Qloo calls hides what the product does. | P0 |
+| A2 | Signed out visitors see sign in and an example of an answer with its receipts. Recorded walkthroughs follow. There is no signup free team, because a demo that cannot make live Qloo calls hides what the product does. A reviewer's account can be given its own run cap. | P0 |
 | A3 | Mobile keeps chat, outputs and their details. Everything else is desktop only. | P1 |
 
 ### 6.7 Agents

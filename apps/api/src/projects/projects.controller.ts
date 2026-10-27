@@ -91,7 +91,7 @@ export class ProjectsController {
     @CurrentMembership() membership: Membership,
     @Query('category', new ZodPipe(scopeSchema)) category: Category | undefined,
   ): Promise<Project[]> {
-    return this.projects.list(membership.teamId, category);
+    return this.projects.list(membership.teamId, category, membership.userId);
   }
 
   @Post('teams/:teamId/projects')
@@ -309,8 +309,9 @@ export class ProjectsController {
   post(
     @Param('threadId') threadId: string,
     @Body(new ZodPipe(postMessageSchema)) body: z.output<typeof postMessageSchema>,
+    @CurrentMembership() membership: Membership,
   ): Promise<void> {
-    return this.runs.post(threadId, body);
+    return this.runs.post(threadId, body, { userId: membership.userId, via: 'web' });
   }
 
   /** Stops the run on this thread. A conflict when nothing is running. */

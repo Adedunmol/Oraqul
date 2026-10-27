@@ -1,6 +1,13 @@
 'use client';
 
-import type { CampaignState, LineChange, Output, ReactionKind, Receipt } from '@oraqul/schema';
+import type {
+  CampaignState,
+  LineChange,
+  Output,
+  ReactionKind,
+  Receipt,
+  WatchState,
+} from '@oraqul/schema';
 import { createContext, use } from 'react';
 
 export interface OutputView {
@@ -16,6 +23,8 @@ export interface OutputView {
   reaction: ReactionKind | null;
   /** The plan's campaign. Null when the output has none, and on a shared link. */
   campaign: CampaignState | null;
+  /** The plan's watch and pace. Null when the output has none, and on a shared link without a sample. */
+  watch: WatchState | null;
   /** False for viewers and on a shared link. */
   canEdit: boolean;
   shared: boolean;

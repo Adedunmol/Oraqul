@@ -18,6 +18,7 @@ export const jobs = [
   'partner',
   'creative',
   'refresh',
+  'rescue',
 ] as const;
 export const jobSchema = z.enum(jobs);
 export type Job = z.infer<typeof jobSchema>;

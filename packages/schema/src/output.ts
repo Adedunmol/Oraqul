@@ -37,6 +37,7 @@ export const outputTabKeys = [
   'kit',
   'fixes',
   'campaign',
+  'watch',
   'refresh',
 ] as const;
 export const outputTabKeySchema = z.enum(outputTabKeys);
@@ -133,6 +134,8 @@ export const outputSchema = z.object({
   /** Lines this output is about, such as the briefed partner or the checked dates. */
   focusIds: z.array(z.string()),
   dateSource: z.enum(['you', 'calendar']).optional(),
+  /** True while a launch watch is on for this plan, so the chat does not offer to start one. */
+  watching: z.boolean().optional(),
   tabs: z.array(outputTabSchema),
   sections: z.array(planSectionSchema),
   glance: z.array(glanceRowSchema),
@@ -172,7 +175,7 @@ export const compareResponseSchema = z.object({
 });
 
 /** Kinds whose output is a launch plan. A fix is a plan written from an audit. */
-export const planKinds = ['build', 'scenario', 'fix', 'creative'] as const;
+export const planKinds = ['build', 'scenario', 'fix', 'creative', 'rescue'] as const;
 /** Kinds whose output is a findings report on a plan someone brought. */
 export const reportKinds = ['audit'] as const;
 

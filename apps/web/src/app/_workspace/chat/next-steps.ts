@@ -1,14 +1,20 @@
+import { WATCH_RULES } from '@oraqul/packs';
 import type { Job } from '@oraqul/schema';
 
 export interface NextStep {
   id: string;
   label: string;
+  /** A step that opens a page instead of sending a message, such as the Watch tab. */
+  href?: string;
   /** What the chip sends. Steps from the demo store have none and run through the demo instead. */
   message?: string;
 }
 
 /** The part of an output a step is worked out from. */
 export interface StepSource {
+  id?: string;
+  /** True while a launch watch is on for the plan. */
+  watching?: boolean;
   kind: Job;
   title: string;
   createdAt: string;
@@ -27,7 +33,7 @@ const key = (text: string) => text.trim().toLowerCase();
 const MAX_STEPS = 3;
 const DAY_MS = 24 * 60 * 60 * 1000;
 /** A plan this old is worth checking against today's data. */
-const STALE_DAYS = 14;
+const STALE_DAYS = WATCH_RULES.staleDays.value;
 
 /**
  * Up to three things worth asking next, worked out from the project's latest plan and what the
@@ -52,6 +58,14 @@ export function nextStepsFor(outputs: StepSource[], now: Date = new Date()): Nex
       id: 'refresh',
       label: 'Check what has changed',
       message: 'Check what has changed since this plan was made',
+    });
+  }
+  // A launch that is out in the world is worth watching: it alerts the team when a date or a rival moves.
+  if (base.id && !base.watching && base.kind !== 'scenario') {
+    steps.push({
+      id: 'watch',
+      label: 'Watch this launch',
+      href: `/outputs/${base.id}?tab=watch`,
     });
   }
   const ranked = [...base.brief.places].sort((a, b) => b.lift - a.lift);

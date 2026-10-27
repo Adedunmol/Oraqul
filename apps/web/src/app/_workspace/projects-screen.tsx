@@ -300,7 +300,16 @@ function ProjectCard({
           className="relative z-10 -mt-1 -mr-1"
         />
       }
-      footerStart={<Chip className="min-w-0 truncate bg-surface/70!">{project.status}</Chip>}
+      footerStart={
+        <div className="flex min-w-0 items-center gap-1.5">
+          <Chip className="min-w-0 truncate bg-surface/70!">{project.status}</Chip>
+          {project.watchUnread > 0 ? (
+            <Chip className="shrink-0 bg-accent-soft! text-accent!">
+              {project.watchUnread} new on Watch
+            </Chip>
+          ) : null}
+        </div>
+      }
       footerEnd={`Updated ${formatDay(project.updatedAt)}`}
     />
   );

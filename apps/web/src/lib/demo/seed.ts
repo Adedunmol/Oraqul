@@ -182,11 +182,14 @@ function seedChat(r: Project, t: Thread, made: DOutput[]): void {
       fix: 'Add the results.',
       creative: 'Make the creative kit.',
       refresh: 'Check what has changed.',
+      rescue: 'Rescue this launch.',
     }[o.kind];
     const steps =
       o.kind === 'scenario'
         ? traceForScenario(o.title.replace('Scenario: ', ''))
-        : pk.trace[o.kind === 'creative' || o.kind === 'refresh' ? 'build' : o.kind].slice();
+        : pk.trace[
+            o.kind === 'creative' || o.kind === 'refresh' || o.kind === 'rescue' ? 'build' : o.kind
+          ].slice();
     const summary = getState().outputs.find((x) => x.id === o.id)?.summary ?? '';
     const key = `${t.id}-${i}`;
     pushItem(t.id, { id: `${key}-u`, role: 'user', text: asked });
@@ -214,6 +217,7 @@ export function seed(): void {
       updatedAt: `${s.updated}T12:00:00.000Z`,
       qlooMatch: null,
       extra: {},
+      watchUnread: 0,
     };
     insertProject(r);
     const pk = PACKS[s.category];

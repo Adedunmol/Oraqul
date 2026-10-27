@@ -80,12 +80,17 @@
       {
         "key": "campaign",
         "label": "Campaign",
-        "note": "The content calendar as actions your team can run, edit and tick off. Each comes with a guide to adapt: Oraqul makes no final asset."
+        "note": "The content calendar as a dated checklist your team edits and ticks off. Each action comes with a guide to adapt, and Oraqul alerts the team when a date slips: it makes no final asset and posts nothing."
       },
       {
         "key": "date",
         "label": "Rival date check",
         "note": "How each date overlaps with rival releases. Lower overlap is better."
+      },
+      {
+        "key": "watch",
+        "label": "Watch",
+        "note": "Oraqul re-checks this plan on a schedule and says what needs a look. Add your own figures to see whether the launch is ahead of, on or behind the plan’s pace. It never changes the plan."
       },
       {
         "key": "audience",
@@ -5446,7 +5451,8 @@
     "status": "active",
     "updatedAt": "2026-10-01T10:00:00.000Z",
     "qlooMatch": null,
-    "extra": {}
+    "extra": {},
+    "watchUnread": 0
   },
   "thread": {
     "id": "00000000-0000-4000-8000-000000000103",

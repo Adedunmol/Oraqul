@@ -5,6 +5,7 @@ import type { Output } from '@oraqul/schema';
 import type { Env } from '../config/env.js';
 import { LLM, type Llm } from '../llm/llm.js';
 import { OutputsService } from '../outputs/outputs.service.js';
+import { PaceService } from '../watch/pace.service.js';
 import { BooksAgent } from './books/agent.js';
 import { ModelFollowUpReader as ModelBooksFollowUpReader } from './books/follow-up.js';
 import {
@@ -137,10 +138,13 @@ import {
   ModelPlanWriter as ModelPodcastsPlanWriter,
   TemplatePlanWriter as TemplatePodcastsPlanWriter,
 } from './podcasts/writer.js';
+import { QlooMeterService } from './qloo-meter.js';
 import { ModelReader } from './router/model-reader.js';
 import { FallbackReader } from './router/router.js';
 import { ScriptedReader } from './router/scripted-reader.js';
 import { ROUTER_READER, RunService } from './run.service.js';
+import { RunCapsService } from './run-caps.js';
+import { currentOrigin } from './run-origin.js';
 import { ShowsAgent } from './shows/agent.js';
 import { ModelFollowUpReader as ModelShowsFollowUpReader } from './shows/follow-up.js';
 import {
@@ -183,6 +187,9 @@ const lookups = new LookupCache();
   providers: [
     ThreadStore,
     RunService,
+    QlooMeterService,
+    RunCapsService,
+    PaceService,
     {
       provide: ROUTER_READER,
       inject: [LLM],
@@ -219,8 +226,14 @@ const lookups = new LookupCache();
     },
     {
       provide: CATEGORY_AGENTS,
-      inject: [LLM, ConfigService, OutputsService],
-      useFactory: (llm: Llm | null, config: ConfigService<Env, true>, outputs: OutputsService) => {
+      inject: [LLM, ConfigService, OutputsService, QlooMeterService, PaceService],
+      useFactory: (
+        llm: Llm | null,
+        config: ConfigService<Env, true>,
+        outputs: OutputsService,
+        meter: QlooMeterService,
+        pace: PaceService,
+      ) => {
         const scripted = new ScriptedFilmReader();
         const scriptedFollowUps = new ScriptedFollowUpReader();
         const followUps = llm
@@ -275,7 +288,7 @@ const lookups = new LookupCache();
               )
             : new NoResearch();
         const slots = new RequestSlots(config.get('QLOO_MAX_CONCURRENT', { infer: true }));
-        const tools = (): ToolContext => toolContext(config, slots);
+        const tools = (): ToolContext => toolContext(config, slots, meter);
         const planFor = (plan: Output) =>
           llm ? new ModelPlanner(llm.model('agent'), llm.timeoutMs) : new PlanSummaryPlanner(plan);
         const maxSteps = config.get('AGENT_MAX_STEPS', { infer: true });
@@ -315,6 +328,7 @@ const lookups = new LookupCache();
           followUps,
           tools,
           plan: (id) => outputs.plan(id),
+          pace: (id) => pace.state(id),
           planner: planFor,
           maxSteps,
           analyst,
@@ -382,6 +396,7 @@ const lookups = new LookupCache();
           followUps: musicFollowUps,
           tools,
           plan: (id) => outputs.plan(id),
+          pace: (id) => pace.state(id),
           planner: planFor,
           maxSteps,
           analyst,
@@ -449,6 +464,7 @@ const lookups = new LookupCache();
           followUps: showsFollowUps,
           tools,
           plan: (id) => outputs.plan(id),
+          pace: (id) => pace.state(id),
           planner: planFor,
           maxSteps,
           analyst,
@@ -517,6 +533,7 @@ const lookups = new LookupCache();
           followUps: gamesFollowUps,
           tools,
           plan: (id) => outputs.plan(id),
+          pace: (id) => pace.state(id),
           planner: planFor,
           maxSteps,
           analyst,
@@ -585,6 +602,7 @@ const lookups = new LookupCache();
           followUps: podcastsFollowUps,
           tools,
           plan: (id) => outputs.plan(id),
+          pace: (id) => pace.state(id),
           planner: planFor,
           maxSteps,
           analyst,
@@ -656,6 +674,7 @@ const lookups = new LookupCache();
           followUps: booksFollowUps,
           tools,
           plan: (id) => outputs.plan(id),
+          pace: (id) => pace.state(id),
           planner: planFor,
           maxSteps,
           analyst,
@@ -710,13 +729,25 @@ const lookups = new LookupCache();
     OutputStore,
     OutputsService,
   ],
-  exports: [RunService, ThreadStore, OutputsService, MemoryStore],
+  exports: [
+    RunService,
+    ThreadStore,
+    OutputsService,
+    MemoryStore,
+    QlooMeterService,
+    RunCapsService,
+    PaceService,
+  ],
 })
 export class AgentModule {}
 
 // One Qloo client per run, so the call budget and the cache are the run's (spec §3.5). The slots
 // are shared, so runs at once stay under the host's rate limit together.
-function toolContext(config: ConfigService<Env, true>, slots: RequestSlots): ToolContext {
+function toolContext(
+  config: ConfigService<Env, true>,
+  slots: RequestSlots,
+  meter: QlooMeterService,
+): ToolContext {
   const callBudget = config.get('QLOO_CALL_BUDGET', { infer: true });
   if (config.get('QLOO_MODE', { infer: true }) === 'demo') {
     const qloo = new QlooClient({
@@ -734,6 +765,7 @@ function toolContext(config: ConfigService<Env, true>, slots: RequestSlots): Too
     callBudget,
     lookupCache: lookups,
     slots,
+    meter: meter.forOrigin(currentOrigin().via),
   });
   return { qloo, source: 'qloo', entities: new Map() };
 }

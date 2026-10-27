@@ -13,11 +13,13 @@ export { type Beat, type DatedBeat, datedBeats } from '../launch';
 export * from './calendar';
 export * from './creative';
 export * from './opportunities';
+export * from './pace';
 export * from './partners';
 export * from './platforms';
 export * from './shared';
 export * from './shows';
 export type { Benchmark, Rule, RuleLibrary, RuleSource, SignalRule } from './types';
+export * from './watch';
 export { BOOKS_RULES, FILM_RULES, GAMES_RULES, MUSIC_RULES, PODCASTS_RULES, SHOWS_RULES };
 
 export const rules: Record<Category, RuleLibrary> = {

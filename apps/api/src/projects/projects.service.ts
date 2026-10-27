@@ -37,6 +37,7 @@ import {
   users,
 } from '../db/schema.js';
 import { OutputsService } from '../outputs/outputs.service.js';
+import { watchUnreadByProject } from '../watch/unread.js';
 
 /** A person keeps three pins at most; pinning a fourth drops the oldest (spec §7). */
 export const MAX_PINS = 3;
@@ -64,7 +65,7 @@ export class ProjectsService {
   ) {}
 
   /** The team's projects, newest first. Drafts the router is still reading are left out. */
-  async list(teamId: string, category: Category | undefined): Promise<Project[]> {
+  async list(teamId: string, category: Category | undefined, userId: string): Promise<Project[]> {
     const rows = await this.db
       .select()
       .from(projects)
@@ -76,9 +77,14 @@ export class ProjectsService {
         ),
       )
       .orderBy(desc(projects.updatedAt));
+    const unread = await watchUnreadByProject(
+      this.db,
+      rows.map((r) => r.id),
+      userId,
+    );
     return rows.flatMap((row) => {
       const project = toProject(row);
-      return project ? [project] : [];
+      return project ? [{ ...project, watchUnread: unread.get(row.id) ?? 0 }] : [];
     });
   }
 
@@ -432,6 +438,7 @@ function inputs(row: ProjectRow) {
     updatedAt: row.updatedAt.toISOString(),
     qlooMatch: null,
     extra: {},
+    watchUnread: 0,
   };
 }
 

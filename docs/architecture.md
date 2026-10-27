@@ -11,7 +11,7 @@ Next.js (Vercel)  ->  NestJS API (VPS)  ->  agent runtime (module in the API)
 ```
 
 - The web app talks only to the API. Runs stream to it over server sent events (event types in `packages/schema`, listed in [spec §8](product/spec.md)).
-- The agent runtime is a module inside the API process, not a separate service.
+- The agent runtime is a module inside the API process, not a separate service. So is the launch watch scheduler (`apps/api/src/watch`): there is no queue or worker. A watch's due time and the claim on it live in Postgres, so a restart only delays a check and never loses it, and the API still runs as one instance.
 - Qloo is reached through the client in `packages/engine`, called from the API. There is no separate Qloo service. See [qloo.md](backend/qloo.md).
 
 ## Repo layout

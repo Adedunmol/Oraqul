@@ -29,6 +29,12 @@ export const envSchema = z
     QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(80),
     /** Qloo requests in flight across all runs together. The development host 429s above about 2. */
     QLOO_MAX_CONCURRENT: z.coerce.number().int().positive().default(2),
+    /** Qloo calls a month across every run. A development key is about 10,000 (docs/backend/qloo.md). */
+    QLOO_MONTHLY_BUDGET: z.coerce.number().int().positive().default(10_000),
+    /** Part of the month kept for people in the web app: connected agents and watches stop short of it. */
+    QLOO_INTERACTIVE_RESERVE: z.coerce.number().int().min(0).default(3_000),
+    /** Runs that ask Qloo, per person per calendar month. A person's own `run_cap` overrides it. */
+    RUN_CAP_PER_USER_MONTH: z.coerce.number().int().positive().default(20),
     QLOO_MODE: z.enum(['demo', 'live']).default('demo'),
     /** The commit the server was built from; saved on every plan. Empty in development. */
     CODE_VERSION: z.string().default(''),

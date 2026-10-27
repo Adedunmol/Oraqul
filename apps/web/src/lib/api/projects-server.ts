@@ -13,6 +13,8 @@ import {
   projectListSchema,
   type ThreadDetail,
   threadDetailSchema,
+  type WatchState,
+  watchStateSchema,
 } from '@oraqul/schema';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
@@ -49,6 +51,10 @@ export function getThreadDetail(threadId: string, returnTo: string): Promise<Thr
 
 export function getCampaign(outputId: string, returnTo: string): Promise<CampaignState> {
   return orNotFound(serverGet(`/outputs/${outputId}/campaign`, campaignStateSchema, { returnTo }));
+}
+
+export function getWatch(outputId: string, returnTo: string): Promise<WatchState> {
+  return orNotFound(serverGet(`/outputs/${outputId}/watch`, watchStateSchema, { returnTo }));
 }
 
 export function getOutputDetail(outputId: string, returnTo: string): Promise<OutputDetail> {

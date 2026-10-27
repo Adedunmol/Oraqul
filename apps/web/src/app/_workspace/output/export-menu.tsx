@@ -4,14 +4,20 @@ import type { Output } from '@oraqul/schema';
 import { Button, Icon } from '@oraqul/ui';
 import { type KeyboardEvent, useEffect, useId, useRef, useState } from 'react';
 import { exportOutput } from '@/lib/api/projects';
+import { downloadCalendar } from '@/lib/api/watch';
 import { copyText, toast } from '../toast';
 
-type Action = 'pdf' | 'docx' | 'md';
+type Action = 'pdf' | 'docx' | 'md' | 'ics';
 
 const ACTIONS: { key: Action; label: string; description: string }[] = [
   { key: 'pdf', label: 'Download PDF', description: 'A clean document to send to partners' },
   { key: 'docx', label: 'Download Word', description: 'To edit and merge with your plan' },
   { key: 'md', label: 'Copy as Markdown', description: 'To paste into email, Slack or Notion' },
+  {
+    key: 'ics',
+    label: 'Download calendar',
+    description: 'The dates, for your calendar app (.ics)',
+  },
 ];
 
 /**
@@ -45,7 +51,10 @@ export function ExportMenu({ output }: { output: Output }) {
     close();
     setBusy(true);
     try {
-      const file = await exportOutput(output.id, action);
+      const file =
+        action === 'ics'
+          ? await downloadCalendar(output.id)
+          : await exportOutput(output.id, action);
       if (action === 'md') {
         copyText(await file.text(), 'Markdown copied');
         return;

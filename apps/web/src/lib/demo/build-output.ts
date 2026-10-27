@@ -38,15 +38,18 @@ export interface DOutput {
   src?: 'you' | 'calendar';
 }
 
-const KIND_LABEL: Record<'build' | 'audit' | 'scenario' | 'fix' | 'creative' | 'refresh', string> =
-  {
-    creative: 'Creative kit',
-    refresh: 'What changed',
-    build: 'Plan',
-    audit: 'Audit',
-    scenario: 'Scenario',
-    fix: 'Fix',
-  };
+const KIND_LABEL: Record<
+  'build' | 'audit' | 'scenario' | 'fix' | 'creative' | 'refresh' | 'rescue',
+  string
+> = {
+  rescue: 'Rescue',
+  creative: 'Creative kit',
+  refresh: 'What changed',
+  build: 'Plan',
+  audit: 'Audit',
+  scenario: 'Scenario',
+  fix: 'Fix',
+};
 
 const isPlanKind = (k: Job): k is 'build' | 'audit' | 'scenario' | 'fix' | 'creative' =>
   k === 'build' || k === 'audit' || k === 'scenario' || k === 'fix' || k === 'creative';
@@ -101,6 +104,7 @@ const ENDPOINT: Record<Exclude<EndpointKind, 'none'>, string> = {
 };
 
 const TAB_NOTE: Record<OutputTabKey, string> = {
+  watch: 'Oraqul re-checks this plan on a schedule and says what needs a look.',
   summary: 'The short version: what to do first, and how sure Oraqul is.',
   audience: 'Who it is for, measured against Qloo taste data.',
   assumptions:
@@ -157,6 +161,7 @@ function tabsFor(pack: DemoPack, o: DOutput): OutputTab[] {
     partner: ['summary', 'partners', 'evidence'],
     creative: ['kit', 'evidence'],
     refresh: ['refresh'],
+    rescue: ['plan', 'evidence'],
   };
   return keys[o.kind].map((key) => ({ key, label: tabLabel(pack, key), note: TAB_NOTE[key] }));
 }
@@ -494,6 +499,7 @@ function headlineFor(
     .sort((x, y) => (x.verdict === 'breaks' ? 0 : 1) - (y.verdict === 'breaks' ? 0 : 1));
   switch (o.kind) {
     case 'refresh':
+    case 'rescue':
     case 'creative':
     case 'build': {
       const first = bad[0];
@@ -804,6 +810,7 @@ export function buildOutput(r: Project, o: DOutput, all: DOutput[]): Output {
     partner: 'B',
     creative: 'K',
     refresh: 'R',
+    rescue: 'X',
   };
   const summary = [
     headline,

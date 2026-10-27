@@ -1,6 +1,6 @@
 'use client';
 
-import type { CampaignState, OutputDetail, OutputTabKey } from '@oraqul/schema';
+import type { CampaignState, OutputDetail, OutputTabKey, WatchState } from '@oraqul/schema';
 import { Button, buttonClassName, Icon, TabNote, Tabs } from '@oraqul/ui';
 import Link from 'next/link';
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
@@ -45,6 +45,7 @@ import {
   TerritoriesTab,
   TopicsTab,
 } from './tabs-signature';
+import { WatchTab } from './tabs-watch';
 
 // An audit report has its own assumptions and results; every other output keeps the older tabs.
 function Assumptions() {
@@ -77,6 +78,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   calls: CallsTab,
   kit: KitTab,
   campaign: CampaignTab,
+  watch: WatchTab,
   refresh: RefreshTab,
   route: RouteTab,
   supportacts: SupportActsTab,
@@ -105,12 +107,15 @@ export function OutputView({
   share,
   dock,
   campaign = null,
+  watch = null,
   shared = false,
   publicExample = false,
 }: {
   detail: OutputDetail;
   /** The plan's campaign, fetched by the page. */
   campaign?: CampaignState | null;
+  /** The plan's watch and pace, fetched by the page. A shared link has none, so it has no Watch tab. */
+  watch?: WatchState | null;
   initialTab: OutputTabKey | undefined;
   canEdit: boolean;
   /** The output's share link, once it has been turned on. Without the prop there is no Share button. */
@@ -126,7 +131,10 @@ export function OutputView({
   // `contrast` remains a schema key for old responses, but product positioning does not belong in
   // a user's working plan. Hide it even if an older API instance still sends it.
   // A shared link is read only and carries no campaign, so that tab stays out of it.
-  const all = output.tabs.filter((t) => t.key !== 'contrast' && !(shared && t.key === 'campaign'));
+  const all = output.tabs.filter(
+    (t) =>
+      t.key !== 'contrast' && !(shared && t.key === 'campaign') && !(t.key === 'watch' && !watch),
+  );
   const keys = all.map((t) => t.key);
   // The API lists the tabs in order: a launch plan opens on Plan, the older outputs on Summary.
   const first = keys[0] ?? 'summary';
@@ -161,10 +169,11 @@ export function OutputView({
         builtOn: builtOn ? { id: builtOn.id, label: builtOn.label } : undefined,
         reaction: detail.reaction,
         campaign: shared ? null : campaign,
+        watch,
         canEdit: canEdit && !shared,
         shared,
       }),
-    [output, builtOn, detail.reaction, campaign, canEdit, shared, goToTab],
+    [output, builtOn, detail.reaction, campaign, watch, canEdit, shared, goToTab],
   );
 
   // Territories is the heart of a plan that has them, so it stays beside the plan.
@@ -178,7 +187,12 @@ export function OutputView({
   const items: { key: TabChoice; label: string; count?: number }[] = visible.map((t) => ({
     key: t.key,
     label: t.label,
-    count: t.key === 'evidence' && !output.plan ? output.evidence.length : undefined,
+    count:
+      t.key === 'evidence' && !output.plan
+        ? output.evidence.length
+        : t.key === 'watch' && watch && watch.unread > 0
+          ? watch.unread
+          : undefined,
   }));
   if (collapsible) items.push({ key: 'more', label: more ? 'Fewer' : `More (${hidden})` });
 

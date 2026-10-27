@@ -1,6 +1,6 @@
 import type { ToolContext } from '@oraqul/engine';
 import { refusalFor } from '@oraqul/packs';
-import type { Output, ThreadEvent } from '@oraqul/schema';
+import type { Output, PaceState, ThreadEvent } from '@oraqul/schema';
 import type { z } from 'zod';
 import { toMarkdown } from '../../outputs/export.js';
 import {
@@ -31,6 +31,7 @@ import type { QueryPlanCore, QueryPlanner } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import { runRefresh } from './refresh.js';
 import type { ReportWriter } from './report-writer.js';
+import { runRescue } from './rescue.js';
 import type { Researcher } from './research.js';
 import type { ResearchPlanner } from './research-loop.js';
 import type { ResultsReader } from './results-read.js';
@@ -70,6 +71,8 @@ export interface LaunchAgentDeps<
   tools: () => ToolContext;
   /** The saved plan a follow up is about, and what it was built from. */
   plan: (outputId: string) => Promise<{ output: Output; inputs: unknown } | null>;
+  /** The team's own figures read against a plan's pace, for a rescue. Null when there are none to read. */
+  pace?: (outputId: string) => Promise<PaceState | null>;
   /** The planner for an answer: the model planner, or a scripted summary of the plan. */
   planner: (plan: Output) => Planner;
   /** The planner for a standalone chat. Without a model it says it cannot talk freely. */
@@ -245,6 +248,16 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
         );
       case 'refresh':
         return withTokens(await runRefresh(handoff, build, output, inputs));
+      case 'rescue':
+        return withTokens(
+          await runRescue(
+            { emit, config: this.deps.config },
+            output,
+            inputs,
+            (await this.deps.pace?.(output.id)) ?? null,
+            handoff.title,
+          ),
+        );
       case 'creative':
         return withTokens(
           await runCreativeKit(

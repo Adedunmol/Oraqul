@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { briefSchema, type CompareResponse, type Output, outputNature } from '@oraqul/schema';
-import { asc, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray } from 'drizzle-orm';
 import { type Database, DB } from '../db/db.module.js';
-import { outputs, projects, receipts, threads, users } from '../db/schema.js';
+import { outputs, projects, receipts, threads, users, watches } from '../db/schema.js';
 import { compareBriefs, comparePlans, presentOutput, storedPlan, storedReport } from './present.js';
 
 /** Saved outputs as the screens read them (spec §7). Writing them is `OutputStore`'s job. */
@@ -40,6 +40,11 @@ export class OutputsService {
     const briefs = new Map(
       rows.map(({ output }) => [output.id, briefSchema.safeParse(output.brief)]),
     );
+    const watched = await this.db
+      .select({ outputId: watches.outputId })
+      .from(watches)
+      .where(and(eq(watches.projectId, projectId), eq(watches.status, 'active')));
+    const watching = new Set(watched.map((w) => w.outputId));
     return rows.map(({ output, by }) => {
       const version = (seen.get(output.kind) ?? 0) + 1;
       seen.set(output.kind, version);
@@ -47,7 +52,7 @@ export class OutputsService {
       const parentRow = output.parentId
         ? rows.find((r) => r.output.id === output.parentId)
         : undefined;
-      return presentOutput({
+      const presented = presentOutput({
         parentPlan: parentRow ? storedPlan(parentRow.output.plan) : null,
         parentReport: parentRow ? storedReport(parentRow.output.report) : null,
         row: output,
@@ -57,6 +62,7 @@ export class OutputsService {
         version,
         parentBrief: parent?.success ? parent.data : null,
       });
+      return watching.has(output.id) ? { ...presented, watching: true } : presented;
     });
   }
 

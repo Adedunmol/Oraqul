@@ -58,3 +58,47 @@ export function inviteEmail(
     html: `<p>${escapeHtml(intro)}</p><p><a href="${escapeHtml(invite.link)}">Accept the invite</a></p><p>${escapeHtml(outro)}</p>`,
   };
 }
+
+export interface DigestEvent {
+  severity: string;
+  title: string;
+  reason: string;
+  evidence: { url: string; title: string; retrievedAt: string }[];
+}
+
+/** One email for what a check found. Plain words and source links; no Qloo data ever goes in it. */
+export function watchDigestEmail(
+  to: string,
+  digest: { project: string; events: DigestEvent[]; link: string },
+): EmailMessage {
+  const count = digest.events.length;
+  const subject = `${count} ${count === 1 ? 'thing needs' : 'things need'} a look on ${digest.project}`;
+  const text = [
+    `Oraqul checked ${digest.project} and found:`,
+    '',
+    ...digest.events.flatMap((e) => [
+      `[${e.severity}] ${e.title}`,
+      e.reason,
+      ...e.evidence.map((s) => `Source: ${s.title}, ${s.url} (read on ${s.retrievedAt})`),
+      '',
+    ]),
+    `Open the plan: ${digest.link}`,
+    '',
+    'Oraqul changes nothing on its own. Open the Watch tab to approve a check or dismiss an event. You can turn these emails off there.',
+  ].join('\n');
+  const html = [
+    `<p>Oraqul checked ${escapeHtml(digest.project)} and found:</p>`,
+    ...digest.events.map(
+      (e) =>
+        `<p><b>[${escapeHtml(e.severity)}] ${escapeHtml(e.title)}</b><br>${escapeHtml(e.reason)}${e.evidence
+          .map(
+            (s) =>
+              `<br>Source: <a href="${escapeHtml(s.url)}">${escapeHtml(s.title)}</a> (read on ${escapeHtml(s.retrievedAt)})`,
+          )
+          .join('')}</p>`,
+    ),
+    `<p><a href="${escapeHtml(digest.link)}">Open the plan</a></p>`,
+    '<p>Oraqul changes nothing on its own. Open the Watch tab to approve a check or dismiss an event. You can turn these emails off there.</p>',
+  ].join('');
+  return { to, subject, text, html };
+}

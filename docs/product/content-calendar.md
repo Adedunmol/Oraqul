@@ -27,6 +27,10 @@ Every calendar ends with one note, from an ad tool vendor, so it is directional 
 
 A saved plan's rows can be set up as a campaign: one action for each row, with a guide from the creative kit, that the team edits and ticks off, and optionally a two-angle test. The set belongs to that plan version, and a revised plan has its own ([spec §5.15](spec.md)). The ad conventions above are the source for the test's measure.
 
+## Into the team's calendar
+
+The plan's dates can be put in a calendar app as a `.ics` file (`GET /outputs/:id/calendar.ics`) or as a feed the app subscribes to (`GET /cal/:token`). It holds the release date, the campaign's dated actions (the calendar's rows until the campaign is set up), the days the plan's signal is read, the rivals the team named and the date a date check chose. It carries titles and dates only: no notes, findings or receipts, because a calendar app holds nothing but the link. The feed follows the project's newest plan. The link is a token whose hash alone is stored, shown once; an owner or editor makes a new one, which turns the old one off ([spec §7](spec.md)).
+
 ## Changing it
 
 Change the rows and the version in `rules/calendar.ts`, say why in the commit, and update this file. Goldens count the calendar's lines, so read the diff before re-recording.

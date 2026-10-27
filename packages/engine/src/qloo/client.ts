@@ -41,15 +41,28 @@ export class QlooError extends Error {
   }
 }
 
-/** Thrown before any request when the run's call budget is spent (stop reason `qloo_budget`). */
+/**
+ * Thrown before any request when a call budget is spent: the run's own (`scope` run) or the
+ * month's shared one (`scope` monthly). Both end the run with the same stop reason.
+ */
 export class QlooBudgetError extends Error {
   constructor(
     readonly endpoint: string,
     readonly budget: number,
+    readonly scope: 'run' | 'monthly' = 'run',
   ) {
-    super(`Qloo call budget of ${budget} is spent, so ${endpoint} was not called`);
+    super(
+      scope === 'run'
+        ? `Qloo call budget of ${budget} is spent, so ${endpoint} was not called`
+        : `The monthly Qloo budget is spent, so ${endpoint} was not called`,
+    );
     this.name = 'QlooBudgetError';
   }
+}
+
+/** A budget shared by every run, asked before each network call. Answers false when it is spent. */
+export interface QlooMeter {
+  take(endpoint: string): Promise<boolean>;
 }
 
 /**
@@ -104,6 +117,8 @@ export interface QlooClientOptions {
   slots?: RequestSlots;
   /** Name lookups kept across runs. Without one, every run asks again. */
   lookupCache?: LookupCache;
+  /** A budget shared across runs and restarts, asked before every network call. */
+  meter?: QlooMeter;
   /** Replaces the global `fetch`. Demo mode and tests pass one so no request leaves the process. */
   fetch?: typeof fetch;
 }
@@ -162,6 +177,7 @@ export class QlooClient {
   private readonly callBudget: number | undefined;
   private readonly fetchImpl: typeof fetch;
   private readonly lookupCache: LookupCache | undefined;
+  private readonly meter: QlooMeter | undefined;
   private readonly answers = new Map<string, Promise<Fetched>>();
   private networkCalls = 0;
   private readonly slots: RequestSlots;
@@ -175,6 +191,7 @@ export class QlooClient {
     this.slots = options.slots ?? new RequestSlots(options.maxConcurrent);
     this.fetchImpl = options.fetch ?? fetch;
     this.lookupCache = options.lookupCache;
+    this.meter = options.meter;
   }
 
   /** Network calls still allowed. Infinity with no budget. */
@@ -219,6 +236,9 @@ export class QlooClient {
 
     if (this.callBudget !== undefined && this.networkCalls >= this.callBudget) {
       throw new QlooBudgetError(endpoint, this.callBudget);
+    }
+    if (this.meter && !(await this.meter.take(endpoint))) {
+      throw new QlooBudgetError(endpoint, 0, 'monthly');
     }
     this.networkCalls += 1;
 

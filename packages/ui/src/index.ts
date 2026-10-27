@@ -6,6 +6,7 @@ export { DirectionPill } from './direction-pill';
 export { Icon, type IconName } from './icon';
 export { Input } from './input';
 export { Logo } from './logo';
+export { PacePill, SeverityPill } from './pace-pill';
 export { PageHead } from './page-head';
 export { ReceiptChip } from './receipt-chip';
 export { Kbd, type TabItem, TabNote, Tabs } from './tabs';
