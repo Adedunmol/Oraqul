@@ -27,7 +27,7 @@ export function Input({
           id={id}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`w-full rounded-lg border border-line bg-surface py-[9px] pl-3 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-accent/45 ${trailing ? 'pr-16' : 'pr-3'} ${className ?? ''}`}
+          className={`w-full rounded-lg border border-line bg-surface py-[9px] pl-3 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-accent/45 ${trailing ? 'pr-11' : 'pr-3'} ${className ?? ''}`}
           {...props}
         />
         {trailing ? (

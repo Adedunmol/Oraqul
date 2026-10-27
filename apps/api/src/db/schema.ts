@@ -38,6 +38,7 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
   passwordHash: text('password_hash'),
+  emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
   createdAt: createdAt(),
 });
 
@@ -77,8 +78,6 @@ export const emailCodes = pgTable(
     email: text('email').notNull(),
     codeHash: text('code_hash').notNull(),
     purpose: text('purpose', { enum: codePurposes }).notNull(),
-    name: text('name'),
-    passwordHash: text('password_hash'),
     attempts: integer('attempts').notNull().default(0),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     consumedAt: timestamp('consumed_at', { withTimezone: true }),

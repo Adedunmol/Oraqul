@@ -11,7 +11,6 @@ const CODE_TTL_MS = 10 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
 const MAX_CODES_PER_WINDOW = 5;
 
-export type PendingSignup = { name: string; passwordHash: string };
 export type ConsumedCode = typeof emailCodes.$inferSelect;
 
 @Injectable()
@@ -29,7 +28,7 @@ export class CodesService {
    * Issues a code for an email whether or not an account exists, so the rate limit
    * and the response cannot be used to find out which emails are registered.
    */
-  async issue(email: string, purpose: CodePurpose, pending?: PendingSignup): Promise<string> {
+  async issue(email: string, purpose: CodePurpose): Promise<string> {
     const since = new Date(Date.now() - CODE_TTL_MS);
     const [recent] = await this.db
       .select({ count: sql<number>`count(*)::int` })
@@ -64,8 +63,6 @@ export class CodesService {
       email,
       purpose,
       codeHash: this.hash(email, code),
-      name: pending?.name ?? null,
-      passwordHash: pending?.passwordHash ?? null,
       expiresAt: new Date(Date.now() + CODE_TTL_MS),
     });
     return code;

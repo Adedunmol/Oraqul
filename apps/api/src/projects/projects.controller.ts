@@ -56,7 +56,7 @@ import { RunService } from '../agent/run.service.js';
 import { CurrentMembership } from '../auth/current-membership.decorator.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { type Membership, Roles, RolesGuard } from '../auth/roles.guard.js';
-import { SessionGuard, type SessionUser } from '../auth/session.guard.js';
+import { SessionGuard, type SessionUser, VerifiedGuard } from '../auth/session.guard.js';
 import { exportFormats, fileName, toDocx, toMarkdown, toPdf } from '../outputs/export.js';
 import { ZodPipe } from '../validation/zod.pipe.js';
 import { CampaignService } from './campaign.service.js';
@@ -96,6 +96,7 @@ export class ProjectsController {
 
   @Post('teams/:teamId/projects')
   @Roles('owner', 'editor')
+  @UseGuards(VerifiedGuard)
   create(
     @CurrentMembership() membership: Membership,
     @Body(new ZodPipe(createProjectInputSchema)) body: z.output<typeof createProjectInputSchema>,
@@ -137,6 +138,7 @@ export class ProjectsController {
 
   @Post('projects/:projectId/threads')
   @Roles('owner', 'editor')
+  @UseGuards(VerifiedGuard)
   createThread(
     @CurrentUser() user: SessionUser,
     @Param('projectId') projectId: string,
@@ -302,6 +304,7 @@ export class ProjectsController {
   /** Returns once the message is saved; the agent's reply arrives on the event stream. */
   @Post('threads/:threadId/messages')
   @Roles('owner', 'editor')
+  @UseGuards(VerifiedGuard)
   @HttpCode(202)
   post(
     @Param('threadId') threadId: string,

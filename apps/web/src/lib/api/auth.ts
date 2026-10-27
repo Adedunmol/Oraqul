@@ -3,12 +3,21 @@ import { clientRequest } from './client';
 
 const accepted = emptyResponseSchema;
 
-export function signup(input: { name: string; email: string; password: string }): Promise<void> {
+/** Makes the account and signs the person in; the confirmation email follows. */
+export function signup(input: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<MeResponse> {
   return clientRequest(
     '/auth/signup',
     { method: 'POST', body: input, redirectOn401: false },
-    accepted,
+    meResponseSchema,
   );
+}
+
+export function resendVerification(): Promise<void> {
+  return clientRequest('/auth/verification', { method: 'POST' }, accepted);
 }
 
 export function requestCode(email: string): Promise<void> {

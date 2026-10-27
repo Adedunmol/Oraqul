@@ -8,17 +8,14 @@ import { PasswordInput } from '../_components/password-input';
 import { useAuthForm } from '../_components/use-auth-form';
 
 export function SignUpForm() {
-  const form = useAuthForm('signin');
+  const form = useAuthForm('signup');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    return form.run(
-      () => signup({ name, email, password }),
-      () => form.router.push(form.href('/verify', { email })),
-    );
+    return form.run(() => signup({ name, email, password }), form.enter);
   }
 
   return (

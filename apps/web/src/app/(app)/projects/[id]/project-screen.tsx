@@ -22,6 +22,7 @@ import { LiveChat } from '@/app/_workspace/chat/live-chat';
 import { Crumbs } from '@/app/_workspace/crumbs';
 import { formatDay, plural } from '@/app/_workspace/format';
 import { toast } from '@/app/_workspace/toast';
+import { EMAIL_NOT_VERIFIED_MESSAGE, isEmailNotVerified } from '@/lib/api/http';
 import {
   comparePlans,
   createThread,
@@ -117,8 +118,12 @@ export function ProjectWorkspace({
   async function newChat(fresh: boolean) {
     try {
       router.push(chatPath(await createThread(project.id, fresh)));
-    } catch {
-      toast('Could not start a new chat. Try again.');
+    } catch (error) {
+      toast(
+        isEmailNotVerified(error)
+          ? EMAIL_NOT_VERIFIED_MESSAGE
+          : 'Could not start a new chat. Try again.',
+      );
     }
   }
 

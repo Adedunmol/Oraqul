@@ -9,6 +9,8 @@ import {
   Copy,
   Download,
   ExternalLink,
+  Eye,
+  EyeOff,
   Flag,
   Gamepad2,
   House,
@@ -83,6 +85,8 @@ const icons = {
   reply: Reply,
   retry: RotateCw,
   warning: TriangleAlert,
+  eye: Eye,
+  eyeOff: EyeOff,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof icons;

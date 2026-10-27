@@ -13,6 +13,7 @@ import type {
 import { Button } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
+import { EMAIL_NOT_VERIFIED_MESSAGE, isEmailNotVerified } from '@/lib/api/http';
 import { cancelRun, markThreadRead, postMessage } from '@/lib/api/projects';
 import { toast } from '../toast';
 import { ChatView } from './chat-panel';
@@ -121,11 +122,15 @@ export function LiveChat({
     setBusy(true);
     try {
       await postMessage(threadId, { kind: 'text', text, attachments });
-    } catch {
+    } catch (error) {
       setItems(before);
       setBusy(false);
       toast(
-        open ? 'Your answer was not sent. Try again.' : 'Your message was not sent. Try again.',
+        isEmailNotVerified(error)
+          ? EMAIL_NOT_VERIFIED_MESSAGE
+          : open
+            ? 'Your answer was not sent. Try again.'
+            : 'Your message was not sent. Try again.',
       );
     }
   }
@@ -158,10 +163,14 @@ export function LiveChat({
     setBusy(true);
     try {
       await postMessage(threadId, { kind: 'answer', answer: sent.answer });
-    } catch {
+    } catch (error) {
       setItems(before);
       setBusy(false);
-      toast('Your answer was not sent. Try again.');
+      toast(
+        isEmailNotVerified(error)
+          ? EMAIL_NOT_VERIFIED_MESSAGE
+          : 'Your answer was not sent. Try again.',
+      );
     }
   }
 

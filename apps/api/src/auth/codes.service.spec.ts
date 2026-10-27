@@ -57,7 +57,7 @@ describe('CodesService', () => {
 
   it('rejects a code for another purpose', async () => {
     const code = await codes.issue(email, 'reset');
-    await expect(codes.consume(email, ['signin', 'signup'], code)).rejects.toMatchObject({
+    await expect(codes.consume(email, ['signin', 'verify'], code)).rejects.toMatchObject({
       status: 400,
     });
     await expect(codes.consume(email, ['reset'], code)).resolves.toBeDefined();
@@ -87,11 +87,12 @@ describe('CodesService', () => {
     await expect(codes.issue(email, 'reset')).resolves.toBeDefined();
   });
 
-  it('keeps a pending signup with the code and never stores the code itself', async () => {
-    const code = await codes.issue(email, 'signup', { name: 'Ada', passwordHash: 'hash' });
+  it('never stores the code itself', async () => {
+    const code = await codes.issue(email, 'verify');
     const [row] = await database.db.select().from(emailCodes).where(eq(emailCodes.email, email));
     expect(row?.codeHash).not.toContain(code);
-    const used = await codes.consume(email, ['signin', 'signup'], code);
-    expect(used).toMatchObject({ name: 'Ada', passwordHash: 'hash', purpose: 'signup' });
+    await expect(codes.consume(email, ['signin', 'verify'], code)).resolves.toMatchObject({
+      purpose: 'verify',
+    });
   });
 });

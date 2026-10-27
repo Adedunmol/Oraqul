@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { createTestDatabase } from '../../test/test-database.js';
-import { memberships, oauthAccounts, teams, users } from '../db/schema.js';
+import { memberships, oauthAccounts, sessions, teams, users } from '../db/schema.js';
 import { UsersService } from './users.service.js';
 
 describe('UsersService linking by verified email', () => {
@@ -61,11 +61,40 @@ describe('UsersService linking by verified email', () => {
     expect(later.id).toBe(first.id);
   });
 
-  it('only sets a password on an account that has none', async () => {
+  it('signs up unverified with a personal team, and refuses a taken email', async () => {
+    const user = await service.createUnverified('ada@example.com', 'Ada', 'hash');
+    expect(user.emailVerifiedAt).toBeNull();
+    const teamRows = await database.db
+      .select()
+      .from(memberships)
+      .where(eq(memberships.userId, user.id));
+    expect(teamRows).toHaveLength(1);
+    await expect(service.createUnverified('ada@example.com', 'Ada', 'other')).rejects.toMatchObject(
+      { status: 409 },
+    );
+  });
+
+  it('keeps the password when the owner confirms the signup email', async () => {
+    const user = await service.createUnverified('ada@example.com', 'Ada', 'hash');
+    const confirmed = await service.confirmSignupEmail(user);
+    expect(confirmed.emailVerifiedAt).not.toBeNull();
+    expect(confirmed.passwordHash).toBe('hash');
+  });
+
+  it('drops the squatter password and sessions when another method proves the email', async () => {
+    const squatted = await service.createUnverified('ada@example.com', 'Ada', 'attacker');
+    await database.db
+      .insert(sessions)
+      .values({ userId: squatted.id, expiresAt: new Date(Date.now() + 1e6) });
+    const viaGoogle = await service.findOrLinkOAuth('google', 'sub-1', 'ada@example.com', 'Ada');
+    expect(viaGoogle.id).toBe(squatted.id);
+    expect(viaGoogle.emailVerifiedAt).not.toBeNull();
+    expect(viaGoogle.passwordHash).toBeNull();
+    expect(await database.db.select().from(sessions)).toEqual([]);
+  });
+
+  it('sets and replaces a password', async () => {
     const user = await service.findOrCreateVerified('ada@example.com', 'Ada');
-    await service.setPasswordIfMissing(user.id, 'first');
-    await service.setPasswordIfMissing(user.id, 'second');
-    expect((await service.findByEmail('ada@example.com'))?.passwordHash).toBe('first');
     await service.setPassword(user.id, 'reset');
     expect((await service.findByEmail('ada@example.com'))?.passwordHash).toBe('reset');
   });

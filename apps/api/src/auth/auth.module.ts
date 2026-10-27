@@ -10,7 +10,7 @@ import { EMAIL_SENDER, type EmailSender } from './email/email-sender.js';
 import { GoogleService } from './google.service.js';
 import { LoginLimiterService } from './login-limiter.service.js';
 import { RolesGuard } from './roles.guard.js';
-import { SessionGuard } from './session.guard.js';
+import { SessionGuard, VerifiedGuard } from './session.guard.js';
 import { SessionsService } from './sessions.service.js';
 import { UsersService } from './users.service.js';
 
@@ -24,6 +24,7 @@ import { UsersService } from './users.service.js';
     SessionsService,
     UsersService,
     SessionGuard,
+    VerifiedGuard,
     RolesGuard,
     {
       provide: EMAIL_SENDER,
@@ -36,6 +37,6 @@ import { UsersService } from './users.service.js';
       },
     },
   ],
-  exports: [SessionGuard, RolesGuard, UsersService, EMAIL_SENDER],
+  exports: [SessionGuard, VerifiedGuard, RolesGuard, UsersService, EMAIL_SENDER],
 })
 export class AuthModule {}

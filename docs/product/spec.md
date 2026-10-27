@@ -508,7 +508,7 @@ Postgres. All ids are UUIDs. Every row has `created_at`.
 | `users` | email, name, password_hash (nullable: Google and code users have none) |
 | `sessions` | user_id, expires_at |
 | `oauth_accounts` | user_id, provider (google), provider_user_id; unique per provider and provider_user_id |
-| `email_codes` | email, code_hash, purpose (signin, signup, reset), name and password_hash for a pending signup, attempts, expires_at, consumed_at |
+| `email_codes` | email, code_hash, purpose (signin, verify, reset), attempts, expires_at, consumed_at |
 | `teams` | name |
 | `memberships` | team_id, user_id, role (owner, editor, viewer); unique per team and user |
 | `invites` | team_id, email, role, token_hash, invited_by, expires_at, accepted_at; one pending invite per team and email |
@@ -600,9 +600,10 @@ A **fix** saves two outputs in one run: the audit, then a plan written from it w
 REST, JSON. Auth by session cookie. Streaming runs by server sent events.
 
 ```
-POST   /auth/signup           email, name, password; emails a code
+POST   /auth/signup           email, name, password; makes the account, starts a session (201) and emails a confirmation link and code; 409 when the email has an account
+POST   /auth/verification     signed in; emails a new confirmation link and code (202); nothing to do once confirmed
 POST   /auth/code             email a sign in code
-POST   /auth/code/verify      code ends in a session, creates the account if new
+POST   /auth/code/verify      sign in or confirmation code ends in a session, creates the account if new
 POST   /auth/login            email and password; 429 after repeated failures
 POST   /auth/password/reset   email a reset code (always 202)
 POST   /auth/password/reset/confirm   code and new password; ends other sessions
@@ -641,6 +642,8 @@ POST   /uploads               a PDF or Word (.docx) file as multipart `file`; an
 ```
 
 Sign in details: codes are 6 digits, expire in 10 minutes, work once, and lock after 5 wrong tries. Accounts are linked by verified email, so the same person reaches one account by password, Google or code. Passwords are at least 8 characters.
+
+**Confirming the email.** Signing up with a password makes the account and signs the person in at once, so they can look around. Until the address is confirmed they can read everything but cannot create a project, start a chat or send a message: those three routes answer 403 with `code: email_not_verified`. The confirmation email carries a link (`/verify?email=&code=`, which submits itself) and the same 6 digit code for another device. `GET /auth/me` reports `emailVerified`. The app shows a banner on every page until then, with Resend email and Enter code. Any other method that proves the address (Google, an emailed sign in code) also confirms it, and if the account was made by password signup that password is dropped and its sessions ended, since whoever typed the address at signup may not own it. Accounts that existed before this change count as confirmed.
 
 Roles are enforced in a guard, never in handlers. `RolesGuard` runs after `SessionGuard`, reads `@Roles()` on the route and the route's team (the `:teamId` param, or the team that owns `:projectId` or `:threadId`), loads the caller's membership and answers 403 when there is none or the role is not listed. A project or thread that does not exist gives the same 403. A route with no `@Roles()` is denied. A team that does not exist and a team the caller is not on give the same 403.
 

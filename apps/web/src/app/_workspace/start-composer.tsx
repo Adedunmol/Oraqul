@@ -5,6 +5,7 @@ import { ChipButton } from '@oraqul/ui';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { EMAIL_NOT_VERIFIED_MESSAGE, isEmailNotVerified } from '@/lib/api/http';
 import { createProject } from '@/lib/api/projects';
 import { getCategory } from '@/lib/demo/catalog';
 import { chatPath } from '@/lib/routes';
@@ -92,9 +93,13 @@ export function StartComposer({
         attachments: files.map((f) => ({ name: f.name, text: f.text })),
       });
       router.push(chatPath(threadId));
-    } catch {
+    } catch (error) {
       setSending(false);
-      toast('Oraqul could not save that. Try again in a moment.');
+      toast(
+        isEmailNotVerified(error)
+          ? EMAIL_NOT_VERIFIED_MESSAGE
+          : 'Oraqul could not save that. Try again in a moment.',
+      );
     }
   }
 

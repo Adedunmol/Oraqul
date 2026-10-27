@@ -8,14 +8,18 @@ import { overviewPath } from '@/lib/routes';
 
 const DEFAULT_NEXT = overviewPath;
 
-export type AuthStep = 'signin' | 'verify' | 'reset';
+export type AuthStep = 'signin' | 'signup' | 'verify' | 'reset';
 
 function messageFor(error: unknown, step: AuthStep): string {
   if (error instanceof ApiError) {
     if (error.status === 429) {
+      if (step === 'signup') return 'Too many tries. Wait a few minutes, then try again.';
       return step === 'signin'
         ? 'Too many tries. Wait a few minutes, then try your password again.'
         : 'Too many tries. Ask for a new code in a few minutes.';
+    }
+    if (step === 'signup' && error.status === 409) {
+      return 'That email already has an account. Sign in instead.';
     }
     if (step === 'signin' && error.status === 401) return 'Wrong email or password.';
     if ((step === 'verify' || step === 'reset') && error.status === 400) {
