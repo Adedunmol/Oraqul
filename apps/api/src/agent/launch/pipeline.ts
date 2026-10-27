@@ -673,6 +673,14 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.tokens += analysed.tokens;
     ({ read, understanding } = applyAnalysis(read, analysed.analysis));
 
+    // A brief that names no city plans for the team's own markets, when its defaults list them, so
+    // the team is not asked for what it already told Oraqul. A city the brief names is never replaced.
+    const markets = handoff.rules?.allowedTerritories ?? [];
+    if (read.places.length === 0 && markets.length > 0) {
+      read = { ...read, places: [...markets] };
+      ctx.trace(`Planning for your team’s markets: ${markets.join(', ')}`);
+    }
+
     // The first question a build may ask: there is nothing to plan from without these (PRD C1). A full plan may also ask for the budget band, below.
     const missing = deps.config.minimum.missing(read);
     if (missing.length && (!resume || deps.config.minimum.strict)) {

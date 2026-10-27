@@ -105,6 +105,9 @@ async function settled(values: Parameters<typeof rule>[0][]) {
 const text = (plan: LaunchPlan | null | undefined) =>
   JSON.stringify([plan?.sections, plan?.partners, plan?.calendar, plan?.territories]);
 
+const NO_CITY =
+  'Launch plan for "Night Ferry", a Nigerian thriller film for 18 to 34 year olds, opening on 2099-03-12. Comps: "Salt Road", "The Glass Lantern" and "Midnight Harbor". An independent budget. Platforms: Instagram, TikTok and YouTube.';
+
 describe('team rules change a plan in code', { timeout: 60_000 }, () => {
   it('has a plan to compare with, naming partners, cities and channels', async () => {
     const { run } = await build([]);
@@ -190,6 +193,40 @@ describe('team rules change a plan in code', { timeout: 60_000 }, () => {
     const unrelated = (await build([{ kind: 'partner_block', names: ['Nobody Brand'] }])).run.output
       ?.plan;
     expect(text(unrelated)).toEqual(text(plain));
+  });
+
+  it('plans for the team’s markets when the brief names no city, and never replaces a city it names', async () => {
+    const run = async (text: string, values: Parameters<typeof rule>[0][]) => {
+      const said = { text, files: [] };
+      const handoff: Handoff = {
+        category: 'film',
+        mode: 'build',
+        title: 'Night Ferry',
+        inputs: said,
+        message: said,
+        recent: [],
+        planId: null,
+        rules: compileRules(values.map((v, i) => rule(v, i + 1))),
+      };
+      return runFilmBuild(handoff, {
+        tools: tools(),
+        emit: () => undefined,
+        reader: new ScriptedFilmReader(),
+        queries: new ScriptedQueryPlanner(),
+        research: new NoResearch(),
+        writer: new TemplatePlanWriter(),
+      });
+    };
+    // Without the rule the brief is missing a city, so Oraqul asks.
+    expect((await run(NO_CITY, [])).reason).toBe('waiting');
+    const own = await run(NO_CITY, [{ kind: 'territory_allow', names: ['Lagos', 'London'] }]);
+    expect(own.reason).toBe('finished');
+    expect(own.output?.plan?.territories.map((t) => t.name).sort()).toEqual(['Lagos', 'London']);
+    // A city the brief does name is kept, and one the team's markets rule out is still ruled out.
+    const named = await run(BRIEF.replace('£90,000', '£40,000'), [
+      { kind: 'territory_allow', names: ['Lagos', 'London'] },
+    ]);
+    expect(named.reason).toBe('waiting');
   });
 
   it('tells the writer and the red team the words rules, labelled as the team’s', async () => {

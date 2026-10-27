@@ -16,7 +16,7 @@ const TEMPLATES: { label: string; line: string; note: string }[] = [
   {
     label: 'Market and territories',
     line: 'Markets: Lagos, London',
-    note: 'Plans cover only these places. Use "Never cover: Atlanta" to rule one out.',
+    note: 'Plans cover only these places, and use them when a brief names no city. Use "Never cover: Atlanta" to rule one out.',
   },
   {
     label: 'Budget ceiling and currency',

@@ -555,7 +555,7 @@ A team's owners tell Oraqul once how every plan should be written, and code make
 * **Rejected with a reason, in code, whatever a model says.** A rule is rejected at extraction, and again at confirmation, when it requires treating people differently because of a protected trait; when it tries to suppress honesty or change computed verdicts ("never say unknown", "mark everything supported", "raise the confidence"); or when it instructs the model's operation or aims at sending things ("ignore previous instructions", "send it automatically"). A rule against discriminatory content ("we don't welcome homophobic suggestions") is accepted as a content rule.
 * **What code enforces:**
   * a budget ceiling holds the budget module at the ceiling and fails any line that states more money in its currency;
-  * territory limits take places out of the brief before any research, and a rule blocks diaspora cities too;
+  * territory limits take places out of the brief before any research, and a rule blocks diaspora cities too. When the team lists the markets it covers and a brief names no city, the plan is made for those markets instead of asking for one; a city the brief does name is never replaced;
   * banned partners are taken out of the findings and the partner options after the Qloo query and before the writer, and a line that names one fails the check;
   * channel exclusions are taken out of the platforms and every territory's channels before the calendar is built;
   * an approval rule decides who may approve a draft (§5.20).

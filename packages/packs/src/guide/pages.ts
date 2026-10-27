@@ -145,7 +145,7 @@ export const GUIDE_PAGES: GuidePage[] = [
           },
           {
             label: 'What code enforces.',
-            text: 'A budget ceiling, the places you cover, banned partners, channels you never use and who approves. A rule that asks Oraqul to hide a weak result, to change a verdict, to treat people differently because of who they are, or to send things by itself is not accepted, and says why.',
+            text: 'A budget ceiling, the places you cover (used when a brief names no city), banned partners, channels you never use and who approves. A rule that asks Oraqul to hide a weak result, to change a verdict, to treat people differently because of who they are, or to send things by itself is not accepted, and says why.',
           },
           {
             label: 'When a brief clashes.',

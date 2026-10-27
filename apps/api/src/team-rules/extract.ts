@@ -157,11 +157,12 @@ export class ScriptedRuleExtractor implements RuleExtractor {
 
 const candidateSchema = z.object({
   kind: z.enum(teamRuleKinds),
-  names: z.array(z.string()).default([]),
-  amount: z.number().nullable().default(null),
-  currency: z.string().nullable().default(null),
-  role: z.enum(['owner', 'editor']).nullable().default(null),
-  text: z.string().nullable().default(null),
+  // No defaults: a model's strict structured output needs every field present, null when empty.
+  names: z.array(z.string()),
+  amount: z.number().nullable(),
+  currency: z.string().nullable(),
+  role: z.enum(['owner', 'editor']).nullable(),
+  text: z.string().nullable(),
   /** The words in the pasted text this rule comes from, copied exactly. */
   sourceText: z.string().min(1),
 });

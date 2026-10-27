@@ -84,21 +84,21 @@ const fundsSchema = z.object({
     .array(
       z.object({
         name: z.string().min(1),
-        owner: z.string().nullable().default(null),
+        owner: z.string().nullable(),
         type: fundTypeSchema,
         /** The amount exactly as the page writes it, or null when it gives none. */
-        amountText: z.string().nullable().default(null),
+        amountText: z.string().nullable(),
         /** The closing date exactly as the page writes it, or null when it gives none. */
-        deadlineText: z.string().nullable().default(null),
-        deadlineIso: z.string().nullable().default(null),
-        applicationUrl: z.string().nullable().default(null),
+        deadlineText: z.string().nullable(),
+        deadlineIso: z.string().nullable(),
+        applicationUrl: z.string().nullable(),
         /** True when the page lists conditions beyond the criteria given here. */
-        otherConditions: z.boolean().default(false),
+        otherConditions: z.boolean(),
         criteria: z
           .array(
             z.object({
               field: z.enum(criterionFields),
-              value: z.string().nullable().default(null),
+              value: z.string().nullable(),
               /** The criterion exactly as the page words it. */
               quote: z.string().min(1),
             }),
