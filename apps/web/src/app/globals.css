@@ -11,7 +11,9 @@
 
 /* Tokens: docs/frontend/design-system.md section 11.1. Never use a literal colour in a component.
    .scheme-light and .scheme-dark pin one theme on a part of a page: the marketing pages use them for
-   their light and dark sections, so components inside read the right tokens whatever the OS says. */
+   their light and dark sections, so components inside read the right tokens whatever the OS says. The
+   marketing header is pinned dark before it hydrates on a page that opens on a dark section
+   (`data-top-dark`), so it never flashes light first. */
 :root,
 .scheme-light {
   --bg: #ffffff;
@@ -128,7 +130,8 @@
 }
 
 :root[data-theme="dark"],
-.scheme-dark {
+.scheme-dark,
+body:has([data-top-dark]) header[data-site-header]:not([data-ready]) {
   --bg: #09090a;
   --surface: #141417;
   --surface2: #26262b;
@@ -183,7 +186,8 @@
 
 /* Text colour is inherited as a computed value, so a pinned scheme must set its own. */
 .scheme-light,
-.scheme-dark {
+.scheme-dark,
+body:has([data-top-dark]) header[data-site-header]:not([data-ready]) {
   color: var(--ink);
 }
 

@@ -251,6 +251,13 @@
   background: var(--accent);
   animation: mk-blink 1s steps(1) infinite;
 }
+/* Inside an input a block reads as overwrite mode; a thin bar reads as the caret people know. */
+.mk-caret-bar {
+  width: 2px;
+  height: 1.2em;
+  margin-left: 1px;
+  vertical-align: -0.2em;
+}
 .mk-thinking {
   position: relative;
   overflow: hidden;
@@ -369,7 +376,7 @@
 /* The hero's discs: category colours as translucent fields that mix where they overlap, then fade
    out towards the edges so the art never ends in a line. */
 .mk-hero-art {
-  mask-image: radial-gradient(60% 75% at 50% 78%, black 35%, transparent 78%);
+  mask-image: radial-gradient(60% 75% at 50% 78%, black 48%, transparent 82%);
 }
 .mk-hero-disc {
   background: radial-gradient(

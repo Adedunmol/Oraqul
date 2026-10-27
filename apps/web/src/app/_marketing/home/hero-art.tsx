@@ -20,7 +20,7 @@ export function HeroArt() {
   return (
     <div
       aria-hidden="true"
-      className="mk-hero-art pointer-events-none absolute left-1/2 top-0 z-0 aspect-[2.2/1] w-[min(1100px,132%)] -translate-x-1/2 -translate-y-[58%]"
+      className="mk-hero-art pointer-events-none absolute left-1/2 top-0 z-0 aspect-[2.2/1] w-[min(1280px,150%)] -translate-x-1/2 -translate-y-[46%]"
     >
       <svg
         aria-hidden="true"
