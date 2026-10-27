@@ -107,7 +107,7 @@ export function StartComposer({
     <section
       aria-label="New project"
       data-cat={category}
-      className="flex flex-col gap-4 rounded-2xl bg-card p-5 min-[700px]:p-6"
+      className="flex flex-col gap-5 rounded-2xl bg-card p-5 min-[700px]:p-6"
     >
       <p key={mode ?? 'any'} className="item-new max-w-[64ch] text-[15.5px] leading-[1.6]">
         {choice?.say ?? OPENING}
@@ -121,7 +121,9 @@ export function StartComposer({
         onSend={send}
       />
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-[12.5px] text-muted">Not sure how to put it? Start from:</span>
+        <span className="w-full text-[13px] text-muted min-[700px]:w-auto">
+          Not sure how to put it? Start from:
+        </span>
         {START_CHOICES.map((c) => (
           <ChipButton
             key={c.mode}
@@ -132,7 +134,7 @@ export function StartComposer({
           </ChipButton>
         ))}
       </div>
-      <p className="text-xs text-muted">
+      <p className="text-[13px] leading-[1.6] text-muted min-[700px]:text-xs">
         {choice ? `${choice.brings}. ` : ''}
         {info
           ? `Oraqul will use its ${info.name} checks.`

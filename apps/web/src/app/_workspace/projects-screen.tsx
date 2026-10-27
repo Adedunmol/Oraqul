@@ -141,7 +141,7 @@ function CategoryFilter({ scope }: { scope: CategoryScope }) {
   return (
     <nav
       aria-label="Filter by category"
-      className="flex min-w-0 max-w-full overflow-x-auto rounded-xl bg-surface2 p-1"
+      className="scroll-quiet flex min-w-0 max-w-full overflow-x-auto rounded-xl bg-surface2 p-1"
     >
       <ul className="flex gap-0.5">
         {items.map((item) => {
@@ -152,7 +152,7 @@ function CategoryFilter({ scope }: { scope: CategoryScope }) {
                 href={projectsPath(item.key)}
                 aria-current={active ? 'page' : undefined}
                 data-cat={item.key === 'all' ? undefined : item.key}
-                className={`inline-flex h-8 items-center gap-2 whitespace-nowrap rounded-lg px-3 text-[13px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent motion-reduce:transition-none ${active ? 'bg-card font-semibold text-ink' : 'text-muted hover:bg-surface2-hover hover:text-ink'}`}
+                className={`inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-lg px-3.5 text-[13px] min-[900px]:h-8 min-[900px]:px-3 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent motion-reduce:transition-none ${active ? 'bg-card font-semibold text-ink' : 'text-muted hover:bg-surface2-hover hover:text-ink'}`}
               >
                 {item.key === 'all' ? null : (
                   <Icon

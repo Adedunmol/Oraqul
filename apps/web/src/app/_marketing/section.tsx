@@ -1,5 +1,5 @@
 /** Content width and side padding for every marketing section. design-system §6 */
-export const wrap = 'mx-auto w-full max-w-[1240px] px-[clamp(16px,2.4vw,32px)]';
+export const wrap = 'mx-auto w-full max-w-[1240px] px-[clamp(20px,2.4vw,32px)]';
 
 /** Vertical rhythm of a full section. */
 export const band = 'py-[clamp(72px,10vw,144px)]';
