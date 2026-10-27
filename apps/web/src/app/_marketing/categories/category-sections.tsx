@@ -24,7 +24,9 @@ export function CategoryTiles() {
                 <span className="font-display text-[19px] font-semibold tracking-[-0.02em]">
                   {info.name}
                 </span>
-                <span className="truncate text-[14px]">{info.blurb}</span>
+                <span className="text-[14px] leading-[1.45] min-[700px]:truncate">
+                  {info.blurb}
+                </span>
               </span>
               <Icon name="chevron" className="size-5 shrink-0" />
             </a>

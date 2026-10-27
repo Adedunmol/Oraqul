@@ -71,14 +71,14 @@ export function ExamplesView({
       </ul>
 
       <div className="overflow-hidden rounded-2xl bg-bg shadow-lg">
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-[clamp(16px,3vw,32px)] py-3 text-[13.5px]">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-4 py-3.5 min-[700px]:px-[clamp(16px,3vw,32px)] text-[13.5px]">
           <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
             Example
           </span>
           Invented data for a made up {current.noun}, so you can see the shape of a plan. Plans you
           make in the app use live Qloo data.
         </p>
-        <div className="product-face bg-canvas px-[clamp(16px,3vw,32px)] pt-7">
+        <div className="product-face bg-canvas px-3 pt-7 min-[700px]:px-[clamp(16px,3vw,32px)]">
           {detail ? (
             <OutputView
               key={current.id}
