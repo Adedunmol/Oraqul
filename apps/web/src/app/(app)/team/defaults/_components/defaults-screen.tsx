@@ -1,0 +1,365 @@
+'use client';
+
+import type { Role, TeamRule } from '@oraqul/schema';
+import { Button, Card, Chip } from '@oraqul/ui';
+import { useRouter } from 'next/navigation';
+import { useId, useState } from 'react';
+import { toast } from '@/app/_workspace/toast';
+import { archiveRule, confirmRule, extractRules, rejectRule } from '@/lib/api/rules';
+
+const field =
+  'w-full rounded-lg border border-line bg-surface px-3 py-[9px] text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-accent/45';
+
+// The lines Oraqul reads without guessing. A team can also write plain sentences such as "We don't
+// welcome homophobic suggestions", which are kept as content rules.
+const TEMPLATES: { label: string; line: string; note: string }[] = [
+  {
+    label: 'Market and territories',
+    line: 'Markets: Lagos, London',
+    note: 'Plans cover only these places. Use "Never cover: Atlanta" to rule one out.',
+  },
+  {
+    label: 'Budget ceiling and currency',
+    line: 'Budget ceiling: £50k',
+    note: 'No plan proposes spending more than this. A currency is needed.',
+  },
+  {
+    label: 'Tone and language',
+    line: 'Tone: warm, plain, no hype',
+    note: 'Used when plans are written and checked. Add "Language: British English".',
+  },
+  {
+    label: 'Brand safety',
+    line: 'Brand safety: no alcohol or gambling brands',
+    note: 'Used when plans are written and checked.',
+  },
+  {
+    label: 'Banned partners and topics',
+    line: 'Banned partners: Guinness',
+    note: 'A banned partner is taken out before the plan is written. "Banned topics: politics" is a content rule.',
+  },
+  {
+    label: 'Channels never used',
+    line: 'Channels never used: Facebook',
+    note: 'Taken out before the content calendar is built.',
+  },
+  {
+    label: 'Who must approve',
+    line: 'Who must approve: owner',
+    note: 'Anything that leaves Oraqul, such as a sponsor pitch, needs this role to approve it. Owner or editor.',
+  },
+];
+
+const when = (iso: string) =>
+  new Date(iso).toLocaleDateString('en', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+/**
+ * Paste what the team wants and Oraqul reads it into rules. Nothing is active until an owner
+ * confirms each one on this page, where it shows as a plain sentence beside the words it came from.
+ */
+export function DefaultsScreen({
+  teamId,
+  role,
+  rules,
+}: {
+  teamId: string;
+  role: Role;
+  rules: TeamRule[];
+}) {
+  const router = useRouter();
+  const uid = useId();
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [unparsed, setUnparsed] = useState<string[]>([]);
+  const isOwner = role === 'owner';
+  const canPropose = role !== 'viewer';
+
+  const proposed = rules.filter((r) => r.status === 'proposed');
+  const active = rules.filter((r) => r.status === 'active');
+  const rejected = rules.filter((r) => r.status === 'rejected').slice(0, 10);
+
+  async function run(action: () => Promise<unknown>, failed = 'That did not work. Try again.') {
+    setBusy(true);
+    try {
+      await action();
+      router.refresh();
+    } catch {
+      toast(failed);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function read() {
+    setBusy(true);
+    try {
+      const out = await extractRules(teamId, { text, scope: 'team', projectId: null });
+      setUnparsed(out.unparsed);
+      setText('');
+      toast(
+        out.rules.length
+          ? `Read ${out.rules.length} ${out.rules.length === 1 ? 'rule' : 'rules'}`
+          : 'No rule found in that',
+      );
+      router.refresh();
+    } catch {
+      toast('Could not read that. Try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-8">
+      {canPropose ? (
+        <section
+          aria-labelledby={`${uid}-paste`}
+          className="grid items-start gap-5 min-[1000px]:grid-cols-[minmax(0,1fr)_340px]"
+        >
+          <Card className="flex flex-col gap-3 p-5">
+            <h2
+              id={`${uid}-paste`}
+              className="font-display text-[16px] font-semibold tracking-[-0.01em]"
+            >
+              Paste your defaults
+            </h2>
+            <p className="text-[13px] text-muted">
+              One rule a line, in your own words or the templates beside this. Oraqul reads them
+              into rules, and{' '}
+              {isOwner ? 'you confirm each one below' : 'an owner confirms each one'}.{' '}
+              {isOwner ? '' : 'You can propose; only an owner makes a rule active.'}
+            </p>
+            <label htmlFor={`${uid}-text`} className="sr-only">
+              Your defaults
+            </label>
+            <textarea
+              id={`${uid}-text`}
+              rows={8}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder={
+                'Markets: Lagos, London\nBudget ceiling: £50k\nBanned partners: Guinness\nWe don’t welcome homophobic suggestions'
+              }
+              className={`${field} font-read leading-[1.55]`}
+            />
+            <div>
+              <Button variant="primary" disabled={busy || !text.trim()} onClick={() => void read()}>
+                Read my defaults
+              </Button>
+            </div>
+            {unparsed.length ? (
+              <div className="rounded-xl bg-inset px-4 py-3 text-[13px]">
+                <p className="font-medium">Could not turn these into rules:</p>
+                <ul className="mt-1 list-disc pl-5 text-muted">
+                  {unparsed.map((l) => (
+                    <li key={l}>{l}</li>
+                  ))}
+                </ul>
+                <p className="mt-1 text-muted">
+                  Write them as a template line, such as “Tone: warm”.
+                </p>
+              </div>
+            ) : null}
+          </Card>
+          <Card className="flex flex-col gap-3 p-5">
+            <h2 className="font-display text-[16px] font-semibold tracking-[-0.01em]">Templates</h2>
+            <ul className="flex flex-col gap-3">
+              {TEMPLATES.map((t) => (
+                <li key={t.label} className="flex flex-col gap-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-[13.5px] font-medium">{t.label}</span>
+                    <button
+                      type="button"
+                      onClick={() => setText((v) => (v ? `${v}\n${t.line}` : t.line))}
+                      className="text-[12.5px] text-accent underline underline-offset-2"
+                    >
+                      Add the line
+                    </button>
+                  </div>
+                  <code className="rounded-md bg-inset px-2 py-1 text-[12.5px]">{t.line}</code>
+                  <p className="text-[12.5px] text-muted">{t.note}</p>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </section>
+      ) : (
+        <p className="text-muted">Viewers can read the team’s defaults but not change them.</p>
+      )}
+
+      <section aria-labelledby={`${uid}-wait`} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-0.5">
+          <h2
+            id={`${uid}-wait`}
+            className="font-display text-[16px] font-semibold tracking-[-0.01em]"
+          >
+            Waiting to be confirmed
+          </h2>
+          <p className="text-[13px] text-muted">
+            Nothing here is followed yet. Each rule shows the words it came from and whether code
+            enforces it or it is only given to the writer.
+          </p>
+        </div>
+        {proposed.length === 0 ? (
+          <p className="text-muted">Nothing is waiting.</p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {proposed.map((rule) => (
+              <li key={rule.id}>
+                <RuleCard rule={rule}>
+                  {isOwner ? (
+                    <Decision
+                      busy={busy}
+                      onConfirm={() => run(() => confirmRule(teamId, rule.id))}
+                      onReject={(reason) => run(() => rejectRule(teamId, rule.id, reason))}
+                    />
+                  ) : (
+                    <p className="text-[13px] text-muted">
+                      Proposed by {rule.createdByName ?? 'a teammate'}. An owner can confirm it.
+                    </p>
+                  )}
+                </RuleCard>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section aria-labelledby={`${uid}-active`} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-0.5">
+          <h2
+            id={`${uid}-active`}
+            className="font-display text-[16px] font-semibold tracking-[-0.01em]"
+          >
+            What every plan follows
+          </h2>
+          <p className="text-[13px] text-muted">
+            Each plan records the version of every rule it ran under. A replacement is a new
+            version.
+          </p>
+        </div>
+        {active.length === 0 ? (
+          <p className="text-muted">No defaults yet. Plans follow Oraqul’s own rules only.</p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {active.map((rule) => (
+              <li key={rule.id}>
+                <RuleCard rule={rule}>
+                  <div className="flex flex-wrap items-center gap-3 text-[13px] text-muted">
+                    <span>
+                      Version {rule.version}
+                      {rule.confirmedAt ? `, confirmed ${when(rule.confirmedAt)}` : ''}
+                    </span>
+                    {isOwner ? (
+                      <Button
+                        size="small"
+                        variant="ghost"
+                        disabled={busy}
+                        onClick={() => void run(() => archiveRule(teamId, rule.id))}
+                      >
+                        Archive
+                      </Button>
+                    ) : null}
+                  </div>
+                </RuleCard>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {rejected.length ? (
+        <section aria-labelledby={`${uid}-no`} className="flex flex-col gap-3">
+          <h2
+            id={`${uid}-no`}
+            className="font-display text-[16px] font-semibold tracking-[-0.01em]"
+          >
+            Not accepted
+          </h2>
+          <ul className="flex flex-col gap-3">
+            {rejected.map((rule) => (
+              <li key={rule.id}>
+                <Card className="flex flex-col gap-1.5 p-4">
+                  <p className="text-[13.5px]">“{rule.sourceText}”</p>
+                  <p className="text-[13px] text-muted">{rule.rejectionReason}</p>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
+function RuleCard({ rule, children }: { rule: TeamRule; children: React.ReactNode }) {
+  return (
+    <Card className="flex flex-col gap-2.5 p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="text-[14.5px] font-medium">{rule.sentence}</p>
+        <Chip>{rule.enforcement === 'code' ? 'Enforced in code' : 'Given to the writer'}</Chip>
+        {rule.scope === 'project' ? <Chip>One project</Chip> : null}
+      </div>
+      <p className="text-[13px] text-muted">From: “{rule.sourceText}”</p>
+      {rule.conflicts.length ? (
+        <ul className="flex flex-col gap-0.5 rounded-xl bg-weak-bg px-3 py-2 text-[13px] text-weak">
+          <li className="font-semibold">◐ Clashes with</li>
+          {rule.conflicts.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      ) : null}
+      {children}
+    </Card>
+  );
+}
+
+function Decision({
+  busy,
+  onConfirm,
+  onReject,
+}: {
+  busy: boolean;
+  onConfirm: () => void;
+  onReject: (reason: string) => void;
+}) {
+  const uid = useId();
+  const [rejecting, setRejecting] = useState(false);
+  const [reason, setReason] = useState('');
+  return rejecting ? (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={`${uid}-why`} className="text-[13px] font-medium">
+        Why not?
+      </label>
+      <input
+        id={`${uid}-why`}
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        className={field}
+        maxLength={300}
+      />
+      <div className="flex gap-2">
+        <Button
+          size="small"
+          variant="danger"
+          disabled={busy || !reason.trim()}
+          onClick={() => onReject(reason.trim())}
+        >
+          Reject the rule
+        </Button>
+        <Button size="small" variant="ghost" onClick={() => setRejecting(false)}>
+          Cancel
+        </Button>
+      </div>
+    </div>
+  ) : (
+    <div className="flex gap-2">
+      <Button size="small" variant="primary" disabled={busy} onClick={onConfirm}>
+        Confirm
+      </Button>
+      <Button size="small" variant="ghost" disabled={busy} onClick={() => setRejecting(true)}>
+        Reject
+      </Button>
+    </div>
+  );
+}

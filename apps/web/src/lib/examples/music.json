@@ -92,6 +92,11 @@
         "note": "The acts Qloo ranks highest with your audience in each tour city."
       },
       {
+        "key": "funding",
+        "label": "Funding and sponsors",
+        "note": "Sponsors that fit each territory and funds that are open now, each with its source and the day it was read. Terms change: confirm on the source page before applying. Oraqul sends nothing."
+      },
+      {
         "key": "watch",
         "label": "Watch",
         "note": "Oraqul re-checks this plan on a schedule and says what needs a look. Add your own figures to see whether the launch is ahead of, on or behind the plan’s pace. It never changes the plan."
@@ -2296,7 +2301,8 @@
               "type": "content",
               "why": "A drinks brand when the audience includes people under 25, some of whom are under the legal drinking age. Check the partner’s rules on who its marketing may reach."
             }
-          ]
+          ],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-mtn",
@@ -2309,7 +2315,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-indomie",
@@ -2322,7 +2329,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-night-market-cola",
@@ -2335,7 +2343,8 @@
           "price": "unknown",
           "findingIds": ["f-brands-lagos"],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-lagoon-mobile",
@@ -2348,7 +2357,8 @@
           "price": "unknown",
           "findingIds": ["f-brands-lagos"],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-bolt",
@@ -2361,7 +2371,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-ee",
@@ -2374,7 +2385,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-monzo",
@@ -2387,7 +2399,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-lyft",
@@ -2400,7 +2413,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-cash-app",
@@ -2413,7 +2427,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-nigeria-venues",
@@ -2426,7 +2441,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-nigeria-creators",
@@ -2439,7 +2455,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-nigeria-community-groups",
@@ -2452,7 +2469,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-nigeria-cinemas",
@@ -2465,7 +2483,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         }
       ],
       "partnerNotes": [

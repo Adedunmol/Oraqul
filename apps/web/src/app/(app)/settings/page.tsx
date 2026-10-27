@@ -1,5 +1,6 @@
-import { Card, Chip, PageHead } from '@oraqul/ui';
+import { buttonClassName, Card, Chip, PageHead } from '@oraqul/ui';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { SignOutButton } from '@/app/_components/sign-out-button';
 import { getMe, getRunAllowance } from '@/lib/api/me';
 import { PasswordForm } from './_components/password-form';
@@ -90,6 +91,16 @@ export default async function SettingsPage() {
           })}
           .
         </p>
+      </Section>
+
+      <Section
+        id="connections-title"
+        title="Connections"
+        note="Let Claude, ChatGPT or another agent use Oraqul for your team."
+      >
+        <Link href="/settings/connections" className={buttonClassName('default', 'small')}>
+          Open connections
+        </Link>
       </Section>
 
       <Section id="account-title" title="Sign out" note="End this session on this device.">

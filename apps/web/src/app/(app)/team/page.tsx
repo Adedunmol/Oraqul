@@ -1,6 +1,7 @@
 import { roleSchema } from '@oraqul/schema';
-import { Card, PageHead } from '@oraqul/ui';
+import { buttonClassName, Card, PageHead } from '@oraqul/ui';
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { getMe } from '@/lib/api/me';
 import { getTeam, getTeams } from '@/lib/api/teams-server';
 import { CURRENT_TEAM_COOKIE, pickTeam } from '@/lib/current-team';
@@ -64,6 +65,20 @@ export default async function TeamPage() {
           </p>
         </div>
         {isOwner ? <RenameTeam teamId={detail.team.id} name={detail.team.name} /> : null}
+      </Card>
+
+      <Card className="flex flex-wrap items-center justify-between gap-3 p-5">
+        <div className="flex flex-col gap-0.5">
+          <h2 className="font-display text-[16px] font-semibold tracking-[-0.01em]">
+            Team defaults
+          </h2>
+          <p className="text-[13px] text-muted">
+            Your market, budget ceiling, tone, banned partners and who approves what leaves Oraqul.
+          </p>
+        </div>
+        <Link href="/team/defaults" className={buttonClassName('default', 'small')}>
+          Open team defaults
+        </Link>
       </Card>
 
       <div className="grid items-start gap-8 min-[1000px]:grid-cols-[minmax(0,1fr)_340px]">
