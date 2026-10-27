@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 // What people actually bring, in their own words, chosen to show an agent at work and not a chat
 // box: real cities and constraints, their own plan and results, jobs that run over time, and the
 // data behind every answer. Each is something Oraqul does today, and none asks for a forecast or
-// for anything it will not do. The strongest come first. Keep each under about 90 characters so
-// the longest still fits three lines on a phone.
+// for anything it will not do. The strongest come first. They type on one line and cut off with an
+// ellipsis, so the opening words have to carry the ask.
 const CASES = [
   'Plan my film for London, Houston, Atlanta and Lagos, with the data behind every call.',
   'Here is our launch plan and first-week sales. Find the assumption that broke.',
@@ -34,9 +34,9 @@ const REDUCED_HOLD_MS = 4200;
 
 /**
  * The questions people bring, typed out one at a time and cleared for the next, so a visitor sees
- * their own launch in one of them. Decoration over a fixed list, so it is hidden from assistive
- * technology and replaced by a short sentence it can read. Under reduced motion each one simply
- * stays for a while and gives way to the next, with no typing.
+ * their own launch in one of them. Meant to sit over an empty input in place of its placeholder:
+ * decoration over a fixed list, so it is hidden from assistive technology. Under reduced motion
+ * each one simply stays for a while and gives way to the next, with no typing.
  */
 export function UseCaseTyper() {
   const [index, setIndex] = useState(0);
@@ -44,12 +44,7 @@ export function UseCaseTyper() {
   const [phase, setPhase] = useState<'type' | 'hold' | 'clear'>('type');
   const [reduced, setReduced] = useState(false);
   const text = CASES[index] ?? '';
-  // The last word, the caret and the closing quote never part, so a sentence that exactly fills the
-  // line cannot leave a quote on a line of its own.
   const typed = text.slice(0, shown);
-  const cut = typed.lastIndexOf(' ') + 1;
-  const head = typed.slice(0, cut);
-  const tail = typed.slice(cut);
 
   useEffect(() => {
     setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -80,26 +75,13 @@ export function UseCaseTyper() {
   }, [phase, shown, text, reduced]);
 
   return (
-    <div className="mx-auto w-full max-w-[680px]">
-      <p className="sr-only">
-        Ask it things like “{CASES[0]}”, “{CASES[1]}” or “{CASES[2]}”.
-      </p>
-      <p
-        aria-hidden="true"
-        className="min-h-[3.96em] text-[clamp(18px,2.1vw,27px)] min-[640px]:min-h-[2.7em] leading-[1.32] font-medium tracking-[-0.02em] text-ink"
-      >
-        {typed ? (
-          <>
-            “{head}
-            <span className="whitespace-nowrap">
-              {tail}
-              <span className="mk-caret" />”
-            </span>
-          </>
-        ) : (
-          <span className="mk-caret" />
-        )}
-      </p>
-    </div>
+    // Long ones scroll like real typing: the box keeps the newest words and the caret in view and
+    // lets the start slide off the left, instead of cutting the end off behind an ellipsis.
+    <span aria-hidden="true" className="flex min-w-0 max-w-full justify-end overflow-hidden">
+      <span className="shrink-0 whitespace-pre">
+        {typed}
+        <span className="mk-caret mk-caret-bar" />
+      </span>
+    </span>
   );
 }

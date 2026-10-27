@@ -4,17 +4,22 @@ import { wrap } from '../section';
 import { HeroArt } from './hero-art';
 import { HeroPrompt } from './hero-prompt';
 import { ProductChat } from './product-chat';
-import { UseCaseTyper } from './use-case-typer';
+
+// The height of the first screen: the viewport less the header and a strip at the bottom, so the
+// group sits in the vertical middle and only the arc's glow shows under it.
+const screen = 'min-h-[clamp(520px,calc(100svh-180px),860px)]';
 
 const at = (ms: number): CSSProperties => ({ animationDelay: `${ms}ms` });
 
-const kinds = [
-  ['film', 'Film and series'],
-  ['music', 'Music'],
-  ['books', 'Books'],
-  ['podcasts', 'Podcasts'],
-  ['games', 'Games'],
-  ['shows', 'Live shows'],
+// The six kinds of launch, scattered faintly in the margins either side of the headline so they
+// hint at the range without becoming a row to read. Kept clear of the text and the message box.
+const marks = [
+  { cat: 'film', x: 9, y: 22, size: 64, turn: -12 },
+  { cat: 'music', x: 9, y: 58, size: 48, turn: 8 },
+  { cat: 'books', x: 7, y: 86, size: 56, turn: -6 },
+  { cat: 'podcasts', x: 91, y: 20, size: 52, turn: 10 },
+  { cat: 'games', x: 91, y: 56, size: 60, turn: -8 },
+  { cat: 'shows', x: 93, y: 84, size: 50, turn: 6 },
 ] as const;
 
 /**
@@ -24,55 +29,66 @@ const kinds = [
  */
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="scheme-dark relative overflow-x-clip bg-bg">
+    <section
+      aria-labelledby="hero-title"
+      data-top-dark=""
+      className="scheme-dark relative overflow-x-clip bg-bg"
+    >
       <div aria-hidden="true" className="mk-hero-glow pointer-events-none absolute inset-0" />
       <div
-        className={`${wrap} relative flex flex-col items-center pt-[clamp(56px,9vw,128px)] text-center`}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 hidden h-[clamp(520px,calc(100svh-180px),860px)] min-[1280px]:block"
       >
-        <h1
-          id="hero-title"
-          className="flex flex-col items-center font-display tracking-[-0.045em] text-balance"
-        >
+        {marks.map((m) => (
           <span
-            className="mk-word text-[clamp(18px,2.3vw,34px)] leading-none font-normal tracking-[-0.02em] text-ink/70 [font-stretch:100%]"
-            style={at(0)}
+            key={m.cat}
+            data-cat={m.cat}
+            className="absolute -translate-1/2 text-cat opacity-[0.08]"
+            style={{
+              left: `${m.x}%`,
+              top: `${m.y}%`,
+              width: m.size,
+              height: m.size,
+              rotate: `${m.turn}deg`,
+            }}
           >
-            The <b className="font-medium text-ink">verifiable</b> AI agent for
-          </span>{' '}
-          <span
-            data-lock="a"
-            className="mk-word mt-[0.35em] text-[clamp(30px,9.2vw,56px)] min-[768px]:text-[clamp(56px,7.4vw,112px)] leading-[0.96] font-semibold [font-stretch:125%]"
-            style={at(90)}
-          >
-            launch planning
-          </span>{' '}
-          <span
-            data-lock="b"
-            className="mk-word text-[clamp(30px,9.2vw,56px)] min-[768px]:text-[clamp(56px,7.4vw,112px)] leading-[1.02] font-semibold text-accent [font-size:0.978em] [font-stretch:75%]"
-            style={at(180)}
-          >
-            in media &amp; entertainment.
+            <Icon name={m.cat} className="size-full" />
           </span>
-        </h1>
-        <div className="mk-rise mt-[clamp(22px,2.8vw,36px)] w-full" style={at(260)}>
-          <UseCaseTyper />
-        </div>
-        <div
-          className="mk-rise mt-[clamp(28px,3.4vw,44px)] flex w-full flex-col items-center gap-6"
-          style={at(380)}
-        >
-          <HeroPrompt />
-          <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13.5px] text-muted">
-            {kinds.map(([cat, label]) => (
-              <li key={cat} data-cat={cat} className="flex items-center gap-1.5">
-                <Icon name={cat} className="size-3.5 text-cat" />
-                {label}
-              </li>
-            ))}
-          </ul>
+        ))}
+      </div>
+      {/* The first screen: the headline, the line under it and the box read as one group, centred
+          in the first screen, with the arc and the chat starting below it. */}
+      <div className={`${wrap} relative flex ${screen} flex-col items-center text-center`}>
+        <div className="flex flex-1 flex-col items-center justify-center py-[clamp(24px,6svh,72px)]">
+          {/* The promise in the widest Mona Sans, the second half in the accent: two short lines on a
+              phone and tablet, one line from 1024px up. The line under it says what the product is. */}
+          <h1
+            id="hero-title"
+            className="flex flex-col items-center font-display text-[clamp(28px,12.4vw,56px)] min-[768px]:text-[clamp(48px,7vw,110px)] min-[1024px]:flex-row min-[1024px]:gap-[0.3em] min-[1024px]:text-[clamp(44px,5.9vw,92px)] leading-[1.04] font-semibold tracking-[-0.012em] [word-spacing:0.08em] whitespace-nowrap [font-stretch:125%]"
+          >
+            <span className="mk-word" style={at(0)}>
+              Plan your
+            </span>
+            <span className="mk-word text-accent" style={at(90)}>
+              launch right.
+            </span>
+          </h1>
+          <p
+            className="mk-word mt-[clamp(16px,2.4vw,28px)] w-full text-[clamp(16px,1.6vw,22px)] leading-[1.35] text-ink/70 text-balance"
+            style={at(220)}
+          >
+            A <b className="font-medium text-ink">culturally grounded</b> AI agent for launch
+            planning in media &amp; entertainment.
+          </p>
+          <div
+            className="mk-rise mt-[clamp(36px,7svh,72px)] flex w-full justify-center"
+            style={at(380)}
+          >
+            <HeroPrompt />
+          </div>
         </div>
       </div>
-      <div className={`${wrap} relative mt-[clamp(88px,12vw,190px)]`}>
+      <div className={`${wrap} relative mt-[clamp(40px,6vw,100px)]`}>
         <HeroArt />
         <div
           className="mk-hero-rise relative z-10 mk-fade-out mx-auto h-[clamp(470px,52vw,640px)] w-full max-w-[1100px] overflow-hidden"
