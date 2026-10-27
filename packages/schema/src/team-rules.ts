@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { roleSchema } from './categories';
 
-// Team defaults (spec §5.21): rules an owner has confirmed that every run of the team follows.
+// Team defaults (spec §5.21): rules an owner or editor saved that every run of the team follows.
 // Each is a plain sentence with the words it came from. Hard rules are enforced in code, never only
 // in a prompt, and no rule can change a refusal, a verdict or a number.
 
@@ -142,8 +142,6 @@ export const extractRulesSchema = z.object({
   projectId: z.uuid().nullable().default(null),
 });
 export type ExtractRulesInput = z.input<typeof extractRulesSchema>;
-
-export const rejectRuleSchema = z.object({ reason: z.string().min(1).max(300) });
 
 /** A rule a run followed, saved on the plan so a reader knows which version it ran under. */
 export const appliedRuleSchema = z.object({ id: z.uuid(), version: z.number().int() });

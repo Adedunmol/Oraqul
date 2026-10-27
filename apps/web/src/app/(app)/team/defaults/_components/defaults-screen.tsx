@@ -5,7 +5,7 @@ import { Button, Card, Chip } from '@oraqul/ui';
 import { useRouter } from 'next/navigation';
 import { useId, useState } from 'react';
 import { toast } from '@/app/_workspace/toast';
-import { archiveRule, confirmRule, extractRules, rejectRule } from '@/lib/api/rules';
+import { archiveRule, extractRules } from '@/lib/api/rules';
 
 const field =
   'w-full rounded-lg border border-line bg-surface px-3 py-[9px] text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-accent/45';
@@ -54,8 +54,9 @@ const when = (iso: string) =>
   new Date(iso).toLocaleDateString('en', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 
 /**
- * Paste what the team wants and Oraqul reads it into rules. Nothing is active until an owner
- * confirms each one on this page, where it shows as a plain sentence beside the words it came from.
+ * Paste what the team wants and save: Oraqul reads it into rules that every later run follows. Each
+ * shows as a plain sentence beside the words it came from, and a rule that is not allowed is listed
+ * with the reason. Owners and editors save; only an owner sets who must approve.
  */
 export function DefaultsScreen({
   teamId,
@@ -72,9 +73,8 @@ export function DefaultsScreen({
   const [busy, setBusy] = useState(false);
   const [unparsed, setUnparsed] = useState<string[]>([]);
   const isOwner = role === 'owner';
-  const canPropose = role !== 'viewer';
+  const canSave = role !== 'viewer';
 
-  const proposed = rules.filter((r) => r.status === 'proposed');
   const active = rules.filter((r) => r.status === 'active');
   const rejected = rules.filter((r) => r.status === 'rejected').slice(0, 10);
 
@@ -96,14 +96,16 @@ export function DefaultsScreen({
       const out = await extractRules(teamId, { text, scope: 'team', projectId: null });
       setUnparsed(out.unparsed);
       setText('');
+      const saved = out.rules.filter((r) => r.status === 'active').length;
+      const refused = out.rules.length - saved;
       toast(
-        out.rules.length
-          ? `Read ${out.rules.length} ${out.rules.length === 1 ? 'rule' : 'rules'}`
-          : 'No rule found in that',
+        out.rules.length === 0
+          ? 'No rule found in that'
+          : `Saved ${saved} ${saved === 1 ? 'rule' : 'rules'}${refused ? `, ${refused} not accepted` : ''}`,
       );
       router.refresh();
     } catch {
-      toast('Could not read that. Try again.');
+      toast('Could not save that. Try again.');
     } finally {
       setBusy(false);
     }
@@ -111,7 +113,7 @@ export function DefaultsScreen({
 
   return (
     <div className="flex flex-col gap-8">
-      {canPropose ? (
+      {canSave ? (
         <section
           aria-labelledby={`${uid}-paste`}
           className="grid items-start gap-5 min-[1000px]:grid-cols-[minmax(0,1fr)_340px]"
@@ -124,10 +126,9 @@ export function DefaultsScreen({
               Paste your defaults
             </h2>
             <p className="text-[13px] text-muted">
-              One rule a line, in your own words or the templates beside this. Oraqul reads them
-              into rules, and{' '}
-              {isOwner ? 'you confirm each one below' : 'an owner confirms each one'}.{' '}
-              {isOwner ? '' : 'You can propose; only an owner makes a rule active.'}
+              One rule a line, in your own words or the templates beside this. Save, and every plan
+              for this team follows them from the next run.{' '}
+              {isOwner ? '' : 'Only an owner can set who must approve.'}
             </p>
             <label htmlFor={`${uid}-text`} className="sr-only">
               Your defaults
@@ -144,7 +145,7 @@ export function DefaultsScreen({
             />
             <div>
               <Button variant="primary" disabled={busy || !text.trim()} onClick={() => void read()}>
-                Read my defaults
+                Save my defaults
               </Button>
             </div>
             {unparsed.length ? (
@@ -187,44 +188,6 @@ export function DefaultsScreen({
         <p className="text-muted">Viewers can read the team’s defaults but not change them.</p>
       )}
 
-      <section aria-labelledby={`${uid}-wait`} className="flex flex-col gap-3">
-        <div className="flex flex-col gap-0.5">
-          <h2
-            id={`${uid}-wait`}
-            className="font-display text-[16px] font-semibold tracking-[-0.01em]"
-          >
-            Waiting to be confirmed
-          </h2>
-          <p className="text-[13px] text-muted">
-            Nothing here is followed yet. Each rule shows the words it came from and whether code
-            enforces it or it is only given to the writer.
-          </p>
-        </div>
-        {proposed.length === 0 ? (
-          <p className="text-muted">Nothing is waiting.</p>
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {proposed.map((rule) => (
-              <li key={rule.id}>
-                <RuleCard rule={rule}>
-                  {isOwner ? (
-                    <Decision
-                      busy={busy}
-                      onConfirm={() => run(() => confirmRule(teamId, rule.id))}
-                      onReject={(reason) => run(() => rejectRule(teamId, rule.id, reason))}
-                    />
-                  ) : (
-                    <p className="text-[13px] text-muted">
-                      Proposed by {rule.createdByName ?? 'a teammate'}. An owner can confirm it.
-                    </p>
-                  )}
-                </RuleCard>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
       <section aria-labelledby={`${uid}-active`} className="flex flex-col gap-3">
         <div className="flex flex-col gap-0.5">
           <h2
@@ -239,7 +202,9 @@ export function DefaultsScreen({
           </p>
         </div>
         {active.length === 0 ? (
-          <p className="text-muted">No defaults yet. Plans follow Oraqul’s own rules only.</p>
+          <p className="text-muted">
+            No defaults yet. Plans follow Oraqul’s own rules only. Save some above.
+          </p>
         ) : (
           <ul className="flex flex-col gap-3">
             {active.map((rule) => (
@@ -248,16 +213,16 @@ export function DefaultsScreen({
                   <div className="flex flex-wrap items-center gap-3 text-[13px] text-muted">
                     <span>
                       Version {rule.version}
-                      {rule.confirmedAt ? `, confirmed ${when(rule.confirmedAt)}` : ''}
+                      {rule.confirmedAt ? `, saved ${when(rule.confirmedAt)}` : ''}
                     </span>
-                    {isOwner ? (
+                    {canSave && (isOwner || rule.kind !== 'approval') ? (
                       <Button
                         size="small"
                         variant="ghost"
                         disabled={busy}
                         onClick={() => void run(() => archiveRule(teamId, rule.id))}
                       >
-                        Archive
+                        Remove
                       </Button>
                     ) : null}
                   </div>
@@ -311,55 +276,5 @@ function RuleCard({ rule, children }: { rule: TeamRule; children: React.ReactNod
       ) : null}
       {children}
     </Card>
-  );
-}
-
-function Decision({
-  busy,
-  onConfirm,
-  onReject,
-}: {
-  busy: boolean;
-  onConfirm: () => void;
-  onReject: (reason: string) => void;
-}) {
-  const uid = useId();
-  const [rejecting, setRejecting] = useState(false);
-  const [reason, setReason] = useState('');
-  return rejecting ? (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={`${uid}-why`} className="text-[13px] font-medium">
-        Why not?
-      </label>
-      <input
-        id={`${uid}-why`}
-        value={reason}
-        onChange={(e) => setReason(e.target.value)}
-        className={field}
-        maxLength={300}
-      />
-      <div className="flex gap-2">
-        <Button
-          size="small"
-          variant="danger"
-          disabled={busy || !reason.trim()}
-          onClick={() => onReject(reason.trim())}
-        >
-          Reject the rule
-        </Button>
-        <Button size="small" variant="ghost" onClick={() => setRejecting(false)}>
-          Cancel
-        </Button>
-      </div>
-    </div>
-  ) : (
-    <div className="flex gap-2">
-      <Button size="small" variant="primary" disabled={busy} onClick={onConfirm}>
-        Confirm
-      </Button>
-      <Button size="small" variant="ghost" disabled={busy} onClick={() => setRejecting(true)}>
-        Reject
-      </Button>
-    </div>
   );
 }

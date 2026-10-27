@@ -137,11 +137,11 @@ export const GUIDE_PAGES: GuidePage[] = [
         items: [
           {
             label: 'Team defaults.',
-            text: 'Owners paste what every plan should follow into Team, then Team defaults: your markets, a budget ceiling and its currency, tone and language, brand safety, banned partners and topics, channels you never use, and who must approve anything that leaves Oraqul. Templates sit beside the box, and plain sentences such as “We don’t welcome homophobic suggestions” work too.',
+            text: 'Owners and editors paste what every plan should follow into Team, then Team defaults, and save: your markets, a budget ceiling and its currency, tone and language, brand safety, banned partners and topics, channels you never use, and who must approve anything that leaves Oraqul. Templates sit beside the box, and plain sentences such as “We don’t welcome homophobic suggestions” work too.',
           },
           {
-            label: 'You confirm each rule.',
-            text: 'Nothing is followed until an owner confirms it. Each rule shows as a plain sentence beside the words it came from, whether code enforces it or it is only given to the writer, and anything it clashes with. Editors can propose rules.',
+            label: 'Saved means live.',
+            text: 'There is no approval step: once saved, every later run follows the rules. Each shows as a plain sentence beside the words it came from, whether code enforces it or it is only given to the writer, and anything it clashes with. Owners and editors can remove one. Only an owner can set who must approve anything that leaves Oraqul.',
           },
           {
             label: 'What code enforces.',

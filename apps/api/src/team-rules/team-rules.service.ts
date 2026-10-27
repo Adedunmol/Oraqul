@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -8,6 +9,7 @@ import {
 import {
   type AppliedRule,
   type ExtractRulesInput,
+  type Role,
   RULE_ENFORCEMENT,
   RULE_FIELD,
   ruleSentence,
@@ -26,6 +28,8 @@ import { REJECTIONS, screenText } from './screen.js';
 type Row = typeof teamRules.$inferSelect;
 
 /** A rule replaces the one before it, as a new version, when a team can only have one of its kind. */
+export const OWNER_ONLY = 'Only an owner can set who must approve anything that leaves Oraqul.';
+
 const SINGLE: TeamRuleKind[] = ['budget_max', 'approval', 'tone', 'language'];
 
 export interface Extracted {
@@ -162,8 +166,13 @@ export class TeamRulesService {
     return out;
   }
 
-  /** Reads pasted text into proposed rules. A rule that is not allowed is saved rejected, with why. */
-  async extract(teamId: string, userId: string, input: ExtractRulesInput): Promise<Extracted> {
+  /** Reads pasted text and saves its rules, live at once. A rule that is not allowed is kept rejected, with why. */
+  async extract(
+    teamId: string,
+    userId: string,
+    input: ExtractRulesInput,
+    role: Role = 'owner',
+  ): Promise<Extracted> {
     const scope = input.scope ?? 'team';
     const projectId = input.projectId ?? null;
     if (scope === 'project') {
@@ -178,22 +187,35 @@ export class TeamRulesService {
     const found = await this.extractor.extract(input.text);
     const made: Row[] = [];
     for (const c of found.candidates) {
-      const [row] = await this.db
-        .insert(teamRules)
-        .values({
-          teamId,
-          scope,
-          projectId: scope === 'project' ? projectId : null,
-          kind: c.value.kind,
-          ...RULE_FIELD[c.value.kind],
-          value: c.value,
-          enforcement: RULE_ENFORCEMENT[c.value.kind],
-          sourceText: c.sourceText,
-          status: c.rejection ? 'rejected' : 'proposed',
-          rejectionReason: c.rejection ? REJECTIONS[c.rejection] : null,
-          createdBy: userId,
-        })
-        .returning();
+      const base = {
+        teamId,
+        scope,
+        projectId: scope === 'project' ? projectId : null,
+        kind: c.value.kind,
+        ...RULE_FIELD[c.value.kind],
+        value: c.value,
+        enforcement: RULE_ENFORCEMENT[c.value.kind],
+        sourceText: c.sourceText,
+        createdBy: userId,
+      };
+      // Who must approve what leaves Oraqul is the control that constrains editors, so only an owner sets it.
+      if (!c.rejection && c.value.kind === 'approval' && role !== 'owner') {
+        const [row] = await this.db
+          .insert(teamRules)
+          .values({ ...base, status: 'rejected', rejectionReason: OWNER_ONLY })
+          .returning();
+        if (row) made.push(row);
+        continue;
+      }
+      if (c.rejection) {
+        const [row] = await this.db
+          .insert(teamRules)
+          .values({ ...base, status: 'rejected', rejectionReason: REJECTIONS[c.rejection] })
+          .returning();
+        if (row) made.push(row);
+        continue;
+      }
+      const row = await this.saveActive(base, userId);
       if (row) made.push(row);
     }
     const all = await this.list(teamId);
@@ -201,38 +223,29 @@ export class TeamRulesService {
     return { rules: all.filter((r) => ids.has(r.id)), unparsed: found.unparsed };
   }
 
-  private async proposed(teamId: string, ruleId: string): Promise<Row> {
-    const [row] = await this.db
-      .select()
-      .from(teamRules)
-      .where(and(eq(teamRules.id, ruleId), eq(teamRules.teamId, teamId)));
-    if (!row) throw new NotFoundException('No such rule');
-    if (row.status !== 'proposed')
-      throw new ConflictException('That rule is not waiting to be confirmed');
-    return row;
-  }
-
-  /** Makes a proposed rule active. A single valued rule replaces the one before it as a new version. */
-  async confirm(teamId: string, ruleId: string, userId: string): Promise<TeamRule[]> {
-    const row = await this.proposed(teamId, ruleId);
-    // Screened again here, not only when it was read, so a rule never goes live on one check.
-    const value = teamRuleValueSchema.parse(row.value);
-    const why = screenText(row.sourceText) ?? screenText(ruleSentence(value));
-    if (why) throw new BadRequestException(REJECTIONS[why]);
-    await this.db.transaction(async (tx) => {
+  /**
+   * Makes a rule active at once. A rule that replaces a single valued one (a ceiling, an approver,
+   * a tone, a language) is a new version, and the one before it is archived, so every plan can say
+   * which version it ran under.
+   */
+  private async saveActive(
+    base: Omit<typeof teamRules.$inferInsert, 'status' | 'version' | 'supersedesId'>,
+    userId: string,
+  ): Promise<Row | undefined> {
+    return this.db.transaction(async (tx) => {
       let version = 1;
       let supersedes: string | null = null;
-      if (SINGLE.includes(row.kind)) {
+      if (SINGLE.includes(base.kind as TeamRuleKind)) {
         const [old] = await tx
           .select()
           .from(teamRules)
           .where(
             and(
-              eq(teamRules.teamId, teamId),
-              eq(teamRules.kind, row.kind),
-              eq(teamRules.scope, row.scope),
+              eq(teamRules.teamId, base.teamId),
+              eq(teamRules.kind, base.kind),
+              eq(teamRules.scope, base.scope ?? 'team'),
               eq(teamRules.status, 'active'),
-              row.projectId ? eq(teamRules.projectId, row.projectId) : undefined,
+              base.projectId ? eq(teamRules.projectId, base.projectId) : undefined,
             ),
           );
         if (old) {
@@ -241,36 +254,29 @@ export class TeamRulesService {
           supersedes = old.id;
         }
       }
-      await tx
-        .update(teamRules)
-        .set({
+      const [row] = await tx
+        .insert(teamRules)
+        .values({
+          ...base,
           status: 'active',
           confirmedBy: userId,
           confirmedAt: new Date(),
           version,
           supersedesId: supersedes,
         })
-        .where(eq(teamRules.id, ruleId));
+        .returning();
+      return row;
     });
-    return this.list(teamId);
   }
 
-  async reject(teamId: string, ruleId: string, reason: string): Promise<TeamRule[]> {
-    await this.proposed(teamId, ruleId);
-    await this.db
-      .update(teamRules)
-      .set({ status: 'rejected', rejectionReason: reason })
-      .where(eq(teamRules.id, ruleId));
-    return this.list(teamId);
-  }
-
-  async archive(teamId: string, ruleId: string): Promise<TeamRule[]> {
+  async archive(teamId: string, ruleId: string, role: Role = 'owner'): Promise<TeamRule[]> {
     const [row] = await this.db
-      .select({ status: teamRules.status })
+      .select({ status: teamRules.status, kind: teamRules.kind })
       .from(teamRules)
       .where(and(eq(teamRules.id, ruleId), eq(teamRules.teamId, teamId)));
     if (!row) throw new NotFoundException('No such rule');
-    if (row.status !== 'active') throw new ConflictException('Only an active rule can be archived');
+    if (row.status !== 'active') throw new ConflictException('Only an active rule can be removed');
+    if (row.kind === 'approval' && role !== 'owner') throw new ForbiddenException(OWNER_ONLY);
     await this.db.update(teamRules).set({ status: 'archived' }).where(eq(teamRules.id, ruleId));
     return this.list(teamId);
   }
