@@ -138,9 +138,7 @@ export function DefaultsScreen({
               rows={8}
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder={
-                'Markets: Lagos, London\nBudget ceiling: £50k\nBanned partners: Guinness\nWe don’t welcome homophobic suggestions'
-              }
+              placeholder="Type something…"
               className={`${field} font-read leading-[1.55]`}
             />
             <div>
