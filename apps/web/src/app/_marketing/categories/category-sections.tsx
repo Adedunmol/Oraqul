@@ -24,7 +24,7 @@ export function CategoryTiles() {
                 <span className="font-display text-[19px] font-semibold tracking-[-0.02em]">
                   {info.name}
                 </span>
-                <span className="text-[14px] leading-[1.45] min-[700px]:truncate">
+                <span className="text-[15px] leading-[1.65] min-[700px]:truncate">
                   {info.blurb}
                 </span>
               </span>
@@ -60,7 +60,7 @@ function CategorySection({ id, index }: { id: Category; index: number }) {
             >
               {info.name}
             </h2>
-            <p className="max-w-[34ch] text-[17px] leading-[1.5]">{info.blurb}</p>
+            <p className="max-w-[34ch] text-[17px] leading-[1.65]">{info.blurb}</p>
             <ul aria-label={`Views in ${info.name}`} className="flex flex-wrap gap-1.5">
               {info.tools.map((t) => (
                 <li key={t} className="rounded-md bg-ink/25 px-2.5 py-1 text-[13px] font-medium">
@@ -84,7 +84,7 @@ function CategorySection({ id, index }: { id: Category; index: number }) {
                 </h3>
                 <p className="text-[13.5px] text-muted">{c.note}</p>
               </div>
-              <ul className="flex flex-col gap-3.5 text-[15px] leading-[1.5]">
+              <ul className="flex flex-col gap-3.5 text-[16px] leading-[1.65]">
                 {c.items.map((item) => (
                   <li key={item}>{item}</li>
                 ))}

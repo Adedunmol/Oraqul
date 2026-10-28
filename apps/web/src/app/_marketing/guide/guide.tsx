@@ -53,7 +53,7 @@ export function GuideHub() {
                 className="flex h-full flex-col gap-2 rounded-2xl bg-card p-5 transition-colors hover:bg-surface2 focus-visible:outline-2 focus-visible:outline-accent motion-reduce:transition-none"
               >
                 <span className={h3}>{p.title}</span>
-                <span className="text-[14.5px] leading-[1.55] text-ink/75">{p.summary}</span>
+                <span className="text-[15.5px] leading-[1.65] text-ink/75">{p.summary}</span>
               </Link>
             </li>
           ))}
@@ -120,7 +120,7 @@ function Sections({
                   <h3 className="font-display text-[18px] font-semibold tracking-[-0.02em]">
                     {it.label}
                   </h3>
-                  <p className="text-[14.5px] leading-[1.55] text-ink/80">{it.text}</p>
+                  <p className="text-[15.5px] leading-[1.65] text-ink/80">{it.text}</p>
                   {it.note ? <p className="mt-auto text-[13px] text-muted">{it.note}</p> : null}
                 </div>
               ))}

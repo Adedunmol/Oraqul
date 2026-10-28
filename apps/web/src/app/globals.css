@@ -195,6 +195,12 @@ body:has([data-top-dark]) header[data-site-header]:not([data-ready]) {
    display token above, so headings and long-form output share Geist. */
 .marketing-shell {
   --f-display: var(--f-brand);
+  /* Running text on the public pages is read, not scanned: a looser default line height than the
+     product's, and no one-word last lines. Classes that set their own leading still win. */
+  line-height: 1.6;
+}
+.marketing-shell :where(p, li) {
+  text-wrap: pretty;
 }
 
 /* A product screen shown inside a marketing page keeps the product's own face, so the example is

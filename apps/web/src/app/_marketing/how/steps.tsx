@@ -119,7 +119,7 @@ export function Describe() {
             className="mk-in flex items-end gap-3 rounded-xl border border-accent bg-surface px-4 py-3.5 outline-2 outline-accent/45"
             style={stagger(1)}
           >
-            <p className="min-w-0 flex-1 text-[clamp(16px,1.6vw,19px)] leading-[1.5]">
+            <p className="min-w-0 flex-1 text-[clamp(17px,1.6vw,19px)] leading-[1.65]">
               Plan the release of Night Ferry, a Mexico City crime drama series, for the UK and the
               US. Comparable shows are Grey Tide and The Ferry Office.
             </p>
@@ -343,7 +343,7 @@ export function KeepGoing() {
               <h3 className="font-display text-[24px] leading-[1.15] font-medium tracking-[-0.03em]">
                 {title}
               </h3>
-              <p className="text-[15px] leading-[1.55] text-muted">{text}</p>
+              <p className="text-[16px] leading-[1.65] text-muted">{text}</p>
             </div>
           ))}
         </div>

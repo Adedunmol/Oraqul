@@ -119,6 +119,15 @@ export class AuthService {
     const matches = await verifyPassword(input.password, stored);
     if (!user?.passwordHash || !matches) {
       await this.loginLimiter.recordFailure(input.email, ip);
+      // Names the real method instead of "wrong password", which would send them in circles. This
+      // tells a stranger the address has an account; the same trade signup makes with its 409.
+      if (user && !user.passwordHash) {
+        throw new UnauthorizedException(
+          (await this.users.hasOAuthAccount(user.id))
+            ? 'This account uses Google. Use Continue with Google to sign in.'
+            : 'This account has no password. Email yourself a sign in code instead.',
+        );
+      }
       throw new UnauthorizedException('Wrong email or password');
     }
     await this.loginLimiter.clear(input.email, ip);

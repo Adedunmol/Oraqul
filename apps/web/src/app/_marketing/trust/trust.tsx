@@ -18,7 +18,7 @@ export function Promises() {
       {items.map((item) => (
         <li
           key={item}
-          className="flex items-start gap-4 rounded-2xl bg-card p-5 text-[17px] leading-[1.45]"
+          className="flex items-start gap-4 rounded-2xl bg-card p-5 text-[17px] leading-[1.65]"
         >
           {item}
         </li>

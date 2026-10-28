@@ -118,6 +118,15 @@ export class UsersService {
     return user;
   }
 
+  async hasOAuthAccount(userId: string): Promise<boolean> {
+    const [linked] = await this.db
+      .select({ id: oauthAccounts.userId })
+      .from(oauthAccounts)
+      .where(eq(oauthAccounts.userId, userId))
+      .limit(1);
+    return linked !== undefined;
+  }
+
   async updateName(userId: string, name: string): Promise<SessionUser> {
     const [user] = await this.db
       .update(users)

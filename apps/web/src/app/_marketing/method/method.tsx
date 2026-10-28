@@ -13,7 +13,7 @@ export function FormulaCard() {
         lift = <span className="text-accent">score(x)</span> ÷{' '}
         <span className="text-muted">score(baseline)</span>
       </p>
-      <p className="text-[15px] leading-[1.55] text-ink/75">
+      <p className="text-[16px] leading-[1.65] text-ink/75">
         Both scores come from the same Qloo ranking call: your audience in a place, against a
         neutral audience in the same place. Above 1 means your audience likes it more than most.
       </p>

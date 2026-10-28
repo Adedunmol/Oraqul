@@ -17,7 +17,7 @@ function CategoryText({ info }: { info: CategoryInfo }) {
       <h3 className="font-display text-[clamp(30px,3.4vw,46px)] leading-[1.05] font-medium tracking-[-0.03em]">
         {info.name}
       </h3>
-      <p className="max-w-[38ch] text-[18px] leading-[1.55] text-ink/75">{info.blurb}</p>
+      <p className="max-w-[38ch] text-[18px] leading-[1.65] text-ink/75">{info.blurb}</p>
       <ul aria-label={`Views in ${info.name}`} className="flex flex-wrap gap-1.5">
         {info.tools.map((t) => (
           <li key={t} className="rounded-md bg-surface2 px-2.5 py-1 text-[13px]">
@@ -44,7 +44,7 @@ function CategoryVisual({ info }: { info: CategoryInfo }) {
         <p className="font-display text-[clamp(26px,2.8vw,38px)] leading-[1.1] font-semibold tracking-[-0.03em]">
           Checked against real audience data
         </p>
-        <ul className="flex flex-col gap-4 text-[clamp(16px,1.4vw,19px)] leading-[1.5]">
+        <ul className="flex flex-col gap-4 text-[clamp(17px,1.4vw,19px)] leading-[1.65]">
           {info.coverage.tests.map((t) => (
             <li key={t} className="flex gap-3">
               <span aria-hidden="true">✓</span>
@@ -78,7 +78,7 @@ function CategoryCards({ infos }: { infos: CategoryInfo[] }) {
               <span className="font-display text-[24px] leading-[1.05] font-semibold tracking-[-0.03em]">
                 {info.name}
               </span>
-              <span className="text-[14.5px] leading-[1.45] opacity-90">{info.blurb}</span>
+              <span className="text-[15.5px] leading-[1.65] opacity-90">{info.blurb}</span>
             </span>
           </Link>
         </li>

@@ -76,9 +76,9 @@ export function Jobs() {
                 <h3 className="font-display text-[clamp(22px,3.4svh,28px)] leading-[1.1] font-medium tracking-[-0.03em]">
                   {job.title}
                 </h3>
-                <p className="text-[15px] leading-[1.5] text-ink/75">{job.gets}</p>
+                <p className="text-[16px] leading-[1.65] text-ink/75">{job.gets}</p>
               </div>
-              <p className="mt-auto rounded-xl bg-inset px-4 py-2.5 text-[14px] leading-[1.45]">
+              <p className="mt-auto rounded-xl bg-inset px-4 py-2.5 text-[15px] leading-[1.65]">
                 <span className="sr-only">You might type: </span>“{job.message}”
               </p>
             </li>
@@ -105,7 +105,7 @@ export function Jobs() {
                 <span className="font-display text-[18px] leading-[1.2] font-medium tracking-[-0.02em]">
                   {title}
                 </span>
-                <span className="text-[14px] leading-[1.45] text-ink/70">{text}</span>
+                <span className="text-[15px] leading-[1.65] text-ink/70">{text}</span>
               </li>
             ))}
           </ul>
