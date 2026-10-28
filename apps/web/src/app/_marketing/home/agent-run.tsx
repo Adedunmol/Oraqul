@@ -28,16 +28,20 @@ export function AgentRun() {
       <div
         className={`${wrap} grid gap-[clamp(32px,5vw,64px)] min-[1000px]:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] min-[1000px]:items-center`}
       >
-        <div className="flex flex-col gap-8">
-          <h2 id="agent-title" className={`${h2Class} text-[clamp(32px,3.8vw,54px)]!`}>
-            Does the research, checking, drafting and watching. Anything that leaves Oraqul goes out
-            only after you approve it.
-          </h2>
-          <ul className="flex flex-col gap-5">
+        <div className="flex flex-col gap-9">
+          <div className="flex flex-col gap-5">
+            <h2 id="agent-title" className={`${h2Class} text-[clamp(32px,3.6vw,48px)]!`}>
+              Does the research, checking, drafting and watching.
+            </h2>
+            <p className="max-w-[40ch] text-[clamp(17px,1.4vw,19px)] leading-[1.65] text-ink/80">
+              Anything that leaves Oraqul goes out only after you approve it.
+            </p>
+          </div>
+          <ul className="flex flex-col gap-6">
             {traits.map(([title, text]) => (
-              <li key={title} className="flex flex-col gap-1">
-                <span className="font-medium">{title}</span>
-                <span className="text-[16px] leading-[1.65] text-ink/70">{text}</span>
+              <li key={title} className="flex max-w-[46ch] flex-col gap-1.5">
+                <span className="text-[17px] font-medium">{title}</span>
+                <span className="text-[16px] leading-[1.65] text-ink/75">{text}</span>
               </li>
             ))}
           </ul>
