@@ -537,17 +537,18 @@ body {
 /* The project workspace has its own two columns, so its main panel gives up some side padding to
    keep the chats panel close to the sidebar. */
 @media (min-width: 900px) {
-  [data-app-main]:has([data-workspace]) {
+  [data-app-main][data-workspace-active] {
     --page-x: 12px;
     overflow: hidden;
   }
-  [data-app-main]:has([data-workspace]) > div {
+  [data-app-main][data-workspace-active] > div {
     height: 100%;
     min-height: 0;
   }
 }
 /* These screens use the whole panel instead of a centred 1280px column. */
-[data-app-main]:has([data-workspace], [data-wide]) > div {
+[data-app-main][data-workspace-active] > div,
+[data-app-main]:has([data-wide]) > div {
   max-width: none;
 }
 

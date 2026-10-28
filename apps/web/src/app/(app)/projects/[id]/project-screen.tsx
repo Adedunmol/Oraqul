@@ -89,6 +89,14 @@ export function ProjectWorkspace({
     }
   }, []);
 
+  // With cacheComponents the previous route stays mounted but hidden, so CSS cannot tell from the
+  // DOM alone that this screen is gone. Effects clean up when a route is hidden; markup does not.
+  useEffect(() => {
+    const main = document.querySelector('[data-app-main]');
+    main?.setAttribute('data-workspace-active', '');
+    return () => main?.removeAttribute('data-workspace-active');
+  }, []);
+
   useEffect(() => {
     const sync = () => setChatFullscreen(document.fullscreenElement === chatFrame.current);
     document.addEventListener('fullscreenchange', sync);
