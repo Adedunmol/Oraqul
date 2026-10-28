@@ -105,3 +105,16 @@ test('the guide assistant says plainly when it is unavailable', async ({ page })
     page.getByRole('alert').filter({ hasText: 'not available right now' }),
   ).toBeVisible();
 });
+
+test('the examples are four real runs, each opens its own plan and brief', async ({ page }) => {
+  await page.goto('/examples');
+  const cards = page.locator('button[aria-pressed]');
+  await expect(cards).toHaveCount(4);
+  await expect(page.getByText('A real run on live Qloo data.')).toBeVisible();
+  expect(await page.locator('body').innerText()).not.toContain('Invented data');
+
+  await page.getByRole('button', { name: /How to be a man/ }).click();
+  await expect(page).toHaveURL(/case=books/);
+  await expect(page.getByText('What was asked:')).toBeVisible();
+  await expect(page.getByText('I just wrote a book titled "How to be a man"')).toBeVisible();
+});

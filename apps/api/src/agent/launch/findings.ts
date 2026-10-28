@@ -159,6 +159,11 @@ export interface GroundInput<R extends LaunchRead, P extends QueryPlanCore> {
   plan: P;
   year: number;
   /**
+   * When the comps were chosen by Oraqul and not by the team, no finding may read higher than
+   * this. A guess at who the audience is cannot be "high" however many titles answered.
+   */
+  cap?: { level: Confidence; why: string } | null;
+  /**
    * A second round: run only the queries in `plan.queries`, on the brief a first round built.
    * The audience and the cities are not asked again, and no core finding is made twice.
    */
@@ -197,6 +202,11 @@ export interface Voice {
   audience: string;
   /** "your comps' audience" */
   yourAudience: string;
+  /**
+   * What the audience is called when some comps were chosen by Oraqul, so the finding does not
+   * read as if the team's own title had been measured.
+   */
+  chosenAudience?: string;
   /** "these comps" */
   theseComps: string;
   /** What the unstated "the anchors describe one audience" test says, by verdict. */
@@ -224,6 +234,8 @@ export interface GroundKit<R extends LaunchRead, P extends QueryPlanCore> {
   plan: P;
   /** The Qloo ids of the anchors. */
   ids: string[];
+  /** Some comps were chosen by Oraqul, so a finding must not read as if the team's own title was measured. */
+  capped: boolean;
   year: number;
   /** The audience, cities and assumptions already tested, which a category may extend. */
   brief: LaunchBrief;
@@ -278,8 +290,15 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
   const makeAdd =
     (into: Finding[], intoReceipts: Receipt[]): Add =>
     (finding, call) => {
+      const capped = input.cap && rank[finding.confidence] > rank[input.cap.level];
       const full: Finding = {
         ...finding,
+        ...(capped && input.cap
+          ? {
+              confidence: input.cap.level,
+              why: `${input.cap.level}: ${input.cap.why}`,
+            }
+          : {}),
         numbers: { ...numbersIn(finding.text), ...(finding.numbers ?? {}) },
         context: {
           city: null,
@@ -339,8 +358,22 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
       worthALook: plan.worthALook,
       standInPlaces: read.places.length ? undefined : spec.standInPlaces?.(read, plan),
     });
-    coreFindings(brief, read, add, gaps, audience, ranked, spec.voice);
-    areaFindings(ranked, add, spec.voice);
+    const voice =
+      input.cap && spec.voice.chosenAudience
+        ? {
+            ...spec.voice,
+            yourAudience: spec.voice.chosenAudience,
+            // "Your comps lean on one title" would claim comps the team never named.
+            compsVerdict: Object.fromEntries(
+              Object.entries(spec.voice.compsVerdict).map(([k, v]) => [
+                k,
+                v.replace(/^Your /, 'The '),
+              ]),
+            ) as typeof spec.voice.compsVerdict,
+          }
+        : spec.voice;
+    coreFindings(brief, read, add, gaps, audience, ranked, voice);
+    areaFindings(ranked, add, voice);
   }
 
   const safely = <T extends { receipts: Receipt[] }>(label: string, run: () => Promise<T>) =>
@@ -466,6 +499,7 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
     read,
     plan,
     ids,
+    capped: Boolean(input.cap),
     year: input.year,
     brief,
     gaps,
@@ -828,7 +862,7 @@ export async function regionSeeds<R extends LaunchRead, P extends QueryPlanCore>
         {
           id: `f-region-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${noun}`,
           query: 'region',
-          text: `With no comps to go on, here is what people ${age} in ${city} like, from the place and age band alone: the ${noun} ${names}. This is taste for the place, not for your comps.`,
+          text: `With no comps to go on, here is what people ${age} in ${city} like, from the place and age band alone: the ${noun} ${names}. This is taste for the place, not for the comps.`,
           entities: out.candidates.map((c) =>
             entity(c.name, c.affinity, c.detail, c.entityId, c.popularity),
           ),

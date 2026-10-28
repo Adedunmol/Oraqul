@@ -210,6 +210,7 @@ export function buildBrief<R extends LaunchRead>(r: BriefResults<R>): LaunchBrie
       text,
       verdict: result.verdict,
       why: result.why,
+      ...(result.verdict === 'cant' ? { cantKind: result.cantKind ?? 'no-signal' } : {}),
       fix: result.verdict === 'holds' ? '' : fix,
       unstated,
     });
@@ -237,7 +238,7 @@ export function buildBrief<R extends LaunchRead>(r: BriefResults<R>): LaunchBrie
       add(
         'a-age',
         text,
-        r.audience.data ? best : { verdict: 'cant', why: whyNot(r.audience) },
+        r.audience.data ? best : { verdict: 'cant', cantKind: 'failed', why: whyNot(r.audience) },
         strongest
           ? `Keep your age band, and lead the creative with people ${ageLabel(strongest).toLowerCase()}, the strongest part of it.`
           : '',
@@ -253,7 +254,9 @@ export function buildBrief<R extends LaunchRead>(r: BriefResults<R>): LaunchBrie
     add(
       'a-gender',
       `The audience is mostly ${g === 'female' ? 'women' : 'men'}`,
-      r.audience.data ? genderVerdict(g, genders) : { verdict: 'cant', why: whyNot(r.audience) },
+      r.audience.data
+        ? genderVerdict(g, genders)
+        : { verdict: 'cant', cantKind: 'failed', why: whyNot(r.audience) },
       'Do not narrow the campaign by gender.',
       false,
       audienceReceipt,
@@ -268,6 +271,7 @@ export function buildBrief<R extends LaunchRead>(r: BriefResults<R>): LaunchBrie
       ? placeVerdict(row)
       : {
           verdict: 'cant' as const,
+          cantKind: r.places.data ? ('no-signal' as const) : ('failed' as const),
           why: r.places.data
             ? 'Qloo has no place record for this city, so it was not tested.'
             : whyNot(r.places),
@@ -304,17 +308,39 @@ export function buildBrief<R extends LaunchRead>(r: BriefResults<R>): LaunchBrie
     .map((a) => ({ id: `risk-${a.id}`, text: a.text, signal: a.why, action: a.fix }));
 
   const cannot: Untested[] = [
-    ...r.dropped.map((d) => ({ id: `cant-comp-${slug(d.name)}`, item: d.name, reason: d.why })),
+    ...r.dropped.map((d) => ({
+      id: `cant-comp-${slug(d.name)}`,
+      item: d.name,
+      reason: d.why,
+      cantKind: 'no-signal' as const,
+      ask: 'Check the spelling, or name a close title and I will use it in its place.',
+    })),
     ...assumptions
       .filter((a) => a.verdict === 'cant')
-      .map((a) => ({ id: `cant-${a.id}`, item: a.text, reason: a.why })),
-    { id: 'cant-box-office', ...r.labels.sales },
+      .map((a) => ({
+        id: `cant-${a.id}`,
+        item: a.text,
+        reason: a.why,
+        cantKind: a.cantKind ?? ('no-signal' as const),
+        ask:
+          a.cantKind === 'failed'
+            ? 'Run it again to fill this in.'
+            : 'Tell me more about it, or add a comparable title, and I will look again.',
+      })),
+    {
+      id: 'cant-box-office',
+      ...r.labels.sales,
+      cantKind: 'input' as const,
+      ask: 'Share your own figures and I will set them against the plan.',
+    },
     ...(r.read.window
       ? [
           {
             id: 'cant-window',
             item: `The release window (${r.read.window})`,
             reason: 'Timing is checked against rival releases with the rival date check.',
+            cantKind: 'input' as const,
+            ask: 'Send the rival release dates you know and I will check the overlap.',
           },
         ]
       : []),

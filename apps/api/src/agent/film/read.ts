@@ -59,11 +59,6 @@ export const filmReadingSchema = z.object({
   gender: said(z.enum(['male', 'female'])).nullable(),
   /** Only when they say the release is for families or for adults only. */
   rating: said(z.enum(['family', 'adult'])).nullable(),
-  /**
-   * Comparable titles the agent proposes when the person named fewer than 3. Not their words, so
-   * code checks each one in Qloo and the plan keeps them apart from the person's own.
-   */
-  suggestedComps: z.array(z.string().min(1)).max(5),
 });
 export type FilmReading = z.infer<typeof filmReadingSchema>;
 
@@ -114,9 +109,6 @@ export function checkReading(reading: FilmReading, { title, text }: FilmReaderIn
     .filter((c) => inWords(c.quote, text) && inWords(c.value, c.quote))
     .map((c) => c.value.trim())
     .filter((c) => normalise(c) !== normalise(title));
-  const suggested = reading.suggestedComps.filter(
-    (s) => normalise(s) !== normalise(title) && !comps.some((c) => normalise(c) === normalise(s)),
-  );
   const all = (items: { value: string; quote: string }[]) =>
     unique(items.flatMap((i) => (inWords(i.quote, text) ? [i.value.trim()] : [])));
   // A name must be in its own quote, so the model cannot rename a person or a partner.
@@ -134,7 +126,7 @@ export function checkReading(reading: FilmReading, { title, text }: FilmReaderIn
     ages: unique(reading.ages.flatMap((a) => (inWords(a.quote, text) ? [a.value] : []))),
     gender: kept(reading.gender),
     rating: kept(reading.rating),
-    suggestedComps: comps.length >= 3 ? [] : unique(suggested),
+    suggestedComps: [],
     logline: kept(reading.logline),
     country: kept(reading.country),
     language: kept(reading.language),
@@ -169,7 +161,6 @@ Rules:
 - partners: brands, media or organisations already signed as partners.
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which cities, or who should do the soundtrack. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: partnerships (music, brands, media partners), placement (trailer and ad placement), publicity (press, podcasts), community (grassroots, churches, campuses), route (release route and window), timeline, cadence (series release cadence), budget, measure (what to track), risks. Null when it is about cities or the audience, or when scope is full.
-- suggestedComps: only when they named fewer than 3 comps. Propose well known, real films or series whose audience is likely the same, from the logline, genre, country and market, and from the best known films or series of the cast and director when they are named (a person cannot be looked up as a signal in Qloo, so their other work stands in for them), enough to reach 3 to 5 in all. Titles only, no years. Code checks each in Qloo.
 - Plain words, no exclamation marks.`;
 
 export class ModelFilmReader implements FilmReader {
@@ -277,7 +268,6 @@ export class ScriptedFilmReader implements FilmReader {
         : adult
           ? { value: 'adult', quote: adult }
           : null,
-      suggestedComps: [],
     };
     return { reading, tokens: 0 };
   }

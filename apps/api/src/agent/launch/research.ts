@@ -38,6 +38,8 @@ const factsSchema = z.object({
         fact: z.string().min(1),
         /** The number of the source in the list, from 1. */
         source: z.number().int().min(1),
+        /** The day an event in the fact happens (YYYY-MM-DD), or null when it is not about one day. */
+        eventDate: z.string().nullable(),
       }),
     )
     .max(MAX_FACTS),
@@ -45,16 +47,20 @@ const factsSchema = z.object({
 
 /** Facts whose source number is not in the list, or that repeat a page's fact, are dropped. */
 export function toSources(
-  facts: { fact: string; source: number }[],
+  facts: { fact: string; source: number; eventDate?: string | null }[],
   pages: { title: string; url: string }[],
+  today?: string,
 ): PlanSource[] {
   const seen = new Set<string>();
-  return facts.flatMap(({ fact, source }) => {
+  return facts.flatMap(({ fact, source, eventDate }) => {
     const page = pages[source - 1];
     const key = fact.trim().toLowerCase();
     if (!page || seen.has(key)) return [];
+    const day = eventDate && /^\d{4}-\d{2}-\d{2}$/.test(eventDate) ? eventDate : null;
+    // An event that has already happened is not a lead: a festival last month cannot take a booking.
+    if (day && today && day < today) return [];
     seen.add(key);
-    return [{ id: '', fact: fact.trim(), title: page.title, url: page.url }];
+    return [{ id: '', fact: fact.trim(), title: page.title, url: page.url, eventDate: day }];
   });
 }
 
@@ -98,7 +104,7 @@ export class ModelResearcher<R extends LaunchRead = LaunchRead> implements Resea
 
     const { output, usage } = await generateText({
       model: this.extract,
-      system: this.kit.extractSystem,
+      system: `${this.kit.extractSystem}\n\nWhen a page announces something for one day (a release, a festival, a show), give that day as eventDate (YYYY-MM-DD), even if the day has passed since. For anything that is not an announced event, such as a past release or a general fact, eventDate is null.`,
       prompt: [
         'Research notes:',
         found.text,
@@ -112,7 +118,7 @@ export class ModelResearcher<R extends LaunchRead = LaunchRead> implements Resea
       abortSignal: AbortSignal.timeout(this.timeoutMs),
     });
     return {
-      sources: numbered(toSources(output.facts, pages)),
+      sources: numbered(toSources(output.facts, pages, input.today)),
       tokens: found.tokens + (usage.totalTokens ?? 0),
     };
   }

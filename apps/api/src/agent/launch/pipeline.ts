@@ -16,6 +16,7 @@ import {
   type Claim,
   type CompUsed,
   type Confidence,
+  type DroppedLine,
   type Finding,
   type LaunchLine,
   type LaunchModuleKey,
@@ -74,10 +75,12 @@ import { dateCalls, showDateCalls, territoryCalls } from './direction.js';
 import { evidenceBlock } from './evidence.js';
 import type { Grounded } from './findings.js';
 import type { Change } from './follow-up.js';
+import { gapsAsUntested } from './gaps.js';
 import { withSharedModules } from './modules.js';
 import { opportunitiesOf, withOpportunities } from './opportunities.js';
 import {
   brandsFrom,
+  checkedPartner,
   flagshipNames,
   marketsOf,
   partnerNotes,
@@ -115,8 +118,9 @@ import {
 } from './rules-gate.js';
 import { codeLine, measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
+import { dropUnsupported, supportLines } from './support.js';
 import { channelsSection, territoriesOf, withLines } from './territories.js';
-import { list, releaseDate } from './text.js';
+import { blocked, list, releaseDate } from './text.js';
 import { CODE_SECTIONS, type WriteInput } from './writer.js';
 
 // A bundle needs 3 to 5 comps to be coherent (PRD C1). Below 3, proposals fill to 4.
@@ -134,9 +138,11 @@ export type Anchor = z.infer<typeof anchorSchema>;
 
 const compUsedSchema = z.object({
   name: z.string(),
-  source: z.enum(['you', 'added']),
+  source: z.enum(['you', 'added', 'genre']),
+  why: z.string().nullable().optional(),
   match: z.string().nullable(),
   choice: z.string().nullable(),
+  anchor: z.boolean().optional(),
 });
 
 /** What a plan was built from, saved on the output so a what-if can rerun it with a change. */
@@ -323,6 +329,7 @@ async function runExtra<R extends LaunchRead, P extends QueryPlanCore>(
         dropped: input.comps.dropped,
         plan: { ...input.queryPlan, queries: input.extra.map((e) => e.query) },
         year: new Date().getFullYear(),
+        cap: compCap(input.comps.used),
         more: { brief: grounded.brief },
       },
     );
@@ -400,6 +407,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
   ctx: RunCtx,
   input: {
     title: string;
+    /** The person's words, so the model's query choices can be pinned to them. */
+    text?: string;
     read: R;
     comps: Anchors;
     /** The audit adds the partners a plan names to the candidates Qloo ranks. */
@@ -416,12 +425,13 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     question?: string;
   },
 ): Promise<Asked<P>> {
-  const { title, read, comps } = input;
+  const { title, read, comps, text } = input;
   ctx.trace('Choosing what to ask Qloo');
   const { modules } = withSharedModules(deps.config.pickModules(read), read);
   const compsCountry = commonCountry(comps.used);
   const { plan: planned, tokens } = await deps.queries.plan({
     title,
+    ...(text ? { text } : {}),
     read,
     modules,
     compsCountry,
@@ -443,10 +453,14 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     dropped: comps.dropped,
     plan: queryPlan,
     year: new Date().getFullYear(),
+    cap: compCap(comps.used),
   };
   let grounded = await deps.config.ground(groundDeps, groundInput);
   // A brand that has closed is taken out here, before anything is written about it.
-  const verified = await verifyBrands(deps.verifier, grounded);
+  const verified = await verifyBrands(deps.verifier, grounded, [
+    ...(input.brands ?? []),
+    ...read.partners,
+  ]);
   grounded = (await verifyVenues(deps.verifier, verified.grounded)).grounded;
   const brandChecks = verified.checks;
 
@@ -604,7 +618,6 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let rivals: Rival[] = [];
   let brands: string[] = [];
   let rulesOverride = false;
-  let assumedLabel: string | null = null;
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -681,7 +694,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       read,
     });
     ctx.tokens += analysed.tokens;
-    ({ read, understanding } = applyAnalysis(read, analysed.analysis));
+    ({ read, understanding } = applyAnalysis(read, analysed.analysis, handoff.title, input.text));
 
     // A brief that names no city plans for the team's own markets, when its defaults list them, so
     // the team is not asked for what it already told Oraqul. A city the brief names is never replaced.
@@ -689,6 +702,43 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     if (read.places.length === 0 && markets.length > 0) {
       read = { ...read, places: [...markets] };
       ctx.trace(`Planning for your team’s markets: ${markets.join(', ')}`);
+    }
+
+    // A brief that says nothing about the work and nowhere to launch is too thin to plan from, and
+    // guessing a launch would be worse than asking. Only the person's own words count here: what
+    // the model proposes for any title is not a description (PRD C1).
+    const bare =
+      !read.genre &&
+      read.comps.length === 0 &&
+      read.places.length === 0 &&
+      !read.country &&
+      !deps.config.described(read) &&
+      // The analyst found a description in the person's words that the reader had no field for.
+      !understanding?.readers;
+    if (bare && !resume) {
+      const question: Question = {
+        id: `${deps.config.category}.describe`,
+        card: 'text',
+        prompt:
+          'That is a little thin for me to plan from, and I would rather not guess. Tell me what it is about (its genre, a line on the story, the subject or the sound) and where you are or where you want to launch (a country or a city). A sentence or two is plenty.',
+        options: [],
+        hint: deps.config.minimum.example,
+      };
+      deps.emit({ type: 'question', agent: deps.config.category, ...question });
+      return ctx.stop('waiting', {
+        job: 'build',
+        kind,
+        extra,
+        asked: true,
+        settle: false,
+        askedBand: false,
+        band: null,
+        askedPlatforms: false,
+        platforms: null,
+        askedRules: false,
+        rulesOverride: false,
+        pending: question,
+      });
     }
 
     // The first question a build may ask: there is nothing to plan from without these (PRD C1). A full plan may also ask for the budget band, below.
@@ -716,33 +766,6 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         rulesOverride: false,
         pending: question,
       });
-    }
-
-    // A brief that says nothing about the work is planned as the category's typical launch, and the
-    // plan says so. What the person adds afterwards (description, genre, comps) sharpens it.
-    const bare =
-      !read.genre &&
-      read.comps.length === 0 &&
-      read.suggestedComps.length === 0 &&
-      !deps.config.typical.described(read);
-    if (bare) {
-      const { typical } = deps.config;
-      read = { ...read, genre: typical.genre, country: read.country ?? typical.country ?? null };
-      if (understanding) {
-        understanding = {
-          ...understanding,
-          assumed: [
-            ...understanding.assumed,
-            {
-              what: 'genre',
-              value: typical.genre,
-              why: `Nothing was said about it, so this is ${typical.label}.`,
-            },
-          ],
-        };
-      }
-      assumedLabel = typical.label;
-      ctx.trace(`No description given, so planning for ${typical.label}`);
     }
 
     // The second question a full build may ask: what the budget can carry decides which partners
@@ -855,7 +878,10 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   if (read.places.length === 0 && enforced.dropped.length) {
     deps.emit({
       type: 'message',
-      body: `Every city in this brief is ruled out by your team’s defaults (${enforced.dropped.join(', ')}), so there is nothing to plan. Change the defaults, or ask again and choose to go ahead against them.`,
+      body: blocked({
+        what: `Every city in this brief is ruled out by your team’s defaults (${enforced.dropped.join(', ')}).`,
+        next: 'Change the defaults, or ask again and choose to go ahead against them.',
+      }),
       claims: [],
     });
     return ctx.stop('finished');
@@ -877,6 +903,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       known,
       knownUsed,
       knownDropped,
+      understanding?.proposed ?? [],
     ));
   } catch (err) {
     if (err instanceof QlooBudgetError) return budgetStop(deps, ctx);
@@ -900,6 +927,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
 
   const asked = await askQloo(deps, ctx, {
     title,
+    text: [briefText(handoff, undefined, true), extra].filter(Boolean).join('\n\n'),
     read,
     comps,
     understanding,
@@ -915,9 +943,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     asked,
     extra,
     kind,
-    intro: assumedLabel
-      ? `Here is a first launch plan for “${title}”, written for ${assumedLabel} because the brief did not say what it is. Tell me what it is about, its genre and who it is for, and I will sharpen it.`
-      : `Here is the launch plan for “${title}”.`,
+    intro: `Here is the launch plan for “${title}”.`,
     band,
     platforms,
   });
@@ -1063,7 +1089,21 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         !ownKeys.includes(s.key) &&
         !(byCode && s.key === 'timeline'),
     );
-    const checked = checkSections(writerSections, checkCtx);
+    const rough = checkSections(writerSections, checkCtx);
+    // The code checks cannot tell whether a sentence says what its findings say, so a model reads
+    // each grounded line beside only the evidence it cites. A line it cannot support goes back.
+    const supported = await deps.reviewer?.support({
+      category: deps.config.category,
+      lines: supportLines(rough.sections, grounded.findings, sources),
+    });
+    ctx.tokens += supported?.tokens ?? 0;
+    const narrowed = supported?.results
+      ? dropUnsupported(rough.sections, supported.results)
+      : { sections: rough.sections, dropped: [] as DroppedLine[] };
+    const checked = {
+      sections: narrowed.sections,
+      dropped: [...rough.dropped, ...narrowed.dropped],
+    };
     // A core section the writer left out, or whose every line failed, comes from the templates.
     const empty = core.filter((key) => !checked.sections.some((s) => s.key === key));
     const filled = empty.length
@@ -1095,7 +1135,12 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       ...(byCode && deps.config.codeSections.timeline
         ? [deps.config.codeSections.timeline(read, today)]
         : []),
-      withLeadNotFound(deps.config.codeSections.gaps(read, comps), deps.config.lead?.(read), comps),
+      withNotes(
+        deps.config.codeSections.gaps(read, comps),
+        deps.config.lead?.(read),
+        comps,
+        grounded.findings,
+      ),
     ];
     const sections = ensureDecisions(
       order.flatMap((key) => {
@@ -1125,6 +1170,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
   let next: string[] = [];
   let feedback: string[] = [];
   let lastBlocking = new Set<string>();
+  let supportRewrote = false;
   let ask: string | null = null;
   let current = await (async () => {
     ctx.trace('Writing the plan');
@@ -1163,6 +1209,19 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     const verdict = judge(out.review, understanding, unrun, codeSections);
     next = verdict.next;
     ask = verdict.ask;
+    // Lines the support check took out of a core section are worth one more draft, so the writer
+    // narrows them instead of the plan going out thinner there.
+    const lostCore = current.dropped.filter(
+      (d) => core.includes(d.section) && d.why.startsWith('It says more than'),
+    );
+    if (verdict.passed && lostCore.length > 0 && !supportRewrote && round < MAX_ROUNDS) {
+      supportRewrote = true;
+      rounds.push({ round, issues: verdict.issues, action: 'rewrote' });
+      feedback = feedbackLines(current.dropped, verdict.issues);
+      ctx.trace(`Narrowing lines that said more than the evidence, draft ${round + 1}`);
+      current = await draft(feedback);
+      continue;
+    }
     if (verdict.passed) {
       rounds.push({ round, issues: verdict.issues, action: 'approved' });
       status = 'passed';
@@ -1210,7 +1269,17 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     teamOrder: grounded.brief.teamOrder,
     signal,
   });
-  const sections = withOpportunities(current.sections, found);
+  // A dead end that survived every draft still never ships on its own: it gets a question.
+  const stillOpen =
+    status === 'flagged'
+      ? (rounds.at(-1)?.issues ?? []).filter((i) => i.type === 'dead-end' && i.blocking)
+      : [];
+  const sections = withOpportunities(
+    stillOpen.length
+      ? withClosingQuestions(current.sections, stillOpen, deps.config.rules.titles.gaps)
+      : current.sections,
+    found,
+  );
   const finished = decisionsOf({
     asked,
     read,
@@ -1331,10 +1400,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         ...(asked.clash && asked.clash.lines.length > 0
           ? { dates: asked.clash.lines, weeks: asked.clash.weeks, chosenDate: asked.clash.chosen }
           : {}),
-        cannot: [
-          ...grounded.brief.brief.cannot,
-          ...grounded.gaps.map((g, i) => ({ id: `cant-q-${i + 1}`, item: g.item, reason: g.why })),
-        ],
+        cannot: [...grounded.brief.brief.cannot, ...gapsAsUntested(grounded.gaps)],
       },
       plan,
       report: null,
@@ -1379,8 +1445,15 @@ export function noCompsStop(
   deps.emit({
     type: 'message',
     body: qlooFailed
-      ? `Qloo did not answer just now, so I could not look up the ${deps.config.words.comps}${tried.length ? ` (${tried.join(', ')})` : ''}. Nothing is wrong with your brief. Send it again in a minute.`
-      : `Qloo had nothing close to this brief${tried.length ? ` or to the ${deps.config.words.comps} I tried (${tried.join(', ')})` : ''}, so I could not describe the audience yet. Tell me what it is about and its genre, and I will plan from that. You do not need to name ${deps.config.words.comps}.`,
+      ? blocked({
+          what: `The audience data is not answering right now, so I could not look up the ${deps.config.words.comps}${tried.length ? ` (${tried.join(', ')})` : ''}.`,
+          kept: 'Nothing is wrong with your brief, and I have kept it.',
+          next: 'Send it again in a few minutes.',
+        })
+      : blocked({
+          what: `I did not find a close match for this brief${tried.length ? `, or for the ${deps.config.words.comps} I tried (${tried.join(', ')})` : ''}, so I cannot describe who it is for yet.`,
+          next: `Tell me what it is about, its genre, and where you are or where you want to launch, and I will plan from that. You do not need to name ${deps.config.words.comps}.`,
+        }),
     claims: ctx.receipts
       .slice(0, 1)
       .map((r) => ({ text: 'Searched Qloo.', receiptIds: [r.callId] })),
@@ -1399,8 +1472,10 @@ export async function findComps(
   known: Anchor[],
   knownUsed: CompUsed[],
   knownDropped: { name: string; why: string }[],
+  reasons: { name: string; why: string }[] = [],
 ): Promise<Anchors & { searchFailed: boolean }> {
   const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
+  const whyOf = (name: string) => reasons.find((r) => same(r.name, name))?.why ?? null;
   const resolved = [...known];
   const used = knownUsed.filter((u) => resolved.some((a) => same(a.name, u.name)));
   const dropped = [...knownDropped];
@@ -1455,6 +1530,7 @@ export async function findComps(
       used.push({
         name: a.name,
         source: mine ? 'you' : 'added',
+        why: mine ? null : whyOf(a.name),
         match: match?.detail ?? null,
         choice: null,
         ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
@@ -1465,6 +1541,7 @@ export async function findComps(
       used.push({
         name: a.name,
         source: mine ? 'you' : 'added',
+        why: mine ? null : whyOf(a.name),
         match: pick.detail,
         choice: `Qloo has ${a.candidates.length} ${deps.config.words.entity}s called “${a.name}”. I used the ${pick.detail ?? 'best known'} one, ${read.country && pick.detail?.includes(read.country) ? `from ${read.country} and ` : ''}the best known. Say which you mean if it is another.`,
         ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
@@ -1477,6 +1554,7 @@ export async function findComps(
       used.push({
         name: pick.name,
         source: mine ? 'you' : 'added',
+        why: mine ? null : whyOf(a.name),
         match: pick.detail,
         choice: `Qloo has no ${deps.config.words.entity} called “${a.name}”. I used the closest one it has, “${pick.name}”${pick.detail ? ` (${pick.detail})` : ''}. Say which you mean if it is another.`,
         ...(mine && isAnchor(a.name) ? { anchor: true } : {}),
@@ -1493,6 +1571,42 @@ export async function findComps(
   }
   used.sort((x, y) => (x.source === y.source ? 0 : x.source === 'you' ? -1 : 1));
   return { resolved, used, dropped, searchFailed };
+}
+
+/**
+ * How far to trust an audience read when some of the comps are Oraqul's own choice. Titles chosen
+ * from the description steer the questions, but they are a guess at who the audience is, so no
+ * line resting on them reads higher than medium; the genre's own titles read lower (spec §5.1).
+ */
+export function compCap(used: CompUsed[]): { level: Confidence; why: string } | null {
+  if (used.some((c) => c.source === 'genre')) {
+    return {
+      level: 'lower',
+      why: 'this rests on titles Qloo lists for the genre, not on your comps',
+    };
+  }
+  if (used.some((c) => c.source === 'added')) {
+    return { level: 'medium', why: 'this rests on comps Oraqul chose from your description' };
+  }
+  return null;
+}
+
+/** A question for each thin spot the drafts left without a way forward, under "To sharpen". */
+function withClosingQuestions(
+  sections: LaunchSection[],
+  open: { text: string; ask?: string }[],
+  title: string,
+): LaunchSection[] {
+  const lines = open.map((issue, i) =>
+    codeLine(
+      `gaps-open-${i + 1}`,
+      issue.ask ?? 'Tell me a little more about this part of the launch, and I will sharpen it.',
+    ),
+  );
+  const has = sections.some((s) => s.key === 'gaps');
+  return has
+    ? sections.map((s) => (s.key === 'gaps' ? { ...s, lines: [...s.lines, ...lines] } : s))
+    : [...sections, { key: 'gaps' as const, title, lines }];
 }
 
 const GENRE_COMPS = 4;
@@ -1582,7 +1696,7 @@ export async function findGenreComps(
       resolved.push({ entityId: t.entityId, name: t.name, popularity: t.popularity });
       used.push({
         name: t.name,
-        source: 'added',
+        source: 'genre',
         match: t.year ? String(t.year) : null,
         choice: `Qloo had none of the comps by name, so I used “${t.name}”, which it lists for ${list(named)}${read.country ? ` from ${read.country}` : ''}. Tell me more about it to sharpen the read.`,
       });
@@ -1688,29 +1802,58 @@ export function applyChange<R extends LaunchRead>(
  * Says so in Gaps when the work the launch is about (an artist) is not in Qloo by name. That is
  * normal before a debut, and the plan then rests on the comps, or on the genre without them.
  */
-function withLeadNotFound(
+// Queries whose results are named places, shows or acts that Qloo lists for an audience. Qloo has
+// no way to say whether each is still open or airing.
+const LISTED = new Set([
+  'cinemas',
+  'venues',
+  'community',
+  'podcasts',
+  'shows',
+  'bookshops',
+  'films',
+  'music',
+  'support',
+  'similar',
+  'games',
+]);
+
+/**
+ * What the person can do about two things code knows: the lead is new to Qloo, so the plan is
+ * built from comparable titles, and the names Qloo lists are current taste that nobody has checked
+ * is still running. Both read as a suggestion, never as a limit.
+ */
+function withNotes(
   section: LaunchSection,
   lead: string | null | undefined,
-  comps: Pick<Anchors, 'resolved' | 'dropped'>,
+  comps: Pick<Anchors, 'resolved' | 'dropped'> & { used: CompUsed[] },
+  findings: Finding[],
 ): LaunchSection {
   const missed = lead
     ? comps.dropped.some((d) => d.name.trim().toLowerCase() === lead.trim().toLowerCase())
     : false;
-  if (!lead || !missed) return section;
-  const rests =
-    comps.resolved.length > 0
-      ? 'The plan rests on the comps you named.'
-      : 'With no comps resolved, the plan rests on the genre’s audience, with lower confidence.';
-  return {
-    ...section,
-    lines: [
-      codeLine(
-        `gaps-lead-${slug(lead)}`,
-        `Qloo does not know ${lead} by name, which is normal before a debut. ${rests}`,
-      ),
-      ...section.lines,
-    ],
-  };
+  const named = comps.used.filter((c) => !c.anchor).map((c) => c.name);
+  const lines = [
+    ...(lead && missed
+      ? [
+          codeLine(
+            `gaps-lead-${slug(lead)}`,
+            comps.resolved.length > 0
+              ? `${lead} is new, so the picture of its audience is built from comparable titles${named.length ? `: ${list(named)}` : ''}. Name your own and I will swap them in.`
+              : `${lead} is new, and no comparable titles came up, so the plan leans on what the genre’s audience likes. Tell me a few titles it is like and I will tighten it.`,
+          ),
+        ]
+      : []),
+    ...(findings.some((f) => LISTED.has(f.query))
+      ? [
+          codeLine(
+            'gaps-still-active',
+            'The venues, shows and podcasts named here come from what this audience likes now. It is worth confirming each is still active before you pitch.',
+          ),
+        ]
+      : []),
+  ];
+  return lines.length ? { ...section, lines: [...lines, ...section.lines] } : section;
 }
 
 export function homeMarket(cities: string[], country: string | null): string | null {
@@ -1737,7 +1880,11 @@ function overall(bottom: LaunchLine[], findings: Finding[]): OverallConfidence {
 export function budgetStop(deps: { emit(event: ThreadEvent): void }, ctx: RunCtx): PlanRun {
   deps.emit({
     type: 'message',
-    body: 'I stopped because the Qloo call budget for this run is spent. Nothing past this point was tested, so no plan was saved.',
+    body: blocked({
+      what: 'This run reached its limit on audience lookups before the plan was complete.',
+      kept: 'Nothing half-built was saved.',
+      next: 'Send it again, or ask for fewer cities or a narrower plan to keep it within the limit.',
+    }),
     claims: [],
   });
   return ctx.stop('budget');
@@ -1824,17 +1971,8 @@ function decisionsOf(input: {
     considered: asked.brands,
     blocked: input.blocked,
   });
-  // Each named brand carries what Wikidata said about it, where a check ran.
-  const partners = built.partners.map((p) =>
-    p.kind === 'brand' && asked.brandChecks[p.name]
-      ? {
-          ...p,
-          check: asked.brandChecks[p.name],
-          // Where the brand is based, when the source says; else the market it was ranked in.
-          market: asked.brandChecks[p.name]?.country ?? p.market,
-        }
-      : p,
-  );
+  // A brand shows a market only when a source confirms it, and carries what the checks found.
+  const partners = built.partners.map((p) => checkedPartner(p, asked.brandChecks[p.name]));
   const partnerCalls = built.calls;
   const partnered = withPartnerIds(placed.territories, partnerCalls, partners);
   return {

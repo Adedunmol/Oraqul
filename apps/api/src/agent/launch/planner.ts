@@ -33,6 +33,8 @@ export interface QueryPlanCore {
 
 export interface QueryPlanInput<R extends LaunchRead = LaunchRead> {
   title: string;
+  /** The person's own words, when the run has them. Pinned choices are keyed on these, not on the read. */
+  text?: string;
   read: R;
   modules: LaunchModuleKey[];
   /** The comps' most common release country, from their Qloo matches. */

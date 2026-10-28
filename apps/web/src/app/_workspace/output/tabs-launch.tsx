@@ -50,7 +50,7 @@ function PartnerRow({
     <li className="flex flex-col gap-1 rounded-xl bg-card px-4 py-3">
       <div className="flex flex-wrap items-center gap-2">
         <b className="text-sm">{partner.name}</b>
-        <span className="text-[12.5px] text-muted">{partner.market}</span>
+        {partner.market ? <span className="text-[12.5px] text-muted">{partner.market}</span> : null}
         {partner.from === 'team' ? <Mark>Your partner</Mark> : null}
         {partner.fit ? <DirectionPill direction={partner.fit.direction} /> : null}
         {finding ? (
@@ -79,8 +79,13 @@ function PartnerRow({
             } `
           : 'A kind of partner, not a brand yet. '}
         {BUDGET[partner.budgetFit]}. Price: unknown.
-        {named && partner.check?.state === 'unverified' ? ' Not verified.' : ''}
+        {named && partner.check?.state === 'unverified' && !partner.check.note
+          ? ' Not verified.'
+          : ''}
       </p>
+      {named && partner.check?.note ? (
+        <p className="text-[13px] text-muted">{partner.check.note}</p>
+      ) : null}
       {partner.flags.map((f) => (
         <p key={f.type + f.why} className="text-[13px] text-warn">
           <span aria-hidden="true">! </span>

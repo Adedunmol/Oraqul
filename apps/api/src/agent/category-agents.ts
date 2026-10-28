@@ -22,6 +22,7 @@ import {
 } from '@oraqul/schema';
 import { z } from 'zod';
 import type { ActiveRules } from '../team-rules/compile.js';
+import { blocked } from './launch/text.js';
 import type { TranscriptLine } from './router/reader.js';
 
 // A file's text is kept whole, up to what an upload allows. Each reader cuts it to what its model
@@ -165,7 +166,10 @@ export class PlaceholderAgent implements CategoryAgent {
     });
     emit({
       type: 'message',
-      body: `The ${pack.title} agent isn't connected yet, so there is no ${WORK[handoff.mode]} for “${handoff.title}” to show. Nothing was tested against Qloo.`,
+      body: blocked({
+        what: `The ${pack.title} agent is not connected yet, so I cannot write a ${WORK[handoff.mode]} for “${handoff.title}”.`,
+        next: 'Start a project in another category for now, and this one will work the same way once it is connected.',
+      }),
       claims: [],
     });
     return { reason: 'finished', state: null, receipts: [], output: null, tokens: 0, qlooCalls: 0 };

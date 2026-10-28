@@ -24,11 +24,8 @@ const NO_META: Meta = { asset: null, count: null, per: null };
 
 /** What a row says about how many posts, in the source's own terms and no more. */
 function postsText(row: Pick<CalendarRow, 'count' | 'per' | 'grade'>): string {
-  if (row.count === null || row.per === null) {
-    return row.grade === 'not-researched'
-      ? 'Posts: not researched.'
-      : 'Posts: the source gives no number.';
-  }
+  // No number means no sentence: the calendar's note says once that no post counts are stated.
+  if (row.count === null || row.per === null) return '';
   if (row.per === 'span') return `Posts: ${row.count}.`;
   if (row.per === 'day') return `Posts: ${row.count} a day.`;
   return `Posts: at least ${row.count} a week.`;
@@ -39,7 +36,7 @@ const GRADE_NOTE: Record<RuleSource['grade'], string | null> = {
   directional:
     'This calendar follows blog-level guidance, one source for each point. Treat it as direction, not a measured result.',
   'not-researched':
-    'Not researched for this category. The rows follow the launch beats, and no post counts are stated.',
+    'The rows follow the launch beats and give no post counts, so set your own rhythm and keep to what you can sustain.',
 };
 
 /**
@@ -128,7 +125,7 @@ export function calendarSection(
     ...rows.map((r) =>
       codeLine(
         r.id,
-        `${when(r)}: ${r.post}${r.asset ? ` Asset: ${r.asset}.` : ''} Lead on ${r.channel}. ${postsText(r)}`,
+        `${when(r)}: ${r.post}${r.asset ? ` Asset: ${r.asset}.` : ''} Lead on ${r.channel}.${postsText(r) ? ` ${postsText(r)}` : ''}`,
         r.territory,
       ),
     ),

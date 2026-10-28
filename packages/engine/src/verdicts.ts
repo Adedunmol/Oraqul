@@ -6,6 +6,11 @@ export interface VerdictResult {
   verdict: Verdict;
   /** How the verdict was reached, in words a marketer can read. Published on the line. */
   why: string;
+  /**
+   * Why a `cant` verdict is one: `input` needs something the person has not given, `no-signal` means
+   * Qloo answered with nothing for it, `failed` means the call failed. Absent on any other verdict.
+   */
+  cantKind?: 'input' | 'no-signal' | 'failed';
 }
 
 const AGE_NEAR_TOP = 0.05;
@@ -32,7 +37,11 @@ export function ageVerdict(band: string, ages: Record<string, number>): VerdictR
   const entries = Object.entries(ages);
   const value = ages[band];
   if (entries.length === 0 || value === undefined) {
-    return { verdict: 'cant', why: 'Qloo returned no age profile for these comps.' };
+    return {
+      verdict: 'cant',
+      cantKind: 'no-signal',
+      why: 'Qloo returned no age profile for these comps.',
+    };
   }
   const top = Math.max(...entries.map(([, v]) => v));
   const shown = `affinity ${value.toFixed(2)}, top band ${top.toFixed(2)}`;
@@ -51,7 +60,11 @@ export function genderVerdict(
 ): VerdictResult {
   const value = genders[gender];
   if (value === undefined) {
-    return { verdict: 'cant', why: 'Qloo returned no gender profile for these comps.' };
+    return {
+      verdict: 'cant',
+      cantKind: 'no-signal',
+      why: 'Qloo returned no gender profile for these comps.',
+    };
   }
   const shown = `affinity ${value.toFixed(2)}`;
   if (value > GENDER_LEAN)
@@ -69,12 +82,14 @@ export function placeVerdict(place: {
   if (place.status === 'unknown_place') {
     return {
       verdict: 'cant',
+      cantKind: 'no-signal',
       why: 'Qloo has no place record for this city, so it was not tested.',
     };
   }
   if (place.status === 'not_ranked' || place.lift === null) {
     return {
       verdict: 'cant',
+      cantKind: 'no-signal',
       why: `Only ${place.cells} cells came back, too few to rank the city.`,
     };
   }
@@ -95,7 +110,11 @@ const ROUTE_WEAK = 0.93;
 /** Spec §5.4: the team's route score as a share of the best order's. */
 export function routeVerdict(actual: number, best: number): VerdictResult {
   if (best <= 0) {
-    return { verdict: 'cant', why: 'The route could not be scored: no stop had a positive lift.' };
+    return {
+      verdict: 'cant',
+      cantKind: 'no-signal',
+      why: 'The route could not be scored: no stop had a positive lift.',
+    };
   }
   const ratio = actual / best;
   const shown = `route score ${actual.toFixed(2)} against ${best.toFixed(2)} for the strongest order`;

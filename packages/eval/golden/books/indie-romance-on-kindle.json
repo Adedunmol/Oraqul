@@ -1,6 +1,38 @@
 {
   "title": "Salt and Ink",
   "brief": "Launch plan for the book \"Salt and Ink\", a self-published contemporary romance on Kindle for women aged 25 to 34, launching in June 2027 in New York and Toronto, with a marketing budget of $5,000. Comparable books: \"Beach Read\" and \"Book Lovers\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "It Ends with Us (It Ends with Us, #1)",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "The Seven Husbands of Evelyn Hugo",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
@@ -10,7 +42,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with New York, then Toronto: that is where your book's readers are strongest.",
+    "headline": "Lead with New York, then Toronto: that is where the comparable books' readers are strongest.",
     "assumptions": {
       "a-age": "holds",
       "a-gender": "holds",
@@ -52,8 +84,6 @@
       "f-a-comp-age-beach-read": [],
       "f-a-comp-age-book-lovers": [],
       "f-shelf": ["The Love Hypothesis"],
-      "f-bridge-film": ["It Ends with Us", "Pride & Prejudice", "Crazy Rich Asians"],
-      "f-bridge-series": ["Bridgerton", "Virgin River", "Outlander"],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
       "f-brands-new-york": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-brands-toronto": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
@@ -67,11 +97,11 @@
     },
     "sections": {
       "bottom-line": "3/0",
-      "positioning": "2/1",
-      "audience": "4/0",
+      "positioning": "1/2",
+      "audience": "3/0",
       "markets": "2/0",
       "comps": "2/1",
-      "adaptation": "3/1",
+      "adaptation": "1/1",
       "publicity": "1/1",
       "events": "1/0",
       "creators": "0/1",
@@ -84,14 +114,14 @@
       "budget": "0/8",
       "measure": "0/8",
       "risks": "3/1",
-      "gaps": "0/6"
+      "gaps": "0/7"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 81,
-      "backed": 28,
+      "lines": 78,
+      "backed": 24,
       "rankKept": 100,
-      "findingsUsed": 13,
+      "findingsUsed": 11,
       "cities": {
         "New York": 5,
         "Toronto": 4

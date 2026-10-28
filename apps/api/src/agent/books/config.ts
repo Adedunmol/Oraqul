@@ -42,7 +42,7 @@ export const BOOKS_DECISIONS: DecisionWords = {
   unreadCity:
     'Build the launch here on bookshops and book clubs: events, signings and the moves below.',
   comp: (c) =>
-    `Pitch the book to booksellers, press and readers in the company of ${c}, a book your readers already know.`,
+    `Pitch the book to booksellers, press and readers in the company of ${c}, a book you named.`,
 };
 
 /** A reading with nothing in it, for an answer about a plan saved before readings. */
@@ -132,9 +132,9 @@ function gapsSection(read: BooksRead, comps: { used: CompUsed[] }): LaunchSectio
     ...(hasAudio(read)
       ? []
       : ['Say if there is an audiobook, and the plan adds an audiobook section.']),
-    ...(comps.used.some((c) => c.source === 'added')
+    ...(comps.used.some((c) => c.source !== 'you')
       ? [
-          'Say what the book is about, its genre and who it is for, and the plan can be built around them.',
+          'I chose the comparable books from what you wrote. Name your own, or say more about the book and who it is for, and I will rebuild the plan around them.',
         ]
       : []),
     ...(read.ages.length
@@ -331,18 +331,15 @@ export const booksLaunch: LaunchConfig<BooksRead, BooksQueryPlan> = {
   minimum: {
     id: 'books.minimum',
     example:
-      'For example: “A Nigerian literary debut for readers of Americanah”, “a romantasy for 18 to 34 on Kindle”, or “the paperback reissue of my memoir”.',
+      'For example: “A self-help book for young men on growing up”, “a romantasy for 18 to 34 on Kindle”, or “the paperback reissue of my memoir”.',
     missing: () => [],
   },
-  typical: {
-    genre: 'literary fiction',
-    label: 'a typical trade book launch',
-    described: (read) =>
-      read.readership !== null ||
-      read.regions.length > 0 ||
-      read.previousBooks.length > 0 ||
-      read.screenTitles.length > 0,
-  },
+  /** Whether the person's words say anything about the work beyond its title. */
+  described: (read) =>
+    read.readership !== null ||
+    read.regions.length > 0 ||
+    read.previousBooks.length > 0 ||
+    read.screenTitles.length > 0,
   pickModules: (read) =>
     booksPlan.pickModules({
       scope: read.scope,

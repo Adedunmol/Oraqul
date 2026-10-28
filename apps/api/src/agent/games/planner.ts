@@ -6,7 +6,6 @@ import { z } from 'zod';
 import {
   brandChoiceSchema,
   checkBrandCandidates,
-  checkWorth,
   FallbackQueryPlanner as LaunchFallbackPlanner,
   type QueryPlanInput as LaunchPlanInput,
   type QueryPlanner as LaunchQueryPlanner,
@@ -77,7 +76,7 @@ export function defaultPlan(input: QueryPlanInput): GamesQueryPlan {
   const worthALook = [
     ...new Set([
       ...regional,
-      ...(cities.length ? citiesNear(cities, 4) : []),
+      ...(cities.length ? citiesNear(cities, 4, country) : []),
       ...(cities.length || regional.length ? [] : KIND_PROFILES[kind].defaultCities),
     ]),
   ].slice(0, 8);
@@ -120,7 +119,6 @@ const modelPlanSchema = z.object({
   brandCities: z.array(z.string()).max(4),
   communityPlaces: z.array(phrase).max(3),
   communityCities: z.array(z.string()).max(5),
-  worthALook: z.array(z.string()).max(4),
   brandCandidates: z.array(brandChoiceSchema).max(5),
 });
 
@@ -133,7 +131,6 @@ You are given the brief and default choices. Return the choices, changed only wh
 - brandCategories: short brand category names whose brands fit a game tie-in ("beverage", "telecom", "gaming peripherals", "food delivery"). Never luxury.
 - communityPlaces: kinds of place where this audience gathers ("university").
 - brandCandidates: for each of the cities to ask about, up to 4 brands that operate there and could realistically partner with an independent studio as an in-kind or co-promotion tie-in: energy drinks, peripherals, telecoms, food delivery, challenger brands. Write each as the company's usual name. Never a global giant that does no small tie-ins. Qloo then ranks only these, per city, for the players.
-- worthALook: up to 4 other cities from the city table where this audience may be strong. They are only shown as alternatives, never in place of the team's cities.
 
 Never name a person. Never use words from the brief that describe a private individual.`;
 
@@ -197,10 +194,6 @@ export function checkPlan(
       : defaults.communityPlaces,
     communityCities: keep(chosen.communityCities, defaults.communityCities),
     // With no team cities the regions are the plan's regions, so the model cannot swap them.
-    worthALook:
-      defaults.cities.length && defaults.regionCities.length === 0
-        ? checkWorth(chosen.worthALook, defaults.cities, defaults.worthALook)
-        : defaults.worthALook,
     brandCandidates: checkBrandCandidates(chosen.brandCandidates, defaults.askCities),
   };
 }

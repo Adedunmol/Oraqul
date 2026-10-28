@@ -6,7 +6,7 @@ export interface BrandChecker {
   check(names: string[]): Promise<Map<string, PartnerCheck>>;
 }
 
-const unverified: PartnerCheck = { state: 'unverified', note: null, country: null };
+const unverified: PartnerCheck = { state: 'unverified', note: null, country: null, operates: [] };
 
 /** Used when no check is wanted: every name stays as Qloo gave it. */
 export class NoBrandChecker implements BrandChecker {
@@ -24,8 +24,27 @@ const NOT_BUSINESS =
   /(video game|novel|film|author|researcher|country|city|county|drug|album|song|band|politician|cinematographer|actor|actress|singer|footballer|writer|born)/i;
 
 const searchSchema = z.object({
-  search: z.array(z.object({ id: z.string(), description: z.string().optional() })).default([]),
+  search: z
+    .array(
+      z.object({
+        id: z.string(),
+        label: z.string().optional(),
+        description: z.string().optional(),
+        match: z.object({ text: z.string().optional() }).optional(),
+      }),
+    )
+    .default([]),
 });
+
+// The same name, ignoring case, accents and punctuation: a hit for a different company that merely
+// ranks first ("VOXI" matching an unrelated firm) is not the brand Qloo meant.
+const plain = (text: string | undefined) =>
+  (text ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 const claimSchema = z.object({
   mainsnak: z.object({ datavalue: z.object({ value: z.unknown() }).optional() }),
 });
@@ -128,7 +147,10 @@ export class WikidataBrandChecker implements BrandChecker {
       searchSchema,
     );
     const match = found.search.find(
-      (h) => BUSINESS.test(h.description ?? '') && !NOT_BUSINESS.test(h.description ?? ''),
+      (h) =>
+        BUSINESS.test(h.description ?? '') &&
+        !NOT_BUSINESS.test(h.description ?? '') &&
+        (plain(h.label) === plain(name) || plain(h.match?.text) === plain(name)),
     );
     if (!match) return unverified;
 
@@ -145,16 +167,17 @@ export class WikidataBrandChecker implements BrandChecker {
         state: 'problem',
         note: `No longer exists: it closed in ${year}.`,
         country: null,
+        operates: [],
       };
     }
 
     const place = idValue.safeParse((claims.P495 ?? claims.P17)?.[0]?.mainsnak.datavalue?.value);
-    if (!place.success) return { state: 'verified', note: null, country: null };
+    if (!place.success) return { state: 'verified', note: null, country: null, operates: [] };
     const labels = await this.get(
       { action: 'wbgetentities', ids: place.data.id, props: 'labels', languages: 'en' },
       labelsSchema,
     );
     const country = labels.entities[place.data.id]?.labels.en?.value;
-    return { state: 'verified', note: null, country: country ?? null };
+    return { state: 'verified', note: null, country: country ?? null, operates: [] };
   }
 }

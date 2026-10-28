@@ -1,7 +1,8 @@
-import type { Finding, LaunchPlan } from '@oraqul/schema';
+import type { Finding, LaunchPlan, PartnerCheck, PartnerOption } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
 import {
   brandsFrom,
+  checkedPartner,
   flagshipNames,
   flagsOf,
   marketsOf,
@@ -308,5 +309,59 @@ describe('the brands the team already knows', () => {
     expect(next.find((c) => c.city === 'Lagos')?.names).toEqual(['Guinness', 'Verve', 'Bolt']);
     expect(next.find((c) => c.city === 'London')?.names).toEqual(['Guinness', 'Verve']);
     expect(withTeamBrands(plan, [])).toBe(plan);
+  });
+});
+
+describe('checkedPartner', () => {
+  const brand = (over: Partial<PartnerOption> = {}): PartnerOption =>
+    ({
+      id: 'partner-cell-c',
+      name: 'Cell C',
+      tier: 'B',
+      market: 'Ghana',
+      from: 'qloo',
+      fit: null,
+      budgetFit: 'fits',
+      price: 'unknown',
+      findingIds: [],
+      kind: 'brand',
+      flags: [],
+      moneyType: 'in_kind',
+      ...over,
+    }) as PartnerOption;
+  const check = (over: Partial<PartnerCheck> = {}): PartnerCheck => ({
+    state: 'unverified',
+    note: null,
+    country: null,
+    operates: [],
+    ...over,
+  });
+
+  it('shows no market for a brand ranked in a city that nothing says it sells in', () => {
+    const out = checkedPartner(brand(), check());
+    expect(out.market).toBeNull();
+    expect(out.check?.note).toMatch(/Worth confirming it operates there before you pitch/);
+  });
+
+  it('says where a brand is based when that is another country', () => {
+    const out = checkedPartner(brand(), check({ state: 'verified', country: 'South Africa' }));
+    expect(out.market).toBeNull();
+    expect(out.check?.note).toMatch(/^Based in South Africa\. /);
+  });
+
+  it('keeps the market when the brand is based there or a page says it sells there', () => {
+    expect(checkedPartner(brand(), check({ state: 'verified', country: 'Ghana' })).market).toBe(
+      'Ghana',
+    );
+    expect(
+      checkedPartner(
+        brand(),
+        check({ operates: [{ country: 'Ghana', title: 'MTN Ghana', url: 'https://mtn.test/gh' }] }),
+      ).market,
+    ).toBe('Ghana');
+  });
+
+  it('keeps the market of a brand the team chose', () => {
+    expect(checkedPartner(brand({ from: 'team' }), check()).market).toBe('Ghana');
   });
 });

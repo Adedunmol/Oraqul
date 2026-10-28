@@ -6,7 +6,6 @@ import { z } from 'zod';
 import {
   brandChoiceSchema,
   checkBrandCandidates,
-  checkWorth,
   FallbackQueryPlanner as LaunchFallbackPlanner,
   type QueryPlanInput as LaunchPlanInput,
   type QueryPlanner as LaunchQueryPlanner,
@@ -78,7 +77,7 @@ export function defaultPlan(input: QueryPlanInput): BooksQueryPlan {
   const worthALook = [
     ...new Set([
       ...regional,
-      ...(cities.length ? citiesNear(cities, 4) : []),
+      ...(cities.length ? citiesNear(cities, 4, country) : []),
       ...(cities.length || regional.length ? [] : KIND_PROFILES[kind].defaultCities),
     ]),
   ].slice(0, 8);
@@ -91,8 +90,6 @@ export function defaultPlan(input: QueryPlanInput): BooksQueryPlan {
   const genre =
     (read.genre ? booksPlan.genrePhrase(`${read.genre} ${market}`) : null) ??
     booksPlan.genrePhrase(`${input.title} ${market}`);
-  const words = `${read.genre ?? ''} ${input.title} ${market}`;
-  const screen = booksPlan.screenCandidates(words);
   return {
     queries: queriesFor(modules),
     cities,
@@ -106,8 +103,9 @@ export function defaultPlan(input: QueryPlanInput): BooksQueryPlan {
     askCities,
     genre,
     shelfCity: home[0] ?? null,
-    screenSeries: screen.series,
-    screenFilms: screen.films,
+    // The model proposes the screen titles from the book; with no model there are none.
+    screenSeries: [],
+    screenFilms: [],
     bookshopCities: askCities.slice(0, 3),
     brandCategories: brandCategoriesFor('books'),
     brandCities: (cities.length ? [home[0] ?? cities[0], cities[1]] : askCities.slice(0, 2))
@@ -131,7 +129,6 @@ const modelPlanSchema = z.object({
   bookshopCities: z.array(z.string()).max(4),
   brandCategories: z.array(phrase).max(3),
   brandCities: z.array(z.string()).max(4),
-  worthALook: z.array(z.string()).max(4),
   brandCandidates: z.array(brandChoiceSchema).max(5),
   screenSeries: z.array(phrase).max(booksPlan.BRIDGE_PER_MEDIUM),
   screenFilms: z.array(phrase).max(booksPlan.BRIDGE_PER_MEDIUM),
@@ -145,8 +142,7 @@ You are given the brief and default choices. Return the choices, changed only wh
 - shelfCity, bookshopCities, brandCities: only cities from "Cities to ask about". Up to ${MAX_CITIES_PER_QUERY}.
 - brandCategories: short brand category names whose brands fit a book partnership ("beverage", "telecom", "food delivery", "banking"). Never luxury.
 - brandCandidates: for each of the cities to ask about, up to 4 brands that operate there and could realistically partner with a book launch: coffee and tea, telecoms, stationery, apps, local retailers, banks. Write each as the company's usual name. Never a global giant that does no small partnerships. Qloo then ranks only these, per city, for the readers.
-- screenSeries and screenFilms: up to ${booksPlan.BRIDGE_PER_MEDIUM} real series and films that could plausibly be a screen comparison for this book: adaptations of similar books, or screen stories that sit next to its themes and tone. Write each as its usual title, exactly. Qloo then ranks only these for the readers. Empty keeps the defaults.
-- worthALook: up to 4 other cities from the city table where these readers may be strong. They are only shown as alternatives, never in place of the team's cities.
+- screenSeries and screenFilms: up to ${booksPlan.BRIDGE_PER_MEDIUM} real series and films that could plausibly be a screen comparison for this book: adaptations of similar books, or screen stories that sit next to its themes and tone. Write each as its usual title, exactly. Qloo then ranks only these for the readers. Leave both empty when the book has no story or themes a screen version could share (a memoir, a self help book, poetry).
 
 Never name a person. Never use words from the brief that describe a private individual.`;
 
@@ -213,10 +209,6 @@ export function checkPlan(
     screenSeries: titles(chosen.screenSeries, defaults.screenSeries),
     screenFilms: titles(chosen.screenFilms, defaults.screenFilms),
     // With no team cities the regions are the plan's markets, so the model cannot swap them.
-    worthALook:
-      defaults.cities.length && defaults.regionCities.length === 0
-        ? checkWorth(chosen.worthALook, defaults.cities, defaults.worthALook)
-        : defaults.worthALook,
     brandCandidates: checkBrandCandidates(chosen.brandCandidates, defaults.askCities),
   };
 }

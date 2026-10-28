@@ -1,6 +1,46 @@
 {
   "title": "The Lagos Ledger",
   "brief": "A Nigerian literary fiction debut, made for Nigerians, publishing on 2099-03-01.",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "Americanah",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Half of a Yellow Sun",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Purple Hibiscus",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Things Fall Apart (The African Trilogy, #1)",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
@@ -10,7 +50,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with Abuja, then Lagos: that is where your book's readers are strongest.",
+    "headline": "Lead with Abuja, then Lagos: that is where the comparable books' readers are strongest.",
     "assumptions": {
       "a-comps": "weak"
     },
@@ -40,12 +80,6 @@
       "f-themes-archetype": ["The Outsider", "The Fixer", "The Rival"],
       "f-themes-theme": ["Family", "Ambition", "Community"],
       "f-shelf": ["Salt Season", "A House of Many Rooms", "Dust and Ink"],
-      "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
-      "f-bridge-series": [
-        "Conversations with Friends",
-        "Little Fires Everywhere",
-        "Big Little Lies"
-      ],
       "f-podcasts": ["Between the Covers", "The Book Club Hour", "Shelf Life"],
       "f-brands-abuja": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-brands-lagos": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
@@ -54,10 +88,10 @@
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/3",
-      "audience": "4/0",
+      "audience": "3/0",
       "markets": "1/0",
       "comps": "1/1",
-      "adaptation": "3/1",
+      "adaptation": "1/1",
       "retail": "1/1",
       "publicity": "1/1",
       "events": "1/0",
@@ -70,14 +104,14 @@
       "budget": "0/8",
       "measure": "0/8",
       "risks": "0/1",
-      "gaps": "0/8"
+      "gaps": "0/9"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 65,
-      "backed": 31,
+      "lines": 62,
+      "backed": 27,
       "rankKept": 100,
-      "findingsUsed": 10,
+      "findingsUsed": 8,
       "cities": {
         "Abuja": 3,
         "Lagos": 7

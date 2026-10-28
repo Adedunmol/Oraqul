@@ -112,19 +112,31 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
     ).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
 
-  it('plans a title and a city as a typical Nollywood film, with no question and no ask for comps', async () => {
+  it('asks what the film is and where, once, and plans nothing, when a brief says neither', async () => {
+    const { events, handoff, deps } = setup('I want to launch a new movie');
+    const run = await runFilmBuild(handoff, deps());
+    expect(run.output).toBeNull();
+    const question = events.find((e) => e.type === 'question');
+    expect(question).toMatchObject({ id: 'film.describe', card: 'text' });
+    expect(JSON.stringify(question)).toMatch(/where you are or where you want to launch/);
+    // No launch is guessed: nothing is traced as a typical Nollywood film, and no comps are asked for.
+    const traced = events.flatMap((e) => (e.type === 'trace.step' ? [e.text] : [])).join('\n');
+    expect(traced).not.toMatch(/typical/i);
+    expect(JSON.stringify(question)).not.toMatch(/name a few comps/i);
+  });
+
+  it('does not plan a guessed launch for a title and a city: it asks what the film is about', async () => {
     const { events, handoff, deps } = setup(
       'I want to launch a new movie called Salty Road in Lagos',
     );
     const run = await runFilmBuild(handoff, deps());
-    expect(events.some((e) => e.type === 'question')).toBe(false);
     const traced = events.flatMap((e) => (e.type === 'trace.step' ? [e.text] : [])).join('\n');
-    expect(traced).toContain('planning for a typical Nollywood film');
-    // The demo Qloo has no drama tag, so this run may end with Qloo's own nothing to find. It must
-    // then ask for a description, never for comps.
+    expect(traced).not.toMatch(/typical/i);
     const said = events.flatMap((e) => (e.type === 'message' ? [e.body] : [])).join('\n');
-    if (run.output) expect(said).toContain('I will sharpen it');
-    else expect(said).not.toMatch(/name a few|Name a few/);
+    if (!run.output) {
+      expect(said).toMatch(/Tell me what it is about/);
+      expect(said).not.toMatch(/name a few|Name a few/);
+    }
   });
 
   it('asks one question when the brief has no market, then plans with the answer', async () => {
@@ -168,8 +180,9 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
     const run = await runFilmBuild(handoff, { ...deps(), tools });
     expect(run.output).toBeNull();
     const said = events.flatMap((e) => (e.type === 'message' ? [e.body] : [])).join('\n');
-    expect(said).toContain('Qloo did not answer');
-    expect(said).not.toContain('nothing close');
+    expect(said).toContain('not answering right now');
+    expect(said).toContain('Send it again in a few minutes');
+    expect(said).not.toContain('did not find a close match');
   });
 
   it('covers a thin check with a second round the research check asks for', async () => {
@@ -229,6 +242,7 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
       return {
         seen,
         reviewer: {
+          support: async () => ({ results: null, tokens: 0 }),
           review: async (input: ReviewInput) => {
             seen.push({ round: input.round, draft: input.draft });
             return {

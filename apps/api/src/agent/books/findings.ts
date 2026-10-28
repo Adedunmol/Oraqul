@@ -64,6 +64,7 @@ const compsVerdict: Voice['compsVerdict'] = {
 const voiceFor = (read: BooksRead): Voice => ({
   audience: "the book's readers",
   yourAudience: "your book's readers",
+  chosenAudience: "the comparable books' readers",
   theseComps: 'this book',
   compsVerdict,
   yourPlaces:
@@ -120,9 +121,13 @@ export function launchYear(read: Pick<BooksRead, 'window'>, thisYear: number): n
   return written ? Number(written) : thisYear;
 }
 
+/** "Your book's readers" only when the team named every comp itself. */
+const readersOf = (kit: Pick<Kit, 'capped'>) =>
+  kit.capped ? "the comparable books' readers" : "your book's readers";
+
 async function runQueries(kit: Kit, input: GroundInput): Promise<void> {
   const { deps, read, plan, gaps, want, jobs, taste } = kit;
-  const crowd = "your book's readers";
+  const crowd = readersOf(kit);
   const tags = await resolve(deps, plan, want);
 
   // A region word with no cities in Qloo's table cannot be ranked, so the plan says so.
@@ -308,7 +313,7 @@ async function shelfAndAges(kit: Kit, input: GroundInput, genre: Tag | null): Pr
         {
           id: 'f-shelf',
           query: 'shelf',
-          text: `The recent books that rank highest with your book's readers${read.ages.length ? ` ${agesPhrase(read.ages)}` : ''}${city ? ` in ${city}` : ''} are ${list(shelf.slice(0, 3).map((b) => b.name))}.`,
+          text: `The recent books that rank highest with ${readersOf(kit)}${read.ages.length ? ` ${agesPhrase(read.ages)}` : ''}${city ? ` in ${city}` : ''} are ${list(shelf.slice(0, 3).map((b) => b.name))}.`,
           entities: shelf.map((b) =>
             entity(b.name, b.overlap / 100, b.year ? String(b.year) : null, b.entityId),
           ),
@@ -528,7 +533,7 @@ async function bridge(kit: Kit, podcasts: () => Promise<Heard | null>): Promise<
       {
         id: `f-bridge-${medium.toLowerCase()}`,
         query: 'bridge',
-        text: `The ${noun} that rank highest with your book's readers, of those asked about, are ${list(ranked.slice(0, 3).map((r) => r.name))}.`,
+        text: `The ${noun} that rank highest with ${readersOf(kit)}, of those asked about, are ${list(ranked.slice(0, 3).map((r) => r.name))}.`,
         entities: ranked.map((r) => entity(r.name, (r.overlap ?? 0) / 100, medium, r.entityId)),
         numbers: Object.fromEntries(ranked.map((r) => [`overlap ${r.name}`, r.overlap ?? 0])),
         verdict: null,
@@ -553,8 +558,8 @@ async function bridge(kit: Kit, podcasts: () => Promise<Heard | null>): Promise<
           // Two or three scores do not make a ranking, so a small group reports the overlap.
           text:
             ranked.length >= 3
-              ? `${t.name} ranks ${place + 1} of ${ranked.length} among the ${noun} asked about for your book's readers.`
-              : `${t.name} overlaps ${ranked[place]?.overlap ?? 0} of 100 with your book's readers, scored with ${ranked.length - 1} other ${noun}.`,
+              ? `${t.name} ranks ${place + 1} of ${ranked.length} among the ${noun} asked about for ${readersOf(kit)}.`
+              : `${t.name} overlaps ${ranked[place]?.overlap ?? 0} of 100 with ${readersOf(kit)}, scored with ${ranked.length - 1} other ${noun}.`,
           entities: [entity(t.name, (ranked[place]?.overlap ?? 0) / 100, medium, t.entityId)],
           numbers: { place: place + 1, of: ranked.length },
           verdict: null,
@@ -619,8 +624,8 @@ async function filmConsult(kit: Kit, titles: ScreenTitle[]): Promise<void> {
         : '';
     const against = readers
       ? top === readers
-        ? `, the same age band as your book's readers`
-        : `, where your book's readers peak at ${ageLabel(readers).toLowerCase()}`
+        ? `, the same age band as ${readersOf(kit)}`
+        : `, where ${readersOf(kit)} peak at ${ageLabel(readers).toLowerCase()}`
       : '';
     kit.add(
       {
@@ -717,7 +722,7 @@ async function podcastsHeard(kit: Kit, booksTag: Tag | null): Promise<Heard | nu
     {
       id: 'f-podcasts',
       query: 'podcasts',
-      text: `The podcasts about books that rank highest with your book's readers are ${list(shows.slice(0, 3).map((s) => s.name))}.`,
+      text: `The podcasts about books that rank highest with ${readersOf(kit)} are ${list(shows.slice(0, 3).map((s) => s.name))}.`,
       entities: shows.map((s) => entity(s.name, s.overlap / 100, 'Podcast', s.entityId)),
       numbers: Object.fromEntries(shows.map((s) => [`overlap ${s.name}`, s.overlap])),
       verdict: null,
@@ -739,7 +744,7 @@ async function themes(kit: Kit): Promise<void> {
   if (!run) return;
   const out = themeTagsOutputSchema.parse(run.data);
   const wording: Record<string, (names: string) => string> = {
-    theme: (names) => `Your comparable books share the themes ${names}.`,
+    theme: (names) => `The comparable books share the themes ${names}.`,
     archetype: (names) => `The characters that readers meet in them are ${names}.`,
   };
   out.kinds.forEach((k, i) => {

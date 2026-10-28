@@ -39,3 +39,19 @@ export function releaseDate(window: string | null): string | null {
   const t = Date.parse(`${written} UTC`);
   return Number.isNaN(t) ? null : new Date(t).toISOString().slice(0, 10);
 }
+
+/**
+ * A message for when something stopped the work. It says what happened in one plain sentence, what
+ * was kept, and what the person can do next, so it never ends on the problem alone.
+ */
+export function blocked({
+  what,
+  kept,
+  next,
+}: {
+  what: string;
+  kept?: string;
+  next: string;
+}): string {
+  return [what, kept, next].filter(Boolean).join(' ');
+}

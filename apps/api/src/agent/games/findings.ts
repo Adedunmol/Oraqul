@@ -66,6 +66,7 @@ const compsVerdict: Voice['compsVerdict'] = {
 const voiceFor = (read: GamesRead): Voice => ({
   audience: "the game's audience",
   yourAudience: "your game's audience",
+  chosenAudience: "the comparable games' audience",
   theseComps: 'this game',
   compsVerdict,
   yourPlaces:

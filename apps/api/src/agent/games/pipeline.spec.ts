@@ -1,6 +1,7 @@
 import { demoFetch, QlooClient, type SeenEntity, type ToolContext } from '@oraqul/engine';
 import { briefSchema, launchPlanSchema, type ThreadEvent } from '@oraqul/schema';
 import type { Handoff } from '../category-agents.js';
+import { FixtureAnalyst, fixtureAnalysis } from '../launch/fixture-analyst.js';
 import { ScriptedQueryPlanner } from './planner.js';
 import { ScriptedGamesReader } from './read.js';
 import { NoResearch } from './research.js';
@@ -234,14 +235,20 @@ describe('Games build pipeline on demo data', { timeout: 30_000 }, () => {
     const { events, handoff, deps } = setup(
       'A Nigerian mobile video game that involves shooting, built for Nigerians.',
     );
-    const run = await runGamesBuild(handoff, deps());
+    const chosen = ['Call of Duty Mobile', 'PUBG MOBILE', 'Garena Free Fire', 'Brawl Stars'];
+    const run = await runGamesBuild(handoff, {
+      ...deps(),
+      analyst: new FixtureAnalyst(
+        fixtureAnalysis(chosen, 'Mobile players in Nigeria who like shooters'),
+      ),
+    });
     expect(run.reason).toBe('finished');
     expect(events.some((e) => e.type === 'question')).toBe(false);
     const output = run.output;
     if (!output?.plan) throw new Error('Expected a launch plan from a one-line brief');
-    // The comps are games like it that Oraqul chose, labelled so, never presented as the team's.
+    // The comps are games Oraqul chose from the description, labelled so, never the team's.
     expect(output.plan.comps.length).toBeGreaterThanOrEqual(3);
-    expect(output.plan.comps.every((c) => c.source === 'added')).toBe(true);
+    expect(output.plan.comps.every((c) => c.source === 'added' && c.why)).toBe(true);
     // A mobile game, and the audience is Nigeria: Lagos and Abuja are ranked.
     const read = gamesInputsSchema.parse(output.inputs).read;
     expect(read.launchKind).toBe('mobile');
@@ -257,7 +264,7 @@ describe('Games build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(audience?.kind).toBe('playbook');
     expect(audience?.text).toContain('Nigerians');
     const gaps = output.plan.sections.find((s) => s.key === 'gaps')?.lines.map((l) => l.text) ?? [];
-    expect(gaps.some((t) => /Say what the game is/.test(t))).toBe(true);
+    expect(gaps.some((t) => /I chose the comparable games/.test(t))).toBe(true);
   });
 
   it('remembers what the person said earlier in the chat when they ask again', async () => {
@@ -284,14 +291,14 @@ describe('Games build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(read.regions).toEqual(['Nigeria']);
   });
 
-  it('does not ask what it is: a bare brief goes on to the cards that follow, as a typical launch', async () => {
-    const { handoff, deps } = setup('I want to work on my new game');
+  it('asks what it is and where to launch, once, when a brief says neither', async () => {
+    const { events, handoff, deps } = setup('I want to work on my new game');
     const first = await runGamesBuild(handoff, deps());
-    if (first.state?.job === 'build') {
-      expect(first.state.pending?.id).not.toBe('games.minimum');
-    } else {
-      expect(first.reason).toBe('finished');
-    }
+    expect(first.output).toBeNull();
+    expect(events.find((e) => e.type === 'question')).toMatchObject({
+      id: 'games.describe',
+      card: 'text',
+    });
   });
 
   it('ranks a country the pack has no entry for, from the cities the table has in it', async () => {

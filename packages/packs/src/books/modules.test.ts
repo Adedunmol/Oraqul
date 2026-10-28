@@ -1,13 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  BOOKS_QUERIES,
-  booksQueryKeys,
-  citiesForRegions,
-  FALLBACK_COMPS,
-  fallbackComps,
-  genrePhrase,
-  screenCandidates,
-} from './catalog';
+import { BOOKS_QUERIES, booksQueryKeys, citiesForRegions, genrePhrase } from './catalog';
 import {
   BOOKS_MODULES,
   beatsFor,
@@ -246,32 +238,5 @@ describe('catalog', () => {
     expect(genrePhrase('a YA thriller')).toBe('young adult');
     expect(genrePhrase('a Nigerian family saga')).toBe('african literature');
     expect(genrePhrase('a book')).toBeNull();
-  });
-
-  it('always has fallback books for a genre, with no repeats', () => {
-    expect(fallbackComps('anything at all')).not.toEqual([]);
-    expect(fallbackComps('a romantasy')[0]).toBe('Fourth Wing (The Empyrean, #1)');
-    expect(fallbackComps('a Nigerian novel')).toContain('Americanah');
-    expect(fallbackComps('a thriller', 2)).toHaveLength(2);
-    for (const rule of FALLBACK_COMPS) expect(new Set(rule.names).size).toBe(rule.names.length);
-  });
-
-  it('has no default screen titles for a book with no story to adapt', () => {
-    for (const words of [
-      'a self help book',
-      'a memoir',
-      'a business book',
-      'a poetry collection',
-    ]) {
-      expect(screenCandidates(words)).toEqual({ series: [], films: [] });
-    }
-  });
-
-  it('always has screen titles to score for a genre', () => {
-    for (const words of ['a romance', 'a fantasy', 'a thriller', 'a YA book', 'a literary novel']) {
-      const { series, films } = screenCandidates(words);
-      expect(series.length).toBeGreaterThan(1);
-      expect(films.length).toBeGreaterThan(1);
-    }
   });
 });

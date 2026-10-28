@@ -1,6 +1,7 @@
 import { demoFetch, QlooClient, type SeenEntity, type ToolContext } from '@oraqul/engine';
 import { briefSchema, launchPlanSchema, type ThreadEvent } from '@oraqul/schema';
 import type { Handoff } from '../category-agents.js';
+import { FixtureAnalyst, fixtureAnalysis } from '../launch/fixture-analyst.js';
 import { ScriptedQueryPlanner } from './planner.js';
 import { ScriptedPodcastsReader } from './read.js';
 import { NoResearch } from './research.js';
@@ -226,14 +227,18 @@ describe('Podcasts build pipeline on demo data', { timeout: 30_000 }, () => {
     const { events, handoff, deps } = setup(
       'A Nigerian true crime podcast on YouTube, made for Nigerians.',
     );
-    const run = await runPodcastsBuild(handoff, deps());
+    const chosen = ['Crime Junkie', 'Serial', 'Casefile True Crime', 'My Favorite Murder'];
+    const run = await runPodcastsBuild(handoff, {
+      ...deps(),
+      analyst: new FixtureAnalyst(fixtureAnalysis(chosen, 'Nigerian true crime listeners')),
+    });
     expect(run.reason).toBe('finished');
     expect(events.some((e) => e.type === 'question')).toBe(false);
     const output = run.output;
     if (!output?.plan) throw new Error('Expected a launch plan from a one-line brief');
-    // The comps are shows like it that Oraqul chose, labelled so, never presented as the team's.
+    // The comps are shows Oraqul chose from the description, labelled so, never the team's.
     expect(output.plan.comps.length).toBeGreaterThanOrEqual(3);
-    expect(output.plan.comps.every((c) => c.source === 'added')).toBe(true);
+    expect(output.plan.comps.every((c) => c.source === 'added' && c.why)).toBe(true);
     const read = podcastsInputsSchema.parse(output.inputs).read;
     expect(read.format).toBe('video');
     expect(read.regions).toEqual(['Nigeria']);
@@ -246,13 +251,13 @@ describe('Podcasts build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(audience?.kind).toBe('playbook');
   });
 
-  it('does not ask what it is: a bare brief goes on to the cards that follow, as a typical launch', async () => {
-    const { handoff, deps } = setup('I want to work on my new podcast', 90, '');
+  it('asks what it is and where to launch, once, when a brief says neither', async () => {
+    const { events, handoff, deps } = setup('I want to start a podcast', 90, '');
     const first = await runPodcastsBuild(handoff, deps());
-    if (first.state?.job === 'build') {
-      expect(first.state.pending?.id).not.toBe('podcasts.minimum');
-    } else {
-      expect(first.reason).toBe('finished');
-    }
+    expect(first.output).toBeNull();
+    expect(events.find((e) => e.type === 'question')).toMatchObject({
+      id: 'podcasts.describe',
+      card: 'text',
+    });
   });
 });

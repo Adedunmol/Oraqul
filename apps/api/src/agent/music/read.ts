@@ -47,11 +47,6 @@ export const musicReadingSchema = z.object({
   window: said(z.string().min(1)).nullable(),
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
-  /**
-   * Sound-alike artists the agent proposes when the person named fewer than 3. Not their words, so
-   * code checks each one in Qloo and the plan keeps them apart from the person's own.
-   */
-  suggestedComps: z.array(z.string().min(1)).max(5),
 });
 export type MusicReading = z.infer<typeof musicReadingSchema>;
 
@@ -137,7 +132,6 @@ Rules:
 - featuredActs: artists featured on the release (a feature, a guest verse, a collaboration) or guesting on the tour. Exactly as written. Never the artist themself, and never a support act.
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which cities, or who should support. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: partnerships (brands, media partners), publicity (press, podcasts, playlists), community (campuses, grassroots), tour (the order of cities), support (support acts), sync (series and films), timeline, budget, measure (what to track), risks. Null when it is about cities or the audience, or when scope is full.
-- suggestedComps: only when they named fewer than 3 comps. Propose well known, real artists whose audience is likely the same, from the genre, country and market, and from the artist's known collaborators and peers and any featured or support acts named, A person cannot be looked up as a signal in Qloo, so use their other work in their place. Enough to reach 3 to 5 in all. Names only. Code checks each in Qloo.
 - Plain words, no exclamation marks.`;
 
 export class ModelMusicReader implements MusicReader {
@@ -242,7 +236,6 @@ export class ScriptedMusicReader implements MusicReader {
         : men
           ? { value: 'male', quote: men }
           : null,
-      suggestedComps: [],
     };
     return { reading, tokens: 0 };
   }

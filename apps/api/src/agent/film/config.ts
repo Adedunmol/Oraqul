@@ -79,9 +79,9 @@ function budgetSection(read: FilmRead): LaunchSection {
 function gapsSection(read: FilmRead, comps: { used: CompUsed[] }): LaunchSection {
   // Only inputs the team could add. What could not be asked goes to the Assumptions tab instead.
   const texts = [
-    ...(comps.used.some((c) => c.source === 'added')
+    ...(comps.used.some((c) => c.source !== 'you')
       ? [
-          'Say what the film is about, its genre, and who stars in it or directs it, and the plan can be built around them.',
+          'I chose the comparable films from what you wrote. Name your own, or say more about the story, the cast or the director, and I will rebuild the plan around them.',
         ]
       : []),
     ...(read.ages.length
@@ -122,7 +122,7 @@ export const filmLaunch: LaunchConfig<FilmRead, QueryPlan> = {
     entity: 'title',
     rivalExample: '“Gangs of Lagos” on 2026-12-05',
     planExample:
-      'For example: “A Nigerian crime thriller for 25 to 34, opening in Lagos and London, with Nike as a partner.”',
+      'For example: “A Korean-language crime thriller for 25 to 34, opening in Seoul and Los Angeles, with a streaming service as a partner.”',
     artistPitch: 'the soundtrack or a launch single',
   },
   // The soundtrack artists the team named are asked of the Music side: who listens to them, and
@@ -137,18 +137,13 @@ export const filmLaunch: LaunchConfig<FilmRead, QueryPlan> = {
     })),
   minimum: {
     id: 'film.minimum',
-    example: 'For example: “A Nigerian crime thriller, opening in Lagos and London.”',
+    example: 'For example: “A Korean-language crime thriller, opening in Seoul and Los Angeles.”',
     missing: (read) => (read.places.length ? [] : ['at least one city it opens in']),
   },
-  typical: {
-    genre: 'drama',
-    country: 'Nigeria',
-    label: 'a typical Nollywood film',
-    // A logline is not counted: a reader may fill it with the request itself, and a real one has
-    // already let the analysis infer a genre.
-    described: (read) =>
-      read.cast.length > 0 || read.director !== null || read.soundtrack.length > 0,
-  },
+  /** Whether the person's words say anything about the work beyond its title. */
+  // A logline is not counted: a reader may fill it with the request itself, and a real one has
+  // already let the analysis infer a genre.
+  described: (read) => read.cast.length > 0 || read.director !== null || read.soundtrack.length > 0,
   pickModules: (read) =>
     filmPlan.pickModules({
       scope: read.scope,

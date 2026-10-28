@@ -20,6 +20,7 @@ import {
 import { ANALYST_SYSTEM } from './launch/analyse.js';
 import { RESEARCH_SYSTEM } from './launch/research-loop.js';
 import { REVIEW_SYSTEM } from './launch/review.js';
+import { SUPPORT_SYSTEM } from './launch/support.js';
 import { QUERY_PLAN_SYSTEM as MUSIC_QUERY_PLAN } from './music/planner.js';
 import { MUSIC_READ_SYSTEM } from './music/read.js';
 import {
@@ -51,6 +52,7 @@ const PROMPTS = [
   ANALYST_SYSTEM,
   RESEARCH_SYSTEM,
   REVIEW_SYSTEM,
+  SUPPORT_SYSTEM,
   FILM_READ_SYSTEM,
   FILM_QUERY_PLAN,
   FILM_PLAN,

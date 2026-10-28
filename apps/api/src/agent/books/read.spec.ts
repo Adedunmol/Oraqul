@@ -23,7 +23,6 @@ const empty: BooksReading = {
   window: null,
   ages: [],
   gender: null,
-  suggestedComps: [],
 };
 
 const input = (text: string) => ({ title: 'The Lagos Ledger', text });
@@ -60,19 +59,6 @@ describe('Books reading', () => {
     expect(read.book).toBe('The Lagos Ledger');
     expect(read.author).toBeNull();
     expect(read.launchKind).toBeNull();
-  });
-
-  it('never adds a fallback comp the team already named, with or without the series mark', () => {
-    const read = checkReading(
-      {
-        ...empty,
-        genre: { value: 'romantasy', quote: 'romantasy' },
-        comps: [{ value: 'Fourth Wing', quote: 'Fourth Wing' }],
-      },
-      input('A romantasy for readers of Fourth Wing.'),
-    );
-    expect(read.suggestedComps.some((n) => n.startsWith('Fourth Wing'))).toBe(false);
-    expect(read.suggestedComps.length).toBeGreaterThan(0);
   });
 
   it('keeps a screen title and an earlier book apart from the comps', () => {

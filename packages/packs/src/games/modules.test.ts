@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  citiesForRegions,
-  FALLBACK_COMPS,
-  fallbackComps,
-  GAMES_QUERIES,
-  gamesQueryKeys,
-} from './catalog';
+import { citiesForRegions, GAMES_QUERIES, gamesQueryKeys } from './catalog';
 import {
   beatsFor,
   datedBeats,
@@ -198,32 +192,5 @@ describe('games catalog', () => {
       'Manchester',
     ]);
     expect(citiesForRegions(['Atlantis'])).toEqual([]);
-  });
-});
-
-describe('fallbackComps', () => {
-  it('picks games like the one described, by genre and then by kind', () => {
-    expect(fallbackComps('a mobile video game that involves shooting', 'mobile')).toContain(
-      'Call of Duty Mobile',
-    );
-    expect(fallbackComps('a cozy farming game', 'premium')).toContain('Stardew Valley');
-    expect(fallbackComps('a roguelike', 'early_access')).toContain('Hades');
-  });
-
-  it('always has something for a brief with no genre, whatever the kind', () => {
-    for (const kind of launchKinds) expect(fallbackComps('a game', kind).length).toBeGreaterThan(2);
-    expect(fallbackComps('a game', 'mobile')).toContain('Subway Surfers');
-  });
-
-  it('keeps a kind-specific rule for the kind it is for', () => {
-    // The mobile shooter list is for mobile only: a premium shooter gets console and PC games.
-    expect(fallbackComps('a shooter', 'premium')).not.toContain('Call of Duty Mobile');
-  });
-
-  it('never suggests more than asked for, and names no duplicates', () => {
-    for (const rule of FALLBACK_COMPS) {
-      expect(new Set(rule.names).size).toBe(rule.names.length);
-    }
-    expect(fallbackComps('a shooter', 'mobile', 2)).toHaveLength(2);
   });
 });

@@ -1,0 +1,100 @@
+[
+  {
+    "name": "film-nigerian-thriller",
+    "category": "film",
+    "mode": "build",
+    "text": "I'm releasing a Nigerian crime thriller in about 4 months. It follows a bank clerk in Lagos who gets pulled into a heist she can't walk away from. We want to open in Lagos, London and Atlanta, mainly for men aged 25 to 34, with around $40k to spend. It's in the world of Gangs of Lagos and King of Boys.",
+    "example": "film",
+    "title": "Salt Road"
+  },
+  {
+    "name": "film-nigerian-thriller-twin",
+    "category": "film",
+    "mode": "build",
+    "text": "I'm releasing a Nigerian crime thriller in about 4 months. It follows a bank clerk in Lagos who gets pulled into a heist she can't walk away from. We want to open in Lagos, London and Atlanta, mainly for men aged 25 to 34, with around $40k to spend. It's in the world of Gangs of Lagos and King of Boys.",
+    "title": "Salt Road"
+  },
+  {
+    "name": "film-kerala-documentary",
+    "category": "film",
+    "mode": "build",
+    "text": "I made a short documentary about a fishing village in Kerala and I want to launch it. I'm in Kochi and I have no budget.",
+    "title": "The Tide Keepers"
+  },
+  {
+    "name": "film-bare",
+    "category": "film",
+    "mode": "build",
+    "text": "I want to launch my film",
+    "replies": [
+      {
+        "text": "It is a quiet drama about two sisters running a bakery in Accra. I am based in Accra and want to launch in Ghana first."
+      }
+    ],
+    "title": "Two Sisters Bakery"
+  },
+  {
+    "name": "film-place-only",
+    "category": "film",
+    "mode": "build",
+    "text": "I want to launch my new movie called Salty Road in Lagos"
+  },
+  {
+    "name": "music-afrobeats-tour",
+    "category": "music",
+    "mode": "build",
+    "text": "I'm an Afrobeats artist putting out a new album in 10 weeks. We're touring Lagos, London, Accra and Atlanta, in that order, for fans aged 18 to 24. Burna Boy, Ayra Starr and Asake are the closest in sound.",
+    "example": "music",
+    "title": "Night Songs"
+  },
+  {
+    "name": "music-indie-folk",
+    "category": "music",
+    "mode": "build",
+    "text": "I'm an indie folk singer-songwriter from Manchester releasing my debut EP in the spring. I play small venues in Manchester, Leeds and Dublin, mostly for people in their late 20s and 30s.",
+    "title": "Quiet Hours"
+  },
+  {
+    "name": "books-how-to-be-a-man",
+    "category": "books",
+    "mode": "build",
+    "text": "Hey, I just wrote a book titled \"How to be a man\". It's about motivation, rules and etiquette for the move from boyhood to manhood. I don't know how to go about the launch or where to launch it.",
+    "example": "books"
+  },
+  {
+    "name": "books-romantasy-debut",
+    "category": "books",
+    "mode": "build",
+    "text": "My debut romantasy novel comes out in 5 months. I'm launching in London and New York. It's for readers of Fourth Wing and A Court of Thorns and Roses.",
+    "title": "Ashes of the Crown"
+  },
+  {
+    "name": "podcast-true-crime-canada",
+    "category": "podcasts",
+    "mode": "build",
+    "text": "I'm starting a weekly true crime podcast called \"Cold Trails\" about unsolved cases in Canada. It launches in 6 weeks and I'm in Toronto, with listeners in Vancouver too.",
+    "example": "podcasts",
+    "title": "Cold Trails"
+  },
+  {
+    "name": "game-cozy-farming",
+    "category": "games",
+    "mode": "build",
+    "text": "Our small studio is releasing a cozy farming game for Switch and PC next spring. Our players are mostly women aged 25 to 40. We're based in Montreal.",
+    "title": "Little Orchard"
+  },
+  {
+    "name": "shows-comedy-mumbai",
+    "category": "shows",
+    "mode": "build",
+    "text": "I'm promoting a stand-up comedy night in Mumbai on 2027-03-12 for people aged 25 to 34. The room holds 500.",
+    "title": "The Late Laugh"
+  },
+  {
+    "name": "film-audit-flawed-plan",
+    "category": "film",
+    "mode": "audit",
+    "text": "Our plan for a Nigerian crime thriller: open in Lagos in December for ages 18 to 24, with Verve as the payment partner and a Tier A beverage sponsor. We expect 500k views in week one. Black Panther is our only comp.",
+    "title": "Salt Road"
+  }
+]

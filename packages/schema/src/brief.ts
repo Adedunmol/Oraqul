@@ -21,6 +21,11 @@ export const assumptionSchema = z.object({
   text: z.string(),
   verdict: verdictSchema,
   why: z.string(),
+  /**
+   * Why a `cant` verdict could not be settled: `input` needs something the person has not given,
+   * `no-signal` means Qloo answered with nothing for it, `failed` means the call failed.
+   */
+  cantKind: z.enum(['input', 'no-signal', 'failed']).optional(),
   /** Empty when the verdict needs no action. */
   fix: z.string(),
   /** True when the plan relies on it without saying so. */
@@ -110,7 +115,15 @@ export const riskSchema = z.object({
   action: z.string(),
 });
 
-export const untestedSchema = z.object({ id: lineIdSchema, item: z.string(), reason: z.string() });
+export const untestedSchema = z.object({
+  id: lineIdSchema,
+  item: z.string(),
+  reason: z.string(),
+  /** What the person can give or do to settle it, and the nearest thing found, when there is one. */
+  ask: z.string().optional(),
+  closest: z.string().optional(),
+  cantKind: z.enum(['input', 'no-signal', 'failed']).optional(),
+});
 
 export const compTitleSchema = z.object({
   id: lineIdSchema,

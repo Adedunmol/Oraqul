@@ -102,6 +102,20 @@ describe('territoryCalls (D5)', () => {
     ]);
   });
 
+  it('does not tell the strongest team city to open after stronger cities it does not have', () => {
+    const { calls } = territoryCalls(
+      [territory('New York'), territory('Chicago')],
+      [row('New York', 0.9), row('Chicago', 0.6), row('Houston', 1.3), row('Atlanta', 1.2)],
+      'New York',
+    );
+    const ny = calls.find((c) => c.name === 'New York');
+    expect(ny?.direction).toBe('avoid');
+    expect(ny?.why).toContain('It leads your cities but sits below an average city');
+    expect(ny?.why).toContain('test Houston and Atlanta beside it');
+    expect(ny?.why).not.toContain('open it after the stronger cities');
+    expect(calls.find((c) => c.name === 'Chicago')?.why).toContain('open it after New York');
+  });
+
   it('makes no call for a city Qloo could not rank', () => {
     const { territories, calls } = territoryCalls(
       [territory('Accra')],

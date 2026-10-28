@@ -17,3 +17,6 @@ packages/engine/fixtures/*/
 
 # Golden runs over recorded live Qloo responses: not until Qloo confirms what may be republished.
 packages/eval/golden/**/*.live.json
+
+# Live runs of the real agents: the plans they wrote and the checker's reports (docs/testing.md).
+packages/eval/live/out/

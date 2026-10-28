@@ -144,7 +144,7 @@ async function cityCheck<R extends LaunchRead, P extends QueryPlanCore>(
     {
       id: `f-brands-city-${slug(city)}`,
       query: 'brands-city',
-      text: `Among the same brands, people ${age} in ${city} overall like ${list(out.candidates.slice(0, NAMED).map((c) => c.name))} best. This is taste for the place, not for your comps.`,
+      text: `Among the same brands, people ${age} in ${city} overall like ${list(out.candidates.slice(0, NAMED).map((c) => c.name))} best. This is taste for the place, not for the comps.`,
       entities: out.candidates.map((c) =>
         entity(c.name, c.affinity, c.detail, c.entityId, c.popularity),
       ),

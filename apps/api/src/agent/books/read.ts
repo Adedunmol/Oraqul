@@ -19,8 +19,7 @@ import { isRegionWord } from './regions.js';
 
 export { type AgeBand, ageBands, type Budget, parseBudget } from '../launch/read-core.js';
 
-const { BOOKS_MODULES, REGION_CITIES, launchKinds, routes, readerships, formats, fallbackComps } =
-  booksPlan;
+const { BOOKS_MODULES, REGION_CITIES, launchKinds, routes, readerships, formats } = booksPlan;
 
 /** What the model reads from the brief. Every value carries the person's own words. */
 export const booksReadingSchema = z.object({
@@ -68,11 +67,6 @@ export const booksReadingSchema = z.object({
   window: said(z.string().min(1)).nullable(),
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
-  /**
-   * Comparable books the agent proposes when the person named fewer than 3. Not their words, so
-   * code checks each one in Qloo and the plan keeps them apart from the person's own.
-   */
-  suggestedComps: z.array(z.string().min(1)).max(5),
 });
 export type BooksReading = z.infer<typeof booksReadingSchema>;
 
@@ -163,23 +157,10 @@ export function checkReading(reading: BooksReading, input: BooksReaderInput): Bo
   // A title the team named for the screen angle or as an earlier book is theirs already, so it is
   // never added as a comp.
   const taken = [...namedIn(reading.screenTitles, text), ...namedIn(reading.previousBooks, text)];
-  // A short brief is enough: when the person named fewer than three books and none were proposed,
-  // books like this one, by genre, describe the readers. They are never asked for.
-  // A title is the same book with or without the series mark Qloo adds to it.
-  const sameBook = (a: string, b: string) => normalizeTitle(a) === normalizeTitle(b);
-  const proposed =
-    comps.length >= 3 || common.suggestedComps.length > 0
-      ? common.suggestedComps
-      : fallbackComps(`${common.genre ?? ''} ${text}`);
-  const suggested = proposed.filter(
-    (n, i) =>
-      !isBook(n) &&
-      ![...comps, ...taken].some((c) => sameBook(c, n)) &&
-      proposed.findIndex((p) => sameBook(p, n)) === i,
-  );
   return {
     ...common,
-    suggestedComps: suggested,
+    // Comps are chosen from the description by the analyst, after this reading.
+    suggestedComps: [],
     comps,
     // A narrow ask names a module this category offers, which the shared check cannot know.
     ask: common.scope === 'full' ? null : reading.ask,
@@ -226,7 +207,6 @@ Rules:
 - window: the publication date or window as written ("Q3 2027", "October").
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which markets, or which comp titles. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: comps (comparable books), adaptation (screen angle), retail, publicity (press, reviews), events, creators, partnerships (brands), community (book clubs), audio, schools, cadence (series and backlist), timeline, budget, measure (what to track), risks. Null when it is about markets or the audience, or when scope is full.
-- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real books whose readers are likely the same, from the genre, the market, the readership, the author's known peers, the earlier books and any screen titles named, A person cannot be looked up as a signal in Qloo, so use their other work in their place. Enough to reach 3 to 5 in all. Titles only. Code checks each in Qloo. The person is never asked for comps.
 - Plain words, no exclamation marks.`;
 
 export class ModelBooksReader implements BooksReader {
@@ -391,7 +371,6 @@ export class ScriptedBooksReader implements BooksReader {
         : men
           ? { value: 'male', quote: men }
           : null,
-      suggestedComps: [],
     };
     return { reading, tokens: 0 };
   }

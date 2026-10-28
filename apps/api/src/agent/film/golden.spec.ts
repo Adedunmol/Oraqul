@@ -11,7 +11,9 @@ import { type Receipt, verdictSchema } from '@oraqul/schema';
 import { z } from 'zod';
 import type { Handoff, Reply } from '../category-agents.js';
 import { ungroundedLines } from '../grounding.js';
-import { clearBaselineCache } from './baseline.js';
+import { analysisSchema } from '../launch/analyse.js';
+import { clearBaselineCache } from '../launch/baseline.js';
+import { FixtureAnalyst } from '../launch/fixture-analyst.js';
 import { groundingReport } from './grounding-report.js';
 import { type PlanRun, runFilmBuild } from './pipeline.js';
 import { ScriptedQueryPlanner } from './planner.js';
@@ -29,7 +31,7 @@ const expectSchema = z.object({
   assumptions: z.record(z.string(), verdictSchema),
   // The team's cities in the order the plan opens them.
   cities: z.array(z.string()),
-  comps: z.array(z.object({ name: z.string(), source: z.enum(['you', 'added']) })),
+  comps: z.array(z.object({ name: z.string(), source: z.enum(['you', 'added', 'genre']) })),
   // Each finding's id and the first three names it returned.
   findings: z.record(z.string(), z.array(z.string())),
   // Lines per section by kind, as `grounded/playbook`.
@@ -63,6 +65,8 @@ const caseSchema = z.object({
   data: z.enum(['demo', 'live']).default('demo'),
   title: z.string(),
   brief: z.string(),
+  // What a model analyst would have answered, so the chosen-comps path is tested without a model.
+  analysis: analysisSchema.optional(),
   // A plan for several cities with rivals makes more calls than the default budget allows.
   callBudget: z.number().int().default(60),
   replies: z.array(
@@ -104,6 +108,7 @@ async function run(golden: GoldenCase, fetchImpl: typeof fetch, source: Receipt[
     };
     return {
       reader: new ScriptedFilmReader(),
+      ...(golden.analysis ? { analyst: new FixtureAnalyst(golden.analysis) } : {}),
       queries: new ScriptedQueryPlanner(),
       research: new NoResearch(),
       writer: new TemplatePlanWriter(),

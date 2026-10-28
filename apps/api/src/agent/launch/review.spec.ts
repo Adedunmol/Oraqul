@@ -103,3 +103,34 @@ describe('feedbackLines', () => {
     expect(lines[1]).toBe('Line removed because no finding backs it: "Lagos loves jollof"');
   });
 });
+
+describe('judge and the issues that never ship', () => {
+  it('blocks a dead end or an overclaim whatever the model marked', () => {
+    const verdict = judge(
+      raw([
+        issue({ type: 'dead-end', blocking: false, text: 'Kochi has no area read.' }),
+        issue({ type: 'overclaim', blocking: false, text: 'A chosen comp is called the team’s.' }),
+      ]),
+      understanding,
+      unrun,
+    );
+    expect(verdict.passed).toBe(false);
+    expect(verdict.issues.every((i) => i.blocking)).toBe(true);
+  });
+
+  it('leaves other issues as the model marked them', () => {
+    const verdict = judge(raw([issue({ type: 'vague', blocking: false })]), understanding, unrun);
+    expect(verdict.passed).toBe(true);
+  });
+
+  it('sends a dead end about a section code writes to the person, not back to the writer', () => {
+    const verdict = judge(
+      raw([issue({ type: 'dead-end', blocking: true, section: 'gaps', fix: 'Say what to add.' })]),
+      understanding,
+      unrun,
+      ['gaps'],
+    );
+    expect(verdict.passed).toBe(true);
+    expect(verdict.next).toContain('Say what to add.');
+  });
+});

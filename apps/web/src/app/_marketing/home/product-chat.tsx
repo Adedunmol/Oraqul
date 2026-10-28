@@ -2,7 +2,7 @@
 
 import type { Finding, Output, ThreadItem } from '@oraqul/schema';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { exampleDetails } from '@/lib/examples';
+import { exampleBriefs, exampleDetails } from '@/lib/examples';
 import { ChatView } from '../../_workspace/chat/chat-panel';
 import type { NextStep } from '../../_workspace/chat/next-steps';
 
@@ -13,8 +13,7 @@ import type { NextStep } from '../../_workspace/chat/next-steps';
 const example = exampleDetails.film;
 const output: Output = example.output;
 
-const PROMPT =
-  'Plan the release of Night Ferry, a crime drama series, for London, Houston, Atlanta and Lagos. Comps: Salt Road, The Glass Lantern and Midnight Harbor.';
+const PROMPT = exampleBriefs.film;
 
 // The steps a build really takes, in the app's own words.
 const STEPS = [
@@ -33,11 +32,11 @@ const STEPS = [
 const LANDS: [number, string][] = [
   [5, 'f-audience'],
   [5, 'f-markets'],
-  [6, 'f-themes'],
+  [6, 'f-comp-fit'],
 ];
 
 const NEXT: NextStep[] = [
-  { id: 'scn', label: 'What if we open in Houston first?' },
+  { id: 'scn', label: 'What if we open in Atlanta first?' },
   { id: 'date', label: 'Check rival release dates' },
   { id: 'fix', label: 'Fix this plan' },
 ];
@@ -135,7 +134,7 @@ export function ProductChat({
       list.push({
         id: 'a',
         role: 'agent',
-        text: `Here is the launch plan for “Night Ferry”. ${output.headline}`,
+        text: `Here is the launch plan for “${output.title}”. ${output.headline}`,
       });
     }
     if (planned) list.push({ id: 'o', role: 'output', outputId: output.id });
@@ -150,13 +149,13 @@ export function ProductChat({
       className={`product-face product-demo flex flex-col overflow-hidden rounded-2xl bg-bg text-left shadow-lg ${className}`}
     >
       <div className="flex shrink-0 items-center gap-3 border-b border-line px-5 py-3">
-        <span className="font-display text-[15px] font-semibold">Night Ferry</span>
+        <span className="font-display text-[15px] font-semibold">{output.title}</span>
         <span className="text-[13px] text-muted">Film and series</span>
       </div>
       <ChatView
         key={`${id}-${runId}`}
         threadId={`marketing-${id}-${runId}`}
-        projectName="Night Ferry"
+        projectName={output.title}
         items={items}
         outputs={outputs}
         busy={live && !planned}

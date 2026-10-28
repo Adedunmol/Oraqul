@@ -48,6 +48,7 @@ export type GroundInput = LaunchGroundInput<FilmRead, QueryPlan>;
 const VOICE: Voice = {
   audience: "the comps' audience",
   yourAudience: "your comps' audience",
+  chosenAudience: "the comps' audience",
   theseComps: 'these comps',
   compsVerdict: {
     holds: 'Your comps point to one audience.',

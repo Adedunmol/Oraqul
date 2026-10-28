@@ -32,7 +32,8 @@ export const RULES = `How to write:
 - Use your launch knowledge freely: promoters, local press and radio, creators, venues and community networks, ideas from the show. These are "playbook" lines. They cite nothing and may name anything real.
 - Every claim about what the audience likes, plays, listens to, buys, or where it goes out, is "grounded": it cites the ids of the findings it rests on in findingIds, and names the findings' own candidates. Never present a name you know but no finding returned as something this audience likes.
 - Write for a marketing team, not an analyst. Never use the words lift, index, affinity, cells, Qloo, findings, tested, confidence or data. No scores or decimals.
-- Never describe what could not be measured. Every city and choice the team made gets a role and a move.
+- Never write about limits or about what could not be measured; write about what to do. When something is missing, give the closest thing the findings do show, call it close, and say in a few words what the team could tell you to sharpen it. Every city and choice the team made gets a role and a move.
+- A comp marked (added by Oraqul) was chosen by Oraqul from the description, so the audience findings describe the people who like those acts, not the person's own work: write "people who like acts like yours", never "your audience" or "your readers". A detail under "Assumed, not said by the person" was filled in by Oraqul: never say the brief or the team gave it; say "assuming" or leave it out.
 - Never invent a number. Money, ticket sales, followers and the dates of other shows may be stated only from a web fact in the list, and the line must cite its id in sourceIds. With no web facts, state none of them.
 - Pick from the candidates. Leave out any that do not fit the act or the market, or are global mass-market giants a single show would not land, and list each in "skipped" with a short reason.
 - Candidates are listed in the order Qloo ranks them for this audience. Keep that order: lead with the highest-ranked candidate you keep and name the others after it.
@@ -80,7 +81,7 @@ export function briefBlock(title: string, read: ShowsRead, comps: CompUsed[]): s
     read.supportActs.length ? `Support acts already booked: ${read.supportActs.join(', ')}` : '',
     read.partners.length ? `Partners already signed: ${read.partners.join(', ')}` : '',
     comps.length
-      ? `Comparable acts: ${comps.map((c) => `${c.name}${c.source === 'added' ? ' (added by Oraqul)' : ''}`).join(', ')}`
+      ? `Comparable acts: ${comps.map((c) => `${c.name}${c.source !== 'you' ? ' (added by Oraqul)' : ''}`).join(', ')}`
       : '',
   ]
     .filter(Boolean)

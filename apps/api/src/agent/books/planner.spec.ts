@@ -73,9 +73,11 @@ describe('Books query plan', () => {
     expect(defaultPlan(input({ places: ['London'] })).shelfCity).toBeNull();
   });
 
-  it('chooses the screen titles from the genre, and the readership and route by default', () => {
+  it('chooses no screen titles itself, and the readership and route by default', () => {
     const plan = defaultPlan(input({ genre: 'romance' }));
-    expect(plan.screenSeries).toContain('Bridgerton');
+    // The model names the screen titles from the book; code holds no list of them.
+    expect(plan.screenSeries).toEqual([]);
+    expect(plan.screenFilms).toEqual([]);
     expect(plan.route).toBe('traditional');
     expect(plan.readership).toBe('adult');
   });
@@ -89,7 +91,6 @@ describe('Books query plan', () => {
         bookshopCities: [],
         brandCategories: [],
         brandCities: [],
-        worthALook: [],
         screenSeries: [],
         screenFilms: [],
         brandCandidates: [
@@ -100,10 +101,9 @@ describe('Books query plan', () => {
       plan,
     );
     expect(checked.brandCandidates).toEqual([{ city: 'Lagos', names: ['MTN', 'Glo', 'Airtel'] }]);
-    // The markets the person named stay the plan's markets: the model cannot swap them.
+    // Worth a look is code's: the model has no say in which cities are ranked beside the team's.
     expect(checked.worthALook).toEqual(plan.worthALook);
-    // An empty choice keeps the defaults.
-    expect(checked.screenSeries).toEqual(plan.screenSeries);
+    expect(checked.screenSeries).toEqual([]);
   });
 
   it('takes the screen titles the model names, as short plain phrases', () => {
@@ -115,7 +115,6 @@ describe('Books query plan', () => {
         bookshopCities: [],
         brandCategories: [],
         brandCities: [],
-        worthALook: [],
         screenSeries: [
           'Conversations with Friends',
           'A line that is far too long to be a title of anything at all',

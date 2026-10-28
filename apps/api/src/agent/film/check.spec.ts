@@ -535,3 +535,131 @@ describe('checkLine and the team’s results', () => {
     expect(checkLine('route', other, ctx)).toBeNull();
   });
 });
+
+describe('a grounded line carries only names its sources account for', () => {
+  const grounded = (text: string, over: Partial<Parameters<typeof checkLine>[1]> = {}) =>
+    line({ text, names: [], findingIds: ['f-music-lagos'], ...over });
+
+  it('drops a university or neighbourhood from memory that sits beside a valid citation', () => {
+    for (const text of [
+      'Pitch Tems at Georgia State University and the local campus radio.',
+      'Tems reaches this audience around Lagos State University and the Yaba Tech Park.',
+    ]) {
+      expect(checkLine('partnerships', grounded(text), ctx), text).toMatch(
+        /names .*, which no finding/,
+      );
+    }
+  });
+
+  it('keeps a multi word name its finding, the brief, a page or the city table gives', () => {
+    const withPage = {
+      ...ctx,
+      sources: [
+        {
+          id: 'w1',
+          url: 'https://news.example/a',
+          title: 'A',
+          fact: 'Silverbird Cinemas opened a new screen in Lagos.',
+        },
+      ],
+    } as unknown as CheckContext;
+    expect(
+      checkLine('partnerships', grounded('Burna Boy and Tems lead for Third Bridge.'), ctx),
+    ).toBeNull();
+    expect(
+      checkLine(
+        'partnerships',
+        grounded('Silverbird Cinemas fits Tems for the premiere.', { sourceIds: ['w1'] }),
+        withPage,
+      ),
+    ).toBeNull();
+  });
+
+  it('does not count the first word of a sentence as part of a name', () => {
+    expect(
+      checkLine('partnerships', grounded('Open Lagos first. Approach Tems for the single.'), ctx),
+    ).toBeNull();
+  });
+
+  it('lets the same name through in a playbook line, which claims nothing about taste', () => {
+    expect(
+      checkLine(
+        'route',
+        line({
+          kind: 'playbook',
+          findingIds: [],
+          names: [],
+          text: 'Send the screener to Georgia State University film society.',
+        }),
+        ctx,
+      ),
+    ).toBeNull();
+  });
+});
+
+describe('numbers come from the findings a line cites', () => {
+  it('drops a number only an uncited finding states', () => {
+    const line2 = line({
+      text: 'Lagos leads with a score of 1.42 for the premiere.',
+      names: ['Lagos'],
+      findingIds: ['f-music-lagos'],
+    });
+    expect(checkLine('markets', line2, ctx)).toMatch(/1\.42/);
+    expect(checkLine('markets', { ...line2, findingIds: ['f-markets'] }, ctx)).toBeNull();
+  });
+});
+
+describe('a name written in another case or without its brackets still gets its finding', () => {
+  it('cites the finding for a book shop written in lower case with its bracket left off', () => {
+    const shops = finding({
+      id: 'f-bookshops',
+      query: 'bookshops',
+      text: 'In London, the book shops this audience likes are Word On The Water and John Sandoe (Books).',
+      entities: ['Word On The Water', 'John Sandoe (Books)'].map((name) => ({
+        entityId: null,
+        name,
+        affinity: 0.8,
+        detail: null,
+      })),
+      context: {
+        city: 'London',
+        ages: [],
+        tags: [],
+        country: null,
+        yearFrom: null,
+        audience: null,
+      },
+    });
+    const withShops = { ...ctx, findings: [...ctx.findings, shops] };
+    const { sections } = checkSections(
+      [
+        {
+          key: 'route',
+          lines: [
+            {
+              kind: 'playbook',
+              text: 'Hold a second event at John Sandoe or Word on the Water.',
+              findingIds: [],
+              sourceIds: [],
+              names: [],
+              group: null,
+            },
+          ],
+        },
+      ],
+      { ...withShops, allowed: ['route'] },
+    );
+    expect(sections[0]?.lines[0]?.findingIds).toEqual(['f-bookshops']);
+    expect(sections[0]?.lines[0]?.kind).toBe('grounded');
+  });
+});
+
+describe('a sentence word and an article are not part of a name', () => {
+  it('reads "Keep the Third Bridge deal" as Third Bridge, which the brief names', () => {
+    const l = line({
+      text: 'Keep the Third Bridge premiere in Lagos, and approach Tems for the single.',
+      names: ['Tems'],
+    });
+    expect(checkLine('partnerships', l, ctx)).toBeNull();
+  });
+});

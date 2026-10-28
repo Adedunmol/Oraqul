@@ -132,8 +132,8 @@ describe('Live shows build pipeline on demo data', { timeout: 20_000 }, () => {
     const run = await runShowsBuild(handoff, deps());
     const plan = launchPlanSchema.parse(run.output?.plan);
     const onsale = plan.sections.find((s) => s.key === 'onsale')?.lines.map((l) => l.text) ?? [];
-    expect(onsale.join(' ')).toContain('Venue capacity: not available');
-    expect(onsale.join(' ')).toContain('Ticket price band: not available');
+    expect(onsale.join(' ')).toContain('Venue capacity: not given');
+    expect(onsale.join(' ')).toContain('Ticket price band: not given');
     expect(onsale.join(' ')).toContain('Give a target and a venue capacity');
   });
 

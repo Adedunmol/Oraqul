@@ -19,7 +19,7 @@ import { type Principal, TokensService } from './tokens.service.js';
 const example: OutputDetail = outputDetailSchema.parse(
   JSON.parse(
     readFileSync(
-      fileURLToPath(new URL('../../../web/src/lib/examples/film.json', import.meta.url)),
+      fileURLToPath(new URL('../../test/fixtures/demo-film-output.json', import.meta.url)),
       'utf8',
     ),
   ),

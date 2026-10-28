@@ -1,4 +1,3 @@
-import { BASELINE_BOOKS, BASELINE_BRANDS } from '../launch';
 import { sharedQlooCoverage } from '../qloo';
 import type { CategoryPack } from '../types';
 
@@ -39,10 +38,6 @@ export const books: CategoryPack = {
   // readers. The generic tool loop may still ask Film one bounded question (spec §3.4).
   consults: ['film'],
   qloo: { titles: ['urn:entity:book'], ...sharedQlooCoverage },
-  baselines: {
-    'urn:entity:brand': BASELINE_BRANDS,
-    'urn:entity:book': BASELINE_BOOKS,
-  },
   coverage: {
     tests: [
       "The book's readers by age and gender",

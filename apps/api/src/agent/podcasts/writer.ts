@@ -39,7 +39,8 @@ export const RULES = `How to write:
 - When the brief says who the show is made for by language, culture or community ("Made for"), Qloo cannot measure that, so you cover it from your own knowledge, as playbook lines: the language of the feed and the description, the newsletters, communities and media that reach that audience, the platforms and apps people there use to hear shows, data costs, and how people in that market discover shows. Name real places and platforms you are sure of, and say nothing you are unsure of. Never claim what that audience likes or follows without a finding, never stereotype, and write about the people the way they would write about themselves.
 - Qloo holds no host or guest data unless a finding says so. Without a guests finding, every guest line is playbook: the kinds of guest, how to ask and how to record. Never name a guest you know as someone these listeners follow.
 - Write for a marketing team, not an analyst. Never use the words lift, index, affinity, cells, overlap, Qloo, findings, tested, confidence or data. Say it plainly: "Lagos has the strongest audience of your markets", "the listeners skew older than your target". No scores or decimals.
-- Never describe what could not be measured. Every market, comparable show and choice the team made gets a role and a move. Where the data says little about a market, plan it around community and swaps, without saying why.
+- Never write about limits or about what could not be measured; write about what to do. When something is missing, give the closest thing the findings do show, call it close, and say in a few words what the team could tell you to sharpen it. Every market, comparable show and choice the team made gets a role and a move. Where the data says little about a market, plan it around community and swaps, and say in a few words what you used and what the team could tell you to sharpen it.
+- A comp marked (added by Oraqul) was chosen by Oraqul from the description, so the audience findings describe the people who like those shows, not the person's own work: write "people who like shows like yours", never "your audience" or "your readers". A detail under "Assumed, not said by the person" was filled in by Oraqul: never say the brief or the team gave it; say "assuming" or leave it out.
 - Never invent a number. Downloads, listeners, chart positions, ad rates, money, and the dates of other releases may be stated only from a web fact in the list, and the line must cite its id in sourceIds. With no web facts, state none of them. Weeks before launch and percentages in a budget split are fine.
 - Web facts, when listed, are for chart and editorial windows, rival releases, sponsor norms and where this kind of show launches. Use them to make the plan's dates specific. Use only what a fact says. A line that states a web fact is a playbook line with sourceIds; it names no audience taste.
 - Pick from the candidates. Leave out any that do not fit the subject or the audience, or are global mass-market giants a new show would not land (a soft-drink brand), and list each in "skipped" with a short reason.
@@ -113,7 +114,7 @@ export function briefBlock(title: string, read: PodcastsRead, comps: CompUsed[])
       : '',
     read.partners.length ? `Sponsors and partners already signed: ${read.partners.join(', ')}` : '',
     comps.length
-      ? `Comparable shows: ${comps.map((c) => `${c.name}${c.source === 'added' ? ' (added by Oraqul)' : ''}`).join(', ')}`
+      ? `Comparable shows: ${comps.map((c) => `${c.name}${c.source !== 'you' ? ' (added by Oraqul)' : ''}`).join(', ')}`
       : '',
   ]
     .filter(Boolean)
@@ -182,7 +183,7 @@ export function templateSection(key: LaunchSectionKey, input: WriteInput): Writt
         const next = rest.slice(0, 2);
         lines.push(
           grounded(
-            `Lead with ${first}${next.length ? `, then ${list(next)}` : ''}: that is where your show's listeners are strongest${rest.length > 2 ? ' of the markets checked' : ''}.`,
+            `Lead with ${first}${next.length ? `, then ${list(next)}` : ''}: that is where ${input.comps.some((c) => c.source !== 'you') ? "the comparable shows' listeners" : "your show's listeners"} are strongest${rest.length > 2 ? ' of the markets checked' : ''}.`,
             markets,
             [first, ...next],
           ),

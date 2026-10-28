@@ -9,7 +9,7 @@ test('the landing page shows the pitch, the example and the ways in', async ({ p
   expect(text).toContain(
     'Build, audit and fix your media & entertainment launch plan with Oraqul, a culturally grounded AI agent that even follows up after launch.',
   );
-  expect(text).toContain('Night Ferry');
+  expect(text).toContain('Salt Road');
   expect(text).toContain('Agent trace');
   await expect(page.getByRole('link', { name: 'Create account' }).first()).toHaveAttribute(
     'href',

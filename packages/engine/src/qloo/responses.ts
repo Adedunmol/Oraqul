@@ -1,12 +1,37 @@
 import { z } from 'zod';
 
+/**
+ * Qloo sends some names with HTML entities in them ("Atomic Habits: … &amp; Proven"). A name is
+ * read as plain text, so it is decoded once here and nothing downstream shows the entity.
+ */
+export function decodeEntities(text: string): string {
+  return text
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) =>
+      String.fromCodePoint(Number.parseInt(hex, 16)),
+    )
+    .replace(/&#(\d+);/g, (_, dec: string) => String.fromCodePoint(Number(dec)))
+    .replace(/&(amp|lt|gt|quot|apos|nbsp);/gi, (_, name: string) => {
+      const map: Record<string, string> = {
+        amp: '&',
+        lt: '<',
+        gt: '>',
+        quot: '"',
+        apos: "'",
+        nbsp: ' ',
+      };
+      return map[name.toLowerCase()] ?? '';
+    });
+}
+
+const plainName = z.string().transform(decodeEntities);
+
 // Objects are loose so the whole body can be stored on the call record as `returned`.
 // Shapes were checked live (docs/backend/qloo.md). Fields not seen live stay optional.
 
 /** A tag as `/v2/tags` lists it. Lookups use `id`, not `tag_id`. */
 export const tagLookupSchema = z.looseObject({
   id: z.string(),
-  name: z.string(),
+  name: plainName,
   type: z.string().optional(),
   popularity: z.number().nullish(),
 });
@@ -15,7 +40,7 @@ export type QlooTagLookup = z.infer<typeof tagLookupSchema>;
 /** A tag as `urn:tag` insights and compare return it. These use `tag_id`. */
 export const tagSchema = z.looseObject({
   tag_id: z.string(),
-  name: z.string(),
+  name: plainName,
   type: z.string().optional(),
   subtype: z.string().optional(),
   popularity: z.number().nullish(),
@@ -42,7 +67,7 @@ export type QlooEntityTag = z.infer<typeof entityTagSchema>;
 
 export const entitySchema = z.looseObject({
   entity_id: z.string(),
-  name: z.string(),
+  name: plainName,
   /** `/search` and `/entities` give `types`; insights gives `subtype`. */
   types: z.array(z.string()).optional(),
   subtype: z.string().optional(),

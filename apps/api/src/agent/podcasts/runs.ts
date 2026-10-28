@@ -1,6 +1,7 @@
 import type { ToolContext } from '@oraqul/engine';
 import type { ThreadEvent } from '@oraqul/schema';
 import type { Handoff, Reply } from '../category-agents.js';
+import type { Analyst } from '../launch/analyse.js';
 import {
   type AuditDeps as LaunchAuditDeps,
   type LaunchAuditInputs,
@@ -17,6 +18,7 @@ import {
   runBuild,
 } from '../launch/pipeline.js';
 import type { ResultsReader } from '../launch/results-read.js';
+import type { Reviewer } from '../launch/review.js';
 import type { AuditState, BuildState, FixState } from '../launch/state.js';
 import { podcastsLaunch } from './config.js';
 import type { PodcastsQueryPlan, QueryPlanner } from './planner.js';
@@ -40,6 +42,10 @@ export type PodcastsAuditInputs = LaunchAuditInputs<PodcastsRead>;
 
 export interface PodcastsDeps {
   reader: PodcastsReader;
+  /** Reads who the audience is and chooses comps from the description. Scripted when omitted. */
+  analyst?: Analyst;
+  /** The red team and the support check. Scripted when omitted. */
+  reviewer?: Reviewer;
   /** Looks up release timing and market facts on the web, when search is configured. */
   research: Researcher;
   queries: QueryPlanner;
@@ -65,6 +71,8 @@ export function launchDeps(deps: PodcastsDeps): LaunchDeps<PodcastsRead, Podcast
   return {
     config: podcastsLaunch,
     read: podcastsRead(deps.reader),
+    analyst: deps.analyst,
+    reviewer: deps.reviewer,
     research: deps.research,
     queries: deps.queries,
     writer: deps.writer,

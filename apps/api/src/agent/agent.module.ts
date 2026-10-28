@@ -3,11 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { demoFetch, LookupCache, QlooClient, RequestSlots, type ToolContext } from '@oraqul/engine';
 import type { Output } from '@oraqul/schema';
 import type { Env } from '../config/env.js';
+import { type Database, DB } from '../db/db.module.js';
 import { FUNDING_RESEARCHER, type FundingResearcher } from '../funding/fund-research.js';
 import { FundingModule } from '../funding/funding.module.js';
 import { LLM, type Llm } from '../llm/llm.js';
 import { OutputsService } from '../outputs/outputs.service.js';
 import { TeamRulesModule } from '../team-rules/team-rules.module.js';
+import { WebPresenceChecker } from '../verify/brand-presence.js';
 import { noVerifier, openDataVerifier } from '../verify/verifier.js';
 import { PaceService } from '../watch/pace.service.js';
 import { BooksAgent } from './books/agent.js';
@@ -32,6 +34,7 @@ import {
   ModelPlanWriter as ModelBooksPlanWriter,
   TemplatePlanWriter as TemplateBooksPlanWriter,
 } from './books/writer.js';
+import { DbBriefMemos } from './brief-memos.js';
 import { CATEGORY_AGENTS, placeholderAgents } from './category-agents.js';
 import { FilmAgent } from './film/agent.js';
 import {
@@ -79,6 +82,9 @@ import {
 import { FallbackGate, GATE, ModelGate, ScriptedGate } from './gate/gate.js';
 import { FallbackAnalyst, ModelAnalyst, ScriptedAnalyst } from './launch/analyse.js';
 import { StandalonePlanner } from './launch/follow-ups.js';
+import { MemoizedAnalyst, MemoizedQueryPlanner } from './launch/memo.js';
+import type { QueryPlanCore, QueryPlanner } from './launch/planner.js';
+import type { LaunchRead } from './launch/read-core.js';
 import {
   FallbackResearchPlanner,
   ModelResearchPlanner,
@@ -179,7 +185,7 @@ import {
 } from './summary/chat-summarizer.js';
 import { ThreadStore } from './thread-store.js';
 import { createTitler, THREAD_TITLER } from './titler.js';
-import { VERSIONS, versionsOf } from './versions.js';
+import { promptVersion, VERSIONS, versionsOf } from './versions.js';
 
 const logger = new Logger('Router');
 
@@ -238,6 +244,7 @@ const lookups = new LookupCache();
         QlooMeterService,
         PaceService,
         FUNDING_RESEARCHER,
+        DB,
       ],
       useFactory: (
         llm: Llm | null,
@@ -246,7 +253,16 @@ const lookups = new LookupCache();
         meter: QlooMeterService,
         pace: PaceService,
         funding: FundingResearcher,
+        db: Database,
       ) => {
+        // What the model chose for a brief is kept, so the same brief asks Qloo the same questions.
+        const memos = new DbBriefMemos(db);
+        const memoPlans = <R extends LaunchRead, P extends QueryPlanCore>(
+          inner: QueryPlanner<R, P>,
+        ) =>
+          new MemoizedQueryPlanner(inner, memos, promptVersion, (err) =>
+            logger.warn(`Brief memory failed, asking the model afresh: ${err}`),
+          );
         const scripted = new ScriptedFilmReader();
         const scriptedFollowUps = new ScriptedFollowUpReader();
         const followUps = llm
@@ -264,10 +280,12 @@ const lookups = new LookupCache();
             )
           : scripted;
         const queries = llm
-          ? new FallbackQueryPlanner(
-              new ModelQueryPlanner(llm.model('agent'), llm.timeoutMs),
-              new ScriptedQueryPlanner(),
-              (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+          ? memoPlans(
+              new FallbackQueryPlanner(
+                new ModelQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                new ScriptedQueryPlanner(),
+                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+              ),
             )
           : new ScriptedQueryPlanner();
         const writer = llm
@@ -307,10 +325,15 @@ const lookups = new LookupCache();
         const maxSteps = config.get('AGENT_MAX_STEPS', { infer: true });
         // One analyst for every category: it reads the request, not the category's fields.
         const analyst = llm
-          ? new FallbackAnalyst(
-              new ModelAnalyst(llm.model('agent'), llm.timeoutMs),
-              new ScriptedAnalyst(),
-              (err) => logger.warn(`Model analyst failed, reading without inference: ${err}`),
+          ? new MemoizedAnalyst(
+              new FallbackAnalyst(
+                new ModelAnalyst(llm.model('agent'), llm.timeoutMs),
+                new ScriptedAnalyst(),
+                (err) => logger.warn(`Model analyst failed, reading without inference: ${err}`),
+              ),
+              memos,
+              promptVersion,
+              (err) => logger.warn(`Brief memory failed, asking the model afresh: ${err}`),
             )
           : new ScriptedAnalyst();
         const researchPlanner = llm
@@ -327,7 +350,11 @@ const lookups = new LookupCache();
         const verifier =
           config.get('BRAND_CHECK', { infer: true }) === 'on' &&
           config.get('QLOO_MODE', { infer: true }) === 'live'
-            ? openDataVerifier()
+            ? openDataVerifier(
+                llm && search
+                  ? new WebPresenceChecker(search, llm.model('agent'), llm.writerTimeoutMs)
+                  : undefined,
+              )
             : noVerifier();
         const reviewer = llm
           ? new FallbackReviewer(
@@ -377,10 +404,12 @@ const lookups = new LookupCache();
               )
             : scriptedMusic,
           queries: llm
-            ? new FallbackMusicQueryPlanner(
-                new ModelMusicQueryPlanner(llm.model('agent'), llm.timeoutMs),
-                new ScriptedMusicQueryPlanner(),
-                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+            ? memoPlans(
+                new FallbackMusicQueryPlanner(
+                  new ModelMusicQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                  new ScriptedMusicQueryPlanner(),
+                  (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+                ),
               )
             : new ScriptedMusicQueryPlanner(),
           writer: llm
@@ -447,10 +476,12 @@ const lookups = new LookupCache();
               )
             : scriptedShows,
           queries: llm
-            ? new FallbackShowsQueryPlanner(
-                new ModelShowsQueryPlanner(llm.model('agent'), llm.timeoutMs),
-                new ScriptedShowsQueryPlanner(),
-                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+            ? memoPlans(
+                new FallbackShowsQueryPlanner(
+                  new ModelShowsQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                  new ScriptedShowsQueryPlanner(),
+                  (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+                ),
               )
             : new ScriptedShowsQueryPlanner(),
           writer: llm
@@ -518,10 +549,12 @@ const lookups = new LookupCache();
               )
             : scriptedGames,
           queries: llm
-            ? new FallbackGamesQueryPlanner(
-                new ModelGamesQueryPlanner(llm.model('agent'), llm.timeoutMs),
-                new ScriptedGamesQueryPlanner(),
-                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+            ? memoPlans(
+                new FallbackGamesQueryPlanner(
+                  new ModelGamesQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                  new ScriptedGamesQueryPlanner(),
+                  (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+                ),
               )
             : new ScriptedGamesQueryPlanner(),
           writer: llm
@@ -589,10 +622,12 @@ const lookups = new LookupCache();
               )
             : scriptedPodcasts,
           queries: llm
-            ? new FallbackPodcastsQueryPlanner(
-                new ModelPodcastsQueryPlanner(llm.model('agent'), llm.timeoutMs),
-                new ScriptedPodcastsQueryPlanner(),
-                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+            ? memoPlans(
+                new FallbackPodcastsQueryPlanner(
+                  new ModelPodcastsQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                  new ScriptedPodcastsQueryPlanner(),
+                  (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+                ),
               )
             : new ScriptedPodcastsQueryPlanner(),
           writer: llm
@@ -663,10 +698,12 @@ const lookups = new LookupCache();
               )
             : scriptedBooks,
           queries: llm
-            ? new FallbackBooksQueryPlanner(
-                new ModelBooksQueryPlanner(llm.model('agent'), llm.timeoutMs),
-                new ScriptedBooksQueryPlanner(),
-                (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+            ? memoPlans(
+                new FallbackBooksQueryPlanner(
+                  new ModelBooksQueryPlanner(llm.model('agent'), llm.timeoutMs),
+                  new ScriptedBooksQueryPlanner(),
+                  (err) => logger.warn(`Model query planner failed, using the defaults: ${err}`),
+                ),
               )
             : new ScriptedBooksQueryPlanner(),
           writer: llm

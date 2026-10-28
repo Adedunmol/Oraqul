@@ -1,6 +1,34 @@
 {
   "title": "Serial",
   "brief": "Launch plan for season 3 of the podcast \"Serial\", an audio only true crime show on Apple Podcasts, launching on 2099-09-01 in New York and London. Comparable shows: \"Crime Junkie\" and \"Casefile\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
@@ -10,7 +38,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with New York, then London: that is where your show's listeners are strongest.",
+    "headline": "Lead with New York, then London: that is where the comparable shows' listeners are strongest.",
     "assumptions": {
       "a-place-new-york": "weak",
       "a-place-london": "breaks",

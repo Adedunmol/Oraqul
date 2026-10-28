@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   citiesForRegions,
-  FALLBACK_COMPS,
-  fallbackComps,
   genreFallback,
   genrePhrase,
   PODCASTS_QUERIES,
@@ -190,18 +188,6 @@ describe('catalog', () => {
     expect(genrePhrase('NFL football in Lagos')).toBe('sports');
     expect(genreFallback('soccer')).toBe('sports');
     expect(genreFallback('sports')).toBeNull();
-  });
-
-  it('always has fallback shows for a genre, with no repeats', () => {
-    expect(fallbackComps('anything at all')).not.toEqual([]);
-    expect(fallbackComps('true crime')).toEqual([
-      'Crime Junkie',
-      'Serial',
-      'My Favorite Murder with Karen Kilgariff and Georgia Hardstark',
-      'Casefile True Crime',
-    ]);
-    expect(fallbackComps('true crime', 2)).toHaveLength(2);
-    for (const rule of FALLBACK_COMPS) expect(new Set(rule.names).size).toBe(rule.names.length);
   });
 
   it('keeps playbook free of taste words in the beats', () => {

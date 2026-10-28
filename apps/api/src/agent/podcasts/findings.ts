@@ -62,6 +62,7 @@ const compsVerdict: Voice['compsVerdict'] = {
 const voiceFor = (read: PodcastsRead): Voice => ({
   audience: "the show's audience",
   yourAudience: "your show's audience",
+  chosenAudience: "the comparable shows' listeners",
   theseComps: 'this show',
   compsVerdict,
   yourPlaces:
@@ -106,10 +107,14 @@ interface Show {
   entityId: string;
 }
 
+/** "Your show's listeners" only when the team named every comp itself. */
+const listenersOf = (kit: Pick<GroundKit<PodcastsRead, PodcastsQueryPlan>, 'capped'>) =>
+  kit.capped ? "the comparable shows' listeners" : "your show's listeners";
+
 async function runQueries(kit: GroundKit<PodcastsRead, PodcastsQueryPlan>): Promise<void> {
   const { deps, read, plan, gaps, want, jobs, taste } = kit;
   const agesText = read.ages.length ? ` ${agesPhrase(read.ages)}` : '';
-  const crowd = "your show's listeners";
+  const crowd = listenersOf(kit);
   const tags = await resolve(deps, plan, want);
 
   // A region word with no cities in Qloo's table cannot be ranked, so the plan says so.
@@ -380,7 +385,7 @@ async function crossPromotion(
     {
       id: 'f-crosspromo',
       query: 'crosspromo',
-      text: `The shows that rank highest with your show's listeners${read.ages.length ? ` ${agesPhrase(read.ages)}` : ''}${city ? ` in ${city}` : ''} are ${list(top.slice(0, 3).map((r) => r.name))}.`,
+      text: `The shows that rank highest with ${listenersOf(kit)}${read.ages.length ? ` ${agesPhrase(read.ages)}` : ''}${city ? ` in ${city}` : ''} are ${list(top.slice(0, 3).map((r) => r.name))}.`,
       entities: ranked.map((r) => entity(r.name, (r.overlap ?? 0) / 100, 'Podcast', r.entityId)),
       numbers: Object.fromEntries(ranked.map((r) => [`overlap ${r.name}`, r.overlap ?? 0])),
       verdict: null,
@@ -404,8 +409,8 @@ async function crossPromotion(
         // Two or three scores do not make a ranking, so a small group reports the overlap.
         text:
           ranked.length >= 3
-            ? `${s.name} ranks ${place + 1} of ${ranked.length} among the shows asked about for your show's listeners.`
-            : `${s.name} overlaps ${ranked[place]?.overlap ?? 0} of 100 with your show's listeners, scored with ${ranked.length - 1} other shows.`,
+            ? `${s.name} ranks ${place + 1} of ${ranked.length} among the shows asked about for ${listenersOf(kit)}.`
+            : `${s.name} overlaps ${ranked[place]?.overlap ?? 0} of 100 with ${listenersOf(kit)}, scored with ${ranked.length - 1} other shows.`,
         entities: [entity(s.name, (ranked[place]?.overlap ?? 0) / 100, 'Podcast', s.entityId)],
         numbers: { place: place + 1, of: ranked.length },
         verdict: null,

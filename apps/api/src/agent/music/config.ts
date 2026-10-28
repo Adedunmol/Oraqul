@@ -30,7 +30,7 @@ export const MUSIC_DECISIONS: DecisionWords = {
   unreadCity:
     'Build the date here on community: campus shows, local creators and the partner moves below.',
   comp: (c) =>
-    `Pitch the artist to press and playlists in the company of ${c}, a name your audience already knows.`,
+    `Pitch the artist to press and playlists in the company of ${c}, a name you chose to be heard beside.`,
 };
 
 /** A reading with nothing in it, for an answer about a plan saved before readings. */
@@ -96,9 +96,9 @@ function budgetSection(read: MusicRead): LaunchSection {
 function gapsSection(read: MusicRead, comps: { used: CompUsed[] }): LaunchSection {
   // Only inputs the team could add. What could not be asked goes to the Assumptions tab instead.
   const texts = [
-    ...(comps.used.some((c) => c.source === 'added')
+    ...(comps.used.some((c) => c.source !== 'you')
       ? [
-          'Say what the music sounds like and who it is made with or features, and the plan can be built around them.',
+          'I chose the sound-alike artists from what you wrote. Name your own, or say more about the sound and who it features, and I will rebuild the plan around them.',
         ]
       : []),
     ...(read.ages.length
@@ -133,20 +133,17 @@ export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
     entity: 'artist',
     rivalExample: '“Rema” on 2026-12-05',
     planExample:
-      'For example: “An afrobeats album tour for 25 to 34, playing Lagos, London and Accra, with MTN as a partner.”',
+      'For example: “A folk album tour for 25 to 34, playing Manchester, Dublin and Berlin, with a regional brewery as a partner.”',
     artistPitch: 'a support slot or a collaboration',
   },
   minimum: {
     id: 'music.minimum',
-    example: 'For example: “An afrobeats album from Lagos, with shows in Lagos and London.”',
+    example:
+      'For example: “An indie folk album from Manchester, with shows in Manchester and Dublin.”',
     missing: (read) => (read.places.length ? [] : ['at least one city they play']),
   },
-  typical: {
-    genre: 'afrobeats',
-    country: 'Nigeria',
-    label: 'a typical afrobeats release',
-    described: (read) => read.artist !== null,
-  },
+  /** Whether the person's words say anything about the work beyond its title. */
+  described: (read) => read.artist !== null,
   pickModules: (read) =>
     musicPlan.pickModules({
       scope: read.scope,

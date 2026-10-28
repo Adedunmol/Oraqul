@@ -108,6 +108,25 @@ export const COUNTRY_CHANNELS: Record<string, string[]> = {
 export const ASSET_OFFER =
   /\b(?:(?:i|we|oraqul)(?:'ll| will| can)?\s+(?:generate|render|produce|create|make|design|edit)|(?:generated|ai[- ]made|ai[- ]generated))\b[^.]{0,60}\b(?:ads?|trailers?|posters?|images?|videos?|clips?|artwork|key art)\b/i;
 
+/**
+ * Multi word names a grounded line may use without a finding behind them: the platforms and
+ * services every launch plan talks about. Any other name in a grounded line has to be in a finding
+ * it cites, in the brief or on a page it cites.
+ */
+export const LAUNCH_TERMS = [
+  'Instagram Reels',
+  'Instagram Stories',
+  'YouTube Shorts',
+  'Apple Music',
+  'Apple Podcasts',
+  'Google Play',
+  'App Store',
+  'Amazon Prime',
+  'Prime Video',
+  'Spotify for Artists',
+  'Black Friday',
+];
+
 export const SHARED_VERSION = 'shared@2026-10-23.1';
 
 /**

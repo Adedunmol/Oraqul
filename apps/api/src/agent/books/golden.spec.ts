@@ -11,7 +11,9 @@ import { verdictSchema } from '@oraqul/schema';
 import { z } from 'zod';
 import type { Handoff, Reply } from '../category-agents.js';
 import { ungroundedLines } from '../grounding.js';
+import { analysisSchema } from '../launch/analyse.js';
 import { clearBaselineCache } from '../launch/baseline.js';
+import { FixtureAnalyst } from '../launch/fixture-analyst.js';
 import { groundingReport } from '../launch/grounding-report.js';
 import type { PlanRun } from '../launch/pipeline.js';
 import { ScriptedQueryPlanner } from './planner.js';
@@ -32,7 +34,7 @@ const expectSchema = z.object({
   assumptions: z.record(z.string(), verdictSchema),
   // The markets, as the plan ranks them.
   cities: z.array(z.string()),
-  comps: z.array(z.object({ name: z.string(), source: z.enum(['you', 'added']) })),
+  comps: z.array(z.object({ name: z.string(), source: z.enum(['you', 'added', 'genre']) })),
   // Each finding's id and the first three names it returned.
   findings: z.record(z.string(), z.array(z.string())),
   // Lines per section by kind, as `grounded/playbook`.
@@ -53,6 +55,8 @@ type Expected = z.infer<typeof expectSchema>;
 const caseSchema = z.object({
   title: z.string(),
   brief: z.string(),
+  // What a model analyst would have answered, so the chosen-comps path is tested without a model.
+  analysis: analysisSchema.optional(),
   replies: z.array(
     z.union([z.object({ optionIds: z.array(z.string()) }), z.object({ text: z.string() })]),
   ),
@@ -87,6 +91,7 @@ async function run(golden: GoldenCase) {
     };
     return {
       reader: new ScriptedBooksReader(),
+      ...(golden.analysis ? { analyst: new FixtureAnalyst(golden.analysis) } : {}),
       queries: new ScriptedQueryPlanner(),
       research: new NoResearch(),
       writer: new TemplatePlanWriter(),

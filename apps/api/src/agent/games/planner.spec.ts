@@ -60,7 +60,6 @@ describe('Games query plan', () => {
         brandCities: [],
         communityPlaces: [],
         communityCities: [],
-        worthALook: [],
         brandCandidates: [
           { city: 'Lagos', names: ['MTN', 'Glo', 'Airtel'] },
           { city: 'Berlin', names: ['Zalando'] },

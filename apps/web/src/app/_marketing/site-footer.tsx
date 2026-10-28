@@ -62,8 +62,8 @@ export function SiteFooter() {
       </div>
       <div className={`${wrap} pb-8 text-[12.5px] text-muted`}>
         <p>
-          Examples on this site use invented titles. Plans in the app are built on live Qloo taste
-          data.
+          The examples on this site are real runs on live Qloo taste data, with what was sent and
+          returned left out. Plans in the app are built the same way.
         </p>
       </div>
     </footer>

@@ -1,6 +1,7 @@
 import type { Confidence, Verdict } from '@oraqul/schema';
+import { exampleDetails } from '@/lib/examples';
 
-/** An invented line for previews. None of it is Qloo data, and every preview says "Example". */
+/** A line of the recorded film example, in words, for previews. Every preview says "Example". */
 export interface SampleLine {
   id: string;
   claim: string;
@@ -10,47 +11,31 @@ export interface SampleLine {
   receipt: { callId: string; input: string; returned: string; decided: string };
 }
 
-export const planPrompt =
-  'Plan the release of Night Ferry, a Mexico City crime drama, for the UK and the US.';
+const { output } = exampleDetails.film;
 
-export const heroLines: SampleLine[] = [
-  {
-    id: 'core',
-    claim: 'Fans of Mexican crime thrillers are your core audience.',
-    detail: 'Their taste overlaps with your lead in Mexico City and London.',
-    verdict: 'holds',
-    confidence: 'high',
-    receipt: {
-      callId: 'call_8f3a',
-      input: 'Lead title, Mexico City and London, ages 25 to 34',
-      returned: 'Taste overlap well above a neutral audience in the same places',
-      decided: 'Computed by code from the values returned, against the published rule',
+// The three cities of the recorded run, so the preview shows a plan line that holds, one that
+// breaks and one that is weak, each with its own call.
+const CITIES = ['a-place-lagos', 'a-place-london', 'a-place-atlanta'];
+
+export const heroLines: SampleLine[] = CITIES.flatMap((id) => {
+  const assumption = output.brief.assumptions.find((a) => a.id === id);
+  const finding = output.plan?.findings.find((f) => f.id === `f-${id}`);
+  const receipt = output.receipts.find((r) => r.lineId === id);
+  if (!assumption || !finding || !receipt) return [];
+  const comps = output.plan?.comps.map((c) => c.name).join(', ');
+  return [
+    {
+      id,
+      claim: assumption.text,
+      detail: assumption.fix ?? assumption.why,
+      verdict: assumption.verdict,
+      confidence: finding.confidence,
+      receipt: {
+        callId: `call_${receipt.callId.slice(0, 4)}`,
+        input: `${comps ?? 'The comps'}, in ${finding.context.city ?? 'the city'}`,
+        returned: finding.text,
+        decided: 'Computed by code from the values returned, against the published rule',
+      },
     },
-  },
-  {
-    id: 'market',
-    claim: 'The UK is the right first market.',
-    detail: 'A stronger first market came back, and it is now in the plan.',
-    verdict: 'breaks',
-    confidence: 'medium',
-    receipt: {
-      callId: 'call_2c71',
-      input: 'Lead title, UK and Canada, ages 25 to 34',
-      returned: 'Canada ranked above the UK on taste fit',
-      decided: 'Computed by code: the UK fell below the plan’s own baseline',
-    },
-  },
-  {
-    id: 'second',
-    claim: 'Seoul is worth a second wave.',
-    detail: 'Thin data for this place. Treat it as a draft.',
-    verdict: 'weak',
-    confidence: 'lower',
-    receipt: {
-      callId: 'call_b904',
-      input: 'Lead title, Seoul, ages 25 to 34',
-      returned: 'A small signal from few comparable titles',
-      decided: 'Computed by code: usable but below the strong threshold, confidence capped',
-    },
-  },
-];
+  ];
+});

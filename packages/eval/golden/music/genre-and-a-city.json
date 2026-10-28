@@ -19,19 +19,19 @@
     "comps": [
       {
         "name": "Neon Tide",
-        "source": "added"
+        "source": "genre"
       },
       {
         "name": "Ada Lux",
-        "source": "added"
+        "source": "genre"
       },
       {
         "name": "Kola Wave",
-        "source": "added"
+        "source": "genre"
       },
       {
         "name": "Sade Rhythm",
-        "source": "added"
+        "source": "genre"
       }
     ],
     "findings": {
@@ -60,7 +60,7 @@
       "budget": "0/7",
       "measure": "0/4",
       "risks": "1/1",
-      "gaps": "0/4"
+      "gaps": "0/5"
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {

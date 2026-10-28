@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { NoBrandChecker, WikidataBrandChecker } from './brand-check.js';
 
 interface Fake {
-  search?: Record<string, { id: string; description: string }[]>;
+  search?: Record<string, { id: string; description: string; label?: string }[]>;
   claims?: Record<string, Record<string, unknown[]>>;
   labels?: Record<string, string>;
   fail?: boolean;
@@ -17,7 +17,8 @@ function fakeFetch(fake: Fake) {
     const action = url.searchParams.get('action');
     let body: unknown = {};
     if (action === 'wbsearchentities') {
-      body = { search: fake.search?.[url.searchParams.get('search') ?? ''] ?? [] };
+      const term = url.searchParams.get('search') ?? '';
+      body = { search: (fake.search?.[term] ?? []).map((h) => ({ label: term, ...h })) };
     } else if (url.searchParams.get('props') === 'claims') {
       const id = url.searchParams.get('ids') ?? '';
       body = { entities: { [id]: { claims: fake.claims?.[id] ?? {} } } };
@@ -45,6 +46,7 @@ describe('WikidataBrandChecker', () => {
       state: 'problem',
       note: 'No longer exists: it closed in 2019.',
       country: null,
+      operates: [],
     });
   });
 
@@ -59,6 +61,7 @@ describe('WikidataBrandChecker', () => {
       state: 'verified',
       note: null,
       country: 'United Kingdom',
+      operates: [],
     });
   });
 
@@ -74,10 +77,59 @@ describe('WikidataBrandChecker', () => {
     expect(out.get('EE')?.state).toBe('unverified');
   });
 
+  it('skips a business whose name is not the brand asked about', async () => {
+    const f = fakeFetch({
+      search: {
+        VOXI: [{ id: 'Q9', label: 'Voxi Technologies', description: 'American software company' }],
+      },
+      claims: { Q9: { P17: [item('Q30')] } },
+      labels: { Q30: 'United States' },
+    });
+    const out = await new WikidataBrandChecker({ fetch: f.impl }).check(['VOXI']);
+    expect(out.get('VOXI')).toEqual({
+      state: 'unverified',
+      note: null,
+      country: null,
+      operates: [],
+    });
+  });
+
+  it('takes a match on an alias of the brand', async () => {
+    const f = fakeFetch({
+      search: {
+        MTN: [
+          { id: 'Q8', label: 'MTN Group', description: 'South African telecommunications company' },
+        ],
+      },
+      claims: { Q8: { P17: [item('Q258')] } },
+      labels: { Q258: 'South Africa' },
+    });
+    // The search hit's matched text is the alias the brand is also called.
+    const original = f.impl;
+    const wrapped: typeof fetch = async (input, init) => {
+      const res = await original(input, init);
+      const url = new URL(input instanceof Request ? input.url : input.toString());
+      if (url.searchParams.get('action') !== 'wbsearchentities') return res;
+      const body = (await res.json()) as { search: { label: string }[] };
+      return new Response(
+        JSON.stringify({
+          search: body.search.map((h) => ({ ...h, label: 'MTN Group', match: { text: 'MTN' } })),
+        }),
+      );
+    };
+    const out = await new WikidataBrandChecker({ fetch: wrapped }).check(['MTN']);
+    expect(out.get('MTN')?.country).toBe('South Africa');
+  });
+
   it('leaves a brand it cannot find unverified', async () => {
     const f = fakeFetch({});
     const out = await new WikidataBrandChecker({ fetch: f.impl }).check(['Aqua Hydrate']);
-    expect(out.get('Aqua Hydrate')).toEqual({ state: 'unverified', note: null, country: null });
+    expect(out.get('Aqua Hydrate')).toEqual({
+      state: 'unverified',
+      note: null,
+      country: null,
+      operates: [],
+    });
   });
 
   it('never throws when the source is down: every name is unverified, and nothing is cached', async () => {

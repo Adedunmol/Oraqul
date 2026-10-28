@@ -8,7 +8,6 @@ import {
   brandChoiceSchema,
   checkAreas,
   checkBrandCandidates,
-  checkWorth,
   FallbackQueryPlanner as LaunchFallbackPlanner,
   type QueryPlanInput as LaunchPlanInput,
   type QueryPlanner as LaunchQueryPlanner,
@@ -66,7 +65,7 @@ export function defaultPlan(input: QueryPlanInput): ShowsQueryPlan {
   return {
     queries: queriesFor(modules),
     cities,
-    worthALook: citiesNear(cities, 4),
+    worthALook: citiesNear(cities, 4, country),
     country,
     // A comedy night, a play and a screening have no music scene to ask about.
     scene: read.showType === 'concert' || read.showType === 'club' || !read.showType ? scene : null,
@@ -100,7 +99,6 @@ const modelPlanSchema = z.object({
   podcastCity: z.string().nullable(),
   venuePlaces: z.array(phrase).max(3),
   venueCities: z.array(z.string()).max(5),
-  worthALook: z.array(z.string()).max(4),
   country: z.string().nullable(),
   areas: z.array(areaChoiceSchema).max(20),
   brandCandidates: z.array(brandChoiceSchema).max(5),
@@ -117,7 +115,6 @@ You are given the brief and default choices. Return the choices, changed only wh
 - venuePlaces: kinds of place where this audience goes out ("comedy club", "night club", "concert hall", "theater", "movie theater").
 - areas: for each of the team's cities, up to 5 neighbourhoods or districts where this audience goes out, each with the latitude and longitude of its centre. Real, well-known places only, inside the city.
 - brandCandidates: for each of the team's cities, up to 4 brands that operate in that city and could realistically sponsor a single show as an in-kind or co-promotion tie-in: telecoms, ride-hailing, fintech, drinks and ticketing brands. Write each as the company's usual name. Never a global giant that does not do small tie-ins.
-- worthALook: up to 4 other cities from the city table where this audience may be strong. They are only shown as alternatives, never in place of the team's cities.
 - country: the act's country as a full name, or null.
 
 Never name a person. Never use words from the brief that describe a private individual. Never state a ticket price, a capacity or a date: those are the team's.`;
@@ -182,7 +179,6 @@ export function checkPlan(
       ? phrases(chosen.venuePlaces)
       : defaults.venuePlaces,
     venueCities: keep(chosen.venueCities, defaults.venueCities),
-    worthALook: checkWorth(chosen.worthALook, defaults.cities, defaults.worthALook),
     areas: checkAreas(chosen.areas, defaults.cities),
     brandCandidates: checkBrandCandidates(chosen.brandCandidates, defaults.cities),
   };

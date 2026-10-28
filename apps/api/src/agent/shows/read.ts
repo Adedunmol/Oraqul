@@ -50,7 +50,6 @@ export const showsReadingSchema = z.object({
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
   /** Comparable acts the agent proposes when the person named fewer than 3. Code checks each. */
-  suggestedComps: z.array(z.string().min(1)).max(5),
 });
 export type ShowsReading = z.infer<typeof showsReadingSchema>;
 
@@ -178,7 +177,6 @@ Rules:
 - supportActs: acts already booked to open.
 - scope: "full" when they ask for a launch plan or help with the show in general, or when it is unclear. "narrow" only for one specific question. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: onsale, partnerships, publicity, venues, finalpush, timeline, budget, measure, risks. Null when it is about cities or the audience, or when scope is full.
-- suggestedComps: only when they named fewer than 3 comps. Propose well known, real acts whose audience is likely the same, from the act, the kind of show, the genre, the country and any support acts named, enough to reach 3 to 5 in all. Names only. Code checks each in Qloo.
 - Plain words, no exclamation marks.`;
 
 export class ModelShowsReader implements ShowsReader {
@@ -281,7 +279,6 @@ export class ScriptedShowsReader implements ShowsReader {
         : men
           ? { value: 'male', quote: men }
           : null,
-      suggestedComps: [],
     };
     // The kind of show comes from the labelled line or a plain word, in `checkReading`.
     if (type) reading.showType = { value: type.type, quote: type.word };

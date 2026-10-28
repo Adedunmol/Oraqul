@@ -57,7 +57,7 @@ export const SECTION_TITLES = {
  * cite a finding (spec §6.2).
  */
 export const TASTE_CLAIM =
-  /\b(fans?|fandoms?|loves?|loved|likes?|liked|prefers?|preferred|resonat\w*|affinit\w*|skews?|skewed|over-?index\w*|popular (?:with|among)|tastes?|enjoys?|enjoyed|devoted)\b/i;
+  /\b(fans?|fandoms?|loves?|loved|likes?|liked|prefers?|preferred|resonat\w*|affinit\w*|skews?|skewed|over-?index\w*|popular (?:with|among)|tastes?|enjoys?|enjoyed|devoted|(?:strongest|weakest|biggest|best|top) (?:market|city|audience|readers?|listeners|viewers|players)|matters? most (?:to|for)|will (?:respond|react)|(?:audiences?|readers?|listeners|viewers|players|crowds?) (?:will|would|tend to|are likely to|respond|react))\b/i;
 
 /** A music scene by a country of origin. No scene means the artist query is skipped. */
 export const MUSIC_SCENES: Record<string, string> = {
@@ -78,15 +78,6 @@ export const PODCAST_GENRES: { match: RegExp; phrase: string }[] = [
   { match: /horror/i, phrase: 'horror' },
   { match: /documentar/i, phrase: 'documentary' },
 ];
-
-/**
- * Mass-market names a named partner is scored against, as a confidence aid. Each name resolves to
- * one exact match on the live host (checked); one that stops doing so is left out of the baseline
- * for that run.
- */
-export const BASELINE_BRANDS = ['Coca-Cola', 'Nike', "McDonald's"];
-export const BASELINE_PODCASTS = ['The Joe Rogan Experience', 'Crime Junkie', 'Serial'];
-export const BASELINE_BOOKS = ['Where the Crawdads Sing', 'Atomic Habits', 'Gone Girl'];
 
 /** Most calls one query may make, so one module cannot spend the run's budget. */
 export const MAX_CITIES_PER_QUERY = 5;

@@ -1,6 +1,8 @@
 import { demoFetch, QlooClient, type SeenEntity, type ToolContext } from '@oraqul/engine';
 import { briefSchema, launchPlanSchema, type ThreadEvent } from '@oraqul/schema';
 import type { Handoff } from '../category-agents.js';
+import type { Analysis } from '../launch/analyse.js';
+import { FixtureAnalyst } from '../launch/fixture-analyst.js';
 import { ScriptedQueryPlanner } from './planner.js';
 import { ScriptedBooksReader } from './read.js';
 import { NoResearch } from './research.js';
@@ -45,13 +47,48 @@ function setup(text: string, callBudget = 120) {
   return { events, handoff, deps };
 }
 
+// What a model analyst would answer for a one-line Nigerian literary debut: who the readers are and
+// the books it chose for them, each with its reason.
+const analysis = (comps: string[]): Analysis => ({
+  asked: 'A launch plan.',
+  goals: [],
+  constraints: [],
+  inferred: [],
+  criteria: [
+    { text: 'Says which city to open in and why', evidence: true },
+    { text: 'Names the first partner to approach', evidence: true },
+  ],
+  readers: {
+    who: 'Nigerian readers of literary fiction and the diaspora who read it',
+    ages: [],
+    consumes: 'literary novels about Nigerian life',
+    why: 'The description says literary fiction made for Nigerians.',
+  },
+  comps: comps.map((name) => ({ name, why: 'A well-read Nigerian literary novel.' })),
+});
+
+// What a model planner would add for a novel: the series and films readers of it also watch.
+const withScreenTitles = (inner = new ScriptedQueryPlanner()) => ({
+  async plan(input: Parameters<ScriptedQueryPlanner['plan']>[0]) {
+    const out = await inner.plan(input);
+    return {
+      ...out,
+      plan: {
+        ...out.plan,
+        screenSeries: ['Conversations with Friends', 'Little Fires Everywhere'],
+        screenFilms: ['Where the Crawdads Sing', 'Crazy Rich Asians'],
+      },
+    };
+  },
+});
+
 const BRIEF =
   'Launch plan for the book "The Lagos Ledger", a debut literary novel by Ada Obi, published by an independent press with a hardcover, an ebook and an audiobook, for readers aged 25 to 44, launching in Lagos and London on 2099-03-01. Comparable books: "Americanah" and "Purple Hibiscus". Compare it with "Normal People". Bookshop "Terra Kulture".';
 
 describe('Books build pipeline on demo data', { timeout: 30_000 }, () => {
   it('builds a debut plan with a comp shelf, a screen bridge and a recency test', async () => {
     const { events, handoff, deps } = setup(BRIEF);
-    const run = await runBooksBuild(handoff, deps());
+    const run = await runBooksBuild(handoff, { ...deps(), queries: withScreenTitles() });
     expect(run.reason).toBe('finished');
     const output = run.output;
     if (!output?.plan) throw new Error('Expected a launch plan');
@@ -236,18 +273,28 @@ describe('Books build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(picks.sort()).toEqual(['Bridgerton', 'Normal People']);
   });
 
-  it('plans from a one-line brief, with no comps named and none asked for', async () => {
+  it('plans from a one-line brief with comps the analyst chose from the description, none asked for', async () => {
     const { events, handoff, deps } = setup(
       'A Nigerian literary fiction debut, made for Nigerians.',
     );
-    const run = await runBooksBuild(handoff, deps());
+    const chosen = [
+      'Americanah',
+      'Half of a Yellow Sun',
+      'Purple Hibiscus',
+      'Things Fall Apart (The African Trilogy, #1)',
+    ];
+    const run = await runBooksBuild(handoff, {
+      ...deps(),
+      analyst: new FixtureAnalyst(analysis(chosen)),
+    });
     expect(run.reason).toBe('finished');
     expect(events.some((e) => e.type === 'question')).toBe(false);
     const output = run.output;
     if (!output?.plan) throw new Error('Expected a launch plan from a one-line brief');
-    // The comps are books like it that Oraqul chose, labelled so, never presented as the team's.
+    // The comps are books Oraqul chose, labelled so with their reason, never the team's.
     expect(output.plan.comps.length).toBeGreaterThanOrEqual(3);
-    expect(output.plan.comps.every((c) => c.source === 'added')).toBe(true);
+    expect(output.plan.comps.every((c) => c.source === 'added' && c.why)).toBe(true);
+    expect(output.plan.understanding?.readers?.who).toMatch(/Nigerian readers/);
     const read = booksInputsSchema.parse(output.inputs).read;
     expect(read.regions).toEqual(['Nigeria']);
     expect(output.brief.places.map((p) => p.name).sort()).toEqual(['Abuja', 'Lagos']);
@@ -257,15 +304,49 @@ describe('Books build pipeline on demo data', { timeout: 30_000 }, () => {
       .find((s) => s.key === 'positioning')
       ?.lines.find((l) => l.group === 'Audience');
     expect(audience?.kind).toBe('playbook');
+    // Comps Oraqul chose cap what rests on them: nothing reads high.
+    expect(output.plan.findings.every((f) => f.confidence !== 'high')).toBe(true);
   });
 
-  it('does not ask what it is: a bare brief goes on to the cards that follow, as a typical launch', async () => {
-    const { handoff, deps } = setup('I want to work on my new book');
-    const first = await runBooksBuild(handoff, deps());
-    if (first.state?.job === 'build') {
-      expect(first.state.pending?.id).not.toBe('books.minimum');
+  it('stands the genre in, labelled, when no analyst chose any comps', async () => {
+    const { handoff, deps } = setup('A Nigerian literary fiction debut, made for Nigerians.');
+    const run = await runBooksBuild(handoff, deps());
+    const comps = run.output?.plan?.comps ?? [];
+    if (run.output) {
+      expect(comps.length).toBeGreaterThan(0);
+      expect(comps.every((c) => c.source === 'genre')).toBe(true);
+      expect(run.output.plan?.findings.every((f) => f.confidence === 'lower')).toBe(true);
     } else {
-      expect(first.reason).toBe('finished');
+      expect(run.reason).toBe('finished');
     }
+  });
+
+  it('does not ask when the analyst finds a description the reader had no field for', async () => {
+    const { events, handoff, deps } = setup(
+      'I just wrote a book about the rules and etiquette of moving from boyhood to manhood. I do not know where to launch it.',
+    );
+    const run = await runBooksBuild(handoff, {
+      ...deps(),
+      analyst: new FixtureAnalyst(
+        analysis(['Atomic Habits', 'The 7 Habits of Highly Effective People', "Can't Hurt Me"]),
+      ),
+    });
+    expect(events.some((e) => e.type === 'question' && e.id === 'books.describe')).toBe(false);
+    // No country or city was guessed: the markets are the ones a launch like this usually checks.
+    const read = booksInputsSchema.parse(run.output?.inputs).read;
+    expect(read.country).toBeNull();
+    expect(read.places).toEqual([]);
+  });
+
+  it('asks what the book is and where to launch, once, when a brief says neither', async () => {
+    const { events, handoff, deps } = setup('I want to work on my new book');
+    const first = await runBooksBuild(handoff, deps());
+    expect(first.output).toBeNull();
+    expect(events.find((e) => e.type === 'question')).toMatchObject({
+      id: 'books.describe',
+      card: 'text',
+    });
+    // It is not asked again once the person has answered, whatever the answer holds.
+    expect(first.state?.job).toBe('build');
   });
 });

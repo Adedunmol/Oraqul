@@ -32,7 +32,8 @@ export const RULES = `How to write:
 - Use your launch knowledge freely: release windows and the seasons to avoid, booking and promotion practice, radio and playlist pitching, short video and creators, campuses, diaspora and community networks, ideas from the release. These are "playbook" lines. They cite nothing and may name anything real.
 - Every claim about what the audience likes, plays, watches, buys, or where it gathers, is "grounded": it cites the ids of the findings it rests on in findingIds, and names the findings' own candidates. These are measured, so prefer them to your own ideas, and weave them in as the reason for the move ("because this audience plays Rema and Ayra Starr in London"). Never present a name you know but no finding returned as something this audience likes.
 - Write for a marketing team, not an analyst. Never use the words lift, index, affinity, cells, Qloo, findings, tested, confidence or data. Say it plainly: "Lagos has the strongest audience of your four cities", "the audience skews older than your target". No scores or decimals.
-- Never describe what could not be measured. Every city, sound-alike and choice the team made gets a role and a move. Where the data says little about a city, plan it around community, creator and partner moves, without saying why.
+- Never write about limits or about what could not be measured; write about what to do. When something is missing, give the closest thing the findings do show, call it close, and say in a few words what the team could tell you to sharpen it. Every city, sound-alike and choice the team made gets a role and a move. Where the data says little about a city, plan it around community, creator and partner moves, and say in a few words what you used and what the team could tell you to sharpen it.
+- A comp marked (added by Oraqul) was chosen by Oraqul from the description, so the audience findings describe the people who like those music, not the person's own work: write "people who like music like yours", never "your audience" or "your readers". A detail under "Assumed, not said by the person" was filled in by Oraqul: never say the brief or the team gave it; say "assuming" or leave it out.
 - Never invent a number. Money, ticket sales, streams, chart positions, market sizes and the dates of other releases may be stated only from a web fact in the list, and the line must cite its id in sourceIds. With no web facts, state none of them. Weeks in a timeline and percentages in a budget split are fine.
 - Web facts, when listed, are for the release window, rival releases, tour and festival timing, who promotes in these markets, and the scale of the market. Use them to make the timeline and the dates specific. Use only what a fact says. A line that states a web fact is a playbook line with sourceIds; it names no audience taste.
 - Pick from the candidates. Leave out any that do not fit the sound or the market, or are not the kind of thing the finding is about, or are global mass-market giants an independent artist would not land (a soft-drink brand), and list each in "skipped" with a short reason.
@@ -89,7 +90,7 @@ export function briefBlock(title: string, read: MusicRead, comps: CompUsed[]): s
       : '',
     read.partners.length ? `Partners already signed: ${read.partners.join(', ')}` : '',
     comps.length
-      ? `Sound-alike artists: ${comps.map((c) => `${c.name}${c.source === 'added' ? ' (added by Oraqul)' : ''}`).join(', ')}`
+      ? `Sound-alike artists: ${comps.map((c) => `${c.name}${c.source !== 'you' ? ' (added by Oraqul)' : ''}`).join(', ')}`
       : '',
   ]
     .filter(Boolean)
