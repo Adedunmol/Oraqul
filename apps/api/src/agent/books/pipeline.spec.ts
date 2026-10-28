@@ -259,28 +259,13 @@ describe('Books build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(audience?.kind).toBe('playbook');
   });
 
-  it('asks again, and plans nothing, when the answer to the one question says nothing', async () => {
+  it('does not ask what it is: a bare brief goes on to the cards that follow, as a typical launch', async () => {
     const { handoff, deps } = setup('I want to work on my new book');
     const first = await runBooksBuild(handoff, deps());
-    expect(first.reason).toBe('waiting');
-    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
-    expect(first.state.pending?.id).toBe('books.minimum');
-
-    const again = await runBooksBuild(handoff, deps(), {
-      state: first.state,
-      reply: { kind: 'typed', text: 'try again bro' },
-    });
-    expect(again.reason).toBe('waiting');
-    expect(again.output).toBeNull();
-
-    if (again.state?.job !== 'build') throw new Error('Expected a paused build');
-    const done = await runBooksBuild(handoff, deps(), {
-      state: again.state,
-      reply: { kind: 'typed', text: 'a thriller for Nigerians' },
-    });
-    expect(done.reason).toBe('finished');
-    const read = booksInputsSchema.parse(done.output?.inputs).read;
-    expect(read.genre).toBe('thriller');
-    expect(read.regions).toEqual(['Nigeria']);
+    if (first.state?.job === 'build') {
+      expect(first.state.pending?.id).not.toBe('books.minimum');
+    } else {
+      expect(first.reason).toBe('finished');
+    }
   });
 });

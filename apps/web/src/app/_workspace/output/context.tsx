@@ -2,6 +2,7 @@
 
 import type {
   CampaignState,
+  FundingState,
   LineChange,
   Output,
   ReactionKind,
@@ -25,6 +26,8 @@ export interface OutputView {
   campaign: CampaignState | null;
   /** The plan's watch and pace. Null when the output has none, and on a shared link without a sample. */
   watch: WatchState | null;
+  /** The plan's funding and sponsors. Null when the output has none, and on a shared link. */
+  funding: FundingState | null;
   /** False for viewers and on a shared link. */
   canEdit: boolean;
   shared: boolean;

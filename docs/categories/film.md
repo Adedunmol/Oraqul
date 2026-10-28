@@ -18,7 +18,7 @@ A plan is a set of decisions, not a document:
 ## Requirements
 
 1. **Plan for the team's decisions.** Their cities, age band, comps and window are constraints. Test them and say what Qloo found, never replace them. Every named city and comp gets an answer.
-2. **Work with thin input.** Use everything given, ask for nothing beyond a description and one city, and end with what would sharpen the plan.
+2. **Work with thin input.** Use everything given, ask for nothing beyond one city, and never ask for comps. A title and a city are planned as a typical Nollywood film, said in the plan, and the agent asks for the description, genre and audience afterwards to sharpen it. Comps are never required: with none named, they are found from the description or genre through Qloo.
 3. **Be realistic about scale.** A small film gets in-kind support, not sponsorship cash. Brand fit (what the audience likes) and ability to partner (who will say yes) are different questions. Qloo answers only the first. Code answers the second from the budget and who is launching (a solo or small launch is not offered a national brand, and the brands Qloo finds for the audience are offered only when the launch can reach them), read from the brief and never guessed.
 4. **Be date-aware.** Never advise around a release that has already opened.
 5. **Be actionable.** Each line is the move, the reason and who does it. Readable in about five minutes, plain words, no data jargon.

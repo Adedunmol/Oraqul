@@ -2,7 +2,9 @@ import type { ToolContext } from '@oraqul/engine';
 import { refusalFor } from '@oraqul/packs';
 import type { Output, PaceState, ThreadEvent } from '@oraqul/schema';
 import type { z } from 'zod';
+import { type FundingResearcher, NoFundingResearch } from '../../funding/fund-research.js';
 import { toMarkdown } from '../../outputs/export.js';
+import { NO_RULES } from '../../team-rules/compile.js';
 import {
   type AgentRun,
   type CategoryAgent,
@@ -25,6 +27,7 @@ import {
   runStandalone,
   StandalonePlanner,
 } from './follow-ups.js';
+import { runFunding } from './funding.js';
 import { withoutOpportunities } from './opportunities.js';
 import { type LaunchInputs, type PlanRun, runBuild } from './pipeline.js';
 import type { QueryPlanCore, QueryPlanner } from './planner.js';
@@ -73,6 +76,8 @@ export interface LaunchAgentDeps<
   plan: (outputId: string) => Promise<{ output: Output; inputs: unknown } | null>;
   /** The team's own figures read against a plan's pace, for a rescue. Null when there are none to read. */
   pace?: (outputId: string) => Promise<PaceState | null>;
+  /** Looks up funds and sponsorship on the web, for the funding job. None when search is not set up. */
+  funding?: FundingResearcher;
   /** The planner for an answer: the model planner, or a scripted summary of the plan. */
   planner: (plan: Output) => Planner;
   /** The planner for a standalone chat. Without a model it says it cannot talk freely. */
@@ -255,6 +260,21 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
             output,
             inputs,
             (await this.deps.pace?.(output.id)) ?? null,
+            handoff.title,
+          ),
+        );
+      case 'funding':
+        return withTokens(
+          await runFunding(
+            {
+              emit,
+              config: this.deps.config,
+              researcher: this.deps.funding ?? new NoFundingResearch(),
+            },
+            output,
+            inputs,
+            handoff.facts ?? { stage: null, nationality: null },
+            handoff.rules ?? NO_RULES,
             handoff.title,
           ),
         );

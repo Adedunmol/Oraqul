@@ -115,6 +115,55 @@ export function staleEvent(
   };
 }
 
+export interface PipelineRow {
+  id: string;
+  kind: 'sponsor' | 'fund';
+  name: string;
+  status: string;
+  nextFollowUpOn: string | null;
+  deadline: string | null;
+  source: { url: string; title: string; retrievedAt: string } | null;
+}
+
+const OPEN = ['found', 'qualified', 'drafted', 'approved'];
+
+/** A fund closing soon that is still being worked, and a follow up that is due. */
+export function pipelineEvents(rows: PipelineRow[], today: string): DraftEvent[] {
+  const out: DraftEvent[] = [];
+  for (const r of rows) {
+    if (r.kind === 'fund' && r.deadline && OPEN.includes(r.status)) {
+      const days = daysBetween(today, r.deadline);
+      if (days >= 0 && days <= WATCH_RULES.deadlineSoonDays.value) {
+        const severity: WatchSeverity =
+          days <= WATCH_RULES.milestoneActAfterDays.value ? 'act' : 'watch';
+        out.push({
+          type: 'deadline_soon',
+          severity,
+          dedupeKey: `deadline:${r.id}:${severity}`,
+          title: `${r.name} closes ${r.deadline}`,
+          reason: `The published deadline for ${r.name} is ${r.deadline}, ${plural(days, 'day')} away. Terms change: confirm it on the source page.`,
+          evidence: r.source ? [{ ...r.source, quote: null }] : [],
+        });
+      }
+    }
+    if (
+      r.nextFollowUpOn &&
+      r.nextFollowUpOn <= today &&
+      ['sent_by_you', 'replied', 'approved'].includes(r.status)
+    ) {
+      out.push({
+        type: 'follow_up_due',
+        severity: 'watch',
+        dedupeKey: `follow:${r.id}:${r.nextFollowUpOn}`,
+        title: `Follow up with ${r.name}`,
+        reason: `You planned to follow up with ${r.name} on ${r.nextFollowUpOn}.`,
+        evidence: [],
+      });
+    }
+  }
+  return out;
+}
+
 export function paceEvent(result: PaceResult | null): DraftEvent | null {
   if (!result || result.verdict !== 'behind' || result.gap === null || result.gapPoints === null) {
     return null;

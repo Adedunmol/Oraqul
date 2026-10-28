@@ -49,6 +49,7 @@ export type FollowUp =
   | { job: 'partner'; partner: string | null }
   | { job: 'creative' }
   | { job: 'rescue' }
+  | { job: 'funding' }
   | { job: 'audit' }
   | { job: 'fix' };
 
@@ -98,6 +99,15 @@ const CREATIVE_ASK =
 // A rescue is asked for in plain words, so code reads it and no model decides it.
 const RESCUE_ASK =
   /\b(?:rescue\s+(?:this|that|the|my|our|it)\b|turn (?:this|the|my|our) (?:launch|plan|campaign) around|get (?:us |this |it |the launch )?back on (?:pace|track))\b/i;
+
+// Funding and sponsors are asked for in plain words, so code reads it and no model decides it.
+const FUNDING_ASK =
+  /\b(?:find|look\s+(?:for|up)|search(?:\s+for)?|show|get|list)\b[^.?!\n]{0,40}\b(?:funding|funds|grants?|sponsors?|sponsorships?|financing|loans?)\b|\bfunding\s+and\s+sponsors\b|\bwho\s+(?:could|can|might)\s+sponsor\b/i;
+
+/** Whether a message asks for funds, grants or sponsors for the plan. */
+export function askedFunding(text: string): boolean {
+  return FUNDING_ASK.test(text);
+}
 
 /** Whether a message asks for a rescue of a launch that is behind its pace. */
 export function askedRescue(text: string): boolean {
@@ -159,6 +169,7 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
 
   if (rivals.length) return { job: 'date', rivals };
   if (askedRescue(text)) return { job: 'rescue' };
+  if (askedFunding(text)) return { job: 'funding' };
   if (askedCreative(text)) return { job: 'creative' };
   if (askedRefresh(text) && !askedJob(text)) return { job: 'refresh' };
   const asked = askedJob(text);

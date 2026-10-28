@@ -132,6 +132,28 @@ export const GUIDE_PAGES: GuidePage[] = [
         items: GUIDE_DETAILS.map((d) => ({ label: d.label, text: d.why })),
       },
       {
+        heading: 'Say it once for the whole team',
+        layout: 'list',
+        items: [
+          {
+            label: 'Team defaults.',
+            text: 'Owners and editors write what every plan should follow in Team, then Team defaults, and save: your markets, a budget ceiling and its currency, tone and language, brand safety, banned partners and topics, channels you never use, and who must approve anything that leaves Oraqul. Say it in your own words, such as “We don’t welcome homophobic suggestions”. The box always shows what you last saved, and editing the words is how you change or remove a rule.',
+          },
+          {
+            label: 'Saved means live.',
+            text: 'There is no approval step: once saved, every later run follows what you wrote. Below the box you see, in plain sentences, what Oraqul took from it and anything it left out. Owners and editors can save. Only an owner can set who must approve anything that leaves Oraqul.',
+          },
+          {
+            label: 'What code enforces.',
+            text: 'A budget ceiling, the places you cover (used when a brief names no city), banned partners, channels you never use and who approves. A rule that asks Oraqul to hide a weak result, to change a verdict, to treat people differently because of who they are, or to send things by itself is not accepted, and says why.',
+          },
+          {
+            label: 'When a brief clashes.',
+            text: 'If your message names something a rule rules out, Oraqul asks once whether to keep the limit or go ahead for this run. Going ahead is logged against the rule.',
+          },
+        ],
+      },
+      {
         heading: 'Weak and strong, side by side',
         compare: [
           { label: 'Release date', weak: 'Opening in spring.', strong: 'Opening on 2027-03-12.' },
@@ -254,6 +276,18 @@ export const GUIDE_PAGES: GuidePage[] = [
             text: '“Rescue this launch”, or Start a rescue on the Watch tab when the figures are behind. It names the territory and channel to put the next seven days into, from your plan’s own findings and your figures. It makes no new Qloo call and saves a short plan beside yours.',
           },
           {
+            label: 'Find sponsors and funding.',
+            text: 'On the Funding and sponsors tab, say your stage and nationality, then “Find funding and sponsors”. You get the brands Qloo ranks for each of your territories with a recent sponsorship a page confirms, and funds, grants and programmes that are open now. Every fund shows its source and the day it was read, and an amount or date a page does not state shows as unknown. “Published criteria met” is not a promise: confirm on the source page before you apply. Oraqul never quotes a fee or the terms of a loan.',
+          },
+          {
+            label: 'Pitch and apply from your own app.',
+            text: 'Write the draft from the plan, approve it, and it opens in your own email or WhatsApp with the text ready. Oraqul sends nothing: you send it, then confirm “Yes, I sent it” and the item moves along your pipeline, with a follow up date in your calendar. If your team’s defaults say an owner must approve, only an owner can.',
+          },
+          {
+            label: 'Use Oraqul from another agent.',
+            text: 'In Settings, then Connections, make a personal token and connect Claude, ChatGPT or any MCP client to Oraqul’s hosted server. The agent can start a plan, an audit or a fix, follow the run and read the finished summary and watch events. It cannot send anything, change your defaults or make a token, and a run counts against your monthly runs.',
+          },
+          {
             label: 'Add results.',
             text: 'After launch, give totals by city or age band, and say the period they cover and where they came from: “Source: box office report”. Oraqul sets them against where the plan put each place, and a fix writes a revised plan around who showed up. Your figures show what happened, not why. For a test, add the figures for each angle and Oraqul compares them, or says inconclusive when they are thin or close.',
           },
@@ -278,6 +312,9 @@ export const GUIDE_PAGES: GuidePage[] = [
             text: 'No forecasts of sales, streams, downloads or box office. A target is your goal, not a prediction.',
           },
           { text: 'No pricing advice, and no price for a partner. Price is always unknown.' },
+          {
+            text: 'No financial advice, no arranging or brokering financing, and no quote of a sponsorship fee or loan terms. It never says a team qualifies: it says which published criteria appear met and which are unknown.',
+          },
           {
             text: 'No ads, trailers, images or video. It writes the script, shot list, key art brief, caption pack and hook options, and a person makes the final creative.',
           },

@@ -1,5 +1,6 @@
 import { demoFetch, QlooClient, type SeenEntity, type ToolContext } from '@oraqul/engine';
 import { briefSchema, launchPlanSchema, type ThreadEvent } from '@oraqul/schema';
+import { NO_RULES } from '../../team-rules/compile.js';
 import type { Handoff } from '../category-agents.js';
 import type { RawReview, ReviewInput } from '../launch/review.js';
 import { type PlanRun, runFilmBuild } from './pipeline.js';
@@ -109,6 +110,21 @@ describe('Film build pipeline on demo data', { timeout: 20_000 }, () => {
     expect(
       events.filter((e) => e.type === 'trace.step').map((e) => e.type === 'trace.step' && e.step),
     ).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+
+  it('plans a title and a city as a typical Nollywood film, with no question and no ask for comps', async () => {
+    const { events, handoff, deps } = setup(
+      'I want to launch a new movie called Salty Road in Lagos',
+    );
+    const run = await runFilmBuild(handoff, deps());
+    expect(events.some((e) => e.type === 'question')).toBe(false);
+    const traced = events.flatMap((e) => (e.type === 'trace.step' ? [e.text] : [])).join('\n');
+    expect(traced).toContain('planning for a typical Nollywood film');
+    // The demo Qloo has no drama tag, so this run may end with Qloo's own nothing to find. It must
+    // then ask for a description, never for comps.
+    const said = events.flatMap((e) => (e.type === 'message' ? [e.body] : [])).join('\n');
+    if (run.output) expect(said).toContain('I will sharpen it');
+    else expect(said).not.toMatch(/name a few|Name a few/);
   });
 
   it('asks one question when the brief has no market, then plans with the answer', async () => {
@@ -517,61 +533,11 @@ describe('the platform card', () => {
     };
   }
 
-  it('suggests platforms for the market before any research, and plans only the ones picked', async () => {
+  it('never asks for platforms: a brief that names none is planned on the usual ones', async () => {
     const { handoff, deps } = platformSetup(bare);
-    const first = await runFilmBuild(handoff, deps());
-    expect(first.reason).toBe('waiting');
-    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
-    const asked = first.state.pending;
-    expect(asked).toMatchObject({ id: 'film.platforms', card: 'multi' });
-    const offered = asked?.options.map((o) => o.id) ?? [];
-    expect(offered.length).toBeGreaterThanOrEqual(5);
-    expect(offered).toEqual(expect.arrayContaining(['Instagram', 'TikTok', 'X']));
-    expect(offered.at(-1)).toBe('WhatsApp');
-    expect(first.receipts).toHaveLength(0);
-
-    const done = await runFilmBuild(handoff, deps(), {
-      state: first.state,
-      reply: { kind: 'options', questionId: 'film.platforms', optionIds: ['X', 'Instagram'] },
-    });
-    expect(done.reason).toBe('finished');
-    const plan = done.output?.plan;
-    for (const t of plan?.territories ?? []) {
-      expect(t.channels.map((c) => c.name)).toEqual(['Instagram', 'X']);
-    }
-    expect(plan?.sections.find((s) => s.key === 'channels')?.lines[0]?.text).toMatch(
-      /Lead on Instagram and X\.$/,
-    );
-  });
-
-  it('leads with WhatsApp never, even when it is picked: it is added after the public platforms', async () => {
-    const { handoff, deps } = platformSetup(bare);
-    const first = await runFilmBuild(handoff, deps());
-    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
-    const done = await runFilmBuild(handoff, deps(), {
-      state: first.state,
-      reply: {
-        kind: 'options',
-        questionId: 'film.platforms',
-        optionIds: ['WhatsApp', 'Instagram', 'TikTok', 'YouTube'],
-      },
-    });
-    const lagos = done.output?.plan?.territories[0];
-    expect(lagos?.channels.at(-1)).toEqual({ name: 'WhatsApp', lead: false });
-  });
-
-  it('plans on the suggested lead platforms when the answer names none', async () => {
-    const { handoff, deps } = platformSetup(bare);
-    const first = await runFilmBuild(handoff, deps());
-    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
-    const done = await runFilmBuild(handoff, deps(), {
-      state: first.state,
-      reply: { kind: 'typed', text: 'you choose' },
-    });
-    expect(done.reason).toBe('finished');
-    expect(done.output?.plan?.territories[0]?.channels.map((c) => c.name)).not.toContain(
-      'WhatsApp',
-    );
+    const run = await runFilmBuild(handoff, deps());
+    expect(run.reason).toBe('finished');
+    expect(run.output?.plan?.territories[0]?.channels.map((c) => c.name)).not.toContain('WhatsApp');
   });
 
   it('does not ask when the brief names the platforms', async () => {
@@ -580,5 +546,29 @@ describe('the platform card', () => {
     expect(run.reason).toBe('finished');
     const lagos = run.output?.plan?.territories.find((t) => t.name === 'Lagos');
     expect(lagos?.channels.map((c) => c.name)).toEqual(['TikTok', 'YouTube']);
+  });
+});
+
+describe('the budget band from team defaults', () => {
+  it('is not asked when the team set a ceiling, and the plan says where it came from', async () => {
+    const { handoff, deps } = setup('Launch "Salty Road", a drama opening in Lagos.');
+    // `setup` states a band; this spec is about the brief that states none.
+    const text = 'Launch "Salty Road", a drama opening in Lagos.';
+    const run = await runFilmBuild(
+      {
+        ...handoff,
+        inputs: { text, files: [] },
+        message: { text, files: [] },
+        rules: {
+          ...NO_RULES,
+          applied: [{ id: 'r1', version: 1 }],
+          budgetMax: { amount: 50_000, currency: 'GBP' },
+        },
+      },
+      deps(),
+    );
+    if (run.state?.job === 'build') expect(run.state.pending?.id).not.toBe('film.band');
+    expect(run.reason).toBe('finished');
+    expect(run.output?.plan?.band).toMatchObject({ band: 'independent', source: 'assumed' });
   });
 });

@@ -248,7 +248,7 @@ function gapsSection(read: ShowsRead, comps: { used: CompUsed[] }): LaunchSectio
         ]),
     ...(comps.used.some((c) => c.source === 'added')
       ? [
-          'Name two or three acts your audience also follows, and every recommendation gets sharper.',
+          'Say what kind of show it is and who is on the bill, and the plan can be built around them.',
         ]
       : []),
     ...(read.ages.length
@@ -476,13 +476,13 @@ export const showsLaunch: LaunchConfig<ShowsRead, ShowsQueryPlan> = {
   minimum: {
     id: 'shows.minimum',
     example: 'For example: “A stand-up night in Lagos on 2027-03-12 for 25 to 34.”',
-    missing: (read) =>
-      [
-        read.act || read.genre || read.showType
-          ? null
-          : 'who the act is and what kind of show it is',
-        read.places.length ? null : 'at least one city the show plays',
-      ].filter((m): m is string => m !== null),
+    missing: (read) => (read.places.length ? [] : ['at least one city the show plays']),
+  },
+  typical: {
+    genre: 'comedy',
+    country: 'Nigeria',
+    label: 'a typical live comedy night',
+    described: (read) => read.act !== null || read.showType !== null,
   },
   pickModules: (read) =>
     showsPlan.pickModules({ scope: read.scope, ask: read.ask, hasBudget: read.budget !== null }),

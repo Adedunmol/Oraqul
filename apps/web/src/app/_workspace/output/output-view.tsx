@@ -1,6 +1,12 @@
 'use client';
 
-import type { CampaignState, OutputDetail, OutputTabKey, WatchState } from '@oraqul/schema';
+import type {
+  CampaignState,
+  FundingState,
+  OutputDetail,
+  OutputTabKey,
+  WatchState,
+} from '@oraqul/schema';
 import { Button, buttonClassName, Icon, TabNote, Tabs } from '@oraqul/ui';
 import Link from 'next/link';
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
@@ -26,6 +32,7 @@ import {
   ResultsTab,
   SummaryTab,
 } from './tabs-core';
+import { FundingTab } from './tabs-funding';
 import { CallsTab, KitTab } from './tabs-launch';
 import { RefreshTab } from './tabs-refresh';
 import {
@@ -79,6 +86,7 @@ const TAB_BODY: Record<OutputTabKey, () => ReactNode> = {
   kit: KitTab,
   campaign: CampaignTab,
   watch: WatchTab,
+  funding: FundingTab,
   refresh: RefreshTab,
   route: RouteTab,
   supportacts: SupportActsTab,
@@ -108,6 +116,7 @@ export function OutputView({
   dock,
   campaign = null,
   watch = null,
+  funding = null,
   shared = false,
   publicExample = false,
 }: {
@@ -116,6 +125,8 @@ export function OutputView({
   campaign?: CampaignState | null;
   /** The plan's watch and pace, fetched by the page. A shared link has none, so it has no Watch tab. */
   watch?: WatchState | null;
+  /** The plan's funding and sponsors, fetched by the page. A shared link has none. */
+  funding?: FundingState | null;
   initialTab: OutputTabKey | undefined;
   canEdit: boolean;
   /** The output's share link, once it has been turned on. Without the prop there is no Share button. */
@@ -133,7 +144,10 @@ export function OutputView({
   // A shared link is read only and carries no campaign, so that tab stays out of it.
   const all = output.tabs.filter(
     (t) =>
-      t.key !== 'contrast' && !(shared && t.key === 'campaign') && !(t.key === 'watch' && !watch),
+      t.key !== 'contrast' &&
+      !(shared && t.key === 'campaign') &&
+      !(t.key === 'watch' && !watch) &&
+      !(t.key === 'funding' && !funding),
   );
   const keys = all.map((t) => t.key);
   // The API lists the tabs in order: a launch plan opens on Plan, the older outputs on Summary.
@@ -170,10 +184,11 @@ export function OutputView({
         reaction: detail.reaction,
         campaign: shared ? null : campaign,
         watch,
+        funding,
         canEdit: canEdit && !shared,
         shared,
       }),
-    [output, builtOn, detail.reaction, campaign, watch, canEdit, shared, goToTab],
+    [output, builtOn, detail.reaction, campaign, watch, funding, canEdit, shared, goToTab],
   );
 
   // Territories is the heart of a plan that has them, so it stays beside the plan.

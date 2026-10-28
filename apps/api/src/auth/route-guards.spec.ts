@@ -1,12 +1,17 @@
 import 'reflect-metadata';
 import type { Type } from '@nestjs/common';
+import { FundingController } from '../funding/funding.controller.js';
 import { GuideController } from '../guide/guide.controller.js';
 import { HealthController } from '../health/health.controller.js';
+import { McpController } from '../mcp-http/mcp.controller.js';
+import { TokenGuard } from '../mcp-http/token.guard.js';
+import { TokensController } from '../mcp-http/tokens.controller.js';
 import { CalendarController, CalendarFeedController } from '../projects/calendar.controller.js';
 import { PinsController } from '../projects/pins.controller.js';
 import { ProjectsController } from '../projects/projects.controller.js';
 import { SharesController } from '../projects/shares.controller.js';
 import { RulesController } from '../rules/rules.controller.js';
+import { TeamRulesController } from '../team-rules/team-rules.controller.js';
 import { InvitesController } from '../teams/invites.controller.js';
 import { TeamsController } from '../teams/teams.controller.js';
 import { UploadsController } from '../uploads/uploads.controller.js';
@@ -34,6 +39,10 @@ const controllers: Type[] = [
   RulesController,
   WatchController,
   AllowanceController,
+  TeamRulesController,
+  FundingController,
+  McpController,
+  TokensController,
 ];
 
 // Routes open to someone with no session, on purpose.
@@ -52,6 +61,10 @@ const open = new Set([
   'GET auth/google',
   'GET auth/google/callback',
 ]);
+
+// The hosted MCP server takes a personal access token, not a session, on every call. A route may
+// lack a session guard only if it has the token guard, and only these routes may.
+const tokenOnly = new Set(['POST mcp', 'GET mcp', 'DELETE mcp']);
 
 // Routes that name a project but need no role in its team, because they only touch the caller's own
 // row: unpinning deletes the caller's pin, so someone who left the team can still tidy up.
@@ -99,7 +112,12 @@ describe('route guards', () => {
   });
 
   it('puts a session guard on every route that is not open on purpose', () => {
-    const unguarded = all.filter((r) => !open.has(r.key) && !r.guards.includes(SessionGuard));
+    const unguarded = all.filter(
+      (r) =>
+        !open.has(r.key) &&
+        !r.guards.includes(SessionGuard) &&
+        !(tokenOnly.has(r.key) && r.guards.includes(TokenGuard)),
+    );
     expect(unguarded.map((r) => r.key)).toEqual([]);
   });
 
@@ -113,8 +131,16 @@ describe('route guards', () => {
     expect(missing.map((r) => r.key)).toEqual([]);
   });
 
+  it('keeps the token routes to the MCP server, each with the token guard and none with a session', () => {
+    const tokened = all.filter((r) => r.guards.includes(TokenGuard)).map((r) => r.key);
+    expect(tokened.sort()).toEqual([...tokenOnly].sort());
+    expect(all.filter((r) => tokenOnly.has(r.key) && r.guards.includes(SessionGuard))).toEqual([]);
+  });
+
   it('keeps the open routes to the list above', () => {
-    const seen = all.filter((r) => !r.guards.includes(SessionGuard)).map((r) => r.key);
+    const seen = all
+      .filter((r) => !r.guards.includes(SessionGuard) && !tokenOnly.has(r.key))
+      .map((r) => r.key);
     expect(seen.sort()).toEqual([...open].filter((k) => seen.includes(k)).sort());
   });
 });

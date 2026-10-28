@@ -1,4 +1,4 @@
-import type { Category } from '@oraqul/schema';
+import type { Category, MoneyType } from '@oraqul/schema';
 import { type LauncherKind, type PartnerTier, teamRule } from './shared';
 import type { Rule } from './types';
 
@@ -227,6 +227,38 @@ export const PARTNER_RULES = {
     room: 'These are starting ideas. Ask the partner what they would build, and leave the creative open to them.',
   }),
 };
+
+/**
+ * What a partner could give, from what it is. A named brand is in kind: "Never assume a cash
+ * sponsorship" (T1). A kind of partner is read from its name, so a cinema is placement and a
+ * radio station is media. Never cash from a guess.
+ */
+export function moneyTypeOf(input: { kind: 'brand' | 'kind'; name: string }): MoneyType {
+  if (input.kind === 'brand') return 'in_kind';
+  const n = input.name.toLowerCase();
+  if (
+    /\b(ticket|screening|giveaway|premiere|community group|club|society|church|school|university)\b/.test(
+      n,
+    )
+  ) {
+    return 'bulk_tickets';
+  }
+  if (
+    /\b(radio|tv|television|newspaper|magazine|blog|podcast|press|media|billboard|ad space|airtime)\b/.test(
+      n,
+    )
+  ) {
+    return 'media';
+  }
+  if (
+    /\b(cinema|venue|theatre|theater|screen|bookshop|bookstore|shop|store|hotel|restaurant|bar|cafe)\b/.test(
+      n,
+    )
+  ) {
+    return 'placement';
+  }
+  return 'in_kind';
+}
 
 export const FLAGSHIPS: string[] = [
   ...new Set(Object.values(SEEDS.value).flatMap((tiers) => tiers.A.names)),

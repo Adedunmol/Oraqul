@@ -14,6 +14,8 @@ export const WATCH_RULES = {
   rivalSameWeekendDays: teamRule('watch.rival-same-weekend-days', 2),
   /** An undone milestone this many days late is an act event. */
   milestoneActAfterDays: teamRule('watch.milestone-act-after-days', 3),
+  /** A fund deadline this close, for a fund still being worked, is a watch event. */
+  deadlineSoonDays: teamRule('watch.deadline-soon-days', 14),
   /** How far either side of the release date a search looks for rivals. */
   rivalSearchDays: teamRule('watch.rival-search-days', 28),
 };

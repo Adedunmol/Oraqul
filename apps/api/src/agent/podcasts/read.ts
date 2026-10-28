@@ -226,7 +226,7 @@ Rules:
 - window: the release date or window as written ("Q3 2027", "October").
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which markets, or which shows to swap with. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: crosspromo (shows to swap with), guests, partnerships (sponsors), publicity (press, newsletters), video (video and clips), live (live shows), community, cadence (episode schedule), timeline, budget, measure (what to track), risks. Null when it is about markets or the audience, or when scope is full.
-- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real podcasts whose listeners are likely the same, from the subject, the style and where the audience is, enough to reach 3 to 5 in all. Names only. Code checks each in Qloo. The person is never asked for comps.
+- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real podcasts whose listeners are likely the same, from the subject, the topics, the style, where the audience is, and the other shows of any hosts or guests named, A person cannot be looked up as a signal in Qloo, so use their other work in their place. Enough to reach 3 to 5 in all. Names only. Code checks each in Qloo. The person is never asked for comps.
 - Plain words, no exclamation marks.`;
 
 export class ModelPodcastsReader implements PodcastsReader {

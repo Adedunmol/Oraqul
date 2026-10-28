@@ -20,6 +20,8 @@ export const watchEventTypes = [
   'milestone_overdue',
   'plan_stale',
   'pace_behind',
+  'deadline_soon',
+  'follow_up_due',
 ] as const;
 export const watchEventTypeSchema = z.enum(watchEventTypes);
 export type WatchEventType = z.infer<typeof watchEventTypeSchema>;

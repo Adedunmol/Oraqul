@@ -39,6 +39,12 @@ import {
 } from '@oraqul/schema';
 import { z } from 'zod';
 import {
+  conflictsOf,
+  guidanceText,
+  NO_RULES,
+  withoutBlockedChannels,
+} from '../../team-rules/compile.js';
+import {
   ATTACHMENT_CHARS,
   cutFiles,
   type Handoff,
@@ -50,6 +56,7 @@ import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
 import {
   bandFromAnswer,
   bandFromBrief,
+  bandOfBudget,
   bandQuestion,
   bandQuestionId,
   withLauncher,
@@ -82,7 +89,6 @@ import type { QueryPlanCore } from './planner.js';
 import {
   marketOf,
   platformLine,
-  platformQuestion,
   platformQuestionId,
   platformsChosen,
   platformsFromAnswer,
@@ -98,6 +104,13 @@ import {
   ScriptedResearchPlanner,
 } from './research-loop.js';
 import { feedbackLines, judge, MAX_ROUNDS, reviewOf, ScriptedReviewer } from './review.js';
+import {
+  effectiveRules,
+  enforceRead,
+  rulesQuestion,
+  rulesQuestionId,
+  withoutBlockedPartners,
+} from './rules-gate.js';
 import { codeLine, measureSection, signalOf } from './signal.js';
 import type { BuildState, LaunchState } from './state.js';
 import { channelsSection, territoriesOf, withLines } from './territories.js';
@@ -581,6 +594,8 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let platforms: string[] | null = null;
   let rivals: Rival[] = [];
   let brands: string[] = [];
+  let rulesOverride = false;
+  let assumedLabel: string | null = null;
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -626,6 +641,14 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       extra = resume.state.extra;
       kind = resume.state.kind;
       band = resume.state.band;
+    } else if (resume?.state.pending?.id === rulesQuestionId(deps.config.category)) {
+      // The card's answer is a choice about the team's defaults, not more of the brief.
+      const typed = resume.reply.kind === 'typed' || resume.reply.kind === 'text';
+      rulesOverride =
+        !typed && (resume.reply as { optionIds: string[] }).optionIds.includes('override');
+      extra = resume.state.extra;
+      kind = resume.state.kind;
+      band = resume.state.band;
     } else if (resume) {
       extra = `${resume.state.extra}\n\n${replyText(resume.state, resume.reply)}`.trim();
       kind = resume.state.kind;
@@ -651,9 +674,17 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     ctx.tokens += analysed.tokens;
     ({ read, understanding } = applyAnalysis(read, analysed.analysis));
 
+    // A brief that names no city plans for the team's own markets, when its defaults list them, so
+    // the team is not asked for what it already told Oraqul. A city the brief names is never replaced.
+    const markets = handoff.rules?.allowedTerritories ?? [];
+    if (read.places.length === 0 && markets.length > 0) {
+      read = { ...read, places: [...markets] };
+      ctx.trace(`Planning for your team’s markets: ${markets.join(', ')}`);
+    }
+
     // The first question a build may ask: there is nothing to plan from without these (PRD C1). A full plan may also ask for the budget band, below.
     const missing = deps.config.minimum.missing(read);
-    if (missing.length && (!resume || deps.config.minimum.strict)) {
+    if (missing.length && !resume) {
       const question: Question = {
         id: deps.config.minimum.id,
         card: 'text',
@@ -672,8 +703,37 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         band: null,
         askedPlatforms: false,
         platforms: null,
+        askedRules: false,
+        rulesOverride: false,
         pending: question,
       });
+    }
+
+    // A brief that says nothing about the work is planned as the category's typical launch, and the
+    // plan says so. What the person adds afterwards (description, genre, comps) sharpens it.
+    const bare =
+      !read.genre &&
+      read.comps.length === 0 &&
+      read.suggestedComps.length === 0 &&
+      !deps.config.typical.described(read);
+    if (bare) {
+      const { typical } = deps.config;
+      read = { ...read, genre: typical.genre, country: read.country ?? typical.country ?? null };
+      if (understanding) {
+        understanding = {
+          ...understanding,
+          assumed: [
+            ...understanding.assumed,
+            {
+              what: 'genre',
+              value: typical.genre,
+              why: `Nothing was said about it, so this is ${typical.label}.`,
+            },
+          ],
+        };
+      }
+      assumedLabel = typical.label;
+      ctx.trace(`No description given, so planning for ${typical.label}`);
     }
 
     // The second question a full build may ask: what the budget can carry decides which partners
@@ -681,6 +741,29 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     rivals = rivalsFrom(input.text);
     brands = brandsFrom(input.text);
     band = band ?? bandFromBrief(read, input.text);
+    // The team's budget ceiling sizes the plan when the brief gives no budget: asking for a figure the
+    // team already set would be a silly question. It is a ceiling, so the plan never goes above it.
+    const ceiling = handoff.rules?.budgetMax;
+    if (!band && ceiling) {
+      band = {
+        band: bandOfBudget({ amount: ceiling.amount, currency: ceiling.currency }),
+        source: 'assumed',
+      };
+      ctx.trace('Sizing the plan from your team’s budget ceiling');
+      if (understanding) {
+        understanding = {
+          ...understanding,
+          assumed: [
+            ...understanding.assumed,
+            {
+              what: 'budget',
+              value: `up to ${ceiling.currency} ${ceiling.amount.toLocaleString('en-GB')}`,
+              why: 'Taken from your team’s defaults, because the brief gave no budget.',
+            },
+          ],
+        };
+      }
+    }
     if (!band && read.scope === 'full' && !resume?.state.askedBand) {
       const question = bandQuestion(deps.config.category);
       deps.emit({ type: 'question', agent: deps.config.category, ...question });
@@ -694,16 +777,30 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         band: null,
         askedPlatforms: false,
         platforms: null,
+        askedRules: false,
+        rulesOverride: false,
         pending: question,
       });
     }
 
-    // The third question a full build may ask: which platforms to plan on. A brief that names them
-    // has answered it. Asked before the research so the plan is written for the ones chosen.
+    // Platforms are never asked: a brief that names them is planned on them, and any other plans on
+    // the format's usual platforms. The plan's "To sharpen" says that naming them would sharpen it.
     platforms =
       platforms ?? (platformsChosen(input.text).length ? platformsChosen(input.text) : null);
-    if (!platforms && read.scope === 'full' && !resume?.state.askedPlatforms) {
-      const question = platformQuestion(deps.config.category, marketOf(read));
+
+    // The fourth question a build may ask: a brief that asks for what the team's defaults rule out
+    // gets one card. Asked once, before any research.
+    const defaults = handoff.rules ?? NO_RULES;
+    const clashes = defaults.applied.length
+      ? conflictsOf(defaults, {
+          places: read.places,
+          budget: read.budget,
+          brands: [...brands, ...read.partners],
+          platforms,
+        })
+      : [];
+    if (clashes.length && !resume?.state.askedRules) {
+      const question = rulesQuestion(deps.config.category, clashes);
       deps.emit({ type: 'question', agent: deps.config.category, ...question });
       return ctx.stop('waiting', {
         job: 'build',
@@ -714,11 +811,51 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
         askedBand: true,
         band,
         askedPlatforms: true,
-        platforms: null,
+        platforms,
+        askedRules: true,
+        rulesOverride: false,
         pending: question,
       });
     }
   }
+
+  // The team's defaults, applied in code. A person who chose to go ahead against a clash sets only
+  // that rule aside for this run, and it is logged against the rule.
+  let rules = handoff.rules ?? NO_RULES;
+  if (rulesOverride && rules.applied.length) {
+    const clashes = conflictsOf(rules, {
+      places: read.places,
+      budget: read.budget,
+      brands: [...brands, ...read.partners],
+      platforms,
+    });
+    const kinds = new Set(clashes.map((c) => c.kind));
+    await handoff.onOverride?.(
+      [...kinds]
+        .flatMap((k) => rules.byKind[k] ?? [])
+        .concat(kinds.has('territory_block') ? (rules.byKind.territory_allow ?? []) : []),
+    );
+    rules = effectiveRules(rules, clashes);
+  }
+  const enforced = enforceRead(read, rules);
+  read = enforced.read;
+  if (enforced.dropped.length) {
+    ctx.trace(`Leaving out ${enforced.dropped.join(', ')}: the team’s defaults rule it out`);
+  }
+  if (enforced.clamped) ctx.trace('Holding the budget to the team’s ceiling');
+  if (read.places.length === 0 && enforced.dropped.length) {
+    deps.emit({
+      type: 'message',
+      body: `Every city in this brief is ruled out by your team’s defaults (${enforced.dropped.join(', ')}), so there is nothing to plan. Change the defaults, or ask again and choose to go ahead against them.`,
+      claims: [],
+    });
+    return ctx.stop('finished');
+  }
+  brands = brands.filter(
+    (b) => !rules.blockedPartners.some((x) => x.trim().toLowerCase() === b.trim().toLowerCase()),
+  );
+  platforms = withoutBlockedChannels(platforms, rules);
+  handoff = { ...handoff, rules };
 
   ctx.trace('Finding the comps in Qloo');
   let comps: Anchors;
@@ -769,7 +906,9 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     asked,
     extra,
     kind,
-    intro: `Here is the launch plan for “${title}”.`,
+    intro: assumedLabel
+      ? `Here is a first launch plan for “${title}”, written for ${assumedLabel} because the brief did not say what it is. Tell me what it is about, its genre and who it is for, and I will sharpen it.`
+      : `Here is the launch plan for “${title}”.`,
     band,
     platforms,
   });
@@ -805,7 +944,13 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     earlier?: NewOutput[];
   },
 ): Promise<PlanRun> {
-  const { handoff, title, read, comps, asked, extra, kind } = input;
+  const { handoff, title, read, comps, extra, kind } = input;
+  const team = handoff.rules ?? NO_RULES;
+  // The team's partners ruled out are taken out before the writer sees the findings, and again by
+  // the line check, so a name cannot come back through the model.
+  const asked = withoutBlockedPartners(input.asked, team);
+  const platforms = withoutBlockedChannels(input.platforms ?? null, team);
+  const guidance = guidanceText(team);
   // A full plan is always sized for a band: stated, asked, or assumed to be independent.
   const band: PlanBand | null = withLauncher(
     input.band ??
@@ -823,7 +968,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     cities: read.places,
     country: queryPlan.country,
     ranked: asked.grounded.brief.teamOrder.map((p) => p.place),
-    platforms: input.platforms ?? null,
+    platforms,
+    blockedChannels: team.blockedChannels,
   });
   const today = new Date().toISOString().slice(0, 10);
   // The content calendar: rows worked back from the release date, on each territory's lead channel.
@@ -856,7 +1002,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
         text,
         extra,
         band ? bandLine(band) : '',
-        input.platforms?.length ? platformLine(input.platforms) : '',
+        platforms?.length ? platformLine(platforms) : '',
+        guidance,
       ]
         .filter(Boolean)
         .join('\n\n'),
@@ -898,6 +1045,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
       launcher: band?.launcher ?? null,
       flagships: flagshipNames(grounded.findings),
       teamPartners: read.partners,
+      budgetMax: team.budgetMax,
+      blockedPartners: team.blockedPartners,
     };
     const writerSections = written.sections.filter(
       (s) =>
@@ -980,7 +1129,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     const out = await reviewer.review({
       category: deps.config.category,
       title,
-      request: [text, extra].filter(Boolean).join('\n\n'),
+      request: [text, extra, guidance].filter(Boolean).join('\n\n'),
       context: [
         ...(handoff.memory?.length
           ? ['Project notes:', ...handoff.memory.map((m) => `- ${m}`), '']
@@ -1068,6 +1217,7 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
     text: [text, extra].join('\n'),
     today,
     release: releaseDate(read.window),
+    blocked: team.blockedPartners,
   });
   const lead = deps.config.lead?.(read)?.trim().toLowerCase();
   const plan: LaunchPlan = {
@@ -1159,6 +1309,8 @@ export async function writePlan<R extends LaunchRead, P extends QueryPlanCore>(
           band,
           askedPlatforms: true,
           platforms: input.platforms ?? null,
+          askedRules: true,
+          rulesOverride: false,
           pending: settle,
         }
       : null,
@@ -1219,9 +1371,7 @@ export function noCompsStop(
     type: 'message',
     body: qlooFailed
       ? `Qloo did not answer just now, so I could not look up the ${deps.config.words.comps}${tried.length ? ` (${tried.join(', ')})` : ''}. Nothing is wrong with your brief. Send it again in a minute.`
-      : tried.length
-        ? `Qloo had nothing close to any of the comps (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`
-        : `I could not find comps for this launch, so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`,
+      : `Qloo had nothing close to this brief${tried.length ? ` or to the ${deps.config.words.comps} I tried (${tried.join(', ')})` : ''}, so I could not describe the audience yet. Tell me what it is about and its genre, and I will plan from that. You do not need to name ${deps.config.words.comps}.`,
     claims: ctx.receipts
       .slice(0, 1)
       .map((r) => ({ text: 'Searched Qloo.', receiptIds: [r.callId] })),
@@ -1348,16 +1498,20 @@ const releaseYear = z.looseObject({ release_year: z.number().optional() });
  */
 export async function findGenreComps(
   deps: {
-    config: Pick<LaunchConfig, 'anchorTypes' | 'genreTagPrefix' | 'words'>;
+    config: Pick<LaunchConfig, 'anchorTypes' | 'genreTagPrefix' | 'tagPhrases' | 'words'>;
     tools: ToolContext;
   },
   keep: (made: Receipt[]) => void,
   read: LaunchRead,
 ): Promise<Pick<Anchors, 'resolved' | 'used'>> {
   const none = { resolved: [], used: [] };
-  if (!read.genre) return none;
-  const words = read.genre.split(/[^\p{L}]+/u).filter((w) => w.length >= 4);
-  const phrases = [...new Set([read.genre, ...words])].slice(0, 5);
+  const extra = deps.config.tagPhrases?.(read) ?? [];
+  if (!read.genre && extra.length === 0) return none;
+  const words = (read.genre ?? '').split(/[^\p{L}]+/u).filter((w) => w.length >= 4);
+  const phrases = [...new Set([...(read.genre ? [read.genre] : []), ...extra, ...words])].slice(
+    0,
+    5,
+  );
   const found = await tools.resolveTags.run(deps.tools, {
     phrases: phrases.map((phrase) => ({
       phrase,
@@ -1421,7 +1575,7 @@ export async function findGenreComps(
         name: t.name,
         source: 'added',
         match: t.year ? String(t.year) : null,
-        choice: `Qloo had none of the comps by name, so I used “${t.name}”, which it lists for ${list(named)}${read.country ? ` from ${read.country}` : ''}. Name comps to sharpen the read.`,
+        choice: `Qloo had none of the comps by name, so I used “${t.name}”, which it lists for ${list(named)}${read.country ? ` from ${read.country}` : ''}. Tell me more about it to sharpen the read.`,
       });
     }
   }
@@ -1637,6 +1791,8 @@ function decisionsOf(input: {
   text: string;
   today: string;
   release: string | null;
+  /** Partners the team never proposes. */
+  blocked: string[];
 }) {
   const { asked, read, band, markets } = input;
   const ranked = asked.grounded.brief.teamOrder;
@@ -1657,6 +1813,7 @@ function decisionsOf(input: {
     ages: read.ages,
     launcher: band?.launcher ?? null,
     considered: asked.brands,
+    blocked: input.blocked,
   });
   const partnered = withPartnerIds(placed.territories, partnerCalls);
   return {

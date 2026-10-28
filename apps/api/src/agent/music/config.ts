@@ -98,7 +98,7 @@ function gapsSection(read: MusicRead, comps: { used: CompUsed[] }): LaunchSectio
   const texts = [
     ...(comps.used.some((c) => c.source === 'added')
       ? [
-          'Name two or three artists your audience also plays, and every recommendation gets sharper.',
+          'Say what the music sounds like and who it is made with or features, and the plan can be built around them.',
         ]
       : []),
     ...(read.ages.length
@@ -139,11 +139,13 @@ export const musicLaunch: LaunchConfig<MusicRead, MusicQueryPlan> = {
   minimum: {
     id: 'music.minimum',
     example: 'For example: “An afrobeats album from Lagos, with shows in Lagos and London.”',
-    missing: (read) =>
-      [
-        read.artist || read.genre ? null : 'who the artist is and what they are releasing',
-        read.places.length ? null : 'at least one city they play',
-      ].filter((m): m is string => m !== null),
+    missing: (read) => (read.places.length ? [] : ['at least one city they play']),
+  },
+  typical: {
+    genre: 'afrobeats',
+    country: 'Nigeria',
+    label: 'a typical afrobeats release',
+    described: (read) => read.artist !== null,
   },
   pickModules: (read) =>
     musicPlan.pickModules({

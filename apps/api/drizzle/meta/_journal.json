@@ -148,6 +148,34 @@
       "when": 1793123257154,
       "tag": "0020_actuals_pace",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1793139793158,
+      "tag": "0021_team_rules",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1793140710364,
+      "tag": "0022_funding",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793141579469,
+      "tag": "0023_api_tokens",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793144596600,
+      "tag": "0024_team_defaults_text",
+      "breakpoints": true
     }
   ]
 }

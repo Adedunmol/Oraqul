@@ -111,7 +111,7 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 
 ## Follow ups (after the chat has a plan)
 
-`FilmAgent` loads the plan, refuses forecasts, pricing or sending with fixed words, then reads the message and lets code pick the job:
+`FilmAgent` loads the plan, refuses forecasts, pricing, financial advice or sending with fixed words, then reads the message and lets code pick the job:
 
 | Job | Trigger | What runs | Saves |
 |---|---|---|---|
@@ -121,8 +121,13 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 | Fix | The plan is the whole ask: "fix this plan", "write a better plan" (also the Fix this plan button on a report). "Fix the budget in this plan" is an answer | The fix; on a saved report only the plan is new | `fix` output (and an `audit` when there was none) |
 | Rival date check | rival titles with YYYY-MM-DD dates | `scoreRivals`: rivals scored against the comps | `date` output |
 | Rescue | "rescue this launch", "turn the plan around", "get us back on pace" (also what approving a pace event posts) | `runRescue` in `launch/rescue.ts`: only when the team's figures are behind the plan's pace (`PaceService.state`); it picks the territory and channel by code, builds three sections from the plan's own findings, and checks every line like a plan line. No new Qloo call | `rescue` output, a narrow plan whose parent is the plan; the chat's plan does not change |
+| Funding and sponsors | "find funding and sponsors", "find grants", "who could sponsor" | `runFunding` in `launch/funding.ts`: the brands Qloo ranked for each territory from the plan (no new Qloo call), one web search each for a recent sponsorship, one search for open funds; every page is fetched by the API and a field is kept only if the page holds it; eligibility is code (`funding/eligibility.ts`); every line goes through the line check, and a sponsor or fund whose line fails is not kept. Without web search it lists the sponsors Qloo ranked and says so | `funding` output (a narrow plan of checked lines), and the sponsors and funds on the plan's pipeline (`funding_items`) |
 | Creative kit | "creative kit", "shot list", "caption pack" | Guides by code for one territory and channel, or every territory when asked for all of them | `creative` output |
 | Partner brief | "partner" + a name, or the first brand the plan names | An artist the plan's music findings ranked is backed by that finding; a brand or podcast is scored with `lift` against the baseline. The model drafts the pitch from findings, checked; the template is the fallback | `partner` output |
+
+## Team defaults in a run
+
+`RunService.agentSegment` loads the team's active rules (`TeamRulesService.forRun`, compiled by `team-rules/compile.ts`) and the project's facts into the `Handoff` (`rules`, `facts`) and a callback that logs an override. The build reads the brief, asks the three questions it may ask, then compares what the brief names with the hard rules: a clash gets one card (`launch/rules-gate.ts`), and the answer sets that rule aside for the run or keeps it. Then `enforceRead` takes ruled out places out of the brief and holds the budget at the ceiling before any Qloo call, `writePlan` takes banned partners out of the findings and the partner options, takes blocked channels out of every territory before the calendar is built, adds the soft rules to the writer's request and the red team's, and the line check fails a line that names a banned partner or states more than the ceiling. The versions of the rules a run followed are saved on every output it makes.
 
 ## After the plan: watch, figures and where a run came from
 

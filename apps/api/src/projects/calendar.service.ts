@@ -5,7 +5,7 @@ import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { releaseOf } from '../agent/launch/campaign.js';
 import { type Database, DB } from '../db/db.module.js';
-import { calendarFeeds, campaignActions, outputs, projects } from '../db/schema.js';
+import { calendarFeeds, campaignActions, fundingItems, outputs, projects } from '../db/schema.js';
 import { buildIcs, type IcsEvent, isIsoDay } from '../outputs/ics.js';
 
 const hash = (token: string) => createHash('sha256').update(token).digest('hex');
@@ -114,6 +114,30 @@ export class CalendarService {
           uid: `rival-${outputId}-${r.title}`,
           date: r.date,
           title: `Rival opens: ${r.title}`,
+        });
+      }
+    }
+
+    // Fund deadlines and the follow ups the team set on its pipeline: titles and dates, as the rest.
+    const pipeline = await this.db
+      .select()
+      .from(fundingItems)
+      .where(eq(fundingItems.planId, outputId));
+    for (const item of pipeline) {
+      if (item.status === 'lost' || item.status === 'won') continue;
+      const deadline = (item.data as { deadline?: unknown }).deadline;
+      if (item.kind === 'fund' && typeof deadline === 'string' && isIsoDay(deadline)) {
+        events.push({
+          uid: `fund-${item.id}`,
+          date: deadline,
+          title: `Fund deadline: ${item.name}`,
+        });
+      }
+      if (isIsoDay(item.nextFollowUpOn)) {
+        events.push({
+          uid: `follow-${item.id}`,
+          date: item.nextFollowUpOn,
+          title: `Follow up: ${item.name}`,
         });
       }
     }

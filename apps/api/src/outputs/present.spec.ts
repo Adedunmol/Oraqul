@@ -101,6 +101,7 @@ describe('presentOutput tabs for a plan', () => {
     expect(tabsOf('film', row(brief, plan()))).toEqual([
       'plan',
       'territories',
+      'funding',
       'watch',
       'audience',
       'assumptions',
@@ -127,6 +128,7 @@ describe('presentOutput tabs for a plan', () => {
       'plan',
       'route',
       'supportacts',
+      'funding',
       'watch',
       'audience',
       'assumptions',

@@ -246,31 +246,13 @@ describe('Podcasts build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(audience?.kind).toBe('playbook');
   });
 
-  it('asks again, and plans nothing, when the answer to the one question says nothing', async () => {
+  it('does not ask what it is: a bare brief goes on to the cards that follow, as a typical launch', async () => {
     const { handoff, deps } = setup('I want to work on my new podcast', 90, '');
     const first = await runPodcastsBuild(handoff, deps());
-    expect(first.reason).toBe('waiting');
-    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
-    expect(first.state.pending?.id).toBe('podcasts.minimum');
-
-    const again = await runPodcastsBuild(handoff, deps(), {
-      state: first.state,
-      reply: { kind: 'typed', text: 'try again bro' },
-    });
-    expect(again.reason).toBe('waiting');
-    expect(again.output).toBeNull();
-
-    if (again.state?.job !== 'build') throw new Error('Expected a paused build');
-    const done = await runPodcastsBuild(handoff, deps(), {
-      state: again.state,
-      reply: {
-        kind: 'typed',
-        text: 'a weekly football chat show for Nigerians, on Instagram and TikTok',
-      },
-    });
-    expect(done.reason).toBe('finished');
-    const read = podcastsInputsSchema.parse(done.output?.inputs).read;
-    expect(read.genre).toBe('football');
-    expect(read.regions).toEqual(['Nigeria']);
+    if (first.state?.job === 'build') {
+      expect(first.state.pending?.id).not.toBe('podcasts.minimum');
+    } else {
+      expect(first.reason).toBe('finished');
+    }
   });
 });

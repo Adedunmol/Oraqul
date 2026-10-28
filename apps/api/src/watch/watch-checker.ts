@@ -4,8 +4,16 @@ import { launchPlanSchema } from '@oraqul/schema';
 import { and, eq, gt } from 'drizzle-orm';
 import { releaseOf } from '../agent/launch/campaign.js';
 import { type Database, DB } from '../db/db.module.js';
-import { campaignActions, outputs, projects } from '../db/schema.js';
-import { type DraftEvent, milestoneEvents, paceEvent, rivalEvents, staleEvent } from './checks.js';
+import { campaignActions, fundingItems, outputs, projects } from '../db/schema.js';
+import {
+  type DraftEvent,
+  milestoneEvents,
+  type PipelineRow,
+  paceEvent,
+  pipelineEvents,
+  rivalEvents,
+  staleEvent,
+} from './checks.js';
 import { PaceService } from './pace.service.js';
 import { RIVAL_FINDER, type RivalFinder } from './rival-dates.js';
 
@@ -52,6 +60,40 @@ export class WatchChecker {
     } else {
       events.push(...milestoneEvents(actions, today));
     }
+
+    const pipeline = await this.db
+      .select()
+      .from(fundingItems)
+      .where(eq(fundingItems.planId, outputId));
+    events.push(
+      ...pipelineEvents(
+        pipeline.map((r): PipelineRow => {
+          const data = r.data as {
+            deadline?: string | null;
+            sourceUrl?: string;
+            sourceTitle?: string;
+            retrievedAt?: string;
+          };
+          return {
+            id: r.id,
+            kind: r.kind,
+            name: r.name,
+            status: r.status,
+            nextFollowUpOn: r.nextFollowUpOn,
+            deadline: r.kind === 'fund' ? (data.deadline ?? null) : null,
+            source:
+              r.kind === 'fund' && data.sourceUrl
+                ? {
+                    url: data.sourceUrl,
+                    title: data.sourceTitle ?? data.sourceUrl,
+                    retrievedAt: data.retrievedAt ?? today,
+                  }
+                : null,
+          };
+        }),
+        today,
+      ),
+    );
 
     const [newer] = await this.db
       .select({ id: outputs.id })

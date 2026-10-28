@@ -169,7 +169,7 @@ Rules:
 - partners: brands, media or organisations already signed as partners.
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which cities, or who should do the soundtrack. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: partnerships (music, brands, media partners), placement (trailer and ad placement), publicity (press, podcasts), community (grassroots, churches, campuses), route (release route and window), timeline, cadence (series release cadence), budget, measure (what to track), risks. Null when it is about cities or the audience, or when scope is full.
-- suggestedComps: only when they named fewer than 3 comps. Propose well known, real films or series whose audience is likely the same, from the logline, genre, country and market, enough to reach 3 to 5 in all. Titles only, no years. Code checks each in Qloo.
+- suggestedComps: only when they named fewer than 3 comps. Propose well known, real films or series whose audience is likely the same, from the logline, genre, country and market, and from the best known films or series of the cast and director when they are named (a person cannot be looked up as a signal in Qloo, so their other work stands in for them), enough to reach 3 to 5 in all. Titles only, no years. Code checks each in Qloo.
 - Plain words, no exclamation marks.`;
 
 export class ModelFilmReader implements FilmReader {

@@ -97,6 +97,11 @@
         "note": "The content calendar as a dated checklist your team edits and ticks off. Each action comes with a guide to adapt, and Oraqul alerts the team when a date slips: it makes no final asset and posts nothing."
       },
       {
+        "key": "funding",
+        "label": "Funding and sponsors",
+        "note": "Sponsors that fit each territory and funds that are open now, each with its source and the day it was read. Terms change: confirm on the source page before applying. Oraqul sends nothing."
+      },
+      {
         "key": "watch",
         "label": "Watch",
         "note": "Oraqul re-checks this plan on a schedule and says what needs a look. Add your own figures to see whether the launch is ahead of, on or behind the plan’s pace. It never changes the plan."
@@ -1236,7 +1241,7 @@
             {
               "id": "gaps-2",
               "kind": "playbook",
-              "text": "Name two or three comparable shows your listeners also hear, and every recommendation gets sharper.",
+              "text": "Say what the show is about, its format, and who hosts or appears on it, and the plan can be built around them.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -2262,7 +2267,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-mtn",
@@ -2275,7 +2281,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-indomie",
@@ -2288,7 +2295,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-glide-mobile",
@@ -2309,7 +2317,8 @@
           "price": "unknown",
           "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-fizz-cola",
@@ -2330,7 +2339,8 @@
           "price": "unknown",
           "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-lumen-coffee",
@@ -2351,7 +2361,8 @@
           "price": "unknown",
           "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-orbit-data",
@@ -2372,7 +2383,8 @@
           "price": "unknown",
           "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-ee",
@@ -2385,7 +2397,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-monzo",
@@ -2398,7 +2411,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-bolt",
@@ -2411,7 +2425,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "brand",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-united-kingdom-creators",
@@ -2424,7 +2439,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-united-kingdom-networks",
@@ -2437,7 +2453,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-united-kingdom-community-groups",
@@ -2450,7 +2467,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         },
         {
           "id": "partner-c-united-kingdom-independent-cinemas",
@@ -2463,7 +2481,8 @@
           "price": "unknown",
           "findingIds": [],
           "kind": "kind",
-          "flags": []
+          "flags": [],
+          "moneyType": "in_kind"
         }
       ],
       "partnerNotes": [

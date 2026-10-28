@@ -86,6 +86,7 @@ describe('OutputStore versions', () => {
       .select()
       .from(outputs)
       .where(eq(outputs.id, id ?? ''));
-    expect(row?.versions).toEqual(stamp);
+    // The team rules the run followed are saved beside it; none applied here.
+    expect(row?.versions).toEqual({ ...stamp, teamRules: [] });
   });
 });

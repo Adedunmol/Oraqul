@@ -122,7 +122,7 @@ function gapsSection(read: GamesRead, comps: { used: CompUsed[] }): LaunchSectio
           ]),
     ...(comps.used.some((c) => c.source === 'added')
       ? [
-          'Name two or three comparable games your players also play, and every recommendation gets sharper.',
+          'Say what the game is, its genre and platform, and who it is for, and the plan can be built around them.',
         ]
       : []),
     ...(read.ages.length
@@ -259,6 +259,7 @@ export const gamesLaunch: LaunchConfig<GamesRead, GamesQueryPlan> = {
   anchorTypes: ['urn:entity:videogame'],
   rivalTypes: ['urn:entity:videogame'],
   genreTagPrefix: gamesPlan.TAG_SPACES.gameGenre.prefix,
+  tagPhrases: (read) => read.storeTags.slice(0, 2),
   artistQueries: [],
   lead: (read) => read.game,
   teamAnchors: (read) => read.franchise,
@@ -285,20 +286,16 @@ export const gamesLaunch: LaunchConfig<GamesRead, GamesQueryPlan> = {
     id: 'games.minimum',
     example:
       'For example: “A Nigerian mobile shooter”, “a cozy farming game for Switch”, or “a roguelike for Steam”.',
-    // A name alone says nothing: a plan for it would be the default launch, which is the wrong
-    // plan for most games. Anything about the game will do: its kind, platform or audience.
-    strict: true,
-    missing: (read) =>
-      read.genre ||
-      read.launchKind ||
-      read.platforms.length ||
-      read.regions.length ||
-      read.places.length ||
-      read.comps.length ||
-      read.franchise.length ||
-      read.collabs.length
-        ? []
-        : ['a line about the game: what kind it is, the platform, or who it is for'],
+    missing: () => [],
+  },
+  typical: {
+    genre: 'action',
+    label: 'a typical indie game launch',
+    described: (read) =>
+      read.launchKind !== null ||
+      read.regions.length > 0 ||
+      read.franchise.length > 0 ||
+      read.collabs.length > 0,
   },
   pickModules: (read) =>
     gamesPlan.pickModules({

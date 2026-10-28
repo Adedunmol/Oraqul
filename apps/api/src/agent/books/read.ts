@@ -226,7 +226,7 @@ Rules:
 - window: the publication date or window as written ("Q3 2027", "October").
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which markets, or which comp titles. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: comps (comparable books), adaptation (screen angle), retail, publicity (press, reviews), events, creators, partnerships (brands), community (book clubs), audio, schools, cadence (series and backlist), timeline, budget, measure (what to track), risks. Null when it is about markets or the audience, or when scope is full.
-- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real books whose readers are likely the same, from the genre, the market and the readership, enough to reach 3 to 5 in all. Titles only. Code checks each in Qloo. The person is never asked for comps.
+- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real books whose readers are likely the same, from the genre, the market, the readership, the author's known peers, the earlier books and any screen titles named, A person cannot be looked up as a signal in Qloo, so use their other work in their place. Enough to reach 3 to 5 in all. Titles only. Code checks each in Qloo. The person is never asked for comps.
 - Plain words, no exclamation marks.`;
 
 export class ModelBooksReader implements BooksReader {

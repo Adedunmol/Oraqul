@@ -178,7 +178,7 @@ Rules:
 - supportActs: acts already booked to open.
 - scope: "full" when they ask for a launch plan or help with the show in general, or when it is unclear. "narrow" only for one specific question. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: onsale, partnerships, publicity, venues, finalpush, timeline, budget, measure, risks. Null when it is about cities or the audience, or when scope is full.
-- suggestedComps: only when they named fewer than 3 comps. Propose well known, real acts whose audience is likely the same. Names only. Code checks each in Qloo.
+- suggestedComps: only when they named fewer than 3 comps. Propose well known, real acts whose audience is likely the same, from the act, the kind of show, the genre, the country and any support acts named, enough to reach 3 to 5 in all. Names only. Code checks each in Qloo.
 - Plain words, no exclamation marks.`;
 
 export class ModelShowsReader implements ShowsReader {

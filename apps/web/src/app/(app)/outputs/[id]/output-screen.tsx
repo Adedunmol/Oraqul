@@ -2,6 +2,7 @@
 
 import type {
   CampaignState,
+  FundingState,
   OutputDetail,
   OutputTabKey,
   ThreadDetail,
@@ -18,6 +19,7 @@ export function OutputScreen({
   chat,
   campaign,
   watch,
+  funding,
   initialTab,
   viewer,
 }: {
@@ -25,6 +27,7 @@ export function OutputScreen({
   chat: ThreadDetail;
   campaign: CampaignState | null;
   watch: WatchState | null;
+  funding: FundingState | null;
   initialTab: OutputTabKey | undefined;
   viewer: Viewer;
 }) {
@@ -36,6 +39,7 @@ export function OutputScreen({
         detail={detail}
         campaign={campaign}
         watch={watch}
+        funding={funding}
         initialTab={initialTab}
         canEdit={canEdit}
         share={detail.share ?? { token: null, enabled: false }}

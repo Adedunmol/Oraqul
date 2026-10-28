@@ -54,6 +54,12 @@ Each category has its own brand categories, kinds of partner and ideas (`rules/p
 - **T4, room for the partner.** The ideas are starting points. The kit says to ask the partner what they would build.
 - **Oraqul never sends anything.** The kit is a draft for the team.
 
+## What a partner could give, and sponsors
+
+Every partner option has a `moneyType`: cash, in kind, placement, media or bulk ticket purchase. A named brand is in kind, since "never assume cash" (T1), and a kind of partner is read from what it is (a cinema is placement, a radio station is media, a community group is bulk tickets). It is a label beside the tier: tiers A, B and C, who can reach which, slots and the partner brief are unchanged, and a plan saved before it reads as in kind.
+
+The Funding and sponsors tab takes the brands Qloo ranked for each territory from the plan, adds the sponsorship each has recently backed (kept only when a fetched page holds it, with the day it was read), and gives the team a pipeline for each ([spec §5.20](spec.md)). A partner the team's defaults ban is never offered. Funds, grants and loans are not partners: they are found on the web at run time, have no tier, and are never given a price.
+
 ## The team's own partners
 
 The plan page lets an owner or an editor add and remove the partners the team already has or knows. `PUT /outputs/:outputId/partners { names }` replaces the team's list. Code places each name from the brands the plan already ranked, with no new Qloo call; a name Qloo did not rank shows as not ranked until a partner brief scores it. Partners Oraqul suggested are not changed. The Guide's `Partners already signed:` line is read as partners the team has, and `Brands to consider:` is asked of Qloo beside the model's own candidates and never signed. A brand to consider is placed before brands nobody asked about, by the name given or a fuller one that starts with it ("MTN" for "MTN Group"), is not dropped by the popular-everywhere check, and shows as not ranked when Qloo ranked none by that name.

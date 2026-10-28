@@ -183,12 +183,18 @@ function seedChat(r: Project, t: Thread, made: DOutput[]): void {
       creative: 'Make the creative kit.',
       refresh: 'Check what has changed.',
       rescue: 'Rescue this launch.',
+      funding: 'Find funding and sponsors.',
     }[o.kind];
     const steps =
       o.kind === 'scenario'
         ? traceForScenario(o.title.replace('Scenario: ', ''))
         : pk.trace[
-            o.kind === 'creative' || o.kind === 'refresh' || o.kind === 'rescue' ? 'build' : o.kind
+            o.kind === 'creative' ||
+            o.kind === 'refresh' ||
+            o.kind === 'rescue' ||
+            o.kind === 'funding'
+              ? 'build'
+              : o.kind
           ].slice();
     const summary = getState().outputs.find((x) => x.id === o.id)?.summary ?? '';
     const key = `${t.id}-${i}`;

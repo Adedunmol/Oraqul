@@ -38,6 +38,8 @@ export function territoriesOf(input: {
   ranked: string[];
   /** The platforms the team chose. Null plans on the market's usual ones. */
   platforms?: string[] | null;
+  /** Channels the team never uses: taken out of every territory before the calendar is built. */
+  blockedChannels?: string[];
 }): Territory[] {
   const { category, cities, country } = input;
   if (cities.length === 0) return [];
@@ -53,7 +55,10 @@ export function territoriesOf(input: {
   );
   const ordered = [...(home ? [home] : []), ...diaspora, ...rest];
   return ordered.map((name, order) => {
-    const channels = channelsFor(category, cityCountry(name), input.platforms ?? null);
+    const blocked = input.blockedChannels ?? [];
+    const channels = channelsFor(category, cityCountry(name), input.platforms ?? null).filter(
+      (c) => !blocked.some((b) => platformOf(b) === platformOf(c)),
+    );
     return {
       id: `territory-${slug(name)}`,
       name,
