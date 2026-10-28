@@ -306,7 +306,7 @@ export function ShelfTab() {
               key={s.id}
               className={`flex flex-col gap-1.5 rounded-xl border p-2.5 ${change(s.id) ? 'border-accent/40 bg-accent-soft' : 'border-transparent bg-inset'}`}
             >
-              <div className="flex h-[88px] items-end rounded-md bg-surface2 p-2.5 font-display text-[15px] leading-tight font-semibold">
+              <div className="flex min-h-[88px] items-end rounded-md bg-surface2 p-2.5 font-display break-words text-[15px] leading-tight font-semibold">
                 {s.name}
               </div>
               <FitBar value={s.overlap} />
