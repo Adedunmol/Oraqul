@@ -10,7 +10,7 @@ describe('envSchema', () => {
   it('applies defaults', () => {
     const env = envSchema.parse(valid);
     expect(env.PORT).toBe(4000);
-    expect(env.QLOO_CALL_BUDGET).toBe(80);
+    expect(env.QLOO_CALL_BUDGET).toBe(100);
   });
 
   it('rejects a short session secret', () => {

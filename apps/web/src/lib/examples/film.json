@@ -2767,7 +2767,7 @@
               "lead": true
             }
           ],
-          "partnerIds": [],
+          "partnerIds": ["partner-night-market-cola", "partner-lagoon-mobile"],
           "lineIds": [
             "audience-4",
             "audience-8",
@@ -2958,53 +2958,6 @@
       ],
       "partners": [
         {
-          "id": "partner-guinness",
-          "name": "Guinness",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [
-            {
-              "type": "content",
-              "why": "A drinks brand when the audience includes people under 25, some of whom are under the legal drinking age. Check the partner’s rules on who its marketing may reach."
-            }
-          ],
-          "moneyType": "in_kind"
-        },
-        {
-          "id": "partner-mtn",
-          "name": "MTN",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
-        {
-          "id": "partner-indomie",
-          "name": "Indomie",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
-        {
           "id": "partner-night-market-cola",
           "name": "Night Market Cola",
           "tier": "B",
@@ -3033,8 +2986,8 @@
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-bolt",
-          "name": "Bolt",
+          "id": "partner-b-food-and-drink",
+          "name": "Food and drink",
           "tier": "B",
           "market": "Nigeria",
           "from": "seed",
@@ -3042,63 +2995,77 @@
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-ee",
-          "name": "EE",
+          "id": "partner-b-apparel",
+          "name": "Apparel",
           "tier": "B",
-          "market": "United Kingdom",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-monzo",
-          "name": "Monzo",
+          "id": "partner-b-beauty",
+          "name": "Beauty",
           "tier": "B",
-          "market": "United Kingdom",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-lyft",
-          "name": "Lyft",
+          "id": "partner-b-telecom-bundles",
+          "name": "Telecom bundles",
           "tier": "B",
-          "market": "United States",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-cash-app",
-          "name": "Cash App",
+          "id": "partner-b-banks-and-payment-brands",
+          "name": "Banks and payment brands",
           "tier": "B",
-          "market": "United States",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-b-hospitality",
+          "name": "Hospitality",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
@@ -3157,6 +3124,34 @@
           "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-c-united-kingdom-cinemas",
+          "name": "Cinemas",
+          "tier": "C",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-c-united-kingdom-creators",
+          "name": "Creators",
+          "tier": "C",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
         }
       ],
       "partnerNotes": [
@@ -3164,6 +3159,11 @@
           "id": "partner-note-band",
           "ruleId": "partners.lead-time",
           "text": "An independent release usually has no franchise behind it, so lead with tier B and tier C partners."
+        },
+        {
+          "id": "partner-note-bare",
+          "ruleId": "partners.slots",
+          "text": "Qloo found no brand to suggest for London, Houston, Atlanta. Start there with local partners: cinemas, creators, community groups and businesses that serve the same audience."
         },
         {
           "id": "partner-note-barter",
@@ -5058,98 +5058,126 @@
       },
       {
         "callId": "00000000-0000-4000-8000-000000005070",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Bolt",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005071",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "EE",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005072",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Monzo",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005073",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Lyft",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005074",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Cash App",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "Lagos",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005075",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Lyft",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
+          "signal.location.query": "London",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005076",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Cash App",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
+          "filter.type": "urn:entity:brand",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "Lagos",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
         "confidence": "lower",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
@@ -5158,112 +5186,20 @@
         "callId": "00000000-0000-4000-8000-000000005077",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
           "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "signal.location.query": "Lagos",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "London",
           "take": "6"
         },
         "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005078",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:beverage",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "signal.location.query": "Lagos",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005079",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:telecom",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "signal.location.query": "London",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005080",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:beverage",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
-          "signal.location.query": "London",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005081",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
-          "filter.type": "urn:entity:brand",
-          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
-          "signal.location.query": "Lagos",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005082",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
-          "filter.type": "urn:entity:brand",
-          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
-          "signal.location.query": "London",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005083",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -5280,7 +5216,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005084",
+        "callId": "00000000-0000-4000-8000-000000005079",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -5297,7 +5233,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005085",
+        "callId": "00000000-0000-4000-8000-000000005080",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -5314,7 +5250,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005086",
+        "callId": "00000000-0000-4000-8000-000000005081",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -5331,7 +5267,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005087",
+        "callId": "00000000-0000-4000-8000-000000005082",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -5348,7 +5284,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005088",
+        "callId": "00000000-0000-4000-8000-000000005083",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -5365,7 +5301,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005089",
+        "callId": "00000000-0000-4000-8000-000000005084",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-FILM-0003,DEMO-FILM-0004,DEMO-FILM-0001",
@@ -5382,7 +5318,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005090",
+        "callId": "00000000-0000-4000-8000-000000005085",
         "endpoint": "/search",
         "input": {
           "query": "Harbor Lights",
@@ -5396,7 +5332,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005091",
+        "callId": "00000000-0000-4000-8000-000000005086",
         "endpoint": "/search",
         "input": {
           "query": "Third Mainland",
@@ -5410,7 +5346,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005092",
+        "callId": "00000000-0000-4000-8000-000000005087",
         "endpoint": "/v2/insights",
         "input": {
           "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
@@ -5425,7 +5361,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005093",
+        "callId": "00000000-0000-4000-8000-000000005088",
         "endpoint": "/v2/insights",
         "input": {
           "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",
@@ -5440,7 +5376,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005094",
+        "callId": "00000000-0000-4000-8000-000000005089",
         "endpoint": "/v2/insights",
         "input": {
           "filter.results.entities": "DEMO-FILM-0105,DEMO-FILM-0106",

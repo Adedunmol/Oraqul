@@ -30,10 +30,8 @@ export interface CategoryPartners {
   ideas: string[];
 }
 
-export interface TierSeed {
-  /** Names Qloo is asked to rank. A name Qloo does not rank shows as not ranked. */
-  names: string[];
-  /** Kinds of partner with no fixed name, named so the writer proposes real ones. */
+export interface TierKinds {
+  /** Kinds of partner with no fixed name, so the writer proposes real ones and Qloo ranks them. */
   kinds: string[];
 }
 
@@ -156,38 +154,35 @@ export const CATEGORY_PARTNERS: Record<Category, Rule<CategoryPartners>> = {
   }),
 };
 
-/** Seed partners per market and tier. Seeds are asked of Qloo only for markets the plan reaches. */
-const SEEDS = teamRule<Record<string, Record<PartnerTier, TierSeed>>>('partners.seeds', {
+/**
+ * Kinds of partner per market and tier. No brand is named here: every brand a plan offers is one
+ * Qloo ranked for this audience or one the team gave.
+ */
+const KINDS = teamRule<Record<string, Record<PartnerTier, TierKinds>>>('partners.kinds', {
   nigeria: {
-    // Probed live 2026-10-23: Guinness, Indomie and Bolt match by exact name, and MTN matches as
-    // "MTN Group". Verve and QuickTeller did not resolve to the Nigerian payment brands ("Verve"
-    // found a coffee roaster, "QuickTeller" nothing), so they are a kind of partner, not a name.
-    A: { names: ['Guinness', 'MTN', 'Indomie'], kinds: [] },
-    B: {
-      names: ['Bolt'],
-      kinds: ['banks and payment brands', 'food and drink', 'hospitality', 'telecom bundles'],
-    },
-    C: { names: [], kinds: ['cinemas', 'creators', 'diaspora businesses', 'community groups'] },
+    A: { kinds: [] },
+    B: { kinds: ['banks and payment brands', 'food and drink', 'hospitality', 'telecom bundles'] },
+    C: { kinds: ['cinemas', 'creators', 'diaspora businesses', 'community groups'] },
   },
   'united kingdom': {
-    A: { names: [], kinds: [] },
-    B: { names: ['EE', 'Monzo'], kinds: [] },
-    C: { names: [], kinds: ['independent cinemas', 'creators', 'diaspora businesses'] },
+    A: { kinds: [] },
+    B: { kinds: [] },
+    C: { kinds: ['independent cinemas', 'creators', 'diaspora businesses'] },
   },
   'united states': {
-    A: { names: [], kinds: [] },
-    B: { names: ['Lyft', 'Cash App'], kinds: [] },
-    C: { names: [], kinds: ['independent cinemas', 'creators', 'diaspora businesses'] },
+    A: { kinds: [] },
+    B: { kinds: [] },
+    C: { kinds: ['independent cinemas', 'creators', 'diaspora businesses'] },
   },
 });
 
 /** T1 to T4 and the tier rule, each with its source. */
 export const PARTNER_RULES = {
   version: PARTNERS_VERSION,
-  seeds: SEEDS,
+  kinds: KINDS,
   /**
-   * A tier by what Qloo says about a brand, not by default. A flagship seed is tier A; so is a
-   * ranked brand at or above this popularity (0 to 1), the top of the band the brand query uses.
+   * A tier by what Qloo says about a brand, not by default. A ranked brand is tier A when it is
+   * at or above this popularity (0 to 1), the top of the band the brand query uses.
    */
   tier: teamRule('partners.tier', { flagshipPopularity: 0.85 }),
   /** Options kept per tier, so the many ranked brands cannot push the local partners out. */
@@ -260,12 +255,8 @@ export function moneyTypeOf(input: { kind: 'brand' | 'kind'; name: string }): Mo
   return 'in_kind';
 }
 
-export const FLAGSHIPS: string[] = [
-  ...new Set(Object.values(SEEDS.value).flatMap((tiers) => tiers.A.names)),
-];
-
-/** Seeds for a market, by lower-case country name. */
-export const PARTNER_SEEDS = SEEDS.value;
+/** Kinds of partner for a market, by lower-case country name. */
+export const PARTNER_KINDS = KINDS.value;
 
 /** The brand categories Qloo may be asked for a category: only the probe-verified ones. */
 export function brandCategoriesFor(category: Category): string[] {

@@ -51,8 +51,7 @@
       "f-shows-nairobi": ["Midnight Harbor", "Harbor Precinct", "Eko Nights"],
       "f-cinemas-atlanta": ["Peachtree Pictures"],
       "f-cinemas-houston": ["Bayou Cinema"],
-      "f-brands-atlanta": ["Night Market Cola", "Lagoon Mobile"],
-      "f-brands-houston": ["Night Market Cola", "Lagoon Mobile"],
+      "f-brands-nairobi": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["The Joe Rogan Experience", "Crime Junkie", "Late Signal"],
       "f-community-church-houston": ["Grace Chapel Houston"],
       "f-community-university-houston": ["Gulf Coast University"],
@@ -63,7 +62,7 @@
       "positioning": "4/1",
       "audience": "5/0",
       "markets": "3/0",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "placement": "3/0",
       "publicity": "1/1",
       "community": "2/1",
@@ -79,14 +78,14 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 72,
-      "backed": 33,
+      "lines": 71,
+      "backed": 32,
       "rankKept": 100,
-      "findingsUsed": 16,
+      "findingsUsed": 15,
       "cities": {
-        "Nairobi": 4,
-        "Atlanta": 6,
-        "Houston": 8
+        "Nairobi": 5,
+        "Atlanta": 5,
+        "Houston": 7
       }
     },
     "dropped": 0,
@@ -118,8 +117,8 @@
       ],
       "partners": {
         "A": 0,
-        "B": 8,
-        "C": 6
+        "B": 6,
+        "C": 8
       }
     }
   }

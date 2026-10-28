@@ -39,7 +39,6 @@
       "f-markets": ["New York", "London"],
       "f-topics": ["Diaspora life", "Politics", "Interviews"],
       "f-crosspromo": ["Midnight Ledger", "The Long Con", "Case Closed Weekly"],
-      "f-brands-london": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
       "f-brands-new-york": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"]
     },
     "sections": {
@@ -48,7 +47,7 @@
       "audience": "2/0",
       "markets": "2/0",
       "crosspromo": "1/1",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "publicity": "0/1",
       "live": "1/0",
       "community": "0/1",
@@ -64,13 +63,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 60,
-      "backed": 23,
+      "lines": 59,
+      "backed": 22,
       "rankKept": 100,
-      "findingsUsed": 8,
+      "findingsUsed": 7,
       "cities": {
         "New York": 5,
-        "London": 4
+        "London": 3
       }
     },
     "dropped": 0,

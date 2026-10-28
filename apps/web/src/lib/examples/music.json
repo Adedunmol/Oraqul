@@ -541,15 +541,6 @@
               "sourceIds": [],
               "names": ["Night Market Cola", "Lagoon Mobile", "Lagos"],
               "group": "Brands"
-            },
-            {
-              "id": "partnerships-2",
-              "kind": "grounded",
-              "text": "Brands: Night Market Cola and Lagoon Mobile in London.",
-              "findingIds": ["f-brands-london"],
-              "sourceIds": [],
-              "names": ["Night Market Cola", "Lagoon Mobile", "London"],
-              "group": "Brands"
             }
           ]
         },
@@ -1545,40 +1536,6 @@
           "callIds": ["00000000-0000-4000-8000-000000005027"]
         },
         {
-          "id": "f-brands-london",
-          "query": "brands",
-          "text": "In London, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best.",
-          "entities": [
-            {
-              "entityId": "DEMO-BRAND-0004",
-              "name": "Night Market Cola",
-              "affinity": 0.47346292537950513,
-              "detail": null,
-              "popularity": 0.32
-            },
-            {
-              "entityId": "DEMO-BRAND-0006",
-              "name": "Lagoon Mobile",
-              "affinity": 0.47502546291216863,
-              "detail": null,
-              "popularity": 0.4
-            }
-          ],
-          "numbers": {},
-          "verdict": null,
-          "confidence": "high",
-          "why": "high: 3 anchors with data, 2 well known",
-          "context": {
-            "city": "London",
-            "ages": [],
-            "tags": [],
-            "country": null,
-            "yearFrom": null,
-            "audience": null
-          },
-          "callIds": ["00000000-0000-4000-8000-000000005028"]
-        },
-        {
           "id": "f-podcasts",
           "query": "podcasts",
           "text": "The podcasts that rank highest with the artist's audience in Lagos are Late Signal, Crime Junkie and The Joe Rogan Experience.",
@@ -1631,7 +1588,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005029"]
+          "callIds": ["00000000-0000-4000-8000-000000005028"]
         },
         {
           "id": "f-shows-houston",
@@ -1674,7 +1631,7 @@
             "yearFrom": 2020,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005032"]
+          "callIds": ["00000000-0000-4000-8000-000000005031"]
         },
         {
           "id": "f-shows-lagos",
@@ -1717,7 +1674,7 @@
             "yearFrom": 2020,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005030"]
+          "callIds": ["00000000-0000-4000-8000-000000005029"]
         },
         {
           "id": "f-shows-london",
@@ -1760,7 +1717,7 @@
             "yearFrom": 2020,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005031"]
+          "callIds": ["00000000-0000-4000-8000-000000005030"]
         },
         {
           "id": "f-community-university-houston",
@@ -1787,7 +1744,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005038"]
+          "callIds": ["00000000-0000-4000-8000-000000005037"]
         },
         {
           "id": "f-community-university-lagos",
@@ -1814,7 +1771,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005037"]
+          "callIds": ["00000000-0000-4000-8000-000000005036"]
         },
         {
           "id": "f-venues-concert-hall-lagos",
@@ -1841,7 +1798,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005035"]
+          "callIds": ["00000000-0000-4000-8000-000000005034"]
         },
         {
           "id": "f-venues-concert-hall-london",
@@ -1868,7 +1825,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005036"]
+          "callIds": ["00000000-0000-4000-8000-000000005035"]
         },
         {
           "id": "f-venues-night-club-lagos",
@@ -1895,7 +1852,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005033"]
+          "callIds": ["00000000-0000-4000-8000-000000005032"]
         },
         {
           "id": "f-venues-night-club-london",
@@ -1922,7 +1879,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005034"]
+          "callIds": ["00000000-0000-4000-8000-000000005033"]
         },
         {
           "id": "f-region-lagos-artists",
@@ -1951,7 +1908,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005039"]
+          "callIds": ["00000000-0000-4000-8000-000000005038"]
         },
         {
           "id": "f-region-lagos-brands",
@@ -2001,7 +1958,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005040"]
+          "callIds": ["00000000-0000-4000-8000-000000005039"]
         },
         {
           "id": "f-region-london-artists",
@@ -2030,7 +1987,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005041"]
+          "callIds": ["00000000-0000-4000-8000-000000005040"]
         },
         {
           "id": "f-region-london-brands",
@@ -2080,7 +2037,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005042"]
+          "callIds": ["00000000-0000-4000-8000-000000005041"]
         }
       ],
       "sources": [],
@@ -2167,7 +2124,7 @@
               "lead": true
             }
           ],
-          "partnerIds": [],
+          "partnerIds": ["partner-night-market-cola", "partner-lagoon-mobile"],
           "lineIds": [
             "audience-3",
             "audience-6",
@@ -2286,53 +2243,6 @@
       ],
       "partners": [
         {
-          "id": "partner-guinness",
-          "name": "Guinness",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [
-            {
-              "type": "content",
-              "why": "A drinks brand when the audience includes people under 25, some of whom are under the legal drinking age. Check the partner’s rules on who its marketing may reach."
-            }
-          ],
-          "moneyType": "in_kind"
-        },
-        {
-          "id": "partner-mtn",
-          "name": "MTN",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
-        {
-          "id": "partner-indomie",
-          "name": "Indomie",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
-        {
           "id": "partner-night-market-cola",
           "name": "Night Market Cola",
           "tier": "B",
@@ -2361,8 +2271,8 @@
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-bolt",
-          "name": "Bolt",
+          "id": "partner-b-drinks-brands",
+          "name": "Drinks brands",
           "tier": "B",
           "market": "Nigeria",
           "from": "seed",
@@ -2370,63 +2280,82 @@
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
-          "flags": [],
+          "kind": "kind",
+          "flags": [
+            {
+              "type": "content",
+              "why": "A drinks brand when the audience includes people under 25, some of whom are under the legal drinking age. Check the partner’s rules on who its marketing may reach."
+            }
+          ],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-ee",
-          "name": "EE",
+          "id": "partner-b-telecom-bundles",
+          "name": "Telecom bundles",
           "tier": "B",
-          "market": "United Kingdom",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-monzo",
-          "name": "Monzo",
+          "id": "partner-b-apparel",
+          "name": "Apparel",
           "tier": "B",
-          "market": "United Kingdom",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-lyft",
-          "name": "Lyft",
+          "id": "partner-b-banks-and-payment-brands",
+          "name": "Banks and payment brands",
           "tier": "B",
-          "market": "United States",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-cash-app",
-          "name": "Cash App",
+          "id": "partner-b-food-and-drink",
+          "name": "Food and drink",
           "tier": "B",
-          "market": "United States",
+          "market": "Nigeria",
           "from": "seed",
           "fit": null,
           "budgetFit": "fits",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-b-hospitality",
+          "name": "Hospitality",
+          "tier": "B",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
@@ -2485,6 +2414,34 @@
           "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-c-nigeria-diaspora-businesses",
+          "name": "Diaspora businesses",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-c-united-kingdom-venues",
+          "name": "Venues",
+          "tier": "C",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
         }
       ],
       "partnerNotes": [
@@ -2492,6 +2449,11 @@
           "id": "partner-note-band",
           "ruleId": "partners.lead-time",
           "text": "An independent release usually has no franchise behind it, so lead with tier B and tier C partners."
+        },
+        {
+          "id": "partner-note-bare",
+          "ruleId": "partners.slots",
+          "text": "Qloo found no brand to suggest for London, Houston. Start there with local partners: cinemas, creators, community groups and businesses that serve the same audience."
         },
         {
           "id": "partner-note-barter",
@@ -2799,13 +2761,6 @@
       {
         "lineId": "f-brands-lagos",
         "label": "In Lagos, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best.",
-        "group": "Findings",
-        "returned": "Night Market Cola, Lagoon Mobile",
-        "driver": false
-      },
-      {
-        "lineId": "f-brands-london",
-        "label": "In London, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best.",
         "group": "Findings",
         "returned": "Night Market Cola, Lagoon Mobile",
         "driver": false
@@ -3464,24 +3419,6 @@
       },
       {
         "callId": "00000000-0000-4000-8000-000000005028",
-        "lineId": "f-brands-london",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "signal.location.query": "London",
-          "take": "9"
-        },
-        "returned": {},
-        "rule": "In London, among brands that could realistically partner with an artist like this, the artist's audience likes Night Market Cola and Lagoon Mobile best. The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005029",
         "lineId": "f-podcasts",
         "endpoint": "/v2/insights",
         "input": {
@@ -3498,7 +3435,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005030",
+        "callId": "00000000-0000-4000-8000-000000005029",
         "lineId": "f-shows-lagos",
         "endpoint": "/v2/insights",
         "input": {
@@ -3516,7 +3453,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005031",
+        "callId": "00000000-0000-4000-8000-000000005030",
         "lineId": "f-shows-london",
         "endpoint": "/v2/insights",
         "input": {
@@ -3534,7 +3471,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005032",
+        "callId": "00000000-0000-4000-8000-000000005031",
         "lineId": "f-shows-houston",
         "endpoint": "/v2/insights",
         "input": {
@@ -3552,7 +3489,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005033",
+        "callId": "00000000-0000-4000-8000-000000005032",
         "lineId": "f-venues-night-club-lagos",
         "endpoint": "/v2/insights",
         "input": {
@@ -3570,7 +3507,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005034",
+        "callId": "00000000-0000-4000-8000-000000005033",
         "lineId": "f-venues-night-club-london",
         "endpoint": "/v2/insights",
         "input": {
@@ -3588,7 +3525,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005035",
+        "callId": "00000000-0000-4000-8000-000000005034",
         "lineId": "f-venues-concert-hall-lagos",
         "endpoint": "/v2/insights",
         "input": {
@@ -3606,7 +3543,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005036",
+        "callId": "00000000-0000-4000-8000-000000005035",
         "lineId": "f-venues-concert-hall-london",
         "endpoint": "/v2/insights",
         "input": {
@@ -3624,7 +3561,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005037",
+        "callId": "00000000-0000-4000-8000-000000005036",
         "lineId": "f-community-university-lagos",
         "endpoint": "/v2/insights",
         "input": {
@@ -3642,7 +3579,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005038",
+        "callId": "00000000-0000-4000-8000-000000005037",
         "lineId": "f-community-university-houston",
         "endpoint": "/v2/insights",
         "input": {
@@ -3660,7 +3597,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005039",
+        "callId": "00000000-0000-4000-8000-000000005038",
         "lineId": "f-region-lagos-artists",
         "endpoint": "/v2/insights",
         "input": {
@@ -3677,7 +3614,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005040",
+        "callId": "00000000-0000-4000-8000-000000005039",
         "lineId": "f-region-lagos-brands",
         "endpoint": "/v2/insights",
         "input": {
@@ -3694,7 +3631,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005041",
+        "callId": "00000000-0000-4000-8000-000000005040",
         "lineId": "f-region-london-artists",
         "endpoint": "/v2/insights",
         "input": {
@@ -3711,7 +3648,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005042",
+        "callId": "00000000-0000-4000-8000-000000005041",
         "lineId": "f-region-london-brands",
         "endpoint": "/v2/insights",
         "input": {
@@ -3728,7 +3665,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005043",
+        "callId": "00000000-0000-4000-8000-000000005042",
         "endpoint": "/search",
         "input": {
           "query": "Neon Tide",
@@ -3742,7 +3679,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005044",
+        "callId": "00000000-0000-4000-8000-000000005043",
         "endpoint": "/search",
         "input": {
           "query": "Ada Lux",
@@ -3756,7 +3693,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005045",
+        "callId": "00000000-0000-4000-8000-000000005044",
         "endpoint": "/search",
         "input": {
           "query": "Kola Wave",
@@ -3770,7 +3707,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005046",
+        "callId": "00000000-0000-4000-8000-000000005045",
         "endpoint": "/v2/insights",
         "input": {
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
@@ -3785,7 +3722,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005047",
+        "callId": "00000000-0000-4000-8000-000000005046",
         "endpoint": "/v2/insights",
         "input": {
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
@@ -3800,7 +3737,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005048",
+        "callId": "00000000-0000-4000-8000-000000005047",
         "endpoint": "/v2/insights",
         "input": {
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((-95.67 29.51, -95.07000000000001 29.51, -95.07000000000001 30.01, -95.67 30.01, -95.67 29.51)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)),((-74.31 40.46, -73.71000000000001 40.46, -73.71000000000001 40.96, -74.31 40.96, -74.31 40.46)))",
@@ -3815,7 +3752,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005049",
+        "callId": "00000000-0000-4000-8000-000000005048",
         "endpoint": "/v2/tags",
         "input": {
           "filter.query": "afrobeats",
@@ -3828,7 +3765,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005050",
+        "callId": "00000000-0000-4000-8000-000000005049",
         "endpoint": "/v2/tags",
         "input": {
           "filter.query": "afrobeats",
@@ -3841,7 +3778,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005051",
+        "callId": "00000000-0000-4000-8000-000000005050",
         "endpoint": "/v2/tags",
         "input": {
           "filter.parents.types": "urn:entity:brand",
@@ -3855,7 +3792,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005052",
+        "callId": "00000000-0000-4000-8000-000000005051",
         "endpoint": "/v2/tags",
         "input": {
           "filter.parents.types": "urn:entity:brand",
@@ -3869,7 +3806,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005053",
+        "callId": "00000000-0000-4000-8000-000000005052",
         "endpoint": "/v2/tags",
         "input": {
           "filter.query": "university",
@@ -3882,7 +3819,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005054",
+        "callId": "00000000-0000-4000-8000-000000005053",
         "endpoint": "/v2/tags",
         "input": {
           "filter.query": "night club",
@@ -3895,7 +3832,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005055",
+        "callId": "00000000-0000-4000-8000-000000005054",
         "endpoint": "/v2/tags",
         "input": {
           "filter.query": "concert hall",
@@ -3908,185 +3845,78 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005056",
-        "endpoint": "/search",
+        "callId": "00000000-0000-4000-8000-000000005055",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Bolt",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005056",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.popularity.max": "0.85",
+          "filter.popularity.min": "0.4",
+          "filter.tags": "urn:tag:genre:brand:beverage",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "6"
+        },
+        "returned": {},
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005057",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "EE",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "filter.tags": "urn:tag:genre:brand:telecom",
+          "filter.type": "urn:entity:brand",
+          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
+          "signal.location.query": "Lagos",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
+        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
+        "confidence": "high",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005058",
-        "endpoint": "/search",
+        "endpoint": "/v2/insights",
         "input": {
-          "query": "Monzo",
-          "take": "5",
-          "types": "urn:entity:brand"
+          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
+          "filter.type": "urn:entity:brand",
+          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
+          "signal.location.query": "Lagos",
+          "take": "6"
         },
         "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
         "confidence": "lower",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005059",
-        "endpoint": "/search",
-        "input": {
-          "query": "Lyft",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005060",
-        "endpoint": "/search",
-        "input": {
-          "query": "Cash App",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005061",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:telecom",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "signal.location.query": "Lagos",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005062",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:beverage",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "signal.location.query": "Lagos",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005063",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:telecom",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "signal.location.query": "London",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005064",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:beverage",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
-          "signal.location.query": "London",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 1 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 3 anchors with data, 2 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005065",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
-          "filter.type": "urn:entity:brand",
-          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
-          "signal.location.query": "Lagos",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005066",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.results.entities": "DEMO-BRAND-0006,DEMO-BRAND-0004",
-          "filter.type": "urn:entity:brand",
-          "signal.demographics.age": "24_and_younger,25_to_29,30_to_34",
-          "signal.location.query": "London",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005067",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4103,7 +3933,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005068",
+        "callId": "00000000-0000-4000-8000-000000005060",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4120,7 +3950,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005069",
+        "callId": "00000000-0000-4000-8000-000000005061",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4137,7 +3967,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005070",
+        "callId": "00000000-0000-4000-8000-000000005062",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",
@@ -4154,7 +3984,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005071",
+        "callId": "00000000-0000-4000-8000-000000005063",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-MUSIC-0001,DEMO-MUSIC-0002,DEMO-MUSIC-0003",

@@ -8,7 +8,6 @@ import {
   CALENDAR_ADS,
   CALENDAR_RULES,
   CATEGORY_PARTNERS,
-  FLAGSHIPS,
   leadChannels,
   PARTNER_RULES,
   partnerReach,
@@ -141,7 +140,7 @@ describe('shared, partner and calendar rules', () => {
   const sources = [
     ...Object.values(SHARED_RULES).filter((r) => typeof r === 'object' && 'source' in r),
     ...Object.values(CATEGORY_PARTNERS),
-    PARTNER_RULES.seeds,
+    PARTNER_RULES.kinds,
     PARTNER_RULES.tier,
     PARTNER_RULES.slots,
     PARTNER_RULES.leadTime,
@@ -204,8 +203,10 @@ describe('shared, partner and calendar rules', () => {
     expect(brandCategoriesFor('film')).toEqual(['telecom', 'beverage', 'food', 'beauty']);
   });
 
-  it('reserves slots for every tier and names flagships only in the seeds', () => {
+  it('reserves slots for every tier and names no brand in the rules', () => {
     expect(PARTNER_RULES.slots.value.C).toBeGreaterThan(0);
-    expect(FLAGSHIPS).toEqual(expect.arrayContaining(['Guinness', 'MTN', 'Indomie']));
+    for (const tiers of Object.values(PARTNER_RULES.kinds.value)) {
+      for (const tier of Object.values(tiers)) expect(tier).not.toHaveProperty('names');
+    }
   });
 });

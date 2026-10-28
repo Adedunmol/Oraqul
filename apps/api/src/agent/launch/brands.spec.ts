@@ -53,12 +53,14 @@ describe('brandPools', () => {
   it('finds mid-size brands among each category for the comps, in the first two cities', async () => {
     const { kit, urls } = setup({ reach: { flagship: false } });
     const pools = await brandPools(kit, tags, ['Lagos', 'London', 'Houston']);
-    // Houston is the third city, so it is not asked and has nothing to rank.
+    // Houston is the third city, so it is not asked by category with a band.
     expect(pools.map((p) => p.city)).toEqual(['Lagos', 'London']);
     expect(pools[0]?.pool).toEqual(['Lagos:Mid One', 'Lagos:Mid Two']);
-    // Two categories in two cities, mid band only: four calls, all banded.
-    expect(urls).toHaveLength(4);
-    expect(urls.every((u) => u.searchParams.has('filter.popularity.min'))).toBe(true);
+    // Two categories in two cities, mid band only: four banded calls. Houston has no brands at
+    // all, so it gets one wider read with no band.
+    expect(urls).toHaveLength(5);
+    expect(urls.filter((u) => u.searchParams.has('filter.popularity.min'))).toHaveLength(4);
+    expect(urls.filter((u) => !u.searchParams.has('filter.popularity.min'))).toHaveLength(1);
     expect(urls.every((u) => u.searchParams.has('signal.interests.entities'))).toBe(true);
   });
 

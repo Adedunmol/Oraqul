@@ -79,6 +79,7 @@ function PartnerRow({
             } `
           : 'A kind of partner, not a brand yet. '}
         {BUDGET[partner.budgetFit]}. Price: unknown.
+        {named && partner.check?.state === 'unverified' ? ' Not verified.' : ''}
       </p>
       {partner.flags.map((f) => (
         <p key={f.type + f.why} className="text-[13px] text-warn">

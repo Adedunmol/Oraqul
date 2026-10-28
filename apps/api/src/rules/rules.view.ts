@@ -52,7 +52,7 @@ export function rulesView(): RulesResponse {
     partners: {
       version: PARTNER_RULES.version,
       categories: CATEGORY_PARTNERS,
-      seeds: PARTNER_RULES.seeds,
+      kinds: PARTNER_RULES.kinds,
       tier: PARTNER_RULES.tier,
       slots: PARTNER_RULES.slots,
       leadTime: PARTNER_RULES.leadTime,

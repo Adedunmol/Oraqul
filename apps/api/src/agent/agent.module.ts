@@ -8,6 +8,7 @@ import { FundingModule } from '../funding/funding.module.js';
 import { LLM, type Llm } from '../llm/llm.js';
 import { OutputsService } from '../outputs/outputs.service.js';
 import { TeamRulesModule } from '../team-rules/team-rules.module.js';
+import { noVerifier, openDataVerifier } from '../verify/verifier.js';
 import { PaceService } from '../watch/pace.service.js';
 import { BooksAgent } from './books/agent.js';
 import { ModelFollowUpReader as ModelBooksFollowUpReader } from './books/follow-up.js';
@@ -323,6 +324,11 @@ const lookups = new LookupCache();
         const standalone = llm
           ? new ModelPlanner(llm.model('agent'), llm.timeoutMs)
           : new StandalonePlanner();
+        const verifier =
+          config.get('BRAND_CHECK', { infer: true }) === 'on' &&
+          config.get('QLOO_MODE', { infer: true }) === 'live'
+            ? openDataVerifier()
+            : noVerifier();
         const reviewer = llm
           ? new FallbackReviewer(
               new ModelReviewer(llm.model('writer'), llm.writerTimeoutMs),
@@ -347,6 +353,7 @@ const lookups = new LookupCache();
           analyst,
           researchPlanner,
           reviewer,
+          verifier,
           standalone,
         });
 
@@ -416,6 +423,7 @@ const lookups = new LookupCache();
           analyst,
           researchPlanner,
           reviewer,
+          verifier,
           standalone,
         });
 
@@ -485,6 +493,7 @@ const lookups = new LookupCache();
           analyst,
           researchPlanner,
           reviewer,
+          verifier,
           standalone,
         });
 
@@ -555,6 +564,7 @@ const lookups = new LookupCache();
           analyst,
           researchPlanner,
           reviewer,
+          verifier,
           standalone,
         });
 
@@ -625,6 +635,7 @@ const lookups = new LookupCache();
           analyst,
           researchPlanner,
           reviewer,
+          verifier,
           standalone,
         });
 
@@ -698,6 +709,7 @@ const lookups = new LookupCache();
           analyst,
           researchPlanner,
           reviewer,
+          verifier,
           standalone,
         });
         return { ...placeholderAgents(), film, music, books, games, podcasts, shows };

@@ -56,13 +56,13 @@ Thresholds and bands are in [launch-rules.md](../product/launch-rules.md). For F
 - **Signal.** Advance screenings and presales. Trailer views, followers and press mentions are secondary. There is no benchmark number: the target is the team's own.
 - **Territories.** One plan per city, the home market first, then the diaspora cities (Lagos, London, Houston, Atlanta), with a call on each.
 - **Channels.** YouTube leads, then Instagram and TikTok. Nigeria leads on Instagram and TikTok; WhatsApp is only a sharing layer.
-- **Partners.** Found from what the comps' audience likes in each verified brand category and city, ranked as one pool with the model's names and the seeds, and checked against the city's own taste. Tier A flagship brands (Guinness, MTN, Indomie in Nigeria) only for a release with scale and a launcher who can reach one, tier B (banks and payment brands, food and drink, hospitality, telecom bundles), tier C local (cinemas, creators, diaspora businesses, community groups).
+- **Partners.** Found from what the comps' audience likes in each verified brand category and city, ranked as one pool with the model's names, and checked against the city's own taste. Tier A flagship brands (those Qloo ranks at or above the flagship popularity) only for a release with scale and a launcher who can reach one, tier B (banks and payment brands, food and drink, hospitality, telecom bundles), tier C local (cinemas, creators, diaspora businesses, community groups).
 
 ## Limits
 
 - **Neighbourhood readings are a lead.** The model names the centre, code checks it against the city's box, and the cells are coarse (about 3 to 7 km). Confirm on the ground.
 - **Web research can find nothing for a city**, especially US diaspora cinema, and what it finds can be stale. Check dates before acting on a rival or a window.
-- **Qloo's place lists carry poor fits** (a theology school among universities). Partner brands are ranked from a pool we choose (the model's names, the seeds, and the brands Qloo finds by category and city); places are not.
+- **Qloo's place lists carry poor fits** (a theology school among universities). Partner brands are ranked from a pool we choose (the model's names and the brands Qloo finds by category and city); places are not.
 - **Ambiguous names** are settled in code (country, then popularity) and the plan says which was chosen. A wrong match is possible.
 - **Plans run long.** The writer aims for about 1,200 words.
 - **Cultural sensitivity.** Real traditions, institutions and neighbourhoods need care in anything the plan puts on screen.

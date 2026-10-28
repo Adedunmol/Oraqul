@@ -1,5 +1,6 @@
 import type { ToolContext } from '@oraqul/engine';
 import type { ThreadEvent } from '@oraqul/schema';
+import type { Verifier } from '../../verify/verifier.js';
 import type { Handoff, Reply } from '../category-agents.js';
 import type { Analyst } from '../launch/analyse.js';
 import type { LaunchDeps } from '../launch/config.js';
@@ -36,6 +37,7 @@ export interface FilmDeps {
   analyst?: Analyst;
   researchPlanner?: ResearchPlanner;
   reviewer?: Reviewer;
+  verifier?: Verifier;
 }
 
 /** Reads the brief with Film's reader and keeps only what the person said. */
@@ -58,6 +60,7 @@ export function launchDeps(deps: FilmDeps): LaunchDeps<FilmRead, QueryPlan> {
     analyst: deps.analyst,
     researchPlanner: deps.researchPlanner,
     reviewer: deps.reviewer,
+    verifier: deps.verifier,
   };
 }
 

@@ -119,9 +119,16 @@ export function PlanDocument({
 export function PlanFollowUp({ plan }: { plan: LaunchPlan }) {
   const gaps = plan.sections.find((s) => s.key === 'gaps');
   const review = plan.review?.status === 'unchecked' ? null : plan.review;
-  if (!gaps?.lines.length && !review) return null;
+  const template = plan.writer === 'template';
+  if (!gaps?.lines.length && !review && !template) return null;
   return (
     <FollowUp label="Review of this plan">
+      {template ? (
+        <p className="inline-flex w-fit items-center gap-1.5 rounded-md bg-weak-bg px-[9px] py-0.5 text-xs font-semibold text-weak">
+          <span aria-hidden="true">◐</span>
+          Written from templates: the writing model was not available, so the wording is plainer
+        </p>
+      ) : null}
       {gaps?.lines.length ? (
         <div className="flex flex-col gap-2.5">
           <h2 className="font-display text-[17px] font-semibold tracking-[-0.02em]">

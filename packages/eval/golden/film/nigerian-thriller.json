@@ -47,7 +47,6 @@
       "f-cinemas-lagos": ["Marina Picturehouse", "Lekki Screens"],
       "f-cinemas-london": ["Southbank Screen"],
       "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
-      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Crime Junkie", "Serial"],
       "f-community-church-london": ["Pentecost House"],
       "f-community-university-lagos": ["Lagoon City University"],
@@ -62,7 +61,7 @@
       "positioning": "5/0",
       "audience": "3/0",
       "markets": "2/0",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "placement": "2/0",
       "publicity": "1/1",
       "community": "2/1",
@@ -78,12 +77,12 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 60,
-      "backed": 33,
+      "lines": 59,
+      "backed": 32,
       "rankKept": 100,
-      "findingsUsed": 13,
+      "findingsUsed": 12,
       "cities": {
-        "London": 6,
+        "London": 5,
         "Lagos": 7
       }
     },
@@ -102,9 +101,9 @@
       "territories": ["London:other:okay", "Lagos:other:avoid"],
       "calls": ["territory:London:okay:lower", "territory:Lagos:avoid:lower"],
       "partners": {
-        "A": 3,
-        "B": 7,
-        "C": 4
+        "A": 0,
+        "B": 8,
+        "C": 6
       }
     }
   }
