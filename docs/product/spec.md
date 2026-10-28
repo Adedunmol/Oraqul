@@ -820,7 +820,7 @@ The marketing and trust pages a signed out visitor sees.
 
 | Route | Holds |
 |---|---|
-| `/` | The pitch, the example answer, the three jobs. Exists |
+| `/` | The pitch, how it differs from chatbots, AI planners and dashboards with what that changes for a team, the three jobs, the example answer. Exists |
 | `/how-it-works` | Describe it, the agent asks only what it must, tests each assumption, ends with a bottom line and receipts |
 | `/examples` | Three full read only sample outputs with every receipt openable: a Nigerian film planned for four territories, an Afrobeats album rollout and a podcast season sized to a micro budget, each a recorded run of the pipeline on the demo data (`apps/api/src/agent/examples.spec.ts` keeps them in step), picked with `?case=`. Built from the demo data and labelled as examples. The walkthrough video joins when it exists. `/example` redirects here |
 | `/use-cases` | Make a plan, check my plan, fix one that missed, and keep going (rival dates, what ifs, the creative kit). One page, a section for each |

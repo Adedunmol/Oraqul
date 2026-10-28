@@ -4,13 +4,50 @@ Built for the **Qloo Hackathon 2026**.
 
 A culturally grounded launch agent for media and entertainment: launch plans grounded in what audiences actually like. Plan a launch, audit a plan, or fix one, before or after launch, across film, music, books, podcasts, games and live shows. Every claim about taste, audience or place cites a finding from Qloo taste data.
 
-<!-- Before submitting: add the live app URL, the demo video link and one screenshot here. -->
+**Live app:** https://oraqul.site
+
+**Code:** https://github.com/Adedunmol/Oraqul
+
+<!-- Before submitting: add the demo video link and one screenshot here. -->
 
 ## The problem
 
 Launch plans rest on audience assumptions nobody writes down, borrowed from a few comparable titles and instinct. When a launch underperforms, the team can see what happened but not which assumption was wrong. Oraqul makes each assumption explicit and tests it against Qloo: a plan says which lines are measured, which are sourced from the web and which are launch craft, and every measured line opens the Qloo call behind it.
 
 It is for the teams that launch cultural products: distributors and studios, labels and managers, publishers, podcast networks, game publishers, and live show promoters. More in [docs/product/overview.md](docs/product/overview.md).
+
+## What it changes
+
+A launch team today pieces its audience plan together from a few comparable titles, a dashboard that answers one question at a time, a chat answer nobody can check, and instinct. Oraqul replaces that with one working loop:
+
+- **Plan right for the right audience.** One brief becomes a plan per market, worked back from the release date, with the audience, the cities, the partners and the creative briefs. The audience is measured in Qloo for each place the team names, and the team's own cities are never dropped.
+- **Catch the wrong assumption before the money is spent.** Bring an existing plan and every audience assumption in it comes back as holds, weak, breaks or could not test, with the sentence that states it and a stronger option where one breaks.
+- **Save the research hours.** The lookups, the comparison across cities, the calendar, the sponsor and funding leads and the first drafts of the creative and pitches are done in one run instead of across tools. We have not measured the time saved and do not claim a figure.
+- **Learn from the launch, not just report on it.** Enter results and Oraqul says which assumption missed and writes a revised plan beside the old one. A launch watch flags rivals landing near the date and dates that slip, and a rescue names where to put the next seven days.
+- **Trust what it says.** Every claim about taste, audience or place opens the Qloo call behind it. Claims that are launch craft are labelled and cite nothing, and a claim code cannot support is dropped before the plan is shown.
+
+## How it is different
+
+| | Chatbot | Generic AI planner or wrapper | Audience dashboard | Oraqul |
+|---|---|---|---|---|
+| Who the audience is and where | From memory | From memory, or a search result summarised | Measured, one query at a time | Measured in Qloo for every place the team names, ranked in one list |
+| Scores, verdicts, confidence | Written by the model | Written by the model | Shown as figures | Computed by code, tested at each threshold; the model never sets a number |
+| Can you check a claim | No | Sometimes a link | Yes, in the tool | Every grounded line opens its Qloo call; code drops a line that cites nothing |
+| Your own plan | Agrees with it | Rewrites it | Not its job | Tests each assumption and reports holds, weak, breaks or could not test |
+| Market facts (rivals, windows) | Stale or invented | Varies | Not covered | Searched, dated and linked to the page; a fact the page does not hold is dropped |
+| After launch | Starts again | Starts again | Reports what happened | Compares results with the plan, revises it, watches the date, names a rescue |
+| Partners and funding | Lists well known brands | Lists well known brands | Not covered | Only brands Qloo ranks for that audience; funds with source, day read and eligibility worked out in code |
+| Same brief twice | Differs | Differs | Same | Same questions, same findings, tested by golden runs per category |
+
+Where the others are better: a chatbot is faster and more fluent, and a dashboard has depth in the one thing it measures. Oraqul has to win on measured, checked specifics and still read as a plan a team can use. [Principles](docs/product/principles.md#against-a-normal-chatbot) has the full comparison.
+
+## Why it needs Qloo
+
+A chat model can write a launch plan, but it cannot know where an audience lives, what else they love or which brands they trust, so it guesses. Oraqul asks Qloo about the launch's comparable titles, places and age band, computes every score from what comes back, and lets the model only write it up. Remove Qloo and there are no cities to rank, no audience to describe and no partners to offer.
+
+## What is and is not autonomous
+
+Plans, reports and fixes run a fixed, tested pipeline, so the same input runs the same checks. Inside it the agent plans its own extra Qloo and web lookups when the evidence is thin, critiques its draft against the brief and rewrites it (up to three drafts), and watches a saved plan on a schedule. In a project chat the model chooses its next tool call. Nothing leaves Oraqul without a person's approval.
 
 ## How Oraqul uses Qloo
 

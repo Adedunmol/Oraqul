@@ -107,6 +107,7 @@ Oraqul is a global product. A title from any market is a normal entity, and citi
 
 ## What makes it different
 
+* Without Qloo it has nothing to say. A chat model can write a launch plan from its training; it cannot know where this audience lives, what else they love or which brands they trust. Oraqul asks Qloo about those and writes up what comes back, so the plan changes when the audience does.
 * The plan's cultural claims are measured: the model shapes the questions with cultural context (a music scene, a release country, a city, an age band), which is what makes Qloo's answers sharp.
 * The team's decisions are respected: Oraqul plans for their cities and audience, and says what it found about them.
 * Every claim about taste cites a finding; launch practice is labelled, so a reader can tell the two apart.

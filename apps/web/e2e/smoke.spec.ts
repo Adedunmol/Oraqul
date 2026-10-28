@@ -7,7 +7,7 @@ test('the landing page shows the pitch, the example and the ways in', async ({ p
   // is, and the real product is shown under that.
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Plan your launch right');
   expect(text).toContain(
-    'culturally grounded AI agent for launch planning in media & entertainment',
+    'Build, audit and fix your media & entertainment launch plan with Oraqul, a culturally grounded AI agent that even follows up after launch.',
   );
   expect(text).toContain('Night Ferry');
   expect(text).toContain('Agent trace');
