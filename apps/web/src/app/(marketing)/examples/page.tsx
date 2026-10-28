@@ -11,7 +11,7 @@ import { wrap } from '../../_marketing/section';
 export const metadata: Metadata = {
   title: 'Examples · Oraqul',
   description:
-    'Three full Oraqul plans: a film planned for four markets, an album rollout worked back from its date, and a podcast season sized to a micro budget. Invented data, every receipt open.',
+    'Four full Oraqul plans for a film, an album, a book and a podcast, each written from a plain description. Real runs on live Qloo data, every receipt open.',
 };
 
 const legend: { verdict: Verdict; text: string }[] = [

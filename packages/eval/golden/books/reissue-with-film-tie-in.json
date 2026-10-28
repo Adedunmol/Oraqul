@@ -42,7 +42,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with London, then Johannesburg: that is where your book's readers are strongest.",
+    "headline": "Lead with London, then Johannesburg: that is where the comparable books' readers are strongest.",
     "assumptions": {
       "a-place-london": "breaks",
       "a-place-johannesburg": "breaks",

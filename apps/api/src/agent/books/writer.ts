@@ -208,7 +208,7 @@ export function templateSection(key: LaunchSectionKey, input: WriteInput): Writt
         const next = rest.slice(0, 2);
         lines.push(
           grounded(
-            `Lead with ${first}${next.length ? `, then ${list(next)}` : ''}: that is where your book's readers are strongest${rest.length > 2 ? ' of the markets checked' : ''}.`,
+            `Lead with ${first}${next.length ? `, then ${list(next)}` : ''}: that is where ${input.comps.some((c) => c.source !== 'you') ? "the comparable books' readers" : "your book's readers"} are strongest${rest.length > 2 ? ' of the markets checked' : ''}.`,
             markets,
             [first, ...next],
           ),
@@ -272,7 +272,7 @@ export function templateSection(key: LaunchSectionKey, input: WriteInput): Writt
       if (themes) {
         lines.push(
           grounded(
-            `Lead the key messages with ${list(themes.entities.slice(0, 3).map((t) => t.name.toLowerCase()))}, the themes your comparable books share.`,
+            `Lead the key messages with ${list(themes.entities.slice(0, 3).map((t) => t.name.toLowerCase()))}, the themes the comparable books share.`,
             themes,
             [],
             'Key messages',

@@ -88,6 +88,57 @@ describe('qaCheck', () => {
     expect(found.map((f) => f.rule)).toEqual(['dead-end']);
   });
 
+  it('does not read story text, a verb or a risk with its fix as a dead end or jargon', () => {
+    const found = run(
+      plan({
+        sections: [
+          {
+            key: 'timeline',
+            title: 'Timeline',
+            lines: [
+              line('Lift the embargo, run the launch discount and watch reviews.', {
+                kind: 'playbook',
+                findingIds: [],
+              }),
+              line('A clerk pulled into a heist she cannot walk away from.', {
+                kind: 'playbook',
+                findingIds: [],
+              }),
+              line(
+                'The budget cannot support broad paid sponsorships, so pick mid-sized creators.',
+                {
+                  kind: 'playbook',
+                  findingIds: [],
+                },
+              ),
+            ],
+          },
+        ],
+      }),
+    );
+    expect(found).toEqual([]);
+  });
+
+  it('flags "your readers" anywhere when the team named none of the comps', () => {
+    const chosen = [{ name: 'Atomic Habits', source: 'added' as const, match: null, choice: null }];
+    const said = line("Lead with Toronto: that is where your book's readers are strongest.");
+    const found = run(
+      plan({
+        comps: chosen.map((c) => ({ ...c, why: 'Reads like it.' })),
+        sections: [{ key: 'bottom-line', title: 'Bottom line', lines: [said] }],
+      }),
+    );
+    expect(found.map((f) => f.rule)).toContain('chosen-comps-yours');
+
+    const named = run(
+      plan({
+        comps: [{ name: 'Americanah', source: 'you', match: null, choice: null }],
+        sections: [{ key: 'bottom-line', title: 'Bottom line', lines: [said] }],
+      }),
+    );
+    expect(named.map((f) => f.rule)).not.toContain('chosen-comps-yours');
+  });
+
   it('flags a guessed launch', () => {
     const found = run(
       plan({

@@ -42,7 +42,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with London, then New York: that is where your book's readers are strongest.",
+    "headline": "Lead with London, then New York: that is where the comparable books' readers are strongest.",
     "assumptions": {
       "a-place-new-york": "breaks",
       "a-place-london": "breaks",

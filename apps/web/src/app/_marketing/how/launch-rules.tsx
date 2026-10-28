@@ -1,46 +1,34 @@
 import { Confidence, DirectionPill } from '@oraqul/ui';
+import { exampleDetails } from '@/lib/examples';
 import { band, h2Class, leadClass, wrap } from '../section';
 
-// Invented example data, labelled as such. Nothing here comes from Qloo.
+// The territories come from the recorded film example. The calendar and the partner tiers below are
+// worked examples of the rules.
 
-function Example() {
+function RealRun() {
   return (
     <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
-      Example
+      Real run
     </span>
   );
 }
 
-const territories = [
-  {
-    name: 'Lagos',
-    role: 'Home market',
-    direction: 'okay',
-    confidence: 'high',
-    channels: 'Instagram, TikTok, YouTube',
-  },
-  {
-    name: 'London',
-    role: 'Diaspora city',
-    direction: 'okay',
-    confidence: 'medium',
-    channels: 'YouTube, Instagram, TikTok',
-  },
-  {
-    name: 'Houston',
-    role: 'Diaspora city',
-    direction: 'risky',
-    confidence: 'medium',
-    channels: 'YouTube, Instagram, TikTok',
-  },
-  {
-    name: 'Atlanta',
-    role: 'Diaspora city',
-    direction: 'avoid',
-    confidence: 'lower',
-    channels: 'YouTube, Instagram, TikTok',
-  },
-] as const;
+const { plan } = exampleDetails.film.output;
+
+/** The recorded film run's territories, each with the call the code made on it. */
+const territories = (plan?.territories ?? []).flatMap((t) => {
+  const call = plan?.calls.find((c) => c.id === t.callId);
+  if (!call) return [];
+  return [
+    {
+      name: t.name,
+      role: t.role === 'home' ? 'Home market' : 'Diaspora city',
+      direction: call.direction,
+      confidence: call.confidence,
+      channels: t.channels.map((c) => c.name).join(', '),
+    },
+  ];
+});
 
 /** One plan per territory: the home market first, then the diaspora cities, each with its call. */
 export function Territories() {
@@ -61,8 +49,8 @@ export function Territories() {
         </div>
         <div className="flex flex-col gap-3 rounded-2xl bg-card p-[clamp(18px,3vw,32px)] shadow-lg">
           <div className="flex items-center justify-between text-[13px]">
-            <span className="font-semibold">Night Ferry, territories</span>
-            <Example />
+            <span className="font-semibold">{exampleDetails.film.output.title}, territories</span>
+            <RealRun />
           </div>
           <ol className="flex flex-col gap-2.5">
             {territories.map((t, i) => (

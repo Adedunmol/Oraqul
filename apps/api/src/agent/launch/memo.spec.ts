@@ -69,6 +69,26 @@ describe('MemoizedAnalyst', () => {
     expect(calls).toBe(2);
   });
 
+  it('pins the analysis to the words, not to what the reader made of them', async () => {
+    let calls = 0;
+    const inner: Analyst = {
+      async analyse() {
+        calls += 1;
+        return { analysis, tokens: 10 };
+      },
+    };
+    const memo = new MemoizedAnalyst(inner, new MapMemos(), 'v1');
+    const input = { category: 'books', title: 'T', text: 'A  Book\n', read };
+    await memo.analyse(input);
+    const again = await memo.analyse({
+      ...input,
+      text: 'a book',
+      read: { ...read, places: ['Elsewhere'] },
+    });
+    expect(again.tokens).toBe(0);
+    expect(calls).toBe(1);
+  });
+
   it('ignores a stored value that no longer fits the schema, and a store that fails', async () => {
     let calls = 0;
     const inner: Analyst = {
@@ -79,7 +99,9 @@ describe('MemoizedAnalyst', () => {
     };
     const store = new MapMemos();
     const input = { category: 'books', title: 'T', text: 'a book', read };
-    store.map.set(memoKey('analysis', 'v1', input), { nonsense: true });
+    store.map.set(memoKey('analysis', 'v1', { category: 'books', title: 'T', text: 'a book' }), {
+      nonsense: true,
+    });
     await new MemoizedAnalyst(inner, store, 'v1').analyse(input);
     expect(calls).toBe(1);
     const broken: BriefMemos = {
@@ -135,6 +157,23 @@ describe('MemoizedQueryPlanner', () => {
     expect(await memo.plan(input)).toEqual({ plan, tokens: 5 });
     expect(await memo.plan(input)).toEqual({ plan, tokens: 0 });
     await memo.plan({ ...input, title: 'Other' });
+    expect(calls).toBe(2);
+  });
+
+  it('pins the plan to the words when the run has them, whatever the reader returned', async () => {
+    let calls = 0;
+    const inner: QueryPlanner = {
+      async plan() {
+        calls += 1;
+        return { plan, tokens: 5 };
+      },
+    };
+    const memo = new MemoizedQueryPlanner(inner, new MapMemos(), 'v1');
+    const input = { title: 'T', text: 'a book', read, modules: [], compsCountry: null };
+    await memo.plan(input);
+    await memo.plan({ ...input, read: { ...read, places: ['Elsewhere'] }, compsCountry: 'NG' });
+    expect(calls).toBe(1);
+    await memo.plan({ ...input, text: 'a different book' });
     expect(calls).toBe(2);
   });
 

@@ -32,7 +32,7 @@ function without(f: Finding, gone: Set<string>, closedForever: boolean): Finding
         : `No brand asked about in ${city ?? 'this market'} could be confirmed as selling there.`
       : f.query === 'brands'
         ? `For this audience${city ? ` in ${city}` : ''}, Qloo ranks ${top} highest among the brands asked.`
-        : `Among the same brands, people${city ? ` in ${city}` : ''} overall like ${top} best. This is taste for the place, not for your comps.`;
+        : `Among the same brands, people${city ? ` in ${city}` : ''} overall like ${top} best. This is taste for the place, not for the comps.`;
   return { ...f, entities, text };
 }
 

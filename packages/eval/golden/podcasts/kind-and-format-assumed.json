@@ -50,7 +50,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with Lagos, then Abuja: that is where your show's listeners are strongest.",
+    "headline": "Lead with Lagos, then Abuja: that is where the comparable shows' listeners are strongest.",
     "assumptions": {
       "a-comps": "weak"
     },

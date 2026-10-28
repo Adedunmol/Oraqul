@@ -174,9 +174,13 @@ function escapeName(text: string): string {
 }
 
 // A name of two or more capitalised words ("Lagos State University", "Between The Covers"). The
-// first word of a sentence is capitalised anyway, so it is not counted as part of a name.
-const PROPER =
-  /(?<![\p{L}\p{N}])\p{Lu}[\p{L}'’.&-]*(?:\s+(?:(?:of|the|de|la|le|del|da|di|von|van)\s+)*\p{Lu}[\p{L}'’.&-]*)+/gu;
+// first word of a sentence is capitalised anyway, so it is not counted as part of a name. A full
+// stop joins words only after a short abbreviation ("St. Louis"), never across a sentence break.
+const NAME_WORD = String.raw`(?:\p{Lu}\p{L}{0,2}\.(?=\s+\p{Lu})|\p{Lu}[\p{L}'’&-]*)`;
+const PROPER = new RegExp(
+  String.raw`(?<![\p{L}\p{N}])${NAME_WORD}(?:\s+(?:(?:of|the|de|la|le|del|da|di|von|van)\s+)*${NAME_WORD})+`,
+  'gu',
+);
 
 /** The names in a line that no finding it cites, the brief or a page it cites accounts for. */
 export function unaccountedNames(text: string, allowed: string): string[] {

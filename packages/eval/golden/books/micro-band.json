@@ -50,7 +50,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with Abuja, then Lagos: that is where your book's readers are strongest.",
+    "headline": "Lead with Abuja, then Lagos: that is where the comparable books' readers are strongest.",
     "assumptions": {
       "a-comps": "weak"
     },

@@ -42,7 +42,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with Manchester, then Lagos: that is where your show's listeners are strongest.",
+    "headline": "Lead with Manchester, then Lagos: that is where the comparable shows' listeners are strongest.",
     "assumptions": {
       "a-age": "holds",
       "a-place-lagos": "weak",

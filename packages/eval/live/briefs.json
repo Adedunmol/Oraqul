@@ -43,7 +43,7 @@
     "name": "music-afrobeats-tour",
     "category": "music",
     "mode": "build",
-    "text": "Rema is putting out a new album in 10 weeks. We're touring Lagos, London, Accra and Atlanta, in that order, for fans aged 18 to 24. Burna Boy, Ayra Starr and Asake are the closest in sound.",
+    "text": "I'm an Afrobeats artist putting out a new album in 10 weeks. We're touring Lagos, London, Accra and Atlanta, in that order, for fans aged 18 to 24. Burna Boy, Ayra Starr and Asake are the closest in sound.",
     "example": "music",
     "title": "Night Songs"
   },
@@ -72,7 +72,7 @@
     "name": "podcast-true-crime-canada",
     "category": "podcasts",
     "mode": "build",
-    "text": "I'm starting a weekly true crime podcast about unsolved cases in Canada. It launches in 6 weeks and I'm in Toronto, with listeners in Vancouver too.",
+    "text": "I'm starting a weekly true crime podcast called \"Cold Trails\" about unsolved cases in Canada. It launches in 6 weeks and I'm in Toronto, with listeners in Vancouver too.",
     "example": "podcasts",
     "title": "Cold Trails"
   },

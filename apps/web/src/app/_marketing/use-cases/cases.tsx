@@ -1,6 +1,7 @@
 import { Chip, Icon, VerdictPill } from '@oraqul/ui';
 import Link from 'next/link';
 import type { CSSProperties, ReactNode } from 'react';
+import { exampleBriefs, exampleDetails } from '@/lib/examples';
 import { Reveal } from '../reveal';
 import { band, h2Class, wrap } from '../section';
 
@@ -90,21 +91,19 @@ function UserBubble({ children }: { children: ReactNode }) {
   );
 }
 
-function ExampleTag() {
+/** "Real run" for what comes from a recorded plan; "Illustration" for a sketch of a job no run backs. */
+function ExampleTag({ real = false }: { real?: boolean }) {
   return (
     <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
-      Example
+      {real ? 'Real run' : 'Illustration'}
     </span>
   );
 }
 
-const ladder: [string, number, string][] = [
-  ['Mexico City', 1.82, 'Strong'],
-  ['London', 1.64, 'Strong'],
-  ['Toronto', 1.41, 'Usable'],
-  ['Austin', 1.33, 'Usable'],
-  ['Manchester', 1.08, 'Low lift'],
-];
+// The cities of the recorded film run, strongest first, with the band the code gave each.
+const ladder: [string, number, string][] = [...exampleDetails.film.output.brief.places]
+  .sort((a, b) => b.lift - a.lift)
+  .map((p) => [p.name, p.lift, `${p.band.charAt(0).toUpperCase()}${p.band.slice(1)}`]);
 
 /** Make a plan reads as the chat it is: the ask on the right, the agent's answer under it. */
 export function PlanCase() {
@@ -124,16 +123,13 @@ export function PlanCase() {
           <ExampleLink href="/examples?case=film&tab=territories" />
         </div>
         <Reveal className="flex flex-col gap-5">
-          <UserBubble>
-            Plan the release of Night Ferry, a Mexico City crime drama series, for the UK and the
-            US.
-          </UserBubble>
+          <UserBubble>{exampleBriefs.film}</UserBubble>
           <div className="mk-in flex flex-col gap-4" style={stagger(1)}>
             <span className="text-[14px] font-semibold text-accent">Oraqul</span>
             <div className="flex flex-col gap-4 rounded-2xl bg-card p-[clamp(16px,3vw,24px)] shadow-md">
               <div className="flex items-center justify-between gap-3 text-[13px]">
                 <span className="font-semibold">Where to open, ranked by lift</span>
-                <ExampleTag />
+                <ExampleTag real />
               </div>
               <ol className="flex flex-col">
                 {ladder.map(([city, lift, tier], i) => (

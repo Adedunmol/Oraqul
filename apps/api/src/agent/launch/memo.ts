@@ -23,6 +23,8 @@ export class NoMemos implements BriefMemos {
   async set() {}
 }
 
+const words = (text: string) => text.toLowerCase().replace(/\s+/g, ' ').trim();
+
 export const memoKey = (kind: string, version: string, input: unknown): string =>
   createHash('sha256')
     .update(JSON.stringify([kind, MEMO_CODE_VERSION, version, input]))
@@ -38,7 +40,12 @@ export class MemoizedAnalyst implements Analyst {
   ) {}
 
   async analyse<R extends LaunchRead>(input: AnalyseInput<R>) {
-    const key = memoKey('analysis', this.version, input);
+    // The reader's output is left out: it is a model's reading and varies, and the memo pins what follows from the words.
+    const key = memoKey('analysis', this.version, {
+      category: input.category,
+      title: input.title,
+      text: words(input.text),
+    });
     try {
       const hit = analysisSchema.safeParse(await this.memos.get(key));
       if (hit.success) return { analysis: hit.data as Analysis, tokens: 0 };
@@ -70,7 +77,13 @@ export class MemoizedQueryPlanner<R extends LaunchRead, P extends QueryPlanCore>
   ) {}
 
   async plan(input: QueryPlanInput<R>) {
-    const key = memoKey('query-plan', this.version, input);
+    const key = memoKey(
+      'query-plan',
+      this.version,
+      input.text === undefined
+        ? input
+        : { title: input.title, text: words(input.text), modules: input.modules },
+    );
     try {
       const hit = await this.memos.get(key);
       if (looksLikePlan(hit)) return { plan: hit as P, tokens: 0 };

@@ -132,7 +132,7 @@ function onsaleSection(read: ShowsRead, today: string, target: Signal['target'])
   lines.push(
     `Open a presale ${presale.leadDays.min} to ${presale.leadDays.max} days before general on sale, behind an access code. Keep registration open for ${presale.registrationDays.min} to ${presale.registrationDays.max} days and give the presale an end date: never plan a presale with no end date.`,
     `The first ${presale.criticalHours} hours of general on sale are the most important${dates ? ` (${range(dates.critical.from, dates.critical.to)})` : ''}: post the link, send the email and SMS scripts and read sales every day.`,
-    `Venue capacity: ${read.capacity ? read.capacity.toLocaleString('en-US') : 'not available'}. Ticket price band: ${read.priceBand ?? 'not available'}. Qloo holds neither, so the plan never estimates them.`,
+    `Venue capacity: ${read.capacity ? read.capacity.toLocaleString('en-US') : 'not given'}. Ticket price band: ${read.priceBand ?? 'not given'}. Oraqul does not guess either; tell me the capacity and the price and the on-sale plan is sized to them.`,
   );
 
   const tickets = ticketTarget(

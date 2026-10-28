@@ -6,6 +6,8 @@ export default defineConfig({
   resolve: { tsconfigPaths: true },
   test: {
     globals: true,
+    // Using this config is asking for the live runs, so no shell-specific env prefix is needed.
+    env: { LIVE_RUNS: '1' },
     root: './',
     include: ['test/**/*.live-spec.ts'],
     hookTimeout: 120_000,

@@ -67,7 +67,7 @@ describe('regionSeeds', () => {
     expect(added.every((a) => a.confidence === 'lower')).toBe(true);
     expect(added[0]?.text).toContain('With no comps to go on');
     expect(added[0]?.text).toContain('Mayorkun, BOJ and Sean Tizzle');
-    expect(added[0]?.text).toContain('not for your comps');
+    expect(added[0]?.text).toContain('not for the comps');
     expect(urls.every((u) => !u.searchParams.has('signal.interests.entities'))).toBe(true);
     expect(urls[0]?.searchParams.get('signal.location.query')).toBe('Lagos');
   });

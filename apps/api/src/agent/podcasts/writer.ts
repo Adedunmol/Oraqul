@@ -183,7 +183,7 @@ export function templateSection(key: LaunchSectionKey, input: WriteInput): Writt
         const next = rest.slice(0, 2);
         lines.push(
           grounded(
-            `Lead with ${first}${next.length ? `, then ${list(next)}` : ''}: that is where your show's listeners are strongest${rest.length > 2 ? ' of the markets checked' : ''}.`,
+            `Lead with ${first}${next.length ? `, then ${list(next)}` : ''}: that is where ${input.comps.some((c) => c.source !== 'you') ? "the comparable shows' listeners" : "your show's listeners"} are strongest${rest.length > 2 ? ' of the markets checked' : ''}.`,
             markets,
             [first, ...next],
           ),

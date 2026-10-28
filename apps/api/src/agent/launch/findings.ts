@@ -234,6 +234,8 @@ export interface GroundKit<R extends LaunchRead, P extends QueryPlanCore> {
   plan: P;
   /** The Qloo ids of the anchors. */
   ids: string[];
+  /** Some comps were chosen by Oraqul, so a finding must not read as if the team's own title was measured. */
+  capped: boolean;
   year: number;
   /** The audience, cities and assumptions already tested, which a category may extend. */
   brief: LaunchBrief;
@@ -497,6 +499,7 @@ export async function ground<R extends LaunchRead, P extends QueryPlanCore>(
     read,
     plan,
     ids,
+    capped: Boolean(input.cap),
     year: input.year,
     brief,
     gaps,
@@ -859,7 +862,7 @@ export async function regionSeeds<R extends LaunchRead, P extends QueryPlanCore>
         {
           id: `f-region-${city.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${noun}`,
           query: 'region',
-          text: `With no comps to go on, here is what people ${age} in ${city} like, from the place and age band alone: the ${noun} ${names}. This is taste for the place, not for your comps.`,
+          text: `With no comps to go on, here is what people ${age} in ${city} like, from the place and age band alone: the ${noun} ${names}. This is taste for the place, not for the comps.`,
           entities: out.candidates.map((c) =>
             entity(c.name, c.affinity, c.detail, c.entityId, c.popularity),
           ),

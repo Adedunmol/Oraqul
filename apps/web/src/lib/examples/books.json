@@ -1,0 +1,3505 @@
+{
+  "output": {
+    "id": "a07e88b6-d1a0-4725-992c-ba5bad4539fd",
+    "projectId": "03e2d6ab-bee7-4227-9a21-2da1d326f5c1",
+    "threadId": "9f453139-35d0-4fa6-a2bb-923db7f5b0bc",
+    "kind": "build",
+    "parentId": null,
+    "title": "How to be a man",
+    "label": "v1 · How to be a man",
+    "shortLabel": "v1",
+    "kindLabel": "Plan",
+    "createdBy": "",
+    "createdAt": "2026-10-28T21:59:41.121Z",
+    "headline": "Lead with Sydney, then Toronto and New York: that is where the comparable books' readers are strongest of the markets checked.",
+    "moves": [
+      {
+        "text": "Lead with Sydney, then Toronto and New York: that is where the comparable books' readers are strongest of the markets checked.",
+        "lineId": "f-markets"
+      },
+      {
+        "text": "Aim the launch at people aged 24 and under, as planned.",
+        "lineId": "f-audience"
+      }
+    ],
+    "confidence": {
+      "level": "low",
+      "why": "Lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire."
+    },
+    "stats": [
+      {
+        "label": "Assumptions",
+        "value": "2"
+      },
+      {
+        "label": "Hold",
+        "value": "1",
+        "verdict": "holds"
+      },
+      {
+        "label": "Weak or break",
+        "value": "1",
+        "verdict": "breaks"
+      },
+      {
+        "label": "Could not test",
+        "value": "0",
+        "verdict": "cant"
+      }
+    ],
+    "counts": {
+      "holds": 1,
+      "weak": 1,
+      "breaks": 0,
+      "cant": 0
+    },
+    "summary": "Lead with Sydney, then Toronto and New York: that is where the comparable books' readers are strongest of the markets checked.\n1. Lead with Sydney, then Toronto and New York: that is where the comparable books' readers are strongest of the markets checked.\n2. Aim the launch at people aged 24 and under, as planned.\nConfidence: Low. Lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+    "changes": [],
+    "focusIds": [],
+    "tabs": [
+      {
+        "key": "plan",
+        "label": "Plan",
+        "note": ""
+      },
+      {
+        "key": "shelf",
+        "label": "Comp shelf",
+        "note": "The recent books your readers pick up, ranked by how close their readers are to yours. These are the comps to pitch against."
+      },
+      {
+        "key": "bridge",
+        "label": "Adaptation bridge",
+        "note": "The series, films and podcasts your readers also follow, ranked within each kind of media. They give the pitch angles for screen and audio."
+      },
+      {
+        "key": "regions",
+        "label": "Markets",
+        "note": "Which markets fit the book, ranked by how strongly each does."
+      },
+      {
+        "key": "calls",
+        "label": "Direction calls",
+        "note": "Okay, risky or avoid, for each date, territory and partner, set by code from what Qloo returned."
+      },
+      {
+        "key": "campaign",
+        "label": "Campaign",
+        "note": "The content calendar as a dated checklist your team edits and ticks off. Each action comes with a guide to adapt, and Oraqul alerts the team when a date slips: it makes no final asset and posts nothing."
+      },
+      {
+        "key": "funding",
+        "label": "Funding and sponsors",
+        "note": "Sponsors that fit each territory and funds that are open now, each with its source and the day it was read. Terms change: confirm on the source page before applying. Oraqul sends nothing."
+      },
+      {
+        "key": "watch",
+        "label": "Watch",
+        "note": "Oraqul re-checks this plan on a schedule and says what needs a look. Add your own figures to see whether the launch is ahead of, on or behind the plan’s pace. It never changes the plan."
+      },
+      {
+        "key": "audience",
+        "label": "Audience",
+        "note": "Who it is for, measured against Qloo taste data."
+      },
+      {
+        "key": "assumptions",
+        "label": "Assumptions",
+        "note": "Every belief your plan rests on. Holds means Qloo data supports it. Breaks means it does not. Each one has a receipt: the exact Qloo call behind it. What could not be tested is at the end."
+      },
+      {
+        "key": "evidence",
+        "label": "Evidence",
+        "note": "Every claim with its receipt. Use this to check any number."
+      }
+    ],
+    "sections": [
+      {
+        "key": "s1",
+        "title": "Comp titles",
+        "one": "Comp"
+      },
+      {
+        "key": "s2",
+        "title": "Screen and audio angles",
+        "one": "Angle"
+      },
+      {
+        "key": "s3",
+        "title": "Brand partners",
+        "one": "Partner"
+      },
+      {
+        "key": "s4",
+        "title": "Markets",
+        "one": "Market"
+      }
+    ],
+    "glance": [],
+    "brief": {
+      "audience": [
+        {
+          "id": "aud-male",
+          "name": "Men",
+          "affinity": 64,
+          "evidence": "Affinity 0.29 across 2 of 4 comps"
+        },
+        {
+          "id": "aud-24_and_younger",
+          "name": "Aged 24 and under",
+          "affinity": 51,
+          "evidence": "Affinity 0.01 across 2 of 4 comps"
+        },
+        {
+          "id": "aud-35_to_44",
+          "name": "Aged 35 to 44",
+          "affinity": 50,
+          "evidence": "Affinity 0.01 across 2 of 4 comps"
+        },
+        {
+          "id": "aud-25_to_29",
+          "name": "Aged 25 to 29",
+          "affinity": 49,
+          "evidence": "Affinity -0.02 across 2 of 4 comps"
+        },
+        {
+          "id": "aud-30_to_34",
+          "name": "Aged 30 to 34",
+          "affinity": 47,
+          "evidence": "Affinity -0.07 across 2 of 4 comps"
+        },
+        {
+          "id": "aud-45_to_54",
+          "name": "Aged 45 to 54",
+          "affinity": 37,
+          "evidence": "Affinity -0.27 across 2 of 4 comps"
+        }
+      ],
+      "assumptions": [
+        {
+          "id": "a-age",
+          "text": "The audience is aged 24 and under",
+          "verdict": "holds",
+          "why": "It is the top age band, or close to it (affinity 0.01, top band 0.01).",
+          "fix": "",
+          "unstated": false
+        },
+        {
+          "id": "a-comps",
+          "text": "The book and its comparable books describe one readership",
+          "verdict": "weak",
+          "why": "The city order rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+          "fix": "Add or swap comps so no single title carries the result.",
+          "unstated": true
+        }
+      ],
+      "s1": [],
+      "s2": [],
+      "s3": [],
+      "s4": [],
+      "places": [
+        {
+          "id": "place-sydney",
+          "name": "Sydney",
+          "lift": 1.44,
+          "band": "usable",
+          "audience": "Men",
+          "confidence": "lower",
+          "note": "1287 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire"
+        },
+        {
+          "id": "place-toronto",
+          "name": "Toronto",
+          "lift": 1.34,
+          "band": "usable",
+          "audience": "Men",
+          "confidence": "lower",
+          "note": "1235 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire"
+        },
+        {
+          "id": "place-new-york",
+          "name": "New York",
+          "lift": 0.92,
+          "band": "weak",
+          "audience": "Men",
+          "confidence": "lower",
+          "note": "2611 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire"
+        },
+        {
+          "id": "place-london",
+          "name": "London",
+          "lift": 0.83,
+          "band": "weak",
+          "audience": "Men",
+          "confidence": "lower",
+          "note": "2212 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire"
+        },
+        {
+          "id": "place-lagos",
+          "name": "Lagos",
+          "lift": 0.47,
+          "band": "weak",
+          "audience": "Men",
+          "confidence": "lower",
+          "note": "703 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire"
+        }
+      ],
+      "weeks": [],
+      "dates": [],
+      "chosenDate": "",
+      "partners": [],
+      "risks": [
+        {
+          "id": "risk-a-comps",
+          "text": "The book and its comparable books describe one readership",
+          "signal": "The city order rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+          "action": "Add or swap comps so no single title carries the result."
+        }
+      ],
+      "cannot": [
+        {
+          "id": "cant-box-office",
+          "item": "Sales, pre-orders and chart positions",
+          "reason": "Qloo has taste data, not sales. Add your own numbers when you fix a plan.",
+          "ask": "Share your own figures and I will set them against the plan.",
+          "cantKind": "input"
+        },
+        {
+          "id": "cant-q-1",
+          "item": "Creators and authors your readers follow",
+          "reason": "Qloo returned authors for one genre and voice actors for another, so the list does not fit every book and was not asked.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
+        }
+      ],
+      "groupLabels": [],
+      "planned": [],
+      "results": null,
+      "course": null,
+      "shelf": [
+        {
+          "id": "shelf-think-again-the-power-of-knowing-what-you-don-t-know",
+          "name": "Think Again: The Power of Knowing What You Don't Know",
+          "overlap": 87,
+          "evidence": "2021 · 87 of 100 overlap with your readers"
+        },
+        {
+          "id": "shelf-four-thousand-weeks-time-management-for-mortals",
+          "name": "Four Thousand Weeks: Time Management for Mortals",
+          "overlap": 85,
+          "evidence": "2021 · 85 of 100 overlap with your readers"
+        },
+        {
+          "id": "shelf-will",
+          "name": "Will",
+          "overlap": 85,
+          "evidence": "2021 · 85 of 100 overlap with your readers"
+        },
+        {
+          "id": "shelf-digital-for-good-raising-kids-to-thrive-in-an-online-world",
+          "name": "Digital for Good: Raising Kids to Thrive in an Online World",
+          "overlap": 80,
+          "evidence": "2021 · 80 of 100 overlap with your readers"
+        },
+        {
+          "id": "shelf-together",
+          "name": "Together",
+          "overlap": 72,
+          "evidence": "2021 · 72 of 100 overlap with your readers"
+        },
+        {
+          "id": "shelf-how-to-be-a-writer",
+          "name": "How to Be a Writer",
+          "overlap": 72,
+          "evidence": "2021 · 72 of 100 overlap with your readers"
+        }
+      ],
+      "bridge": [
+        {
+          "id": "bridge-podcast-fresh-air",
+          "name": "Fresh Air",
+          "fit": 89,
+          "evidence": "Podcast · 89 of 100 overlap with your readers",
+          "medium": "Podcast"
+        },
+        {
+          "id": "bridge-podcast-curious-minds-at-work",
+          "name": "Curious Minds at Work",
+          "fit": 88,
+          "evidence": "Podcast · 88 of 100 overlap with your readers",
+          "medium": "Podcast"
+        },
+        {
+          "id": "bridge-podcast-books-writers-the-creative-process-novelists-screenwriters-playwrights-poets-non-fiction-writers-journalists-talk",
+          "name": "Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk",
+          "fit": 85,
+          "evidence": "Podcast · 85 of 100 overlap with your readers",
+          "medium": "Podcast"
+        },
+        {
+          "id": "bridge-podcast-word-matters",
+          "name": "Word Matters",
+          "fit": 85,
+          "evidence": "Podcast · 85 of 100 overlap with your readers",
+          "medium": "Podcast"
+        }
+      ]
+    },
+    "plan": {
+      "scope": "full",
+      "sections": [
+        {
+          "key": "bottom-line",
+          "title": "Bottom line",
+          "lines": [
+            {
+              "id": "bottom-line-1",
+              "kind": "grounded",
+              "text": "Lead with Sydney, then Toronto and New York: that is where the comparable books' readers are strongest of the markets checked.",
+              "findingIds": ["f-markets"],
+              "sourceIds": [],
+              "names": ["Sydney", "Toronto", "New York"],
+              "group": null
+            },
+            {
+              "id": "bottom-line-2",
+              "kind": "grounded",
+              "text": "Aim the launch at people aged 24 and under, as planned.",
+              "findingIds": ["f-audience"],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "positioning",
+          "title": "Positioning",
+          "lines": [
+            {
+              "id": "positioning-1",
+              "kind": "playbook",
+              "text": "Name the genre, motivation, and the closest comparable book in the first line of the blurb and of the pitch to booksellers.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook"
+            },
+            {
+              "id": "positioning-2",
+              "kind": "grounded",
+              "text": "Lead the key messages with resilience, mental toughness and overcoming adversity, the themes the comparable books share.",
+              "findingIds": ["f-themes-theme"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Key messages"
+            },
+            {
+              "id": "positioning-3",
+              "kind": "playbook",
+              "text": "Pitch the book to booksellers, press and readers in the company of Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones, The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire and Can't Hurt Me: Master Your Mind and Defy the Odds.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [
+                "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+                "The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+                "Can't Hurt Me: Master Your Mind and Defy the Odds"
+              ],
+              "group": "Comps"
+            }
+          ]
+        },
+        {
+          "key": "audience",
+          "title": "Audience",
+          "lines": [
+            {
+              "id": "audience-1",
+              "kind": "grounded",
+              "text": "The core readers are people 24 and under, then 35 to 44.",
+              "findingIds": ["f-audience"],
+              "sourceIds": [],
+              "names": [],
+              "group": "Who they are"
+            },
+            {
+              "id": "audience-2",
+              "kind": "grounded",
+              "text": "They also hear Fresh Air and Curious Minds at Work.",
+              "findingIds": ["f-podcasts"],
+              "sourceIds": [],
+              "names": ["Fresh Air", "Curious Minds at Work"],
+              "group": "What else they follow"
+            }
+          ]
+        },
+        {
+          "key": "markets",
+          "title": "Markets",
+          "lines": [
+            {
+              "id": "markets-1",
+              "kind": "grounded",
+              "text": "Among the markets a launch like this usually checks, the comparable books' readers is strongest in Sydney, then Toronto, New York, London and Lagos.",
+              "findingIds": ["f-markets"],
+              "sourceIds": [],
+              "names": ["Sydney", "Toronto", "New York", "London", "Lagos"],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "comps",
+          "title": "Comp titles",
+          "lines": [
+            {
+              "id": "comps-1",
+              "kind": "playbook",
+              "text": "Put the two closest comparable books in the first line of the pitch to booksellers and in the note to reviewers.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "How"
+            }
+          ]
+        },
+        {
+          "key": "adaptation",
+          "title": "Screen and audio angles",
+          "lines": [
+            {
+              "id": "adaptation-1",
+              "kind": "grounded",
+              "text": "For audio, offer the author to Fresh Air and Curious Minds at Work, the podcasts your readers hear.",
+              "findingIds": ["f-podcasts"],
+              "sourceIds": [],
+              "names": ["Fresh Air", "Curious Minds at Work"],
+              "group": "Audio"
+            },
+            {
+              "id": "adaptation-2",
+              "kind": "playbook",
+              "text": "Use these as comparisons in the pitch only. Do not announce an adaptation until a producer is attached.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "How"
+            }
+          ]
+        },
+        {
+          "key": "retail",
+          "title": "Retail and pre-orders",
+          "lines": [
+            {
+              "id": "retail-1",
+              "kind": "playbook",
+              "text": "Open pre-orders on every retail page eight weeks out, and ask the buyers for a display or a promotion slot against the closest comparable book.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Pre-orders"
+            },
+            {
+              "id": "retail-2",
+              "kind": "grounded",
+              "text": "Ask Word On The Water - The London Bookbarge and Hatchards in London to stock and display the book: they rank highest with your readers.",
+              "findingIds": ["f-shops-london", "f-markets"],
+              "sourceIds": [],
+              "names": ["Word On The Water - The London Bookbarge", "Hatchards", "London"],
+              "group": "Bookshops"
+            },
+            {
+              "id": "retail-3",
+              "kind": "grounded",
+              "text": "Ask SPYSCAPE & SPYGAMES and Holy Cross Monastery in New York to stock and display the book: they rank highest with your readers.",
+              "findingIds": ["f-shops-new-york", "f-markets"],
+              "sourceIds": [],
+              "names": ["SPYSCAPE & SPYGAMES", "Holy Cross Monastery", "New York"],
+              "group": "Bookshops"
+            }
+          ]
+        },
+        {
+          "key": "publicity",
+          "title": "Press and reviews",
+          "lines": [
+            {
+              "id": "publicity-1",
+              "kind": "playbook",
+              "text": "Send long-lead outlets finished copies three months out, and the newsletters and review sites for the genre an advance copy and a short note on why now.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Press"
+            }
+          ]
+        },
+        {
+          "key": "events",
+          "title": "Events and festivals",
+          "lines": [
+            {
+              "id": "events-1",
+              "kind": "grounded",
+              "text": "Plan the launch event or a signing at Word On The Water - The London Bookbarge and Hatchards in London: they rank highest with your readers.",
+              "findingIds": ["f-shops-london", "f-markets"],
+              "sourceIds": [],
+              "names": ["Word On The Water - The London Bookbarge", "Hatchards", "London"],
+              "group": "London"
+            },
+            {
+              "id": "events-2",
+              "kind": "grounded",
+              "text": "Plan the launch event or a signing at SPYSCAPE & SPYGAMES and Holy Cross Monastery in New York: they rank highest with your readers.",
+              "findingIds": ["f-shops-new-york", "f-markets"],
+              "sourceIds": [],
+              "names": ["SPYSCAPE & SPYGAMES", "Holy Cross Monastery", "New York"],
+              "group": "New York"
+            },
+            {
+              "id": "events-3",
+              "kind": "grounded",
+              "text": "Plan the launch event or a signing at Humber Lakeshore Campus Store and Old's Cool General Store in Toronto: they rank highest with your readers.",
+              "findingIds": ["f-shops-toronto", "f-markets"],
+              "sourceIds": [],
+              "names": ["Humber Lakeshore Campus Store", "Old's Cool General Store", "Toronto"],
+              "group": "Toronto"
+            }
+          ]
+        },
+        {
+          "key": "creators",
+          "title": "BookTok and creators",
+          "lines": [
+            {
+              "id": "creators-1",
+              "kind": "playbook",
+              "text": "Send finished copies to the reviewers and creators who cover the genre two weeks before launch, with a short note and a date to post.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Creators"
+            }
+          ]
+        },
+        {
+          "key": "partnerships",
+          "title": "Brand partners",
+          "lines": [
+            {
+              "id": "partnerships-1",
+              "kind": "grounded",
+              "text": "Approach Vita Coco and Soylent in New York for an in-kind partnership or a co-promotion: they rank highest with your readers.",
+              "findingIds": ["f-brands-new-york", "f-markets"],
+              "sourceIds": [],
+              "names": ["Vita Coco", "Soylent", "New York"],
+              "group": "Brand partners"
+            }
+          ]
+        },
+        {
+          "key": "community",
+          "title": "Book clubs and community",
+          "lines": [
+            {
+              "id": "community-1",
+              "kind": "playbook",
+              "text": "Give book clubs a reading kit and the first chapter before launch, and offer the author for one club evening in each lead market.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Book clubs"
+            }
+          ]
+        },
+        {
+          "key": "creative",
+          "title": "Creative briefs",
+          "lines": [
+            {
+              "id": "creative-1",
+              "kind": "playbook",
+              "text": "Hook one: open on the strongest image of How to be a man in the first two seconds.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-2",
+              "kind": "playbook",
+              "text": "Hook two: open on the question this release answers, as text on screen over the first shot.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Hook options"
+            },
+            {
+              "id": "creative-3",
+              "kind": "playbook",
+              "text": "Key art brief: one image, the title How to be a man and at most one line of text. Say what the image must show, what to avoid and where it will be seen, then hand it to a designer. Oraqul writes the brief; a person makes the art.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Key art brief"
+            }
+          ]
+        },
+        {
+          "key": "calendar",
+          "title": "Content calendar",
+          "lines": [
+            {
+              "id": "calendar-source",
+              "kind": "playbook",
+              "text": "The rows follow the launch beats and give no post counts, so set your own rhythm and keep to what you can sustain.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-metadata",
+              "kind": "playbook",
+              "text": "T-26 to T-20: Lock the cover, the blurb, the categories and the keywords, and set the on-sale date. Check the categories against the comparable books. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-sell-in",
+              "kind": "playbook",
+              "text": "T-24 to T-16: Sell in to the retail buyers and wholesalers with the catalogue page, the cover and the comparable books. Ask for pre-order placement. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-advance-copies",
+              "kind": "playbook",
+              "text": "T-20: Send advance copies, proofs or digital, to early reviewers, booksellers and the trade press. An indie author builds a team of advance readers the same way. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-long-lead",
+              "kind": "playbook",
+              "text": "T-12 to T-8: Pitch the long-lead magazines, newspapers and literary supplements, and send finished copies where you have them. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-preorders",
+              "kind": "playbook",
+              "text": "T-8: Open pre-orders everywhere and make the cover and an excerpt public. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-events",
+              "kind": "playbook",
+              "text": "T-6 to T-2: Book the launch event, the bookshop signings and any festival slots, and confirm each one in writing. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-newsletter",
+              "kind": "playbook",
+              "text": "T-4: Send the newsletter with the first chapter and the pre-order link, and give book clubs a reading kit. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-creators",
+              "kind": "playbook",
+              "text": "T-2: Send finished copies to the reviewers and creators who cover the genre, and schedule their posts for launch week. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-launch",
+              "kind": "playbook",
+              "text": "Launch week: Publication day: pre-orders ship, the launch event runs, and the press and the first round of reviews go out the same week. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-reviews",
+              "kind": "playbook",
+              "text": "T+1 to T+4: Ask every reader you can reach for a rating and a review on the retail pages and Goodreads, and keep the events and posts coming. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-first-read",
+              "kind": "playbook",
+              "text": "T+4 to T+12: Read the first sales and reviews by market and age band. Move advertising, events and restocks to where the book sells. Lead on TikTok.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "calendar-ads-1",
+              "kind": "playbook",
+              "text": "Put about 80 percent of paid spend behind creative that has already worked, and about 20 percent into testing new creative.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-2",
+              "kind": "playbook",
+              "text": "Run three to five ads in each ad group.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            },
+            {
+              "id": "calendar-ads-3",
+              "kind": "playbook",
+              "text": "Judge a winner by its conversion count, not by how many days it has run.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": "Paid ads"
+            }
+          ]
+        },
+        {
+          "key": "timeline",
+          "title": "Launch beats",
+          "lines": [
+            {
+              "id": "timeline-metadata",
+              "kind": "playbook",
+              "text": "T-26 to T-20: Lock the cover, the blurb, the categories and the keywords, and set the on-sale date. Check the categories against the comparable books.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-sell-in",
+              "kind": "playbook",
+              "text": "T-24 to T-16: Sell in to the retail buyers and wholesalers with the catalogue page, the cover and the comparable books. Ask for pre-order placement.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-advance-copies",
+              "kind": "playbook",
+              "text": "T-20: Send advance copies, proofs or digital, to early reviewers, booksellers and the trade press. An indie author builds a team of advance readers the same way.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-long-lead",
+              "kind": "playbook",
+              "text": "T-12 to T-8: Pitch the long-lead magazines, newspapers and literary supplements, and send finished copies where you have them.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-preorders",
+              "kind": "playbook",
+              "text": "T-8: Open pre-orders everywhere and make the cover and an excerpt public.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-events",
+              "kind": "playbook",
+              "text": "T-6 to T-2: Book the launch event, the bookshop signings and any festival slots, and confirm each one in writing.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-newsletter",
+              "kind": "playbook",
+              "text": "T-4: Send the newsletter with the first chapter and the pre-order link, and give book clubs a reading kit.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-creators",
+              "kind": "playbook",
+              "text": "T-2: Send finished copies to the reviewers and creators who cover the genre, and schedule their posts for launch week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-launch",
+              "kind": "playbook",
+              "text": "Launch week: Publication day: pre-orders ship, the launch event runs, and the press and the first round of reviews go out the same week.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-reviews",
+              "kind": "playbook",
+              "text": "T+1 to T+4: Ask every reader you can reach for a rating and a review on the retail pages and Goodreads, and keep the events and posts coming.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "timeline-first-read",
+              "kind": "playbook",
+              "text": "T+4 to T+12: Read the first sales and reviews by market and age band. Move advertising, events and restocks to where the book sells.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "budget",
+          "title": "Budget split",
+          "lines": [
+            {
+              "id": "budget-1",
+              "kind": "playbook",
+              "text": "A starting split of $10,000: adjust it with your publisher or your team, and move money first to the markets where your readers are strongest.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-2",
+              "kind": "playbook",
+              "text": "Publicity, reviews and publicists: 25%, $2,500.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-3",
+              "kind": "playbook",
+              "text": "Events, tour and festivals: 20%, $2,000.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-4",
+              "kind": "playbook",
+              "text": "Advertising and discovery: 20%, $2,000.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-5",
+              "kind": "playbook",
+              "text": "Retail promotion and pre-order support: 10%, $1,000.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-6",
+              "kind": "playbook",
+              "text": "Creators and advance copies: 10%, $1,000.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-7",
+              "kind": "playbook",
+              "text": "Book clubs and community: 5%, $500.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "budget-8",
+              "kind": "playbook",
+              "text": "Contingency: 10%, $1,000.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "measure",
+          "title": "What to measure",
+          "lines": [
+            {
+              "id": "measure-primary",
+              "kind": "playbook",
+              "text": "Judge this plan on one signal: advance copy conversion and early reviews.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-target",
+              "kind": "playbook",
+              "text": "No target is set. Give your own number, such as “target 10,000”, and the plan will carry it.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-checkpoints",
+              "kind": "playbook",
+              "text": "Read it 28 days before release, day 0 and day 28.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-secondary",
+              "kind": "playbook",
+              "text": "Followers, Views, Pre-orders are secondary: track them, but do not judge the plan on them.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-pre-orders-by-market-and-age-band",
+              "kind": "playbook",
+              "text": "Also track pre-orders by market and age band.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-first-week-sales-by-market",
+              "kind": "playbook",
+              "text": "Also track first-week sales by market.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-ratings-and-reviews-on-the-retail-pages-in-the-first-month",
+              "kind": "playbook",
+              "text": "Also track ratings and reviews on the retail pages in the first month.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
+              "id": "measure-where-new-readers-came-from-shop-event-creator-or-newsletter",
+              "kind": "playbook",
+              "text": "Also track where new readers came from: shop, event, creator or newsletter.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        },
+        {
+          "key": "risks",
+          "title": "Risks",
+          "lines": [
+            {
+              "id": "risks-1",
+              "kind": "playbook",
+              "text": "A slipped publication date: hold the date once pre-orders open, and tell booksellers and reviewers the same day if it moves.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            }
+          ]
+        }
+      ],
+      "comps": [
+        {
+          "name": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+          "source": "added",
+          "why": "It shares the same practical motivation and self-improvement focus sought by young readers.",
+          "match": "2018",
+          "choice": "Qloo has no book called “Atomic Habits”. I used the closest one it has, “Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones” (2018). Say which you mean if it is another."
+        },
+        {
+          "name": "The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+          "source": "added",
+          "why": "It explores similar themes regarding masculinity, discipline, and personal growth.",
+          "match": "1997",
+          "choice": "Qloo has no book called “The Way of the Superior Man”. I used the closest one it has, “The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire” (1997). Say which you mean if it is another."
+        },
+        {
+          "name": "Can't Hurt Me: Master Your Mind and Defy the Odds",
+          "source": "added",
+          "why": "It appeals to young men looking for raw motivation and strict rules for self-mastery.",
+          "match": "2018",
+          "choice": "Qloo has no book called “Can't Hurt Me”. I used the closest one it has, “Can't Hurt Me: Master Your Mind and Defy the Odds” (2018). Say which you mean if it is another."
+        }
+      ],
+      "compsNotFound": [],
+      "findings": [
+        {
+          "id": "f-a-age",
+          "query": "audience",
+          "text": "Your target (aged 24 and under) is where the book's readers is strongest.",
+          "entities": [],
+          "numbers": {
+            "n0": 24
+          },
+          "verdict": "holds",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["00d6ab60-18f6-4131-90aa-32d294a64650"]
+        },
+        {
+          "id": "f-a-comps",
+          "query": "audience",
+          "text": "The book and its comparable books lean on one title for the result, so another comp of your own would firm it up.",
+          "entities": [],
+          "numbers": {},
+          "verdict": "weak",
+          "confidence": "lower",
+          "why": "lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["f787a7b0-c65c-4488-8684-65de31e13e29"]
+        },
+        {
+          "id": "f-audience",
+          "query": "audience",
+          "text": "The comparable books' readers is strongest among people aged 24 and under, then aged 35 to 44.",
+          "entities": [],
+          "numbers": {
+            "n0": 24,
+            "n1": 35,
+            "n2": 44,
+            "Men": 64,
+            "Aged 25 to 29": 49,
+            "Aged 30 to 34": 47,
+            "Aged 35 to 44": 50,
+            "Aged 45 to 54": 37,
+            "Aged 24 and under": 51
+          },
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "people 24 and under, then 35 to 44"
+          },
+          "callIds": ["00d6ab60-18f6-4131-90aa-32d294a64650"]
+        },
+        {
+          "id": "f-markets",
+          "query": "markets",
+          "text": "Among the markets a launch like this usually checks, the comparable books' readers is strongest in Sydney, then Toronto, New York, London and Lagos.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Sydney",
+              "affinity": 0.7163948129525365,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Toronto",
+              "affinity": 0.6696565572001343,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "New York",
+              "affinity": 0.45821292057762775,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "London",
+              "affinity": 0.41304628481271044,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Lagos",
+              "affinity": 0.23248832737821767,
+              "detail": null,
+              "popularity": null
+            }
+          ],
+          "numbers": {
+            "lift Lagos": 0.47,
+            "lift London": 0.83,
+            "lift Sydney": 1.44,
+            "lift Toronto": 1.34,
+            "lift New York": 0.92
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["f787a7b0-c65c-4488-8684-65de31e13e29"]
+        },
+        {
+          "id": "f-themes-archetype",
+          "query": "themes",
+          "text": "The characters that readers meet in them are dual identity, rivalry, survival and the tragic hero.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Dual Identity",
+              "affinity": 0.9800191815856778,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Rivalry",
+              "affinity": 0.9766193280221683,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Survival",
+              "affinity": 0.9752528513019152,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "The Tragic Hero",
+              "affinity": 0.9735131621709457,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Antihero",
+              "affinity": 0.9734959349593496,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "The Other",
+              "affinity": 0.9719558530848562,
+              "detail": null,
+              "popularity": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["6d8f9dbf-d57a-48f9-959f-317b73debbd5"]
+        },
+        {
+          "id": "f-themes-theme",
+          "query": "themes",
+          "text": "The comparable books share the themes resilience, mental toughness, overcoming adversity and humor.",
+          "entities": [
+            {
+              "entityId": null,
+              "name": "Resilience",
+              "affinity": 0.9961963576784927,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Mental Toughness",
+              "affinity": 0.9946566396200277,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Overcoming Adversity",
+              "affinity": 0.9936854719764012,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Humor",
+              "affinity": 0.9132960729519047,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Existentialism",
+              "affinity": 0.886189137947263,
+              "detail": null,
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Mindful Living",
+              "affinity": 0.882051282051282,
+              "detail": null,
+              "popularity": null
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": null,
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["3d8a1b52-530f-41a4-8f48-2bf1454faf62"]
+        },
+        {
+          "id": "f-shelf",
+          "query": "shelf",
+          "text": "The recent books that rank highest with the comparable books' readers aged 24 and under are Think Again: The Power of Knowing What You Don't Know, Four Thousand Weeks: Time Management for Mortals and Will.",
+          "entities": [
+            {
+              "entityId": "2FA0166A-F8D2-4718-BB7F-7403DD38A662",
+              "name": "Think Again: The Power of Knowing What You Don't Know",
+              "affinity": 0.87,
+              "detail": "2021",
+              "popularity": null
+            },
+            {
+              "entityId": "657EEB1C-DBBB-4771-92F8-21DE5AB889A5",
+              "name": "Four Thousand Weeks: Time Management for Mortals",
+              "affinity": 0.85,
+              "detail": "2021",
+              "popularity": null
+            },
+            {
+              "entityId": "3669BF66-6D7F-4903-91CF-32E38D89D33D",
+              "name": "Will",
+              "affinity": 0.85,
+              "detail": "2021",
+              "popularity": null
+            },
+            {
+              "entityId": "B3D357C2-A0A9-41DD-8746-4D35AE8EB174",
+              "name": "Digital for Good: Raising Kids to Thrive in an Online World",
+              "affinity": 0.8,
+              "detail": "2021",
+              "popularity": null
+            },
+            {
+              "entityId": "76836351-51F7-4D8C-BC9B-BECCB92AF95C",
+              "name": "Together",
+              "affinity": 0.72,
+              "detail": "2021",
+              "popularity": null
+            },
+            {
+              "entityId": "2C12926B-66AC-48D3-B190-DC2EE4E8F2A5",
+              "name": "How to Be a Writer",
+              "affinity": 0.72,
+              "detail": "2021",
+              "popularity": null
+            }
+          ],
+          "numbers": {
+            "n0": 24,
+            "overlap Will": 85,
+            "overlap Together": 72,
+            "overlap How to Be a Writer": 72,
+            "overlap Four Thousand Weeks: Time Management for Mortals": 85,
+            "overlap Think Again: The Power of Knowing What You Don't Know": 87,
+            "overlap Digital for Good: Raising Kids to Thrive in an Online World": 80
+          },
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": null,
+            "ages": ["24_and_younger"],
+            "tags": [],
+            "country": null,
+            "yearFrom": 2021,
+            "audience": null
+          },
+          "callIds": ["042535ec-6379-47dd-be83-9a719bdc6a2e"]
+        },
+        {
+          "id": "f-podcasts",
+          "query": "podcasts",
+          "text": "The podcasts about books that rank highest with the comparable books' readers are Fresh Air, Curious Minds at Work and Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk.",
+          "entities": [
+            {
+              "entityId": "BC64F7FD-D2F6-4C13-A211-83B38AFC9273",
+              "name": "Fresh Air",
+              "affinity": 0.89,
+              "detail": "Podcast",
+              "popularity": null
+            },
+            {
+              "entityId": "EEC53276-377D-48E3-A688-1F80DA39FE49",
+              "name": "Curious Minds at Work",
+              "affinity": 0.88,
+              "detail": "Podcast",
+              "popularity": null
+            },
+            {
+              "entityId": "CA10247A-9C8A-4DC6-82D4-B8394E1DEAEF",
+              "name": "Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk",
+              "affinity": 0.85,
+              "detail": "Podcast",
+              "popularity": null
+            },
+            {
+              "entityId": "6A6C5D00-9160-486D-8C4A-70289972ACE3",
+              "name": "Word Matters",
+              "affinity": 0.85,
+              "detail": "Podcast",
+              "popularity": null
+            }
+          ],
+          "numbers": {
+            "overlap Fresh Air": 89,
+            "overlap Word Matters": 85,
+            "overlap Curious Minds at Work": 88,
+            "overlap Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk": 85
+          },
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": null,
+            "ages": ["24_and_younger"],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["163e7ae8-f2de-40eb-abeb-e1540cd57a1d"]
+        },
+        {
+          "id": "f-brands-london",
+          "query": "brands",
+          "text": "In London, among brands that could realistically partner with a book launch, the comparable books' readers like Dishoom, Ahmad Tea and Carluccio's best.",
+          "entities": [
+            {
+              "entityId": "9BAB7C7F-68F4-4A31-B5DA-8346C1E9563D",
+              "name": "Dishoom",
+              "affinity": 0.9356824969544889,
+              "detail": null,
+              "popularity": 0.8546557949517724
+            },
+            {
+              "entityId": "0CC57FD1-971C-47FC-9961-F633A4DF4159",
+              "name": "Ahmad Tea",
+              "affinity": 0.9231970045334402,
+              "detail": null,
+              "popularity": 0.6977250767066162
+            },
+            {
+              "entityId": "8FA3AD6A-8210-437B-A3C7-7B6DABA9DCFF",
+              "name": "Carluccio's",
+              "affinity": 0.9158799049921962,
+              "detail": null,
+              "popularity": 0.7444779712159482
+            },
+            {
+              "entityId": "4C804A63-DE1A-45AE-900B-B61E759F01D1",
+              "name": "Leon Restaurants",
+              "affinity": 0.9073762759823145,
+              "detail": null,
+              "popularity": 0.8278805241477514
+            },
+            {
+              "entityId": "9AEF459B-3D95-43D0-B7A0-0C734FFCCC6B",
+              "name": "Vita Coco",
+              "affinity": 0.906782951574504,
+              "detail": null,
+              "popularity": 0.8452391042701429
+            },
+            {
+              "entityId": "179E8DBE-E199-4E3A-96DE-175BA7707C70",
+              "name": "Pret A Manger",
+              "affinity": 0.8971924513548776,
+              "detail": null,
+              "popularity": 0.8389076299774542
+            },
+            {
+              "entityId": "DF0B7C3B-0120-499E-AD92-AAE639B17EE2",
+              "name": "VOXI",
+              "affinity": 0.8703160619682188,
+              "detail": null,
+              "popularity": 0.596116356732383
+            },
+            {
+              "entityId": "32768EEC-F8C6-4947-BCB0-D2FF541ABEA5",
+              "name": "Travelwifi (formerly Tep)",
+              "affinity": 0.8110445074779657,
+              "detail": null,
+              "popularity": 0.47141089318709634
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["894affb3-6a47-4773-8a19-9028d8a74beb"]
+        },
+        {
+          "id": "f-brands-new-york",
+          "query": "brands",
+          "text": "In New York, among brands that could realistically partner with a book launch, the comparable books' readers like Vita Coco, Soylent and Dots best.",
+          "entities": [
+            {
+              "entityId": "9AEF459B-3D95-43D0-B7A0-0C734FFCCC6B",
+              "name": "Vita Coco",
+              "affinity": 0.9065790101462516,
+              "detail": null,
+              "popularity": 0.8452391042701429
+            },
+            {
+              "entityId": "BED9714C-EB06-4A8B-9490-EC8DAA5BD9D5",
+              "name": "Soylent",
+              "affinity": 0.8999322865359516,
+              "detail": null,
+              "popularity": 0.7886202980115611
+            },
+            {
+              "entityId": "2E4EBE96-CDE6-4EE8-A76D-3803F3473312",
+              "name": "Dots",
+              "affinity": 0.8960213215987155,
+              "detail": null,
+              "popularity": 0.6608296180773339
+            },
+            {
+              "entityId": "22B1BC87-CDFE-4340-86F8-8E0E6E1E6A7D",
+              "name": "Blue Bottle Coffee",
+              "affinity": 0.8724350858841705,
+              "detail": null,
+              "popularity": 0.9492210676204845
+            },
+            {
+              "entityId": "6E96DC68-1E42-4F17-A51F-1D68D89DE42B",
+              "name": "Visible",
+              "affinity": 0.8698746828773297,
+              "detail": null,
+              "popularity": 0.6980217321286298
+            },
+            {
+              "entityId": "E6BC1B43-71EA-4CAD-9CF5-BCADD6951F31",
+              "name": "Stumptown Coffee Roasters",
+              "affinity": 0.8680306294953649,
+              "detail": null,
+              "popularity": 0.923420521774508
+            },
+            {
+              "entityId": "32768EEC-F8C6-4947-BCB0-D2FF541ABEA5",
+              "name": "Travelwifi (formerly Tep)",
+              "affinity": 0.814877953850273,
+              "detail": null,
+              "popularity": 0.47141089318709634
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": "New York",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["8ecebc0f-02f8-46bb-965f-59085a7a6957"]
+        },
+        {
+          "id": "f-shops-london",
+          "query": "bookshops",
+          "text": "In London, the bookshops that rank highest with the comparable books' readers are Word On The Water - The London Bookbarge, Hatchards and The National Archives.",
+          "entities": [
+            {
+              "entityId": "5B5E9AC8-0DB6-4C0D-B251-7EBD15CB1E0A",
+              "name": "Word On The Water - The London Bookbarge",
+              "affinity": 0.8496504252463462,
+              "detail": "Regent's Canal Towpath London N1C 4LW United Kingdom",
+              "popularity": 0.9777619784696042
+            },
+            {
+              "entityId": "F5FAE4FF-879D-4C96-AC39-5910649081C8",
+              "name": "Hatchards",
+              "affinity": 0.8371229571999605,
+              "detail": "187 Piccadilly London W1J 9LE United Kingdom",
+              "popularity": 0.9836222712297942
+            },
+            {
+              "entityId": "AC619129-9CFB-4D0E-8EFE-D8235F904839",
+              "name": "The National Archives",
+              "affinity": 0.8356196151647002,
+              "detail": "Richmond TW9 4DU United Kingdom",
+              "popularity": 0.8983008066933595
+            },
+            {
+              "entityId": "FFCBF2AC-A6D9-4BFB-A817-88F0C4E9F1F6",
+              "name": "Skoob Books",
+              "affinity": 0.8329238819097917,
+              "detail": "66 The Brunswick off Marchmont St London WC1N 1AE United Kingdom",
+              "popularity": 0.8964401781359614
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": "London",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["d9985e00-67d7-4e92-918d-2b692b78a77d"]
+        },
+        {
+          "id": "f-shops-new-york",
+          "query": "bookshops",
+          "text": "In New York, the bookshops that rank highest with the comparable books' readers are SPYSCAPE & SPYGAMES, Holy Cross Monastery and Albertine.",
+          "entities": [
+            {
+              "entityId": "0E3DD1D7-72D0-4B05-A2A0-EA33A3D6CA97",
+              "name": "SPYSCAPE & SPYGAMES",
+              "affinity": 0.788068290466731,
+              "detail": "928 8th Ave New York, NY 10019",
+              "popularity": 0.993490585977272
+            },
+            {
+              "entityId": "3461565B-7438-4B15-9ABA-27784DEEB6FD",
+              "name": "Holy Cross Monastery",
+              "affinity": 0.782209979641201,
+              "detail": "1615 US-9W West Park, NY 12493",
+              "popularity": 0.4718745693419378
+            },
+            {
+              "entityId": "B96A451B-7E4A-430A-829D-0F7E4D4ACCD4",
+              "name": "Albertine",
+              "affinity": 0.7808436470757366,
+              "detail": "972 5th Ave New York, NY 10075",
+              "popularity": 0.975337849508618
+            },
+            {
+              "entityId": "2E192BAC-5BF3-404A-9E5C-E536C125EBB0",
+              "name": "Tibet House",
+              "affinity": 0.780400141374995,
+              "detail": "22 W 15th St New York, NY 10011",
+              "popularity": 0.8460085635717234
+            },
+            {
+              "entityId": "25B3F4D1-EF75-44F9-B938-481E764958E2",
+              "name": "POWERHOUSE Arena",
+              "affinity": 0.779683449430152,
+              "detail": "28 Adams St Brooklyn, NY 11201",
+              "popularity": 0.9689131277021181
+            },
+            {
+              "entityId": "F56956F7-BEC6-4D1D-9F85-487FB671D3EF",
+              "name": "Argosy Book Store",
+              "affinity": 0.7782091660779138,
+              "detail": "116 E 59th St New York, NY 10022",
+              "popularity": 0.9379908108945393
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": "New York",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["7e6a2db2-554f-4ad6-b6ca-72acdbb67f0f"]
+        },
+        {
+          "id": "f-shops-toronto",
+          "query": "bookshops",
+          "text": "In Toronto, the bookshops that rank highest with the comparable books' readers are Humber Lakeshore Campus Store, Old's Cool General Store and Type Books.",
+          "entities": [
+            {
+              "entityId": "D2D75A3D-7C35-4224-88E7-0565E356A364",
+              "name": "Humber Lakeshore Campus Store",
+              "affinity": 0.7616919519793511,
+              "detail": "Lakeshore Campus 3199 Lake Shore Blvd W Etobicoke, ON M8V 1K8 Canada",
+              "popularity": 0.9933808204075553
+            },
+            {
+              "entityId": "C79AC3F6-A56C-4DB9-AADB-67EBF074127F",
+              "name": "Old's Cool General Store",
+              "affinity": 0.7417469234578226,
+              "detail": "250 Westlake Ave East York, ON M4C 4T4 Canada",
+              "popularity": 0.7027325497817504
+            },
+            {
+              "entityId": "339A5893-07F8-471F-A1AC-B85E021BC355",
+              "name": "Type Books",
+              "affinity": 0.7385030869281043,
+              "detail": "2887 Dundas St W Toronto, ON M6P 1Y9 Canada",
+              "popularity": 0.8729089287511873
+            },
+            {
+              "entityId": "96B62522-5616-4215-BF51-3F2DF7FEA8BF",
+              "name": "Book City",
+              "affinity": 0.7313937803125383,
+              "detail": "2354 Bloor St W Toronto, ON M6S 1P3 Canada",
+              "popularity": 0.6789227075804363
+            },
+            {
+              "entityId": "72088289-29E3-44AC-A17B-D60C53B65946",
+              "name": "A Different Booklist",
+              "affinity": 0.7291979792783597,
+              "detail": "779 Bathurst St Toronto, ON M5S 0B7 Canada",
+              "popularity": 0.8321885025858985
+            },
+            {
+              "entityId": "8F2468A9-A946-45B0-9CE0-2C086B9027D4",
+              "name": "Glad Day Bookshop",
+              "affinity": 0.7281199337154618,
+              "detail": "499 Church St Toronto, ON M4Y 2C6 Canada",
+              "popularity": 0.9826042930781572
+            }
+          ],
+          "numbers": {},
+          "verdict": null,
+          "confidence": "medium",
+          "why": "medium: this rests on comps Oraqul chose from your description",
+          "context": {
+            "city": "Toronto",
+            "ages": [],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": null
+          },
+          "callIds": ["ba2d16d5-5006-4ea4-aa43-b4261033274d"]
+        },
+        {
+          "id": "f-brands-city-london",
+          "query": "brands-city",
+          "text": "Among the same brands, people aged 24 and under in London overall like VOXI, Pret A Manger and Leon Restaurants best. This is taste for the place, not for the comps.",
+          "entities": [
+            {
+              "entityId": "DF0B7C3B-0120-499E-AD92-AAE639B17EE2",
+              "name": "VOXI",
+              "affinity": 0.9847825813309129,
+              "detail": null,
+              "popularity": 0.596116356732383
+            },
+            {
+              "entityId": "179E8DBE-E199-4E3A-96DE-175BA7707C70",
+              "name": "Pret A Manger",
+              "affinity": 0.9696607307212975,
+              "detail": null,
+              "popularity": 0.8389076299774542
+            },
+            {
+              "entityId": "4C804A63-DE1A-45AE-900B-B61E759F01D1",
+              "name": "Leon Restaurants",
+              "affinity": 0.9694701633398515,
+              "detail": null,
+              "popularity": 0.8278805241477514
+            },
+            {
+              "entityId": "8FA3AD6A-8210-437B-A3C7-7B6DABA9DCFF",
+              "name": "Carluccio's",
+              "affinity": 0.9669525459497055,
+              "detail": null,
+              "popularity": 0.7444779712159482
+            },
+            {
+              "entityId": "9AEF459B-3D95-43D0-B7A0-0C734FFCCC6B",
+              "name": "Vita Coco",
+              "affinity": 0.9628288604556912,
+              "detail": null,
+              "popularity": 0.8452391042701429
+            },
+            {
+              "entityId": "9BAB7C7F-68F4-4A31-B5DA-8346C1E9563D",
+              "name": "Dishoom",
+              "affinity": 0.9554266957691341,
+              "detail": null,
+              "popularity": 0.8546557949517724
+            },
+            {
+              "entityId": "0CC57FD1-971C-47FC-9961-F633A4DF4159",
+              "name": "Ahmad Tea",
+              "affinity": 0.8486106151052502,
+              "detail": null,
+              "popularity": 0.6977250767066162
+            },
+            {
+              "entityId": "32768EEC-F8C6-4947-BCB0-D2FF541ABEA5",
+              "name": "Travelwifi (formerly Tep)",
+              "affinity": 0.8361385387704857,
+              "detail": null,
+              "popularity": 0.47141089318709634
+            }
+          ],
+          "numbers": {
+            "n0": 24
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: it rests on the place and age band alone, with no comps behind it",
+          "context": {
+            "city": "London",
+            "ages": ["24_and_younger"],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "region and age only"
+          },
+          "callIds": ["9f49cfeb-2fdd-4ec9-9b2e-85b88c7cc3ae"]
+        },
+        {
+          "id": "f-brands-city-new-york",
+          "query": "brands-city",
+          "text": "Among the same brands, people aged 24 and under in New York overall like Vita Coco, Blue Bottle Coffee and Stumptown Coffee Roasters best. This is taste for the place, not for the comps.",
+          "entities": [
+            {
+              "entityId": "9AEF459B-3D95-43D0-B7A0-0C734FFCCC6B",
+              "name": "Vita Coco",
+              "affinity": 0.9625701119182686,
+              "detail": null,
+              "popularity": 0.8452391042701429
+            },
+            {
+              "entityId": "22B1BC87-CDFE-4340-86F8-8E0E6E1E6A7D",
+              "name": "Blue Bottle Coffee",
+              "affinity": 0.9621484960008491,
+              "detail": null,
+              "popularity": 0.9492210676204845
+            },
+            {
+              "entityId": "E6BC1B43-71EA-4CAD-9CF5-BCADD6951F31",
+              "name": "Stumptown Coffee Roasters",
+              "affinity": 0.9395632504578132,
+              "detail": null,
+              "popularity": 0.923420521774508
+            },
+            {
+              "entityId": "BED9714C-EB06-4A8B-9490-EC8DAA5BD9D5",
+              "name": "Soylent",
+              "affinity": 0.85380958571345,
+              "detail": null,
+              "popularity": 0.7886202980115611
+            },
+            {
+              "entityId": "6E96DC68-1E42-4F17-A51F-1D68D89DE42B",
+              "name": "Visible",
+              "affinity": 0.85380958571345,
+              "detail": null,
+              "popularity": 0.6980217321286298
+            },
+            {
+              "entityId": "32768EEC-F8C6-4947-BCB0-D2FF541ABEA5",
+              "name": "Travelwifi (formerly Tep)",
+              "affinity": 0.8411700229851742,
+              "detail": null,
+              "popularity": 0.47141089318709634
+            },
+            {
+              "entityId": "2E4EBE96-CDE6-4EE8-A76D-3803F3473312",
+              "name": "Dots",
+              "affinity": 0.8283879002757625,
+              "detail": null,
+              "popularity": 0.6608296180773339
+            }
+          ],
+          "numbers": {
+            "n0": 24
+          },
+          "verdict": null,
+          "confidence": "lower",
+          "why": "lower: it rests on the place and age band alone, with no comps behind it",
+          "context": {
+            "city": "New York",
+            "ages": ["24_and_younger"],
+            "tags": [],
+            "country": null,
+            "yearFrom": null,
+            "audience": "region and age only"
+          },
+          "callIds": ["3edc17f1-bca3-4303-afe4-7cbb56d98964"]
+        }
+      ],
+      "sources": [],
+      "dropped": [],
+      "writer": "template",
+      "understanding": {
+        "asked": "The user wants a complete launch plan for their book including strategy and launch locations.",
+        "goals": ["Launch the book successfully and reach the target audience"],
+        "constraints": ["Micro budget under ten thousand dollars"],
+        "assumed": [
+          {
+            "what": "ages",
+            "value": "24_and_younger",
+            "why": "The work focuses on the move from boyhood to manhood, targeting young males."
+          },
+          {
+            "what": "Budget band",
+            "value": "Micro",
+            "why": "You gave it when asked."
+          }
+        ],
+        "readers": {
+          "who": "Young males transitioning into adulthood who are interested in personal growth, discipline, and self-improvement",
+          "ages": ["Teenagers and young adults"],
+          "consumes": "Non-fiction books on productivity, lifestyle podcasts, and self-help guides",
+          "why": "The subject matter directly addresses the challenges of moving from boyhood to manhood through rules and motivation."
+        },
+        "proposed": [
+          {
+            "name": "Atomic Habits",
+            "why": "It shares the same practical motivation and self-improvement focus sought by young readers."
+          },
+          {
+            "name": "The Way of the Superior Man",
+            "why": "It explores similar themes regarding masculinity, discipline, and personal growth."
+          },
+          {
+            "name": "Can't Hurt Me",
+            "why": "It appeals to young men looking for raw motivation and strict rules for self-mastery."
+          }
+        ],
+        "criteria": [
+          {
+            "id": "c1",
+            "text": "Outlines a launch strategy fitting the micro budget constraint.",
+            "evidence": false,
+            "status": "unchecked",
+            "findingIds": []
+          },
+          {
+            "id": "c2",
+            "text": "Suggests specific cities or regions to target based on audience taste data.",
+            "evidence": true,
+            "status": "unchecked",
+            "findingIds": []
+          },
+          {
+            "id": "c3",
+            "text": "Identifies marketing channels suited for young men seeking self-improvement advice.",
+            "evidence": true,
+            "status": "unchecked",
+            "findingIds": []
+          }
+        ],
+        "by": "model"
+      },
+      "review": {
+        "status": "unchecked",
+        "rounds": [],
+        "next": []
+      },
+      "process": {
+        "research": [],
+        "drafts": 1,
+        "dropped": []
+      },
+      "rules": {
+        "category": "books",
+        "version": "books@2026-10-22.1",
+        "parts": {
+          "shared": "shared@2026-10-23.1",
+          "calendar": "calendar@2026-10-23.1",
+          "partners": "partners@2026-10-23.1"
+        }
+      },
+      "band": {
+        "band": "micro",
+        "source": "asked"
+      },
+      "signal": {
+        "key": "advance-conversion-reviews",
+        "primary": "Advance copy conversion and early reviews",
+        "secondary": ["Followers", "Views", "Pre-orders"],
+        "checkpoints": [-28, 0, 28],
+        "target": null
+      },
+      "territories": [],
+      "calls": [
+        {
+          "id": "call-partner-ahmad-tea",
+          "subject": "partner",
+          "name": "Ahmad Tea",
+          "direction": "okay",
+          "confidence": "medium",
+          "why": "Ranked 2 of 8 brands for this audience in London.",
+          "findingIds": ["f-brands-london"],
+          "teamChoice": false,
+          "territory": "London"
+        },
+        {
+          "id": "call-partner-carluccio-s",
+          "subject": "partner",
+          "name": "Carluccio's",
+          "direction": "okay",
+          "confidence": "medium",
+          "why": "Ranked 3 of 8 brands for this audience in London.",
+          "findingIds": ["f-brands-london"],
+          "teamChoice": false,
+          "territory": "London"
+        },
+        {
+          "id": "call-partner-leon-restaurants",
+          "subject": "partner",
+          "name": "Leon Restaurants",
+          "direction": "risky",
+          "confidence": "medium",
+          "why": "Ranked 4 of 8 brands for this audience in London.",
+          "findingIds": ["f-brands-london"],
+          "teamChoice": false,
+          "territory": "London"
+        },
+        {
+          "id": "call-partner-vita-coco",
+          "subject": "partner",
+          "name": "Vita Coco",
+          "direction": "okay",
+          "confidence": "medium",
+          "why": "Ranked 1 of 7 brands for this audience in New York.",
+          "findingIds": ["f-brands-new-york"],
+          "teamChoice": false,
+          "territory": "New York"
+        },
+        {
+          "id": "call-partner-pret-a-manger",
+          "subject": "partner",
+          "name": "Pret A Manger",
+          "direction": "risky",
+          "confidence": "medium",
+          "why": "Ranked 6 of 8 brands for this audience in London.",
+          "findingIds": ["f-brands-london"],
+          "teamChoice": false,
+          "territory": "London"
+        },
+        {
+          "id": "call-partner-soylent",
+          "subject": "partner",
+          "name": "Soylent",
+          "direction": "okay",
+          "confidence": "medium",
+          "why": "Ranked 2 of 7 brands for this audience in New York.",
+          "findingIds": ["f-brands-new-york"],
+          "teamChoice": false,
+          "territory": "New York"
+        },
+        {
+          "id": "call-partner-dots",
+          "subject": "partner",
+          "name": "Dots",
+          "direction": "okay",
+          "confidence": "medium",
+          "why": "Ranked 3 of 7 brands for this audience in New York.",
+          "findingIds": ["f-brands-new-york"],
+          "teamChoice": false,
+          "territory": "New York"
+        },
+        {
+          "id": "call-partner-visible",
+          "subject": "partner",
+          "name": "Visible",
+          "direction": "risky",
+          "confidence": "medium",
+          "why": "Ranked 5 of 7 brands for this audience in New York.",
+          "findingIds": ["f-brands-new-york"],
+          "teamChoice": false,
+          "territory": "New York"
+        }
+      ],
+      "partners": [
+        {
+          "id": "partner-dishoom",
+          "name": "Dishoom",
+          "tier": "A",
+          "market": "United Kingdom",
+          "from": "qloo",
+          "fit": {
+            "place": 1,
+            "of": 8,
+            "direction": "okay",
+            "local": {
+              "place": 6,
+              "of": 8
+            }
+          },
+          "budgetFit": "out",
+          "price": "unknown",
+          "findingIds": ["f-brands-london", "f-brands-city-london"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "verified",
+            "note": null,
+            "country": "United Kingdom",
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-ahmad-tea",
+          "name": "Ahmad Tea",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "qloo",
+          "fit": {
+            "place": 2,
+            "of": 8,
+            "direction": "okay",
+            "local": {
+              "place": 7,
+              "of": 8
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-london", "f-brands-city-london"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "verified",
+            "note": null,
+            "country": "United Kingdom",
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-carluccio-s",
+          "name": "Carluccio's",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "qloo",
+          "fit": {
+            "place": 3,
+            "of": 8,
+            "direction": "okay",
+            "local": {
+              "place": 4,
+              "of": 8
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-london", "f-brands-city-london"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "verified",
+            "note": null,
+            "country": "United Kingdom",
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-leon-restaurants",
+          "name": "Leon Restaurants",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "qloo",
+          "fit": {
+            "place": 4,
+            "of": 8,
+            "direction": "risky",
+            "local": {
+              "place": 3,
+              "of": 8
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-london", "f-brands-city-london"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "verified",
+            "note": null,
+            "country": "United Kingdom",
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-vita-coco",
+          "name": "Vita Coco",
+          "tier": "B",
+          "market": null,
+          "from": "qloo",
+          "fit": {
+            "place": 1,
+            "of": 7,
+            "direction": "okay",
+            "local": {
+              "place": 1,
+              "of": 7
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-new-york", "f-brands-city-new-york"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "verified",
+            "note": "A taste fit for this audience in United States. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-pret-a-manger",
+          "name": "Pret A Manger",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "qloo",
+          "fit": {
+            "place": 6,
+            "of": 8,
+            "direction": "risky",
+            "local": {
+              "place": 2,
+              "of": 8
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-london", "f-brands-city-london"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "verified",
+            "note": null,
+            "country": "United Kingdom",
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-soylent",
+          "name": "Soylent",
+          "tier": "B",
+          "market": "United States",
+          "from": "qloo",
+          "fit": {
+            "place": 2,
+            "of": 7,
+            "direction": "okay",
+            "local": {
+              "place": 4,
+              "of": 7
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-new-york", "f-brands-city-new-york"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "verified",
+            "note": null,
+            "country": "United States",
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-dots",
+          "name": "Dots",
+          "tier": "B",
+          "market": null,
+          "from": "qloo",
+          "fit": {
+            "place": 3,
+            "of": 7,
+            "direction": "okay",
+            "local": {
+              "place": 7,
+              "of": 7
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-new-york", "f-brands-city-new-york"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "unverified",
+            "note": "A taste fit for this audience in United States. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-visible",
+          "name": "Visible",
+          "tier": "B",
+          "market": null,
+          "from": "qloo",
+          "fit": {
+            "place": 5,
+            "of": 7,
+            "direction": "risky",
+            "local": {
+              "place": 5,
+              "of": 7
+            }
+          },
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": ["f-brands-new-york", "f-brands-city-new-york"],
+          "kind": "brand",
+          "flags": [],
+          "moneyType": "in_kind",
+          "check": {
+            "state": "unverified",
+            "note": "A taste fit for this audience in United States. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
+        },
+        {
+          "id": "partner-b-coffee-and-lifestyle-brands",
+          "name": "Coffee and lifestyle brands",
+          "tier": "B",
+          "market": "the home market",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-b-stationery",
+          "name": "Stationery",
+          "tier": "B",
+          "market": "the home market",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        }
+      ],
+      "partnerNotes": [
+        {
+          "id": "partner-note-band",
+          "ruleId": "partners.lead-time",
+          "text": "An independent release usually has no franchise behind it, so lead with tier B and tier C partners."
+        },
+        {
+          "id": "partner-note-barter",
+          "ruleId": "partners.lead-time",
+          "text": "Barter and in-kind deals are common: a venue, product or reach in place of cash. Never assume a cash sponsorship."
+        }
+      ],
+      "calendar": [
+        {
+          "id": "calendar-metadata",
+          "territory": null,
+          "key": "metadata",
+          "at": -26,
+          "until": -20,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Lock the cover, the blurb, the categories and the keywords, and set the on-sale date. Check the categories against the comparable books.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-sell-in",
+          "territory": null,
+          "key": "sell-in",
+          "at": -24,
+          "until": -16,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Sell in to the retail buyers and wholesalers with the catalogue page, the cover and the comparable books. Ask for pre-order placement.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-advance-copies",
+          "territory": null,
+          "key": "advance-copies",
+          "at": -20,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Send advance copies, proofs or digital, to early reviewers, booksellers and the trade press. An indie author builds a team of advance readers the same way.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-long-lead",
+          "territory": null,
+          "key": "long-lead",
+          "at": -12,
+          "until": -8,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Pitch the long-lead magazines, newspapers and literary supplements, and send finished copies where you have them.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-preorders",
+          "territory": null,
+          "key": "preorders",
+          "at": -8,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Open pre-orders everywhere and make the cover and an excerpt public.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-events",
+          "territory": null,
+          "key": "events",
+          "at": -6,
+          "until": -2,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Book the launch event, the bookshop signings and any festival slots, and confirm each one in writing.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-newsletter",
+          "territory": null,
+          "key": "newsletter",
+          "at": -4,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Send the newsletter with the first chapter and the pre-order link, and give book clubs a reading kit.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-creators",
+          "territory": null,
+          "key": "creators",
+          "at": -2,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Send finished copies to the reviewers and creators who cover the genre, and schedule their posts for launch week.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-launch",
+          "territory": null,
+          "key": "launch",
+          "at": 0,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Publication day: pre-orders ship, the launch event runs, and the press and the first round of reviews go out the same week.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-reviews",
+          "territory": null,
+          "key": "reviews",
+          "at": 1,
+          "until": 4,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Ask every reader you can reach for a rating and a review on the retail pages and Goodreads, and keep the events and posts coming.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        },
+        {
+          "id": "calendar-first-read",
+          "territory": null,
+          "key": "first-read",
+          "at": 4,
+          "until": 12,
+          "from": null,
+          "to": null,
+          "asset": null,
+          "post": "Read the first sales and reviews by market and age band. Move advertising, events and restocks to where the book sells.",
+          "channel": "TikTok",
+          "count": null,
+          "per": null,
+          "ruleId": "books.calendar",
+          "grade": "not-researched"
+        }
+      ],
+      "opportunities": []
+    },
+    "report": null,
+    "refresh": null,
+    "evidence": [
+      {
+        "lineId": "f-a-age",
+        "label": "Your target (aged 24 and under) is where the book's readers is strongest.",
+        "group": "Findings",
+        "verdict": "holds",
+        "returned": "Confidence medium. medium: 2 anchors with data",
+        "driver": false
+      },
+      {
+        "lineId": "f-a-comps",
+        "label": "The book and its comparable books lean on one title for the result, so another comp of your own would firm it up.",
+        "group": "Findings",
+        "verdict": "weak",
+        "returned": "Confidence lower. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+        "driver": true
+      },
+      {
+        "lineId": "f-audience",
+        "label": "The comparable books' readers is strongest among people aged 24 and under, then aged 35 to 44.",
+        "group": "Findings",
+        "returned": "Confidence medium. medium: 2 anchors with data",
+        "driver": true
+      },
+      {
+        "lineId": "f-markets",
+        "label": "Among the markets a launch like this usually checks, the comparable books' readers is strongest in Sydney, then Toronto, New York, London and Lagos.",
+        "group": "Findings",
+        "returned": "Sydney, Toronto, New York, London, Lagos",
+        "driver": true
+      },
+      {
+        "lineId": "f-themes-archetype",
+        "label": "The characters that readers meet in them are dual identity, rivalry, survival and the tragic hero.",
+        "group": "Findings",
+        "returned": "Dual Identity, Rivalry, Survival, The Tragic Hero, Antihero, The Other",
+        "driver": false
+      },
+      {
+        "lineId": "f-themes-theme",
+        "label": "The comparable books share the themes resilience, mental toughness, overcoming adversity and humor.",
+        "group": "Findings",
+        "returned": "Resilience, Mental Toughness, Overcoming Adversity, Humor, Existentialism, Mindful Living",
+        "driver": false
+      },
+      {
+        "lineId": "f-shelf",
+        "label": "The recent books that rank highest with the comparable books' readers aged 24 and under are Think Again: The Power of Knowing What You Don't Know, Four Thousand Weeks: Time Management for Mortals and Will.",
+        "group": "Findings",
+        "returned": "Think Again: The Power of Knowing What You Don't Know, Four Thousand Weeks: Time Management for Mortals, Will, Digital for Good: Raising Kids to Thrive in an Online World, Together, How to Be a Writer",
+        "driver": false
+      },
+      {
+        "lineId": "f-podcasts",
+        "label": "The podcasts about books that rank highest with the comparable books' readers are Fresh Air, Curious Minds at Work and Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk.",
+        "group": "Findings",
+        "returned": "Fresh Air, Curious Minds at Work, Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk, Word Matters",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-london",
+        "label": "In London, among brands that could realistically partner with a book launch, the comparable books' readers like Dishoom, Ahmad Tea and Carluccio's best.",
+        "group": "Findings",
+        "returned": "Dishoom, Ahmad Tea, Carluccio's, Leon Restaurants, Vita Coco, Pret A Manger, VOXI, Travelwifi (formerly Tep)",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-new-york",
+        "label": "In New York, among brands that could realistically partner with a book launch, the comparable books' readers like Vita Coco, Soylent and Dots best.",
+        "group": "Findings",
+        "returned": "Vita Coco, Soylent, Dots, Blue Bottle Coffee, Visible, Stumptown Coffee Roasters, Travelwifi (formerly Tep)",
+        "driver": false
+      },
+      {
+        "lineId": "f-shops-london",
+        "label": "In London, the bookshops that rank highest with the comparable books' readers are Word On The Water - The London Bookbarge, Hatchards and The National Archives.",
+        "group": "Findings",
+        "returned": "Word On The Water - The London Bookbarge, Hatchards, The National Archives, Skoob Books",
+        "driver": false
+      },
+      {
+        "lineId": "f-shops-new-york",
+        "label": "In New York, the bookshops that rank highest with the comparable books' readers are SPYSCAPE & SPYGAMES, Holy Cross Monastery and Albertine.",
+        "group": "Findings",
+        "returned": "SPYSCAPE & SPYGAMES, Holy Cross Monastery, Albertine, Tibet House, POWERHOUSE Arena, Argosy Book Store",
+        "driver": false
+      },
+      {
+        "lineId": "f-shops-toronto",
+        "label": "In Toronto, the bookshops that rank highest with the comparable books' readers are Humber Lakeshore Campus Store, Old's Cool General Store and Type Books.",
+        "group": "Findings",
+        "returned": "Humber Lakeshore Campus Store, Old's Cool General Store, Type Books, Book City, A Different Booklist, Glad Day Bookshop",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-city-london",
+        "label": "Among the same brands, people aged 24 and under in London overall like VOXI, Pret A Manger and Leon Restaurants best. This is taste for the place, not for the comps.",
+        "group": "Findings",
+        "returned": "VOXI, Pret A Manger, Leon Restaurants, Carluccio's, Vita Coco, Dishoom, Ahmad Tea, Travelwifi (formerly Tep)",
+        "driver": false
+      },
+      {
+        "lineId": "f-brands-city-new-york",
+        "label": "Among the same brands, people aged 24 and under in New York overall like Vita Coco, Blue Bottle Coffee and Stumptown Coffee Roasters best. This is taste for the place, not for the comps.",
+        "group": "Findings",
+        "returned": "Vita Coco, Blue Bottle Coffee, Stumptown Coffee Roasters, Soylent, Visible, Travelwifi (formerly Tep), Dots",
+        "driver": false
+      },
+      {
+        "lineId": "a-age",
+        "label": "The audience is aged 24 and under",
+        "group": "Assumptions",
+        "verdict": "holds",
+        "returned": "It is the top age band, or close to it (affinity 0.01, top band 0.01).",
+        "driver": false
+      },
+      {
+        "lineId": "a-comps",
+        "label": "The book and its comparable books describe one readership",
+        "group": "Assumptions",
+        "verdict": "weak",
+        "returned": "The city order rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "driver": true
+      },
+      {
+        "lineId": "aud-male",
+        "label": "Men",
+        "group": "Audience",
+        "returned": "Affinity 0.29 across 2 of 4 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-24_and_younger",
+        "label": "Aged 24 and under",
+        "group": "Audience",
+        "returned": "Affinity 0.01 across 2 of 4 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-35_to_44",
+        "label": "Aged 35 to 44",
+        "group": "Audience",
+        "returned": "Affinity 0.01 across 2 of 4 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-25_to_29",
+        "label": "Aged 25 to 29",
+        "group": "Audience",
+        "returned": "Affinity -0.02 across 2 of 4 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-30_to_34",
+        "label": "Aged 30 to 34",
+        "group": "Audience",
+        "returned": "Affinity -0.07 across 2 of 4 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-45_to_54",
+        "label": "Aged 45 to 54",
+        "group": "Audience",
+        "returned": "Affinity -0.27 across 2 of 4 comps",
+        "driver": false
+      },
+      {
+        "lineId": "place-sydney",
+        "label": "Sydney",
+        "group": "Places",
+        "returned": "Lift 1.44x. 1287 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+        "driver": false
+      },
+      {
+        "lineId": "place-toronto",
+        "label": "Toronto",
+        "group": "Places",
+        "returned": "Lift 1.34x. 1235 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+        "driver": false
+      },
+      {
+        "lineId": "place-new-york",
+        "label": "New York",
+        "group": "Places",
+        "returned": "Lift 0.92x. 2611 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+        "driver": false
+      },
+      {
+        "lineId": "place-london",
+        "label": "London",
+        "group": "Places",
+        "returned": "Lift 0.83x. 2212 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+        "driver": false
+      },
+      {
+        "lineId": "place-lagos",
+        "label": "Lagos",
+        "group": "Places",
+        "returned": "Lift 0.47x. 703 cells. lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire",
+        "driver": false
+      }
+    ],
+    "receipts": [
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "aud-male",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "aud-24_and_younger",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "aud-35_to_44",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "aud-25_to_29",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "aud-30_to_34",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "aud-45_to_54",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "place-sydney",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "place-toronto",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "place-new-york",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "place-london",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "894affb3-6a47-4773-8a19-9028d8a74beb",
+        "lineId": "f-brands-london",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "In London, among brands that could realistically partner with a book launch, the comparable books' readers like Dishoom, Ahmad Tea and Carluccio's best. The 8 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:14.643Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "place-lagos",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "a-age",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "It is the top age band, or close to it (affinity 0.01, top band 0.01). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "a-comps",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The city order rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "163e7ae8-f2de-40eb-abeb-e1540cd57a1d",
+        "lineId": "bridge-podcast-fresh-air",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Fresh Air for these readers × 100, from one list of podcasts, so it compares only within these podcasts. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.449Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "163e7ae8-f2de-40eb-abeb-e1540cd57a1d",
+        "lineId": "bridge-podcast-curious-minds-at-work",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Curious Minds at Work for these readers × 100, from one list of podcasts, so it compares only within these podcasts. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.449Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "163e7ae8-f2de-40eb-abeb-e1540cd57a1d",
+        "lineId": "bridge-podcast-books-writers-the-creative-process-novelists-screenwriters-playwrights-poets-non-fiction-writers-journalists-talk",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk for these readers × 100, from one list of podcasts, so it compares only within these podcasts. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.449Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "163e7ae8-f2de-40eb-abeb-e1540cd57a1d",
+        "lineId": "bridge-podcast-word-matters",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Word Matters for these readers × 100, from one list of podcasts, so it compares only within these podcasts. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.449Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "042535ec-6379-47dd-be83-9a719bdc6a2e",
+        "lineId": "shelf-think-again-the-power-of-knowing-what-you-don-t-know",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Think Again: The Power of Knowing What You Don't Know for these readers × 100, from one list of books, so it compares only within these books. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.817Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "042535ec-6379-47dd-be83-9a719bdc6a2e",
+        "lineId": "shelf-four-thousand-weeks-time-management-for-mortals",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Four Thousand Weeks: Time Management for Mortals for these readers × 100, from one list of books, so it compares only within these books. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.817Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "042535ec-6379-47dd-be83-9a719bdc6a2e",
+        "lineId": "shelf-will",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Will for these readers × 100, from one list of books, so it compares only within these books. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.817Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "042535ec-6379-47dd-be83-9a719bdc6a2e",
+        "lineId": "shelf-digital-for-good-raising-kids-to-thrive-in-an-online-world",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Digital for Good: Raising Kids to Thrive in an Online World for these readers × 100, from one list of books, so it compares only within these books. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.817Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "042535ec-6379-47dd-be83-9a719bdc6a2e",
+        "lineId": "shelf-together",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives Together for these readers × 100, from one list of books, so it compares only within these books. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.817Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "042535ec-6379-47dd-be83-9a719bdc6a2e",
+        "lineId": "shelf-how-to-be-a-writer",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Overlap is the affinity Qloo gives How to Be a Writer for these readers × 100, from one list of books, so it compares only within these books. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.817Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "e4b77acf-ec14-4014-9571-f3400e63d053",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: several share the name.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:45.181Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "f-audience",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The comparable books' readers is strongest among people aged 24 and under, then aged 35 to 44. The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "00d6ab60-18f6-4131-90aa-32d294a64650",
+        "lineId": "f-a-age",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Your target (aged 24 and under) is where the book's readers is strongest. It is the top age band, or close to it (affinity 0.01, top band 0.01). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:48.751Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "f-a-comps",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The book and its comparable books lean on one title for the result, so another comp of your own would firm it up. The city order rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f787a7b0-c65c-4488-8684-65de31e13e29",
+        "lineId": "f-markets",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Among the markets a launch like this usually checks, the comparable books' readers is strongest in Sydney, then Toronto, New York, London and Lagos. Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:48.752Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "3edc17f1-bca3-4303-afe4-7cbb56d98964",
+        "lineId": "f-brands-city-new-york",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Among the same brands, people aged 24 and under in New York overall like Vita Coco, Blue Bottle Coffee and Stumptown Coffee Roasters best. This is taste for the place, not for the comps. The 7 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:59:14.639Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "163e7ae8-f2de-40eb-abeb-e1540cd57a1d",
+        "lineId": "f-podcasts",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The podcasts about books that rank highest with the comparable books' readers are Fresh Air, Curious Minds at Work and Books & Writers · The Creative Process: Novelists, Screenwriters, Playwrights, Poets, Non-fiction Writers & Journalists Talk. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:11.449Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "3d8a1b52-530f-41a4-8f48-2bf1454faf62",
+        "lineId": "f-themes-theme",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The comparable books share the themes resilience, mental toughness, overcoming adversity and humor. The theme tags Qloo ranks closest to the anchors, in Qloo's order.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:11.441Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "6d8f9dbf-d57a-48f9-959f-317b73debbd5",
+        "lineId": "f-themes-archetype",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The characters that readers meet in them are dual identity, rivalry, survival and the tragic hero. The archetype tags Qloo ranks closest to the anchors, in Qloo's order.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:11.806Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "042535ec-6379-47dd-be83-9a719bdc6a2e",
+        "lineId": "f-shelf",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The recent books that rank highest with the comparable books' readers aged 24 and under are Think Again: The Power of Knowing What You Don't Know, Four Thousand Weeks: Time Management for Mortals and Will. The 6 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:11.817Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "9f49cfeb-2fdd-4ec9-9b2e-85b88c7cc3ae",
+        "lineId": "f-brands-city-london",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Among the same brands, people aged 24 and under in London overall like VOXI, Pret A Manger and Leon Restaurants best. This is taste for the place, not for the comps. The 8 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:59:14.641Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "8ecebc0f-02f8-46bb-965f-59085a7a6957",
+        "lineId": "f-brands-new-york",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "In New York, among brands that could realistically partner with a book launch, the comparable books' readers like Vita Coco, Soylent and Dots best. The 7 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:14.642Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "d9985e00-67d7-4e92-918d-2b692b78a77d",
+        "lineId": "f-shops-london",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "In London, the bookshops that rank highest with the comparable books' readers are Word On The Water - The London Bookbarge, Hatchards and The National Archives. The 6 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:14.644Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "7e6a2db2-554f-4ad6-b6ca-72acdbb67f0f",
+        "lineId": "f-shops-new-york",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "In New York, the bookshops that rank highest with the comparable books' readers are SPYSCAPE & SPYGAMES, Holy Cross Monastery and Albertine. The 6 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:14.643Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "ba2d16d5-5006-4ea4-aa43-b4261033274d",
+        "lineId": "f-shops-toronto",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "In Toronto, the bookshops that rank highest with the comparable books' readers are Humber Lakeshore Campus Store, Old's Cool General Store and Type Books. The 6 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:59:14.644Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "d5602bc6-500a-46d5-b311-fd0b85dcd41e",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:45.184Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "131dab24-88de-44a9-a12a-95e29134b946",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:45.187Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "0886ed39-3c9e-4cd6-ad2f-213e98b85466",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:58:45.188Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "0ab17da8-9b22-439e-b67f-c115511a5f0c",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Leave one out: the same ranking without How to Be a Man.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:57.267Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "226aa5a3-2047-464e-9017-802589426060",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Leave one out: the same ranking without Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:57.270Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "5f8b3221-37f0-485b-b7b2-5443aca3cb85",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:59:11.443Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "d1997013-4c3b-48d2-a378-848a39f0637f",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Leave one out: the same ranking without The Way of the Superior Man: A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:57.271Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "fab6750a-7f19-43e3-8c1a-eb85e1cc9db7",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "Leave one out: the same ranking without Can't Hurt Me: Master Your Mind and Defy the Odds.",
+        "confidence": "medium",
+        "calledAt": "2026-10-28T21:58:57.272Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "4e7f6f51-782d-43aa-846f-d802d21edd00",
+        "endpoint": "/v2/tags",
+        "input": {},
+        "returned": null,
+        "rule": "The first tag Qloo lists for \"self help\" whose urn starts with urn:tag:genre:media. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:09.894Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "f10beb06-70a4-4c7e-b136-de6ef3d140ce",
+        "endpoint": "/v2/tags",
+        "input": {},
+        "returned": null,
+        "rule": "The first tag Qloo lists for \"books\" whose urn starts with urn:tag:genre:media. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:10.326Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "71ee1173-8f73-443c-9099-75b537abbd54",
+        "endpoint": "/v2/tags",
+        "input": {},
+        "returned": null,
+        "rule": "The first tag Qloo lists for \"beverage\" whose urn starts with urn:tag:genre:brand. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:10.644Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "1f563d86-89b1-455e-8bd6-15dfe08f5b51",
+        "endpoint": "/v2/tags",
+        "input": {},
+        "returned": null,
+        "rule": "The first tag Qloo lists for \"telecom\" whose urn starts with urn:tag:genre:brand. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:10.915Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "d77825c6-9956-41a1-b10a-300a407d9163",
+        "endpoint": "/v2/tags",
+        "input": {},
+        "returned": null,
+        "rule": "The first tag Qloo lists for \"book store\" whose urn starts with urn:tag:category:place. None means the phrase is not used as a filter.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.154Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "ddba350d-be84-4c34-9681-de97719c41b3",
+        "endpoint": "/entities",
+        "input": {},
+        "returned": null,
+        "rule": "What Qloo lists for each book, as returned. Nothing is scored. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.439Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "93c961ba-1320-4e1f-939a-5083af698d16",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.442Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "a516fece-998c-40b3-8f73-12e085548aec",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:59:11.444Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "9b8cbd8b-2e99-4247-91ec-f16909f1d660",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.446Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "d8d77269-cf39-4c64-8196-de0adbb04763",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.447Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "be46f644-3572-4da6-9530-568181c73feb",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:59:11.447Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "36e5a448-876e-4bdd-b01d-10a81308a2e9",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
+        "confidence": "lower",
+        "calledAt": "2026-10-28T21:59:11.448Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "06411e5e-7ab3-45f2-ad8c-4e72fe7bbb45",
+        "endpoint": "/search",
+        "input": {},
+        "returned": null,
+        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:11.448Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "73df76f5-fc94-4dab-a486-e6d77308ca62",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:13.465Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "d36ca01e-5647-442d-a3bc-0839fc22ecf4",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:13.466Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "a0ad7d80-fcca-4b18-8fc9-efe5fd7f0f45",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The 3 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:13.466Z",
+        "source": "qloo"
+      },
+      {
+        "callId": "8e99f8e7-f9ea-4a89-8504-84e9e0f51de4",
+        "endpoint": "/v2/insights",
+        "input": {},
+        "returned": null,
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 3 well known.",
+        "confidence": "high",
+        "calledAt": "2026-10-28T21:59:13.467Z",
+        "source": "qloo"
+      }
+    ],
+    "limits": "Confidence shows how much Qloo data sits behind a line. Qloo shows current taste, not history, and holds age and gender for only about half of books. Sales, pre-orders, chart positions and ratings are not in Qloo. Every number comes from the comparable books you confirmed."
+  },
+  "project": {
+    "id": "03e2d6ab-bee7-4227-9a21-2da1d326f5c1",
+    "category": "books",
+    "name": "How to be a man",
+    "kind": "",
+    "genre": "",
+    "places": [],
+    "window": "",
+    "lead": "",
+    "comps": [],
+    "status": "Planning",
+    "updatedAt": "2026-10-28T21:58:34.517Z",
+    "qlooMatch": null,
+    "extra": {},
+    "watchUnread": 0
+  },
+  "thread": {
+    "id": "9f453139-35d0-4fa6-a2bb-923db7f5b0bc",
+    "projectId": "03e2d6ab-bee7-4227-9a21-2da1d326f5c1",
+    "name": "",
+    "createdBy": "",
+    "createdAt": "2026-10-28T21:58:30.238Z",
+    "baseOutputId": null,
+    "fromOutputId": null,
+    "fresh": false
+  },
+  "builtOn": null,
+  "share": null,
+  "reaction": null
+}

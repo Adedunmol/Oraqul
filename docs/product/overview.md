@@ -95,7 +95,7 @@ Media and entertainment is the one industry Oraqul serves today, in six categori
 * A project is the workspace: its chats beside the current plan. Each output opens its takeaway and a details page with only the tabs that fit it (full list in [spec §9](spec.md)).
 * Every capability is something you ask for in the chat. After a plan the chat offers up to three next steps from the latest plan.
 * Every line has a receipt; charts have a table view; versions can be compared; a plan exports as PDF, Word or Markdown; a read only share link can be turned off.
-* Signed out visitors see sign in and example answers on invented data, labelled as such. Live runs need an account. On mobile only the core stays: chat, outputs and their details.
+* Signed out visitors see sign in and example plans that are real runs on live Qloo data, with what was sent and returned left out, as in a share link. Live runs need an account. On mobile only the core stays: chat, outputs and their details.
 
 ## How it looks and reads
 

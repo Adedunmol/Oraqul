@@ -1,7 +1,7 @@
 import { BAND_OPTIONS } from '@oraqul/packs';
-import type { Verdict } from '@oraqul/schema';
 import { Confidence, Icon, type IconName, VerdictPill } from '@oraqul/ui';
 import type { CSSProperties, ReactNode } from 'react';
+import { exampleBriefs, exampleDetails } from '@/lib/examples';
 import { Reveal } from '../reveal';
 import { band, h2Class, wrap } from '../section';
 
@@ -51,14 +51,21 @@ function NextStep() {
 
 const stagger = (i: number) => ({ '--i': i }) as CSSProperties;
 
+// Everything the steps show as output is the recorded film example, not invented.
+const film = exampleDetails.film.output;
+const compNames = film.plan?.comps.map((c) => c.name) ?? [];
+const cityNames = film.brief.places.map((p) => p.name);
+const joined = (names: string[]) =>
+  names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : (names[0] ?? '');
+
 export function TraceCard() {
   const steps = [
-    'Reading the message: series, crime drama',
-    'Finding the comparable titles, Grey Tide and The Ferry Office',
-    'Looking up who else your audience loves',
-    'Ranking the UK, Canada and the US',
-    'Testing 9 assumptions in the plan',
-    'Writing the bottom line',
+    'Reading your brief',
+    `Finding the comps in Qloo: ${joined(compNames)}`,
+    'Asking Qloo about your audience',
+    `Ranking ${joined(cityNames)}`,
+    `Testing ${film.brief.assumptions.length} assumptions in the plan`,
+    'Writing the plan',
   ];
   return (
     <Reveal className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-md">
@@ -120,8 +127,7 @@ export function Describe() {
             style={stagger(1)}
           >
             <p className="min-w-0 flex-1 text-[clamp(17px,1.6vw,19px)] leading-[1.65]">
-              Plan the release of Night Ferry, a Mexico City crime drama series, for the UK and the
-              US. Comparable shows are Grey Tide and The Ferry Office.
+              {exampleBriefs.film}
             </p>
             <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-ink">
               <Icon name="arrowUp" className="size-4" />
@@ -163,11 +169,12 @@ export function Asks() {
 
         <Reveal className="flex flex-col gap-4">
           <p className="mk-in max-w-[56ch] text-[16.5px] leading-[1.65]" style={stagger(0)}>
-            Reading this as a new plan: series, crime drama, territories UK and US, plus{' '}
+            Reading this as a new launch plan for “{film.title}”. You named {compNames[0]} and{' '}
+            {compNames[1]}, so I{' '}
             <mark className="rounded-sm bg-accent-soft px-1 text-accent">
-              Canada (assumed, you did not name it)
-            </mark>
-            . Say “only the UK and US” to change it.
+              added {film.plan?.understanding?.proposed?.[0]?.name} (my pick, not yours)
+            </mark>{' '}
+            to describe the audience. Name a different comp to change it.
           </p>
           <div className="mk-in flex flex-col gap-3 rounded-2xl bg-inset p-4" style={stagger(1)}>
             <p className="text-[15.5px] font-semibold">
@@ -202,12 +209,12 @@ export function Asks() {
   );
 }
 
-const tests: { belief: string; call: string; verdict: Verdict }[] = [
-  { belief: 'Crime thriller fans are the core', call: 'call_8f3a', verdict: 'holds' },
-  { belief: 'The UK should open first', call: 'call_2c71', verdict: 'breaks' },
-  { belief: 'Seoul for a second wave', call: 'call_b904', verdict: 'weak' },
-  { belief: 'Pre sales will cover the spend', call: 'no call', verdict: 'cant' },
-];
+// Four of the recorded run's assumptions, each with the call that tested it.
+const tests = film.brief.assumptions.slice(0, 4).map((a) => ({
+  belief: a.text,
+  call: `call_${film.receipts.find((r) => r.lineId === a.id)?.callId.slice(0, 4) ?? 'none'}`,
+  verdict: a.verdict,
+}));
 
 export function Tests() {
   return (
@@ -262,33 +269,33 @@ export function BottomLine() {
             className="mk-in font-display text-[clamp(24px,2.6vw,32px)] leading-[1.15] font-semibold tracking-[-0.03em]"
             style={stagger(0)}
           >
-            Open in Mexico City and London, then Toronto. Move the UK to week three.
+            {film.headline}
           </p>
           <div className="mk-in flex flex-wrap items-center gap-3" style={stagger(1)}>
-            <Confidence level="medium" />
-            <span className="text-[14px] text-muted">Two cities have thin data.</span>
+            <Confidence level={film.confidence.level} />
+            <span className="text-[14px] text-muted">{film.confidence.why}</span>
           </div>
           <span className="pt-2 text-[12.5px] font-medium text-muted">Do this</span>
-          {[
-            'Open in Mexico City and London in week one.',
-            'Add Toronto in week two.',
-            'Move the UK to week three.',
-          ].map((step, i) => (
-            <span
-              key={step}
-              className="mk-in flex items-center gap-3 rounded-xl bg-inset px-4 py-3 text-[15px]"
-              style={stagger(i + 2)}
-            >
+          {film.moves
+            .filter((m) => m.text !== film.headline)
+            .slice(0, 3)
+            .map((m) => m.text)
+            .map((step, i) => (
               <span
-                aria-hidden="true"
-                className="grid size-6 shrink-0 place-items-center rounded-md bg-accent-soft text-accent"
+                key={step}
+                className="mk-in flex items-center gap-3 rounded-xl bg-inset px-4 py-3 text-[15px]"
+                style={stagger(i + 2)}
               >
-                <Icon name="chevron" className="size-3.5 -rotate-90" />
+                <span
+                  aria-hidden="true"
+                  className="grid size-6 shrink-0 place-items-center rounded-md bg-accent-soft text-accent"
+                >
+                  <Icon name="chevron" className="size-3.5 -rotate-90" />
+                </span>
+                <span className="min-w-0 flex-1">{step}</span>
+                <span className="rounded-md bg-button px-2 py-0.5 text-xs">View receipt</span>
               </span>
-              <span className="min-w-0 flex-1">{step}</span>
-              <span className="rounded-md bg-button px-2 py-0.5 text-xs">View receipt</span>
-            </span>
-          ))}
+            ))}
         </Reveal>
         <div className="order-1 min-[1000px]:order-2">
           <StepHead n={4} icon="flag" title="It ends with what to do first.">

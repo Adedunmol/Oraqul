@@ -42,7 +42,7 @@
     }
   ],
   "expect": {
-    "headline": "Lead with London, then Lagos: that is where your book's readers are strongest.",
+    "headline": "Lead with London, then Lagos: that is where the comparable books' readers are strongest.",
     "assumptions": {
       "a-age": "holds",
       "a-place-lagos": "breaks",

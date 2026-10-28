@@ -407,6 +407,8 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
   ctx: RunCtx,
   input: {
     title: string;
+    /** The person's words, so the model's query choices can be pinned to them. */
+    text?: string;
     read: R;
     comps: Anchors;
     /** The audit adds the partners a plan names to the candidates Qloo ranks. */
@@ -423,12 +425,13 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     question?: string;
   },
 ): Promise<Asked<P>> {
-  const { title, read, comps } = input;
+  const { title, read, comps, text } = input;
   ctx.trace('Choosing what to ask Qloo');
   const { modules } = withSharedModules(deps.config.pickModules(read), read);
   const compsCountry = commonCountry(comps.used);
   const { plan: planned, tokens } = await deps.queries.plan({
     title,
+    ...(text ? { text } : {}),
     read,
     modules,
     compsCountry,
@@ -924,6 +927,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
 
   const asked = await askQloo(deps, ctx, {
     title,
+    text: [briefText(handoff, undefined, true), extra].filter(Boolean).join('\n\n'),
     read,
     comps,
     understanding,

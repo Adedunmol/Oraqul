@@ -6,11 +6,11 @@ import { useState } from 'react';
 import { OutputView } from '@/app/_workspace/output/output-view';
 import { Toaster } from '@/app/_workspace/toast';
 import { Tooltip } from '@/app/_workspace/tooltip';
-import { exampleDetails } from '@/lib/examples';
+import { exampleBriefs, exampleDetails } from '@/lib/examples';
 import { type ExampleCase, exampleCases } from './cases';
 
 /**
- * The three showcase launches as large cards, and the real output screen for the chosen one,
+ * The four showcase launches as large cards, and the real output screen for the chosen one,
  * read only. The choice lives in ?case= so a link opens it.
  */
 export function ExamplesView({
@@ -35,7 +35,7 @@ export function ExamplesView({
 
   return (
     <div className="flex flex-col gap-8">
-      <ul className="grid gap-3 min-[900px]:grid-cols-3">
+      <ul className="grid gap-3 min-[700px]:grid-cols-2 min-[1200px]:grid-cols-4">
         {exampleCases.map((c) => {
           const on = c.id === current.id;
           return (
@@ -75,8 +75,12 @@ export function ExamplesView({
           <span className="rounded-md bg-surface2 px-2 py-0.5 text-[12.5px] font-medium text-muted">
             Example
           </span>
-          Invented data for a made up {current.noun}, so you can see the shape of a plan. Plans you
-          make in the app use live Qloo data.
+          A real run on live Qloo data. What was sent to Qloo and what came back is left out, as it
+          is in a share link.
+        </p>
+        <p className="border-b border-line px-4 py-3.5 min-[700px]:px-[clamp(16px,3vw,32px)] text-[14.5px] leading-[1.6] text-ink/80">
+          <span className="font-semibold text-ink">What was asked: </span>
+          {exampleBriefs[current.id]}
         </p>
         <div className="product-face bg-canvas px-3 pt-7 min-[700px]:px-[clamp(16px,3vw,32px)]">
           {detail ? (

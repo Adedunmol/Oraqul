@@ -31,13 +31,15 @@ export interface QaInput {
 
 // Wording that states a limit and stops. A plan line says what is closest and what would help.
 const DEAD_END =
-  /\b(could not|couldn[’']t|cannot|unable to|no data|nothing came back|not enough data|too thin|limited data|not found)\b/i;
-const JARGON = /\b(lift|affinity|cells|qloo|findings?|confidence|endpoint|receipt)\b/i;
+  /\b(?:(?:could not|couldn[’']t|cannot|unable to) (?:be )?(?:find|found|measure|measured|test|tested|rank|ranked|check|checked|score|scored|tell|say|read)|no data|nothing came back|not enough data|limited data|not found)\b/i;
+// "lift" is the verb in "lift the embargo"; the statistic is never followed by an article.
+const JARGON =
+  /\b(lift(?!\s+(?:the|a|an|your|it|them|up|off))|affinity|cells|qloo|findings?|confidence|endpoint|receipt)\b/i;
 // The old fallback planned a brief with nothing in it as "a typical Nollywood film" and the like.
 const GUESSED =
   /\ba typical (?:nollywood|afrobeats|indie|trade book|interview podcast|live comedy|film|release|launch)\b/i;
 // Words that make a choice sound like the team's own.
-const YOURS = /\byour (?:comps?|comparable|book'?s readers)\b/i;
+const YOURS = /\byour (?:comps?|comparable|book'?s readers|show'?s listeners)\b/i;
 
 const lines = (plan: QaInput['plan']) =>
   plan.sections.flatMap((s) => s.lines.map((l) => ({ section: s.key, line: l })));
@@ -113,6 +115,28 @@ export function qaCheck(input: QaInput): QaFinding[] {
       }
       if (YOURS.test(f.text)) {
         add('chosen-comps-yours', 'S2', f.id, 'The finding calls comps Oraqul chose "your" comps.');
+      }
+    }
+    // When the team named none of the comps, nothing measured is theirs, whichever finding or line says so.
+    if (chosen.length === plan.comps.length) {
+      const texts = [
+        ...plan.findings
+          .filter((x) => x.query !== 'audience' && x.id !== 'f-audience')
+          .map((x) => ({ where: x.id, text: x.text })),
+        ...lines(plan).map(({ section, line }) => ({
+          where: `${section}: ${line.text.slice(0, 60)}`,
+          text: line.text,
+        })),
+      ];
+      for (const { where, text } of texts) {
+        if (YOURS.test(text)) {
+          add(
+            'chosen-comps-yours',
+            'S2',
+            where,
+            'The text calls an audience measured from comps Oraqul chose "your" own.',
+          );
+        }
       }
     }
     for (const c of chosen) {
