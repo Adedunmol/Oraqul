@@ -428,7 +428,9 @@ body {
 @media (min-width: 900px) {
   .sticky-head {
     position: sticky;
-    top: 0;
+    /* The panel's padding is not part of the sticky area, so top: 0 would stop the head a padding
+       below the edge and let scrolled text show above it. */
+    top: calc(-1 * var(--page-y));
     z-index: 20;
     margin: calc(-1 * var(--page-y)) calc(-1 * var(--page-x)) 0;
     padding: var(--page-y) var(--page-x) 12px;
