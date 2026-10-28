@@ -6,6 +6,7 @@
       "!**/node_modules",
       "!**/dist",
       "!packages/engine/fixtures",
+      "!packages/eval/live/out",
       "!**/*.live.json",
       "!**/.next",
       "!**/.turbo",
