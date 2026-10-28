@@ -84,7 +84,7 @@ function ExampleLink({ href }: { href: string }) {
 
 function UserBubble({ children }: { children: ReactNode }) {
   return (
-    <p className="mk-in max-w-[46ch] self-end rounded-xl bg-inset px-4 py-3 text-[15px] leading-[1.5]">
+    <p className="mk-in max-w-[46ch] self-end rounded-xl bg-inset px-4 py-3 text-[16px] leading-[1.65]">
       <span className="sr-only">You might type: </span>“{children}”
     </p>
   );
@@ -113,11 +113,11 @@ export function PlanCase() {
       <div className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}>
         <div className="flex flex-col gap-6 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
           <h2 className={h2Class}>Make a plan</h2>
-          <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
+          <p className="max-w-[40ch] text-[18px] leading-[1.65] text-ink/75">
             You have a title, a rough window and a hunch about the audience. Oraqul builds the plan
             from what that audience actually likes.
           </p>
-          <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
+          <p className="max-w-[40ch] text-[16px] leading-[1.65] text-ink/75">
             <span className="font-medium text-ink">You bring </span>a title and a short description.
             Files help but are optional.
           </p>
@@ -160,7 +160,7 @@ export function PlanCase() {
                 ))}
               </ol>
             </div>
-            <p className="text-[15px] leading-[1.55] text-ink/75">
+            <p className="text-[16px] leading-[1.65] text-ink/75">
               Also in the plan: the audience, comparable titles, partner brands and the risks to
               watch.
             </p>
@@ -311,18 +311,18 @@ export function FixCase() {
               </div>
             ))}
           </div>
-          <p className="text-[15px] leading-[1.5]">
+          <p className="text-[16px] leading-[1.65]">
             <span className="font-semibold">What broke:</span> the plan bet on 25 to 34. The people
             who came were 35 to 44, so the next wave is planned around them.
           </p>
         </Reveal>
         <div className="flex flex-col gap-6">
           <h2 className={h2Class}>Fix my plan</h2>
-          <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
+          <p className="max-w-[40ch] text-[18px] leading-[1.65] text-ink/75">
             It is out and the people who came are not the people you planned for. Oraqul finds the
             assumption that broke and rebuilds around who showed up.
           </p>
-          <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
+          <p className="max-w-[40ch] text-[16px] leading-[1.65] text-ink/75">
             <span className="font-medium text-ink">You bring </span>your results by region or age
             band, typed, pasted or as a file. They are kept as totals.
           </p>
@@ -352,7 +352,7 @@ export function WhatIfCase() {
       <div className={`${wrap} flex flex-col items-center gap-12`}>
         <div className="flex flex-col items-center gap-6 text-center">
           <h2 className={h2Class}>Keep going</h2>
-          <p className="max-w-[46ch] text-[18px] leading-[1.55] text-ink/75">
+          <p className="max-w-[46ch] text-[18px] leading-[1.65] text-ink/75">
             Ask before you lock a date, a city or a partner, then make the creative kit. Oraqul
             compares the options against the same audience and says which one is safer, with the
             receipt for each.
@@ -380,15 +380,15 @@ export function WhatIfCase() {
           ))}
         </Reveal>
         <div className="flex max-w-[60ch] flex-col items-center gap-4 text-center">
-          <p className="rounded-xl bg-inset px-4 py-3 text-[15px] leading-[1.5]">
+          <p className="rounded-xl bg-inset px-4 py-3 text-[16px] leading-[1.65]">
             <span className="sr-only">You might type: </span>“What if a rival series opens the same
             weekend?”
           </p>
-          <p className="text-[15px] leading-[1.55] text-ink/75">
+          <p className="text-[16px] leading-[1.65] text-ink/75">
             You get the overlap for each option, lower is better, and what changes in the plan. Give
             real rivals with the day each opens: “Rivals: Harbor Lights on 2027-03-12”.
           </p>
-          <p className="text-[15px] leading-[1.55] text-ink/75">
+          <p className="text-[16px] leading-[1.65] text-ink/75">
             For a single live show, a rival on your night or in your week is flagged as okay, risky
             or avoid, and the on-sale plan, the presale and the final push are worked back from your
             show date.
@@ -432,12 +432,12 @@ export function CampaignCase() {
       <div className={`${wrap} grid gap-14 min-[1000px]:grid-cols-[0.8fr_1.2fr]`}>
         <div className="flex flex-col gap-6 min-[1000px]:sticky min-[1000px]:top-28 min-[1000px]:self-start">
           <h2 className={h2Class}>Run the campaign</h2>
-          <p className="max-w-[40ch] text-[18px] leading-[1.55] text-ink/75">
+          <p className="max-w-[40ch] text-[18px] leading-[1.65] text-ink/75">
             The plan’s content calendar becomes a dated checklist in the project. Edit it, tick it
             off, and set up a test of two creative angles. Each action comes with a guide to adapt.
             Oraqul watches the dates and alerts the team, makes no final asset and posts nothing.
           </p>
-          <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/75">
+          <p className="max-w-[40ch] text-[16px] leading-[1.65] text-ink/75">
             Add your own figures for the two angles and Oraqul compares them. When they are thin or
             close it says inconclusive, and it never names a cause as fact.
           </p>
@@ -484,20 +484,20 @@ export function CampaignCase() {
           >
             <div className="flex flex-col gap-2.5 rounded-lg bg-bg px-4 py-3">
               <p className="text-[13.5px] font-medium">Two-angle test</p>
-              <p className="text-[14.5px] leading-[1.55]">
+              <p className="text-[15.5px] leading-[1.65]">
                 <span className="font-medium">Angle A: the audience’s tone.</span> Take the tone
                 from noir and road trip.{' '}
                 <span className="text-[12.5px] text-muted">Grounded in your audience’s taste</span>
               </p>
-              <p className="text-[14.5px] leading-[1.55]">
+              <p className="text-[15.5px] leading-[1.65]">
                 <span className="font-medium">Angle B: Lagos itself.</span> Open on Lagos itself,
                 with the name on screen. <span className="text-[12.5px] text-muted">Playbook</span>
               </p>
-              <p className="text-[14.5px] leading-[1.55]">
+              <p className="text-[15.5px] leading-[1.65]">
                 <span className="font-medium">Your figures.</span> Angle A 120, angle B 104
                 conversions, week one. Source: the ad manager.
               </p>
-              <p className="text-[14.5px] leading-[1.55]">
+              <p className="text-[15.5px] leading-[1.65]">
                 <span className="font-medium">Inconclusive.</span> The two are within 20% of each
                 other (120 and 104 conversions), too close to call.
               </p>

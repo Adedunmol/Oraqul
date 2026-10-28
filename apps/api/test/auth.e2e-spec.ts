@@ -45,6 +45,7 @@ describe('auth (e2e, services stubbed)', () => {
   const assertAllowed = vi.fn(async (): Promise<void> => undefined);
   const recordFailure = vi.fn(async (): Promise<void> => undefined);
   const clear = vi.fn(async (): Promise<void> => undefined);
+  const hasOAuthAccount = vi.fn(async () => true);
   const findByEmail = vi.fn(async (): Promise<typeof user | undefined> => undefined);
 
   const createUnverified = vi.fn(
@@ -81,6 +82,7 @@ describe('auth (e2e, services stubbed)', () => {
       .overrideProvider(UsersService)
       .useValue({
         findByEmail,
+        hasOAuthAccount,
         findOrCreateVerified: async () => user,
         createUnverified,
         confirmSignupEmail: async () => user,
@@ -160,6 +162,27 @@ describe('auth (e2e, services stubbed)', () => {
       .send({ email: 'ghost@example.com' })
       .expect(202);
     expect(issue).toHaveBeenCalledOnce();
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it('sends the reset code only to an account that exists', async () => {
+    await boot(fakeDb());
+    findByEmail.mockResolvedValue({ ...user, passwordHash: null });
+    await request(app.getHttpServer())
+      .post('/auth/password/reset')
+      .send({ email: 'ada@example.com' })
+      .expect(202);
+    expect(send).toHaveBeenCalledOnce();
+  });
+
+  it('tells a Google account to sign in with Google, not that the password is wrong', async () => {
+    await boot(fakeDb());
+    findByEmail.mockResolvedValue({ ...user, passwordHash: null });
+    const res = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email: 'ada@example.com', password: 'whatever1' })
+      .expect(401);
+    expect(res.body.message).toMatch(/Google/);
   });
 
   it('gives the same 401 for an unknown email and a wrong password', async () => {

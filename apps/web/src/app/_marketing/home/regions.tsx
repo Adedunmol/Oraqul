@@ -141,7 +141,7 @@ export function Regions() {
           <h2 id="regions-title" className={fitH2}>
             Every place you name gets its own read.
           </h2>
-          <p className="max-w-[72ch] text-[clamp(15px,1.3vw,17px)] leading-[1.55] text-ink/75">
+          <p className="max-w-[72ch] text-[clamp(16px,1.3vw,17px)] leading-[1.65] text-ink/75">
             Name Lagos and Oraqul asks Qloo what the audience for your comparable titles looks like
             there, ranks it against your other cities, and says whether the place fits. Then it goes
             down to the neighbourhoods.
@@ -273,8 +273,8 @@ export function Regions() {
                   <span>Stronger</span>
                 </div>
               </div>
-              <p className="text-[15px] leading-[1.55]">{city.line}</p>
-              <p className="text-[14.5px] leading-[1.55] text-ink/75">
+              <p className="text-[16px] leading-[1.65]">{city.line}</p>
+              <p className="text-[15.5px] leading-[1.65] text-ink/75">
                 <span className="font-medium text-ink">Strongest around</span>{' '}
                 {city.areas.join(' and ')}. {city.taste}
               </p>
@@ -308,7 +308,7 @@ export function Regions() {
 
         <ul className="grid gap-x-10 gap-y-3 border-t border-line pt-[clamp(12px,2svh,20px)] min-[800px]:grid-cols-3">
           {facts.map(([title, text]) => (
-            <li key={title} className="text-[14px] leading-[1.5] text-ink/70">
+            <li key={title} className="text-[15px] leading-[1.65] text-ink/70">
               <span className="font-medium text-ink">{title}.</span> {text}
             </li>
           ))}

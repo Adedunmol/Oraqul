@@ -37,7 +37,7 @@ export function AgentRun() {
             {traits.map(([title, text]) => (
               <li key={title} className="flex flex-col gap-1">
                 <span className="font-medium">{title}</span>
-                <span className="text-[15px] leading-[1.55] text-ink/70">{text}</span>
+                <span className="text-[16px] leading-[1.65] text-ink/70">{text}</span>
               </li>
             ))}
           </ul>

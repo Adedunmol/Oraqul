@@ -62,7 +62,7 @@ export function ExamplesView({
                     {c.title}
                   </span>
                   <span className="text-[13.5px] text-muted">{c.meta}</span>
-                  <span className="pt-1 text-[15px] leading-[1.55] text-ink/80">{c.why}</span>
+                  <span className="pt-1 text-[16px] leading-[1.65] text-ink/80">{c.why}</span>
                 </span>
               </button>
             </li>

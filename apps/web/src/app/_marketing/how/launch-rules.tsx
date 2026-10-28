@@ -136,7 +136,7 @@ export function Craft() {
             <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">
               Worked back from your date
             </h3>
-            <p className="text-[15px] leading-[1.55] text-ink/75">
+            <p className="text-[16px] leading-[1.65] text-ink/75">
               Film plans run months. Music rollouts run six to eight weeks. Books send advance
               copies two to three months out. The calendar is written by code, and a beat already
               over is dropped.
@@ -162,11 +162,11 @@ export function Craft() {
             <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">
               Briefs and scripts, never ads
             </h3>
-            <p className="text-[15px] leading-[1.55] text-ink/75">
+            <p className="text-[16px] leading-[1.65] text-ink/75">
               Oraqul writes what a team needs to make the creative. A person makes the final
               trailer, ad or image.
             </p>
-            <div className="flex flex-col gap-2 rounded-xl bg-inset p-4 text-[14px] leading-[1.55]">
+            <div className="flex flex-col gap-2 rounded-xl bg-inset p-4 text-[15px] leading-[1.65]">
               <b className="text-[13px] text-muted">Lagos · Instagram</b>
               <span>
                 <b>Hook one:</b> open on the strongest image, in the first two seconds.
@@ -191,7 +191,7 @@ export function Craft() {
             <h3 className="font-display text-[22px] font-semibold tracking-[-0.025em]">
               Partners that fit the launch
             </h3>
-            <p className="text-[15px] leading-[1.55] text-ink/75">
+            <p className="text-[16px] leading-[1.65] text-ink/75">
               Qloo finds the brands your audience likes in each category and city, and ranks them
               next to the city's own taste. Each partner shows its Qloo fit and whether the budget
               and who is launching can reach it. Price is always unknown. A flagship that the launch

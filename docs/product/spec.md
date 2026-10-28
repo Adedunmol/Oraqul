@@ -691,7 +691,7 @@ POST   /auth/signup           email, name, password; makes the account, starts a
 POST   /auth/verification     signed in; emails a new confirmation link and code (202); nothing to do once confirmed
 POST   /auth/code             email a sign in code
 POST   /auth/code/verify      sign in or confirmation code ends in a session, creates the account if new
-POST   /auth/login            email and password; 429 after repeated failures
+POST   /auth/login            email and password; 429 after repeated failures; 401 "Wrong email or password" for an unknown email or wrong password, and a 401 that names the method instead (Google, or an emailed code) when the account has no password
 POST   /auth/password/reset   email a reset code (always 202)
 POST   /auth/password/reset/confirm   code and new password; ends other sessions
 GET    /auth/google           GET /auth/google/callback

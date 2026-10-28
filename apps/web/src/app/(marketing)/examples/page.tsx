@@ -53,7 +53,7 @@ export default function Examples({ searchParams }: PageProps<'/examples'>) {
               className="flex flex-col items-start gap-2.5 rounded-2xl bg-card p-4"
             >
               <VerdictPill verdict={l.verdict} />
-              <p className="text-[14.5px] leading-[1.5]">{l.text}</p>
+              <p className="text-[15.5px] leading-[1.65]">{l.text}</p>
             </li>
           ))}
         </ul>
