@@ -1,4 +1,3 @@
-import { BASELINE_BRANDS, BASELINE_PODCASTS } from '../launch';
 import { sharedQlooCoverage } from '../qloo';
 import type { CategoryPack } from '../types';
 
@@ -36,10 +35,6 @@ export const games: CategoryPack = {
   ],
   consults: [],
   qloo: { titles: ['urn:entity:videogame'], ...sharedQlooCoverage },
-  baselines: {
-    'urn:entity:brand': BASELINE_BRANDS,
-    'urn:entity:podcast': BASELINE_PODCASTS,
-  },
   coverage: {
     tests: [
       "The game's audience by age and gender",

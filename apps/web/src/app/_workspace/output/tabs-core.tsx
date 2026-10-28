@@ -25,7 +25,7 @@ const NEXT_STEP: Record<Verdict, string> = {
   holds: 'Safe to rely on. No action needed.',
   weak: 'Not safe to rely on yet. Test it before you commit spend.',
   breaks: 'This is wrong. Change the plan.',
-  cant: 'Qloo has no data for this. Decide it yourself or add your own numbers.',
+  cant: 'No exact read yet. Add a detail or a comparable title and Oraqul will look again, or decide this one yourself.',
 };
 
 export function Stats() {
@@ -349,7 +349,7 @@ export function AssumptionsTab() {
               }
               side={
                 <>
-                  <VerdictPill verdict={a.verdict} />
+                  <VerdictPill verdict={a.verdict} cantKind={a.cantKind} />
                   {receipt(a.id) ? (
                     <Evidence lineId={a.id} />
                   ) : (
@@ -448,12 +448,21 @@ function CannotList() {
   return (
     <Section title="Could not test">
       <p className="text-[13px] text-muted">
-        What Oraqul could not test, and why. Nothing here is guessed. You may need to supply it.
+        Where Oraqul could not get an exact read, and what would help. Nothing here is guessed.
       </p>
       <Stack>
         {output.brief.cannot.map((k) => (
-          <Line key={k.id} title={k.item} side={<VerdictPill verdict="cant" />}>
+          <Line
+            key={k.id}
+            title={k.item}
+            side={<VerdictPill verdict="cant" cantKind={k.cantKind} />}
+          >
             <p>{k.reason}</p>
+            {k.ask ? (
+              <p className="text-ink">
+                <b>Next step:</b> {k.ask}
+              </p>
+            ) : null}
           </Line>
         ))}
       </Stack>

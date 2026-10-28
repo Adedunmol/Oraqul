@@ -3,6 +3,7 @@ import { SHOWS_PLAN_RULES } from '@oraqul/packs';
 import type { Confidence, Direction, DirectionCall, Territory, Verdict } from '@oraqul/schema';
 import { slug } from './brief.js';
 import type { Clash, Rival } from './clash.js';
+import { list } from './text.js';
 
 // A direction is the call on what to do, set by code from a value Qloo returned (hard rule 1).
 // The model never sets one. Okay, risky and avoid are the edges of the verdict rules in spec §5.
@@ -141,9 +142,19 @@ export function territoryCalls(
     if (!direction || row.lift === null) return t;
     const id = `call-territory-${slug(t.name)}`;
     const strength = row.lift.toFixed(2);
+    // Cities ranked in the same call that beat this one, strongest first, for what to test beside it.
+    const stronger = ranked
+      .filter((r) => r.lift !== null && r.lift > (row.lift ?? 0) && r.place !== t.name)
+      .sort((x, y) => (y.lift ?? 0) - (x.lift ?? 0))
+      .map((r) => r.place)
+      .slice(0, 2);
     const say =
       direction === 'avoid'
-        ? ` Thinner than an average city. Keep it, and open it after ${strongest && strongest !== t.name ? strongest : 'the stronger cities'}.`
+        ? strongest && strongest !== t.name
+          ? ` It comes after ${strongest} for this audience. Keep it, and open it after ${strongest}.`
+          : stronger.length
+            ? ` It leads your cities but sits below an average city in the wider ranking. Keep it, lead with local partners and community, and test ${list(stronger)} beside it.`
+            : ' Thinner than an average city. Keep it, and lead with local partners and community.'
         : direction === 'risky'
           ? ' About an average city for this audience: lead with the local angle.'
           : '';

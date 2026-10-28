@@ -82,7 +82,6 @@ describe('Podcasts query plan', () => {
         crossoverCity: null,
         brandCategories: [],
         brandCities: [],
-        worthALook: [],
         brandCandidates: [
           { city: 'Lagos', names: ['MTN', 'Glo', 'Airtel'] },
           { city: 'Berlin', names: ['Zalando'] },

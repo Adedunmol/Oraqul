@@ -66,7 +66,7 @@ Used only on verdicts and verdict counts, never as decoration.
 | Holds | #167A40 | #E8F5EC | #5CC98B | #10251A | tick |
 | Weak | #8A5800 | #FBF2D9 | #E3AE4A | #2A2010 | half circle |
 | Breaks | #BE3128 | #FCEBE9 | #F27A6F | #2F1715 | cross |
-| Could not test | #5A5A63 | #ECECEF | #9A9AA3 | #26262B | dotted circle |
+| Could not test | #5A5A63 | #ECECEF | #9A9AA3 | #26262B | dotted circle. When the reason is known the word changes and the glyph does not: Not tested yet (the person can add something), No exact read (Qloo had nothing for it), Could not check this time (the check failed) |
 
 Tokens: `--holds --holds-bg --weak --weak-bg --breaks --breaks-bg --cant --cant-bg`. Also `--good --warn --crit --na` for chart and status use, and `--s1 --s2` for chart series.
 

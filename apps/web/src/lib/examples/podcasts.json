@@ -22,13 +22,13 @@
         "lineId": "f-audience"
       },
       {
-        "text": "Build the positioning on storytelling and interviews: your listeners lean to it more than the listeners of rival shows do.",
+        "text": "Build the positioning on storytelling and true stories: your listeners lean to it more than the listeners of rival shows do.",
         "lineId": "f-topics"
       }
     ],
     "confidence": {
-      "level": "low",
-      "why": "Lower: the result rests on Crime Junkie."
+      "level": "medium",
+      "why": "Medium: 2 anchors with data."
     },
     "stats": [
       {
@@ -37,27 +37,27 @@
       },
       {
         "label": "Hold",
-        "value": "2",
+        "value": "3",
         "verdict": "holds"
       },
       {
         "label": "Weak or break",
-        "value": "4",
+        "value": "2",
         "verdict": "breaks"
       },
       {
         "label": "Could not test",
-        "value": "0",
+        "value": "1",
         "verdict": "cant"
       }
     ],
     "counts": {
-      "holds": 2,
-      "weak": 3,
-      "breaks": 1,
-      "cant": 0
+      "holds": 3,
+      "weak": 2,
+      "breaks": 0,
+      "cant": 1
     },
-    "summary": "Lead with London, then Lagos: that is where your show's listeners are strongest.\n1. Lead with London, then Lagos: that is where your show's listeners are strongest.\n2. Aim the launch at people aged 25 to 34, as planned.\n3. Build the positioning on storytelling and interviews: your listeners lean to it more than the listeners of rival shows do.\nConfidence: Low. Lower: the result rests on Crime Junkie.",
+    "summary": "Lead with London, then Lagos: that is where your show's listeners are strongest.\n1. Lead with London, then Lagos: that is where your show's listeners are strongest.\n2. Aim the launch at people aged 25 to 34, as planned.\n3. Build the positioning on storytelling and true stories: your listeners lean to it more than the listeners of rival shows do.\nConfidence: Medium. Medium: 2 anchors with data.",
     "changes": [],
     "focusIds": [],
     "tabs": [
@@ -148,40 +148,40 @@
     "brief": {
       "audience": [
         {
-          "id": "aud-25_to_29",
-          "name": "Aged 25 to 29",
-          "affinity": 59,
-          "evidence": "Affinity 0.19 across 4 of 4 comps"
+          "id": "aud-female",
+          "name": "Women",
+          "affinity": 60,
+          "evidence": "Affinity 0.20 across 2 of 2 comps"
         },
         {
           "id": "aud-30_to_34",
           "name": "Aged 30 to 34",
-          "affinity": 59,
-          "evidence": "Affinity 0.19 across 4 of 4 comps"
+          "affinity": 56,
+          "evidence": "Affinity 0.13 across 2 of 2 comps"
         },
         {
-          "id": "aud-female",
-          "name": "Women",
-          "affinity": 55,
-          "evidence": "Affinity 0.10 across 4 of 4 comps"
-        },
-        {
-          "id": "aud-24_and_younger",
-          "name": "Aged 24 and under",
-          "affinity": 53,
-          "evidence": "Affinity 0.06 across 4 of 4 comps"
+          "id": "aud-25_to_29",
+          "name": "Aged 25 to 29",
+          "affinity": 54,
+          "evidence": "Affinity 0.08 across 2 of 2 comps"
         },
         {
           "id": "aud-35_to_44",
           "name": "Aged 35 to 44",
-          "affinity": 52,
-          "evidence": "Affinity 0.04 across 4 of 4 comps"
+          "affinity": 54,
+          "evidence": "Affinity 0.08 across 2 of 2 comps"
+        },
+        {
+          "id": "aud-24_and_younger",
+          "name": "Aged 24 and under",
+          "affinity": 51,
+          "evidence": "Affinity 0.03 across 2 of 2 comps"
         },
         {
           "id": "aud-45_to_54",
           "name": "Aged 45 to 54",
-          "affinity": 45,
-          "evidence": "Affinity -0.10 across 4 of 4 comps"
+          "affinity": 50,
+          "evidence": "Affinity 0.00 across 2 of 2 comps"
         }
       ],
       "assumptions": [
@@ -189,31 +189,32 @@
           "id": "a-age",
           "text": "The audience is aged 25 to 29, aged 30 to 34",
           "verdict": "holds",
-          "why": "It is the top age band, or close to it (affinity 0.19, top band 0.19).",
+          "why": "It is the top age band, or close to it (affinity 0.08, top band 0.13).",
           "fix": "",
           "unstated": false
         },
         {
           "id": "a-place-lagos",
           "text": "Lagos is a strong market for this show",
-          "verdict": "breaks",
-          "why": "The audience is thinner here than elsewhere (lift 0.87 over an average city in the same call).",
-          "fix": "Keep Lagos, and open it after London, where lift is 1.07.",
+          "verdict": "weak",
+          "why": "About average for this audience (lift 1.04 over an average city in the same call).",
+          "fix": "Keep Lagos, and open it after London, where lift is 1.06.",
           "unstated": false
         },
         {
           "id": "a-place-london",
           "text": "London is a strong market for this show",
           "verdict": "weak",
-          "why": "About average for this audience (lift 1.07 over an average city in the same call).",
+          "why": "About average for this audience (lift 1.06 over an average city in the same call).",
           "fix": "",
           "unstated": false
         },
         {
           "id": "a-comps",
           "text": "The show and its comparable shows describe one audience",
-          "verdict": "weak",
-          "why": "The city order rests on Crime Junkie.",
+          "verdict": "cant",
+          "why": "Needs at least 3 comps that Qloo found to check.",
+          "cantKind": "no-signal",
           "fix": "Add or swap comps so no single title carries the result.",
           "unstated": true
         },
@@ -228,9 +229,9 @@
         {
           "id": "a-topic-money",
           "text": "Money is a topic your show can own",
-          "verdict": "weak",
-          "why": "Your listeners and the rival shows’ listeners both carry this topic, so it is not yours alone.",
-          "fix": "Keep money, and lead with Storytelling and Interviews too: your listeners lean to those more than the rival shows' listeners.",
+          "verdict": "holds",
+          "why": "Your listeners lean to this topic more than the listeners of the rival shows.",
+          "fix": "",
           "unstated": false
         }
       ],
@@ -242,20 +243,20 @@
         {
           "id": "place-london",
           "name": "London",
-          "lift": 1.07,
+          "lift": 1.06,
           "band": "weak",
-          "audience": "Aged 25 to 29",
-          "confidence": "lower",
-          "note": "120 cells. lower: the result rests on Crime Junkie"
+          "audience": "Women",
+          "confidence": "medium",
+          "note": "120 cells. medium: 2 anchors with data"
         },
         {
           "id": "place-lagos",
           "name": "Lagos",
-          "lift": 0.87,
+          "lift": 1.04,
           "band": "weak",
-          "audience": "Aged 25 to 29",
-          "confidence": "lower",
-          "note": "120 cells. lower: the result rests on Crime Junkie"
+          "audience": "Women",
+          "confidence": "medium",
+          "note": "120 cells. medium: 2 anchors with data"
         }
       ],
       "weeks": [],
@@ -266,53 +267,58 @@
         {
           "id": "risk-a-place-lagos",
           "text": "Lagos is a strong market for this show",
-          "signal": "The audience is thinner here than elsewhere (lift 0.87 over an average city in the same call).",
-          "action": "Keep Lagos, and open it after London, where lift is 1.07."
+          "signal": "About average for this audience (lift 1.04 over an average city in the same call).",
+          "action": "Keep Lagos, and open it after London, where lift is 1.06."
         },
         {
           "id": "risk-a-place-london",
           "text": "London is a strong market for this show",
-          "signal": "About average for this audience (lift 1.07 over an average city in the same call).",
+          "signal": "About average for this audience (lift 1.06 over an average city in the same call).",
           "action": ""
-        },
-        {
-          "id": "risk-a-comps",
-          "text": "The show and its comparable shows describe one audience",
-          "signal": "The city order rests on Crime Junkie.",
-          "action": "Add or swap comps so no single title carries the result."
-        },
-        {
-          "id": "risk-a-topic-money",
-          "text": "Money is a topic your show can own",
-          "signal": "Your listeners and the rival shows’ listeners both carry this topic, so it is not yours alone.",
-          "action": "Keep money, and lead with Storytelling and Interviews too: your listeners lean to those more than the rival shows' listeners."
         }
       ],
       "cannot": [
         {
           "id": "cant-comp-cold-case-lagos",
           "item": "Cold Case Lagos",
-          "reason": "Qloo does not know this one by name, which is normal before a debut. The plan rests on the comps."
+          "reason": "Qloo does not know this one by name, which is normal before a debut. The plan rests on the comps.",
+          "ask": "Check the spelling, or name a close title and I will use it in its place.",
+          "cantKind": "no-signal"
+        },
+        {
+          "id": "cant-a-comps",
+          "item": "The show and its comparable shows describe one audience",
+          "reason": "Needs at least 3 comps that Qloo found to check.",
+          "ask": "Tell me more about it, or add a comparable title, and I will look again.",
+          "cantKind": "no-signal"
         },
         {
           "id": "cant-box-office",
           "item": "Downloads, chart positions and ad revenue",
-          "reason": "Qloo has taste data, not downloads. Add your own numbers when you fix a plan."
+          "reason": "Qloo has taste data, not downloads. Add your own numbers when you fix a plan.",
+          "ask": "Share your own figures and I will set them against the plan.",
+          "cantKind": "input"
         },
         {
           "id": "cant-window",
           "item": "The release window (2099-03-01)",
-          "reason": "Timing is checked against rival releases with the rival date check."
+          "reason": "Timing is checked against rival releases with the rival date check.",
+          "ask": "Send the rival release dates you know and I will check the overlap.",
+          "cantKind": "input"
         },
         {
           "id": "cant-q-1",
           "item": "Artists and series your audience follows",
-          "reason": "Qloo returns these lists with no subject context, so they drift to what is popular overall and were not asked."
+          "reason": "Qloo returns these lists with no subject context, so they drift to what is popular overall and were not asked.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         },
         {
           "id": "cant-q-2",
           "item": "Guests",
-          "reason": "Qloo has no verified data on hosts and guests, so guests are planned from launch practice and not measured."
+          "reason": "Qloo has no verified data on hosts and guests, so guests are planned from launch practice and not measured.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         }
       ],
       "groupLabels": [],
@@ -328,22 +334,29 @@
           "evidence": "Your shows carry it and the rival shows you named do not"
         },
         {
-          "id": "topic-interviews",
-          "name": "Interviews",
+          "id": "topic-true-stories",
+          "name": "True stories",
           "ownership": "distinct",
           "weight": 1,
           "evidence": "Your shows carry it and the rival shows you named do not"
         },
         {
-          "id": "topic-technology",
-          "name": "Technology",
+          "id": "topic-money",
+          "name": "Money",
           "ownership": "distinct",
-          "weight": 0.75,
+          "weight": 1,
           "evidence": "Your shows carry it and the rival shows you named do not"
         },
         {
-          "id": "topic-faith",
-          "name": "Faith",
+          "id": "topic-politics",
+          "name": "Politics",
+          "ownership": "distinct",
+          "weight": 1,
+          "evidence": "Your shows carry it and the rival shows you named do not"
+        },
+        {
+          "id": "topic-interviews",
+          "name": "Interviews",
           "ownership": "distinct",
           "weight": 0.5,
           "evidence": "Your shows carry it and the rival shows you named do not"
@@ -351,20 +364,13 @@
         {
           "id": "topic-humour",
           "name": "Humour",
-          "ownership": "shared",
-          "weight": 1,
-          "evidence": "Both your listeners and the rival shows you named lean to it"
+          "ownership": "distinct",
+          "weight": 0.5,
+          "evidence": "Your shows carry it and the rival shows you named do not"
         },
         {
-          "id": "topic-true-stories",
-          "name": "True stories",
-          "ownership": "shared",
-          "weight": 1,
-          "evidence": "Both your listeners and the rival shows you named lean to it"
-        },
-        {
-          "id": "topic-money",
-          "name": "Money",
+          "id": "topic-diaspora-life",
+          "name": "Diaspora life",
           "ownership": "shared",
           "weight": 1,
           "evidence": "Both your listeners and the rival shows you named lean to it"
@@ -377,8 +383,8 @@
           "evidence": "Both your listeners and the rival shows you named lean to it"
         },
         {
-          "id": "topic-politics",
-          "name": "Politics",
+          "id": "topic-faith",
+          "name": "Faith",
           "ownership": "shared",
           "weight": 1,
           "evidence": "Both your listeners and the rival shows you named lean to it"
@@ -389,42 +395,42 @@
           "id": "fan-podcast-casefile",
           "name": "Casefile",
           "medium": "podcast",
-          "before": 65,
-          "after": 65,
-          "evidence": "Podcast · 65 of 100 overlap with your listeners",
+          "before": 72,
+          "after": 72,
+          "evidence": "Podcast · 72 of 100 overlap with your listeners",
           "note": "Your pick"
-        },
-        {
-          "id": "fan-podcast-the-long-con",
-          "name": "The Long Con",
-          "medium": "podcast",
-          "before": 64,
-          "after": 64,
-          "evidence": "Podcast · 64 of 100 overlap with your listeners"
-        },
-        {
-          "id": "fan-podcast-case-closed-weekly",
-          "name": "Case Closed Weekly",
-          "medium": "podcast",
-          "before": 64,
-          "after": 64,
-          "evidence": "Podcast · 64 of 100 overlap with your listeners"
         },
         {
           "id": "fan-podcast-midnight-ledger",
           "name": "Midnight Ledger",
           "medium": "podcast",
-          "before": 64,
-          "after": 64,
-          "evidence": "Podcast · 64 of 100 overlap with your listeners"
+          "before": 58,
+          "after": 58,
+          "evidence": "Podcast · 58 of 100 overlap with your listeners"
+        },
+        {
+          "id": "fan-podcast-case-closed-weekly",
+          "name": "Case Closed Weekly",
+          "medium": "podcast",
+          "before": 58,
+          "after": 58,
+          "evidence": "Podcast · 58 of 100 overlap with your listeners"
+        },
+        {
+          "id": "fan-podcast-the-long-con",
+          "name": "The Long Con",
+          "medium": "podcast",
+          "before": 58,
+          "after": 58,
+          "evidence": "Podcast · 58 of 100 overlap with your listeners"
         },
         {
           "id": "fan-podcast-dead-air",
           "name": "Dead Air",
           "medium": "podcast",
-          "before": 63,
-          "after": 63,
-          "evidence": "Podcast · 63 of 100 overlap with your listeners"
+          "before": 57,
+          "after": 57,
+          "evidence": "Podcast · 57 of 100 overlap with your listeners"
         }
       ]
     },
@@ -456,7 +462,7 @@
             {
               "id": "bottom-line-3",
               "kind": "grounded",
-              "text": "Build the positioning on storytelling and interviews: your listeners lean to it more than the listeners of rival shows do.",
+              "text": "Build the positioning on storytelling and true stories: your listeners lean to it more than the listeners of rival shows do.",
               "findingIds": ["f-topics"],
               "sourceIds": [],
               "names": [],
@@ -480,7 +486,7 @@
             {
               "id": "positioning-2",
               "kind": "grounded",
-              "text": "Lead the key messages with storytelling, interviews and technology, the topics your listeners lean to that rival shows do not.",
+              "text": "Lead the key messages with storytelling, true stories and money, the topics your listeners lean to that rival shows do not.",
               "findingIds": ["f-topics"],
               "sourceIds": [],
               "names": [],
@@ -488,16 +494,11 @@
             },
             {
               "id": "positioning-3",
-              "kind": "grounded",
-              "text": "Pitch the show to press, newsletters and listeners in the company of Crime Junkie, Serial, My Favorite Murder with Karen Kilgariff and Georgia Hardstark and Casefile True Crime.",
-              "findingIds": ["f-crosspromo"],
+              "kind": "playbook",
+              "text": "Pitch the show to press, newsletters and listeners in the company of Crime Junkie and Serial.",
+              "findingIds": [],
               "sourceIds": [],
-              "names": [
-                "Crime Junkie",
-                "Serial",
-                "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
-                "Casefile True Crime"
-              ],
+              "names": ["Crime Junkie", "Serial"],
               "group": "Comps"
             }
           ]
@@ -509,7 +510,7 @@
             {
               "id": "audience-1",
               "kind": "grounded",
-              "text": "The core audience is people 25 to 29, then 30 to 34.",
+              "text": "The core audience is people 30 to 34, then 25 to 29.",
               "findingIds": ["f-audience"],
               "sourceIds": [],
               "names": [],
@@ -518,10 +519,10 @@
             {
               "id": "audience-2",
               "kind": "grounded",
-              "text": "They also hear Casefile and The Long Con.",
+              "text": "They also hear Casefile and Midnight Ledger.",
               "findingIds": ["f-crosspromo"],
               "sourceIds": [],
-              "names": ["Casefile", "The Long Con"],
+              "names": ["Casefile", "Midnight Ledger"],
               "group": "What else they follow"
             }
           ]
@@ -542,7 +543,7 @@
             {
               "id": "markets-2",
               "kind": "grounded",
-              "text": "Plan Lagos as a smaller market: keep the spend small and lean on swaps and community.",
+              "text": "Plan Lagos as a solid market: grow it with swaps and community events.",
               "findingIds": ["f-a-place-lagos"],
               "sourceIds": [],
               "names": ["Lagos"],
@@ -566,10 +567,10 @@
             {
               "id": "crosspromo-2",
               "kind": "grounded",
-              "text": "Offer a trailer swap or a guest slot to Casefile, The Long Con and Case Closed Weekly: they rank highest with your listeners.",
+              "text": "Offer a trailer swap or a guest slot to Casefile, Midnight Ledger and Case Closed Weekly: they rank highest with your listeners.",
               "findingIds": ["f-crosspromo"],
               "sourceIds": [],
-              "names": ["Casefile", "The Long Con", "Case Closed Weekly"],
+              "names": ["Casefile", "Midnight Ledger", "Case Closed Weekly"],
               "group": "Who"
             },
             {
@@ -761,7 +762,7 @@
             {
               "id": "calendar-source",
               "kind": "playbook",
-              "text": "Not researched for this category. The rows follow the launch beats, and no post counts are stated.",
+              "text": "The rows follow the launch beats and give no post counts, so set your own rhythm and keep to what you can sustain.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -770,7 +771,7 @@
             {
               "id": "calendar-london-artwork-feed",
               "kind": "playbook",
-              "text": "T-8 to T-6 (2099-01-04 to 2099-01-24): Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced. Lead on YouTube. Posts: not researched.",
+              "text": "T-8 to T-6 (2099-01-04 to 2099-01-24): Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -779,7 +780,7 @@
             {
               "id": "calendar-london-editorial",
               "kind": "playbook",
-              "text": "T-6 (2099-01-18): Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard. Lead on YouTube. Posts: not researched.",
+              "text": "T-6 (2099-01-18): Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -788,7 +789,7 @@
             {
               "id": "calendar-london-trailer",
               "kind": "playbook",
-              "text": "T-4 (2099-02-01): Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social. Lead on YouTube. Posts: not researched.",
+              "text": "T-4 (2099-02-01): Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -797,7 +798,7 @@
             {
               "id": "calendar-london-swaps",
               "kind": "playbook",
-              "text": "T-3 to T-1 (2099-02-08 to 2099-02-28): Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch. Lead on YouTube. Posts: not researched.",
+              "text": "T-3 to T-1 (2099-02-08 to 2099-02-28): Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -806,7 +807,7 @@
             {
               "id": "calendar-london-launch",
               "kind": "playbook",
-              "text": "Launch week (2099-03-01): Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day. Lead on YouTube. Posts: not researched.",
+              "text": "Launch week (2099-03-01): Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -815,7 +816,7 @@
             {
               "id": "calendar-london-clips",
               "kind": "playbook",
-              "text": "Launch week to T+8 (2099-03-01 to 2099-05-02): Publish a clip of every episode with captions, and a full episode on YouTube. Lead on YouTube. Posts: not researched.",
+              "text": "Launch week to T+8 (2099-03-01 to 2099-05-02): Publish a clip of every episode with captions, and a full episode on YouTube. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -824,7 +825,7 @@
             {
               "id": "calendar-london-chart-window",
               "kind": "playbook",
-              "text": "T+1 to T+4 (2099-03-08 to 2099-04-04): Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly. Lead on YouTube. Posts: not researched.",
+              "text": "T+1 to T+4 (2099-03-08 to 2099-04-04): Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -833,7 +834,7 @@
             {
               "id": "calendar-london-first-read",
               "kind": "playbook",
-              "text": "T+4 to T+8 (2099-03-29 to 2099-05-02): Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked. Lead on YouTube. Posts: not researched.",
+              "text": "T+4 to T+8 (2099-03-29 to 2099-05-02): Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -842,7 +843,7 @@
             {
               "id": "calendar-lagos-artwork-feed",
               "kind": "playbook",
-              "text": "T-8 to T-6 (2099-01-04 to 2099-01-24): Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced. Lead on YouTube. Posts: not researched.",
+              "text": "T-8 to T-6 (2099-01-04 to 2099-01-24): Lock the cover art, the show description and the feed. Test it in Apple Podcasts and Spotify before anything is announced. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -851,7 +852,7 @@
             {
               "id": "calendar-lagos-editorial",
               "kind": "playbook",
-              "text": "T-6 (2099-01-18): Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard. Lead on YouTube. Posts: not researched.",
+              "text": "T-6 (2099-01-18): Send the platforms your pitch for editorial placement: a short note on the show, the host and why it is new. Apple and Spotify both take pitches from the show dashboard. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -860,7 +861,7 @@
             {
               "id": "calendar-lagos-trailer",
               "kind": "playbook",
-              "text": "T-4 (2099-02-01): Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social. Lead on YouTube. Posts: not researched.",
+              "text": "T-4 (2099-02-01): Publish the trailer to the feed so people can follow before episode one. Cut a short clip of it for social. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -869,7 +870,7 @@
             {
               "id": "calendar-lagos-swaps",
               "kind": "playbook",
-              "text": "T-3 to T-1 (2099-02-08 to 2099-02-28): Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch. Lead on YouTube. Posts: not researched.",
+              "text": "T-3 to T-1 (2099-02-08 to 2099-02-28): Book the cross promotion: a guest slot or a trailer swap on each show you want to reach, recorded before launch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -878,7 +879,7 @@
             {
               "id": "calendar-lagos-launch",
               "kind": "playbook",
-              "text": "Launch week (2099-03-01): Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day. Lead on YouTube. Posts: not researched.",
+              "text": "Launch week (2099-03-01): Release the first three episodes at once, so a new listener can stay. Send the trailer swap and the press note the same day. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -887,7 +888,7 @@
             {
               "id": "calendar-lagos-clips",
               "kind": "playbook",
-              "text": "Launch week to T+8 (2099-03-01 to 2099-05-02): Publish a clip of every episode with captions, and a full episode on YouTube. Lead on YouTube. Posts: not researched.",
+              "text": "Launch week to T+8 (2099-03-01 to 2099-05-02): Publish a clip of every episode with captions, and a full episode on YouTube. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -896,7 +897,7 @@
             {
               "id": "calendar-lagos-chart-window",
               "kind": "playbook",
-              "text": "T+1 to T+4 (2099-03-08 to 2099-04-04): Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly. Lead on YouTube. Posts: not researched.",
+              "text": "T+1 to T+4 (2099-03-08 to 2099-04-04): Ask every listener you can reach to follow, rate and review in the first week: early follows and ratings decide how the show is placed. Keep episodes weekly. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -905,7 +906,7 @@
             {
               "id": "calendar-lagos-first-read",
               "kind": "playbook",
-              "text": "T+4 to T+8 (2099-03-29 to 2099-05-02): Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked. Lead on YouTube. Posts: not researched.",
+              "text": "T+4 to T+8 (2099-03-29 to 2099-05-02): Read the first month: which episodes held listeners, which markets and ages came. Move the next swaps and ads to what worked. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1189,15 +1190,6 @@
             },
             {
               "id": "risks-3",
-              "kind": "grounded",
-              "text": "Money is not a topic only your listeners lean to, so take an angle on it that the rival shows do not.",
-              "findingIds": ["f-a-topic-money"],
-              "sourceIds": [],
-              "names": [],
-              "group": null
-            },
-            {
-              "id": "risks-4",
               "kind": "playbook",
               "text": "A slipped launch date: hold the date once the trailer is public, and record the first episodes before announcing it.",
               "findingIds": [],
@@ -1214,7 +1206,7 @@
             {
               "id": "gaps-lead-cold-case-lagos",
               "kind": "playbook",
-              "text": "Qloo does not know Cold Case Lagos by name, which is normal before a debut. The plan rests on the comps you named.",
+              "text": "Cold Case Lagos is new, so the picture of its audience is built from comparable titles: Crime Junkie and Serial. Name your own and I will swap them in.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1232,15 +1224,6 @@
             {
               "id": "gaps-2",
               "kind": "playbook",
-              "text": "Say what the show is about, its format, and who hosts or appears on it, and the plan can be built around them.",
-              "findingIds": [],
-              "sourceIds": [],
-              "names": [],
-              "group": null
-            },
-            {
-              "id": "gaps-3",
-              "kind": "playbook",
               "text": "Add a marketing budget, and the split turns into amounts.",
               "findingIds": [],
               "sourceIds": [],
@@ -1254,24 +1237,14 @@
         {
           "name": "Crime Junkie",
           "source": "you",
+          "why": null,
           "match": null,
           "choice": null
         },
         {
           "name": "Serial",
           "source": "you",
-          "match": null,
-          "choice": null
-        },
-        {
-          "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
-          "source": "added",
-          "match": null,
-          "choice": null
-        },
-        {
-          "name": "Casefile True Crime",
-          "source": "added",
+          "why": null,
           "match": null,
           "choice": null
         }
@@ -1288,8 +1261,8 @@
             "n1": 34
           },
           "verdict": "holds",
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1303,12 +1276,12 @@
         {
           "id": "f-a-comps",
           "query": "audience",
-          "text": "Your show and its comparable shows lean on one title for the result, so another comp of your own would firm it up.",
+          "text": "Your show and its comparable shows could not be compared as one audience.",
           "entities": [],
           "numbers": {},
-          "verdict": "weak",
+          "verdict": "cant",
           "confidence": "lower",
-          "why": "lower: the result rests on Crime Junkie",
+          "why": "lower: this line could not be tested",
           "context": {
             "city": null,
             "ages": [],
@@ -1322,42 +1295,42 @@
         {
           "id": "f-audience",
           "query": "audience",
-          "text": "Your show's audience is strongest among people aged 25 to 29, then aged 30 to 34.",
+          "text": "Your show's audience is strongest among people aged 30 to 34, then aged 25 to 29.",
           "entities": [],
           "numbers": {
-            "n0": 25,
-            "n1": 29,
-            "n2": 30,
-            "n3": 34,
-            "Aged 25 to 29": 59,
-            "Aged 30 to 34": 59,
-            "Women": 55,
-            "Aged 24 and under": 53,
-            "Aged 35 to 44": 52,
-            "Aged 45 to 54": 45
+            "n0": 30,
+            "n1": 34,
+            "n2": 25,
+            "n3": 29,
+            "Women": 60,
+            "Aged 30 to 34": 56,
+            "Aged 25 to 29": 54,
+            "Aged 35 to 44": 54,
+            "Aged 24 and under": 51,
+            "Aged 45 to 54": 50
           },
           "verdict": null,
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
             "tags": [],
             "country": null,
             "yearFrom": null,
-            "audience": "people 25 to 29, then 30 to 34"
+            "audience": "people 30 to 34, then 25 to 29"
           },
           "callIds": ["00000000-0000-4000-8000-000000005000"]
         },
         {
           "id": "f-a-place-lagos",
           "query": "markets",
-          "text": "Lagos has a smaller audience for this show than your other cities.",
+          "text": "Lagos is an average city for this audience.",
           "entities": [],
           "numbers": {},
-          "verdict": "breaks",
-          "confidence": "lower",
-          "why": "lower: the result rests on Crime Junkie",
+          "verdict": "weak",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1375,8 +1348,8 @@
           "entities": [],
           "numbers": {},
           "verdict": "weak",
-          "confidence": "lower",
-          "why": "lower: the result rests on Crime Junkie",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1395,25 +1368,25 @@
             {
               "entityId": null,
               "name": "London",
-              "affinity": 0.6288752036056344,
+              "affinity": 0.5639874537909996,
               "detail": null,
               "popularity": null
             },
             {
               "entityId": null,
               "name": "Lagos",
-              "affinity": 0.5141774086631317,
+              "affinity": 0.5550539060242132,
               "detail": null,
               "popularity": null
             }
           ],
           "numbers": {
-            "lift London": 1.07,
-            "lift Lagos": 0.87
+            "lift London": 1.06,
+            "lift Lagos": 1.04
           },
           "verdict": null,
-          "confidence": "lower",
-          "why": "lower: the result rests on Crime Junkie",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1427,12 +1400,12 @@
         {
           "id": "f-a-topic-money",
           "query": "topics",
-          "text": "Money is a topic your listeners and the rival shows you named both lean to, so it is not yours alone.",
+          "text": "Money is a topic your listeners lean to more than the listeners of the rival shows you named.",
           "entities": [],
           "numbers": {},
-          "verdict": "weak",
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "verdict": "holds",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1450,8 +1423,8 @@
           "entities": [],
           "numbers": {},
           "verdict": "holds",
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1465,7 +1438,7 @@
         {
           "id": "f-topics",
           "query": "topics",
-          "text": "Compared with the rival shows you named, the topics your listeners lean to that rivals do not are storytelling, interviews and technology.",
+          "text": "Compared with the rival shows you named, the topics your listeners lean to that rivals do not are storytelling, true stories and money.",
           "entities": [
             {
               "entityId": null,
@@ -1476,21 +1449,28 @@
             },
             {
               "entityId": null,
-              "name": "Interviews",
+              "name": "True stories",
               "affinity": null,
               "detail": "yours · 1×",
               "popularity": null
             },
             {
               "entityId": null,
-              "name": "Technology",
+              "name": "Money",
               "affinity": null,
-              "detail": "yours · 0.75×",
+              "detail": "yours · 1×",
               "popularity": null
             },
             {
               "entityId": null,
-              "name": "Faith",
+              "name": "Politics",
+              "affinity": null,
+              "detail": "yours · 1×",
+              "popularity": null
+            },
+            {
+              "entityId": null,
+              "name": "Interviews",
               "affinity": null,
               "detail": "yours · 0.5×",
               "popularity": null
@@ -1499,19 +1479,12 @@
               "entityId": null,
               "name": "Humour",
               "affinity": null,
-              "detail": "shared",
+              "detail": "yours · 0.5×",
               "popularity": null
             },
             {
               "entityId": null,
-              "name": "True stories",
-              "affinity": null,
-              "detail": "shared",
-              "popularity": null
-            },
-            {
-              "entityId": null,
-              "name": "Money",
+              "name": "Diaspora life",
               "affinity": null,
               "detail": "shared",
               "popularity": null
@@ -1525,14 +1498,14 @@
             },
             {
               "entityId": null,
-              "name": "Politics",
+              "name": "Faith",
               "affinity": null,
               "detail": "shared",
               "popularity": null
             },
             {
               "entityId": null,
-              "name": "Diaspora life",
+              "name": "Technology",
               "affinity": null,
               "detail": "rivals",
               "popularity": null
@@ -1540,13 +1513,15 @@
           ],
           "numbers": {
             "weight Storytelling": 1,
-            "weight Interviews": 1,
-            "weight Technology": 0.75,
-            "weight Faith": 0.5
+            "weight True stories": 1,
+            "weight Money": 1,
+            "weight Politics": 1,
+            "weight Interviews": 0.5,
+            "weight Humour": 0.5
           },
           "verdict": null,
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1560,40 +1535,40 @@
         {
           "id": "f-crosspromo",
           "query": "crosspromo",
-          "text": "The shows that rank highest with your show's listeners aged 25 to 34 in Lagos are The Long Con, Case Closed Weekly and Midnight Ledger.",
+          "text": "The shows that rank highest with your show's listeners aged 25 to 34 in Lagos are Midnight Ledger, Case Closed Weekly and The Long Con.",
           "entities": [
             {
               "entityId": "DEMO-POD-0214",
               "name": "Casefile",
-              "affinity": 0.65,
-              "detail": "Podcast",
-              "popularity": null
-            },
-            {
-              "entityId": "DEMO-POD-0203",
-              "name": "The Long Con",
-              "affinity": 0.64,
-              "detail": "Podcast",
-              "popularity": null
-            },
-            {
-              "entityId": "DEMO-POD-0202",
-              "name": "Case Closed Weekly",
-              "affinity": 0.64,
+              "affinity": 0.72,
               "detail": "Podcast",
               "popularity": null
             },
             {
               "entityId": "DEMO-POD-0201",
               "name": "Midnight Ledger",
-              "affinity": 0.64,
+              "affinity": 0.58,
+              "detail": "Podcast",
+              "popularity": null
+            },
+            {
+              "entityId": "DEMO-POD-0202",
+              "name": "Case Closed Weekly",
+              "affinity": 0.58,
+              "detail": "Podcast",
+              "popularity": null
+            },
+            {
+              "entityId": "DEMO-POD-0203",
+              "name": "The Long Con",
+              "affinity": 0.58,
               "detail": "Podcast",
               "popularity": null
             },
             {
               "entityId": "DEMO-POD-0204",
               "name": "Dead Air",
-              "affinity": 0.63,
+              "affinity": 0.57,
               "detail": "Podcast",
               "popularity": null
             }
@@ -1601,15 +1576,15 @@
           "numbers": {
             "n0": 25,
             "n1": 34,
-            "overlap Casefile": 65,
-            "overlap The Long Con": 64,
-            "overlap Case Closed Weekly": 64,
-            "overlap Midnight Ledger": 64,
-            "overlap Dead Air": 63
+            "overlap Casefile": 72,
+            "overlap Midnight Ledger": 58,
+            "overlap Case Closed Weekly": 58,
+            "overlap The Long Con": 58,
+            "overlap Dead Air": 57
           },
           "verdict": null,
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": "Lagos",
             "ages": ["25_to_29", "30_to_34"],
@@ -1628,7 +1603,7 @@
             {
               "entityId": "DEMO-POD-0214",
               "name": "Casefile",
-              "affinity": 0.65,
+              "affinity": 0.72,
               "detail": "Podcast",
               "popularity": null
             }
@@ -1640,8 +1615,8 @@
             "of": 5
           },
           "verdict": null,
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": null,
             "ages": [],
@@ -1660,36 +1635,36 @@
             {
               "entityId": "DEMO-BRAND-0201",
               "name": "Glide Mobile",
-              "affinity": 0.5935786078436249,
+              "affinity": 0.5570746912055357,
               "detail": null,
               "popularity": 0.46
             },
             {
               "entityId": "DEMO-BRAND-0202",
               "name": "Fizz Cola",
-              "affinity": 0.5912348015446296,
+              "affinity": 0.5570746912055357,
               "detail": null,
               "popularity": 0.41
             },
             {
               "entityId": "DEMO-BRAND-0203",
               "name": "Lumen Coffee",
-              "affinity": 0.5912348015446296,
+              "affinity": 0.5570746912055357,
               "detail": null,
               "popularity": 0.28
             },
             {
               "entityId": "DEMO-BRAND-0204",
               "name": "Orbit Data",
-              "affinity": 0.5935786078436249,
+              "affinity": 0.5570746912055357,
               "detail": null,
               "popularity": 0.24
             }
           ],
           "numbers": {},
           "verdict": null,
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
+          "confidence": "medium",
+          "why": "medium: 2 anchors with data",
           "context": {
             "city": "Lagos",
             "ages": [],
@@ -2080,8 +2055,8 @@
           "subject": "territory",
           "name": "London",
           "direction": "risky",
-          "confidence": "lower",
-          "why": "Audience strength 1.07, where 1.0 is an average city in the same ranking. About an average city for this audience: lead with the local angle.",
+          "confidence": "medium",
+          "why": "Audience strength 1.06, where 1.0 is an average city in the same ranking. About an average city for this audience: lead with the local angle.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "London"
@@ -2090,9 +2065,9 @@
           "id": "call-territory-lagos",
           "subject": "territory",
           "name": "Lagos",
-          "direction": "avoid",
-          "confidence": "lower",
-          "why": "Audience strength 0.87, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after London.",
+          "direction": "risky",
+          "confidence": "medium",
+          "why": "Audience strength 1.04, where 1.0 is an average city in the same ranking. About an average city for this audience: lead with the local angle.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Lagos"
@@ -2102,7 +2077,7 @@
           "subject": "partner",
           "name": "Glide Mobile",
           "direction": "okay",
-          "confidence": "high",
+          "confidence": "medium",
           "why": "Ranked 1 of 4 brands for this audience in Lagos.",
           "findingIds": ["f-brands-lagos"],
           "teamChoice": false,
@@ -2113,7 +2088,7 @@
           "subject": "partner",
           "name": "Fizz Cola",
           "direction": "okay",
-          "confidence": "high",
+          "confidence": "medium",
           "why": "Ranked 2 of 4 brands for this audience in Lagos.",
           "findingIds": ["f-brands-lagos"],
           "teamChoice": false,
@@ -2124,7 +2099,7 @@
           "subject": "partner",
           "name": "Lumen Coffee",
           "direction": "risky",
-          "confidence": "high",
+          "confidence": "medium",
           "why": "Ranked 3 of 4 brands for this audience in Lagos.",
           "findingIds": ["f-brands-lagos"],
           "teamChoice": false,
@@ -2136,7 +2111,7 @@
           "id": "partner-glide-mobile",
           "name": "Glide Mobile",
           "tier": "B",
-          "market": "Nigeria",
+          "market": null,
           "from": "qloo",
           "fit": {
             "place": 1,
@@ -2152,13 +2127,19 @@
           "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
           "kind": "brand",
           "flags": [],
-          "moneyType": "in_kind"
+          "moneyType": "in_kind",
+          "check": {
+            "state": "unverified",
+            "note": "A taste fit for this audience in Nigeria. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
         },
         {
           "id": "partner-fizz-cola",
           "name": "Fizz Cola",
           "tier": "B",
-          "market": "Nigeria",
+          "market": null,
           "from": "qloo",
           "fit": {
             "place": 2,
@@ -2174,13 +2155,19 @@
           "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
           "kind": "brand",
           "flags": [],
-          "moneyType": "in_kind"
+          "moneyType": "in_kind",
+          "check": {
+            "state": "unverified",
+            "note": "A taste fit for this audience in Nigeria. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
         },
         {
           "id": "partner-lumen-coffee",
           "name": "Lumen Coffee",
           "tier": "B",
-          "market": "Nigeria",
+          "market": null,
           "from": "qloo",
           "fit": {
             "place": 3,
@@ -2196,7 +2183,13 @@
           "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
           "kind": "brand",
           "flags": [],
-          "moneyType": "in_kind"
+          "moneyType": "in_kind",
+          "check": {
+            "state": "unverified",
+            "note": "A taste fit for this audience in Nigeria. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
         },
         {
           "id": "partner-b-sponsor-brands-that-fit-the-listener-profile",
@@ -2367,7 +2360,7 @@
         {
           "id": "partner-note-bare",
           "ruleId": "partners.slots",
-          "text": "Qloo found no brand to suggest for London. Start there with local partners: cinemas, creators, community groups and businesses that serve the same audience."
+          "text": "No national brand came up for London, so start there with local partners: cinemas, creators, community groups and businesses that serve the same audience."
         },
         {
           "id": "partner-note-barter",
@@ -2637,30 +2630,30 @@
         "label": "Your target (aged 25 to 34) is where the show's audience is strongest.",
         "group": "Findings",
         "verdict": "holds",
-        "returned": "Confidence high. high: 4 anchors with data, 4 well known",
+        "returned": "Confidence medium. medium: 2 anchors with data",
         "driver": false
       },
       {
         "lineId": "f-a-comps",
-        "label": "Your show and its comparable shows lean on one title for the result, so another comp of your own would firm it up.",
+        "label": "Your show and its comparable shows could not be compared as one audience.",
         "group": "Findings",
-        "verdict": "weak",
-        "returned": "Confidence lower. lower: the result rests on Crime Junkie",
-        "driver": true
+        "verdict": "cant",
+        "returned": "Confidence lower. lower: this line could not be tested",
+        "driver": false
       },
       {
         "lineId": "f-audience",
-        "label": "Your show's audience is strongest among people aged 25 to 29, then aged 30 to 34.",
+        "label": "Your show's audience is strongest among people aged 30 to 34, then aged 25 to 29.",
         "group": "Findings",
-        "returned": "Confidence high. high: 4 anchors with data, 4 well known",
+        "returned": "Confidence medium. medium: 2 anchors with data",
         "driver": true
       },
       {
         "lineId": "f-a-place-lagos",
-        "label": "Lagos has a smaller audience for this show than your other cities.",
+        "label": "Lagos is an average city for this audience.",
         "group": "Findings",
-        "verdict": "breaks",
-        "returned": "Confidence lower. lower: the result rests on Crime Junkie",
+        "verdict": "weak",
+        "returned": "Confidence medium. medium: 2 anchors with data",
         "driver": true
       },
       {
@@ -2668,7 +2661,7 @@
         "label": "London is an average city for this audience.",
         "group": "Findings",
         "verdict": "weak",
-        "returned": "Confidence lower. lower: the result rests on Crime Junkie",
+        "returned": "Confidence medium. medium: 2 anchors with data",
         "driver": true
       },
       {
@@ -2680,32 +2673,32 @@
       },
       {
         "lineId": "f-a-topic-money",
-        "label": "Money is a topic your listeners and the rival shows you named both lean to, so it is not yours alone.",
+        "label": "Money is a topic your listeners lean to more than the listeners of the rival shows you named.",
         "group": "Findings",
-        "verdict": "weak",
-        "returned": "Confidence high. high: 4 anchors with data, 4 well known",
-        "driver": true
+        "verdict": "holds",
+        "returned": "Confidence medium. medium: 2 anchors with data",
+        "driver": false
       },
       {
         "lineId": "f-a-topic-storytelling",
         "label": "Storytelling is a topic your listeners lean to more than the listeners of the rival shows you named.",
         "group": "Findings",
         "verdict": "holds",
-        "returned": "Confidence high. high: 4 anchors with data, 4 well known",
+        "returned": "Confidence medium. medium: 2 anchors with data",
         "driver": false
       },
       {
         "lineId": "f-topics",
-        "label": "Compared with the rival shows you named, the topics your listeners lean to that rivals do not are storytelling, interviews and technology.",
+        "label": "Compared with the rival shows you named, the topics your listeners lean to that rivals do not are storytelling, true stories and money.",
         "group": "Findings",
-        "returned": "Storytelling, Interviews, Technology, Faith, Humour, True stories, Money, Relationships, Politics, Diaspora life",
+        "returned": "Storytelling, True stories, Money, Politics, Interviews, Humour, Diaspora life, Relationships, Faith, Technology",
         "driver": true
       },
       {
         "lineId": "f-crosspromo",
-        "label": "The shows that rank highest with your show's listeners aged 25 to 34 in Lagos are The Long Con, Case Closed Weekly and Midnight Ledger.",
+        "label": "The shows that rank highest with your show's listeners aged 25 to 34 in Lagos are Midnight Ledger, Case Closed Weekly and The Long Con.",
         "group": "Findings",
-        "returned": "Casefile, The Long Con, Case Closed Weekly, Midnight Ledger, Dead Air",
+        "returned": "Casefile, Midnight Ledger, Case Closed Weekly, The Long Con, Dead Air",
         "driver": false
       },
       {
@@ -2762,15 +2755,15 @@
         "label": "The audience is aged 25 to 29, aged 30 to 34",
         "group": "Assumptions",
         "verdict": "holds",
-        "returned": "It is the top age band, or close to it (affinity 0.19, top band 0.19).",
+        "returned": "It is the top age band, or close to it (affinity 0.08, top band 0.13).",
         "driver": false
       },
       {
         "lineId": "a-place-lagos",
         "label": "Lagos is a strong market for this show",
         "group": "Assumptions",
-        "verdict": "breaks",
-        "returned": "The audience is thinner here than elsewhere (lift 0.87 over an average city in the same call).",
+        "verdict": "weak",
+        "returned": "About average for this audience (lift 1.04 over an average city in the same call).",
         "driver": true
       },
       {
@@ -2778,16 +2771,16 @@
         "label": "London is a strong market for this show",
         "group": "Assumptions",
         "verdict": "weak",
-        "returned": "About average for this audience (lift 1.07 over an average city in the same call).",
+        "returned": "About average for this audience (lift 1.06 over an average city in the same call).",
         "driver": true
       },
       {
         "lineId": "a-comps",
         "label": "The show and its comparable shows describe one audience",
         "group": "Assumptions",
-        "verdict": "weak",
-        "returned": "The city order rests on Crime Junkie.",
-        "driver": true
+        "verdict": "cant",
+        "returned": "Needs at least 3 comps that Qloo found to check.",
+        "driver": false
       },
       {
         "lineId": "a-topic-storytelling",
@@ -2801,79 +2794,79 @@
         "lineId": "a-topic-money",
         "label": "Money is a topic your show can own",
         "group": "Assumptions",
-        "verdict": "weak",
-        "returned": "Your listeners and the rival shows’ listeners both carry this topic, so it is not yours alone.",
-        "driver": true
-      },
-      {
-        "lineId": "aud-25_to_29",
-        "label": "Aged 25 to 29",
-        "group": "Audience",
-        "returned": "Affinity 0.19 across 4 of 4 comps",
-        "driver": false
-      },
-      {
-        "lineId": "aud-30_to_34",
-        "label": "Aged 30 to 34",
-        "group": "Audience",
-        "returned": "Affinity 0.19 across 4 of 4 comps",
+        "verdict": "holds",
+        "returned": "Your listeners lean to this topic more than the listeners of the rival shows.",
         "driver": false
       },
       {
         "lineId": "aud-female",
         "label": "Women",
         "group": "Audience",
-        "returned": "Affinity 0.10 across 4 of 4 comps",
+        "returned": "Affinity 0.20 across 2 of 2 comps",
         "driver": false
       },
       {
-        "lineId": "aud-24_and_younger",
-        "label": "Aged 24 and under",
+        "lineId": "aud-30_to_34",
+        "label": "Aged 30 to 34",
         "group": "Audience",
-        "returned": "Affinity 0.06 across 4 of 4 comps",
+        "returned": "Affinity 0.13 across 2 of 2 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-25_to_29",
+        "label": "Aged 25 to 29",
+        "group": "Audience",
+        "returned": "Affinity 0.08 across 2 of 2 comps",
         "driver": false
       },
       {
         "lineId": "aud-35_to_44",
         "label": "Aged 35 to 44",
         "group": "Audience",
-        "returned": "Affinity 0.04 across 4 of 4 comps",
+        "returned": "Affinity 0.08 across 2 of 2 comps",
+        "driver": false
+      },
+      {
+        "lineId": "aud-24_and_younger",
+        "label": "Aged 24 and under",
+        "group": "Audience",
+        "returned": "Affinity 0.03 across 2 of 2 comps",
         "driver": false
       },
       {
         "lineId": "aud-45_to_54",
         "label": "Aged 45 to 54",
         "group": "Audience",
-        "returned": "Affinity -0.10 across 4 of 4 comps",
+        "returned": "Affinity 0.00 across 2 of 2 comps",
         "driver": false
       },
       {
         "lineId": "place-london",
         "label": "London",
         "group": "Places",
-        "returned": "Lift 1.07x. 120 cells. lower: the result rests on Crime Junkie",
+        "returned": "Lift 1.06x. 120 cells. medium: 2 anchors with data",
         "driver": false
       },
       {
         "lineId": "place-lagos",
         "label": "Lagos",
         "group": "Places",
-        "returned": "Lift 0.87x. 120 cells. lower: the result rests on Crime Junkie",
+        "returned": "Lift 1.04x. 120 cells. medium: 2 anchors with data",
         "driver": false
       }
     ],
     "receipts": [
       {
         "callId": "00000000-0000-4000-8000-000000005000",
-        "lineId": "aud-25_to_29",
+        "lineId": "aud-female",
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -2883,39 +2876,25 @@
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
         "callId": "00000000-0000-4000-8000-000000005000",
-        "lineId": "aud-female",
+        "lineId": "aud-25_to_29",
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005000",
-        "lineId": "aud-24_and_younger",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
-        },
-        "returned": {},
-        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -2925,11 +2904,25 @@
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005000",
+        "lineId": "aud-24_and_younger",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.type": "urn:demographics",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
+        },
+        "returned": {},
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -2939,11 +2932,11 @@
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -2955,11 +2948,11 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Crime Junkie.",
-        "confidence": "lower",
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -2971,11 +2964,11 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Crime Junkie.",
-        "confidence": "lower",
+        "rule": "Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -2985,11 +2978,11 @@
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "It is the top age band, or close to it (affinity 0.19, top band 0.19). Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "It is the top age band, or close to it (affinity 0.08, top band 0.13). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3001,11 +2994,11 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "The audience is thinner here than elsewhere (lift 0.87 over an average city in the same call). Confidence lower: the result rests on Crime Junkie.",
-        "confidence": "lower",
+        "rule": "About average for this audience (lift 1.04 over an average city in the same call). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3017,11 +3010,11 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "About average for this audience (lift 1.07 over an average city in the same call). Confidence lower: the result rests on Crime Junkie.",
-        "confidence": "lower",
+        "rule": "About average for this audience (lift 1.06 over an average city in the same call). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3033,10 +3026,10 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "The city order rests on Crime Junkie. Confidence lower: the result rests on Crime Junkie.",
+        "rule": "Could not test: Needs at least 3 comps that Qloo found to check.",
         "confidence": "lower",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
@@ -3046,46 +3039,14 @@
         "lineId": "fan-podcast-casefile",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.results.entities": "DEMO-POD-0203,DEMO-POD-0202,DEMO-POD-0201,DEMO-POD-0204,DEMO-POD-0214",
+          "filter.results.entities": "DEMO-POD-0201,DEMO-POD-0202,DEMO-POD-0203,DEMO-POD-0204,DEMO-POD-0214",
           "filter.type": "urn:entity:podcast",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "take": "5"
         },
         "returned": {},
-        "rule": "Overlap is the affinity Qloo gives Casefile for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005012",
-        "lineId": "fan-podcast-the-long-con",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.results.entities": "DEMO-POD-0203,DEMO-POD-0202,DEMO-POD-0201,DEMO-POD-0204,DEMO-POD-0214",
-          "filter.type": "urn:entity:podcast",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "take": "5"
-        },
-        "returned": {},
-        "rule": "Overlap is the affinity Qloo gives The Long Con for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005012",
-        "lineId": "fan-podcast-case-closed-weekly",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.results.entities": "DEMO-POD-0203,DEMO-POD-0202,DEMO-POD-0201,DEMO-POD-0204,DEMO-POD-0214",
-          "filter.type": "urn:entity:podcast",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "take": "5"
-        },
-        "returned": {},
-        "rule": "Overlap is the affinity Qloo gives Case Closed Weekly for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Overlap is the affinity Qloo gives Casefile for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3094,14 +3055,46 @@
         "lineId": "fan-podcast-midnight-ledger",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.results.entities": "DEMO-POD-0203,DEMO-POD-0202,DEMO-POD-0201,DEMO-POD-0204,DEMO-POD-0214",
+          "filter.results.entities": "DEMO-POD-0201,DEMO-POD-0202,DEMO-POD-0203,DEMO-POD-0204,DEMO-POD-0214",
           "filter.type": "urn:entity:podcast",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "take": "5"
         },
         "returned": {},
-        "rule": "Overlap is the affinity Qloo gives Midnight Ledger for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Overlap is the affinity Qloo gives Midnight Ledger for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005012",
+        "lineId": "fan-podcast-case-closed-weekly",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-POD-0201,DEMO-POD-0202,DEMO-POD-0203,DEMO-POD-0204,DEMO-POD-0214",
+          "filter.type": "urn:entity:podcast",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
+          "take": "5"
+        },
+        "returned": {},
+        "rule": "Overlap is the affinity Qloo gives Case Closed Weekly for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005012",
+        "lineId": "fan-podcast-the-long-con",
+        "endpoint": "/v2/insights",
+        "input": {
+          "filter.results.entities": "DEMO-POD-0201,DEMO-POD-0202,DEMO-POD-0203,DEMO-POD-0204,DEMO-POD-0214",
+          "filter.type": "urn:entity:podcast",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
+          "take": "5"
+        },
+        "returned": {},
+        "rule": "Overlap is the affinity Qloo gives The Long Con for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3110,14 +3103,14 @@
         "lineId": "fan-podcast-dead-air",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.results.entities": "DEMO-POD-0203,DEMO-POD-0202,DEMO-POD-0201,DEMO-POD-0204,DEMO-POD-0214",
+          "filter.results.entities": "DEMO-POD-0201,DEMO-POD-0202,DEMO-POD-0203,DEMO-POD-0204,DEMO-POD-0214",
           "filter.type": "urn:entity:podcast",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "take": "5"
         },
         "returned": {},
-        "rule": "Overlap is the affinity Qloo gives Dead Air for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Overlap is the affinity Qloo gives Dead Air for these listeners × 100, scored with the other shows in one call, so it compares only within these shows. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3126,73 +3119,13 @@
         "lineId": "topic-storytelling",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005017",
-        "lineId": "topic-interviews",
-        "endpoint": "/v2/analysis/compare",
-        "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "b.signal.interests.entities": "DEMO-POD-0203",
-          "take": "50"
-        },
-        "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005017",
-        "lineId": "topic-technology",
-        "endpoint": "/v2/analysis/compare",
-        "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "b.signal.interests.entities": "DEMO-POD-0203",
-          "take": "50"
-        },
-        "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005017",
-        "lineId": "topic-faith",
-        "endpoint": "/v2/analysis/compare",
-        "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "b.signal.interests.entities": "DEMO-POD-0203",
-          "take": "50"
-        },
-        "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005017",
-        "lineId": "topic-humour",
-        "endpoint": "/v2/analysis/compare",
-        "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "b.signal.interests.entities": "DEMO-POD-0203",
-          "take": "50"
-        },
-        "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3201,13 +3134,13 @@
         "lineId": "topic-true-stories",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3216,28 +3149,13 @@
         "lineId": "topic-money",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005017",
-        "lineId": "topic-relationships",
-        "endpoint": "/v2/analysis/compare",
-        "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "b.signal.interests.entities": "DEMO-POD-0203",
-          "take": "50"
-        },
-        "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3246,13 +3164,88 @@
         "lineId": "topic-politics",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Confidence high: 4 anchors with data, 4 well known. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
-        "confidence": "high",
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005017",
+        "lineId": "topic-interviews",
+        "endpoint": "/v2/analysis/compare",
+        "input": {
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
+          "b.signal.interests.entities": "DEMO-POD-0203",
+          "take": "50"
+        },
+        "returned": {},
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005017",
+        "lineId": "topic-humour",
+        "endpoint": "/v2/analysis/compare",
+        "input": {
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
+          "b.signal.interests.entities": "DEMO-POD-0203",
+          "take": "50"
+        },
+        "returned": {},
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005017",
+        "lineId": "topic-diaspora-life",
+        "endpoint": "/v2/analysis/compare",
+        "input": {
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
+          "b.signal.interests.entities": "DEMO-POD-0203",
+          "take": "50"
+        },
+        "returned": {},
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005017",
+        "lineId": "topic-relationships",
+        "endpoint": "/v2/analysis/compare",
+        "input": {
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
+          "b.signal.interests.entities": "DEMO-POD-0203",
+          "take": "50"
+        },
+        "returned": {},
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
+        "calledAt": "2026-10-01T10:00:00.000Z",
+        "source": "demo"
+      },
+      {
+        "callId": "00000000-0000-4000-8000-000000005017",
+        "lineId": "topic-faith",
+        "endpoint": "/v2/analysis/compare",
+        "input": {
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
+          "b.signal.interests.entities": "DEMO-POD-0203",
+          "take": "50"
+        },
+        "returned": {},
+        "rule": "Confidence medium: 2 anchors with data. A topic is yours when its weight against a typical rival topic is above 1, from one comparison with the rival shows you named.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3261,13 +3254,13 @@
         "lineId": "a-topic-storytelling",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Your listeners lean to this topic more than the listeners of the rival shows. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Your listeners lean to this topic more than the listeners of the rival shows. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3276,13 +3269,13 @@
         "lineId": "a-topic-money",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Your listeners and the rival shows’ listeners both carry this topic, so it is not yours alone. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Your listeners lean to this topic more than the listeners of the rival shows. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3292,11 +3285,11 @@
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "Your show's audience is strongest among people aged 25 to 29, then aged 30 to 34. The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Your show's audience is strongest among people aged 30 to 34, then aged 25 to 29. The index is 50 + 50 × the affinity Qloo gives this group, averaged over the comps that have a profile. 50 is neutral. It is a taste index, not a share of viewers. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3306,11 +3299,11 @@
         "endpoint": "/v2/insights",
         "input": {
           "filter.type": "urn:demographics",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "Your target (aged 25 to 34) is where the show's audience is strongest. It is the top age band, or close to it (affinity 0.19, top band 0.19). Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Your target (aged 25 to 34) is where the show's audience is strongest. It is the top age band, or close to it (affinity 0.08, top band 0.13). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3322,11 +3315,11 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "Lagos has a smaller audience for this show than your other cities. The audience is thinner here than elsewhere (lift 0.87 over an average city in the same call). Confidence lower: the result rests on Crime Junkie.",
-        "confidence": "lower",
+        "rule": "Lagos is an average city for this audience. About average for this audience (lift 1.04 over an average city in the same call). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3338,11 +3331,11 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "London is an average city for this audience. About average for this audience (lift 1.07 over an average city in the same call). Confidence lower: the result rests on Crime Junkie.",
-        "confidence": "lower",
+        "rule": "London is an average city for this audience. About average for this audience (lift 1.06 over an average city in the same call). Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3354,10 +3347,10 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "Your show and its comparable shows lean on one title for the result, so another comp of your own would firm it up. The city order rests on Crime Junkie. Confidence lower: the result rests on Crime Junkie.",
+        "rule": "Your show and its comparable shows could not be compared as one audience. Could not test: Needs at least 3 comps that Qloo found to check.",
         "confidence": "lower",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
@@ -3370,11 +3363,11 @@
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
           "filter.type": "urn:heatmap",
           "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004"
         },
         "returned": {},
-        "rule": "Among your markets, your show's audience is strongest in London, then Lagos. Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence lower: the result rests on Crime Junkie.",
-        "confidence": "lower",
+        "rule": "Among your markets, your show's audience is strongest in London, then Lagos. Place lift is the city's mean cell affinity over the mean of every ranked city in the same call, so 1.0 is an average city. 1.2 and above holds, 1.0 to 1.2 is weak, below 1.0 breaks. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3383,14 +3376,14 @@
         "lineId": "f-crosspromo",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.results.entities": "DEMO-POD-0203,DEMO-POD-0202,DEMO-POD-0201,DEMO-POD-0204,DEMO-POD-0214",
+          "filter.results.entities": "DEMO-POD-0201,DEMO-POD-0202,DEMO-POD-0203,DEMO-POD-0204,DEMO-POD-0214",
           "filter.type": "urn:entity:podcast",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "take": "5"
         },
         "returned": {},
-        "rule": "The shows that rank highest with your show's listeners aged 25 to 34 in Lagos are The Long Con, Case Closed Weekly and Midnight Ledger. Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 85 is risky, 70 to 85 moderate, below 70 low. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The shows that rank highest with your show's listeners aged 25 to 34 in Lagos are Midnight Ledger, Case Closed Weekly and The Long Con. Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 85 is risky, 70 to 85 moderate, below 70 low. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3399,14 +3392,14 @@
         "lineId": "f-promo-casefile",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.results.entities": "DEMO-POD-0203,DEMO-POD-0202,DEMO-POD-0201,DEMO-POD-0204,DEMO-POD-0214",
+          "filter.results.entities": "DEMO-POD-0201,DEMO-POD-0202,DEMO-POD-0203,DEMO-POD-0204,DEMO-POD-0214",
           "filter.type": "urn:entity:podcast",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "take": "5"
         },
         "returned": {},
-        "rule": "Casefile ranks 1 of 5 among the shows asked about for your show's listeners. Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 85 is risky, 70 to 85 moderate, below 70 low. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Casefile ranks 1 of 5 among the shows asked about for your show's listeners. Qloo scores each rival against your comps' audience in one call. Overlap is that affinity × 100: above 85 is risky, 70 to 85 moderate, below 70 low. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3415,13 +3408,13 @@
         "lineId": "f-topics",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Compared with the rival shows you named, the topics your listeners lean to that rivals do not are storytelling, interviews and technology. Qloo compares your show's audience with the rival shows' audience in one call. A topic is yours when only your audience carries it, and shared when both audiences do. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Compared with the rival shows you named, the topics your listeners lean to that rivals do not are storytelling, true stories and money. Qloo compares your show's audience with the rival shows' audience in one call. A topic is yours when only your audience carries it, and shared when both audiences do. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3430,13 +3423,13 @@
         "lineId": "f-a-topic-storytelling",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Storytelling is a topic your listeners lean to more than the listeners of the rival shows you named. Qloo compares your show's audience with the rival shows' audience in one call. A topic is yours when only your audience carries it, and shared when both audiences do. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Storytelling is a topic your listeners lean to more than the listeners of the rival shows you named. Qloo compares your show's audience with the rival shows' audience in one call. A topic is yours when only your audience carries it, and shared when both audiences do. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3445,13 +3438,13 @@
         "lineId": "f-a-topic-money",
         "endpoint": "/v2/analysis/compare",
         "input": {
-          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "a.signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "b.signal.interests.entities": "DEMO-POD-0203",
           "take": "50"
         },
         "returned": {},
-        "rule": "Money is a topic your listeners and the rival shows you named both lean to, so it is not yours alone. Qloo compares your show's audience with the rival shows' audience in one call. A topic is yours when only your audience carries it, and shared when both audiences do. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "Money is a topic your listeners lean to more than the listeners of the rival shows you named. Qloo compares your show's audience with the rival shows' audience in one call. A topic is yours when only your audience carries it, and shared when both audiences do. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3477,16 +3470,16 @@
         "lineId": "f-brands-lagos",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.results.entities": "DEMO-BRAND-0202,DEMO-BRAND-0203,DEMO-BRAND-0201,DEMO-BRAND-0204",
           "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "signal.location.query": "Lagos",
-          "take": "10"
+          "take": "8"
         },
         "returned": {},
-        "rule": "In Lagos, among brands that could realistically sponsor a new show, your show's listeners like Glide Mobile, Fizz Cola and Lumen Coffee best. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "In Lagos, among brands that could realistically sponsor a new show, your show's listeners like Glide Mobile, Fizz Cola and Lumen Coffee best. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
@@ -3495,11 +3488,11 @@
         "lineId": "f-region-lagos-artists",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.type": "urn:entity:artist",
           "signal.demographics.age": "25_to_29,30_to_34",
           "signal.location.query": "Lagos",
-          "take": "8"
+          "take": "6"
         },
         "returned": {},
         "rule": "With no comps to go on, here is what people aged 25 to 34 in Lagos like, from the place and age band alone: the artists Neon Tide, Ada Lux and Kola Wave. This is taste for the place, not for your comps. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
@@ -3512,11 +3505,11 @@
         "lineId": "f-region-lagos-brands",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.type": "urn:entity:brand",
           "signal.demographics.age": "25_to_29,30_to_34",
           "signal.location.query": "Lagos",
-          "take": "8"
+          "take": "6"
         },
         "returned": {},
         "rule": "With no comps to go on, here is what people aged 25 to 34 in Lagos like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
@@ -3529,11 +3522,11 @@
         "lineId": "f-region-london-artists",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.type": "urn:entity:artist",
           "signal.demographics.age": "25_to_29,30_to_34",
           "signal.location.query": "London",
-          "take": "8"
+          "take": "6"
         },
         "returned": {},
         "rule": "With no comps to go on, here is what people aged 25 to 34 in London like, from the place and age band alone: the artists Neon Tide, Ada Lux and Kola Wave. This is taste for the place, not for your comps. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
@@ -3546,11 +3539,11 @@
         "lineId": "f-region-london-brands",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.type": "urn:entity:brand",
           "signal.demographics.age": "25_to_29,30_to_34",
           "signal.location.query": "London",
-          "take": "8"
+          "take": "6"
         },
         "returned": {},
         "rule": "With no comps to go on, here is what people aged 25 to 34 in London like, from the place and age band alone: the brands Coca-Cola, Nike and McDonald's. This is taste for the place, not for your comps. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
@@ -3602,94 +3595,6 @@
       },
       {
         "callId": "00000000-0000-4000-8000-000000005048",
-        "endpoint": "/search",
-        "input": {
-          "query": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
-          "take": "5",
-          "types": "urn:entity:podcast"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005049",
-        "endpoint": "/search",
-        "input": {
-          "query": "Casefile True Crime",
-          "take": "5",
-          "types": "urn:entity:podcast"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence high: one exact match.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005050",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
-          "filter.type": "urn:heatmap",
-          "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235"
-        },
-        "returned": {},
-        "rule": "Leave one out: the same ranking without Crime Junkie.",
-        "confidence": "medium",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005051",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
-          "filter.type": "urn:heatmap",
-          "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0234,DEMO-POD-0235"
-        },
-        "returned": {},
-        "rule": "Leave one out: the same ranking without Serial.",
-        "confidence": "medium",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005052",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
-          "filter.type": "urn:heatmap",
-          "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0235"
-        },
-        "returned": {},
-        "rule": "Leave one out: the same ranking without My Favorite Murder with Karen Kilgariff and Georgia Hardstark.",
-        "confidence": "medium",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005053",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
-          "filter.type": "urn:heatmap",
-          "output.heatmap.boundary": "urn:geohash",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234"
-        },
-        "returned": {},
-        "rule": "Leave one out: the same ranking without Casefile True Crime.",
-        "confidence": "medium",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005054",
         "endpoint": "/v2/tags",
         "input": {
           "filter.query": "true crime",
@@ -3702,7 +3607,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005055",
+        "callId": "00000000-0000-4000-8000-000000005049",
         "endpoint": "/v2/tags",
         "input": {
           "filter.parents.types": "urn:entity:brand",
@@ -3716,7 +3621,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005056",
+        "callId": "00000000-0000-4000-8000-000000005050",
         "endpoint": "/v2/tags",
         "input": {
           "filter.parents.types": "urn:entity:brand",
@@ -3730,7 +3635,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005057",
+        "callId": "00000000-0000-4000-8000-000000005051",
         "endpoint": "/search",
         "input": {
           "query": "Casefile",
@@ -3744,25 +3649,25 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005058",
+        "callId": "00000000-0000-4000-8000-000000005052",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.tags": "urn:tag:genre:media:true_crime",
           "filter.type": "urn:entity:podcast",
           "signal.demographics.age": "25_to_29,30_to_34",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "signal.location.query": "Lagos",
-          "take": "8"
+          "take": "6"
         },
         "returned": {},
-        "rule": "The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005059",
+        "callId": "00000000-0000-4000-8000-000000005053",
         "endpoint": "/search",
         "input": {
           "query": "The Long Con",
@@ -3776,40 +3681,40 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005060",
+        "callId": "00000000-0000-4000-8000-000000005054",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.popularity.max": "0.85",
           "filter.popularity.min": "0.4",
           "filter.tags": "urn:tag:genre:brand:beverage",
           "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "signal.location.query": "Lagos",
-          "take": "7"
+          "take": "5"
         },
         "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005061",
+        "callId": "00000000-0000-4000-8000-000000005055",
         "endpoint": "/v2/insights",
         "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "filter.popularity.max": "0.85",
           "filter.popularity.min": "0.4",
           "filter.tags": "urn:tag:genre:brand:telecom",
           "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
+          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004",
           "signal.location.query": "Lagos",
-          "take": "7"
+          "take": "5"
         },
         "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
+        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence medium: 2 anchors with data.",
+        "confidence": "medium",
         "calledAt": "2026-10-01T10:00:00.000Z",
         "source": "demo"
       }

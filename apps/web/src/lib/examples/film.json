@@ -320,37 +320,51 @@
         {
           "id": "cant-box-office",
           "item": "Box office and viewing numbers",
-          "reason": "Qloo has taste data, not sales. Add your own numbers when you fix a plan."
+          "reason": "Qloo has taste data, not sales. Add your own numbers when you fix a plan.",
+          "ask": "Share your own figures and I will set them against the plan.",
+          "cantKind": "input"
         },
         {
           "id": "cant-q-1",
           "item": "Bars in Atlanta",
-          "reason": "Qloo returned nothing for this audience with this context."
+          "reason": "Qloo returned nothing for this audience with this context.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         },
         {
           "id": "cant-q-2",
           "item": "Bars in Houston",
-          "reason": "Qloo returned nothing for this audience with this context."
+          "reason": "Qloo returned nothing for this audience with this context.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         },
         {
           "id": "cant-q-3",
           "item": "Churches in Atlanta",
-          "reason": "Qloo returned nothing for this audience with this context."
+          "reason": "Qloo returned nothing for this audience with this context.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         },
         {
           "id": "cant-q-4",
           "item": "Churches in Lagos",
-          "reason": "Qloo returned nothing for this audience with this context."
+          "reason": "Qloo returned nothing for this audience with this context.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         },
         {
           "id": "cant-q-5",
           "item": "Universities in Atlanta",
-          "reason": "Qloo returned nothing for this audience with this context."
+          "reason": "Qloo returned nothing for this audience with this context.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         },
         {
           "id": "cant-q-6",
           "item": "Universities in London",
-          "reason": "Qloo returned nothing for this audience with this context."
+          "reason": "Qloo returned nothing for this audience with this context.",
+          "ask": "Tell me more about it, or name a close title, and I will look again.",
+          "cantKind": "no-signal"
         }
       ],
       "groupLabels": [],
@@ -884,7 +898,7 @@
             {
               "id": "calendar-lagos-print",
               "kind": "playbook",
-              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on Instagram. Posts: the source gives no number.",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on Instagram.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -911,7 +925,7 @@
             {
               "id": "calendar-lagos-screener",
               "kind": "playbook",
-              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on Instagram. Posts: the source gives no number.",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on Instagram.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -920,7 +934,7 @@
             {
               "id": "calendar-lagos-podcasts",
               "kind": "playbook",
-              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on Instagram. Posts: the source gives no number.",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on Instagram.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -938,7 +952,7 @@
             {
               "id": "calendar-london-print",
               "kind": "playbook",
-              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -965,7 +979,7 @@
             {
               "id": "calendar-london-screener",
               "kind": "playbook",
-              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -974,7 +988,7 @@
             {
               "id": "calendar-london-podcasts",
               "kind": "playbook",
-              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -992,7 +1006,7 @@
             {
               "id": "calendar-houston-print",
               "kind": "playbook",
-              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1019,7 +1033,7 @@
             {
               "id": "calendar-houston-screener",
               "kind": "playbook",
-              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1028,7 +1042,7 @@
             {
               "id": "calendar-houston-podcasts",
               "kind": "playbook",
-              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1046,7 +1060,7 @@
             {
               "id": "calendar-atlanta-print",
               "kind": "playbook",
-              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-8: Pitch print outlets about two months before release. Asset: press pitch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1073,7 +1087,7 @@
             {
               "id": "calendar-atlanta-screener",
               "kind": "playbook",
-              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-3 to T-1: Give reviewers an online screener and ask them to hold reviews until a few days before release. Asset: online screener. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1082,7 +1096,7 @@
             {
               "id": "calendar-atlanta-podcasts",
               "kind": "playbook",
-              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube. Posts: the source gives no number.",
+              "text": "T-2 to T-1: Pitch podcasts: they need one to two weeks of lead time. Asset: guest pitch. Lead on YouTube.",
               "findingIds": [],
               "sourceIds": [],
               "names": [],
@@ -1371,6 +1385,15 @@
           "title": "To sharpen this plan",
           "lines": [
             {
+              "id": "gaps-still-active",
+              "kind": "playbook",
+              "text": "The venues, shows and podcasts named here come from what this audience likes now. It is worth confirming each is still active before you pitch.",
+              "findingIds": [],
+              "sourceIds": [],
+              "names": [],
+              "group": null
+            },
+            {
               "id": "gaps-1",
               "kind": "playbook",
               "text": "Add a release date or window, and the timeline turns into real dates.",
@@ -1404,18 +1427,21 @@
         {
           "name": "Salt Road",
           "source": "you",
+          "why": null,
           "match": null,
           "choice": null
         },
         {
           "name": "The Glass Lantern",
           "source": "you",
+          "why": null,
           "match": null,
           "choice": null
         },
         {
           "name": "Midnight Harbor",
           "source": "you",
+          "why": null,
           "match": null,
           "choice": "Qloo has 2 titles called “Midnight Harbor”. I used the best known one, the best known. Say which you mean if it is another."
         }
@@ -2917,7 +2943,7 @@
           "name": "Lagos",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.85, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after London.",
+          "why": "Audience strength 0.85, where 1.0 is an average city in the same ranking. It comes after London for this audience. Keep it, and open it after London.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Lagos"
@@ -2950,7 +2976,7 @@
           "name": "Atlanta",
           "direction": "avoid",
           "confidence": "lower",
-          "why": "Audience strength 0.92, where 1.0 is an average city in the same ranking. Thinner than an average city. Keep it, and open it after London.",
+          "why": "Audience strength 0.92, where 1.0 is an average city in the same ranking. It comes after London for this audience. Keep it, and open it after London.",
           "findingIds": ["f-markets"],
           "teamChoice": true,
           "territory": "Atlanta"
@@ -2961,7 +2987,7 @@
           "id": "partner-night-market-cola",
           "name": "Night Market Cola",
           "tier": "B",
-          "market": "Nigeria",
+          "market": null,
           "from": "qloo",
           "fit": null,
           "budgetFit": "fits",
@@ -2969,13 +2995,19 @@
           "findingIds": ["f-brands-lagos"],
           "kind": "brand",
           "flags": [],
-          "moneyType": "in_kind"
+          "moneyType": "in_kind",
+          "check": {
+            "state": "unverified",
+            "note": "A taste fit for this audience in Nigeria. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
         },
         {
           "id": "partner-lagoon-mobile",
           "name": "Lagoon Mobile",
           "tier": "B",
-          "market": "Nigeria",
+          "market": null,
           "from": "qloo",
           "fit": null,
           "budgetFit": "fits",
@@ -2983,7 +3015,13 @@
           "findingIds": ["f-brands-lagos"],
           "kind": "brand",
           "flags": [],
-          "moneyType": "in_kind"
+          "moneyType": "in_kind",
+          "check": {
+            "state": "unverified",
+            "note": "A taste fit for this audience in Nigeria. Worth confirming it operates there before you pitch.",
+            "country": null,
+            "operates": []
+          }
         },
         {
           "id": "partner-b-food-and-drink",
@@ -3163,7 +3201,7 @@
         {
           "id": "partner-note-bare",
           "ruleId": "partners.slots",
-          "text": "Qloo found no brand to suggest for London, Houston, Atlanta. Start there with local partners: cinemas, creators, community groups and businesses that serve the same audience."
+          "text": "No national brand came up for London, Houston, Atlanta, so start there with local partners: cinemas, creators, community groups and businesses that serve the same audience."
         },
         {
           "id": "partner-note-barter",

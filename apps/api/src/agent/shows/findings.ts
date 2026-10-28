@@ -32,6 +32,7 @@ export type GroundInput = LaunchGroundInput<ShowsRead, ShowsQueryPlan>;
 const VOICE: Voice = {
   audience: "the act's audience",
   yourAudience: "your act's audience",
+  chosenAudience: "the comparable acts' audience",
   theseComps: 'this act',
   compsVerdict: {
     holds: 'Your act and its comparable acts point to one audience.',

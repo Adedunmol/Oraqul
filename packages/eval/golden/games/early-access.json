@@ -61,7 +61,7 @@
       "budget": "0/8",
       "measure": "0/10",
       "risks": "0/1",
-      "gaps": "0/4"
+      "gaps": "0/5"
     },
     "moves": ["f-markets", "f-audience", "f-fan-anime"],
     "grounding": {

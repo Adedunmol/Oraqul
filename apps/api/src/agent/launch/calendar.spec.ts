@@ -116,8 +116,9 @@ describe('calendarSection', () => {
     const film = calendarSection('Content calendar', rowsFor('film'), 'film');
     expect(film.lines[0]?.text).toContain('blog-level guidance');
     const games = calendarSection('Content calendar', rowsFor('games'), 'games');
-    expect(games.lines[0]?.text).toContain('Not researched');
-    expect(games.lines.some((l) => l.text.includes('Posts: not researched.'))).toBe(true);
+    expect(games.lines[0]?.text).toContain('set your own rhythm');
+    // The limit is said once, at the top, not on every row.
+    expect(games.lines.some((l) => /not researched/i.test(l.text))).toBe(false);
   });
 
   it('says plainly when the release date has passed', () => {

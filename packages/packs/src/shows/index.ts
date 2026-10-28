@@ -1,4 +1,3 @@
-import { BASELINE_BRANDS, BASELINE_PODCASTS } from '../launch';
 import { sharedQlooCoverage } from '../qloo';
 import type { CategoryPack } from '../types';
 
@@ -33,10 +32,6 @@ export const shows: CategoryPack = {
   ],
   consults: [],
   qloo: { titles: ['urn:entity:artist', 'urn:entity:movie'], ...sharedQlooCoverage },
-  baselines: {
-    'urn:entity:brand': BASELINE_BRANDS,
-    'urn:entity:podcast': BASELINE_PODCASTS,
-  },
   coverage: {
     tests: [
       "The act's audience by age and gender",

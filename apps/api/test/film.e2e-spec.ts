@@ -127,6 +127,8 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       'territories',
       'calls',
       'campaign',
+      'funding',
+      'watch',
       'audience',
       'assumptions',
       'evidence',
@@ -158,6 +160,10 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       .set(viewer)
       .expect(200);
     expect(md.text).toContain('## In brief');
+    // What the plan stands on travels with it: the comps that matched, what was assumed, what to confirm.
+    expect(md.text).toContain('## Comparable titles');
+    expect(md.text).toMatch(/Matched: .*Salt Road/);
+    expect(md.text).toContain('## Before you pitch');
     expect(md.text).toMatch(/\[\^1\]: /);
     for (const r of output.receipts) expect(md.text).not.toContain(r.callId);
     const docx = await request(http())
@@ -505,6 +511,8 @@ describe('Film build end to end (real agents, demo Qloo, scripted reader)', () =
       'territories',
       'calls',
       'campaign',
+      'funding',
+      'watch',
       'audience',
       'assumptions',
       'evidence',

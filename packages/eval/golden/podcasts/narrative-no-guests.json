@@ -1,6 +1,38 @@
 {
   "title": "The Last Ferry",
   "brief": "Launch plan for the podcast \"The Last Ferry\", a narrative true crime storytelling show for Apple Podcasts, launching on 2099-04-01 in Toronto and New York. Comparable shows: \"Serial\" and \"Casefile\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "Crime Junkie",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]

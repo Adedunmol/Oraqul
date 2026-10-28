@@ -14,6 +14,7 @@ import {
 import type { QueryPlanCore } from './planner.js';
 import type { LaunchRead } from './read-core.js';
 import { affectedLines, compareFindings, compareSources } from './refresh-compare.js';
+import { blocked } from './text.js';
 
 const NO_CHANGE: Change = {
   addPlaces: [],
@@ -152,7 +153,11 @@ export async function runRefresh<R extends LaunchRead, P extends QueryPlanCore>(
     if (err instanceof QlooBudgetError) {
       deps.emit({
         type: 'message',
-        body: 'The Qloo allowance for now is used up, so I could not check what changed. Try again later.',
+        body: blocked({
+          what: 'The audience data is at its limit for now, so I could not check what changed.',
+          kept: 'Your plan is untouched.',
+          next: 'Try again later today, or tell me which part matters most and I will check that first.',
+        }),
         claims: [],
       });
       return ctx.stop('finished');

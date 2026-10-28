@@ -19,8 +19,7 @@ import { isRegionWord } from './regions.js';
 
 export { type AgeBand, ageBands, type Budget, parseBudget } from '../launch/read-core.js';
 
-const { PODCASTS_MODULES, REGION_CITIES, launchKinds, formats, styles, platforms, fallbackComps } =
-  podcastsPlan;
+const { PODCASTS_MODULES, REGION_CITIES, launchKinds, formats, styles, platforms } = podcastsPlan;
 
 /** What the model reads from the brief. Every value carries the person's own words. */
 export const podcastsReadingSchema = z.object({
@@ -72,11 +71,6 @@ export const podcastsReadingSchema = z.object({
   window: said(z.string().min(1)).nullable(),
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
-  /**
-   * Comparable shows the agent proposes when the person named fewer than 3. Not their words, so
-   * code checks each one in Qloo and the plan keeps them apart from the person's own.
-   */
-  suggestedComps: z.array(z.string().min(1)).max(5),
 });
 export type PodcastsReading = z.infer<typeof podcastsReadingSchema>;
 
@@ -166,17 +160,10 @@ export function checkReading(reading: PodcastsReading, input: PodcastsReaderInpu
     ...namedIn(reading.rivals, text),
     ...namedIn(reading.previousShows, text),
   ];
-  // A short brief is enough: when the person named fewer than three shows and none were proposed,
-  // shows like this one, by genre, describe the audience. They are never asked for.
-  const suggested =
-    comps.length >= 3 || common.suggestedComps.length > 0
-      ? common.suggestedComps
-      : fallbackComps(`${common.genre ?? ''} ${text}`).filter(
-          (n) => !isShow(n) && ![...comps, ...taken].some((c) => normalise(c) === normalise(n)),
-        );
   return {
     ...common,
-    suggestedComps: suggested,
+    // Comps are chosen from the description by the analyst, after this reading.
+    suggestedComps: [],
     comps,
     // A narrow ask names a module this category offers, which the shared check cannot know.
     ask: common.scope === 'full' ? null : reading.ask,
@@ -226,7 +213,6 @@ Rules:
 - window: the release date or window as written ("Q3 2027", "October").
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which markets, or which shows to swap with. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: crosspromo (shows to swap with), guests, partnerships (sponsors), publicity (press, newsletters), video (video and clips), live (live shows), community, cadence (episode schedule), timeline, budget, measure (what to track), risks. Null when it is about markets or the audience, or when scope is full.
-- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real podcasts whose listeners are likely the same, from the subject, the topics, the style, where the audience is, and the other shows of any hosts or guests named, A person cannot be looked up as a signal in Qloo, so use their other work in their place. Enough to reach 3 to 5 in all. Names only. Code checks each in Qloo. The person is never asked for comps.
 - Plain words, no exclamation marks.`;
 
 export class ModelPodcastsReader implements PodcastsReader {
@@ -386,7 +372,6 @@ export class ScriptedPodcastsReader implements PodcastsReader {
         : men
           ? { value: 'male', quote: men }
           : null,
-      suggestedComps: [],
     };
     return { reading, tokens: 0 };
   }

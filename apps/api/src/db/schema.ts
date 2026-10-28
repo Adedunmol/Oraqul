@@ -832,3 +832,16 @@ export const apiTokens = pgTable(
   },
   (table) => [index('api_tokens_user_team_idx').on(table.userId, table.teamId)],
 );
+
+/**
+ * What the model chose for a brief, kept so the same brief asks Qloo the same questions: the
+ * analyst's reading of who the audience is and which comps fit, and the query planner's choices
+ * (areas, brand candidates, categories). Keyed by a hash of the exact input and the prompt
+ * version, so an edited prompt starts fresh. Nothing here is evidence; it only steers questions.
+ */
+export const briefMemos = pgTable('brief_memos', {
+  key: text('key').primaryKey(),
+  kind: text('kind').notNull(),
+  value: jsonb('value').notNull(),
+  createdAt: createdAt(),
+});

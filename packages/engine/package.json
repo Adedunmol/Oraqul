@@ -36,7 +36,8 @@
     "qloo:shows-probes": "tsx --env-file=../../.env scripts/qloo-shows-probes.ts",
     "qloo:partner-probes": "tsx --env-file=../../.env scripts/qloo-partner-probes.ts",
     "qloo:brand-probes": "tsx --env-file=../../.env scripts/qloo-brand-probes.ts",
-    "qloo:place-probes": "tsx --env-file=../../.env scripts/qloo-place-probes.ts"
+    "qloo:place-probes": "tsx --env-file=../../.env scripts/qloo-place-probes.ts",
+    "qloo:baseline-probes": "tsx --env-file=../../.env scripts/qloo-baseline-probes.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

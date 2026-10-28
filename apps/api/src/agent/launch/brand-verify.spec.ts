@@ -1,5 +1,6 @@
 import type { Finding, PartnerCheck } from '@oraqul/schema';
 import { describe, expect, it } from 'vitest';
+import { type BrandPresence, presenceKey } from '../../verify/brand-presence.js';
 import { type VenueCheck, venueKey } from '../../verify/venue-check.js';
 import type { Verifier } from '../../verify/verifier.js';
 import { brandNames, verifyBrands, verifyVenues } from './brand-verify.js';
@@ -28,12 +29,32 @@ const grounded = (findings: Finding[]) => ({ findings }) as unknown as Grounded;
 const says = (
   answers: Record<string, PartnerCheck['state']> = {},
   venues: Record<string, VenueCheck['state']> = {},
+  sells: Record<string, BrandPresence['state']> = {},
+  based: Record<string, string> = {},
 ): Verifier => ({
+  async presence(items) {
+    return new Map(
+      items.map((i) => [
+        presenceKey(i.name, i.country),
+        {
+          state: sells[`${i.name}|${i.country}`] ?? 'unknown',
+          source: sells[`${i.name}|${i.country}`]
+            ? { title: 'Page', url: 'https://example.test/p' }
+            : null,
+        } as BrandPresence,
+      ]),
+    );
+  },
   async brands(names) {
     return new Map(
       names.map((n) => [
         n,
-        { state: answers[n] ?? 'unverified', note: null, country: null } as PartnerCheck,
+        {
+          state: answers[n] ?? 'unverified',
+          note: null,
+          country: based[n] ?? null,
+          operates: [],
+        } as PartnerCheck,
       ]),
     );
   },
@@ -57,6 +78,41 @@ describe('verifyBrands', () => {
     expect(f?.text).not.toContain('SunTrust');
     expect(f?.text).toContain('Green Dot Bank');
     expect(out.checks['SunTrust Banks']?.state).toBe('problem');
+  });
+
+  it('takes a brand out of a city when a page says it does not sell there', async () => {
+    const accra = brands('Accra', ['Cell C', 'MTN Ghana']);
+    const out = await verifyBrands(
+      says({}, {}, { 'Cell C|Ghana': 'absent', 'MTN Ghana|Ghana': 'present' }),
+      grounded([accra]),
+    );
+    expect(out.grounded.findings[0]?.entities.map((e) => e.name)).toEqual(['MTN Ghana']);
+    expect(out.grounded.findings[0]?.text).not.toContain('Cell C');
+    expect(out.checks['MTN Ghana']?.operates).toEqual([
+      { country: 'Ghana', title: 'Page', url: 'https://example.test/p' },
+    ]);
+  });
+
+  it('never removes a brand the team named, even when a page says it does not sell there', async () => {
+    const accra = brands('Accra', ['Cell C', 'MTN Ghana']);
+    const out = await verifyBrands(says({}, {}, { 'Cell C|Ghana': 'absent' }), grounded([accra]), [
+      'cell c',
+    ]);
+    expect(out.grounded.findings[0]?.entities).toHaveLength(2);
+  });
+
+  it('does not look up a brand Wikidata places in the country it was ranked for', async () => {
+    const accra = brands('Accra', ['MTN Ghana']);
+    const out = await verifyBrands(
+      says(
+        { 'MTN Ghana': 'verified' },
+        {},
+        { 'MTN Ghana|Ghana': 'absent' },
+        { 'MTN Ghana': 'Ghana' },
+      ),
+      grounded([accra]),
+    );
+    expect(out.grounded.findings[0]?.entities).toHaveLength(1);
   });
 
   it('keeps unverified brands: a brand the source cannot place is never dropped', async () => {

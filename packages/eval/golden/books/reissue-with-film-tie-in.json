@@ -1,6 +1,38 @@
 {
   "title": "The River Between",
   "brief": "Launch plan for the paperback reissue of the book \"The River Between\", a novel with a film tie-in edition, relaunching in March 2027 in London and Johannesburg. Comparable books: \"Where the Crawdads Sing\" and \"Normal People\". Compare it with \"Where the Crawdads Sing\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "Americanah",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Educated",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
@@ -42,8 +74,7 @@
       "f-themes-theme": ["Power", "Survival", "Loyalty"],
       "f-a-comp-age-normal-people": [],
       "f-shelf": ["Iron Flame (The Empyrean, #2)", "The River Kept Count", "The Orchard Heir"],
-      "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
-      "f-bridge-series": ["Big Little Lies", "Conversations with Friends", "You"],
+      "f-bridge-film": ["Where the Crawdads Sing"],
       "f-film-consult-audience-where-the-crawdads-sing": ["Where the Crawdads Sing"],
       "f-film-consult-places-where-the-crawdads-sing": ["London", "Johannesburg"],
       "f-screen-where-the-crawdads-sing": ["Where the Crawdads Sing"],
@@ -55,10 +86,10 @@
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/2",
-      "audience": "4/0",
+      "audience": "3/0",
       "markets": "2/0",
       "comps": "2/1",
-      "adaptation": "4/1",
+      "adaptation": "3/1",
       "retail": "1/1",
       "creators": "0/1",
       "publicity": "1/1",
@@ -73,14 +104,14 @@
       "budget": "0/8",
       "measure": "0/8",
       "risks": "3/1",
-      "gaps": "0/7"
+      "gaps": "0/8"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 82,
-      "backed": 29,
+      "lines": 80,
+      "backed": 28,
       "rankKept": 100,
-      "findingsUsed": 14,
+      "findingsUsed": 13,
       "cities": {
         "London": 6,
         "Johannesburg": 4

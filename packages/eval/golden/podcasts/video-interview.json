@@ -1,6 +1,38 @@
 {
   "title": "Dugout Talk",
   "brief": "Launch plan for the podcast \"Dugout Talk\", a weekly video football interview show on YouTube and Spotify for 18 to 34 year olds, launching on 2099-05-01 in Lagos and Manchester. Comparable shows: \"SmartLess\" and \"The Daily\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "Pardon My Take",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Men In Blazers",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]

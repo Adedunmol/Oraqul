@@ -17,8 +17,7 @@ export const FILM_DECISIONS: DecisionWords = {
   role: marketRole,
   unreadCity:
     'Build the release here on the diaspora community: church and campus screenings, the music and brand partners below, and the cast at opening weekend.',
-  comp: (c) =>
-    `Pitch the film to buyers and press in the company of ${c}, one of the titles your audience already knows.`,
+  comp: (c) => `Pitch the film to buyers and press in the company of ${c}, a title you named.`,
 };
 
 export function ensureDecisions(

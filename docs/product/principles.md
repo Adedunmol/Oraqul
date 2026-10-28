@@ -29,8 +29,8 @@ Claims about taste, audience and place come from measured data, not the model's 
 | Audience claims | From memory, unchecked | Measured per city, with named picks |
 | The team's assumptions | Accepted | Tested and reported |
 | Time-sensitive facts | Stale or invented | Searched, dated, linked |
-| Consistency | Differs each run | Same brief, same questions, same findings |
-| Invention | Can invent plot, venues, numbers | A check drops lines no source supports |
+| Consistency | Differs each run | Same brief, same questions: what the model chose to ask is kept for 21 days, and the cities in a ranking are code's. Qloo's own answers can still move between calls |
+| Invention | Can invent plot, venues, numbers | A check drops names and numbers no source accounts for, and a second reader drops lines their findings do not support |
 | Follow-ups | Starts again | Reruns the plan with the change |
 | Output | A chat answer | A plan, as a document |
 

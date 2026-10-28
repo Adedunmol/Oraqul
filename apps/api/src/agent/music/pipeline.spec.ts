@@ -147,8 +147,9 @@ describe('Music build pipeline on demo data', { timeout: 20_000 }, () => {
     );
     const run = await runMusicBuild(withAlikes.handoff, withAlikes.deps());
     const gaps = run.output?.plan?.sections.find((s) => s.key === 'gaps');
-    expect(gaps?.lines[0]?.text).toContain('Qloo does not know Zanzibar Quill Ensemble by name');
-    expect(gaps?.lines[0]?.text).toContain('rests on the comps you named');
+    expect(gaps?.lines[0]?.text).toContain('Zanzibar Quill Ensemble is new');
+    expect(gaps?.lines[0]?.text).toContain('Ada Lux and Kola Wave');
+    expect(gaps?.lines[0]?.text).toContain('Name your own and I will swap them in');
   });
 
   it('uses an act featured on the release as an audience anchor, not as a sound-alike', async () => {

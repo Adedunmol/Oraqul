@@ -14,6 +14,7 @@ import type {
   Finding,
   LauncherKind,
   LaunchPlan,
+  PartnerCheck,
   PartnerFlag,
   PartnerKit,
   PartnerNote,
@@ -233,7 +234,7 @@ export function partnerNotes(input: {
     notes.push({
       id: 'partner-note-bare',
       ruleId: 'partners.slots',
-      text: `Qloo found no brand to suggest for ${cities}. Start there with local partners: cinemas, creators, community groups and businesses that serve the same audience.`,
+      text: `No national brand came up for ${cities}, so start there with local partners: cinemas, creators, community groups and businesses that serve the same audience.`,
     });
   }
   notes.push({ id: 'partner-note-barter', ruleId: 'partners.lead-time', text: lead.barter });
@@ -595,5 +596,38 @@ export function partnerKit(input: {
     ideas: own.ideas.slice(0, 2),
     script,
     room: PARTNER_RULES.pitch.value.room,
+  };
+}
+
+const sameName = (a: string | null | undefined, b: string | null | undefined) =>
+  !!a && !!b && a.trim().toLowerCase() === b.trim().toLowerCase();
+
+/**
+ * Settles what a brand's market is. Qloo ranks a brand by taste for a city, which says nothing
+ * about whether it sells there, so the market is shown only when a source confirms it (where the
+ * brand is based, or a page that says it operates there) or the team chose the brand itself.
+ * Otherwise there is no market, and the note says what the person can do about it.
+ */
+export function checkedPartner(p: PartnerOption, check: PartnerCheck | undefined): PartnerOption {
+  if (p.kind !== 'brand') return p;
+  // The team's own partner keeps the market it was named for.
+  if (p.from === 'team') return check ? { ...p, check } : p;
+  const ranked = p.market;
+  const confirmed =
+    !!ranked &&
+    (check?.operates.some((o) => sameName(o.country, ranked)) ||
+      (check?.state === 'verified' && sameName(check.country, ranked)));
+  if (confirmed) return { ...p, check, market: ranked };
+  const where = ranked ?? 'this market';
+  const based = check?.country ? `Based in ${check.country}. ` : '';
+  return {
+    ...p,
+    market: null,
+    check: {
+      state: check?.state === 'verified' ? 'verified' : 'unverified',
+      country: check?.country ?? null,
+      operates: check?.operates ?? [],
+      note: `${based}A taste fit for this audience in ${where}. Worth confirming it operates there before you pitch.`,
+    },
   };
 }

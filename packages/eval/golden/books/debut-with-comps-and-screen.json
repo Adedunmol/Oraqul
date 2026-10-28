@@ -1,6 +1,38 @@
 {
   "title": "The Lagos Ledger",
   "brief": "Launch plan for the book \"The Lagos Ledger\", a debut literary novel by Ada Obi, published by an independent press with a hardcover, an ebook and an audiobook, for readers aged 25 to 44, launching in Lagos and London in September 2027. Comparable books: \"Americanah\" and \"Purple Hibiscus\". Compare it with \"Normal People\". Bookshop \"Terra Kulture\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "Where the Crawdads Sing",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Educated",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
@@ -50,8 +82,7 @@
       "f-a-comp-age-americanah": [],
       "f-a-comp-age-purple-hibiscus": [],
       "f-shelf": ["Dust and Ink", "Salt Season", "A House of Many Rooms"],
-      "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
-      "f-bridge-series": ["Big Little Lies", "Normal People", "Conversations with Friends"],
+      "f-bridge-series": ["Normal People"],
       "f-film-consult-audience-normal-people": ["Normal People"],
       "f-film-consult-places-normal-people": ["London", "Lagos"],
       "f-screen-normal-people": ["Normal People"],
@@ -69,11 +100,11 @@
     },
     "sections": {
       "bottom-line": "3/0",
-      "positioning": "2/1",
+      "positioning": "1/2",
       "audience": "4/0",
       "markets": "2/0",
       "comps": "2/1",
-      "adaptation": "4/1",
+      "adaptation": "3/1",
       "retail": "2/1",
       "publicity": "1/1",
       "events": "3/0",
@@ -88,14 +119,14 @@
       "budget": "0/8",
       "measure": "0/8",
       "risks": "2/1",
-      "gaps": "0/4"
+      "gaps": "0/5"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 90,
-      "backed": 30,
+      "lines": 89,
+      "backed": 28,
       "rankKept": 100,
-      "findingsUsed": 16,
+      "findingsUsed": 15,
       "cities": {
         "London": 5,
         "Lagos": 6

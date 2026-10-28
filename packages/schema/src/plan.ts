@@ -83,6 +83,8 @@ export const planSourceSchema = z.object({
   url: z.url(),
   /** The day the fact was read from the page. Plans saved before it have none. */
   retrievedAt: z.string().nullable().optional(),
+  /** The day an event the fact describes happens, when the page says (ISO date). */
+  eventDate: z.string().nullable().optional(),
 });
 export type PlanSource = z.infer<typeof planSourceSchema>;
 
@@ -109,10 +111,15 @@ export const launchSectionSchema = z.object({
 });
 export type LaunchSection = z.infer<typeof launchSectionSchema>;
 
-/** A comp the plan stands on. The team's lead; `added` ones are the agent's, kept apart. */
+/**
+ * A comp the plan stands on. `you` is the team's; `added` is a title Oraqul chose from the
+ * description; `genre` is a title Qloo lists for the genre when nothing else was found.
+ */
 export const compUsedSchema = z.object({
   name: z.string(),
-  source: z.enum(['you', 'added']),
+  source: z.enum(['you', 'added', 'genre']),
+  /** Why Oraqul chose it, for `added` titles. */
+  why: z.string().nullable().optional(),
   /** The Qloo match, such as "2018 · Nigeria", when code chose between same-name titles. */
   match: z.string().nullable(),
   /** Why code picked this match from several, said plainly. Null for a single match. */
@@ -144,6 +151,21 @@ export const understandingSchema = z.object({
    * show on the plan as assumptions; they are never evidence.
    */
   assumed: z.array(z.object({ what: z.string(), value: z.string(), why: z.string() })),
+  /**
+   * Who the audience probably is, read from the description before the comps were chosen. It
+   * steers which comps are looked up and is never evidence.
+   */
+  readers: z
+    .object({
+      who: z.string(),
+      ages: z.array(z.string()),
+      consumes: z.string(),
+      why: z.string(),
+    })
+    .nullable()
+    .optional(),
+  /** The comps Oraqul chose from the description, each with why. Never the team's own. */
+  proposed: z.array(z.object({ name: z.string(), why: z.string() })).optional(),
   /** What a good answer must do. The research, the writer and the review all work from these. */
   criteria: z.array(
     z.object({
@@ -168,6 +190,8 @@ export const reviewIssueTypes = [
   'weak-evidence',
   'unhelpful',
   'vague',
+  'dead-end',
+  'overclaim',
 ] as const;
 
 /** One thing the red team found wrong with a draft, against a check or the request as a whole. */
@@ -334,6 +358,8 @@ export const partnerCheckSchema = z.object({
   note: z.string().nullable(),
   /** Where the brand is based, when the source says. It becomes the partner's market. */
   country: z.string().nullable().default(null),
+  /** Countries a page says the brand sells in, found for the cities it was ranked in. */
+  operates: z.array(z.object({ country: z.string(), title: z.string(), url: z.url() })).default([]),
 });
 export type PartnerCheck = z.infer<typeof partnerCheckSchema>;
 
@@ -341,7 +367,8 @@ export const partnerOptionSchema = z.object({
   id: z.string().min(1),
   name: z.string(),
   tier: partnerTierSchema,
-  market: z.string(),
+  /** Where the brand operates, when a source says. Null for a taste fit nobody has checked. */
+  market: z.string().nullable(),
   from: z.enum(['seed', 'qloo', 'team']),
   /** Place in the list Qloo ranked for this audience. Null when Qloo did not rank it. */
   fit: z

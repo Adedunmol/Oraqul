@@ -44,6 +44,7 @@ export type GroundInput = LaunchGroundInput<MusicRead, MusicQueryPlan>;
 const VOICE: Voice = {
   audience: "the artist's audience",
   yourAudience: "your artist's audience",
+  chosenAudience: "the sound-alikes' audience",
   theseComps: 'this artist',
   compsVerdict: {
     holds: 'Your artist and its sound-alikes point to one audience.',

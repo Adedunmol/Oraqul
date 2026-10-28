@@ -21,7 +21,8 @@
     "seed:reviewer": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/seed-reviewer.js",
     "db:backfill-thread-names": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/backfill-thread-names.js",
     "error-sample": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/error-sample.js",
-    "cost-report": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/cost-report.js"
+    "cost-report": "nest build && node --env-file-if-exists=../../.env --env-file-if-exists=.env dist/scripts/cost-report.js",
+    "test:live": "LIVE_RUNS=1 vitest run --config ./vitest.config.live.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.99",

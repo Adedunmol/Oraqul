@@ -31,14 +31,14 @@ import { ungroundedClaims, ungroundedLines } from '../grounding.js';
 import { normalise } from '../router/decide.js';
 import { advance, newRunState } from '../runtime.js';
 import { type Planner, STANDALONE_CONTEXT } from '../types.js';
-import { baselineFor } from './baseline.js';
+import { MIN_BASELINE, marketBaseline } from './baseline.js';
 import { round2, slug } from './brief.js';
 import { checkLine } from './check.js';
 import type { LaunchConfig } from './config.js';
 import { partnerKit } from './partners.js';
 import { briefText, type LaunchInputs, type PlanRun } from './pipeline.js';
 import type { LaunchRead } from './read-core.js';
-import { releaseDate } from './text.js';
+import { blocked, releaseDate } from './text.js';
 import type { PlanWriter, WrittenLine } from './writer.js';
 
 export interface FollowUpDeps<R extends LaunchRead = LaunchRead> {
@@ -379,7 +379,13 @@ export async function runDateCheck<R extends LaunchRead>(
       ];
     });
     if (lines.length === 0) {
-      say(deps, 'Qloo did not score any of the rivals, so no date could be checked.');
+      say(
+        deps,
+        blocked({
+          what: 'None of those rivals came up for this audience, so I could not size the overlap.',
+          next: 'Send me the exact titles, or a release date for the ones you worry about, and I will check them.',
+        }),
+      );
       return done('finished');
     }
     const lineReceipts = lines.map((l) => ({
@@ -484,7 +490,7 @@ export async function runPartnerBrief<R extends LaunchRead>(
   }
   const anchors = inputs.resolved.map((a) => a.entityId);
   for (const a of inputs.resolved) deps.tools.entities.set(a.entityId, a);
-  // An artist has no mass-market baseline to score against, so it is backed by the plan's own
+  // An artist has no baseline to score against, so it is backed by the plan's own
   // music finding that ranked it for this audience.
   const music = plan.plan?.findings.find(
     (f) =>
@@ -517,13 +523,24 @@ export async function runPartnerBrief<R extends LaunchRead>(
       return done('finished');
     }
 
+    const where = plan.brief.places[0]?.name ?? inputs.read.places[0] ?? null;
+    if (!where) {
+      say(
+        deps,
+        `To size how well ${name} fits, I measure it against what your audience already likes in one city. Tell me the city to start in, and I will score it.`,
+      );
+      return done('finished');
+    }
     trace(
       2,
-      `Scoring ${name} against mass-market ${type === 'urn:entity:brand' ? 'brands' : 'podcasts'}`,
+      `Scoring ${name} against what ${where} already likes in ${type === 'urn:entity:brand' ? 'brands' : 'podcasts'}`,
     );
-    const baseline = await baselineFor(deps.config.category, deps.tools, keep, type);
-    if (baseline.length < 2) {
-      say(deps, 'Too few baseline names were found in Qloo to score this partner against.');
+    const baseline = await marketBaseline(deps.tools, keep, type, where);
+    if (baseline.length < MIN_BASELINE) {
+      say(
+        deps,
+        `I could not line ${name} up against enough of what ${where} already likes to size its fit. Try another city your audience is in, or another partner, and I will score it.`,
+      );
       return done('finished');
     }
     const scored = await tools.lift.run(deps.tools, {
@@ -537,7 +554,10 @@ export async function runPartnerBrief<R extends LaunchRead>(
     const [call] = scored.receipts;
     const value = lift.candidates[0]?.lift ?? null;
     if (!call || value === null) {
-      say(deps, `Qloo did not score ${name} for this audience, so no fit could be measured.`);
+      say(
+        deps,
+        `${name} did not come up for this audience in the same ranking, so I could not size its fit. Try a partner like it, or tell me where your audience gathers and I will look there.`,
+      );
       return done('finished');
     }
 
@@ -548,7 +568,7 @@ export async function runPartnerBrief<R extends LaunchRead>(
     const id = `partner-${slug(name)}`;
     const template = [
       `Hi ${name} team,`,
-      `We are launching ${handoff.title}${city ? `, opening first in ${city}` : ''}. Taste data from Qloo shows the audience we are building it for${segment ? ` (${segment.name.toLowerCase()})` : ''} likes ${name} more than the biggest mass-market names.`,
+      `We are launching ${handoff.title}${city ? `, opening first in ${city}` : ''}. Taste data shows the audience we are building it for${segment ? ` (${segment.name.toLowerCase()})` : ''} likes ${name} more than it likes the usual favourites in ${city ?? 'its market'}.`,
       'We would love to talk about a partnership around the release. Could we set up a call?',
       'Thanks,',
     ].join('\n\n');

@@ -8,7 +8,6 @@ import {
   brandChoiceSchema,
   checkAreas,
   checkBrandCandidates,
-  checkWorth,
   FallbackQueryPlanner as LaunchFallbackPlanner,
   type QueryPlanInput as LaunchPlanInput,
   type QueryPlanner as LaunchQueryPlanner,
@@ -91,7 +90,7 @@ export function defaultPlan(input: QueryPlanInput): QueryPlan {
   return {
     queries: queriesFor(modules, read),
     cities,
-    worthALook: citiesNear(cities, 4),
+    worthALook: citiesNear(cities, 4, country),
     country,
     musicScene: scene,
     // Every city the team chose gets the same questions, so none is left with less than another.
@@ -134,7 +133,6 @@ const modelPlanSchema = z.object({
   podcastCity: z.string().nullable(),
   communityPlaces: z.array(phrase).max(3),
   communityCities: z.array(z.string()).max(5),
-  worthALook: z.array(z.string()).max(4),
   country: z.string().nullable(),
   areas: z.array(areaChoiceSchema).max(20),
   brandCandidates: z.array(brandChoiceSchema).max(5),
@@ -150,9 +148,8 @@ You are given the brief and default choices. Return the choices, changed only wh
 - filmGenre: a genre name for the recent-films query, only when there is no country of origin.
 - podcastGenre: a podcast genre that fits the launch ("true crime", "comedy", "pop culture").
 - communityPlaces: kinds of place where this audience gathers in the diaspora cities ("church", "university", "event venue").
-- areas: for each of the team's cities, up to 5 neighbourhoods or districts where this community lives, goes out or gathers (for Nigerian diaspora: Peckham, Croydon and Thamesmead in London; Sugar Land and Alief in Houston; Stonecrest and Lithonia in Atlanta), each with the latitude and longitude of its centre. Real, well-known places only, inside the city. Qloo then says which the audience is strongest in.
-- brandCandidates: for each of the team's cities, up to 4 brands that operate in that city and could realistically partner with an independent film as an in-kind or co-promotion tie-in: telecoms, ride-hailing, fintech, food delivery, drinks and challenger brands. Write each as the company's usual name ("MTN", "Bolt"). Never a global giant that does not do small tie-ins (soft-drink and fast-food majors, car and luxury brands). Qloo then ranks only these, per city, for the audience.
-- worthALook: up to 4 other cities from the city table where this audience may be strong. They are only shown as alternatives, never in place of the team's cities.
+- areas: for each of the team's cities, up to 5 neighbourhoods or districts where this community lives, goes out or gathers (for example, where a city's communities live and go out: Peckham and Croydon in London; Alief and Sugar Land in Houston; Bandra and Powai in Mumbai; Lekki and Surulere in Lagos), each with the latitude and longitude of its centre. Real, well-known places only, inside the city. Qloo then says which the audience is strongest in.
+- brandCandidates: for each of the team's cities, up to 4 brands that operate in that city and could realistically partner with an independent film as an in-kind or co-promotion tie-in: telecoms, ride-hailing, fintech, food delivery, drinks and challenger brands. Write each as the company's usual name ("Bolt", "Vodafone", "Zomato"). Never a global giant that does not do small tie-ins (soft-drink and fast-food majors, car and luxury brands). Qloo then ranks only these, per city, for the audience.
 - country: the launch's country of origin as a full name, or null.
 
 Never name a person. Never use words from the brief that describe a private individual.`;
@@ -217,7 +214,6 @@ export function checkPlan(chosen: z.infer<typeof modelPlanSchema>, defaults: Que
       ? phrases(chosen.communityPlaces)
       : defaults.communityPlaces,
     communityCities: keep(chosen.communityCities, defaults.communityCities),
-    worthALook: checkWorth(chosen.worthALook, defaults.cities, defaults.worthALook),
     areas: checkAreas(chosen.areas, defaults.cities),
     brandCandidates: checkBrandCandidates(chosen.brandCandidates, defaults.cities),
   };

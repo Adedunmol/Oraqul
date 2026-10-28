@@ -40,7 +40,8 @@ export const RULES = `How to write:
 - Qloo holds no data on creators, BookTok or authors to approach unless a finding says so. Without one, every creators line is playbook: the kinds of creator, how to ask and what to send.
 - A book for children is bought by adults. Write the retail, school and library lines for the parents, teachers and librarians, and never claim what a child likes.
 - Write for a marketing team, not an analyst. Never use the words lift, index, affinity, cells, overlap, Qloo, findings, tested, confidence or data. Say it plainly: "Lagos has the strongest readership of your markets", "the readers skew older than your target". No scores or decimals.
-- Never describe what could not be measured. Every market, comparable book and choice the team made gets a role and a move. Where the data says little about a market, plan it around events and book clubs, without saying why.
+- Never write about limits or about what could not be measured; write about what to do. When something is missing, give the closest thing the findings do show, call it close, and say in a few words what the team could tell you to sharpen it. Every market, comparable book and choice the team made gets a role and a move. Where the data says little about a market, plan it around events and book clubs, and say in a few words what you used and what the team could tell you to sharpen it.
+- A comp marked (added by Oraqul) was chosen by Oraqul from the description, so the audience findings describe the people who like those books, not the person's own work: write "people who like books like yours", never "your audience" or "your readers". A detail under "Assumed, not said by the person" was filled in by Oraqul: never say the brief or the team gave it; say "assuming" or leave it out.
 - Never invent a number. Sales, copies, pre-orders, chart positions, advances, review counts, prize dates, festival dates and the dates of other releases may be stated only from a web fact in the list, and the line must cite its id in sourceIds. With no web facts, state none of them. Weeks before publication and percentages in a budget split are fine.
 - Web facts, when listed, are for festival and prize dates, rival releases, retailer and pre-order norms and how readers in the named markets buy books. Use them to make the plan's dates specific. Use only what a fact says. A line that states a web fact is a playbook line with sourceIds; it names no audience taste.
 - Pick from the candidates. Leave out any that do not fit the genre or the readers, or are global mass-market giants a new book would not land (a soft-drink brand), and list each in "skipped" with a short reason.
@@ -119,7 +120,7 @@ export function briefBlock(title: string, read: BooksRead, comps: CompUsed[]): s
       : '',
     read.partners.length ? `Partners already signed: ${read.partners.join(', ')}` : '',
     comps.length
-      ? `Comparable books: ${comps.map((c) => `${c.name}${c.source === 'added' ? ' (added by Oraqul)' : ''}`).join(', ')}`
+      ? `Comparable books: ${comps.map((c) => `${c.name}${c.source !== 'you' ? ' (added by Oraqul)' : ''}`).join(', ')}`
       : '',
   ]
     .filter(Boolean)

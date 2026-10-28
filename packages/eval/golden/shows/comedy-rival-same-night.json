@@ -60,7 +60,7 @@
       "budget": "0/4",
       "measure": "0/6",
       "risks": "2/1",
-      "gaps": "0/0"
+      "gaps": "0/1"
     },
     "moves": ["f-markets", "f-audience", "f-brands-lagos"],
     "grounding": {

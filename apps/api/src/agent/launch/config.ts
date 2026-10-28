@@ -106,11 +106,11 @@ export interface LaunchConfig<
   /** The one question a build may ask: what it cannot plan without. A description is never one. */
   minimum: { id: string; example: string; missing(read: R): string[] };
   /**
-   * What a brief with no description, comps or genre is planned as, so a title and a city are
-   * enough for a first plan. Said in the plan, with a nudge to say more. Never overrides a field
-   * the brief or the analysis already set.
+   * Whether the person's words say anything about the work beyond its title (a cast, an act, a
+   * readership, a region). A brief with no genre, comps, place, country or this is too thin to plan
+   * from, so the build asks once instead of guessing a launch.
    */
-  typical: { genre: string; country?: string; label: string; described(read: R): boolean };
+  described(read: R): boolean;
   pickModules(read: R): ModulePick;
 
   rules: CheckRules;

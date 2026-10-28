@@ -11,6 +11,7 @@ import type {
 } from '@oraqul/schema';
 import { z } from 'zod';
 import { ungroundedClaims } from './grounding.js';
+import { blocked } from './launch/text.js';
 import {
   type AgentContext,
   type HistoryItem,
@@ -111,7 +112,11 @@ export async function advance(state: RunState, deps: RuntimeDeps, answer?: Answe
     case 'budget':
       deps.emit({
         type: 'message',
-        body: 'I stopped because the Qloo call budget is spent. These are the calls that were made; anything else was not tested.',
+        body: blocked({
+          what: 'This conversation reached its limit on audience lookups.',
+          kept: 'What was found so far stands.',
+          next: 'Ask again in a new message, or narrow the question and I will pick it up from there.',
+        }),
         claims: state.receipts.map((r) => ({
           text: `Called ${r.endpoint}.`,
           receiptIds: [r.callId],

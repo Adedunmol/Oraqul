@@ -20,7 +20,6 @@ Defined by `CategoryPack` in `packages/packs/src/types.ts`. Every category fills
 - Tool allowlist and `consults` (other categories this agent may ask; only Books asks Film)
 - `qloo`: the Qloo entity types it tests
 - `coverage`: tests, thin and not supported lists
-- `baselines`: mass-market names a candidate is scored against in the same call
 
 Film, Music, Games and Podcasts keep their depth next to the pack, not in the type: `packages/packs/src/<category>/catalog.ts` (the query catalog), `modules.ts` (module rules, budget convention, taste words) and `plan.ts`, exported as `filmPlan`, `musicPlan`, `booksPlan`, `gamesPlan` and `podcastsPlan`. The versioned launch rules (timeline, signal, channels, budget bands, partner tiers) are in `packages/packs/src/rules/`. What both share is in `packages/packs/src/launch.ts` (section titles, `TASTE_CLAIM`, brand categories, music scenes). Scenarios, results format and the output schema from [spec §3.2](../product/spec.md) live in the launch runtime (`apps/api/src/agent/launch`) and `packages/schema`, not in the pack.
 

@@ -116,7 +116,6 @@ export interface CommonReading {
   ages: { value: AgeBand; quote: string }[];
   gender: { value: 'male' | 'female'; quote: string } | null;
   partners: { value: string; quote: string }[];
-  suggestedComps: string[];
 }
 
 export function checkCommon(
@@ -129,9 +128,6 @@ export function checkCommon(
     .filter((c) => inWords(c.quote, text) && inWords(c.value, c.quote))
     .map((c) => c.value.trim())
     .filter((c) => normalise(c) !== normalise(title));
-  const suggested = reading.suggestedComps.filter(
-    (s) => normalise(s) !== normalise(title) && !comps.some((c) => normalise(c) === normalise(s)),
-  );
   const budget =
     reading.budget && inWords(reading.budget.quote, text) ? reading.budget.quote : null;
   const scope = FULL_ASK.test(text) ? 'full' : reading.scope;
@@ -142,7 +138,8 @@ export function checkCommon(
     window: kept(reading.window),
     ages: unique(reading.ages.flatMap((a) => (inWords(a.quote, text) ? [a.value] : []))),
     gender: kept(reading.gender),
-    suggestedComps: comps.length >= 3 ? [] : unique(suggested),
+    // The analyst chooses comps from the description, after the reading (launch/analyse.ts).
+    suggestedComps: [],
     country: kept(reading.country),
     budget: budget ? parseBudget(budget) : null,
     partners: namedIn(reading.partners, text),

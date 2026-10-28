@@ -50,8 +50,7 @@ export const SHOWS_DECISIONS: DecisionWords = {
   unranked: (cities) => ` Build ${list(cities)} around the venue, creator and partner moves below.`,
   role: (verdict: Finding['verdict']) => marketRole(verdict),
   unreadCity: 'Build the show here on venues, local creators and the partner moves below.',
-  comp: (c) =>
-    `Pitch the show to press and promoters in the company of ${c}, an act your audience already knows.`,
+  comp: (c) => `Pitch the show to press and promoters in the company of ${c}, an act you named.`,
 };
 
 /** A reading with nothing in it, for an answer about a plan saved before readings. */
@@ -246,9 +245,9 @@ function gapsSection(read: ShowsRead, comps: { used: CompUsed[] }): LaunchSectio
       : [
           'Add rival shows with their dates, such as “Rivals: Title on 2027-03-12”, and each date is checked against your night and week.',
         ]),
-    ...(comps.used.some((c) => c.source === 'added')
+    ...(comps.used.some((c) => c.source !== 'you')
       ? [
-          'Say what kind of show it is and who is on the bill, and the plan can be built around them.',
+          'I chose the comparable acts from what you wrote. Name your own, or say more about the show and who is on the bill, and I will rebuild the plan around them.',
         ]
       : []),
     ...(read.ages.length
@@ -470,20 +469,16 @@ export const showsLaunch: LaunchConfig<ShowsRead, ShowsQueryPlan> = {
     entity: 'act',
     rivalExample: '“Rema” on 2026-12-05',
     planExample:
-      'For example: “A comedy night in Lagos for 25 to 34 on 2027-03-12, venue capacity 500, with MTN as a partner.”',
+      'For example: “A comedy night in Mumbai for 25 to 34 on 2027-03-12, venue capacity 500, with a food-delivery brand as a partner.”',
     artistPitch: 'a support slot or a co-promotion',
   },
   minimum: {
     id: 'shows.minimum',
-    example: 'For example: “A stand-up night in Lagos on 2027-03-12 for 25 to 34.”',
+    example: 'For example: “A stand-up night in Toronto on 2027-03-12 for 25 to 34.”',
     missing: (read) => (read.places.length ? [] : ['at least one city the show plays']),
   },
-  typical: {
-    genre: 'comedy',
-    country: 'Nigeria',
-    label: 'a typical live comedy night',
-    described: (read) => read.act !== null || read.showType !== null,
-  },
+  /** Whether the person's words say anything about the work beyond its title. */
+  described: (read) => read.act !== null || read.showType !== null,
   pickModules: (read) =>
     showsPlan.pickModules({ scope: read.scope, ask: read.ask, hasBudget: read.budget !== null }),
   rules: SHOWS_CHECK_RULES,

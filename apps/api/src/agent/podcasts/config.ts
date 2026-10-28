@@ -39,8 +39,7 @@ export const PODCASTS_DECISIONS: DecisionWords = {
   unranked: (cities) => ` Build ${list(cities)} around the swaps and community moves below.`,
   role: (verdict: Finding['verdict']) => marketRole(verdict),
   unreadCity: 'Build the launch here on community: local newsletters, swaps and the moves below.',
-  comp: (c) =>
-    `Pitch the show to press and listeners in the company of ${c}, a title your listeners already know.`,
+  comp: (c) => `Pitch the show to press and listeners in the company of ${c}, a show you named.`,
 };
 
 /** A reading with nothing in it, for an answer about a plan saved before readings. */
@@ -123,9 +122,9 @@ function gapsSection(read: PodcastsRead, comps: { used: CompUsed[] }): LaunchSec
           `Planned as an ${format.format} show on ${list(platformsOf(read).map((p) => PLATFORM_LABEL[p]))}. Say if it is filmed or goes on YouTube, and the plan adds a video section.`,
         ]
       : []),
-    ...(comps.used.some((c) => c.source === 'added')
+    ...(comps.used.some((c) => c.source !== 'you')
       ? [
-          'Say what the show is about, its format, and who hosts or appears on it, and the plan can be built around them.',
+          'I chose the comparable shows from what you wrote. Name your own, or say more about the format and who is on it, and I will rebuild the plan around them.',
         ]
       : []),
     ...(read.ages.length
@@ -276,19 +275,16 @@ export const podcastsLaunch: LaunchConfig<PodcastsRead, PodcastsQueryPlan> = {
   minimum: {
     id: 'podcasts.minimum',
     example:
-      'For example: “A true crime podcast for Nigerians”, “a weekly football chat show on YouTube”, or “season 2 of my business interview show”.',
+      'For example: “A true crime podcast for listeners in Canada”, “a weekly football chat show on YouTube”, or “season 2 of my business interview show”.',
     missing: () => [],
   },
-  typical: {
-    genre: 'interview',
-    label: 'a typical interview podcast launch',
-    described: (read) =>
-      read.style !== null ||
-      read.topics.length > 0 ||
-      read.regions.length > 0 ||
-      read.previousShows.length > 0 ||
-      read.crossPromo.length > 0,
-  },
+  /** Whether the person's words say anything about the work beyond its title. */
+  described: (read) =>
+    read.style !== null ||
+    read.topics.length > 0 ||
+    read.regions.length > 0 ||
+    read.previousShows.length > 0 ||
+    read.crossPromo.length > 0,
   pickModules: (read) =>
     podcastsPlan.pickModules({
       scope: read.scope,

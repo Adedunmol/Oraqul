@@ -1,10 +1,4 @@
-import type {
-  Category,
-  PlanSectionKey,
-  QlooCoverage,
-  QlooEntityType,
-  ToolName,
-} from '@oraqul/schema';
+import type { Category, PlanSectionKey, QlooCoverage, ToolName } from '@oraqul/schema';
 
 /**
  * One category agent is a configuration of the shared runtime.
@@ -27,9 +21,4 @@ export interface CategoryPack {
   /** Qloo entity types this category tests, by role. */
   qloo: QlooCoverage;
   coverage: { tests: string[]; thin: string[]; notSupported: string[] };
-  /**
-   * Mass-market names per entity type that plan lines are scored against in the same call, so
-   * fit is lift over the biggest titles or brands (spec §5). Found by exact name each run.
-   */
-  baselines: Partial<Record<QlooEntityType, string[]>>;
 }

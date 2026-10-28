@@ -199,13 +199,20 @@ const lowerFirst = (text: string) => text.replace(/^([A-Z])(?=[a-z])/, (c) => c.
 /** What the plan filled in because the brief did not say it, so a wrong guess is easy to spot. */
 function Assumed({ plan }: { plan: LaunchPlan }) {
   const assumed = plan.understanding?.assumed ?? [];
-  if (assumed.length === 0) return null;
+  const readers = plan.understanding?.readers ?? null;
+  if (assumed.length === 0 && !readers) return null;
   return (
     <section aria-labelledby="assumed" className="flex scroll-mt-48 flex-col gap-4">
       <h2 id="assumed" className={sectionTitle}>
         Assumed
       </h2>
       <ul className="flex flex-col gap-1.5 text-[16px] leading-[1.65] text-muted">
+        {readers ? (
+          <li>
+            Read as the audience: <span className="text-ink">{readers.who}</span>. They already like{' '}
+            {readers.consumes}. {readers.why}
+          </li>
+        ) : null}
         {assumed.map((a) => (
           <li key={`${a.what}-${a.value}`}>
             <span className="text-ink">{a.value.replaceAll('_', ' ')}</span>, because{' '}
@@ -328,7 +335,7 @@ export function LineText({
 }
 
 function Comps({ plan }: { plan: LaunchPlan }) {
-  const added = plan.comps.filter((c) => c.source === 'added');
+  const added = plan.comps.filter((c) => c.source !== 'you');
   const yours = plan.comps.filter((c) => c.source === 'you' && !c.anchor);
   const exact = yours.filter((c) => !c.choice);
   const settled = yours.filter((c) => c.choice);
@@ -343,10 +350,18 @@ function Comps({ plan }: { plan: LaunchPlan }) {
         <p>Not found in Qloo, so left out: {plan.compsNotFound.map((c) => c.name).join(', ')}.</p>
       ) : null}
       {added.length > 0 ? (
-        <p>
-          Planned against {added.map((c) => c.name).join(', ')}. Name your own comparable titles in
-          the chat to swap them.
-        </p>
+        <>
+          <p>The audience picture is built from comparable titles Oraqul chose, not from yours:</p>
+          <ul className="flex flex-col gap-0.5">
+            {added.map((c) => (
+              <li key={c.name}>
+                <b className="text-ink">{c.name}</b>
+                {c.why ? ` — ${c.why}` : c.choice ? ` — ${c.choice}` : ''}
+              </li>
+            ))}
+          </ul>
+          <p>Name your own comparable titles in the chat and Oraqul will swap them in.</p>
+        </>
       ) : null}
     </div>
   );

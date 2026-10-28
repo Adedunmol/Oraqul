@@ -8,7 +8,6 @@ import {
   brandChoiceSchema,
   checkAreas,
   checkBrandCandidates,
-  checkWorth,
   FallbackQueryPlanner as LaunchFallbackPlanner,
   type QueryPlanInput as LaunchPlanInput,
   type QueryPlanner as LaunchQueryPlanner,
@@ -72,7 +71,7 @@ export function defaultPlan(input: QueryPlanInput): MusicQueryPlan {
   return {
     queries: queriesFor(modules),
     cities,
-    worthALook: citiesNear(cities, 4),
+    worthALook: citiesNear(cities, 4, country),
     country,
     scene,
     // Every city the team chose gets the same questions, so none is left with less than another.
@@ -112,7 +111,6 @@ const modelPlanSchema = z.object({
   podcastCity: z.string().nullable(),
   communityPlaces: z.array(phrase).max(3),
   communityCities: z.array(z.string()).max(5),
-  worthALook: z.array(z.string()).max(4),
   country: z.string().nullable(),
   areas: z.array(areaChoiceSchema).max(20),
   brandCandidates: z.array(brandChoiceSchema).max(5),
@@ -129,8 +127,7 @@ You are given the brief and default choices. Return the choices, changed only wh
 - podcastGenre: a podcast genre that fits the artist ("music", "comedy", "pop culture").
 - communityPlaces: kinds of place where this audience gathers ("university").
 - areas: for each of the team's cities, up to 5 neighbourhoods or districts where this scene lives, goes out or gathers, each with the latitude and longitude of its centre. Real, well-known places only, inside the city. Qloo then says which the audience is strongest in.
-- brandCandidates: for each of the team's cities, up to 4 brands that operate in that city and could realistically partner with an independent artist as an in-kind or co-promotion tie-in: telecoms, ride-hailing, fintech, food delivery, drinks and challenger brands. Write each as the company's usual name ("MTN", "Bolt"). Never a global giant that does not do small tie-ins (soft-drink and fast-food majors, car and luxury brands). Qloo then ranks only these, per city, for the audience.
-- worthALook: up to 4 other cities from the city table where this audience may be strong. They are only shown as alternatives, never in place of the team's cities.
+- brandCandidates: for each of the team's cities, up to 4 brands that operate in that city and could realistically partner with an independent artist as an in-kind or co-promotion tie-in: telecoms, ride-hailing, fintech, food delivery, drinks and challenger brands. Write each as the company's usual name ("Bolt", "Vodafone", "Zomato"). Never a global giant that does not do small tie-ins (soft-drink and fast-food majors, car and luxury brands). Qloo then ranks only these, per city, for the audience.
 - country: the artist's country as a full name, or null.
 
 Never name a person. Never use words from the brief that describe a private individual.`;
@@ -197,7 +194,6 @@ export function checkPlan(
       ? phrases(chosen.communityPlaces)
       : defaults.communityPlaces,
     communityCities: keep(chosen.communityCities, defaults.communityCities),
-    worthALook: checkWorth(chosen.worthALook, defaults.cities, defaults.worthALook),
     areas: checkAreas(chosen.areas, defaults.cities),
     brandCandidates: checkBrandCandidates(chosen.brandCandidates, defaults.cities),
   };

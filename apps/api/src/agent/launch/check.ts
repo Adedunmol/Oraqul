@@ -1,5 +1,5 @@
 import { cityNames } from '@oraqul/engine';
-import { ASSET_OFFER, BAND_LABEL, type BudgetBand, bandCarries } from '@oraqul/packs';
+import { ASSET_OFFER, BAND_LABEL, type BudgetBand, bandCarries, LAUNCH_TERMS } from '@oraqul/packs';
 import type {
   DroppedLine,
   Finding,
@@ -159,13 +159,40 @@ function resolveCitations(line: WrittenLine, ctx: CheckContext): WrittenLine {
 }
 
 // A name written as a name: same case, whole words. So "Industry" the series, not the word.
-const names = (text: string, name: string) =>
-  new RegExp(`(^|[^\\p{L}\\p{N}])${escapeName(name)}($|[^\\p{L}\\p{N}])`, 'u').test(
-    text.replace(/[’‘]/g, "'"),
-  );
+// A single word keeps its case ("Industry" the series, not the word). A name of several words is
+// specific enough to match in any case, and Qloo's own brackets ("(Books)") are not in the text.
+const names = (text: string, name: string) => {
+  const plain = bare(name) || name;
+  return new RegExp(
+    `(^|[^\\p{L}\\p{N}])${escapeName(plain)}($|[^\\p{L}\\p{N}])`,
+    /\s/.test(plain.trim()) ? 'iu' : 'u',
+  ).test(text.replace(/[’‘]/g, "'"));
+};
 
 function escapeName(text: string): string {
   return text.replace(/[’‘]/g, "'").replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// A name of two or more capitalised words ("Lagos State University", "Between The Covers"). The
+// first word of a sentence is capitalised anyway, so it is not counted as part of a name.
+const PROPER =
+  /(?<![\p{L}\p{N}])\p{Lu}[\p{L}'’.&-]*(?:\s+(?:(?:of|the|de|la|le|del|da|di|von|van)\s+)*\p{Lu}[\p{L}'’.&-]*)+/gu;
+
+/** The names in a line that no finding it cites, the brief or a page it cites accounts for. */
+export function unaccountedNames(text: string, allowed: string): string[] {
+  const out: string[] = [];
+  for (const m of text.matchAll(PROPER)) {
+    let name = m[0];
+    const start = m.index ?? 0;
+    const atSentenceStart = start === 0 || /[.!?:]\s*$/.test(text.slice(0, start));
+    if (atSentenceStart) name = name.split(/\s+/).slice(1).join(' ');
+    // "Keep the Pixel Choir": once the sentence word is gone, a leading "the" is not part of the name.
+    name = name.replace(/^(?:(?:of|the|de|la|le|del|da|di|von|van)\s+)+/i, '');
+    name = name.replace(/[.,;:'’&-]+$/, '').trim();
+    if (name.split(/\s+/).length < 2 || MIN_NAME > name.length) continue;
+    if (!has(allowed, name)) out.push(name);
+  }
+  return [...new Set(out)];
 }
 
 const numbers = (text: string) =>
@@ -273,6 +300,22 @@ export function checkLine(
       ]),
     ];
     const inText = (n: string) => found.some((f) => has(f.text, n));
+    // Every name the line carries has to be one the findings it cites, the brief or a page it
+    // cites account for. A university or a neighbourhood from the model's memory goes in a
+    // playbook line, which says nothing about taste and cites nothing.
+    const allowedText = [
+      ...allowed,
+      ctx.briefText,
+      sourceText,
+      ...found.map((f) => f.text),
+      ...ctx.teamCities,
+      ...cityNames(),
+      ...LAUNCH_TERMS,
+    ].join(' . ');
+    const stranger = unaccountedNames(line.text, allowedText)[0];
+    if (stranger) {
+      return `It names ${stranger}, which no finding it cites or the brief gives. Name it in a playbook line, or leave it out.`;
+    }
     // `names` are what the line recommends because of the audience, so each must be in a
     // finding it cites. Other names in the text (a distributor, a regulator) are launch knowledge.
     const named = [...line.names, ...dictionary.filter((n) => names(line.text, n))];
@@ -285,10 +328,17 @@ export function checkLine(
     ) {
       return 'It states a market figure the findings it cites do not.';
     }
-    // Any figure this run's findings state may be repeated: an age group from one finding is as
-    // true in a line that cites another. What may not appear is a figure from nowhere.
+    // A figure has to come from a finding the line cites, a page it cites or the brief. An age
+    // range is the one exception: it is true in a line that cites another finding.
+    const ageNumbers = ctx.findings.flatMap((f) =>
+      [...f.text.matchAll(/\b(\d{2})\s*(?:to|and|-)\s*(\d{2})\b/g)].flatMap((m) => [
+        Number(m[1]),
+        Number(m[2]),
+      ]),
+    );
     const known = new Set([
-      ...ctx.findings.flatMap((f) => [...Object.values(f.numbers), ...numbers(f.text)]),
+      ...found.flatMap((f) => [...Object.values(f.numbers), ...numbers(f.text)]),
+      ...ageNumbers,
       ...numbers(sourceText),
       ...numbers(ctx.briefText),
       ...named.flatMap(numbers),

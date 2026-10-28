@@ -62,6 +62,7 @@ const compsVerdict: Voice['compsVerdict'] = {
 const voiceFor = (read: PodcastsRead): Voice => ({
   audience: "the show's audience",
   yourAudience: "your show's audience",
+  chosenAudience: "the comparable shows' audience",
   theseComps: 'this show',
   compsVerdict,
   yourPlaces:

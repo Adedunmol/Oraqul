@@ -1,6 +1,38 @@
 {
   "title": "Ash Throne",
   "brief": "Launch plan for the book \"Ash Throne\", book three of a romantasy trilogy with a hardcover and an audiobook, published by a major press, launching in October 2027 in New York and London. Comparable books: \"A Court of Thorns and Roses\" and \"Fourth Wing\". Compare it with \"The Witcher\" and \"The Hunger Games\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "The Name of the Wind (The Kingkiller Chronicle, #1)",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Harry Potter and the Sorcerer's Stone",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
@@ -48,8 +80,8 @@
       "f-a-comp-age-a-court-of-thorns-and-roses": [],
       "f-a-comp-age-fourth-wing": [],
       "f-shelf": ["The Orchard Heir", "Throne of Embers"],
-      "f-bridge-film": ["The Hunger Games", "The Martian"],
-      "f-bridge-series": ["The Witcher", "Shadow and Bone", "The Wheel of Time"],
+      "f-bridge-film": ["The Hunger Games"],
+      "f-bridge-series": ["The Witcher"],
       "f-film-consult-audience-the-witcher": ["The Witcher"],
       "f-film-consult-places-the-witcher": ["New York", "London"],
       "f-screen-the-hunger-games": ["The Hunger Games"],
@@ -82,7 +114,7 @@
       "budget": "0/8",
       "measure": "0/8",
       "risks": "3/1",
-      "gaps": "0/5"
+      "gaps": "0/6"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {

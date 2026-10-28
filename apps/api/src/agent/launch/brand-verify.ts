@@ -1,4 +1,6 @@
+import { cityCountry } from '@oraqul/engine';
 import type { Finding, PartnerCheck } from '@oraqul/schema';
+import { presenceKey } from '../../verify/brand-presence.js';
 import { type VenueCheck, venueKey } from '../../verify/venue-check.js';
 import type { Verifier } from '../../verify/verifier.js';
 import type { Grounded } from './findings.js';
@@ -17,36 +19,93 @@ export function brandNames(findings: Finding[]): string[] {
   ];
 }
 
+/** A finding of ranked brands with some taken out, its sentence reworded from what is left. */
+function without(f: Finding, gone: Set<string>, closedForever: boolean): Finding {
+  if (!f.entities.some((e) => gone.has(e.name))) return f;
+  const entities = f.entities.filter((e) => !gone.has(e.name));
+  const city = f.context.city;
+  const top = list(entities.slice(0, 3).map((e) => e.name));
+  const text =
+    entities.length === 0
+      ? closedForever
+        ? `No brand asked about in ${city ?? 'this market'} is still trading.`
+        : `No brand asked about in ${city ?? 'this market'} could be confirmed as selling there.`
+      : f.query === 'brands'
+        ? `For this audience${city ? ` in ${city}` : ''}, Qloo ranks ${top} highest among the brands asked.`
+        : `Among the same brands, people${city ? ` in ${city}` : ''} overall like ${top} best. This is taste for the place, not for your comps.`;
+  return { ...f, entities, text };
+}
+
+const sameCountry = (a: string | null, b: string | null) =>
+  !!a && !!b && a.trim().toLowerCase() === b.trim().toLowerCase();
+
+/** Brand lookups a plan may make, so a long list never turns into a long wait. */
+const MAX_PRESENCE = 12;
+
 /**
  * Checks the brands Qloo ranked and takes out any that no longer exist, before the writer or the
- * partner code can see them. A finding whose sentence named one is reworded from what is left, so
- * the name does not survive in the text. Everything else passes through with its check, because a
- * source that is down, or a brand it cannot place, must never change a plan.
+ * partner code can see them. A brand that Qloo ranked for a city is a taste fit, not proof that it
+ * sells there, so each one not based in that city's country is looked up on the web, and one a
+ * page says does not sell there is taken out of that city's list. Everything else passes through
+ * with its check, because a source that is down, or a brand it cannot place, must never change a
+ * plan. `keep` are brands the team named, which are never removed.
  */
 export async function verifyBrands(
   verifier: Verifier | undefined,
   grounded: Grounded,
+  keep: string[] = [],
 ): Promise<{ grounded: Grounded; checks: Record<string, PartnerCheck> }> {
   if (!verifier) return { grounded, checks: {} };
   const names = brandNames(grounded.findings);
   if (names.length === 0) return { grounded, checks: {} };
   const checked = await verifier.brands(names);
-  const checks = Object.fromEntries(checked);
+  const checks: Record<string, PartnerCheck> = Object.fromEntries(checked);
   const closed = new Set(names.filter((n) => checked.get(n)?.state === 'problem'));
-  if (closed.size === 0) return { grounded, checks };
-  const findings = grounded.findings.map((f) => {
-    if (!BRAND_QUERIES.has(f.query) || !f.entities.some((e) => closed.has(e.name))) return f;
-    const entities = f.entities.filter((e) => !closed.has(e.name));
-    const city = f.context.city;
-    const top = list(entities.slice(0, 3).map((e) => e.name));
-    const text =
-      entities.length === 0
-        ? `No brand asked about in ${city ?? 'this market'} is still trading.`
-        : f.query === 'brands'
-          ? `For this audience${city ? ` in ${city}` : ''}, Qloo ranks ${top} highest among the brands asked.`
-          : `Among the same brands, people${city ? ` in ${city}` : ''} overall like ${top} best. This is taste for the place, not for your comps.`;
-    return { ...f, entities, text };
-  });
+  let findings = grounded.findings.map((f) =>
+    BRAND_QUERIES.has(f.query) ? without(f, closed, true) : f,
+  );
+
+  const team = new Set(keep.map((k) => k.trim().toLowerCase()));
+  const asked = new Map<string, { name: string; country: string }>();
+  for (const f of findings) {
+    if (!BRAND_QUERIES.has(f.query) || !f.context.city) continue;
+    const country = cityCountry(f.context.city);
+    if (!country) continue;
+    for (const e of f.entities) {
+      const based = checks[e.name];
+      if (based?.state === 'verified' && sameCountry(based.country, country)) continue;
+      asked.set(presenceKey(e.name, country), { name: e.name, country });
+    }
+  }
+  const present = asked.size
+    ? await verifier.presence([...asked.values()].slice(0, MAX_PRESENCE))
+    : new Map();
+  const absent = new Map<string, Set<string>>();
+  for (const [key, found] of present) {
+    const item = asked.get(key);
+    if (!item || !found) continue;
+    if (found.state === 'present' && found.source) {
+      const check = checks[item.name] ?? {
+        state: 'unverified',
+        note: null,
+        country: null,
+        operates: [],
+      };
+      checks[item.name] = {
+        ...check,
+        operates: [...check.operates, { country: item.country, ...found.source }],
+      };
+    } else if (found.state === 'absent' && !team.has(item.name.trim().toLowerCase())) {
+      absent.set(item.country, (absent.get(item.country) ?? new Set()).add(item.name));
+    }
+  }
+  if (absent.size > 0) {
+    findings = findings.map((f) => {
+      const country = f.context.city ? cityCountry(f.context.city) : null;
+      const gone = country ? absent.get(country) : undefined;
+      return BRAND_QUERIES.has(f.query) && gone ? without(f, gone, false) : f;
+    });
+  }
   return {
     grounded: {
       ...grounded,

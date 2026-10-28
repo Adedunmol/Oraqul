@@ -186,11 +186,18 @@ export function cityCountry(name: string): string | null {
 
 /**
  * Table cities in the same regions as `names`, not in `names`, in table order. The candidates
- * for "Worth a look", so they never replace the team's cities.
+ * for "Worth a look", so they never replace the team's cities. A city outside the table has no
+ * region of its own, so its country's table cities stand for it when the launch's country is known.
  */
-export function citiesNear(names: string[], max: number): string[] {
+export function citiesNear(names: string[], max: number, country?: string | null): string[] {
   const named = new Set(names.map((n) => n.trim().toLowerCase()));
   const wanted = new Set([...named].flatMap((n) => regions[n] ?? []));
+  if (wanted.size === 0 && country) {
+    for (const c of citiesInCountry(country)) {
+      const region = regions[c.toLowerCase()];
+      if (region) wanted.add(region);
+    }
+  }
   return cityNames()
     .filter((c) => !named.has(c.toLowerCase()) && wanted.has(regions[c.toLowerCase()] ?? ''))
     .slice(0, max);

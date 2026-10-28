@@ -83,6 +83,7 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
         .filter((s) => s.key !== 'bottom-line' && s.key !== 'gaps')
         .map((s) => ({ title: s.title, groups: groups(s.lines) })),
       ...decisionSections(plan, refsOf),
+      ...basisSections(plan),
     ],
     sources: [...order].flatMap(([id, n]) => {
       const web = plan.sources.find((src) => src.id === id);
@@ -97,6 +98,56 @@ function planDoc(output: Output, plan: LaunchPlan): PlanDoc {
       return [{ n, text: finding.text, from }];
     }),
   };
+}
+
+const plain = (text: string) => ({ text, refs: [] as number[] });
+
+/**
+ * What the plan stands on, which the screen shows beside it: the comps that matched, the ones
+ * Oraqul chose and why, what it read from the description, and what is worth confirming before a
+ * pitch. None of it cites a finding.
+ */
+function basisSections(plan: LaunchPlan): DocSection[] {
+  const yours = plan.comps.filter((c) => c.source === 'you' && !c.anchor);
+  const chosen = plan.comps.filter((c) => c.source !== 'you');
+  const exact = yours.filter((c) => !c.choice).map((c) => c.name);
+  const comps = [
+    ...(exact.length ? [`Matched: ${exact.join(', ')}.`] : []),
+    ...yours.flatMap((c) => (c.choice ? [c.choice] : [])),
+    ...(plan.compsNotFound.length
+      ? [`Not found, so left out: ${plan.compsNotFound.map((c) => c.name).join(', ')}.`]
+      : []),
+    ...(chosen.length
+      ? [
+          'The audience picture is built from comparable titles Oraqul chose, not from yours:',
+          ...chosen.map(
+            (c) => `${c.name}${c.why ? `: ${c.why}` : c.choice ? `: ${c.choice}` : ''}`,
+          ),
+        ]
+      : []),
+  ];
+  const readers = plan.understanding?.readers;
+  const assumed = [
+    ...(readers
+      ? [
+          `Read as the audience: ${readers.who}. They already like ${readers.consumes}. ${readers.why}`,
+        ]
+      : []),
+    ...(plan.understanding?.assumed ?? []).map(
+      (a) => `${a.what}: ${a.value.replace(/_/g, ' ')}, because ${a.why}`,
+    ),
+  ];
+  const confirm = plan.sections
+    .find((s) => s.key === 'gaps')
+    ?.lines.filter((l) => l.id === 'gaps-still-active')
+    .map((l) => l.text);
+  const section = (title: string, lines: string[]): DocSection[] =>
+    lines.length ? [{ title, groups: [{ name: null, lines: lines.map(plain) }] }] : [];
+  return [
+    ...section('Comparable titles', comps),
+    ...section('What Oraqul assumed', assumed),
+    ...section('Before you pitch', confirm ?? []),
+  ];
 }
 
 const DIRECTION_WORD = { okay: 'Okay', risky: 'Risky', avoid: 'Avoid' } as const;
@@ -196,7 +247,8 @@ function partnerText(p: LaunchPlan['partners'][number]): string {
     : `Qloo fit: ${partnerFitText(p)}`;
   const flags = p.flags.map((f) => ` ${FLAG_WORD[f.type]}: ${f.why}`).join('');
   const kind = p.kind === 'kind' ? ' A kind of partner, not a brand yet.' : '';
-  return `${p.name} (${p.market}).${kind} ${fit}. Budget: ${BAND_WORD[p.budgetFit]}. Price: unknown.${flags}`;
+  const note = p.check?.note ? ` ${p.check.note}` : '';
+  return `${p.name}${p.market ? ` (${p.market})` : ''}.${kind} ${fit}. Budget: ${BAND_WORD[p.budgetFit]}. Price: unknown.${note}${flags}`;
 }
 
 const VERDICT_WORD: Record<Verdict, string> = {

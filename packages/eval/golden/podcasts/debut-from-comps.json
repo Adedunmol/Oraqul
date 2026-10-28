@@ -1,6 +1,38 @@
 {
   "title": "Cold Case Files",
   "brief": "Launch plan for the podcast \"Cold Case Files\", a true crime interview show, launching on 2099-03-01 in London and Lagos. Comparable shows: \"Crime Junkie\" and \"Serial\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Casefile True Crime",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]

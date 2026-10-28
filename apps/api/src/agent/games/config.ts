@@ -42,8 +42,7 @@ export const GAMES_DECISIONS: DecisionWords = {
   role: (verdict: Finding['verdict']) => marketRole(verdict),
   unreadCity:
     'Build the launch here on community: local creators, a Discord and the partner moves below.',
-  comp: (c) =>
-    `Pitch the game to press and creators in the company of ${c}, a title your players already know.`,
+  comp: (c) => `Pitch the game to press and creators in the company of ${c}, a game you named.`,
 };
 
 /** A reading with nothing in it, for an answer about a plan saved before readings. */
@@ -120,9 +119,9 @@ function gapsSection(read: GamesRead, comps: { used: CompUsed[] }): LaunchSectio
         : [
             `Say which platforms you ship on. Until then the plan assumes ${list(platformsOf(read).map((p) => PLATFORM_LABEL[p]))}.`,
           ]),
-    ...(comps.used.some((c) => c.source === 'added')
+    ...(comps.used.some((c) => c.source !== 'you')
       ? [
-          'Say what the game is, its genre and platform, and who it is for, and the plan can be built around them.',
+          'I chose the comparable games from what you wrote. Name your own, or say more about the genre, the platform and who it is for, and I will rebuild the plan around them.',
         ]
       : []),
     ...(read.ages.length
@@ -285,18 +284,15 @@ export const gamesLaunch: LaunchConfig<GamesRead, GamesQueryPlan> = {
   minimum: {
     id: 'games.minimum',
     example:
-      'For example: “A Nigerian mobile shooter”, “a cozy farming game for Switch”, or “a roguelike for Steam”.',
+      'For example: “A mobile shooter for players in Brazil”, “a cozy farming game for Switch”, or “a roguelike for Steam”.',
     missing: () => [],
   },
-  typical: {
-    genre: 'action',
-    label: 'a typical indie game launch',
-    described: (read) =>
-      read.launchKind !== null ||
-      read.regions.length > 0 ||
-      read.franchise.length > 0 ||
-      read.collabs.length > 0,
-  },
+  /** Whether the person's words say anything about the work beyond its title. */
+  described: (read) =>
+    read.launchKind !== null ||
+    read.regions.length > 0 ||
+    read.franchise.length > 0 ||
+    read.collabs.length > 0,
   pickModules: (read) =>
     gamesPlan.pickModules({
       scope: read.scope,

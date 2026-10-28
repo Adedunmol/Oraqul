@@ -1,6 +1,38 @@
 {
   "title": "Kofi and the River",
   "brief": "Launch plan for the book \"Kofi and the River\", a middle grade adventure published by a children's imprint, launching in September 2027 in London and Lagos. Comparable books: \"Wonder\".",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "Harry Potter and the Sorcerer's Stone",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "The Lightning Thief (Percy Jackson and the Olympians, #1)",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
@@ -42,8 +74,6 @@
       "f-themes-theme": ["Ambition", "Loyalty", "Family"],
       "f-a-comp-age-wonder": [],
       "f-shelf": ["The River Kept Count"],
-      "f-bridge-film": ["Wonder", "The Hunger Games"],
-      "f-bridge-series": ["Shadow and Bone", "Heartstopper", "Percy Jackson and the Olympians"],
       "f-podcasts": ["Between the Covers", "Shelf Life", "The Book Club Hour"],
       "f-brands-lagos": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-brands-london": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
@@ -52,11 +82,11 @@
     },
     "sections": {
       "bottom-line": "3/0",
-      "positioning": "2/1",
-      "audience": "4/0",
+      "positioning": "1/2",
+      "audience": "3/0",
       "markets": "2/0",
       "comps": "2/1",
-      "adaptation": "3/1",
+      "adaptation": "1/1",
       "retail": "2/1",
       "publicity": "1/1",
       "events": "2/0",
@@ -71,14 +101,14 @@
       "budget": "0/8",
       "measure": "0/8",
       "risks": "3/1",
-      "gaps": "0/7"
+      "gaps": "0/8"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 89,
-      "backed": 29,
+      "lines": 86,
+      "backed": 26,
       "rankKept": 100,
-      "findingsUsed": 14,
+      "findingsUsed": 12,
       "cities": {
         "London": 6,
         "Lagos": 6

@@ -176,6 +176,13 @@
       "when": 1793144596600,
       "tag": "0024_team_defaults_text",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1793208656680,
+      "tag": "0025_brief_memos",
+      "breakpoints": true
     }
   ]
 }

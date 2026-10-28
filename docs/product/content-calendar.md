@@ -6,7 +6,7 @@ Every full plan has a content calendar. Code writes it from the release date and
 
 Week or date, what to post, the kind of asset, the lead channel for the territory, and how many posts. A territory gets its own rows on its own lead channel (WhatsApp never leads). `plan.calendar` holds the rows for the table on the plan page; the section's lines carry the same rows into the exports.
 
-A post count appears only where a source gave one. Otherwise the row says "the source gives no number", or "not researched".
+A post count appears only where a source gave one. Otherwise the row states none, and the calendar's note says once that no post counts are given, so a limit is not repeated on every row.
 
 ## Where the rows come from
 

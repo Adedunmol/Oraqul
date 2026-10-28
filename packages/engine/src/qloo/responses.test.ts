@@ -65,3 +65,20 @@ describe('response schemas accept what Qloo really sends', () => {
     expect(parsed.results.trending[0]?.population_rank).toBe('118');
   });
 });
+
+describe('names read as plain text', () => {
+  it('decodes the entities Qloo puts in an entity or tag name, once', async () => {
+    const { decodeEntities, entitySchema, tagSchema } = await import('./responses');
+    expect(decodeEntities('Atomic Habits: An Easy &amp; Proven Way')).toBe(
+      'Atomic Habits: An Easy & Proven Way',
+    );
+    expect(decodeEntities('It&#39;s &quot;Fine&quot; &#x26; more')).toBe('It\'s "Fine" & more');
+    expect(decodeEntities('Plain name')).toBe('Plain name');
+    expect(entitySchema.parse({ entity_id: 'E1', name: 'Tom &amp; Jerry' }).name).toBe(
+      'Tom & Jerry',
+    );
+    expect(tagSchema.parse({ tag_id: 'urn:tag:x', name: 'Humor &amp; Wit' }).name).toBe(
+      'Humor & Wit',
+    );
+  });
+});

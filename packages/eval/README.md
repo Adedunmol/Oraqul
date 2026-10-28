@@ -10,3 +10,9 @@ Evals are the proof the product works ([docs/testing.md](../../docs/testing.md))
 - `golden/<category>/*.live.json`: the same runs over recorded live Qloo responses. Recorded with
   `RECORD_LIVE=1` and a key, and gitignored until Qloo confirms what may be republished. When a
   file is there, the golden spec replays it too.
+- `live/briefs.json`: the briefs the live runs send through the real agents, as a person would write them
+  (a sentence or two, few or no comps, sometimes a place and nothing else). They run with
+  `pnpm --filter @oraqul/api test:live` on live Qloo and the configured models, and each plan,
+  its Markdown export and the QA checker's report go to `live/out/`, which is gitignored. A brief with
+  an `example` is also written as a marketing example when `RECORD_EXAMPLES=1`. See
+  [docs/testing.md](../../docs/testing.md).

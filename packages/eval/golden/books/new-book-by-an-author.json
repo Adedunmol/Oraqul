@@ -44,8 +44,6 @@
       "f-a-comp-age-americanah": [],
       "f-a-comp-age-normal-people": [],
       "f-shelf": ["A House of Many Rooms", "Salt Season", "Dust and Ink"],
-      "f-bridge-film": ["Where the Crawdads Sing", "Crazy Rich Asians"],
-      "f-bridge-series": ["Conversations with Friends", "Big Little Lies", "You"],
       "f-podcasts": ["The Book Club Hour", "Shelf Life", "Between the Covers"],
       "f-brands-lagos": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
       "f-brands-london": ["Page Turner Coffee", "Lantern Tea", "Spine Mobile"],
@@ -55,13 +53,13 @@
     "sections": {
       "bottom-line": "3/0",
       "positioning": "1/2",
-      "audience": "4/0",
+      "audience": "3/0",
       "markets": "2/0",
       "comps": "2/1",
       "retail": "2/1",
       "publicity": "1/1",
       "events": "2/0",
-      "adaptation": "3/1",
+      "adaptation": "1/1",
       "creators": "0/1",
       "community": "0/1",
       "partnerships": "2/0",
@@ -73,14 +71,14 @@
       "budget": "0/8",
       "measure": "0/8",
       "risks": "3/1",
-      "gaps": "0/6"
+      "gaps": "0/7"
     },
     "moves": ["f-markets", "f-audience", "f-shelf"],
     "grounding": {
-      "lines": 89,
-      "backed": 28,
+      "lines": 86,
+      "backed": 26,
       "rankKept": 100,
-      "findingsUsed": 15,
+      "findingsUsed": 13,
       "cities": {
         "Lagos": 6,
         "London": 6

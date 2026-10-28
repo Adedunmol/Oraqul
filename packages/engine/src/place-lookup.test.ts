@@ -86,3 +86,17 @@ describe('findPlace', () => {
     expect(cityBox('Nowhereville')).toBeNull();
   });
 });
+
+describe('citiesNear for a city outside the table', () => {
+  it('offers the table cities of the launch country when the city has no region', async () => {
+    const { citiesNear } = await import('./places');
+    expect(citiesNear(['Kochi'], 4, 'India')).toEqual(['Mumbai', 'Delhi']);
+    expect(citiesNear(['Kochi'], 4)).toEqual([]);
+    expect(citiesNear(['Kochi'], 4, 'Atlantis')).toEqual([]);
+  });
+
+  it('keeps using the region of a table city first', async () => {
+    const { citiesNear } = await import('./places');
+    expect(citiesNear(['Lagos'], 4, 'India')).toEqual(['Abuja', 'Accra']);
+  });
+});

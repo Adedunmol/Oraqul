@@ -19,7 +19,7 @@ import { isRegionWord } from './regions.js';
 
 export { type AgeBand, ageBands, type Budget, parseBudget } from '../launch/read-core.js';
 
-const { GAMES_MODULES, REGION_CITIES, launchKinds, platforms, kindFrom, fallbackComps } = gamesPlan;
+const { GAMES_MODULES, REGION_CITIES, launchKinds, platforms, kindFrom } = gamesPlan;
 
 /** What the model reads from the brief. Every value carries the person's own words. */
 export const gamesReadingSchema = z.object({
@@ -64,11 +64,6 @@ export const gamesReadingSchema = z.object({
   window: said(z.string().min(1)).nullable(),
   ages: z.array(said(z.enum(ageBands))).max(6),
   gender: said(z.enum(['male', 'female'])).nullable(),
-  /**
-   * Comparable games the agent proposes when the person named fewer than 3. Not their words, so
-   * code checks each one in Qloo and the plan keeps them apart from the person's own.
-   */
-  suggestedComps: z.array(z.string().min(1)).max(5),
 });
 export type GamesReading = z.infer<typeof gamesReadingSchema>;
 
@@ -141,17 +136,10 @@ export function checkReading(reading: GamesReading, input: GamesReaderInput): Ga
     ...new Set([...namesIn(reading.regions, text), ...common.places.filter(regionWord)]),
   ];
   const comps = common.comps.filter((c) => !isGame(c));
-  // A short brief is enough: when the person named fewer than three games and none were proposed,
-  // games like this one, by genre and kind, describe the audience. They are never asked for.
-  const suggested =
-    comps.length >= 3 || common.suggestedComps.length > 0
-      ? common.suggestedComps
-      : fallbackComps(`${common.genre ?? ''} ${text}`, kind ?? gamesPlan.DEFAULT_KIND).filter(
-          (n) => !isGame(n) && !comps.some((c) => normalise(c) === normalise(n)),
-        );
   return {
     ...common,
-    suggestedComps: suggested,
+    // Comps are chosen from the description by the analyst, after this reading.
+    suggestedComps: [],
     comps,
     // A narrow ask names a module this category offers, which the shared check cannot know.
     ask: common.scope === 'full' ? null : reading.ask,
@@ -194,7 +182,6 @@ Rules:
 - window: the release date or window as written ("Q3 2027", "October").
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which regions, or which creators. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: store (store page and tags), events (festivals, showcases), softlaunch, earlyaccess, collabs (fan base collabs), creators, liveops (seasons, events after launch), publicity (press, podcasts), partnerships (brands), community, timeline, budget, measure (what to track), risks. Null when it is about regions or the audience, or when scope is full.
-- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real games whose players are likely the same, from the genre, the store tags, the platforms, the kind of launch, where the audience is, the earlier games and any collaborations named, A person cannot be looked up as a signal in Qloo, so use their other work in their place. Enough to reach 3 to 5 in all. Names only. Code checks each in Qloo. The person is never asked for comps.
 - Plain words, no exclamation marks.`;
 
 export class ModelGamesReader implements GamesReader {
@@ -349,7 +336,6 @@ export class ScriptedGamesReader implements GamesReader {
         : men
           ? { value: 'male', quote: men }
           : null,
-      suggestedComps: [],
     };
     // The launch kind is read from the words in `checkReading`, so a run with a model and one
     // without agree on it.

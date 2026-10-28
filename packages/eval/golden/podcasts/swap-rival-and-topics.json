@@ -1,6 +1,38 @@
 {
   "title": "Fund Notes",
   "brief": "Launch plan for the podcast \"Fund Notes\", a weekly business show for 25 to 44 year olds, launching on 2099-08-01 in Lagos and Accra. Comparable shows: \"How I Built This\" and \"Huberman Lab\". Swap with \"Armchair Expert\". Rival \"SmartLess\". Topics: money, technology.",
+  "analysis": {
+    "asked": "A launch plan.",
+    "goals": [],
+    "constraints": [],
+    "inferred": [],
+    "criteria": [
+      {
+        "text": "Says which city to open in and why",
+        "evidence": true
+      },
+      {
+        "text": "Names the first partner to approach",
+        "evidence": true
+      }
+    ],
+    "readers": {
+      "who": "The audience for this work, read from the brief",
+      "ages": [],
+      "consumes": "the comparable titles below",
+      "why": "Recorded for the golden run, as a model analyst would answer."
+    },
+    "comps": [
+      {
+        "name": "How I Built This with Guy Raz",
+        "why": "A comparable title chosen for the golden run."
+      },
+      {
+        "name": "Planet Money",
+        "why": "A comparable title chosen for the golden run."
+      }
+    ]
+  },
   "replies": [
     {
       "optionIds": ["skip"]
