@@ -1,4 +1,5 @@
 import { categorySchema, startModeSchema } from '@oraqul/schema';
+import { offerTeamSetup } from '@/lib/api/team-setup';
 import { getViewer } from '@/lib/api/viewer';
 import { startPath } from '@/lib/routes';
 import { StartScreen } from './start-screen';
@@ -14,5 +15,14 @@ export default async function StartPage({ searchParams }: PageProps<'/start'>) {
   // A brief handed over by the guide. Long text stays out of the sign-in return path.
   const text = typeof query.text === 'string' ? query.text.slice(0, MAX_TEXT) : undefined;
   const viewer = await getViewer(startPath({ mode, category, text }));
-  return <StartScreen mode={mode} category={category} text={text} viewer={viewer} />;
+  const path = startPath({ mode, category, text });
+  return (
+    <StartScreen
+      mode={mode}
+      category={category}
+      text={text}
+      viewer={viewer}
+      offerSetup={await offerTeamSetup(viewer, path)}
+    />
+  );
 }
