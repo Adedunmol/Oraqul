@@ -65,7 +65,7 @@ type Reader = (rest: string) => TeamRuleValue | null;
 // The template lines the page offers. A line is `Label: what it says`.
 const TEMPLATE: [RegExp, Reader][] = [
   [
-    /^(?:markets?|territor(?:y|ies)|cities|only cover)\b/i,
+    /^(?:markets?|territor(?:y|ies)|cities|city|locations?|based in|home markets?|only cover)\b/i,
     (r) => (splitNames(r).length ? { kind: 'territory_allow', names: splitNames(r) } : null),
   ],
   [

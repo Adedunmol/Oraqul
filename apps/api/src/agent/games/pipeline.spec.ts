@@ -257,7 +257,7 @@ describe('Games build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(audience?.kind).toBe('playbook');
     expect(audience?.text).toContain('Nigerians');
     const gaps = output.plan.sections.find((s) => s.key === 'gaps')?.lines.map((l) => l.text) ?? [];
-    expect(gaps.some((t) => /Name two or three comparable games/.test(t))).toBe(true);
+    expect(gaps.some((t) => /Say what the game is/.test(t))).toBe(true);
   });
 
   it('remembers what the person said earlier in the chat when they ask again', async () => {
@@ -284,32 +284,14 @@ describe('Games build pipeline on demo data', { timeout: 30_000 }, () => {
     expect(read.regions).toEqual(['Nigeria']);
   });
 
-  it('asks again, and plans nothing, when the answer to the one question says nothing', async () => {
+  it('does not ask what it is: a bare brief goes on to the cards that follow, as a typical launch', async () => {
     const { handoff, deps } = setup('I want to work on my new game');
     const first = await runGamesBuild(handoff, deps());
-    expect(first.reason).toBe('waiting');
-    if (first.state?.job !== 'build') throw new Error('Expected a paused build');
-    expect(first.state.pending?.id).toBe('games.minimum');
-
-    // "try again" tells the agent nothing about the game, so it asks again and plans no default.
-    const again = await runGamesBuild(handoff, deps(), {
-      state: first.state,
-      reply: { kind: 'typed', text: 'try again bro' },
-    });
-    expect(again.reason).toBe('waiting');
-    expect(again.output).toBeNull();
-
-    // Anything about the game is enough: the kind, the platform and who it is for.
-    if (again.state?.job !== 'build') throw new Error('Expected a paused build');
-    const done = await runGamesBuild(handoff, deps(), {
-      state: again.state,
-      reply: { kind: 'typed', text: 'a mobile shooter built for Nigerians' },
-    });
-    expect(done.reason).toBe('finished');
-    const read = gamesInputsSchema.parse(done.output?.inputs).read;
-    expect(read.launchKind).toBe('mobile');
-    expect(read.regions).toEqual(['Nigeria']);
-    expect(done.output?.brief.places.map((p) => p.name).sort()).toEqual(['Abuja', 'Lagos']);
+    if (first.state?.job === 'build') {
+      expect(first.state.pending?.id).not.toBe('games.minimum');
+    } else {
+      expect(first.reason).toBe('finished');
+    }
   });
 
   it('ranks a country the pack has no entry for, from the cities the table has in it', async () => {

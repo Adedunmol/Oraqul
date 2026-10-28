@@ -58,6 +58,8 @@ export interface LaunchConfig<
   rivalTypes: readonly QlooEntityType[];
   /** Where tags of a genre live in Qloo, for the genre fallback when no comp is found by name. */
   genreTagPrefix: string;
+  /** More phrases than the genre that name the launch's kind (topics, store tags), tried as genre tags. */
+  tagPhrases?(read: R): string[];
   /** Every query the category can run, so a second round can add one the first did not. */
   catalog: readonly CatalogEntry[];
   /** Finding queries that rank artists, which a partner brief and an audit can place. */
@@ -100,11 +102,14 @@ export interface LaunchConfig<
    */
   fixed?(read: R): R;
 
+  /** The one question a build may ask: what it cannot plan without. A description is never one. */
+  minimum: { id: string; example: string; missing(read: R): string[] };
   /**
-   * The one question a build may ask: there is nothing to plan from without these. `strict` asks
-   * again when the answer still leaves something missing, instead of planning from nothing.
+   * What a brief with no description, comps or genre is planned as, so a title and a city are
+   * enough for a first plan. Said in the plan, with a nudge to say more. Never overrides a field
+   * the brief or the analysis already set.
    */
-  minimum: { id: string; example: string; strict?: boolean; missing(read: R): string[] };
+  typical: { genre: string; country?: string; label: string; described(read: R): boolean };
   pickModules(read: R): ModulePick;
 
   rules: CheckRules;

@@ -45,11 +45,11 @@ The Games, Books and Podcasts calendars still live in their `KIND_PROFILES` (bea
 | D3 | Clash checks use real rival dates. The user supplies them. | `Rivals: Title on YYYY-MM-DD` in the brief is scored against the comps in one call during the build (`clash.ts`), and a fix keeps them. An audit does not run the clash. For a live show a rival is also called by how near its date is to the show's (E6) |
 | D4 | One plan per territory, home first, then diaspora cities. | `plan.territories`, in code (`territories.ts`) |
 | D5 | Direction, never forecasts. Okay, risky or avoid, with confidence set by code. | `plan.calls` (`direction.ts`) |
-| D6 | Ask for a budget band first. Propose only what it can carry. | One card in a full build, and the line check (`band.ts`, `check.ts`) |
+| D6 | Size the plan by a budget band, from the brief, else from the team's budget ceiling, and only then ask. Propose only what it can carry. | One card in a full build, and the line check (`band.ts`, `check.ts`) |
 | D7 | Channels by audience. Music and books lead on TikTok, Reels and Shorts. Film and podcasts lead on YouTube. Games lead on YouTube, TikTok and Discord. Live shows lead on Instagram, TikTok and X. Nigeria leads on Instagram and TikTok. WhatsApp is never a lead channel, whatever the team picks: it passes a launch between people who know each other, so it is offered last, as a sharing layer. The team picks the platforms (D10), either on the card, in a `Platforms:` line, or in the Guide's `Channels we already use:` line. | Code writes Channels per territory (`channelsSection`) |
 | D8 | Guides and scripts only. Oraqul does not generate ads, trailers, images or video. | The asset refusal, the line check, Creative briefs in every full plan, and the creative kit job |
 | D9 | Partners come in tiers, each with Qloo fit and budget fit, and price unknown. | `plan.partners` (`partners.ts`) |
-| D10 | Ask which platforms to plan on. Suggest them for the market, let the team pick several, and plan only those. | One multi-select card in a full build (`platforms.ts`), then `territoriesOf` |
+| D10 | Plan on the platforms the brief names, and on the format's usual ones for the market when it names none. Never ask. The plan says naming them would sharpen it. | `platformsChosen` in a full build, then `territoriesOf` |
 
 ## Targets are not forecasts
 

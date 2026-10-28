@@ -56,6 +56,7 @@ import { applyAnalysis, ScriptedAnalyst } from './analyse.js';
 import {
   bandFromAnswer,
   bandFromBrief,
+  bandOfBudget,
   bandQuestion,
   bandQuestionId,
   withLauncher,
@@ -88,7 +89,6 @@ import type { QueryPlanCore } from './planner.js';
 import {
   marketOf,
   platformLine,
-  platformQuestion,
   platformQuestionId,
   platformsChosen,
   platformsFromAnswer,
@@ -595,6 +595,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
   let rivals: Rival[] = [];
   let brands: string[] = [];
   let rulesOverride = false;
+  let assumedLabel: string | null = null;
 
   if (from) {
     ctx.trace('Applying your what-if to the plan');
@@ -683,7 +684,7 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
 
     // The first question a build may ask: there is nothing to plan from without these (PRD C1). A full plan may also ask for the budget band, below.
     const missing = deps.config.minimum.missing(read);
-    if (missing.length && (!resume || deps.config.minimum.strict)) {
+    if (missing.length && !resume) {
       const question: Question = {
         id: deps.config.minimum.id,
         card: 'text',
@@ -708,11 +709,61 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       });
     }
 
+    // A brief that says nothing about the work is planned as the category's typical launch, and the
+    // plan says so. What the person adds afterwards (description, genre, comps) sharpens it.
+    const bare =
+      !read.genre &&
+      read.comps.length === 0 &&
+      read.suggestedComps.length === 0 &&
+      !deps.config.typical.described(read);
+    if (bare) {
+      const { typical } = deps.config;
+      read = { ...read, genre: typical.genre, country: read.country ?? typical.country ?? null };
+      if (understanding) {
+        understanding = {
+          ...understanding,
+          assumed: [
+            ...understanding.assumed,
+            {
+              what: 'genre',
+              value: typical.genre,
+              why: `Nothing was said about it, so this is ${typical.label}.`,
+            },
+          ],
+        };
+      }
+      assumedLabel = typical.label;
+      ctx.trace(`No description given, so planning for ${typical.label}`);
+    }
+
     // The second question a full build may ask: what the budget can carry decides which partners
     // and moves the plan may propose, so it is asked before the research and only once.
     rivals = rivalsFrom(input.text);
     brands = brandsFrom(input.text);
     band = band ?? bandFromBrief(read, input.text);
+    // The team's budget ceiling sizes the plan when the brief gives no budget: asking for a figure the
+    // team already set would be a silly question. It is a ceiling, so the plan never goes above it.
+    const ceiling = handoff.rules?.budgetMax;
+    if (!band && ceiling) {
+      band = {
+        band: bandOfBudget({ amount: ceiling.amount, currency: ceiling.currency }),
+        source: 'assumed',
+      };
+      ctx.trace('Sizing the plan from your team’s budget ceiling');
+      if (understanding) {
+        understanding = {
+          ...understanding,
+          assumed: [
+            ...understanding.assumed,
+            {
+              what: 'budget',
+              value: `up to ${ceiling.currency} ${ceiling.amount.toLocaleString('en-GB')}`,
+              why: 'Taken from your team’s defaults, because the brief gave no budget.',
+            },
+          ],
+        };
+      }
+    }
     if (!band && read.scope === 'full' && !resume?.state.askedBand) {
       const question = bandQuestion(deps.config.category);
       deps.emit({ type: 'question', agent: deps.config.category, ...question });
@@ -732,28 +783,10 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
       });
     }
 
-    // The third question a full build may ask: which platforms to plan on. A brief that names them
-    // has answered it. Asked before the research so the plan is written for the ones chosen.
+    // Platforms are never asked: a brief that names them is planned on them, and any other plans on
+    // the format's usual platforms. The plan's "To sharpen" says that naming them would sharpen it.
     platforms =
       platforms ?? (platformsChosen(input.text).length ? platformsChosen(input.text) : null);
-    if (!platforms && read.scope === 'full' && !resume?.state.askedPlatforms) {
-      const question = platformQuestion(deps.config.category, marketOf(read));
-      deps.emit({ type: 'question', agent: deps.config.category, ...question });
-      return ctx.stop('waiting', {
-        job: 'build',
-        kind,
-        extra,
-        asked: true,
-        settle: false,
-        askedBand: true,
-        band,
-        askedPlatforms: true,
-        platforms: null,
-        askedRules: false,
-        rulesOverride: false,
-        pending: question,
-      });
-    }
 
     // The fourth question a build may ask: a brief that asks for what the team's defaults rule out
     // gets one card. Asked once, before any research.
@@ -873,7 +906,9 @@ export async function runBuild<R extends LaunchRead, P extends QueryPlanCore>(
     asked,
     extra,
     kind,
-    intro: `Here is the launch plan for “${title}”.`,
+    intro: assumedLabel
+      ? `Here is a first launch plan for “${title}”, written for ${assumedLabel} because the brief did not say what it is. Tell me what it is about, its genre and who it is for, and I will sharpen it.`
+      : `Here is the launch plan for “${title}”.`,
     band,
     platforms,
   });
@@ -1336,9 +1371,7 @@ export function noCompsStop(
     type: 'message',
     body: qlooFailed
       ? `Qloo did not answer just now, so I could not look up the ${deps.config.words.comps}${tried.length ? ` (${tried.join(', ')})` : ''}. Nothing is wrong with your brief. Send it again in a minute.`
-      : tried.length
-        ? `Qloo had nothing close to any of the comps (${tried.join(', ')}), so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`
-        : `I could not find comps for this launch, so there is nothing to describe the audience with. Name a few ${deps.config.words.comps} your audience ${deps.config.words.compsVerb ?? 'watches'} and I will plan from them.`,
+      : `Qloo had nothing close to this brief${tried.length ? ` or to the ${deps.config.words.comps} I tried (${tried.join(', ')})` : ''}, so I could not describe the audience yet. Tell me what it is about and its genre, and I will plan from that. You do not need to name ${deps.config.words.comps}.`,
     claims: ctx.receipts
       .slice(0, 1)
       .map((r) => ({ text: 'Searched Qloo.', receiptIds: [r.callId] })),
@@ -1465,16 +1498,20 @@ const releaseYear = z.looseObject({ release_year: z.number().optional() });
  */
 export async function findGenreComps(
   deps: {
-    config: Pick<LaunchConfig, 'anchorTypes' | 'genreTagPrefix' | 'words'>;
+    config: Pick<LaunchConfig, 'anchorTypes' | 'genreTagPrefix' | 'tagPhrases' | 'words'>;
     tools: ToolContext;
   },
   keep: (made: Receipt[]) => void,
   read: LaunchRead,
 ): Promise<Pick<Anchors, 'resolved' | 'used'>> {
   const none = { resolved: [], used: [] };
-  if (!read.genre) return none;
-  const words = read.genre.split(/[^\p{L}]+/u).filter((w) => w.length >= 4);
-  const phrases = [...new Set([read.genre, ...words])].slice(0, 5);
+  const extra = deps.config.tagPhrases?.(read) ?? [];
+  if (!read.genre && extra.length === 0) return none;
+  const words = (read.genre ?? '').split(/[^\p{L}]+/u).filter((w) => w.length >= 4);
+  const phrases = [...new Set([...(read.genre ? [read.genre] : []), ...extra, ...words])].slice(
+    0,
+    5,
+  );
   const found = await tools.resolveTags.run(deps.tools, {
     phrases: phrases.map((phrase) => ({
       phrase,
@@ -1538,7 +1575,7 @@ export async function findGenreComps(
         name: t.name,
         source: 'added',
         match: t.year ? String(t.year) : null,
-        choice: `Qloo had none of the comps by name, so I used “${t.name}”, which it lists for ${list(named)}${read.country ? ` from ${read.country}` : ''}. Name comps to sharpen the read.`,
+        choice: `Qloo had none of the comps by name, so I used “${t.name}”, which it lists for ${list(named)}${read.country ? ` from ${read.country}` : ''}. Tell me more about it to sharpen the read.`,
       });
     }
   }

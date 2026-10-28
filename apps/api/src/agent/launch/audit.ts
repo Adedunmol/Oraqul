@@ -1,4 +1,4 @@
-import { QlooBudgetError } from '@oraqul/engine';
+import { QlooBudgetError, QlooError } from '@oraqul/engine';
 import {
   type AuditReport,
   type Claim,
@@ -29,6 +29,7 @@ import {
   briefText,
   budgetStop,
   findComps,
+  findGenreComps,
   type LaunchInputs,
   launchInputsSchema,
   noCompsStop,
@@ -243,6 +244,16 @@ export async function auditStages<R extends LaunchRead, P extends QueryPlanCore>
     } catch (err) {
       if (err instanceof QlooBudgetError) return { stop: budgetStop(deps, ctx) };
       throw err;
+    }
+    if (comps.resolved.length === 0 && !qlooFailed) {
+      ctx.trace('No comp found, so reading the genre in Qloo');
+      try {
+        comps = { ...comps, ...(await findGenreComps(deps, ctx.keep, read)) };
+      } catch (err) {
+        if (err instanceof QlooBudgetError) return { stop: budgetStop(deps, ctx) };
+        if (!(err instanceof QlooError)) throw err;
+        qlooFailed = true;
+      }
     }
     if (comps.resolved.length === 0) {
       noCompsStop(deps, ctx, read, qlooFailed);

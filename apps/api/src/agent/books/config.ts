@@ -134,7 +134,7 @@ function gapsSection(read: BooksRead, comps: { used: CompUsed[] }): LaunchSectio
       : ['Say if there is an audiobook, and the plan adds an audiobook section.']),
     ...(comps.used.some((c) => c.source === 'added')
       ? [
-          'Name two or three comparable books your readers also read, and every recommendation gets sharper.',
+          'Say what the book is about, its genre and who it is for, and the plan can be built around them.',
         ]
       : []),
     ...(read.ages.length
@@ -332,19 +332,16 @@ export const booksLaunch: LaunchConfig<BooksRead, BooksQueryPlan> = {
     id: 'books.minimum',
     example:
       'For example: “A Nigerian literary debut for readers of Americanah”, “a romantasy for 18 to 34 on Kindle”, or “the paperback reissue of my memoir”.',
-    // A title alone says nothing: a plan for it would be the default launch, which is the wrong
-    // plan for most books. Anything about the book will do: its genre, readers or kind.
-    strict: true,
-    missing: (read) =>
-      read.genre ||
-      read.readership ||
-      read.regions.length ||
-      read.places.length ||
-      read.comps.length ||
-      read.previousBooks.length ||
-      read.screenTitles.length
-        ? []
-        : ['a line about the book: its genre, who it is for, or what kind of launch it is'],
+    missing: () => [],
+  },
+  typical: {
+    genre: 'literary fiction',
+    label: 'a typical trade book launch',
+    described: (read) =>
+      read.readership !== null ||
+      read.regions.length > 0 ||
+      read.previousBooks.length > 0 ||
+      read.screenTitles.length > 0,
   },
   pickModules: (read) =>
     booksPlan.pickModules({

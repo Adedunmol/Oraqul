@@ -125,7 +125,7 @@ function gapsSection(read: PodcastsRead, comps: { used: CompUsed[] }): LaunchSec
       : []),
     ...(comps.used.some((c) => c.source === 'added')
       ? [
-          'Name two or three comparable shows your listeners also hear, and every recommendation gets sharper.',
+          'Say what the show is about, its format, and who hosts or appears on it, and the plan can be built around them.',
         ]
       : []),
     ...(read.ages.length
@@ -250,6 +250,7 @@ export const podcastsLaunch: LaunchConfig<PodcastsRead, PodcastsQueryPlan> = {
   anchorTypes: ['urn:entity:podcast'],
   rivalTypes: ['urn:entity:podcast'],
   genreTagPrefix: podcastsPlan.TAG_SPACES.podcastGenre.prefix,
+  tagPhrases: (read) => read.topics.slice(0, 2),
   artistQueries: [],
   lead: (read) => read.show,
   teamAnchors: (read) => read.previousShows,
@@ -276,21 +277,17 @@ export const podcastsLaunch: LaunchConfig<PodcastsRead, PodcastsQueryPlan> = {
     id: 'podcasts.minimum',
     example:
       'For example: “A true crime podcast for Nigerians”, “a weekly football chat show on YouTube”, or “season 2 of my business interview show”.',
-    // A name alone says nothing: a plan for it would be the default launch, which is the wrong
-    // plan for most shows. Anything about the show will do: its subject, style or audience.
-    strict: true,
-    missing: (read) =>
-      read.genre ||
-      read.style ||
-      read.platforms.length ||
-      read.regions.length ||
-      read.places.length ||
-      read.comps.length ||
-      read.previousShows.length ||
-      read.crossPromo.length ||
-      read.topics.length
-        ? []
-        : ['a line about the show: its subject, its style, or who it is for'],
+    missing: () => [],
+  },
+  typical: {
+    genre: 'interview',
+    label: 'a typical interview podcast launch',
+    described: (read) =>
+      read.style !== null ||
+      read.topics.length > 0 ||
+      read.regions.length > 0 ||
+      read.previousShows.length > 0 ||
+      read.crossPromo.length > 0,
   },
   pickModules: (read) =>
     podcastsPlan.pickModules({

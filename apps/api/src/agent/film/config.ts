@@ -81,7 +81,7 @@ function gapsSection(read: FilmRead, comps: { used: CompUsed[] }): LaunchSection
   const texts = [
     ...(comps.used.some((c) => c.source === 'added')
       ? [
-          'Name two or three films your audience also watches, and every recommendation gets sharper.',
+          'Say what the film is about, its genre, and who stars in it or directs it, and the plan can be built around them.',
         ]
       : []),
     ...(read.ages.length
@@ -138,11 +138,16 @@ export const filmLaunch: LaunchConfig<FilmRead, QueryPlan> = {
   minimum: {
     id: 'film.minimum',
     example: 'For example: “A Nigerian crime thriller, opening in Lagos and London.”',
-    missing: (read) =>
-      [
-        read.genre || read.logline ? null : 'what the film or series is',
-        read.places.length ? null : 'at least one city it opens in',
-      ].filter((m): m is string => m !== null),
+    missing: (read) => (read.places.length ? [] : ['at least one city it opens in']),
+  },
+  typical: {
+    genre: 'drama',
+    country: 'Nigeria',
+    label: 'a typical Nollywood film',
+    // A logline is not counted: a reader may fill it with the request itself, and a real one has
+    // already let the analysis infer a genre.
+    described: (read) =>
+      read.cast.length > 0 || read.director !== null || read.soundtrack.length > 0,
   },
   pickModules: (read) =>
     filmPlan.pickModules({
