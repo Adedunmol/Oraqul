@@ -19,7 +19,7 @@ export function CreateTeamForm({ onDone }: { onDone?: () => void }) {
     try {
       const team = await createTeam(name);
       setCurrentTeam(team.id);
-      router.push('/team');
+      router.push('/overview');
       router.refresh();
       onDone?.();
     } catch {

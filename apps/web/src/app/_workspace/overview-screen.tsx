@@ -9,14 +9,24 @@ import { chatPath, projectPath } from '@/lib/routes';
 import { formatDay, plural } from './format';
 import { CardShell, cardGridClass } from './project-card';
 import { StartComposer } from './start-composer';
+import { TeamSetupDialog } from './team-setup-dialog';
 
 const sectionTitle = 'text-[15px] font-semibold tracking-[-0.01em]';
 const emptyBox = 'flex items-center gap-3 rounded-2xl bg-card px-5 py-5 text-[13.5px] text-muted';
-export function OverviewScreen({ viewer, overview }: { viewer: Viewer; overview: Overview }) {
+export function OverviewScreen({
+  viewer,
+  overview,
+  offerSetup = false,
+}: {
+  viewer: Viewer;
+  overview: Overview;
+  offerSetup?: boolean;
+}) {
   const canEdit = viewer.role !== 'viewer' && viewer.teamId !== null;
 
   return (
     <div className="view-enter flex flex-col gap-10">
+      {offerSetup && viewer.teamId ? <TeamSetupDialog teamId={viewer.teamId} /> : null}
       <PageHead
         className="sticky-head"
         title="Overview"
