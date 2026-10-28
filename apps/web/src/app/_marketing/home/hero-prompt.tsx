@@ -44,9 +44,9 @@ export function HeroPrompt() {
       </div>
       <button
         type="submit"
-        className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl max-[639px]:h-10 max-[639px]:rounded-lg bg-primary px-4 text-[15px] font-medium text-primary-ink shadow-primary hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="flex size-11 shrink-0 items-center justify-center rounded-xl max-[639px]:size-10 max-[639px]:rounded-lg bg-primary text-[15px] font-medium text-primary-ink shadow-primary hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        <span className="max-[479px]:sr-only">Plan it</span>
+        <span className="sr-only">Plan it</span>
         <Icon name="sparkles" className="size-4" />
       </button>
     </form>
