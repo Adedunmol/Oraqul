@@ -194,7 +194,7 @@ Rules:
 - window: the release date or window as written ("Q3 2027", "October").
 - scope: "full" when they ask for a launch plan, a go-to-market, or help with the launch in general, or when it is unclear. "narrow" only for one specific question, such as which regions, or which creators. This field is your judgment, with no quote.
 - ask: for a narrow question, the part of a plan it is about: store (store page and tags), events (festivals, showcases), softlaunch, earlyaccess, collabs (fan base collabs), creators, liveops (seasons, events after launch), publicity (press, podcasts), partnerships (brands), community, timeline, budget, measure (what to track), risks. Null when it is about regions or the audience, or when scope is full.
-- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real games whose players are likely the same, from the genre, the platforms, the kind of launch and where the audience is, enough to reach 3 to 5 in all. Names only. Code checks each in Qloo. The person is never asked for comps.
+- suggestedComps: whenever they named fewer than 3 comps, even for a one-line brief. Propose well known, real games whose players are likely the same, from the genre, the store tags, the platforms, the kind of launch, where the audience is, the earlier games and any collaborations named, A person cannot be looked up as a signal in Qloo, so use their other work in their place. Enough to reach 3 to 5 in all. Names only. Code checks each in Qloo. The person is never asked for comps.
 - Plain words, no exclamation marks.`;
 
 export class ModelGamesReader implements GamesReader {
