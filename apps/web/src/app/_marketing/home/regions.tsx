@@ -137,11 +137,11 @@ export function Regions() {
   return (
     <section aria-labelledby="regions-title" className={`scheme-dark mk-glow bg-bg ${fitBand}`}>
       <div className={`${wrap} flex flex-col gap-[clamp(20px,3.6svh,48px)]`}>
-        <div className="flex flex-col items-start gap-[clamp(10px,2svh,20px)]">
+        <div className="flex flex-col items-start gap-[clamp(14px,2.4svh,24px)]">
           <h2 id="regions-title" className={fitH2}>
             Every place you name gets its own read.
           </h2>
-          <p className="max-w-[72ch] text-[clamp(16px,1.3vw,17px)] leading-[1.65] text-ink/75">
+          <p className="max-w-[60ch] text-[clamp(17px,1.3vw,18px)] leading-[1.65] text-ink/75">
             Name Lagos and Oraqul asks Qloo what the audience for your comparable titles looks like
             there, ranks it against your other cities, and says whether the place fits. Then it goes
             down to the neighbourhoods.
@@ -247,7 +247,7 @@ export function Regions() {
               role="tabpanel"
               id={`${base}-panel`}
               aria-labelledby={`${base}-${city.id}`}
-              className="flex flex-1 flex-col gap-3 rounded-2xl bg-card p-4"
+              className="flex flex-1 flex-col gap-4 rounded-2xl bg-card p-5"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="font-display text-[clamp(26px,2.6vw,34px)] leading-none font-medium tracking-[-0.03em]">
@@ -267,7 +267,7 @@ export function Regions() {
                   />
                   <span className="absolute -top-1 bottom-[-4px] left-1/2 w-px bg-ink/50" />
                 </div>
-                <div className="flex justify-between text-[11.5px] text-muted">
+                <div className="flex justify-between text-[12.5px] text-muted">
                   <span>Weaker</span>
                   <span>An average city</span>
                   <span>Stronger</span>
@@ -279,14 +279,14 @@ export function Regions() {
                 {city.areas.join(' and ')}. {city.taste}
               </p>
               <div className="mt-auto flex flex-col gap-2 border-t border-line pt-4">
-                <p className="text-[13px] text-muted">Your cities, ranked together</p>
+                <p className="text-[14px] text-muted">Your cities, ranked together</p>
                 <ol className="flex flex-col gap-1.5">
                   {[...cities]
                     .sort((a, b) => b.strength - a.strength)
                     .map((c) => (
                       <li
                         key={c.id}
-                        className={`grid grid-cols-[72px_minmax(0,1fr)_34px] items-center gap-3 text-[13.5px] transition-opacity duration-300 motion-reduce:transition-none ${c.id === city.id ? 'opacity-100' : 'opacity-50'}`}
+                        className={`grid grid-cols-[76px_minmax(0,1fr)_36px] items-center gap-3 text-[14.5px] transition-opacity duration-300 motion-reduce:transition-none ${c.id === city.id ? 'opacity-100' : 'opacity-65'}`}
                       >
                         <span className="font-medium">{c.name}</span>
                         <span className="h-1.5 overflow-hidden rounded-full bg-surface2">
@@ -306,10 +306,14 @@ export function Regions() {
           </div>
         </div>
 
-        <ul className="grid gap-x-10 gap-y-3 border-t border-line pt-[clamp(12px,2svh,20px)] min-[800px]:grid-cols-3">
+        <ul className="grid gap-x-12 gap-y-6 border-t border-line pt-[clamp(20px,3svh,32px)] min-[800px]:grid-cols-3">
           {facts.map(([title, text]) => (
-            <li key={title} className="text-[15px] leading-[1.65] text-ink/70">
-              <span className="font-medium text-ink">{title}.</span> {text}
+            <li
+              key={title}
+              className="flex flex-col gap-1.5 text-[15.5px] leading-[1.65] text-ink/75"
+            >
+              <span className="text-[16px] font-medium text-ink">{title}</span>
+              <span>{text}</span>
             </li>
           ))}
         </ul>
