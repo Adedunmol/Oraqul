@@ -62,12 +62,12 @@ export function Hero() {
         <div className="flex flex-1 flex-col items-center justify-center py-[clamp(24px,6svh,72px)]">
           {/* The promise in the widest Mona Sans, the second half in the accent: two short lines on a
               phone and tablet, one line from 1024px up. The line under it says what the product is. */}
-          <p className="mk-word mb-[clamp(16px,2.4vw,28px)] rounded-full bg-card px-3.5 py-1.5 text-[13px] font-medium text-ink/80">
+          <p className="mk-pill mb-[clamp(28px,4vw,48px)] rounded-full bg-card px-3 py-1 text-[12px] font-medium text-ink/80">
             Powered by <span className="text-accent">Qloo</span>
           </p>
           <h1
             id="hero-title"
-            className="flex flex-col items-center font-display text-[clamp(28px,12.4vw,56px)] min-[768px]:text-[clamp(48px,7vw,110px)] min-[1024px]:flex-row min-[1024px]:gap-[0.3em] min-[1024px]:text-[clamp(44px,5.9vw,92px)] leading-[1.04] font-semibold tracking-[-0.012em] [word-spacing:0.08em] whitespace-nowrap [font-stretch:125%]"
+            className="flex flex-col items-center font-display text-[clamp(28px,13.2vw,58px)] min-[768px]:text-[clamp(48px,7vw,110px)] min-[1024px]:flex-row min-[1024px]:gap-[0.3em] min-[1024px]:text-[clamp(44px,5.9vw,92px)] leading-[1.04] font-semibold tracking-[-0.012em] [word-spacing:0.08em] whitespace-nowrap [font-stretch:125%]"
           >
             <span className="mk-word" style={at(0)}>
               Plan your

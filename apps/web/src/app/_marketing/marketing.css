@@ -65,6 +65,23 @@
   animation: mk-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
+/* The credit pill fades in, then breathes very slowly so it stays quietly alive. */
+@keyframes mk-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes mk-breathe {
+  50% {
+    opacity: 0.72;
+  }
+}
+.mk-pill {
+  animation:
+    mk-fade-in 900ms ease-out both,
+    mk-breathe 5s ease-in-out 900ms infinite;
+}
+
 /* The arrow between steps bobs down, a nudge to keep scrolling. */
 @keyframes mk-nudge {
   50% {
@@ -294,6 +311,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .mk-pill,
   .mk-word,
   .mk-rise,
   .mk-nudge,
