@@ -324,6 +324,19 @@ export const moneyTypeSchema = z.enum(moneyTypes);
 export type MoneyType = z.infer<typeof moneyTypeSchema>;
 
 /** A partner the plan can approach, with its tier, Qloo fit and budget fit. Price is never known. */
+/**
+ * What an outside source says about a named brand: `verified` (found, with where it is based),
+ * `unverified` (not found, or the source was down) or `problem` (no longer exists). A problem is
+ * removed before the plan is written, so a saved plan only carries the other two.
+ */
+export const partnerCheckSchema = z.object({
+  state: z.enum(['verified', 'unverified', 'problem']),
+  note: z.string().nullable(),
+  /** Where the brand is based, when the source says. It becomes the partner's market. */
+  country: z.string().nullable().default(null),
+});
+export type PartnerCheck = z.infer<typeof partnerCheckSchema>;
+
 export const partnerOptionSchema = z.object({
   id: z.string().min(1),
   name: z.string(),
@@ -349,6 +362,8 @@ export const partnerOptionSchema = z.object({
   flags: z.array(partnerFlagSchema).default([]),
   /** What it could give, set by code. Tiers and their logic do not depend on it. */
   moneyType: moneyTypeSchema.default('in_kind'),
+  /** Wikidata's read of a named brand. Absent for kinds of partner and when no check ran. */
+  check: partnerCheckSchema.optional(),
 });
 export type PartnerOption = z.infer<typeof partnerOptionSchema>;
 

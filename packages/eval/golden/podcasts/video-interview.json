@@ -46,9 +46,7 @@
       "f-topics": ["Diaspora life", "Faith", "Technology"],
       "f-crosspromo": ["Case Closed Weekly", "The Long Con", "Midnight Ledger"],
       "f-brands-lagos": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
-      "f-brands-manchester": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
       "f-brands-city-lagos": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
-      "f-brands-city-manchester": ["Glide Mobile", "Fizz Cola", "Lumen Coffee"],
       "f-region-lagos-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
       "f-region-lagos-brands": ["Coca-Cola", "Nike", "McDonald's"],
       "f-region-manchester-artists": ["Neon Tide", "Ada Lux", "Kola Wave"],
@@ -61,7 +59,7 @@
       "markets": "2/0",
       "crosspromo": "1/1",
       "guests": "0/1",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "publicity": "0/1",
       "video": "0/1",
       "live": "1/0",
@@ -78,12 +76,12 @@
     },
     "moves": ["f-markets", "f-audience", "f-topics"],
     "grounding": {
-      "lines": 65,
-      "backed": 22,
+      "lines": 64,
+      "backed": 20,
       "rankKept": 100,
-      "findingsUsed": 8,
+      "findingsUsed": 7,
       "cities": {
-        "Manchester": 5,
+        "Manchester": 4,
         "Lagos": 4
       }
     },

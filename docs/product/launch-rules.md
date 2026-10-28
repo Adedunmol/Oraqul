@@ -15,7 +15,7 @@ A rule is launch practice, so a line that states one is a **playbook** line (spe
 | Diaspora hubs | The cities a rollout reaches after the home market, by country of origin | `rules/shared.ts` |
 | Country channels | Channels that lead in a market whatever the category | `rules/shared.ts` |
 | Platform extras | The platforms a category or a market adds to the suggestions | `rules/platforms.ts` |
-| Partners | Tiers, seeded names per market, brand categories and kinds of partner per category, lead time, content fit, the pitch kit | `rules/partners.ts` (`partners@<date>.<n>`), see [partnerships](partnerships.md) |
+| Partners | Tiers, kinds of partner per market, brand categories and kinds of partner per category, lead time, content fit, the pitch kit | `rules/partners.ts` (`partners@<date>.<n>`), see [partnerships](partnerships.md) |
 | Content calendar | The rows a calendar is built from, and the paid ads note | `rules/calendar.ts` (`calendar@<date>.<n>`), see [content calendar](content-calendar.md) |
 | Pace | How the team's own figures are read against the plan's signal: the default curve for each category and the thresholds for ahead, on pace and behind | `rules/pace.ts` (`pace@<date>.<n>`), see [pace](#pace-and-watch) |
 | Watch | What a launch watch looks for, in days: when a plan is old, how near a rival is, when a late action is urgent | `rules/watch.ts` (`watch@<date>.<n>`) |
@@ -97,15 +97,15 @@ Tier A is out on a micro budget for everyone. A flagship that is out or a stretc
 
 | Tier | What | Budget fit |
 |---|---|---|
-| A, flagship | Guinness, MTN, Indomie in Nigeria, and any ranked brand at or above the flagship popularity (0.85). Only for releases with scale | Fits a mid-size or major band, out for micro and independent, and out for a solo launcher at any band. Who is launching can lift independent to a stretch, below |
-| B, category and integration | Brands that fit the category: banks and payment brands, food and drink, hospitality, telecom bundles. EE and Monzo in London, Lyft and Cash App in the US, Bolt in Lagos | Fits, a stretch for micro or a solo launcher |
+| A, flagship | Any ranked brand at or above the flagship popularity (0.85). Only for releases with scale | Fits a mid-size or major band, out for micro and independent, and out for a solo launcher at any band. Who is launching can lift independent to a stretch, below |
+| B, category and integration | Ranked brands that fit the category, and kinds of partner: banks and payment brands, food and drink, hospitality, telecom bundles | Fits, a stretch for micro or a solo launcher |
 | C, local | Cinemas, creators, venues, diaspora businesses, community groups. Most realistic for a solo or independent release | Fits every band and every launcher |
 
-A tier is set by what Qloo says about a brand, not by default: a flagship seed, or a ranked brand at or above the flagship popularity, is tier A; any other ranked brand is tier B; kinds of local partner are tier C. A plan keeps reserved slots per tier (3 flagship, 7 category, 4 local) so many ranked brands cannot push the local ones out.
+A tier is set by what Qloo says about a brand, not by default: a ranked brand at or above the flagship popularity is tier A; any other ranked brand is tier B; kinds of local partner are tier C. A plan keeps reserved slots per tier (3 flagship, 7 category, 4 local) so many ranked brands cannot push the local ones out.
 
-Seeded names are asked of Qloo only for the markets of the plan's territories, joined to the brands Qloo is asked to rank for those cities, so a seed gets a measured fit. A flagship seed is left out of the pool when the launch cannot reach one. Qloo also finds brands for the comps' audience by category and city, and a ranked brand's place for the city and age band alone is checked ([partnerships](partnerships.md#how-a-plan-finds-partners)). A seed Qloo does not rank shows as not ranked and gets no call, never a weak one. Each option carries its own market.
+No brand is named in the rules. Every brand a plan offers is one the team gave, one the model proposed for a city, or one Qloo found by category and city, and all of them are ranked in one pool, so each has a measured fit. The biggest names are asked for only when the launch can reach one. Qloo finds brands for the comps' audience by category and city, and a ranked brand's place for the city and age band alone is checked ([partnerships](partnerships.md#how-a-plan-finds-partners)). A brand the team asked about that Qloo does not rank shows as not ranked and gets no call, never a weak one. Each option carries the market of the city it was ranked in.
 
-**Verification.** Checked on the development host ([qloo.md](../backend/qloo.md#what-is-verified)): Guinness, Indomie, EE, Monzo, Lyft, Cash App and Bolt match by exact name, and MTN matches as "MTN Group". "Verve" and "QuickTeller" did not resolve to the Nigerian payment brands, so they are not seeds; banks and payment brands are a kind of partner. Brand categories that give brands that operate in a city: beverage, telecom, food and beauty. Coffee, energy drink and snack were thin and are not asked; Qloo has no brand category for apparel, hardware, ticketing or payments.
+**Verification.** Checked on the development host ([qloo.md](../backend/qloo.md#what-is-verified)): "Verve" and "QuickTeller" did not resolve to the Nigerian payment brands, so they are not named; banks and payment brands are a kind of partner. Brand categories that give brands that operate in a city: beverage, telecom, food and beauty. Coffee, energy drink and snack were thin and are not asked; Qloo has no brand category for apparel, hardware, ticketing or payments.
 
 Price is always **unknown**. Oraqul gives no pricing advice, and no sponsorship fee or loan terms are ever quoted. Details, the lead time rule (T1), content fit (T2), the pitch kit (T3, T4) and the team's own partners are in [partnerships](partnerships.md).
 

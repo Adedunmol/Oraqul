@@ -2,10 +2,9 @@ import { cityCountry } from '@oraqul/engine';
 import {
   type BudgetBand,
   CATEGORY_PARTNERS,
-  FLAGSHIPS,
   moneyTypeOf,
+  PARTNER_KINDS,
   PARTNER_RULES,
-  PARTNER_SEEDS,
   type PartnerTier,
   partnerReach,
 } from '@oraqul/packs';
@@ -29,7 +28,7 @@ import type { QueryPlanCore } from './planner.js';
 
 const same = (a: string, b: string) => normalise(a) === normalise(b);
 
-const seedsFor = (market: string) => PARTNER_SEEDS[market.toLowerCase()];
+const kindsFor = (market: string) => PARTNER_KINDS[market.toLowerCase()];
 
 const sentence = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
@@ -40,27 +39,26 @@ export function marketsOf(country: string | null, cities: string[]): string[] {
 }
 
 /**
- * A tier for a brand by what Qloo says about it. A flagship seed is tier A, and so is a ranked
- * brand at or above the flagship popularity: a mass-market name is not "category and integration".
- * Any other brand is tier B.
+ * A tier for a brand by what Qloo says about it. A ranked brand at or above the flagship
+ * popularity is tier A: a mass-market name is not "category and integration". Any other brand is
+ * tier B.
  */
-export function tierOf(name: string, popularity: number | null = null): PartnerTier {
-  if (FLAGSHIPS.some((f) => same(f, name))) return 'A';
+export function tierOf(popularity: number | null = null): PartnerTier {
   return popularity !== null && popularity >= PARTNER_RULES.tier.value.flagshipPopularity
     ? 'A'
     : 'B';
 }
 
 /**
- * Every name the line check treats as a flagship: the seeded ones, and any brand Qloo ranked at
- * flagship popularity, so a band that cannot carry tier A drops lines that propose either.
+ * Every name the line check treats as a flagship: any brand Qloo ranked at flagship popularity, so
+ * a band that cannot carry tier A drops lines that propose one.
  */
 export function flagshipNames(findings: Finding[]): string[] {
   const limit = PARTNER_RULES.tier.value.flagshipPopularity;
   const ranked = findings
     .filter((f) => f.query === 'brands')
     .flatMap((f) => f.entities.filter((e) => (e.popularity ?? 0) >= limit).map((e) => e.name));
-  return [...new Set([...FLAGSHIPS, ...ranked])];
+  return [...new Set(ranked)];
 }
 
 /**
@@ -76,31 +74,24 @@ export function budgetFitOf(
 }
 
 /**
- * Adds the seeded partners for each city's market to the brands Qloo is asked to rank, so a seed
- * gets a measured fit. A flagship is added unless the band is far out of its reach (micro), since
- * a stretch still deserves a measured fit. The team's own candidates come first, and one call
- * still resolves them all.
+ * Says whether the launch can reach a flagship, which decides if Qloo is also asked for the biggest
+ * names, and makes sure every city the plan reaches is asked about. The brands themselves come from
+ * the team, the model's candidates and Qloo's own category search, never from a fixed list.
  */
-export function withSeeds<P extends QueryPlanCore>(
+export function withReach<P extends QueryPlanCore>(
   plan: P,
   band: BudgetBand,
   cities: string[],
   launcher: LauncherKind | null = null,
 ): P {
   const flagship = budgetFitOf(band, 'A', launcher) !== 'out';
-  const seeded = (city: string): string[] => {
-    const country = cityCountry(city);
-    const seeds = country ? seedsFor(country) : undefined;
-    if (!seeds) return [];
-    return [...(flagship ? seeds.A.names : []), ...seeds.B.names];
-  };
   const known = new Map(plan.brandCandidates.map((c) => [c.city, c.names]));
   const askCities = [...new Set([...plan.brandCandidates.map((c) => c.city), ...cities])];
   return {
     ...plan,
     reach: { flagship },
     brandCandidates: askCities.flatMap((city) => {
-      const names = [...new Set([...(known.get(city) ?? []), ...seeded(city)])].slice(0, 8);
+      const names = [...new Set(known.get(city) ?? [])].slice(0, 8);
       return names.length > 0 ? [{ city, names }] : [];
     }),
   };
@@ -207,6 +198,8 @@ export function partnerNotes(input: {
   today: string;
   band: BudgetBand;
   launcher?: LauncherKind | null;
+  /** Cities with no brand to suggest, so the plan says so and points to the local partners. */
+  bare?: string[];
 }): PartnerNote[] {
   const { release, today, band, launcher } = input;
   const lead = PARTNER_RULES.leadTime.value;
@@ -233,6 +226,14 @@ export function partnerNotes(input: {
       id: 'partner-note-launcher',
       ruleId: 'partners.reach',
       text: PARTNER_RULES.reach.value[launcher],
+    });
+  }
+  if (input.bare?.length) {
+    const cities = input.bare.join(', ');
+    notes.push({
+      id: 'partner-note-bare',
+      ruleId: 'partners.slots',
+      text: `Qloo found no brand to suggest for ${cities}. Start there with local partners: cinemas, creators, community groups and businesses that serve the same audience.`,
     });
   }
   notes.push({ id: 'partner-note-barter', ruleId: 'partners.lead-time', text: lead.barter });
@@ -280,11 +281,6 @@ function localPlace(
   return null;
 }
 
-const seeded = (name: string): boolean =>
-  Object.values(PARTNER_SEEDS).some((tiers) =>
-    [...tiers.A.names, ...tiers.B.names].some((n) => same(n, name)),
-  );
-
 /** Keeps each tier's reserved slots, then fills what is left in tier order. */
 function reserve(options: PartnerOption[]): PartnerOption[] {
   const slots = PARTNER_RULES.slots.value;
@@ -314,7 +310,7 @@ export function partnerOptions(input: {
   findings: Finding[];
   signed: string[];
   band: BudgetBand;
-  /** The markets of the plan's territories. Seeds are listed only for these. */
+  /** The markets of the plan's territories. Kinds of partner are listed only for these. */
   markets: string[];
   /** The release country, for a partner Qloo did not place in a city. */
   home?: string | null;
@@ -356,11 +352,6 @@ export function partnerOptions(input: {
     ...considered
       .filter((c) => !ranked.some((n) => same(n, c) || normalise(n).startsWith(`${normalise(c)} `)))
       .map((name) => ({ name, from: 'qloo' as const, market: null })),
-    ...markets.flatMap((m) =>
-      (['A', 'B'] as const).flatMap((t) =>
-        (seedsFor(m)?.[t].names ?? []).map((name) => ({ name, from: 'seed' as const, market: m })),
-      ),
-    ),
   ]
     .filter((n, i, all) => all.findIndex((x) => same(x.name, n.name)) === i)
     .filter((n) => !(input.blocked ?? []).some((b) => same(b, n.name)));
@@ -368,19 +359,18 @@ export function partnerOptions(input: {
   const calls: DirectionCall[] = [];
   const options: PartnerOption[] = names.flatMap(({ name, from, market }) => {
     const row = best(name);
-    const tier = tierOf(name, row?.popularity ?? null);
+    const tier = tierOf(row?.popularity ?? null);
     const budgetFit = budgetFitOf(band, tier, launcher);
     // A flagship this launch cannot reach is kept, unranked, for the "later" list: never a
     // move in the plan, only a goal to grow toward.
     const local = row ? localPlace(findings, name, row.city) : null;
     // A big brand that the city likes as much as this audience does is popular everywhere, which
-    // says nothing about this audience. A seed or a partner the team named is kept either way.
+    // says nothing about this audience. A partner the team named is kept either way.
     if (
       row &&
       local &&
       tier === 'A' &&
       from === 'qloo' &&
-      !seeded(name) &&
       !asked(name) &&
       row.place / row.of > local.place / local.of
     ) {
@@ -457,34 +447,73 @@ export function partnerOptions(input: {
   const kindsB = kinds(
     'B',
     home,
-    [...new Set([...own.bKinds, ...markets.flatMap((m) => seedsFor(m)?.B.kinds ?? [])])],
+    [...new Set([...own.bKinds, ...markets.flatMap((m) => kindsFor(m)?.B.kinds ?? [])])],
     'partner-b',
   );
   const kindsC = markets.flatMap((m) =>
     kinds(
       'C',
       m,
-      [...new Set([...own.cKinds, ...(seedsFor(m)?.C.kinds ?? [])])],
+      [...new Set([...own.cKinds, ...(kindsFor(m)?.C.kinds ?? [])])],
       `partner-c-${slug(m)}`,
     ),
   );
 
-  return { partners: reserve([...options, ...kindsB, ...kindsC]), calls };
+  // A brand Qloo ranks against this audience is left out only when its city still has three better
+  // ones. A thin city keeps it, so the team is never left with nothing to try; the call says to
+  // approach the stronger ones first.
+  const weak = new Set(
+    options
+      .filter(
+        (o) =>
+          o.kind === 'brand' &&
+          o.fit?.direction === 'avoid' &&
+          o.from !== 'team' &&
+          !asked(o.name) &&
+          options.filter(
+            (x) =>
+              x !== o &&
+              x.kind === 'brand' &&
+              x.findingIds[0] === o.findingIds[0] &&
+              x.fit?.direction !== 'avoid',
+          ).length >= 3,
+      )
+      .map((o) => o.id),
+  );
+  const offered = options.filter((o) => !weak.has(o.id));
+  const calling = calls.filter((c) => !weak.has(`partner-${c.id.replace(/^call-partner-/, '')}`));
+  return { partners: reserve([...offered, ...kindsB, ...kindsC]), calls: calling };
 }
 
-/** The partner ids each territory carries: the partners Qloo ranked in its city. */
-export function withPartnerIds(territories: Territory[], calls: DirectionCall[]): Territory[] {
-  return territories.map((t) => ({
-    ...t,
-    partnerIds: calls
+/**
+ * The partner ids each territory carries: the partners Qloo ranked in its city, then any other
+ * brand found for that city. A city with too few brands to give a verdict still shows what was
+ * found, with no fit call, so the team always has options to try.
+ */
+export function withPartnerIds(
+  territories: Territory[],
+  calls: DirectionCall[],
+  partners: PartnerOption[] = [],
+): Territory[] {
+  return territories.map((t) => {
+    const called = calls
       .filter(
         (c) =>
           c.subject === 'partner' &&
           c.territory &&
           c.territory.toLowerCase() === t.name.toLowerCase(),
       )
-      .map((c) => `partner-${c.id.replace(/^call-partner-/, '')}`),
-  }));
+      .map((c) => `partner-${c.id.replace(/^call-partner-/, '')}`);
+    const found = partners
+      .filter(
+        (p) =>
+          p.kind === 'brand' &&
+          p.findingIds.includes(`f-brands-${slug(t.name)}`) &&
+          !(p.tier === 'A' && p.budgetFit !== 'fits' && p.from !== 'team'),
+      )
+      .map((p) => p.id);
+    return { ...t, partnerIds: [...new Set([...called, ...found])] };
+  });
 }
 
 /**
@@ -526,11 +555,12 @@ export function withTeamPartners(
     ),
     ...built.calls.filter((c) => added.some((a) => same(a.name, c.name))),
   ];
+  const listed = reserve([...added, ...rest]);
   return {
     ...plan,
-    partners: reserve([...added, ...rest]),
+    partners: listed,
     calls,
-    territories: withPartnerIds(plan.territories, calls),
+    territories: withPartnerIds(plan.territories, calls, listed),
   };
 }
 

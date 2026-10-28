@@ -96,9 +96,9 @@
       "territories": ["Accra:other:okay", "Lagos:other:avoid"],
       "calls": ["territory:Accra:okay:lower", "territory:Lagos:avoid:lower"],
       "partners": {
-        "A": 3,
-        "B": 7,
-        "C": 4
+        "A": 0,
+        "B": 8,
+        "C": 6
       }
     }
   }

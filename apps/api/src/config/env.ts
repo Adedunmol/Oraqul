@@ -26,7 +26,7 @@ export const envSchema = z
     QLOO_API_KEY: z.string().default(''),
     QLOO_BASE_URL: z.string().default(''),
     QLOO_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
-    QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(80),
+    QLOO_CALL_BUDGET: z.coerce.number().int().positive().default(100),
     /** Qloo requests in flight across all runs together. The development host 429s above about 2. */
     QLOO_MAX_CONCURRENT: z.coerce.number().int().positive().default(2),
     /** Qloo calls a month across every run. A development key is about 10,000 (docs/backend/qloo.md). */
@@ -36,6 +36,8 @@ export const envSchema = z
     /** Runs that ask Qloo, per person per calendar month. A person's own `run_cap` overrides it. */
     RUN_CAP_PER_USER_MONTH: z.coerce.number().int().positive().default(20),
     QLOO_MODE: z.enum(['demo', 'live']).default('demo'),
+    // Checks the brands Qloo ranked against Wikidata. Off in demo mode, whose brands are made up.
+    BRAND_CHECK: z.enum(['on', 'off']).default('on'),
     /** The commit the server was built from; saved on every plan. Empty in development. */
     CODE_VERSION: z.string().default(''),
     AGENT_MAX_STEPS: z.coerce.number().int().positive().default(12),

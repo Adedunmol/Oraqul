@@ -43,7 +43,6 @@
       "f-markets": ["Lagos", "London"],
       "f-worth-a-look": ["Manchester"],
       "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
-      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Late Signal", "The Joe Rogan Experience", "Crime Junkie"],
       "f-shows-lagos": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
       "f-shows-london": ["Harbor Precinct", "Eko Nights", "Midnight Harbor"],
@@ -58,7 +57,7 @@
       "positioning": "0/2",
       "audience": "3/0",
       "markets": "3/3",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "publicity": "1/1",
       "community": "1/1",
       "tour": "1/0",
@@ -74,13 +73,13 @@
     },
     "moves": ["f-markets", "f-audience"],
     "grounding": {
-      "lines": 54,
-      "backed": 31,
+      "lines": 53,
+      "backed": 30,
       "rankKept": 100,
-      "findingsUsed": 12,
+      "findingsUsed": 11,
       "cities": {
         "Lagos": 7,
-        "London": 7
+        "London": 6
       }
     },
     "dropped": 0,

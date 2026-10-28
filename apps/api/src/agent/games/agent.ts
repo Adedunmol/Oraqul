@@ -1,6 +1,7 @@
 import type { ToolContext } from '@oraqul/engine';
 import type { Output, PaceState } from '@oraqul/schema';
 import type { FundingResearcher } from '../../funding/fund-research.js';
+import type { Verifier } from '../../verify/verifier.js';
 import { LaunchAgent } from '../launch/agent.js';
 import type { Analyst } from '../launch/analyse.js';
 import type { FollowUpReader } from '../launch/follow-up.js';
@@ -34,6 +35,8 @@ export interface GamesAgentDeps {
   researchPlanner?: ResearchPlanner;
   /** Compares a draft plan with the request and sends it back. */
   reviewer?: Reviewer;
+  /** Checks the brands Qloo ranked against Wikidata. */
+  verifier?: Verifier;
   /** The planner for a standalone chat. */
   standalone?: Planner;
   followUps: FollowUpReader;

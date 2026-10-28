@@ -37,7 +37,7 @@ const brands = (city: string, names: string[], popularity: number | null = null)
 const base = { signed: [], band: 'mid' as const, category: 'film' as const };
 
 describe('partner market', () => {
-  it('gives a ranked partner the country of the city it was ranked in, and a seed its own market', () => {
+  it('gives a ranked partner the country of the city it was ranked in, and one Qloo placed in no city the release country', () => {
     const { partners } = partnerOptions({
       ...base,
       findings: [brands('London', ['Revolut'])],
@@ -45,11 +45,10 @@ describe('partner market', () => {
       home: 'Nigeria',
     });
     expect(partners.find((p) => p.name === 'Revolut')?.market).toBe('United Kingdom');
-    expect(partners.find((p) => p.name === 'EE')?.market).toBe('United Kingdom');
-    expect(partners.find((p) => p.name === 'MTN')?.market).toBe('Nigeria');
+    expect(partners.find((p) => p.name === 'EE')).toBeUndefined();
   });
 
-  it('lists seeds only for the markets the plan reaches', () => {
+  it('names no brand of its own, and lists kinds only for the markets the plan reaches', () => {
     const { partners } = partnerOptions({
       ...base,
       findings: [],
@@ -57,18 +56,16 @@ describe('partner market', () => {
       home: 'United Kingdom',
     });
     const names = partners.map((p) => p.name);
-    expect(names).toContain('EE');
-    expect(names).not.toContain('MTN');
-    expect(names).not.toContain('Lyft');
+    expect(partners.every((p) => p.kind === 'kind')).toBe(true);
+    expect(names).toContain('Independent cinemas');
   });
 });
 
 describe('partner tier', () => {
   it('puts a mass-market ranked brand in tier A and a mid-size one in tier B', () => {
-    expect(tierOf('Coca-Cola', 0.97)).toBe('A');
-    expect(tierOf('Ride Co', 0.5)).toBe('B');
-    expect(tierOf('Ride Co')).toBe('B');
-    expect(tierOf('Guinness')).toBe('A');
+    expect(tierOf(0.97)).toBe('A');
+    expect(tierOf(0.5)).toBe('B');
+    expect(tierOf()).toBe('B');
   });
 
   it('names mass-market brands as flagships for the line check', () => {
@@ -88,7 +85,7 @@ describe('reserved slots', () => {
     });
     expect(partners.length).toBeLessThanOrEqual(14);
     expect(partners.filter((p) => p.tier === 'C').length).toBeGreaterThanOrEqual(3);
-    expect(partners.filter((p) => p.tier === 'B').length).toBeLessThanOrEqual(7);
+    expect(partners.filter((p) => p.tier === 'B').length).toBeLessThanOrEqual(10);
   });
 
   it('places the brands the team asked to consider first, by a fuller name too, and lists one Qloo did not rank', () => {
@@ -145,17 +142,30 @@ describe('content fit', () => {
   it('keeps a flagged partner in the list', () => {
     const { partners } = partnerOptions({
       ...base,
-      findings: [],
+      findings: [brands('Lagos', ['MTN Group'], 0.9)],
       markets: ['Nigeria'],
       home: 'Nigeria',
       tone: 'adult',
     });
-    const mtn = partners.find((p) => p.name === 'MTN');
+    const mtn = partners.find((p) => p.name === 'MTN Group');
     expect(mtn?.flags.length).toBeGreaterThan(0);
   });
 });
 
 describe('partner notes (T1)', () => {
+  it('says plainly when a city has no brand to suggest, and points to the local partners', () => {
+    const notes = partnerNotes({
+      release: null,
+      today: '2026-10-23',
+      band: 'major',
+      bare: ['Atlanta'],
+    });
+    const bare = notes.find((n) => n.id === 'partner-note-bare');
+    expect(bare?.text).toContain('Atlanta');
+    expect(bare?.text).toContain('local partners');
+    expect(partnerNotes({ release: null, today: '2026-10-23', band: 'major' })).toHaveLength(1);
+  });
+
   it('says plainly when the release is closer than 18 months', () => {
     const notes = partnerNotes({ release: '2027-03-01', today: '2026-10-23', band: 'independent' });
     expect(notes[0]?.text).toContain('short of the 18 months');
@@ -231,7 +241,7 @@ describe('the team’s own partners on a saved plan', () => {
     const before = planWith(['Corner Cafe']);
     const next = withTeamPartners(before, [], 'film');
     expect(next.partners.some((p) => p.name === 'Corner Cafe')).toBe(false);
-    expect(next.partners.some((p) => p.name === 'MTN')).toBe(true);
+    expect(next.partners.some((p) => p.from === 'seed')).toBe(true);
     expect(next.partners.every((p) => p.from !== 'team')).toBe(true);
   });
 

@@ -13,6 +13,7 @@ import type {
   Signal,
   ThreadEvent,
 } from '@oraqul/schema';
+import type { Verifier } from '../../verify/verifier.js';
 import type { Analyst } from './analyse.js';
 import type { DraftItem } from './audit-verdicts.js';
 import type { CheckRules } from './check.js';
@@ -180,6 +181,8 @@ export interface LaunchDeps<
   researchPlanner?: ResearchPlanner;
   /** Red team: compares a draft with the request and sends it back. Scripted when omitted. */
   reviewer?: Reviewer;
+  /** Checks the brands Qloo ranked against Wikidata. Nothing is checked when omitted. */
+  verifier?: Verifier;
   /** Looks up release timing and market facts on the web, when search is configured. */
   research: Researcher<R>;
   queries: QueryPlanner<R, P>;

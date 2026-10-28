@@ -16,6 +16,9 @@ import type { LaunchRead } from './read-core.js';
 /** Cities brands are looked for in a category, first the home market. */
 export const BRAND_DISCOVERY_CITIES = 2;
 
+/** Calls that must be left before a thin city is searched wider, so a plan stays in its budget. */
+const WIDEN_MIN_CALLS = 12;
+
 /** The most brands Qloo ranks in one call (`findTaste` takes ten). */
 export const POOL_CAP = 10;
 
@@ -26,8 +29,7 @@ export interface BrandTag {
 }
 
 /**
- * The brands Qloo ranks for each city: the ones the team and the model named, the seeds the budget
- * can reach, and the brands Qloo finds among the verified categories for the comps' audience (so a
+ * The brands Qloo ranks for each city: the ones the team and the model named, and the brands Qloo finds among the verified categories for the comps' audience (so a
  * soft drink the audience likes can be a partner without anyone having guessed it). A mid-size
  * band is always asked; the biggest names only when who is launching can realistically approach
  * one (`plan.reach`). Everything found joins one pool, and one call ranks it (qloo.md: rank a list
@@ -66,6 +68,22 @@ export async function brandPools<R extends LaunchRead, P extends QueryPlanCore>(
     });
   }
 
+  // A city with fewer than three brands cannot be given a verdict, and the team still needs options.
+  // Look wider for it: one more category read with no popularity band, kept inside the call budget.
+  const thin = asked.filter((c) => (named.get(c)?.length ?? 0) + (found.get(c)?.length ?? 0) < 3);
+  const tag = tags[0];
+  if (
+    tag &&
+    kit.ids.length > 0 &&
+    thin.length > 0 &&
+    kit.deps.tools.qloo.callsLeft >= WIDEN_MIN_CALLS
+  ) {
+    const wider = await Promise.all(thin.map((city) => discover(kit, tag, city, null, 3)));
+    thin.forEach((city, i) => {
+      found.set(city, [...(found.get(city) ?? []), ...(wider[i] ?? [])]);
+    });
+  }
+
   const pools = asked.map((city) => ({
     city,
     pool: [...new Set([...(named.get(city) ?? []), ...(found.get(city) ?? [])])].slice(0, POOL_CAP),
@@ -85,6 +103,7 @@ async function discover<R extends LaunchRead, P extends QueryPlanCore>(
   tag: BrandTag,
   city: string,
   band: { min: number; max: number } | null,
+  take = band ? 3 : 2,
 ): Promise<string[]> {
   const run = await kit.safely(`${tag.name} brands in ${city}`, () =>
     tools.findTaste.run(kit.deps.tools, {
@@ -93,7 +112,7 @@ async function discover<R extends LaunchRead, P extends QueryPlanCore>(
       tags: [tag.id],
       city,
       popularity: band,
-      take: band ? 3 : 2,
+      take,
     }),
   );
   if (!run) return [];

@@ -132,9 +132,9 @@
         "territory:Atlanta:avoid:lower"
       ],
       "partners": {
-        "A": 3,
-        "B": 7,
-        "C": 4
+        "A": 0,
+        "B": 8,
+        "C": 6
       }
     }
   }

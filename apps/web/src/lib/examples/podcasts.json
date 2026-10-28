@@ -610,15 +610,6 @@
               "sourceIds": [],
               "names": ["Glide Mobile", "Fizz Cola", "Lagos"],
               "group": "Sponsors"
-            },
-            {
-              "id": "partnerships-2",
-              "kind": "grounded",
-              "text": "Approach Glide Mobile and Fizz Cola in London for an in-kind sponsorship or a co-promotion: they rank highest with your listeners.",
-              "findingIds": ["f-brands-london"],
-              "sourceIds": [],
-              "names": ["Glide Mobile", "Fizz Cola", "London"],
-              "group": "Sponsors"
             }
           ]
         },
@@ -1707,55 +1698,7 @@
             "yearFrom": null,
             "audience": null
           },
-          "callIds": ["00000000-0000-4000-8000-000000005041"]
-        },
-        {
-          "id": "f-brands-london",
-          "query": "brands",
-          "text": "In London, among brands that could realistically sponsor a new show, your show's listeners like Glide Mobile, Fizz Cola and Lumen Coffee best.",
-          "entities": [
-            {
-              "entityId": "DEMO-BRAND-0201",
-              "name": "Glide Mobile",
-              "affinity": 0.5935786078436249,
-              "detail": null,
-              "popularity": 0.46
-            },
-            {
-              "entityId": "DEMO-BRAND-0202",
-              "name": "Fizz Cola",
-              "affinity": 0.5912348015446296,
-              "detail": null,
-              "popularity": 0.41
-            },
-            {
-              "entityId": "DEMO-BRAND-0203",
-              "name": "Lumen Coffee",
-              "affinity": 0.5912348015446296,
-              "detail": null,
-              "popularity": 0.28
-            },
-            {
-              "entityId": "DEMO-BRAND-0204",
-              "name": "Orbit Data",
-              "affinity": 0.5935786078436249,
-              "detail": null,
-              "popularity": 0.24
-            }
-          ],
-          "numbers": {},
-          "verdict": null,
-          "confidence": "high",
-          "why": "high: 4 anchors with data, 4 well known",
-          "context": {
-            "city": "London",
-            "ages": [],
-            "tags": [],
-            "country": null,
-            "yearFrom": null,
-            "audience": null
-          },
-          "callIds": ["00000000-0000-4000-8000-000000005042"]
+          "callIds": ["00000000-0000-4000-8000-000000005040"]
         },
         {
           "id": "f-brands-city-lagos",
@@ -1809,57 +1752,6 @@
           "callIds": ["00000000-0000-4000-8000-000000005039"]
         },
         {
-          "id": "f-brands-city-london",
-          "query": "brands-city",
-          "text": "Among the same brands, people aged 25 to 34 in London overall like Glide Mobile, Fizz Cola and Lumen Coffee best. This is taste for the place, not for your comps.",
-          "entities": [
-            {
-              "entityId": "DEMO-BRAND-0201",
-              "name": "Glide Mobile",
-              "affinity": 0.3,
-              "detail": null,
-              "popularity": 0.46
-            },
-            {
-              "entityId": "DEMO-BRAND-0202",
-              "name": "Fizz Cola",
-              "affinity": 0.3,
-              "detail": null,
-              "popularity": 0.41
-            },
-            {
-              "entityId": "DEMO-BRAND-0203",
-              "name": "Lumen Coffee",
-              "affinity": 0.3,
-              "detail": null,
-              "popularity": 0.28
-            },
-            {
-              "entityId": "DEMO-BRAND-0204",
-              "name": "Orbit Data",
-              "affinity": 0.3,
-              "detail": null,
-              "popularity": 0.24
-            }
-          ],
-          "numbers": {
-            "n0": 25,
-            "n1": 34
-          },
-          "verdict": null,
-          "confidence": "lower",
-          "why": "lower: it rests on the place and age band alone, with no comps behind it",
-          "context": {
-            "city": "London",
-            "ages": ["25_to_29", "30_to_34"],
-            "tags": [],
-            "country": null,
-            "yearFrom": null,
-            "audience": "region and age only"
-          },
-          "callIds": ["00000000-0000-4000-8000-000000005040"]
-        },
-        {
           "id": "f-region-lagos-artists",
           "query": "region",
           "text": "With no comps to go on, here is what people aged 25 to 34 in Lagos like, from the place and age band alone: the artists Neon Tide, Ada Lux and Kola Wave. This is taste for the place, not for your comps.",
@@ -1908,7 +1800,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005043"]
+          "callIds": ["00000000-0000-4000-8000-000000005041"]
         },
         {
           "id": "f-region-lagos-brands",
@@ -1959,7 +1851,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005044"]
+          "callIds": ["00000000-0000-4000-8000-000000005042"]
         },
         {
           "id": "f-region-london-artists",
@@ -2010,7 +1902,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005045"]
+          "callIds": ["00000000-0000-4000-8000-000000005043"]
         },
         {
           "id": "f-region-london-brands",
@@ -2061,7 +1953,7 @@
             "yearFrom": null,
             "audience": "region and age only"
           },
-          "callIds": ["00000000-0000-4000-8000-000000005046"]
+          "callIds": ["00000000-0000-4000-8000-000000005044"]
         }
       ],
       "sources": [],
@@ -2167,12 +2059,7 @@
               "lead": true
             }
           ],
-          "partnerIds": [
-            "partner-glide-mobile",
-            "partner-fizz-cola",
-            "partner-lumen-coffee",
-            "partner-orbit-data"
-          ],
+          "partnerIds": ["partner-glide-mobile", "partner-fizz-cola", "partner-lumen-coffee"],
           "lineIds": [
             "markets-2",
             "channels-lagos",
@@ -2242,62 +2129,9 @@
           "findingIds": ["f-brands-lagos"],
           "teamChoice": false,
           "territory": "Lagos"
-        },
-        {
-          "id": "call-partner-orbit-data",
-          "subject": "partner",
-          "name": "Orbit Data",
-          "direction": "avoid",
-          "confidence": "high",
-          "why": "Ranked 4 of 4 brands for this audience in Lagos. Approach the higher ranked ones first.",
-          "findingIds": ["f-brands-lagos"],
-          "teamChoice": false,
-          "territory": "Lagos"
         }
       ],
       "partners": [
-        {
-          "id": "partner-guinness",
-          "name": "Guinness",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
-        {
-          "id": "partner-mtn",
-          "name": "MTN",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
-        {
-          "id": "partner-indomie",
-          "name": "Indomie",
-          "tier": "A",
-          "market": "Nigeria",
-          "from": "seed",
-          "fit": null,
-          "budgetFit": "out",
-          "price": "unknown",
-          "findingIds": [],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
         {
           "id": "partner-glide-mobile",
           "name": "Glide Mobile",
@@ -2365,30 +2199,8 @@
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-orbit-data",
-          "name": "Orbit Data",
-          "tier": "B",
-          "market": "Nigeria",
-          "from": "qloo",
-          "fit": {
-            "place": 4,
-            "of": 4,
-            "direction": "avoid",
-            "local": {
-              "place": 4,
-              "of": 4
-            }
-          },
-          "budgetFit": "stretch",
-          "price": "unknown",
-          "findingIds": ["f-brands-lagos", "f-brands-city-lagos"],
-          "kind": "brand",
-          "flags": [],
-          "moneyType": "in_kind"
-        },
-        {
-          "id": "partner-ee",
-          "name": "EE",
+          "id": "partner-b-sponsor-brands-that-fit-the-listener-profile",
+          "name": "Sponsor brands that fit the listener profile",
           "tier": "B",
           "market": "United Kingdom",
           "from": "seed",
@@ -2396,13 +2208,13 @@
           "budgetFit": "stretch",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-monzo",
-          "name": "Monzo",
+          "id": "partner-b-telecom-bundles",
+          "name": "Telecom bundles",
           "tier": "B",
           "market": "United Kingdom",
           "from": "seed",
@@ -2410,21 +2222,49 @@
           "budgetFit": "stretch",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
         {
-          "id": "partner-bolt",
-          "name": "Bolt",
+          "id": "partner-b-banks-and-payment-brands",
+          "name": "Banks and payment brands",
           "tier": "B",
-          "market": "Nigeria",
+          "market": "United Kingdom",
           "from": "seed",
           "fit": null,
           "budgetFit": "stretch",
           "price": "unknown",
           "findingIds": [],
-          "kind": "brand",
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-b-food-and-drink",
+          "name": "Food and drink",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-b-hospitality",
+          "name": "Hospitality",
+          "tier": "B",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "stretch",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
         },
@@ -2483,6 +2323,34 @@
           "kind": "kind",
           "flags": [],
           "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-c-united-kingdom-diaspora-businesses",
+          "name": "Diaspora businesses",
+          "tier": "C",
+          "market": "United Kingdom",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
+        },
+        {
+          "id": "partner-c-nigeria-creators",
+          "name": "Creators",
+          "tier": "C",
+          "market": "Nigeria",
+          "from": "seed",
+          "fit": null,
+          "budgetFit": "fits",
+          "price": "unknown",
+          "findingIds": [],
+          "kind": "kind",
+          "flags": [],
+          "moneyType": "in_kind"
         }
       ],
       "partnerNotes": [
@@ -2495,6 +2363,11 @@
           "id": "partner-note-band",
           "ruleId": "partners.lead-time",
           "text": "An independent release usually has no franchise behind it, so lead with tier B and tier C partners."
+        },
+        {
+          "id": "partner-note-bare",
+          "ruleId": "partners.slots",
+          "text": "Qloo found no brand to suggest for London. Start there with local partners: cinemas, creators, community groups and businesses that serve the same audience."
         },
         {
           "id": "partner-note-barter",
@@ -2850,22 +2723,8 @@
         "driver": false
       },
       {
-        "lineId": "f-brands-london",
-        "label": "In London, among brands that could realistically sponsor a new show, your show's listeners like Glide Mobile, Fizz Cola and Lumen Coffee best.",
-        "group": "Findings",
-        "returned": "Glide Mobile, Fizz Cola, Lumen Coffee, Orbit Data",
-        "driver": false
-      },
-      {
         "lineId": "f-brands-city-lagos",
         "label": "Among the same brands, people aged 25 to 34 in Lagos overall like Glide Mobile, Fizz Cola and Lumen Coffee best. This is taste for the place, not for your comps.",
-        "group": "Findings",
-        "returned": "Glide Mobile, Fizz Cola, Lumen Coffee, Orbit Data",
-        "driver": false
-      },
-      {
-        "lineId": "f-brands-city-london",
-        "label": "Among the same brands, people aged 25 to 34 in London overall like Glide Mobile, Fizz Cola and Lumen Coffee best. This is taste for the place, not for your comps.",
         "group": "Findings",
         "returned": "Glide Mobile, Fizz Cola, Lumen Coffee, Orbit Data",
         "driver": false
@@ -3615,23 +3474,6 @@
       },
       {
         "callId": "00000000-0000-4000-8000-000000005040",
-        "lineId": "f-brands-city-london",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.results.entities": "DEMO-BRAND-0202,DEMO-BRAND-0203,DEMO-BRAND-0201,DEMO-BRAND-0204",
-          "filter.type": "urn:entity:brand",
-          "signal.demographics.age": "25_to_29,30_to_34",
-          "signal.location.query": "London",
-          "take": "6"
-        },
-        "returned": {},
-        "rule": "Among the same brands, people aged 25 to 34 in London overall like Glide Mobile, Fizz Cola and Lumen Coffee best. This is taste for the place, not for your comps. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence lower: 0 anchors with data.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005041",
         "lineId": "f-brands-lagos",
         "endpoint": "/v2/insights",
         "input": {
@@ -3649,25 +3491,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005042",
-        "lineId": "f-brands-london",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "filter.results.entities": "DEMO-BRAND-0202,DEMO-BRAND-0203,DEMO-BRAND-0201,DEMO-BRAND-0204",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "signal.location.query": "London",
-          "take": "10"
-        },
-        "returned": {},
-        "rule": "In London, among brands that could realistically sponsor a new show, your show's listeners like Glide Mobile, Fizz Cola and Lumen Coffee best. The 4 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005043",
+        "callId": "00000000-0000-4000-8000-000000005041",
         "lineId": "f-region-lagos-artists",
         "endpoint": "/v2/insights",
         "input": {
@@ -3684,7 +3508,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005044",
+        "callId": "00000000-0000-4000-8000-000000005042",
         "lineId": "f-region-lagos-brands",
         "endpoint": "/v2/insights",
         "input": {
@@ -3701,7 +3525,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005045",
+        "callId": "00000000-0000-4000-8000-000000005043",
         "lineId": "f-region-london-artists",
         "endpoint": "/v2/insights",
         "input": {
@@ -3718,7 +3542,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005046",
+        "callId": "00000000-0000-4000-8000-000000005044",
         "lineId": "f-region-london-brands",
         "endpoint": "/v2/insights",
         "input": {
@@ -3735,7 +3559,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005047",
+        "callId": "00000000-0000-4000-8000-000000005045",
         "endpoint": "/search",
         "input": {
           "query": "Cold Case Lagos",
@@ -3749,7 +3573,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005048",
+        "callId": "00000000-0000-4000-8000-000000005046",
         "endpoint": "/search",
         "input": {
           "query": "Crime Junkie",
@@ -3763,7 +3587,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005049",
+        "callId": "00000000-0000-4000-8000-000000005047",
         "endpoint": "/search",
         "input": {
           "query": "Serial",
@@ -3777,7 +3601,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005050",
+        "callId": "00000000-0000-4000-8000-000000005048",
         "endpoint": "/search",
         "input": {
           "query": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
@@ -3791,7 +3615,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005051",
+        "callId": "00000000-0000-4000-8000-000000005049",
         "endpoint": "/search",
         "input": {
           "query": "Casefile True Crime",
@@ -3805,7 +3629,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005052",
+        "callId": "00000000-0000-4000-8000-000000005050",
         "endpoint": "/v2/insights",
         "input": {
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
@@ -3820,7 +3644,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005053",
+        "callId": "00000000-0000-4000-8000-000000005051",
         "endpoint": "/v2/insights",
         "input": {
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
@@ -3835,7 +3659,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005054",
+        "callId": "00000000-0000-4000-8000-000000005052",
         "endpoint": "/v2/insights",
         "input": {
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
@@ -3850,7 +3674,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005055",
+        "callId": "00000000-0000-4000-8000-000000005053",
         "endpoint": "/v2/insights",
         "input": {
           "filter.location": "MULTIPOLYGON(((3.08 6.27, 3.6799999999999997 6.27, 3.6799999999999997 6.77, 3.08 6.77, 3.08 6.27)),((-0.43 51.26, 0.16999999999999998 51.26, 0.16999999999999998 51.76, -0.43 51.76, -0.43 51.26)),((7.19 8.81, 7.79 8.81, 7.79 9.31, 7.19 9.31, 7.19 8.81)),((-0.49 5.35, 0.10999999999999999 5.35, 0.10999999999999999 5.85, -0.49 5.85, -0.49 5.35)),((-2.54 53.23, -1.9400000000000002 53.23, -1.9400000000000002 53.73, -2.54 53.73, -2.54 53.23)))",
@@ -3865,7 +3689,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005056",
+        "callId": "00000000-0000-4000-8000-000000005054",
         "endpoint": "/v2/tags",
         "input": {
           "filter.query": "true crime",
@@ -3878,7 +3702,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005057",
+        "callId": "00000000-0000-4000-8000-000000005055",
         "endpoint": "/v2/tags",
         "input": {
           "filter.parents.types": "urn:entity:brand",
@@ -3892,7 +3716,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005058",
+        "callId": "00000000-0000-4000-8000-000000005056",
         "endpoint": "/v2/tags",
         "input": {
           "filter.parents.types": "urn:entity:brand",
@@ -3906,7 +3730,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005059",
+        "callId": "00000000-0000-4000-8000-000000005057",
         "endpoint": "/search",
         "input": {
           "query": "Casefile",
@@ -3920,7 +3744,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005060",
+        "callId": "00000000-0000-4000-8000-000000005058",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
@@ -3938,7 +3762,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005061",
+        "callId": "00000000-0000-4000-8000-000000005059",
         "endpoint": "/search",
         "input": {
           "query": "The Long Con",
@@ -3952,49 +3776,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005062",
-        "endpoint": "/search",
-        "input": {
-          "query": "Bolt",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005063",
-        "endpoint": "/search",
-        "input": {
-          "query": "EE",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005064",
-        "endpoint": "/search",
-        "input": {
-          "query": "Monzo",
-          "take": "5",
-          "types": "urn:entity:brand"
-        },
-        "returned": {},
-        "rule": "An anchor counts as found only when one candidate has its exact name. Confidence lower: no exact match.",
-        "confidence": "lower",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005065",
+        "callId": "00000000-0000-4000-8000-000000005060",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
@@ -4013,7 +3795,7 @@
         "source": "demo"
       },
       {
-        "callId": "00000000-0000-4000-8000-000000005066",
+        "callId": "00000000-0000-4000-8000-000000005061",
         "endpoint": "/v2/insights",
         "input": {
           "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
@@ -4023,44 +3805,6 @@
           "filter.type": "urn:entity:brand",
           "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
           "signal.location.query": "Lagos",
-          "take": "7"
-        },
-        "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005067",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:beverage",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "signal.location.query": "London",
-          "take": "7"
-        },
-        "returned": {},
-        "rule": "The 2 results Qloo ranks closest to the anchors' audience with this context, in Qloo's order. Confidence high: 4 anchors with data, 4 well known.",
-        "confidence": "high",
-        "calledAt": "2026-10-01T10:00:00.000Z",
-        "source": "demo"
-      },
-      {
-        "callId": "00000000-0000-4000-8000-000000005068",
-        "endpoint": "/v2/insights",
-        "input": {
-          "filter.exclude.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "filter.popularity.max": "0.85",
-          "filter.popularity.min": "0.4",
-          "filter.tags": "urn:tag:genre:brand:telecom",
-          "filter.type": "urn:entity:brand",
-          "signal.interests.entities": "DEMO-POD-0003,DEMO-POD-0004,DEMO-POD-0234,DEMO-POD-0235",
-          "signal.location.query": "London",
           "take": "7"
         },
         "returned": {},

@@ -84,11 +84,8 @@ export const rulesResponseSchema = z.object({
   partners: z.object({
     version: z.string(),
     categories: z.record(z.string(), ruleOf(partnerKindsSchema)),
-    seeds: ruleOf(
-      z.record(
-        z.string(),
-        z.record(z.string(), z.object({ names: z.array(z.string()), kinds: z.array(z.string()) })),
-      ),
+    kinds: ruleOf(
+      z.record(z.string(), z.record(z.string(), z.object({ kinds: z.array(z.string()) }))),
     ),
     tier: ruleOf(z.object({ flagshipPopularity: z.number() })),
     slots: ruleOf(z.record(z.string(), z.number().int())),

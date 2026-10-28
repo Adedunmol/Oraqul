@@ -44,7 +44,6 @@
       "f-support-lagos": ["Sade Rhythm"],
       "f-support-london": ["Sade Rhythm"],
       "f-brands-lagos": ["Night Market Cola", "Lagoon Mobile"],
-      "f-brands-london": ["Night Market Cola", "Lagoon Mobile"],
       "f-podcasts": ["Late Signal", "Crime Junkie", "The Joe Rogan Experience"],
       "f-shows-houston": ["Midnight Harbor", "Eko Nights", "Harbor Precinct"],
       "f-shows-lagos": ["Midnight Harbor", "Eko Nights", "Harbor Precinct"],
@@ -65,7 +64,7 @@
       "positioning": "0/2",
       "audience": "7/0",
       "markets": "4/3",
-      "partnerships": "2/0",
+      "partnerships": "1/0",
       "publicity": "1/1",
       "community": "2/1",
       "tour": "1/0",
@@ -82,13 +81,13 @@
     },
     "moves": ["f-markets", "f-audience", "f-support-houston"],
     "grounding": {
-      "lines": 71,
-      "backed": 41,
+      "lines": 70,
+      "backed": 40,
       "rankKept": 100,
-      "findingsUsed": 18,
+      "findingsUsed": 17,
       "cities": {
         "Lagos": 9,
-        "London": 8,
+        "London": 7,
         "Houston": 10
       }
     },

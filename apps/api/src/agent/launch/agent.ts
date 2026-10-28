@@ -5,6 +5,7 @@ import type { z } from 'zod';
 import { type FundingResearcher, NoFundingResearch } from '../../funding/fund-research.js';
 import { toMarkdown } from '../../outputs/export.js';
 import { NO_RULES } from '../../team-rules/compile.js';
+import type { Verifier } from '../../verify/verifier.js';
 import {
   type AgentRun,
   type CategoryAgent,
@@ -65,6 +66,8 @@ export interface LaunchAgentDeps<
   researchPlanner?: ResearchPlanner;
   /** Compares a draft plan with the request and sends it back. */
   reviewer?: Reviewer;
+  /** Checks the brands Qloo ranked against Wikidata. */
+  verifier?: Verifier;
   followUps: FollowUpReader;
   /** Checks what a plan was built from, when a follow up reruns it. */
   inputsSchema: z.ZodType<LaunchInputs<R>>;
@@ -118,6 +121,7 @@ export class LaunchAgent<R extends LaunchRead = LaunchRead, P extends QueryPlanC
       analyst: this.deps.analyst,
       researchPlanner: this.deps.researchPlanner,
       reviewer: this.deps.reviewer,
+      verifier: this.deps.verifier,
       queries: this.deps.queries,
       writer: this.deps.writer,
       research: this.deps.research,

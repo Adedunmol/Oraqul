@@ -151,7 +151,7 @@ The watch module (`apps/api/src/watch`) holds the scheduler (`WatchScheduler`), 
 | Setting | Default | Meaning |
 |---|---|---|
 | `QLOO_MODE` | `demo` | `live` for real Qloo. Demo data is made up and every receipt says so. The API refuses to start with `NODE_ENV=production` unless it is `live` |
-| `QLOO_CALL_BUDGET` | 80 | Qloo calls per run. A live Third Bridge plan uses about 45 to 65 |
+| `QLOO_CALL_BUDGET` | 100 | Qloo calls per run. A live Third Bridge plan with the red team and the wider brand search uses about 70 to 80 |
 | `QLOO_MONTHLY_BUDGET` | 10000 | Qloo calls a month across every run together, counted in Postgres (`qloo_usage`) so a restart does not reset it. Taken one call at a time through `QlooMeterService` before each network call; cache hits are free |
 | `QLOO_INTERACTIVE_RESERVE` | 3000 | Part of the month kept for people in the web app: a run started from a connected agent or approved on a watch stops short of it. The run ends with what is tested, the same as a spent run budget |
 | `RUN_CAP_PER_USER_MONTH` | 20 | Runs that ask Qloo a person may start in a calendar month, counted from `runs` (`user_id`, `qloo_calls`). A person's `users.run_cap` overrides it. Checked when an agent run starts, never on a card answer that resumes a counted run |

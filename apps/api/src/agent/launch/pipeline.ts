@@ -24,6 +24,7 @@ import {
   type LaunchSectionKey,
   type Move,
   type OverallConfidence,
+  type PartnerCheck,
   type PlanBand,
   type PlanProcess,
   type PlanReview,
@@ -61,6 +62,7 @@ import {
   bandQuestionId,
   withLauncher,
 } from './band.js';
+import { verifyBrands, verifyVenues } from './brand-verify.js';
 import { capital, slug } from './brief.js';
 import { calendarRows, calendarSection } from './calendar.js';
 import { type CheckContext, checkSections } from './check.js';
@@ -82,7 +84,7 @@ import {
   partnerOptions,
   toneOf,
   withPartnerIds,
-  withSeeds,
+  withReach,
   withTeamBrands,
 } from './partners.js';
 import type { QueryPlanCore } from './planner.js';
@@ -270,6 +272,8 @@ export interface Asked<P extends QueryPlanCore = QueryPlanCore> {
   rivals: Rival[];
   /** The brands the team named to consider, kept on the plan inputs. */
   brands: string[];
+  /** What Wikidata said about each brand Qloo ranked. Empty when nothing was checked. */
+  brandChecks: Record<string, PartnerCheck>;
 }
 
 /** What one research round did, as saved on the plan. */
@@ -426,7 +430,7 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
   const adjusted = input.adjust ? input.adjust(planned) : planned;
   const queryPlan = withTeamBrands(
     input.band
-      ? withSeeds(adjusted, input.band.band, read.places, input.band.launcher ?? null)
+      ? withReach(adjusted, input.band.band, read.places, input.band.launcher ?? null)
       : adjusted,
     input.brands ?? [],
   );
@@ -441,6 +445,10 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     year: new Date().getFullYear(),
   };
   let grounded = await deps.config.ground(groundDeps, groundInput);
+  // A brand that has closed is taken out here, before anything is written about it.
+  const verified = await verifyBrands(deps.verifier, grounded);
+  grounded = (await verifyVenues(deps.verifier, verified.grounded)).grounded;
+  const brandChecks = verified.checks;
 
   let understanding = input.understanding ?? null;
   const extraKeys: string[] = [];
@@ -568,6 +576,7 @@ export async function askQloo<R extends LaunchRead, P extends QueryPlanCore>(
     clash,
     rivals,
     brands: input.brands ?? [],
+    brandChecks,
   };
 }
 
@@ -1802,7 +1811,7 @@ function decisionsOf(input: {
     ranked.map((p) => ({ ...p })),
     strongest,
   );
-  const { partners, calls: partnerCalls } = partnerOptions({
+  const built = partnerOptions({
     findings: asked.grounded.findings,
     signed: read.partners,
     band: band?.band ?? 'independent',
@@ -1815,7 +1824,19 @@ function decisionsOf(input: {
     considered: asked.brands,
     blocked: input.blocked,
   });
-  const partnered = withPartnerIds(placed.territories, partnerCalls);
+  // Each named brand carries what Wikidata said about it, where a check ran.
+  const partners = built.partners.map((p) =>
+    p.kind === 'brand' && asked.brandChecks[p.name]
+      ? {
+          ...p,
+          check: asked.brandChecks[p.name],
+          // Where the brand is based, when the source says; else the market it was ranked in.
+          market: asked.brandChecks[p.name]?.country ?? p.market,
+        }
+      : p,
+  );
+  const partnerCalls = built.calls;
+  const partnered = withPartnerIds(placed.territories, partnerCalls, partners);
   return {
     territories: partnered,
     partners,
@@ -1824,6 +1845,7 @@ function decisionsOf(input: {
       today: input.today,
       band: band?.band ?? 'independent',
       launcher: band?.launcher ?? null,
+      bare: partnered.filter((t) => t.partnerIds.length === 0).map((t) => t.name),
     }),
     calls: [
       ...(input.byProximity
