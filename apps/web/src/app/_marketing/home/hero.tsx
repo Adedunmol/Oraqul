@@ -62,7 +62,7 @@ export function Hero() {
         <div className="flex flex-1 flex-col items-center justify-center py-[clamp(24px,6svh,72px)]">
           {/* The promise in the widest Mona Sans, the second half in the accent: two short lines on a
               phone and tablet, one line from 1024px up. The line under it says what the product is. */}
-          <p className="mk-word mb-[clamp(16px,2.4vw,28px)] rounded-full bg-card px-3.5 py-1.5 text-[13px] font-medium text-ink/80">
+          <p className="mk-pill mb-[clamp(28px,4vw,48px)] rounded-full bg-card px-4 py-1.5 text-[14px] font-medium text-ink/80 min-[640px]:text-[13px]">
             Powered by <span className="text-accent">Qloo</span>
           </p>
           <h1
@@ -77,7 +77,7 @@ export function Hero() {
             </span>
           </h1>
           <p
-            className="mk-word mt-[clamp(16px,2.4vw,28px)] w-full text-[clamp(16px,1.6vw,22px)] leading-[1.35] text-ink/70 text-balance"
+            className="mk-word mt-[clamp(16px,2.4vw,28px)] w-full text-[clamp(18px,1.6vw,22px)] leading-[1.35] text-ink/70 text-balance"
             style={at(220)}
           >
             <b className="font-medium text-ink">
