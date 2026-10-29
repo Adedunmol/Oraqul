@@ -54,7 +54,7 @@ One per category. Each is a configuration of the same runtime:
 | Tool allowlist | Which engine tools it may call |
 | Coverage | Tests, also handles, and what the team brings lists shown on the category page |
 
-A what-if is not a preset: the launch runtime changes places, comps, age or gender on the plan's saved inputs and reruns it. Results are read by the launch runtime (`results-read.ts`), and the launch plan and audit report shapes are in `packages/schema` (§6.1, §6.3).
+A what-if is not a preset: the launch runtime changes places, comps, age or gender on the plan's saved inputs and reruns it. Asking for a new plan in plain words ("generate a new plan", "regenerate the plan") is read by code and reruns the whole plan the same way, with whatever change the message names; only what the message itself names is applied, not the content of an earlier answer. Results are read by the launch runtime (`results-read.ts`), and the launch plan and audit report shapes are in `packages/schema` (§6.1, §6.3).
 
 The runtime is shared by all six and has two paths:
 

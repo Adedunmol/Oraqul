@@ -82,6 +82,16 @@ const AUDIT_ASK = new RegExp(
   'i',
 );
 
+// A new plan is asked for in plain words, so code reads it and no model decides it. It reruns the
+// whole plan from the saved inputs, with whatever change the message names, instead of answering.
+const NEW_PLAN_ASK =
+  /\b(?:generate|make|write|build|create|produce|give me|redo|rerun|re-?run|regenerate)\s+(?:me\s+)?(?:an?\s+|the\s+)?(?:new|fresh|updated|revised)\s+(?:launch\s+)?plan\b|\b(?:regenerate|rebuild|rerun|re-?run)\s+(?:the\s+|my\s+|this\s+)?(?:launch\s+)?plan\b/i;
+
+/** Whether a message asks for the whole plan to be generated again. */
+export function askedNewPlan(text: string): boolean {
+  return NEW_PLAN_ASK.test(text);
+}
+
 // "What if we open in Accra?" asks to see the plan with the change, so it reruns it.
 const WHAT_IF = /\b(?:what if|what happens if|what would happen if|how about|suppose|imagine)\b/i;
 
@@ -174,6 +184,7 @@ export function decideFollowUp(reading: FollowUpReading, { text }: FollowUpInput
   if (askedRefresh(text) && !askedJob(text)) return { job: 'refresh' };
   const asked = askedJob(text);
   if (asked) return { job: asked };
+  if (askedNewPlan(text)) return { job: 'scenario', change };
   if (/\bpartner|\boutreach\b|\bsponsor/i.test(text) && reading.job === 'partner') {
     return { job: 'partner', partner };
   }
