@@ -58,6 +58,19 @@ describe('decideFollowUp: fix and audit are asked for the whole plan', () => {
   });
 });
 
+describe('decideFollowUp: a new plan reruns the whole plan', () => {
+  it.each([
+    'generate a new plan and add this info',
+    'Make a new plan',
+    'regenerate the plan',
+    'give me an updated plan with Atlanta',
+  ])('%s reruns the plan', (text) => expect(job(text)).toBe('scenario'));
+
+  it('does not rerun for a question about the plan', () => {
+    expect(job('what is in the new plan section?')).toBe('answer');
+  });
+});
+
 describe('askedJob', () => {
   it('reads an audit or a fix from plain words, and nothing from a build', () => {
     expect(askedJob('audit my launch plan')).toBe('audit');

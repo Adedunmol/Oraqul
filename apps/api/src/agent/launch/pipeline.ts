@@ -1779,7 +1779,7 @@ export function applyChange<R extends LaunchRead>(
         choice: null,
       }));
   return {
-    title: `${title}: ${parts.join(', ') || 'what-if'}`,
+    title: `${title}: ${parts.join(', ') || 'new plan'}`,
     read: (extend ?? ((r: R) => r))(
       {
         ...inputs.read,
