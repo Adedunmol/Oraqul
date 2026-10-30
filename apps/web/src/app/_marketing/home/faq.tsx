@@ -37,7 +37,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'Does it find markets I had not thought of?',
-    a: 'Yes, and it keeps them beside your plan. Nearby cities that rank above your weakest, and the strongest area of each of your cities, appear under Worth a look with why, what the data does not show, a first test and what to measure. Nothing joins your plan until you add it: ask “What if we add Accra?”. If the evidence is thin, it says so rather than filling a list.',
+    a: 'Yes, and it keeps them beside your plan. Nearby cities that rank above your weakest, and the strongest area of each of your cities, appear under Worth a look with why, what the data does not show, a first test and what to measure. Nothing joins your plan until you add it: ask “What if we add Chicago?”. If the evidence is thin, it says so rather than filling a list.',
   },
   {
     q: 'Can it help me run the campaign?',
@@ -61,7 +61,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'What is a plan for each market?',
-    a: 'One plan for each place you open, called a territory: the home market first, then the diaspora cities, such as Lagos, then London, Houston and Atlanta. Each has its own call (okay, risky or avoid), lead channels, and the partners Qloo ranked there. WhatsApp is a sharing layer and never a lead channel. Your own cities are never dropped.',
+    a: 'One plan for each place you open, called a territory: the home market first, such as New York, then each other city you name, such as Los Angeles, Atlanta and London. Each has its own call (okay, risky or avoid), lead channels, and the partners Qloo ranked there. WhatsApp is a sharing layer and never a lead channel. Your own cities are never dropped.',
   },
   {
     q: 'Can it check my release date against rivals?',
@@ -86,7 +86,7 @@ const faqs: { q: string; a: ReactNode; home?: ReactNode }[] = [
   },
   {
     q: 'Does it work outside the US and UK?',
-    a: 'Yes. It tests titles from any market and ranks cities like Mexico City, Seoul and São Paulo beside London, Chicago and Toronto. Where the data for a place is thin, it says so plainly and lowers its confidence.',
+    a: 'Yes. It tests titles from any market and ranks cities like Mexico City, Seoul and São Paulo beside New York, Chicago and London. Where the data for a place is thin, it says so plainly and lowers its confidence.',
   },
   {
     home: 'Only public names, places and age bands leave Oraqul. Uploaded results are kept as totals, and your work is visible only to your team.',

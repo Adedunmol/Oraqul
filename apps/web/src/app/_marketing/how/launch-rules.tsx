@@ -22,7 +22,7 @@ const territories = (plan?.territories ?? []).flatMap((t) => {
   return [
     {
       name: t.name,
-      role: t.role === 'home' ? 'Home market' : 'Diaspora city',
+      role: t.role === 'home' ? 'Home market' : t.role === 'diaspora' ? 'Diaspora city' : 'Market',
       direction: call.direction,
       confidence: call.confidence,
       channels: t.channels.map((c) => c.name).join(', '),
@@ -30,7 +30,7 @@ const territories = (plan?.territories ?? []).flatMap((t) => {
   ];
 });
 
-/** One plan per territory: the home market first, then the diaspora cities, each with its call. */
+/** One plan per territory: the home market first, then the other cities, each with its call. */
 export function Territories() {
   return (
     <section aria-labelledby="territories-title" className={`bg-bg ${band}`}>
@@ -42,7 +42,7 @@ export function Territories() {
             One plan for each place you open.
           </h2>
           <p className={leadClass}>
-            Home first, then the diaspora cities. Each territory gets its own call, its lead
+            Home first, then every other city you name. Each territory gets its own call, its lead
             channels and its partners, and a call on something you chose keeps your choice and says
             how to handle it.
           </p>
@@ -155,7 +155,7 @@ export function Craft() {
               trailer, ad or image.
             </p>
             <div className="flex flex-col gap-2 rounded-xl bg-inset p-4 text-[15px] leading-[1.65]">
-              <b className="text-[13px] text-muted">Lagos · Instagram</b>
+              <b className="text-[13px] text-muted">Los Angeles · Instagram</b>
               <span>
                 <b>Hook one:</b> open on the strongest image, in the first two seconds.
               </span>

@@ -467,7 +467,7 @@ function AddFigures() {
           setText(e.target.value);
           setPreview(null);
         }}
-        placeholder={'2027-03-01, 120\n2027-03-02, 150, Lagos'}
+        placeholder={'2027-03-01, 120\n2027-03-02, 150, Atlanta'}
         className={`${field} font-mono`}
       />
       <p className="text-[12.5px] text-muted">

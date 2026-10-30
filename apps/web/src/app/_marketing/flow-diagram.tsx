@@ -3,13 +3,13 @@ import type { CSSProperties } from 'react';
 
 const inYourTeam: [string, boolean][] = [
   ['Comparable titles', true],
-  ['Mexico City, London', true],
+  ['New York, London', true],
   ['Ages 25 to 34', true],
   ['Your title and your plan', false],
   ['Customer emails', false],
 ];
 
-const sent = ['Salt Road', 'Mexico City', '25 to 34'];
+const sent = ['Salt Road', 'New York', '25 to 34'];
 
 function Lane() {
   return (

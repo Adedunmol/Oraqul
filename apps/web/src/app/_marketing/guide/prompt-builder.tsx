@@ -129,13 +129,13 @@ export function PromptBuilder() {
             label="Country it comes from"
             value={v.country}
             onChange={(e) => set('country', e.target.value)}
-            placeholder="Nigeria"
+            placeholder="United States"
           />
         </Group>
 
         <Group
           title="Date and places"
-          note="Plans are worked back from the date. Name the home city first, then the diaspora cities you want a plan for."
+          note="Plans are worked back from the date. Name the home city first, then the other cities you want a plan for."
         >
           <Input
             id={`${uid}-release`}
@@ -149,7 +149,7 @@ export function PromptBuilder() {
             label="Cities, home first"
             value={v.cities}
             onChange={(e) => set('cities', e.target.value)}
-            placeholder="Lagos, London, Houston, Atlanta"
+            placeholder="New York, Los Angeles, Atlanta, London"
           />
           <Input
             id={`${uid}-ages`}
@@ -286,7 +286,7 @@ export function PromptBuilder() {
             label="Partners already signed"
             value={v.partners}
             onChange={(e) => set('partners', e.target.value)}
-            placeholder="MTN"
+            placeholder="Verizon"
           />
           <Input
             id={`${uid}-brands`}

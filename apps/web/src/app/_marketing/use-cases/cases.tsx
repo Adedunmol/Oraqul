@@ -486,8 +486,9 @@ export function CampaignCase() {
                 <span className="text-[12.5px] text-muted">Grounded in your audience’s taste</span>
               </p>
               <p className="text-[15.5px] leading-[1.65]">
-                <span className="font-medium">Angle B: Lagos itself.</span> Open on Lagos itself,
-                with the name on screen. <span className="text-[12.5px] text-muted">Playbook</span>
+                <span className="font-medium">Angle B: the city itself.</span> Open on New York
+                itself, with the name on screen.{' '}
+                <span className="text-[12.5px] text-muted">Playbook</span>
               </p>
               <p className="text-[15.5px] leading-[1.65]">
                 <span className="font-medium">Your figures.</span> Angle A 120, angle B 104

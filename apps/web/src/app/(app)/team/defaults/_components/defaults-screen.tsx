@@ -12,8 +12,8 @@ const field =
 
 // A few ways to start. Each adds one line to the box, which a team can then rewrite in its own words.
 const IDEAS: { label: string; line: string }[] = [
-  { label: 'Markets', line: 'Markets: Lagos, London' },
-  { label: 'Budget ceiling', line: 'Budget ceiling: £50k' },
+  { label: 'Markets', line: 'Markets: New York, London' },
+  { label: 'Budget ceiling', line: 'Budget ceiling: $50k' },
   { label: 'Tone', line: 'Tone: warm, plain, no hype' },
   { label: 'Brand safety', line: 'Brand safety: no alcohol or gambling brands' },
   { label: 'Banned partners', line: 'Banned partners: Guinness' },

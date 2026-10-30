@@ -294,7 +294,7 @@ function RulesBody() {
       <div className="flex flex-col gap-2 rounded-2xl bg-card p-5">
         <p className="text-[14.5px] text-ink/80">
           A single show or a short run is planned from the show date back. These are editable
-          defaults, not facts, and none of them is specific to Nigeria.
+          defaults, not facts.
         </p>
         <ul className="flex flex-col gap-2 text-[14.5px] text-ink/80">
           <li>

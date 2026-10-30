@@ -230,12 +230,12 @@ export const shows: DemoPack = {
         ),
         AS(
           'as7',
-          'The Naija Heat playlist reaches the target listeners',
+          'The Late Night Heat playlist reaches the target listeners',
           'holds',
           'Listener overlap is 87.',
           '',
           'pod',
-          'playlist overlap(Naija Heat) = 87',
+          'playlist overlap(Late Night Heat) = 87',
         ),
       ],
       s1: [
@@ -262,7 +262,7 @@ export const shows: DemoPack = {
         F('s2d', 'Ledger Bank', 41, 'Affinity 41 with the core group', 'brand'),
       ],
       s3: [
-        F('s3a', 'Naija Heat (playlist)', 87, 'Listener overlap 87', 'pod'),
+        F('s3a', 'Late Night Heat (playlist)', 87, 'Listener overlap 87', 'pod'),
         F('s3b', 'Mexico City to London (playlist)', 80, 'Listener overlap 80', 'pod'),
         F('s3c', 'Indie Pop Now (radio)', 74, 'Listener overlap 74', 'pod'),
         F('s3d', 'Late Night Rotation (radio)', 61, 'Listener overlap 61', 'pod'),
