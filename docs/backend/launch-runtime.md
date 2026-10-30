@@ -117,7 +117,7 @@ A fix (`fix.ts`) runs these, saves the report, then asks about the cities the re
 |---|---|---|---|
 | Answer | default | The plan's findings, the writer in answer mode, the same line check. If the answer would change a decision it offers a what-if. Plans saved before findings use the older tool loop | Message only |
 | What-if | any change to places, comps, ages or gender | The build from the plan's `inputs` with the change; every query reruns | `scenario` output; "What changed" compares plan lines by id; becomes the chat's plan |
-| Audit | The plan is the whole ask: "audit my plan", "check my plan", "why did it fail". "Check how the plan plays in Lagos" is an answer | The audit of the plan the chat has: a saved audit is rerun with the new message (results, say); an Oraqul plan is read back as text | `audit` output |
+| Audit | The plan is the whole ask: "audit my plan", "check my plan", "why did it fail". "Check how the plan plays in Chicago" is an answer | The audit of the plan the chat has: a saved audit is rerun with the new message (results, say); an Oraqul plan is read back as text | `audit` output |
 | Fix | The plan is the whole ask: "fix this plan", "write a better plan" (also the Fix this plan button on a report). "Fix the budget in this plan" is an answer | The fix; on a saved report only the plan is new | `fix` output (and an `audit` when there was none) |
 | Rival date check | rival titles with YYYY-MM-DD dates | `scoreRivals`: rivals scored against the comps | `date` output |
 | Rescue | "rescue this launch", "turn the plan around", "get us back on pace" (also what approving a pace event posts) | `runRescue` in `launch/rescue.ts`: only when the team's figures are behind the plan's pace (`PaceService.state`); it picks the territory and channel by code, builds three sections from the plan's own findings, and checks every line like a plan line. No new Qloo call | `rescue` output, a narrow plan whose parent is the plan; the chat's plan does not change |
@@ -192,7 +192,7 @@ The **grounding report** (`apps/api/src/agent/launch/grounding-report.ts`) is al
 - Window, budget and forecasts are always "could not test" in an audit. Cast, director and media placements are not extracted as claims.
 - Auditing an Oraqul plan reads it back as exported Markdown, which works but is rough.
 - Missing engine tools: `crossTaste`, `tagWeights`, `momentum`, `explain`, `applyScenario` and `compareResults`. A what-if reruns every query.
-- Results come in through a text card ("Lagos: 4,200") or the model reader; there is no form or file column mapping.
+- Results come in through a text card ("Atlanta: 4,200") or the model reader; there is no form or file column mapping.
 - Contract tests against recorded Qloo responses are not started ([testing.md](../testing.md)); the cut-offs for partner and artist verdicts and for results gaps (spec §5.3) are starting values.
 
 ## Where to change things

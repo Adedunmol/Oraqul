@@ -120,7 +120,7 @@ Set by code from a value Qloo returned, with the confidence of the finding behin
 | A territory as a place to open | Lift 1.2 or above | 1.0 to 1.2 | Below 1.0 | The place could not be ranked |
 | A partner among the brands Qloo ranked | Top third | Middle third | Bottom third | Fewer than 3 ranked, or not ranked |
 
-A day is as risky as its riskiest rival. **A team choice is a constraint** (spec §5.2): a call on a city, a date or a partner the team chose keeps it and says how to handle it ("Keep it, and open it after Lagos"). It never says to drop it.
+A day is as risky as its riskiest rival. **A team choice is a constraint** (spec §5.2): a call on a city, a date or a partner the team chose keeps it and says how to handle it ("Keep it, and open it after New York"). It never says to drop it.
 
 ## Creative
 
@@ -129,7 +129,7 @@ Oraqul writes guides, never the asset.
 - **Refusal.** A request to generate, make, design or produce an ad, trailer, image, video or key art is refused in fixed words, with the way to ask for the guide. "Write a trailer script" and "a trailer shot list" are guides and are not refused.
 - **Line check.** A line that offers to make the asset is dropped.
 - **Creative briefs.** Every full plan has a short section: hook options and a key art brief.
-- **Creative kit.** A follow-up job, "make the creative kit for Lagos on Instagram", saves an output with, for one territory and channel: hook options, a script outline, a shot list, a key art brief and a caption pack. Built by code from the plan's findings and the rule library, with every line checked. Only the tone and the places named come from Qloo and cite a finding.
+- **Creative kit.** A follow-up job, "make the creative kit for Los Angeles on Instagram", saves an output with, for one territory and channel: hook options, a script outline, a shot list, a key art brief and a caption pack. Built by code from the plan's findings and the rule library, with every line checked. Only the tone and the places named come from Qloo and cite a finding.
 
 ## Changing a rule
 

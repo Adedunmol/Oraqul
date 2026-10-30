@@ -363,4 +363,4 @@ body{background:var(--bg);color:var(--ink)}
 * Behaviour reference: `src/js/07_fx.js` for the palette and view animations, and `src/js/03_core.js` for the word by word reveal and the seen tracking of new messages.
 
 ### 11.3 What to test with real people
-Show five or six launch marketers, including Nigerian users on mid range Android. Watch for: do they start with one message without help, do they correct a wrong guess by typing, do they understand Holds and Breaks without the note, and do they open a receipt unprompted. Fix wording before fixing visuals.
+Show five or six launch marketers, mostly in the US and UK, plus a few on mid range Android in markets such as Nigeria. Watch for: do they start with one message without help, do they correct a wrong guess by typing, do they understand Holds and Breaks without the note, and do they open a receipt unprompted. Fix wording before fixing visuals.

@@ -103,7 +103,7 @@ Calm and clear, a little cinematic. Neutral surfaces with no tint, a near black 
 
 ## Every market
 
-Oraqul is a global product. A title from any market is a normal entity, and cities from every region are ranked in one list by lift, whether the release is a Korean series, a Mexican album or a Nigerian novel. Any city can be ranked: the ones in our table directly, and every other city through the place record Qloo holds for it. Coverage differs by place, and it is tested and recorded in `docs/backend/qloo.md` (Nigerian film is the first measured case). Where data for a place is too thin to rank, the product says so plainly and lowers its confidence.
+Oraqul is a global product. A title from any market is a normal entity, and cities from every region are ranked in one list by lift, whether the release is an American film, a Korean series or a Mexican album. Any city can be ranked: the ones in our table directly, and every other city through the place record Qloo holds for it. Coverage differs by place, and it is tested and recorded in `docs/backend/qloo.md` (Nigerian film is the first measured case). Where data for a place is too thin to rank, the product says so plainly and lowers its confidence.
 
 ## What makes it different
 

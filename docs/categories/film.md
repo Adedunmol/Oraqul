@@ -54,7 +54,7 @@ Thresholds and bands are in [launch-rules.md](../product/launch-rules.md). For F
 
 - **Calendar.** Months, worked back from the release date in code: key art and the sales page about 26 weeks out, the first trailer at 12, advance screenings from 10 to 6, presales at 8, the premiere at 1 and the second wave in the weeks after.
 - **Signal.** Advance screenings and presales. Trailer views, followers and press mentions are secondary. There is no benchmark number: the target is the team's own.
-- **Territories.** One plan per city, the home market first, then the diaspora cities (Lagos, London, Houston, Atlanta), with a call on each.
+- **Territories.** One plan per city, the home market first, then the other cities (for example New York, then Los Angeles, Atlanta and London), with a call on each.
 - **Channels.** YouTube leads, then Instagram and TikTok. Nigeria leads on Instagram and TikTok; WhatsApp is only a sharing layer.
 - **Partners.** Found from what the comps' audience likes in each verified brand category and city, ranked as one pool with the model's names, and checked against the city's own taste. Tier A flagship brands (those Qloo ranks at or above the flagship popularity) only for a release with scale and a launcher who can reach one, tier B (banks and payment brands, food and drink, hospitality, telecom bundles), tier C local (cinemas, creators, diaspora businesses, community groups).
 
