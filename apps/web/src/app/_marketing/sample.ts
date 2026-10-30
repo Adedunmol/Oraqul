@@ -13,9 +13,9 @@ export interface SampleLine {
 
 const { output } = exampleDetails.film;
 
-// The three cities of the recorded run, so the preview shows a plan line that holds, one that
-// breaks and one that is weak, each with its own call.
-const CITIES = ['a-place-lagos', 'a-place-london', 'a-place-atlanta'];
+// The three cities of the recorded run, in the team's order, so the preview shows each city's
+// line with its own call. Rerecording the film example can change which ones hold.
+const CITIES = ['a-place-atlanta', 'a-place-new-york', 'a-place-london'];
 
 export const heroLines: SampleLine[] = CITIES.flatMap((id) => {
   const assumption = output.brief.assumptions.find((a) => a.id === id);

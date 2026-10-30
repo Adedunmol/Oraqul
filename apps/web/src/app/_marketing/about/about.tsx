@@ -77,7 +77,7 @@ const ranked: [string, string, number][] = [
   ['Seoul', 'Asia', 1.51],
   ['Mexico City', 'Americas', 1.47],
   ['Sydney', 'Oceania', 1.38],
-  ['Lagos', 'Africa', 1.22],
+  ['Johannesburg', 'Africa', 1.22],
 ];
 
 /** Cities from every region in one ranking, which is the point: one list, not one per region. */
@@ -103,8 +103,8 @@ export function Markets() {
 
         <figure className="flex flex-col gap-3">
           <figcaption className="sr-only">
-            An example ranking by lift: New York, London, Seoul, Mexico City, Sydney and Lagos in
-            one list.
+            An example ranking by lift: New York, London, Seoul, Mexico City, Sydney and
+            Johannesburg in one list.
           </figcaption>
           <Reveal className="flex flex-col gap-2 rounded-2xl bg-card p-[clamp(16px,3vw,28px)]">
             {ranked.map(([city, where, lift], i) => (

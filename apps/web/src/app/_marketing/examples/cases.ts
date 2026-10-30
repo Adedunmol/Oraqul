@@ -15,11 +15,11 @@ const filmCase: ExampleCase = {
   category: 'film',
   job: 'Make a plan',
   title: 'Salt Road',
-  meta: 'Nigerian crime thriller · Lagos, London and Atlanta',
+  meta: 'Crime thriller · Atlanta, New York and London',
   why: 'Written from a few sentences and two comps the team named. Each of the three cities gets a call, ranked for the audience those comps share.',
 };
 
-// Four launches that each show a different job, category and part of the world.
+// Four launches that each show a different category, led by the largest markets.
 export const exampleCases: ExampleCase[] = [
   filmCase,
   {
@@ -27,7 +27,7 @@ export const exampleCases: ExampleCase[] = [
     category: 'music',
     job: 'Make a plan',
     title: 'Night Songs',
-    meta: 'Afrobeats album · Lagos, Accra, London and Atlanta',
+    meta: 'R&B album · Atlanta, New York, Los Angeles and London',
     why: 'A tour of four cities in the order the artist gave, each ranked for the audience of three named sound-alikes.',
   },
   {
