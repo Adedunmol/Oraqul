@@ -36,7 +36,7 @@ const LANDS: [number, string][] = [
 ];
 
 const NEXT: NextStep[] = [
-  { id: 'scn', label: 'What if we open in Atlanta first?' },
+  { id: 'scn', label: 'What if we open in New York first?' },
   { id: 'date', label: 'Check rival release dates' },
   { id: 'fix', label: 'Fix this plan' },
 ];
