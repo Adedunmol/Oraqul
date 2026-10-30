@@ -1,17 +1,17 @@
 [
   {
-    "name": "film-nigerian-thriller",
+    "name": "film-atlanta-heist",
     "category": "film",
     "mode": "build",
-    "text": "I'm releasing a Nigerian crime thriller in about 4 months. It follows a bank clerk in Lagos who gets pulled into a heist she can't walk away from. We want to open in Lagos, London and Atlanta, mainly for men aged 25 to 34, with around $40k to spend. It's in the world of Gangs of Lagos and King of Boys.",
+    "text": "I'm releasing an American crime thriller in about 4 months. It follows a bank clerk in Atlanta who gets pulled into a heist she can't walk away from. We want to open in Atlanta, New York and London, mainly for men aged 25 to 34, with around $40k to spend. It's in the world of Widows and Baby Driver.",
     "example": "film",
     "title": "Salt Road"
   },
   {
-    "name": "film-nigerian-thriller-twin",
+    "name": "film-atlanta-heist-twin",
     "category": "film",
     "mode": "build",
-    "text": "I'm releasing a Nigerian crime thriller in about 4 months. It follows a bank clerk in Lagos who gets pulled into a heist she can't walk away from. We want to open in Lagos, London and Atlanta, mainly for men aged 25 to 34, with around $40k to spend. It's in the world of Gangs of Lagos and King of Boys.",
+    "text": "I'm releasing an American crime thriller in about 4 months. It follows a bank clerk in Atlanta who gets pulled into a heist she can't walk away from. We want to open in Atlanta, New York and London, mainly for men aged 25 to 34, with around $40k to spend. It's in the world of Widows and Baby Driver.",
     "title": "Salt Road"
   },
   {
@@ -40,10 +40,10 @@
     "text": "I want to launch my new movie called Salty Road in Lagos"
   },
   {
-    "name": "music-afrobeats-tour",
+    "name": "music-rnb-tour",
     "category": "music",
     "mode": "build",
-    "text": "I'm an Afrobeats artist putting out a new album in 10 weeks. We're touring Lagos, London, Accra and Atlanta, in that order, for fans aged 18 to 24. Burna Boy, Ayra Starr and Asake are the closest in sound.",
+    "text": "I'm an R&B artist putting out a new album in 10 weeks. We're touring Atlanta, New York, Los Angeles and London, in that order, for fans aged 18 to 24. SZA, Summer Walker and Brent Faiyaz are the closest in sound.",
     "example": "music",
     "title": "Night Songs"
   },
@@ -58,7 +58,7 @@
     "name": "books-how-to-be-a-man",
     "category": "books",
     "mode": "build",
-    "text": "Hey, I just wrote a book titled \"How to be a man\". It's about motivation, rules and etiquette for the move from boyhood to manhood. I don't know how to go about the launch or where to launch it.",
+    "text": "Hey, I just wrote a book titled \"How to be a man\". It's about motivation, rules and etiquette for the move from boyhood to manhood. I want to launch it in the US first, then the UK, but I don't know how to go about it.",
     "example": "books"
   },
   {
