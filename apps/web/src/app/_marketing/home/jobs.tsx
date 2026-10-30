@@ -14,14 +14,14 @@ const jobs: {
     icon: 'sparkles',
     title: 'Make a plan',
     gets: 'A plan for each market, worked back from your release date.',
-    message: 'Plan the release of Night Ferry in Lagos, London and Houston.',
+    message: 'Plan the release of Night Ferry in New York, Los Angeles and London.',
   },
   {
     id: 'check',
     icon: 'check',
     title: 'Check my plan',
     gets: 'Every assumption marked as holding, weak or broken, with a stronger option where one breaks.',
-    message: 'Check my plan: open in the UK, then Canada.',
+    message: 'Check my plan: open in the US, then the UK.',
   },
   {
     id: 'fix',

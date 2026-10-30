@@ -137,11 +137,11 @@ const SEEDS: SeedProject[] = [
   {
     key: 'r9',
     category: 'shows',
-    name: 'Night Laughs Lagos',
+    name: 'Night Laughs Atlanta',
     kind: 'Comedy night',
     genre: 'Stand-up',
     status: 'Planning',
-    places: ['Lagos', 'London'],
+    places: ['Atlanta', 'London'],
     window: 'Nov 2026',
     lead: 'Ada Okoye',
     comps: 'Kola Wave, Ada Lux',

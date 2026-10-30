@@ -221,7 +221,7 @@ function Facts() {
             label="Nationality of the team"
             value={nationality}
             onChange={(e) => setNationality(e.target.value)}
-            placeholder="For example Nigerian"
+            placeholder="For example American"
             disabled={!canEdit || busy}
           />
         </div>

@@ -28,47 +28,47 @@ const ROWS = 16;
 
 const cities: City[] = [
   {
-    id: 'lagos',
-    name: 'Lagos',
+    id: 'los-angeles',
+    name: 'Los Angeles',
     verdict: 'holds',
     strength: 1.6,
     line: 'The audience is 1.6 times as strong here as in an average city. Open here first.',
-    areas: ['Surulere', 'Lekki'],
+    areas: ['Inglewood', 'Silver Lake'],
     taste: 'Screens that rank highest with this audience: Kingsway Screen, Palm Grove Cinema.',
     shape: { x: 13, y: 8, rx: 11.5, ry: 5.2 },
     peaks: [
-      { x: 8, y: 9, r: 3.4, a: 1, label: 'Surulere' },
-      { x: 18, y: 7, r: 3.0, a: 0.85, label: 'Lekki' },
+      { x: 8, y: 9, r: 3.4, a: 1, label: 'Inglewood' },
+      { x: 18, y: 7, r: 3.0, a: 0.85, label: 'Silver Lake' },
       { x: 13, y: 8, r: 5, a: 0.4 },
+    ],
+  },
+  {
+    id: 'new-york',
+    name: 'New York',
+    verdict: 'holds',
+    strength: 1.3,
+    line: 'A little over an average city. Strong enough to plan for, with the lead in Brooklyn.',
+    areas: ['Bed-Stuy', 'Harlem'],
+    taste: 'Venues that rank highest with this audience: The Annex, Quay Hall.',
+    shape: { x: 13, y: 8, rx: 12, ry: 6.2 },
+    peaks: [
+      { x: 10, y: 11, r: 3.2, a: 0.85, label: 'Bed-Stuy' },
+      { x: 19, y: 9, r: 3.4, a: 0.7, label: 'Harlem' },
+      { x: 13, y: 6, r: 4.6, a: 0.3 },
     ],
   },
   {
     id: 'london',
     name: 'London',
-    verdict: 'holds',
-    strength: 1.3,
-    line: 'A little over an average city. Strong enough to plan for, with the lead in the south.',
-    areas: ['Croydon', 'Thamesmead'],
-    taste: 'Venues that rank highest with this audience: The Annex, Quay Hall.',
-    shape: { x: 13, y: 8, rx: 12, ry: 6.2 },
-    peaks: [
-      { x: 10, y: 11, r: 3.2, a: 0.85, label: 'Croydon' },
-      { x: 19, y: 9, r: 3.4, a: 0.7, label: 'Thamesmead' },
-      { x: 13, y: 6, r: 4.6, a: 0.3 },
-    ],
-  },
-  {
-    id: 'houston',
-    name: 'Houston',
     verdict: 'weak',
     strength: 0.9,
     line: 'Below an average city for these comps. Test it small before you spend.',
-    areas: ['Alief', 'Sugar Land'],
+    areas: ['Croydon', 'Thamesmead'],
     taste: 'Community screenings rank highest here, so start there.',
     shape: { x: 13, y: 8, rx: 12.4, ry: 6.6 },
     peaks: [
-      { x: 8, y: 9, r: 2.8, a: 0.55, label: 'Alief' },
-      { x: 17, y: 11, r: 3.0, a: 0.45, label: 'Sugar Land' },
+      { x: 8, y: 9, r: 2.8, a: 0.55, label: 'Croydon' },
+      { x: 17, y: 11, r: 3.0, a: 0.45, label: 'Thamesmead' },
       { x: 13, y: 6, r: 4.2, a: 0.25 },
     ],
   },
@@ -142,9 +142,9 @@ export function Regions() {
             Every place you name gets its own read.
           </h2>
           <p className="max-w-[60ch] text-[clamp(17px,1.3vw,18px)] leading-[1.65] text-ink/75">
-            Name Lagos and Oraqul asks Qloo what the audience for your comparable titles looks like
-            there, ranks it against your other cities, and says whether the place fits. Then it goes
-            down to the neighbourhoods.
+            Name Los Angeles and Oraqul asks Qloo what the audience for your comparable titles looks
+            like there, ranks it against your other cities, and says whether the place fits. Then it
+            goes down to the neighbourhoods.
           </p>
         </div>
 

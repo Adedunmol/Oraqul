@@ -69,12 +69,12 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Film and series',
     noun: 'film',
     compsLabel: 'Comps',
-    compsExample: 'Line of Duty, Happy Valley, Top Boy',
+    compsExample: 'Ozark, Mare of Easttown, Line of Duty',
     signal: 'Advance screenings and presales',
     unit: 'presales',
     extras: [
       { id: 'format', label: 'Film or series', placeholder: 'A feature film' },
-      { id: 'language', label: 'Language', placeholder: 'English and Yoruba' },
+      { id: 'language', label: 'Language', placeholder: 'English and Spanish' },
       { id: 'route', label: 'Release route', placeholder: 'Cinemas first, then streaming' },
       { id: 'cast', label: 'Cast and director', placeholder: 'Names, as they would appear' },
     ],
@@ -83,7 +83,7 @@ export const CATEGORY_GUIDE: Record<Category, CategoryGuide> = {
     name: 'Music',
     noun: 'release',
     compsLabel: 'Sound-alikes',
-    compsExample: 'Burna Boy, Tems, Rema',
+    compsExample: 'SZA, Frank Ocean, Daniel Caesar',
     signal: 'Save rate and stream completion',
     unit: 'saves',
     extras: [

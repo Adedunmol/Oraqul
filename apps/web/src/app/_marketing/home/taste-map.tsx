@@ -19,10 +19,10 @@ interface Node {
 const nodes: Node[] = [
   { name: 'Harbor Lights', kind: 'Series', cat: 'film', angle: 0, ring: 1 },
   { name: 'Nia Okoro', kind: 'Artist', cat: 'music', angle: 45, ring: 0 },
-  { name: 'Houston', kind: 'Place', angle: 90, ring: 1 },
+  { name: 'Los Angeles', kind: 'Place', angle: 90, ring: 1 },
   { name: 'The Long Quay', kind: 'Book', cat: 'books', angle: 135, ring: 0 },
   { name: 'Night Shift', kind: 'Podcast', cat: 'podcasts', angle: 180, ring: 1 },
-  { name: 'London', kind: 'Place', angle: 225, ring: 0 },
+  { name: 'New York', kind: 'Place', angle: 225, ring: 0 },
   { name: 'Ember Run', kind: 'Game', cat: 'games', angle: 270, ring: 1 },
   { name: 'Atelier Nord', kind: 'Brand', angle: 315, ring: 0 },
 ];

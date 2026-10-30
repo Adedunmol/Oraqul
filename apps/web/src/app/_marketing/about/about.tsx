@@ -72,12 +72,12 @@ export function Idea() {
 }
 
 const ranked: [string, string, number][] = [
-  ['Mexico City', 'Americas', 1.82],
-  ['Seoul', 'Asia', 1.64],
-  ['London', 'Europe', 1.51],
-  ['Lagos', 'Africa', 1.47],
-  ['Toronto', 'Americas', 1.38],
-  ['Sydney', 'Oceania', 1.22],
+  ['New York', 'Americas', 1.82],
+  ['London', 'Europe', 1.64],
+  ['Seoul', 'Asia', 1.51],
+  ['Mexico City', 'Americas', 1.47],
+  ['Sydney', 'Oceania', 1.38],
+  ['Lagos', 'Africa', 1.22],
 ];
 
 /** Cities from every region in one ranking, which is the point: one list, not one per region. */
@@ -94,8 +94,8 @@ export function Markets() {
           <div className="flex max-w-[46ch] flex-col gap-4 text-[17px] leading-[1.65] text-ink/80">
             <p>
               A release rarely lives in one country. Oraqul tests titles from any market and ranks
-              cities from every region in a single list, so a plan for Seoul, Mexico City and London
-              is judged by the same rule.
+              cities from every region in a single list, so a plan for New York, London and Seoul is
+              judged by the same rule.
             </p>
             <p>Where the data is thin, it says so and lowers its confidence rather than guess.</p>
           </div>
@@ -103,8 +103,8 @@ export function Markets() {
 
         <figure className="flex flex-col gap-3">
           <figcaption className="sr-only">
-            An example ranking by lift: Mexico City, Seoul, London, Lagos, Toronto and Sydney in one
-            list.
+            An example ranking by lift: New York, London, Seoul, Mexico City, Sydney and Lagos in
+            one list.
           </figcaption>
           <Reveal className="flex flex-col gap-2 rounded-2xl bg-card p-[clamp(16px,3vw,28px)]">
             {ranked.map(([city, where, lift], i) => (
